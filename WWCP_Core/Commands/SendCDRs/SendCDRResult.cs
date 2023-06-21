@@ -70,9 +70,9 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<Warning>  Warnings              { get; }
 
         /// <summary>
-        /// The optional URL for locating the charge detail record as defined e.g. in OCPI.
+        /// The optional (absolute or relative) URL for locating the charge detail record as defined e.g. in OCPI.
         /// </summary>
-        public URL?                  Location              { get; }
+        public Location?             Location              { get; }
 
         /// <summary>
         /// The runtime of the request.
@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.WWCP
                               SendCDRResultTypes     Result,
                               I18NString?            Description   = null,
                               IEnumerable<Warning>?  Warnings      = null,
-                              URL?                   Location      = null,
+                              Location?              Location      = null,
                               TimeSpan?              Runtime       = null)
         {
 
@@ -780,7 +780,7 @@ namespace cloud.charging.open.protocols.WWCP
             Success(DateTime            Timestamp,
                     ChargeDetailRecord  ChargeDetailRecord,
                     I18NString?         Description   = null,
-                    URL?                Location      = null,
+                    Location?           Location      = null,
                     TimeSpan?           Runtime       = null)
 
                 => new (Timestamp,
@@ -807,14 +807,14 @@ namespace cloud.charging.open.protocols.WWCP
                     ChargeDetailRecord  ChargeDetailRecord,
                     Warning             Warning,
                     I18NString?         Description   = null,
-                    URL?                Location      = null,
+                    Location?           Location      = null,
                     TimeSpan?           Runtime       = null)
 
                 => new (Timestamp,
                         ChargeDetailRecord,
                         SendCDRResultTypes.Success,
                         Description,
-                        new Warning[] { Warning },
+                        new[] { Warning },
                         Location,
                         Runtime);
 
@@ -834,7 +834,7 @@ namespace cloud.charging.open.protocols.WWCP
                     ChargeDetailRecord    ChargeDetailRecord,
                     IEnumerable<Warning>  Warnings,
                     I18NString?           Description   = null,
-                    URL?                  Location      = null,
+                    Location?             Location      = null,
                     TimeSpan?             Runtime       = null)
 
                 => new (Timestamp,
@@ -1075,8 +1075,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (JSONObject.ParseOptional("location",
                                              "location URL",
-                                             URL.TryParse,
-                                             out URL? Location,
+                                             org.GraphDefined.Vanaheimr.Hermod.HTTP.Location.TryParse,
+                                             out Location? Location,
                                              out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

@@ -2829,7 +2829,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 }
                 else
                 {
-
                     result = AdminStatus.Value switch {
                         _ => RemoteStartResult.OutOfService(),
                     };

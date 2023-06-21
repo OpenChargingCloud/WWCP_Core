@@ -6920,7 +6920,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    TimeSpan?           RequestTimeout      = null)
 
 
-                => SendChargeDetailRecords(new ChargeDetailRecord[] { ChargeDetailRecord },
+                => SendChargeDetailRecords(new[] { ChargeDetailRecord },
                                            TransmissionType,
 
                                            Timestamp,
@@ -6956,24 +6956,24 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            Timestamp       ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            EventTrackingId ??= EventTracking_Id.New;
-            RequestTimeout  ??= this.RequestTimeout;
+            var timestamp        = Timestamp       ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var eventTrackingId  = EventTrackingId ?? EventTracking_Id.New;
+            var requestTimeout   = RequestTimeout  ?? this.RequestTimeout;
 
             #endregion
 
             #region Send OnSendCDRsRequest event
 
-            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnSendCDRsRequest?.Invoke(StartTime,
-                                          Timestamp.Value,
+                OnSendCDRsRequest?.Invoke(startTime,
+                                          timestamp,
                                           this,
                                           Id.ToString(),
-                                          EventTrackingId,
+                                          eventTrackingId,
                                           Id,
                                           ChargeDetailRecords,
                                           RequestTimeout);
@@ -6989,21 +6989,21 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region if SendChargeDetailRecords disabled...
 
-            DateTime         Endtime;
-            TimeSpan         Runtime;
-            SendCDRsResult?  result = null;
+            DateTime         endtime;
+            TimeSpan         runtime;
+            SendCDRsResult?  result   = null;
 
             if (DisableSendChargeDetailRecords)
             {
 
-                Endtime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-                Runtime  = Endtime - StartTime;
+                endtime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+                runtime  = endtime - startTime;
                 result   = SendCDRsResult.AdminDown(
                                org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                Id,
                                this as ISendChargeDetailRecords,
                                ChargeDetailRecords,
-                               Runtime: Runtime
+                               Runtime: runtime
                            );
 
             }
@@ -7015,14 +7015,14 @@ namespace cloud.charging.open.protocols.WWCP
             else if (!ChargeDetailRecords.Any())
             {
 
-                Endtime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-                Runtime  = Endtime - StartTime;
+                endtime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+                runtime  = endtime - startTime;
                 result   = SendCDRsResult.NoOperation(
                                org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                Id,
                                this as ISendChargeDetailRecords,
                                ChargeDetailRecords,
-                               Runtime: Runtime
+                               Runtime: runtime
                            );
 
             }
@@ -7126,10 +7126,48 @@ namespace cloud.charging.open.protocols.WWCP
                 foreach (var cdr in chargeDetailRecordsToProcess.ToArray())
                 {
 
-                    #region The CDR EMPRoamingProvider(Id) is known, or...
+                    #region The CDR ProviderIdStart is known, or...
 
-                    if (cdr.EMPRoamingProvider is not null &&
-                       !cdr.EMPRoamingProviderId.HasValue)
+                    if (cdr.ProviderIdStart.HasValue &&
+                        TryGetEMobilityProviderById(cdr.ProviderIdStart.Value, out var empForCDR) &&
+                        empForCDR is not null)
+                    {
+
+                        cdrTargets[empForCDR].Add(cdr);
+                        chargeDetailRecordsToProcess.Remove(cdr);
+
+                        SessionsStore.CDRReceived(cdr.SessionId,
+                                                  cdr);
+
+                        continue;
+
+                    }
+
+                    #endregion
+
+                    #region ...the CDR ProviderIdStop is known, or...
+
+                    else if (cdr.ProviderIdStop.HasValue &&
+                             TryGetEMobilityProviderById(cdr.ProviderIdStop.Value, out empForCDR) &&
+                             empForCDR is not null)
+                    {
+
+                        cdrTargets[empForCDR].Add(cdr);
+                        chargeDetailRecordsToProcess.Remove(cdr);
+
+                        SessionsStore.CDRReceived(cdr.SessionId,
+                                                  cdr);
+
+                        continue;
+
+                    }
+
+                    #endregion
+
+                    #region ...the CDR EMPRoamingProvider(Id) is known, or...
+
+                    else if (cdr.EMPRoamingProvider is not null &&
+                            !cdr.EMPRoamingProviderId.HasValue)
                     {
                         cdr.EMPRoamingProviderId = cdr.EMPRoamingProvider.Id;
                     }
@@ -7580,41 +7618,43 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                var Overview = new Dictionary<SendCDRResultTypes, UInt32>();
+                var cdrResultOverview = new Dictionary<SendCDRResultTypes, UInt32>();
                 foreach (var res in resultMap)
                 {
 
-                    if (!Overview.ContainsKey(res.Result))
-                        Overview.Add(res.Result, 1);
+                    if (!cdrResultOverview.ContainsKey(res.Result))
+                        cdrResultOverview.Add(res.Result, 1);
 
                     else
-                        Overview[res.Result]++;
+                        cdrResultOverview[res.Result]++;
 
                 }
 
-                var GlobalResultNumber = Overview.Values.Max();
-                var GlobalResults      = Overview.Where(kvp => kvp.Value == GlobalResultNumber).Select(kvp => kvp.Key).ToList();
-                if (GlobalResults.Count > 1)
+                var globalResultNumber = cdrResultOverview.Values.Max();
+                var globalResults      = cdrResultOverview.Where(kvp => kvp.Value == globalResultNumber).Select(kvp => kvp.Key).ToList();
+                if (globalResults.Count > 1)
                 {
 
-                    if (GlobalResults.Contains(SendCDRResultTypes.Success))
-                        GlobalResults.Remove(SendCDRResultTypes.Success);
+                    if (globalResults.Contains(SendCDRResultTypes.Success))
+                        globalResults.Remove(SendCDRResultTypes.Success);
 
-                    if (GlobalResults.Contains(SendCDRResultTypes.Enqueued))
-                        GlobalResults.Remove(SendCDRResultTypes.Enqueued);
+                    if (globalResults.Contains(SendCDRResultTypes.Enqueued))
+                        globalResults.Remove(SendCDRResultTypes.Enqueued);
 
                 }
 
-                Endtime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-                Runtime  = Endtime - StartTime;
-                result   = new SendCDRsResult(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                              Id,
-                                              this as IReceiveChargeDetailRecords,
-                                              GlobalResults[0].Convert(),
-                                              resultMap,
-                                              I18NString.Empty,
-                                              null,
-                                              Runtime);
+                endtime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+                runtime  = endtime - startTime;
+                result   = new SendCDRsResult(
+                               org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                               Id,
+                               this as IReceiveChargeDetailRecords,
+                               globalResults[0].Convert(),
+                               resultMap,
+                               I18NString.Empty,
+                               null,
+                               runtime
+                           );
 
             }
 
@@ -7624,16 +7664,16 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                OnSendCDRsResponse?.Invoke(Endtime,
-                                           Timestamp.Value,
+                OnSendCDRsResponse?.Invoke(endtime,
+                                           timestamp,
                                            this,
                                            Id.ToString(),
-                                           EventTrackingId,
+                                           eventTrackingId,
                                            Id,
                                            ChargeDetailRecords,
                                            RequestTimeout,
                                            result,
-                                           Runtime);
+                                           runtime);
 
             }
             catch (Exception e)

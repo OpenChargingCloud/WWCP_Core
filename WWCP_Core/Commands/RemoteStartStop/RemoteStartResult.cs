@@ -273,15 +273,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Session">The charging session.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult AsyncOperation(ChargingSession  Session,
-                                                       I18NString       Description      = null,
-                                                       String           AdditionalInfo   = null,
+                                                       I18NString?      Description      = null,
+                                                       String?          AdditionalInfo   = null,
                                                        TimeSpan?        Runtime          = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.AsyncOperation,
-                                     Description ?? I18NString.Create(Languages.en, "An async remote start was sent successfully!"),
-                                     AdditionalInfo,
-                                     Session,
-                                     Runtime: Runtime);
+            => new (RemoteStartResultTypes.AsyncOperation,
+                    Description ?? I18NString.Create(Languages.en, "An async remote start was sent successfully!"),
+                    AdditionalInfo,
+                    Session,
+                    Runtime: Runtime);
 
         #endregion
 
@@ -295,15 +295,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Session">The charging session.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult SuccessPlugInCableToStartCharging(ChargingSession  Session,
-                                                                          I18NString       Description      = null,
-                                                                          String           AdditionalInfo   = null,
+                                                                          I18NString?      Description      = null,
+                                                                          String?          AdditionalInfo   = null,
                                                                           TimeSpan?        Runtime          = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.SuccessPlugInCableToStartCharging,
-                                     Description ?? I18NString.Create(Languages.en, "The remote start was successful. Please plug in the cable to start charging!"),
-                                     AdditionalInfo,
-                                     Session,
-                                     Runtime: Runtime);
+            => new (RemoteStartResultTypes.SuccessPlugInCableToStartCharging,
+                    Description ?? I18NString.Create(Languages.en, "The remote start was successful. Please plug in the cable to start charging!"),
+                    AdditionalInfo,
+                    Session,
+                    Runtime: Runtime);
 
         #endregion
 
@@ -314,12 +314,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Runtime">The runtime of the request.</param>
         /// <param name="Description">An optional error message.</param>
-        public static RemoteStartResult Timeout(I18NString  Description   = null,
-                                                TimeSpan?   Runtime       = null)
+        public static RemoteStartResult Timeout(I18NString?  Description   = null,
+                                                TimeSpan?    Runtime       = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.Timeout,
-                                     Description ?? I18NString.Create(Languages.en, "A timeout occured!"),
-                                     Runtime: Runtime);
+            => new (RemoteStartResultTypes.Timeout,
+                    Description ?? I18NString.Create(Languages.en, "A timeout occured!"),
+                    Runtime: Runtime);
 
         #endregion
 
@@ -331,14 +331,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">A optional description of the remote start result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult CommunicationError(I18NString  Description      = null,
-                                                           String      AdditionalInfo   = null,
-                                                           TimeSpan?   Runtime          = null)
+        public static RemoteStartResult CommunicationError(I18NString?  Description      = null,
+                                                           String?      AdditionalInfo   = null,
+                                                           TimeSpan?    Runtime          = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.CommunicationError,
-                                     Description ?? I18NString.Create(Languages.en, "A communication error occured!"),
-                                     AdditionalInfo,
-                                     Runtime: Runtime);
+            => new (RemoteStartResultTypes.CommunicationError,
+                    Description ?? I18NString.Create(Languages.en, "A communication error occured!"),
+                    AdditionalInfo,
+                    Runtime: Runtime);
 
         #endregion
 
@@ -350,14 +350,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">A optional description of the remote start result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult Error(I18NString  Description      = null,
-                                              String      AdditionalInfo   = null,
-                                              TimeSpan?   Runtime          = null)
+        public static RemoteStartResult Error(I18NString?  Description      = null,
+                                              String?      AdditionalInfo   = null,
+                                              TimeSpan?    Runtime          = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.Error,
-                                     Description ?? I18NString.Create(Languages.en, "An error occured!"),
-                                     AdditionalInfo,
-                                     Runtime: Runtime);
+            => new (RemoteStartResultTypes.Error,
+                    Description ?? I18NString.Create(Languages.en, "An error occured!"),
+                    AdditionalInfo,
+                    Runtime: Runtime);
 
 
         /// <summary>
@@ -367,15 +367,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult Error(String     Description,
-                                              String     AdditionalInfo   = null,
+                                              String?    AdditionalInfo   = null,
                                               TimeSpan?  Runtime          = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.Error,
-                                     Description?.Trim().IsNotNullOrEmpty() == false
-                                         ? I18NString.Create(Languages.en, Description)
-                                         : I18NString.Create(Languages.en, "An error occured!"),
-                                     AdditionalInfo,
-                                     Runtime: Runtime);
+            => new (RemoteStartResultTypes.Error,
+                    Description?.Trim().IsNotNullOrEmpty() == false
+                        ? I18NString.Create(Languages.en, Description)
+                        : I18NString.Create(Languages.en, "An error occured!"),
+                    AdditionalInfo,
+                    Runtime: Runtime);
 
         #endregion
 
