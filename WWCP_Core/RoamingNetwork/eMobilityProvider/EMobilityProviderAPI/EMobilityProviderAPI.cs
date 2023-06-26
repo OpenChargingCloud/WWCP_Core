@@ -99,11 +99,6 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
         #region Properties
 
-        /// <summary>
-        /// The optional URL path prefix, used when defining URL templates.
-        /// </summary>
-        public new HTTPPath                URLPathPrefix     { get; }
-
 //        /// <summary>
 //        /// The attached HTTP logger.
 //        /// </summary>
@@ -125,9 +120,19 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
         #region Custom JSON parsers
 
+        public CustomJObjectParserDelegate<RemoteStartRequest>?  CustomRemoteStartRequestParser    { get; set; }
+
+        public CustomJObjectParserDelegate<RemoteStopRequest>?   CustomRemoteStopRequestParser     { get; set; }
+
         #endregion
 
         #region Custom JSON serializers
+
+        public CustomJObjectSerializerDelegate<RemoteStartResponse>?  CustomRemoteStartResponseSerializer   { get; set; }
+        public CustomJObjectSerializerDelegate<ChargeDetailRecord>?   CustomChargeDetailRecordSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<SendCDRResult>?        CustomSendCDRResultSerializer         { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSession>?      CustomChargingSessionSerializer       { get; set; }
+        public CustomJObjectSerializerDelegate<Warning>?              CustomWarningSerializer               { get; set; }
 
         #endregion
 
@@ -505,6 +510,222 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                               });
 
             #endregion
+
+            #endregion
+
+
+            #region POST      ~/remoteStart
+
+            AddMethodCallback(HTTPHostname.Any,
+                              HTTPMethod.POST,
+                              URLPathPrefix + "remoteStart",
+                              HTTPContentType.JSON_UTF8,
+                              //HTTPRequestLogger:   GetLocationsRequest,
+                              //HTTPResponseLogger:  GetLocationsResponse,
+                              HTTPDelegate:        async Request => {
+
+                                  var startTime = Timestamp.Now;
+
+                                  RemoteStartResponse? remoteStartResponse = null;
+
+                                  try
+                                  {
+
+                                      var jsonBody = Request.HTTPBodyAsJSONObject;
+
+                                      if (jsonBody is not null &&
+                                          RemoteStartRequest.TryParse(jsonBody,
+                                                                      out var remoteStartRequest,
+                                                                      out var errorResponse,
+                                                                      Request.Timestamp,
+                                                                      Request.CancellationToken,
+                                                                      Request.EventTrackingId,
+                                                                      Request.Timeout ?? DefaultRequestTimeout,
+                                                                      CustomRemoteStartRequestParser) &&
+                                          remoteStartRequest is not null)
+                                      {
+
+                                          Counters.RemoteStart.IncRequests_OK();
+
+                                          #region Send OnRemoteStartRequest event
+
+                                          //try
+                                          //{
+
+                                          //    if (OnRemoteStartRequest is not null)
+                                          //        await Task.WhenAll(OnRemoteStartRequest.GetInvocationList().
+                                          //                           Cast<OnRemoteStartRequestDelegate>().
+                                          //                           Select(e => e(Timestamp.Now,
+                                          //                                         this,
+                                          //                                         authorizeRemoteStartRequest!))).
+                                          //                           ConfigureAwait(false);
+
+                                          //}
+                                          //catch (Exception e)
+                                          //{
+                                          //    DebugX.LogException(e, nameof(CPOServerAPI) + "." + nameof(OnRemoteStartRequest));
+                                          //}
+
+                                          #endregion
+
+                                          #region Call async subscribers
+
+                                          try
+                                          {
+
+                                              var remoteStartResult = await eMobilityProvider.RemoteStart(remoteStartRequest.ChargingLocation,
+                                                                                                          remoteStartRequest.ChargingProduct,
+                                                                                                          remoteStartRequest.ReservationId,
+                                                                                                          remoteStartRequest.RemoteAuthentication,
+                                                                                                          remoteStartRequest.ChargingSessionId,
+                                                                                                          remoteStartRequest.Timestamp,
+                                                                                                          remoteStartRequest.EventTrackingId,
+                                                                                                          remoteStartRequest.RequestTimeout,
+                                                                                                          remoteStartRequest.CancellationToken);
+
+                                              remoteStartResponse = new RemoteStartResponse(remoteStartRequest,
+                                                                                            remoteStartResult.Result,
+                                                                                            remoteStartRequest.EventTrackingId,
+                                                                                            Timestamp.Now,
+                                                                                            remoteStartResult.Session,
+                                                                                            remoteStartResult.Description,
+                                                                                            remoteStartResult.AdditionalInfo,
+                                                                                            Array.Empty<Warning>(),
+                                                                                            null,
+                                                                                            remoteStartResult.Runtime);
+
+                                              //authorizeRemoteStartResponse = (await Task.WhenAll(OnRemoteStartLocal.GetInvocationList().
+                                              //                                                                  Cast<OnRemoteStartDelegate>().
+                                              //                                                                  Select(e => e(Timestamp.Now,
+                                              //                                                                                this,
+                                              //                                                                                authorizeRemoteStartRequest!))))?.FirstOrDefault();
+
+                                              Counters.RemoteStart.IncResponses_OK();
+
+                                          }
+                                          catch (Exception e)
+                                          {
+
+                                              Counters.RemoteStart.IncResponses_Error();
+
+                                              //authorizeRemoteStartResponse = Acknowledgement<RemoteStartRequest>.DataError(
+                                              //                                   Request:                   authorizeRemoteStartRequest,
+                                              //                                   StatusCodeDescription:     e.Message,
+                                              //                                   StatusCodeAdditionalInfo:  e.StackTrace,
+                                              //                                   SessionId:                 authorizeRemoteStartRequest?.SessionId,
+                                              //                                   CPOPartnerSessionId:       authorizeRemoteStartRequest?.CPOPartnerSessionId
+                                              //                               );
+
+                                          }
+
+                                          if (remoteStartResponse is null)
+                                          {
+
+                                              Counters.RemoteStart.IncResponses_Error();
+
+                                              //remoteStartResponse = Acknowledgement<RemoteStartRequest>.SystemError(
+                                              //                          authorizeRemoteStartRequest,
+                                              //                          "Could not process the received RemoteStart request!"
+                                              //                      );
+
+                                          }
+
+                                          #endregion
+
+                                          #region Send OnRemoteStartResponse event
+
+                                          //try
+                                          //{
+
+                                          //    if (OnRemoteStartResponse is not null)
+                                          //        await Task.WhenAll(OnRemoteStartResponse.GetInvocationList().
+                                          //                           Cast<OnRemoteStartResponseDelegate>().
+                                          //                           Select(e => e(Timestamp.Now,
+                                          //                                         this,
+                                          //                                         authorizeRemoteStartRequest!,
+                                          //                                         authorizeRemoteStartResponse,
+                                          //                                         Timestamp.Now - startTime))).
+                                          //                           ConfigureAwait(false);
+
+                                          //}
+                                          //catch (Exception e)
+                                          //{
+                                          //    DebugX.LogException(e, nameof(CPOServerAPI) + "." + nameof(OnRemoteStartResponse));
+                                          //}
+
+                                          #endregion
+
+                                      }
+
+                                  }
+                                  catch (Exception e)
+                                  {
+
+                                      remoteStartResponse = new RemoteStartResponse(null,
+                                                                                    RemoteStartResultTypes.Error,
+                                                                                    EventTracking_Id.New,
+                                                                                    Timestamp.Now,
+                                                                                    null,
+                                                                                    I18NString.Create(Languages.en, e.Message),
+                                                                                    e.StackTrace,
+                                                                                    Array.Empty<Warning>(),
+                                                                                    null,
+                                                                                    TimeSpan.Zero);
+
+                                  }
+
+                                  remoteStartResponse ??= new RemoteStartResponse(null,
+                                                                                  RemoteStartResultTypes.Error,
+                                                                                  EventTracking_Id.New,
+                                                                                  Timestamp.Now,
+                                                                                  null,
+                                                                                  null,
+                                                                                  null,
+                                                                                  Array.Empty<Warning>(),
+                                                                                  null,
+                                                                                  TimeSpan.Zero);
+
+
+                                  if (remoteStartResponse.Result == RemoteStartResultTypes.Success ||
+                                      remoteStartResponse.Result == RemoteStartResultTypes.AsyncOperation)
+                                  {
+
+                                      return new HTTPResponse.Builder(Request) {
+                                                 HTTPStatusCode             = HTTPStatusCode.OK,
+                                                 AccessControlAllowMethods  = new[] { "OPTIONS", "POST" },
+                                                 Allow                      = new List<HTTPMethod> {
+                                                                                  HTTPMethod.OPTIONS,
+                                                                                  HTTPMethod.POST
+                                                                              },
+                                                 ContentType                = HTTPContentType.JSON_UTF8,
+                                                 Content                    = remoteStartResponse.ToJSON(CustomRemoteStartResponseSerializer,
+                                                                                                         CustomChargeDetailRecordSerializer,
+                                                                                                         CustomSendCDRResultSerializer,
+                                                                                                         CustomChargingSessionSerializer,
+                                                                                                         CustomWarningSerializer).
+                                                                                                  ToString(JSONFormatting).
+                                                                                                  ToUTF8Bytes(),
+                                                 AccessControlAllowHeaders  = "Authorization"
+                                          }.AsImmutable;
+
+                                  }
+
+                                  else
+                                  {
+
+                                      return new HTTPResponse.Builder(Request) {
+                                                 HTTPStatusCode             = HTTPStatusCode.Forbidden,
+                                                 AccessControlAllowMethods  = new[] { "OPTIONS", "POST" },
+                                                 Allow                      = new List<HTTPMethod> {
+                                                                                  HTTPMethod.OPTIONS,
+                                                                                  HTTPMethod.POST
+                                                                              },
+                                                 AccessControlAllowHeaders  = "Authorization"
+                                          }.AsImmutable;
+
+                                  }
+
+                              });
 
             #endregion
 

@@ -23,6 +23,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.WWCP.Networking;
+using cloud.charging.open.protocols.WWCP.MobilityProvider;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -167,6 +169,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
+        public EMobilityProviderAPI?  HTTPAPI { get; private set; }
 
 
 
@@ -939,6 +942,29 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+
+
+
+        public EMobilityProviderAPI StartAPI(IPPort? HTTPServerPort = null)
+        {
+
+            HTTPAPI = new EMobilityProviderAPI(
+                          this,
+                          HTTPServerPort:  HTTPServerPort,
+                          Autostart:       true
+                      );
+
+            return HTTPAPI;
+
+        }
+
+        public void ShutdownAPI()
+        {
+
+            HTTPAPI?.Shutdown(Wait: true);
+
+        }
 
 
     }

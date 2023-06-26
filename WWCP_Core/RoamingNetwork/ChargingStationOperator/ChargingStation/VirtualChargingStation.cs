@@ -1767,7 +1767,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     lock (chargingReservations)
                     {
-                        expiredReservations = chargingReservations.Values.Where(reservationCollection => reservationCollection.LastOrDefault().IsExpired()).LastOrDefault().ToArray();
+                        expiredReservations = chargingReservations.Values.Where(reservationCollection => reservationCollection.LastOrDefault()?.IsExpired() == true).LastOrDefault()?.ToArray() ?? Array.Empty<ChargingReservation>();
                     }
 
                     foreach (var expiredReservation in expiredReservations)

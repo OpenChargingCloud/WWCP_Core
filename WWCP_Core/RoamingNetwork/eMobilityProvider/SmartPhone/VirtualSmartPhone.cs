@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.WWCP.Networking;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -32,6 +33,17 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
     public class VirtualSmartPhone
     {
 
+        #region Data
+
+        private EMobilityProviderAPIClient? HTTPClient;
+
+        #endregion
+
+        #region Properties
+
+        public URL? ServerURL { get; private set; }
+
+        #endregion
 
         #region Constructor(s)
 
@@ -41,6 +53,65 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         #endregion
 
 
+        public void Connect(URL ServerURL)
+        {
+            this.ServerURL = ServerURL;
+        }
+
+
+        public async Task<RemoteStartResponse> RemoteStart(RemoteStartRequest Request)
+        {
+
+            RemoteStartResponse? response = null;
+
+            if (ServerURL.HasValue)
+            {
+
+                response = await new EMobilityProviderAPIClient(ServerURL.Value).RemoteStart(Request);
+
+            }
+            else {
+
+                response = new RemoteStartResponse(
+                               Request,
+                               RemoteStartResultTypes.Offline,
+                               EventTracking_Id.New,
+                               Timestamp.Now
+                           );
+
+            }
+
+            return response;
+
+        }
+
+        public async Task<RemoteStopResponse> RemoteStop(RemoteStopRequest Request)
+        {
+
+            RemoteStopResponse? response = null;
+
+            if (ServerURL.HasValue)
+            {
+
+                response = await new EMobilityProviderAPIClient(ServerURL.Value).RemoteStop(Request);
+
+            }
+            else
+            {
+
+                response = new RemoteStopResponse(
+                               Request,
+                               RemoteStopResultTypes.Offline,
+                               EventTracking_Id.New,
+                               Timestamp.Now,
+                               Request.ChargingSessionId
+                           );
+
+            }
+
+            return response;
+
+        }
 
 
     }
