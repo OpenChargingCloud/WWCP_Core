@@ -201,6 +201,19 @@ namespace cloud.charging.open.protocols.WWCP
                );
 
 
+        public static Boolean TryParse(JObject                JSON,
+                                       out ChargingLocation?  ChargingLocation,
+                                       out String?            ErrorResponse)
+        {
+
+            ChargingLocation  = null;
+            ErrorResponse     = null;
+            return false;
+
+        }
+
+
+
         #region Operator overloading
 
         #region Operator == (ChargingLocation1, ChargingLocation2)

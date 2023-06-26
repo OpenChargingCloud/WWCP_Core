@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The attached roaming network.
         /// </summary>
-        IRoamingNetwork        RoamingNetwork    { get; }
+        IRoamingNetwork?       RoamingNetwork    { get; }
 
         #endregion
 

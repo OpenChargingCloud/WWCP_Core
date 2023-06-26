@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingStationOperator_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out ChargingStationOperator_Id chargingStationOperatorId))
+            if (TryParse(Text, out var chargingStationOperatorId))
                 return chargingStationOperatorId;
 
             throw new ArgumentException("Invalid text representation of a charging station operator identification: '" + Text + "'!",
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingStationOperator_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out ChargingStationOperator_Id chargingStationOperatorId))
+            if (TryParse(Text, out var chargingStationOperatorId))
                 return chargingStationOperatorId;
 
             return null;
@@ -278,12 +278,12 @@ namespace cloud.charging.open.protocols.WWCP
                     return false;
 
                 // DE...
-                if (Country.TryParseAlpha2Code(matchCollection[0].Groups[1].Value, out Country countryCode))
+                if (Country.TryParseAlpha2Code(matchCollection[0].Groups[1].Value, out var countryCode))
                 {
 
-                    ChargingStationOperatorId = new ChargingStationOperator_Id(countryCode,
-                                                                               matchCollection[0].Groups[3].Value,
-                                                                               matchCollection[0].Groups[2].Value == "*" ? OperatorIdFormats.ISO_STAR : OperatorIdFormats.ISO);
+                    ChargingStationOperatorId = new (countryCode,
+                                                     matchCollection[0].Groups[3].Value,
+                                                     matchCollection[0].Groups[2].Value == "*" ? OperatorIdFormats.ISO_STAR : OperatorIdFormats.ISO);
 
                     return true;
 
@@ -293,9 +293,9 @@ namespace cloud.charging.open.protocols.WWCP
                 if (Country.TryParseTelefonCode(matchCollection[0].Groups[4].Value, out countryCode))
                 {
 
-                    ChargingStationOperatorId = new ChargingStationOperator_Id(countryCode,
-                                                                               matchCollection[0].Groups[5].Value,
-                                                                               OperatorIdFormats.DIN);
+                    ChargingStationOperatorId = new (countryCode,
+                                                     matchCollection[0].Groups[5].Value,
+                                                     OperatorIdFormats.DIN);
 
                     return true;
 
@@ -303,9 +303,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 // Just e.g. "822"...
-                ChargingStationOperatorId = new ChargingStationOperator_Id(Country.Germany,
-                                                                           matchCollection[0].Groups[6].Value,
-                                                                           OperatorIdFormats.DIN);
+                ChargingStationOperatorId = new (Country.Germany,
+                                                 matchCollection[0].Groups[6].Value,
+                                                 OperatorIdFormats.DIN);
 
                 return true;
 

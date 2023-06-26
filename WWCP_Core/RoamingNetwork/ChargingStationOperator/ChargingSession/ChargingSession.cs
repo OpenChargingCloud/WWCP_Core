@@ -840,6 +840,19 @@ namespace cloud.charging.open.protocols.WWCP
         //}
 
 
+        public static Boolean TryParse(JObject               JSON,
+                                       out ChargingSession?  ChargingSession,
+                                       out String?           ErrorResponse)
+        {
+
+            ErrorResponse    = null;
+            ChargingSession  = null;
+
+            return false;
+
+        }
+
+
         #region ToJSON(Embedded, ...)
 
         public JObject ToJSON(Boolean                                               Embedded                             = false,

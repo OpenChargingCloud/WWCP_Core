@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomChargingProductSerializer">A delegate to serialize custom ChargingProduct JSON objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingProduct> CustomChargingProductSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingProduct>? CustomChargingProductSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -206,6 +206,18 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+        public static Boolean TryParse(JObject               JSON,
+                                       out ChargingProduct?  ChargingProduct,
+                                       out String?           ErrorResponse)
+        {
+
+            ErrorResponse    = "Not implemented!";
+            ChargingProduct  = null;
+
+            return false;
+
+        }
 
 
         #region Operator overloading

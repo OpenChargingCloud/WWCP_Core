@@ -1323,9 +1323,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Reservations
-
-        #region Data
+        #region ChargingReservation(s)
 
         /// <summary>
         /// All current charging reservations.
@@ -1341,6 +1339,90 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region ChargingSession(s)
+
+        /// <summary>
+        /// The current charging session, if available.
+        /// </summary>
+        [InternalUseOnly]
+        public ChargingSession?  ChargingSession    { get; set; }
+
+
+        /// <summary>
+        /// All charging sessions.
+        /// </summary>
+        public IEnumerable<ChargingSession> ChargingSessions
+
+            => ChargingSession is not null
+                   ? new[] { ChargingSession }
+                   : Array.Empty<ChargingSession>();
+
+
+        #region Contains(ChargingSessionId)
+
+        /// <summary>
+        /// Whether the given charging session identification is known within the EVSE.
+        /// </summary>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
+        public Boolean Contains(ChargingSession_Id ChargingSessionId)
+
+            => ChargingSessionId == ChargingSession?.Id;
+
+        #endregion
+
+        #region TryGetChargingSessionById(ChargingSessionId, out ChargingSession)
+
+        /// <summary>
+        /// Return the charging session specified by the given charging session identification.
+        /// </summary>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
+        /// <param name="ChargingSession">The charging session.</param>
+        public Boolean TryGetChargingSessionById(ChargingSession_Id    ChargingSessionId,
+                                                 out ChargingSession?  ChargingSession)
+        {
+
+            if (ChargingSessionId == this.ChargingSession?.Id)
+            {
+                ChargingSession = this.ChargingSession;
+                return true;
+            }
+
+            ChargingSession = null;
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region (internal) SendNewChargingSession   (Timestamp, Sender, Session)
+
+        internal void SendNewChargingSession(DateTime Timestamp,
+                                             Object Sender,
+                                             ChargingSession Session)
+        {
+
+            if (Session is not null)
+            {
+
+                if (Session.EVSE is null)
+                {
+                    Session.EVSE = this;
+                    Session.EVSEId = Id;
+                }
+
+                OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
+
+            }
+
+        }
+
+        #endregion
+
+        #endregion
+
+
+        #region Reserve/CancelReservation
 
         #region Reserve(                                           StartTime = null, Duration = null, ReservationId = null, ProviderId = null, ...)
 
@@ -1827,46 +1909,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region RemoteStart/-Stop and SendSession/-CDR
-
-        #region Data
-
-        /// <summary>
-        /// The current charging session, if available.
-        /// </summary>
-        [InternalUseOnly]
-        public ChargingSession? ChargingSession { get; set; }
-
-
-        public IEnumerable<ChargingSession> ChargingSessions
-            => ChargingSession is not null
-                   ? new ChargingSession[] { ChargingSession }
-                   : Array.Empty<ChargingSession>();
-
-        #region TryGetChargingSessionById(SessionId, out ChargingSession)
-
-        /// <summary>
-        /// Return the charging session specified by the given identification.
-        /// </summary>
-        /// <param name="SessionId">The charging session identification.</param>
-        /// <param name="ChargingSession">The charging session.</param>
-        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession? chargingSession)
-        {
-
-            if (SessionId == ChargingSession.Id)
-            {
-                chargingSession = ChargingSession;
-                return true;
-            }
-
-            chargingSession = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #endregion
+        #region RemoteStart/-Stop
 
         #region RemoteStart(                  ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 
@@ -2439,30 +2482,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region (internal) SendNewChargingSession   (Timestamp, Sender, Session)
-
-        internal void SendNewChargingSession(DateTime Timestamp,
-                                             Object Sender,
-                                             ChargingSession Session)
-        {
-
-            if (Session is not null)
-            {
-
-                if (Session.EVSE is null)
-                {
-                    Session.EVSE = this;
-                    Session.EVSEId = Id;
-                }
-
-                OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
-
-            }
-
-        }
-
         #endregion
+
+        #region SendNewChargeDetailRecord
 
         #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
 

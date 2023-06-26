@@ -26,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+
     /// <summary>
     /// The result of a remote start operation.
     /// </summary>
@@ -470,6 +471,167 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
+    /// Extensions methods for remote start result types.
+    /// </summary>
+    public static class RemoteStartResultTypesExtensions
+    {
+
+        #region Parse   (Text)
+
+        /// <summary>
+        /// Parses the given text representation of a remote start result type.
+        /// </summary>
+        /// <param name="Text">A text representation of a remote start result type.</param>
+        public static RemoteStartResultTypes Parse(String Text)
+        {
+
+            if (TryParse(Text, out var remoteStartResultType))
+                return remoteStartResultType;
+
+            throw new ArgumentException("Undefined remote start result type '" + Text + "'!");
+
+        }
+
+        #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Parses the given text representation of a remote start result type.
+        /// </summary>
+        /// <param name="Text">A text representation of a remote start result type.</param>
+        public static RemoteStartResultTypes? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var remoteStartResultType))
+                return remoteStartResultType;
+
+            return default;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out RemoteStartResultType)
+
+        /// <summary>
+        /// Parses the given text representation of a remote start result type.
+        /// </summary>
+        /// <param name="Text">A text representation of a remote start result type.</param>
+        /// <param name="RemoteStartResultType">The parsed remote start result type.</param>
+        public static Boolean TryParse(String Text, out RemoteStartResultTypes RemoteStartResultType)
+        {
+            switch (Text?.Trim())
+            {
+
+                case "unknownOperator":
+                    RemoteStartResultType = RemoteStartResultTypes.UnknownOperator;
+                    return true;
+
+                case "unknownLocation":
+                    RemoteStartResultType = RemoteStartResultTypes.UnknownLocation;
+                    return true;
+
+                case "invalidSessionId":
+                    RemoteStartResultType = RemoteStartResultTypes.InvalidSessionId;
+                    return true;
+
+                case "invalidCredentials":
+                    RemoteStartResultType = RemoteStartResultTypes.InvalidCredentials;
+                    return true;
+
+                case "noEVConnectedToEVSE":
+                    RemoteStartResultType = RemoteStartResultTypes.NoEVConnectedToEVSE;
+                    return true;
+
+                case "alreadyInUse":
+                    RemoteStartResultType = RemoteStartResultTypes.AlreadyInUse;
+                    return true;
+
+                case "outOfService":
+                    RemoteStartResultType = RemoteStartResultTypes.OutOfService;
+                    return true;
+
+                case "offline":
+                    RemoteStartResultType = RemoteStartResultTypes.Offline;
+                    return true;
+
+                case "reserved":
+                    RemoteStartResultType = RemoteStartResultTypes.Reserved;
+                    return true;
+
+                case "success":
+                    RemoteStartResultType = RemoteStartResultTypes.Success;
+                    return true;
+
+                case "asyncOperation":
+                    RemoteStartResultType = RemoteStartResultTypes.AsyncOperation;
+                    return true;
+
+                case "successPlugInCableToStartCharging":
+                    RemoteStartResultType = RemoteStartResultTypes.SuccessPlugInCableToStartCharging;
+                    return true;
+
+                case "timeout":
+                    RemoteStartResultType = RemoteStartResultTypes.Timeout;
+                    return true;
+
+                case "communicationError":
+                    RemoteStartResultType = RemoteStartResultTypes.CommunicationError;
+                    return true;
+
+                case "error":
+                    RemoteStartResultType = RemoteStartResultTypes.Error;
+                    return true;
+
+                case "noOperation":
+                    RemoteStartResultType = RemoteStartResultTypes.NoOperation;
+                    return true;
+
+                default:
+                    RemoteStartResultType = RemoteStartResultTypes.Unspecified;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+        #region AsString(this RemoteStartResultType)
+
+        /// <summary>
+        /// Return a text representation of the given remote start result type.
+        /// </summary>
+        /// <param name="RemoteStartResultType">An remote start result type.</param>
+        public static String AsString(this RemoteStartResultTypes RemoteStartResultType)
+
+            => RemoteStartResultType switch {
+                   RemoteStartResultTypes.UnknownOperator                    => "unknownOperator",
+                   RemoteStartResultTypes.UnknownLocation                    => "unknownLocation",
+                   RemoteStartResultTypes.InvalidSessionId                   => "invalidSessionId",
+                   RemoteStartResultTypes.InvalidCredentials                 => "invalidCredentials",
+                   RemoteStartResultTypes.NoEVConnectedToEVSE                => "noEVConnectedToEVSE",
+                   RemoteStartResultTypes.AlreadyInUse                       => "alreadyInUse",
+                   RemoteStartResultTypes.InternalUse                        => "internalUse",
+                   RemoteStartResultTypes.OutOfService                       => "outOfService",
+                   RemoteStartResultTypes.Offline                            => "offline",
+                   RemoteStartResultTypes.Reserved                           => "reserved",
+                   RemoteStartResultTypes.Success                            => "success",
+                   RemoteStartResultTypes.AsyncOperation                     => "asyncOperation",
+                   RemoteStartResultTypes.SuccessPlugInCableToStartCharging  => "successPlugInCableToStartCharging",
+                   RemoteStartResultTypes.Timeout                            => "timeout",
+                   RemoteStartResultTypes.CommunicationError                 => "communicationError",
+                   RemoteStartResultTypes.Error                              => "error",
+                   RemoteStartResultTypes.NoOperation                        => "noOperation",
+                   _                                                         => "unspecified",
+               };
+
+        #endregion
+
+    }
+
+
+    /// <summary>
     /// The result types of a remote start operation at an EVSE.
     /// </summary>
     public enum RemoteStartResultTypes
@@ -553,6 +715,16 @@ namespace cloud.charging.open.protocols.WWCP
         Timeout,
 
         /// <summary>
+        /// A bad request was sent.
+        /// </summary>
+        BadRequest,
+
+        /// <summary>
+        /// Unauthorized request.
+        /// </summary>
+        Unauthorized,
+
+        /// <summary>
         /// A communication error occured.
         /// </summary>
         CommunicationError,
@@ -562,6 +734,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         Error,
 
+        /// <summary>
+        /// No operation.
+        /// </summary>
         NoOperation
 
     }

@@ -29,9 +29,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The unique identification of a charging reservation.
     /// </summary>
-    public struct ChargingReservation_Id : IId,
-                                           IEquatable<ChargingReservation_Id>,
-                                           IComparable<ChargingReservation_Id>
+    public readonly struct ChargingReservation_Id : IId,
+                                                    IEquatable<ChargingReservation_Id>,
+                                                    IComparable<ChargingReservation_Id>
 
     {
 
@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.WWCP
                 throw new ArgumentException("Illegal text representation of a charging session identification: '" + Text + "'!", nameof(Text));
 
 
-            if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out ChargingStationOperator_Id chargingStationOperatorId))
+            if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out var chargingStationOperatorId))
                 return new ChargingReservation_Id(chargingStationOperatorId,
                                                   matchCollection[0].Groups[2].Value);
 
@@ -156,6 +156,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region (static) TryParse (Text)
+
+        /// <summary>
+        /// Try to parse the given string as a charging reservation identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging reservation identification..</param>
+        public static ChargingReservation_Id? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var chargingReservationId))
+                return chargingReservationId;
+
+            return null;
+
+        }
+
+        #endregion
+
         #region TryParse(Text, out ChargingReservation_Id)
 
         /// <summary>
@@ -177,7 +195,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                ReservationId = default(ChargingReservation_Id);
+                ReservationId = default;
 
                 var matchCollection = ReservationId_RegEx.Matches(Text);
 

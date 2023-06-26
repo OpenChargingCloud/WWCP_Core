@@ -2192,10 +2192,22 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region Data
 
-        private readonly Dictionary<ChargingSession_Id, ChargingSession> _ChargingSessions;
+        private readonly Dictionary<ChargingSession_Id, ChargingSession> chargingSessions;
 
         public IEnumerable<ChargingSession> ChargingSessions
-            => _ChargingSessions.Select(_ => _.Value);
+            => chargingSessions.Select(_ => _.Value);
+
+        #region Contains(ChargingSessionId)
+
+        /// <summary>
+        /// Whether the given charging session identification is known within the EVSE.
+        /// </summary>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
+        public Boolean Contains(ChargingSession_Id ChargingSessionId)
+
+            => chargingSessions.ContainsKey(ChargingSessionId);
+
+        #endregion
 
         #region TryGetChargingSessionById(SessionId, out ChargingSession)
 
@@ -2204,8 +2216,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="SessionId">The charging session identification.</param>
         /// <param name="ChargingSession">The charging session.</param>
-        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession ChargingSession)
-            => _ChargingSessions.TryGetValue(SessionId, out ChargingSession);
+        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession? ChargingSession)
+            => chargingSessions.TryGetValue(SessionId, out ChargingSession);
 
         #endregion
 

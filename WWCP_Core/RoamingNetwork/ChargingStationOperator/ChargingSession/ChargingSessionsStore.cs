@@ -194,11 +194,6 @@ namespace cloud.charging.open.protocols.WWCP
 
                            var session = ChargingSession.Parse(chargingSession, RoamingNetwork);
 
-                           if (session.Id.ToString() == "f62520b6-9840-4601-b0b8-52e3023a6492")
-                           {
-
-                           }
-
                            switch (command)
                            {
 
@@ -478,9 +473,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoteStart(NewChargingSession, Result, UpdateFunc = null)
 
-        public Boolean RemoteStart(ChargingSession          NewChargingSession,
-                                   RemoteStartResult        Result,
-                                   Action<ChargingSession>  UpdateFunc = null)
+        public Boolean RemoteStart(ChargingSession           NewChargingSession,
+                                   RemoteStartResult         Result,
+                                   Action<ChargingSession>?  UpdateFunc = null)
         {
 
             if (NewChargingSession == null)

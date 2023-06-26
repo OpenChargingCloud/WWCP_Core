@@ -664,6 +664,19 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        public static Boolean TryParse(JObject JSON,
+                                       out ChargeDetailRecord?  ChargeDetailRecord,
+                                       out String?              ErrorResponse)
+        {
+
+            ErrorResponse       = null;
+            ChargeDetailRecord  = null;
+
+            return false;
+
+        }
+
+
         #region Operator overloading
 
         #region Operator == (ChargeDetailRecord1, ChargeDetailRecord2)

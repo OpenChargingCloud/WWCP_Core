@@ -2525,6 +2525,94 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region ChargingSession(s)
+
+        /// <summary>
+        /// All charging sessions.
+        /// </summary>
+        public IEnumerable<ChargingSession> ChargingSessions
+
+            => RoamingNetwork?.SessionsStore.Where(session => session.ChargingStationId == Id)
+                   ?? Array.Empty<ChargingSession>();
+
+
+        #region Contains(ChargingSessionId)
+
+        /// <summary>
+        /// Whether the given charging session identification is known within the EVSE.
+        /// </summary>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
+        public Boolean Contains(ChargingSession_Id ChargingSessionId)
+        {
+
+            if (RoamingNetwork is not null &&
+                RoamingNetwork.SessionsStore.TryGet(ChargingSessionId, out var chargingSession) &&
+                chargingSession is not null)
+            {
+                return chargingSession.ChargingStationId == Id;
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region TryGetChargingSessionById(ChargingSessionId, out ChargingSession)
+
+        /// <summary>
+        /// Return the charging session specified by the given identification.
+        /// </summary>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
+        /// <param name="ChargingSession">The charging session.</param>
+        public Boolean TryGetChargingSessionById(ChargingSession_Id    ChargingSessionId,
+                                                 out ChargingSession?  ChargingSession)
+        {
+
+            if (RoamingNetwork is not null &&
+                RoamingNetwork.SessionsStore.TryGet(ChargingSessionId, out var chargingSession) &&
+                chargingSession is not null &&
+                chargingSession.ChargingStationId == Id)
+            {
+                ChargingSession = chargingSession;
+                return true;
+            }
+
+            ChargingSession = null;
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region (internal) SendNewChargingSession   (Timestamp, Sender, Session)
+
+        internal void SendNewChargingSession(DateTime         Timestamp,
+                                             Object           Sender,
+                                             ChargingSession  Session)
+        {
+
+            if (Session is not null)
+            {
+
+                if (Session.ChargingStation is null)
+                {
+                    Session.ChargingStation    = this;
+                    Session.ChargingStationId  = Id;
+                }
+
+                OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
+
+            }
+
+        }
+
+        #endregion
+
+        #endregion
+
+
         #region Reservations
 
         #region Data
@@ -3089,25 +3177,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoteStart/-Stop and Sessions
 
-        #region Data
-
-        public IEnumerable<ChargingSession> ChargingSessions
-            => RoamingNetwork.SessionsStore.Where(session => session.ChargingStationId == Id);
-
-        #region TryGetChargingSessionById(SessionId, out ChargingSession)
-
-        /// <summary>
-        /// Return the charging session specified by the given identification.
-        /// </summary>
-        /// <param name="SessionId">The charging session identification.</param>
-        /// <param name="ChargingSession">The charging session.</param>
-        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession ChargingSession)
-            => RoamingNetwork.SessionsStore.TryGet(SessionId, out ChargingSession);
-
-        #endregion
-
-        #endregion
-
         #region Events
 
         /// <summary>
@@ -3524,30 +3593,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region (internal) SendNewChargingSession   (Timestamp, Sender, Session)
-
-        internal void SendNewChargingSession(DateTime         Timestamp,
-                                             Object           Sender,
-                                             ChargingSession  Session)
-        {
-
-            if (Session != null)
-            {
-
-                if (Session.ChargingStation == null)
-                {
-                    Session.ChargingStation    = this;
-                    Session.ChargingStationId  = Id;
-                }
-
-                OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
-
-            }
-
-        }
-
         #endregion
+
+        #region SendNewChargeDetailRecord
 
         #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
 

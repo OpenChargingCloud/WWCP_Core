@@ -49,10 +49,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
-        /// The roaming network of this entity.
+        /// The roaming network of this charging pool.
         /// </summary>
-        [Mandatory]
-        public IRoamingNetwork          RoamingNetwork           { get; }
+        [InternalUseOnly]
+        public IRoamingNetwork?         RoamingNetwork           { get; }
 
         public String                   EllipticCurve            { get; }
         public X9ECParameters?          ECP                      { get; }

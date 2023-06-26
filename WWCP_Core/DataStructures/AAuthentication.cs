@@ -953,6 +953,41 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
+        public static Boolean TryParse(JObject                    JSON,
+                                       out RemoteAuthentication?  RemoteAuthentication,
+                                       out String?                ErrorResponse)
+        {
+
+            ErrorResponse = null;
+
+            var authToken                    = JSON["authToken"]?.                  Value<String>();
+            var qrCodeIdentification         = JSON["QRCodeIdentification"] as JObject;
+            var plugAndChargeIdentification  = JSON["plugAndChargeIdentification"]?.Value<String>();
+            var remoteIdentification         = JSON["remoteIdentification"]?.       Value<String>();
+            var pin                          = JSON["PIN"]?.                        Value<String>();
+            var publicKey                    = JSON["publicKey"]?.                  Value<String>();
+            var certificate                  = JSON["certificate"]?.                Value<String>();
+
+            var authMethod                   = JSON["authMethod"]?.                 Value<String>();
+            var description                  = JSON["description"] as JObject;
+
+            RemoteAuthentication = new(
+                       authToken                   is not null ? AuthenticationToken.Parse(authToken) : null,
+                       null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
+                       plugAndChargeIdentification is not null ? EMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
+                       remoteIdentification        is not null ? EMobilityAccount_Id.Parse(remoteIdentification)        : null,
+                       pin                         is not null ? WWCP.PIN.           Parse(pin)                         : null,
+                       publicKey                   is not null ? WWCP.PublicKey.     Parse(publicKey)                   : null,
+                       certificate                 is not null ? WWCP.Certificate.   Parse(certificate)                 : null,
+
+                       authMethod                  is not null ? null : null,
+                       description                 is not null ? I18NString.         Parse(description)                 : I18NString.Empty
+                   );
+
+            return true;
+
+        }
+
 
         public LocalAuthentication ToLocal
 

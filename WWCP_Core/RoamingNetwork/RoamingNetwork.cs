@@ -6750,20 +6750,32 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// Return the charging session specified by the given identification.
+        /// Whether the given charging session identification is known within the roaming network.
         /// </summary>
-        /// <param name="SessionId">The charging session identification.</param>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
+        public Boolean Contains(ChargingSession_Id ChargingSessionId)
+
+            => SessionsStore.ContainsKey(ChargingSessionId);
+
+
+        /// <summary>
+        /// Return the charging session specified by the given charging session identification.
+        /// </summary>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
         /// <param name="ChargingSession">The charging session.</param>
-        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession? ChargingSession)
-            => SessionsStore.TryGet(SessionId, out ChargingSession);
+        public Boolean TryGetChargingSessionById(ChargingSession_Id    ChargingSessionId,
+                                                 out ChargingSession?  ChargingSession)
+
+            => SessionsStore.TryGet(ChargingSessionId, out ChargingSession);
+
 
         /// <summary>
         /// Return the charging session specified by the given identification.
         /// </summary>
-        /// <param name="SessionId">The charging session identification.</param>
-        /// <param name="ChargingSession">The charging session.</param>
-        public ChargingSession? GetChargingSessionById(ChargingSession_Id SessionId)
-            => SessionsStore.Get(SessionId);
+        /// <param name="ChargingSessionId">The charging session identification.</param>
+        public ChargingSession? GetChargingSessionById(ChargingSession_Id ChargingSessionId)
+
+            => SessionsStore.Get(ChargingSessionId);
 
 
         #region (internal) SendNewChargingSession   (Timestamp, Sender, Session)
@@ -8390,12 +8402,12 @@ namespace cloud.charging.open.protocols.WWCP
                        (result.Result == RemoteStartResultTypes.UnknownLocation)))
                     {
 
-                        foreach (var empRoamingProvider in csoRoamingProviders.
+                        foreach (var csoRoamingProvider in csoRoamingProviders.
                                                                 OrderBy(CSORoamingServiceWithPriority => CSORoamingServiceWithPriority.Key).
                                                                 Select (CSORoamingServiceWithPriority => CSORoamingServiceWithPriority.Value))
                         {
 
-                            result = await empRoamingProvider.
+                            result = await csoRoamingProvider.
                                                RemoteStart(ChargingLocation,
                                                            ChargingProduct,
                                                            ReservationId,
@@ -8417,7 +8429,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                           result,
                                                           session => {
                                                               session.EMPRoamingProviderStart = EMPRoamingProvider;
-                                                              session.CSORoamingProviderStart = empRoamingProvider;
+                                                              session.CSORoamingProviderStart = csoRoamingProvider;
                                                           });
 
                             }

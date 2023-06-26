@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// Indicate a remote start of the given charging session at the given EVSE
     /// and for the given provider/eMAId.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="LogTimestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>

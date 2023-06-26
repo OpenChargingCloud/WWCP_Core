@@ -1057,9 +1057,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Parse Description    [optional]
+                #region Parse Warnings       [optional]
 
-                if (JSONObject.ParseOptionalJSON("description",
+                if (JSONObject.ParseOptionalJSON("warnings",
                                                  "description or warnings",
                                                  Warning.TryParse,
                                                  out IEnumerable<Warning> Warnings,

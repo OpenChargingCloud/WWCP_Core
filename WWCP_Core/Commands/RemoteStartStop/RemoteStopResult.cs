@@ -17,10 +17,8 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -42,9 +40,14 @@ namespace cloud.charging.open.protocols.WWCP
         public RemoteStopResultTypes    Result                   { get; }
 
         /// <summary>
-        /// The charging session identification for an invalid remote stop operation.
+        /// The charging session identification, e.g. in case of an unknown/invalid remote stop request.
         /// </summary>
         public ChargingSession_Id       SessionId                { get; }
+
+        /// <summary>
+        /// The charging session identification for an invalid remote stop operation.
+        /// </summary>
+        public ChargingSession?         ChargingSession        { get; }
 
         /// <summary>
         /// A optional description of the authorize stop result.
@@ -95,6 +98,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  RemoteStopResultTypes    Result,
                                  I18NString?              Description           = null,
                                  String?                  AdditionalInfo        = null,
+                                 ChargingSession?         ChargingSession       = null,
                                  ChargingReservation_Id?  ReservationId         = null,
                                  ReservationHandling?     ReservationHandling   = null,
                                  ChargeDetailRecord?      ChargeDetailRecord    = null,
@@ -103,12 +107,14 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.SessionId            = SessionId;
             this.Result               = Result;
-            this.ReservationId        = ReservationId;
-            this.ReservationHandling  = ReservationHandling ?? WWCP.ReservationHandling.Close;
             this.Description          = Description         ?? I18NString.Empty;
             this.AdditionalInfo       = AdditionalInfo;
+
+            this.ChargingSession      = ChargingSession;
+            this.ReservationId        = ReservationId;
+            this.ReservationHandling  = ReservationHandling ?? WWCP.ReservationHandling.Close;
             this.ChargeDetailRecord   = ChargeDetailRecord;
-            this.Runtime              = Runtime ?? TimeSpan.Zero;
+            this.Runtime              = Runtime             ?? TimeSpan.Zero;
 
         }
 
@@ -122,12 +128,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         public static RemoteStopResult Unspecified(ChargingSession_Id SessionId)
-        {
 
-            return new RemoteStopResult(SessionId,
-                                        RemoteStopResultTypes.Unspecified);
-
-        }
+            => new (SessionId,
+                    RemoteStopResultTypes.Unspecified);
 
         #endregion
 
@@ -141,10 +144,10 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStopResult UnknownOperator(ChargingSession_Id  SessionId,
                                                        TimeSpan?           Runtime = null)
 
-            => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.UnknownOperator,
-                                    I18NString.Create(Languages.en, "The EVSE or charging station operator is unknown!"),
-                                    Runtime: Runtime);
+            => new (SessionId,
+                    RemoteStopResultTypes.UnknownOperator,
+                    I18NString.Create(Languages.en, "The EVSE or charging station operator is unknown!"),
+                    Runtime: Runtime);
 
         #endregion
 
@@ -158,10 +161,10 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStopResult UnknownLocation(ChargingSession_Id  SessionId,
                                                         TimeSpan?          Runtime = null)
 
-            => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.UnknownLocation,
-                                    I18NString.Create(Languages.en, "The charging location is unknown!"),
-                                    Runtime: Runtime);
+            => new (SessionId,
+                    RemoteStopResultTypes.UnknownLocation,
+                    I18NString.Create(Languages.en, "The charging location is unknown!"),
+                    Runtime: Runtime);
 
         #endregion
 
@@ -177,11 +180,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                         String              AdditionalInfo   = null,
                                                         TimeSpan?           Runtime          = null)
 
-            => new RemoteStopResult(SessionId:       SessionId,
-                                    Result:          RemoteStopResultTypes.InvalidSessionId,
-                                    Description:     I18NString.Create(Languages.en, "The session identification is unknown or invalid!"),
-                                    AdditionalInfo:  AdditionalInfo,
-                                    Runtime:         Runtime);
+            => new (SessionId:       SessionId,
+                    Result:          RemoteStopResultTypes.InvalidSessionId,
+                    Description:     I18NString.Create(Languages.en, "The session identification is unknown or invalid!"),
+                    AdditionalInfo:  AdditionalInfo,
+                    Runtime:         Runtime);
 
         #endregion
 
@@ -195,10 +198,10 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStopResult InvalidCredentials(ChargingSession_Id  SessionId,
                                                           TimeSpan?           Runtime  = null)
 
-            => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.InvalidCredentials,
-                                    I18NString.Create(Languages.en, "Unauthorized remote stop or invalid credentials!"),
-                                    Runtime: Runtime);
+            => new (SessionId,
+                    RemoteStopResultTypes.InvalidCredentials,
+                    I18NString.Create(Languages.en, "Unauthorized remote stop or invalid credentials!"),
+                    Runtime: Runtime);
 
         #endregion
 
@@ -212,10 +215,10 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStopResult InternalUse(ChargingSession_Id  SessionId,
                                                    TimeSpan?           Runtime  = null)
 
-            => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.InternalUse,
-                                    I18NString.Create(Languages.en, "Reserved for internal use!"),
-                                    Runtime: Runtime);
+            => new (SessionId,
+                    RemoteStopResultTypes.InternalUse,
+                    I18NString.Create(Languages.en, "Reserved for internal use!"),
+                    Runtime: Runtime);
 
         #endregion
 
@@ -229,10 +232,10 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStopResult OutOfService(ChargingSession_Id  SessionId,
                                                     TimeSpan?           Runtime  = null)
 
-            => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.OutOfService,
-                                    I18NString.Create(Languages.en, "The EVSE or charging station is out of service!"),
-                                    Runtime: Runtime);
+            => new (SessionId,
+                    RemoteStopResultTypes.OutOfService,
+                    I18NString.Create(Languages.en, "The EVSE or charging station is out of service!"),
+                    Runtime: Runtime);
 
         #endregion
 
@@ -246,10 +249,10 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStopResult Offline(ChargingSession_Id  SessionId,
                                                TimeSpan?           Runtime  = null)
 
-            => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.Offline,
-                                    I18NString.Create(Languages.en, "The EVSE or charging station is offline!"),
-                                    Runtime: Runtime);
+            => new (SessionId,
+                    RemoteStopResultTypes.Offline,
+                    I18NString.Create(Languages.en, "The EVSE or charging station is offline!"),
+                    Runtime: Runtime);
 
         #endregion
 
@@ -265,11 +268,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                       String              AdditionalInfo   = null,
                                                       TimeSpan?           Runtime          = null)
 
-            => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.AlreadyStopped,
-                                    I18NString.Create(Languages.en, "The charging process was already stopped!"),
-                                    AdditionalInfo,
-                                    Runtime: Runtime);
+            => new (SessionId,
+                    RemoteStopResultTypes.AlreadyStopped,
+                    I18NString.Create(Languages.en, "The charging process was already stopped!"),
+                    AdditionalInfo,
+                    Runtime: Runtime);
 
         #endregion
 
@@ -286,21 +289,23 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult Success(ChargingSession_Id       SessionId,
-                                               I18NString               Description           = null,
-                                               String                   AdditionalInfo        = null,
+                                               ChargingSession?         Session               = null,
+                                               I18NString?              Description           = null,
+                                               String?                  AdditionalInfo        = null,
                                                ChargingReservation_Id?  ReservationId         = null,
                                                ReservationHandling?     ReservationHandling   = null,
-                                               ChargeDetailRecord       ChargeDetailRecord    = null,
+                                               ChargeDetailRecord?      ChargeDetailRecord    = null,
                                                TimeSpan?                Runtime               = null)
 
-            => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.Success,
-                                    Description,
-                                    AdditionalInfo,
-                                    ReservationId,
-                                    ReservationHandling,
-                                    ChargeDetailRecord,
-                                    Runtime);
+            => new (SessionId,
+                    RemoteStopResultTypes.Success,
+                    Description,
+                    AdditionalInfo,
+                    Session,
+                    ReservationId,
+                    ReservationHandling,
+                    ChargeDetailRecord,
+                    Runtime);
 
         #endregion
 
@@ -318,11 +323,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                       String              AdditionalInfo   = null,
                                                       TimeSpan?           Runtime          = null)
 
-            => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.AsyncOperation,
-                                    Description ?? I18NString.Create(Languages.en, "An async remote stop was sent successfully!"),
-                                    AdditionalInfo,
-                                    Runtime: Runtime);
+            => new (SessionId,
+                    RemoteStopResultTypes.AsyncOperation,
+                    Description ?? I18NString.Create(Languages.en, "An async remote stop was sent successfully!"),
+                    AdditionalInfo,
+                    Runtime: Runtime);
 
         #endregion
 
@@ -338,10 +343,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                I18NString          Description   = null,
                                                TimeSpan?           Runtime       = null)
 
-            => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.Timeout,
-                                    Description ?? I18NString.Create(Languages.en, "A timeout occured!"),
-                                    Runtime: Runtime);
+            => new (SessionId,
+                    RemoteStopResultTypes.Timeout,
+                    Description ?? I18NString.Create(Languages.en, "A timeout occured!"),
+                    Runtime: Runtime);
 
         #endregion
 
@@ -359,11 +364,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                           String              AdditionalInfo   = null,
                                                           TimeSpan?           Runtime          = null)
 
-            => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.CommunicationError,
-                                    Description ?? I18NString.Create(Languages.en, "A communication error occured!"),
-                                    AdditionalInfo,
-                                    Runtime: Runtime);
+            => new (SessionId,
+                    RemoteStopResultTypes.CommunicationError,
+                    Description ?? I18NString.Create(Languages.en, "A communication error occured!"),
+                    AdditionalInfo,
+                    Runtime: Runtime);
 
         #endregion
 
@@ -435,38 +440,38 @@ namespace cloud.charging.open.protocols.WWCP
                               Func<JObject, JObject>                               ResponseMapper                       = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                new JProperty("sessionId",                  SessionId.          ToString()),
+                                 new JProperty("sessionId",            SessionId.          ToString()),
 
-                new JProperty("result",                     Result.             ToString()),
+                                 new JProperty("result",               Result.             ToString()),
 
-                Description.IsNeitherNullNorEmpty()
-                    ? new JProperty("description",          Description.        ToJSON())
-                    : null,
+                           Description.IsNeitherNullNorEmpty()
+                               ? new JProperty("description",          Description.        ToJSON())
+                               : null,
 
-                AdditionalInfo.IsNotNullOrEmpty()
-                    ? new JProperty("additionalInfo",       AdditionalInfo)
-                    : null,
+                           AdditionalInfo.IsNotNullOrEmpty()
+                               ? new JProperty("additionalInfo",       AdditionalInfo)
+                               : null,
 
-                ReservationId.HasValue
-                    ? new JProperty("reservationId",        ReservationId.      ToString())
-                    : null,
+                           ReservationId.HasValue
+                               ? new JProperty("reservationId",        ReservationId.      ToString())
+                               : null,
 
-                new JProperty("reservationHandling",        ReservationHandling.ToString()),
+                           new JProperty("reservationHandling",        ReservationHandling.ToString()),
 
-                ChargeDetailRecord is not null
-                    ? new JProperty("chargeDetailRecord",   ChargeDetailRecord.ToJSON(Embedded: false,
-                                                                                      CustomChargeDetailRecordSerializer))
-                    : null,
+                           ChargeDetailRecord is not null
+                               ? new JProperty("chargeDetailRecord",   ChargeDetailRecord.ToJSON(Embedded: false,
+                                                                                                 CustomChargeDetailRecordSerializer))
+                               : null,
 
-                      new JProperty("runtime",              Math.Round(Runtime.TotalMilliseconds, 0))
+                                 new JProperty("runtime",              Math.Round(Runtime.TotalMilliseconds, 0))
 
-            );
+                       );
 
-            return ResponseMapper != null
-                       ? ResponseMapper(JSON)
-                       : JSON;
+            return ResponseMapper is not null
+                       ? ResponseMapper(json)
+                       : json;
 
         }
 
@@ -479,6 +484,7 @@ namespace cloud.charging.open.protocols.WWCP
                                         (RemoteStopResultTypes) Enum.Parse(typeof(RemoteStopResultTypes), JSON["result"]?.Value<String>(), true),
                                         JSON["description"] is JObject descriptionJSON ? I18NString.Parse(descriptionJSON) : null,
                                         JSON["additionalInfo"] != null ? JSON["additionalInfo"].Value<String>() : null,
+                                        null,
                                         JSON["reservationId"] != null ? ChargingReservation_Id.Parse(JSON["reservationId"]?.Value<String>()) : new ChargingReservation_Id?(),
                                         null,
                                         null, //JSON["chargeDetailRecord"] != null ? ChargeDetailRecord.Parse(JSON["chargeDetailRecord"]) : null,
@@ -503,6 +509,147 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
+    /// Extensions methods for remote stop result types.
+    /// </summary>
+    public static class RemoteStopResultTypesExtensions
+    {
+
+        #region Parse   (Text)
+
+        /// <summary>
+        /// Parses the given text representation of a remote stop result type.
+        /// </summary>
+        /// <param name="Text">A text representation of a remote stop result type.</param>
+        public static RemoteStopResultTypes Parse(String Text)
+        {
+
+            if (TryParse(Text, out var remoteStartResultType))
+                return remoteStartResultType;
+
+            throw new ArgumentException("Undefined remote stop result type '" + Text + "'!");
+
+        }
+
+        #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Parses the given text representation of a remote stop result type.
+        /// </summary>
+        /// <param name="Text">A text representation of a remote stop result type.</param>
+        public static RemoteStopResultTypes? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var remoteStartResultType))
+                return remoteStartResultType;
+
+            return default;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out RemoteStartResultType)
+
+        /// <summary>
+        /// Parses the given text representation of a remote stop result type.
+        /// </summary>
+        /// <param name="Text">A text representation of a remote stop result type.</param>
+        /// <param name="RemoteStartResultType">The parsed remote stop result type.</param>
+        public static Boolean TryParse(String Text, out RemoteStopResultTypes RemoteStartResultType)
+        {
+            switch (Text?.Trim())
+            {
+
+                case "unknownOperator":
+                    RemoteStartResultType = RemoteStopResultTypes.UnknownOperator;
+                    return true;
+
+                case "unknownLocation":
+                    RemoteStartResultType = RemoteStopResultTypes.UnknownLocation;
+                    return true;
+
+                case "invalidSessionId":
+                    RemoteStartResultType = RemoteStopResultTypes.InvalidSessionId;
+                    return true;
+
+                case "invalidCredentials":
+                    RemoteStartResultType = RemoteStopResultTypes.InvalidCredentials;
+                    return true;
+
+                case "outOfService":
+                    RemoteStartResultType = RemoteStopResultTypes.OutOfService;
+                    return true;
+
+                case "offline":
+                    RemoteStartResultType = RemoteStopResultTypes.Offline;
+                    return true;
+
+                case "success":
+                    RemoteStartResultType = RemoteStopResultTypes.Success;
+                    return true;
+
+                case "asyncOperation":
+                    RemoteStartResultType = RemoteStopResultTypes.AsyncOperation;
+                    return true;
+
+                case "timeout":
+                    RemoteStartResultType = RemoteStopResultTypes.Timeout;
+                    return true;
+
+                case "communicationError":
+                    RemoteStartResultType = RemoteStopResultTypes.CommunicationError;
+                    return true;
+
+                case "error":
+                    RemoteStartResultType = RemoteStopResultTypes.Error;
+                    return true;
+
+                case "noOperation":
+                    RemoteStartResultType = RemoteStopResultTypes.NoOperation;
+                    return true;
+
+                default:
+                    RemoteStartResultType = RemoteStopResultTypes.Unspecified;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+        #region AsString(this RemoteStartResultType)
+
+        /// <summary>
+        /// Return a text representation of the given remote stop result type.
+        /// </summary>
+        /// <param name="RemoteStartResultType">An remote stop result type.</param>
+        public static String AsString(this RemoteStopResultTypes RemoteStartResultType)
+
+            => RemoteStartResultType switch {
+                   RemoteStopResultTypes.UnknownOperator     => "unknownOperator",
+                   RemoteStopResultTypes.UnknownLocation     => "unknownLocation",
+                   RemoteStopResultTypes.InvalidSessionId    => "invalidSessionId",
+                   RemoteStopResultTypes.InvalidCredentials  => "invalidCredentials",
+                   RemoteStopResultTypes.InternalUse         => "internalUse",
+                   RemoteStopResultTypes.OutOfService        => "outOfService",
+                   RemoteStopResultTypes.Offline             => "offline",
+                   RemoteStopResultTypes.Success             => "success",
+                   RemoteStopResultTypes.AsyncOperation      => "asyncOperation",
+                   RemoteStopResultTypes.Timeout             => "timeout",
+                   RemoteStopResultTypes.CommunicationError  => "communicationError",
+                   RemoteStopResultTypes.Error               => "error",
+                   RemoteStopResultTypes.NoOperation         => "noOperation",
+                   _                                         => "unspecified",
+               };
+
+        #endregion
+
+    }
+
+
+    /// <summary>
     /// The result types of a remote stop operation.
     /// </summary>
     public enum RemoteStopResultTypes
@@ -512,6 +659,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The result is unknown and/or should be ignored.
         /// </summary>
         Unspecified,
+
 
         /// <summary>
         /// The EVSE or charging station operator is unknown.
@@ -567,6 +715,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// The remote stop ran into a timeout.
         /// </summary>
         Timeout,
+
+        /// <summary>
+        /// A bad request was sent.
+        /// </summary>
+        BadRequest,
+
+        /// <summary>
+        /// Unauthorized request.
+        /// </summary>
+        Unauthorized,
 
         /// <summary>
         /// A communication error occured.

@@ -255,10 +255,21 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// Remote charging sessions.
+        /// All charging sessions.
         /// </summary>
         IEnumerable<ChargingSession> ChargingSessions { get; }
 
+        /// <summary>
+        /// Whether the given charging session identification is known within the roaming network.
+        /// </summary>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
+        Boolean Contains(ChargingSession_Id ChargingSessionId);
+
+        /// <summary>
+        /// Return the charging session specified by the given charging session identification.
+        /// </summary>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
+        /// <param name="ChargingSession">The charging session.</param>
         Boolean TryGetChargingSessionById(ChargingSession_Id ChargingSessionId, out ChargingSession? ChargingSession);
 
         #endregion

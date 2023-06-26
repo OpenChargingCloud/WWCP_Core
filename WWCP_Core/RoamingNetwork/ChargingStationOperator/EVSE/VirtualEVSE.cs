@@ -2485,6 +2485,18 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    : Array.Empty<ChargingSession>();
 
 
+        #region Contains(ChargingSessionId)
+
+        /// <summary>
+        /// Whether the given charging session identification is known within the EVSE.
+        /// </summary>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
+        public Boolean Contains(ChargingSession_Id ChargingSessionId)
+
+            => ChargingSessionId == chargingSession?.Id;
+
+        #endregion
+
         #region TryGetChargingSessionById(SessionId, out ChargingSession)
 
         /// <summary>
@@ -2492,10 +2504,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="SessionId">The charging session identification.</param>
         /// <param name="ChargingSession">The charging session.</param>
-        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession ChargingSession)
+        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession? ChargingSession)
         {
 
-            if (SessionId == chargingSession.Id)
+            if (SessionId == chargingSession?.Id)
             {
                 ChargingSession = chargingSession;
                 return true;
@@ -3034,6 +3046,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             //                                _ChargeDetailRecord);
 
                             result = RemoteStopResult.Success(SessionId,
+                                                              null,
                                                               null,
                                                               null,
                                                               __ChargingSession.Reservation?.Id,
