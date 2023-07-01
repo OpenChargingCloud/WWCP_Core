@@ -364,11 +364,11 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                       new HTTPResponse.Builder(Request) {
                                              HTTPStatusCode             = HTTPStatusCode.OK,
                                              AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-                                             Allow                      = new List<HTTPMethod> {
+                                             Allow                      = new[] {
                                                                               HTTPMethod.OPTIONS,
                                                                               HTTPMethod.GET
                                                                           },
-                                             AccessControlAllowHeaders  = "Authorization"
+                                             AccessControlAllowHeaders  = new[] { "Authorization" }
                                       }.AsImmutable);
 
                               });
@@ -399,7 +399,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                   //            HTTPResponseBuilder  = new HTTPResponse.Builder(Request.HTTPRequest) {
                                   //                HTTPStatusCode             = HTTPStatusCode.Forbidden,
                                   //                AccessControlAllowMethods  = new[] { "OPTIONS", "GET", "DELETE" },
-                                  //                AccessControlAllowHeaders  = "Authorization"
+                                  //                AccessControlAllowHeaders  = new[] { "Authorization" }
                                   //            }
                                   //        });
 
@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                   //                               Server                     = DefaultHTTPServerName,
                                   //                               Date                       = Timestamp.Now,
                                   //                               AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-                                  //                               AccessControlAllowHeaders  = "Authorization"
+                                  //                               AccessControlAllowHeaders  = new[] { "Authorization" }
                                   //                           }.
 
                                   //                           // The overall number of locations
@@ -499,11 +499,11 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                       new HTTPResponse.Builder(Request) {
                                              HTTPStatusCode             = HTTPStatusCode.OK,
                                              AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-                                             Allow                      = new List<HTTPMethod> {
+                                             Allow                      = new[] {
                                                                               HTTPMethod.OPTIONS,
                                                                               HTTPMethod.GET
                                                                           },
-                                             AccessControlAllowHeaders  = "Authorization"
+                                             AccessControlAllowHeaders  = new[] { "Authorization" }
                                       }.AsImmutable);
 
 
@@ -693,7 +693,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                       return new HTTPResponse.Builder(Request) {
                                                  HTTPStatusCode             = HTTPStatusCode.OK,
                                                  AccessControlAllowMethods  = new[] { "OPTIONS", "POST" },
-                                                 Allow                      = new List<HTTPMethod> {
+                                                 Allow                      = new[] {
                                                                                   HTTPMethod.OPTIONS,
                                                                                   HTTPMethod.POST
                                                                               },
@@ -705,7 +705,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                                                          CustomWarningSerializer).
                                                                                                   ToString(JSONFormatting).
                                                                                                   ToUTF8Bytes(),
-                                                 AccessControlAllowHeaders  = "Authorization"
+                                                 AccessControlAllowHeaders  = new[] { "Authorization" }
                                           }.AsImmutable;
 
                                   }
@@ -716,11 +716,11 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                       return new HTTPResponse.Builder(Request) {
                                                  HTTPStatusCode             = HTTPStatusCode.Forbidden,
                                                  AccessControlAllowMethods  = new[] { "OPTIONS", "POST" },
-                                                 Allow                      = new List<HTTPMethod> {
+                                                 Allow                      = new[] {
                                                                                   HTTPMethod.OPTIONS,
                                                                                   HTTPMethod.POST
                                                                               },
-                                                 AccessControlAllowHeaders  = "Authorization"
+                                                 AccessControlAllowHeaders  = new[] { "Authorization" }
                                           }.AsImmutable;
 
                                   }
