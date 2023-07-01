@@ -443,6 +443,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                     {
 
                         if (HTTPResponse.ContentType == HTTPContentType.JSON_UTF8 &&
+                            HTTPResponse.HTTPBody is not null &&
                             HTTPResponse.HTTPBody.Length > 0)
                         {
 
