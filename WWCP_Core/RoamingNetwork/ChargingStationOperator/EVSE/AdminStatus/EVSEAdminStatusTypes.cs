@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The length of the EVSE admin status.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out var evseAdminStatusType))
                 return evseAdminStatusType;
 
-            throw new ArgumentException("Invalid text representation of an EVSE admin status type: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of an EVSE admin status type: '" + Text + "'!",
                                         nameof(Text));
 
         }

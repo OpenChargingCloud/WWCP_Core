@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out ChargingPool_Id chargingPoolId))
                 return chargingPoolId;
 
-            throw new ArgumentException("Invalid text representation of a charging pool identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a charging pool identification: '{Text}'!",
                                         nameof(Text));
 
         }
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.WWCP
                 }
 
             }
-            catch (Exception)
+            catch
             { }
 
             return false;

@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out var certificateId))
                 return certificateId;
 
-            throw new ArgumentException("Invalid text representation of a certificate identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a certificate identification: '{Text}'!",
                                         nameof(Text));
 
         }

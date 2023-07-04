@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.WWCP
             var MatchCollection = OperatorId_RegEx.Matches(Text);
 
             if (MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal text representation of a charging station operator identification: '" + Text + "'!",
+                throw new ArgumentException("Illegal text representation of a charging station operator identification: '{Text}'!",
                                             nameof(Text));
 
             Country _CountryCode;
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 #pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-            catch (Exception)
+            catch
 #pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
 #pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }

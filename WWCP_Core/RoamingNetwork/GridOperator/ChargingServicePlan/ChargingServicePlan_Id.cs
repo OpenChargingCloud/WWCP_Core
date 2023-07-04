@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out ChargingServicePlan_Id sessionId))
                 return sessionId;
 
-            throw new ArgumentException("Invalid text representation of a charging service plan identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a charging service plan identification: '{Text}'!",
                                         nameof(Text));
 
         }

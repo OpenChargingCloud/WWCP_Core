@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.WWCP
             var matchCollection = ChargingStationGroupId_RegEx.Matches(Text);
 
             if (matchCollection.Count != 1)
-                throw new ArgumentException("Illegal text representation of a charging station group identification: '" + Text + "'!",
+                throw new ArgumentException("Illegal text representation of a charging station group identification: '{Text}'!",
                                             nameof(Text));
 
             if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out ChargingStationOperator_Id chargingStationOperatorId))
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.WWCP
                 }
 
             }
-            catch (Exception)
+            catch
             { }
 
             return false;

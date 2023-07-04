@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out var providerId))
                 return providerId;
 
-            throw new ArgumentException("Unknown country code in the given text representation of an e-mobility provider identification: '" + Text + "'!",
+            throw new ArgumentException("Unknown country code in the given text representation of an e-mobility provider identification: '{Text}'!",
                                         nameof(Text));
 
         }
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            catch (Exception)
+            catch
             { }
 
             return false;

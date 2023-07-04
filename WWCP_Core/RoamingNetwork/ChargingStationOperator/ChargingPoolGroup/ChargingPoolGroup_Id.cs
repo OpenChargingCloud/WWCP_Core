@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.WWCP
             var MatchCollection = ChargingPoolGroupId_RegEx.Matches(Text);
 
             if (MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal text representation of a charging pool group identification: '" + Text + "'!",
+                throw new ArgumentException("Illegal text representation of a charging pool group identification: '{Text}'!",
                                             nameof(Text));
 
             ChargingStationOperator_Id _OperatorId;

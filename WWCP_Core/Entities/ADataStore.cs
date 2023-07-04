@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean                           DisableNetworkSync      { get; }
 
 
-        public Node_Id                           NodeId                  { get; }
+        public ChargingNode_Id                           NodeId                  { get; }
 
         private readonly List<RoamingNetworkInfo> roamingNetworkInfos;
 
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.NodeId                        = Node_Id.Parse(Environment.MachineName);
+            this.NodeId                        = ChargingNode_Id.Parse(Environment.MachineName);
 
             this.RoamingNetworkId              = RoamingNetworkId;
             this.roamingNetworkInfos           = RoamingNetworkInfos != null
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.WWCP
                                             }
 
                                         }
-                                        catch (Exception)
+                                        catch
                                         { }
 
                                     }
@@ -241,13 +241,13 @@ namespace cloud.charging.open.protocols.WWCP
                                 }
 
                             }
-                            catch (Exception)
+                            catch
                             { }
 
                         } while (!connection.IsClosed && Timestamp.Now - LastDataReceivedAt < TimeSpan.FromSeconds(10));
 
                     }
-                    catch (Exception)
+                    catch
                     { }
 
                     try
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.WWCP
                         if (!connection.IsClosed)
                             connection.Close();
 
-                    } catch (Exception)
+                    } catch
                     { }
 
                     Console.WriteLine("Connection '" + connection.RemoteSocket.ToString() + "' closed!");

@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The length of the charging station status.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out ChargingStationStatusTypes chargingStationStatusTypes))
                 return chargingStationStatusTypes;
 
-            throw new ArgumentException("Invalid text representation of a charging station status type: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a charging station status type: '" + Text + "'!",
                                         nameof(Text));
 
         }

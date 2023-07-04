@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The length of the feature.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out var featureId))
                 return featureId;
 
-            throw new ArgumentException("Invalid text representation of a feature: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a feature: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.WWCP
                     Features = new Features(Text);
                     return true;
                 }
-                catch (Exception)
+                catch
                 { }
             }
 

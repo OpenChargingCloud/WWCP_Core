@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.WWCP
             var matchCollection = ReservationId_RegEx.Matches(Text);
 
             if (matchCollection.Count != 1)
-                throw new ArgumentException("Illegal text representation of a charging session identification: '" + Text + "'!", nameof(Text));
+                throw new ArgumentException("Illegal text representation of a charging session identification: '{Text}'!", nameof(Text));
 
 
             if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out var chargingStationOperatorId))

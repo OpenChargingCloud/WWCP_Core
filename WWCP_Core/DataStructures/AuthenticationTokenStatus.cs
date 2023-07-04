@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out var authenticationToken))
                 return authenticationToken;
 
-            throw new ArgumentException("Invalid text representation of an authentication token status: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of an authentication token status: '" + Text + "'!",
                                         nameof(Text));
 
         }

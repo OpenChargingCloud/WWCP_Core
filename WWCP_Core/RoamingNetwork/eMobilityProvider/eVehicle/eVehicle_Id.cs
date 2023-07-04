@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.WWCP
                 }
 
             }
-            catch (Exception)
+            catch
             { }
 
             eVehicleId = null;
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             }
-            catch (Exception)
+            catch
             {
                 eVehicleId = null;
                 return false;

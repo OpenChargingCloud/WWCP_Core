@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out var authMethod))
                 return authMethod;
 
-            throw new ArgumentException("Invalid text representation of an authentication method: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of an authentication method: '" + Text + "'!",
                                         nameof(Text));
 
         }

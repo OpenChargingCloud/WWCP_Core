@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out var pin))
                 return pin;
 
-            throw new ArgumentException("Invalid text representation of a PIN: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a PIN: '" + Text + "'!",
                                         nameof(Text));
 
         }

@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.WWCP
                 }
 
             }
-            catch (Exception)
+            catch
             { }
 
             return false;
@@ -322,7 +322,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             }
-            catch (Exception)
+            catch
             { }
 
             return false;

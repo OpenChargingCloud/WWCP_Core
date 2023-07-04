@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out EnergyMeter_Id energyMeterId))
                 return energyMeterId;
 
-            throw new ArgumentException("Invalid text representation of an energy meter identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of an energy meter identification: '{Text}'!",
                                         nameof(Text));
 
         }

@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
         //            {
         //                JSONConfig = JObject.Parse(File.ReadAllText(InputFile));
         //            }
-        //            catch (Exception)
+        //            catch
         //            {
         //                throw new ApplicationException("Could not read '" + InputFile + "'!");
         //            }

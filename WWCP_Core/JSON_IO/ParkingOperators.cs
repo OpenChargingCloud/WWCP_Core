@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
                                                                                 tsv.Value.    ToString())));
 
             }
-            catch (Exception)
+            catch
             {
                 // e.g. when a Stack behind ParkingOperatorAdminStatus is empty!
                 return new JObject();
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
                                                           )));
 
             }
-            catch (Exception)
+            catch
             {
                 // e.g. when a Stack behind ParkingOperatorAdminStatus is empty!
                 return new JObject();
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
                                                                                 tsv.Value.    ToString())));
 
             }
-            catch (Exception)
+            catch
             {
                 // e.g. when a Stack behind ParkingOperatorStatus is empty!
                 return new JObject();
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
                                                                 )));
 
             }
-            catch (Exception)
+            catch
             {
                 // e.g. when a Stack behind ParkingOperatorStatus is empty!
                 return new JObject();

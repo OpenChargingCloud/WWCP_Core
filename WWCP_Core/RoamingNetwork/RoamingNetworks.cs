@@ -115,8 +115,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                       Action<RoamingNetwork>?                    Configurator                                = null,
                                                       RoamingNetworkAdminStatusTypes?            AdminStatus                                 = null,
                                                       RoamingNetworkStatusTypes?                 Status                                      = null,
-                                                      UInt16?                                    MaxAdminStatusScheduleSize                      = null,
-                                                      UInt16?                                    MaxStatusScheduleSize                           = null,
+                                                      UInt16?                                    MaxAdminStatusScheduleSize                  = null,
+                                                      UInt16?                                    MaxStatusScheduleSize                       = null,
 
                                                       ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator           = null,
                                                       ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator              = null,
@@ -172,13 +172,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Register the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">The roaming network to add.</param>
-        public RoamingNetwork AddRoamingNetwork(RoamingNetwork  RoamingNetwork)
+        public RoamingNetwork AddRoamingNetwork(RoamingNetwork RoamingNetwork)
         {
 
             #region Initial checks
-
-            if (RoamingNetwork is null)
-                throw new ArgumentNullException(nameof(RoamingNetwork),  "The given roaming network must not be null!");
 
             if (roamingNetworks.ContainsKey(RoamingNetwork.Id))
                 throw new RoamingNetworkAlreadyExists(RoamingNetwork.Id);
@@ -204,15 +201,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Register the given roaming networks.
         /// </summary>
         /// <param name="RoamingNetworks">An enumeration of roaming networks to add.</param>
-        public void AddRoamingNetworks(IEnumerable<RoamingNetwork>  RoamingNetworks)
+        public void AddRoamingNetworks(IEnumerable<RoamingNetwork> RoamingNetworks)
         {
-
-            #region Initial checks
-
-            if (RoamingNetworks is null)
-                throw new ArgumentNullException(nameof(RoamingNetworks),  "The given enumeration of roaming networks must not be null!");
-
-            #endregion
 
             foreach (var roamingNetwork in RoamingNetworks)
                 AddRoamingNetwork(roamingNetwork);

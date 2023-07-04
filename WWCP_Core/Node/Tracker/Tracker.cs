@@ -103,13 +103,14 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public Tracker(Tracker_Id                                   Id,
                        I18NString                                   Description,
                        HTTPServer<RoamingNetworks, RoamingNetwork>  HTTPServer,
-                       HTTPPath?                                    URLPrefix = null)
+                       HTTPPath?                                    URLPrefix   = null,
+                       DNSClient?                                   DNSClient   = null)
         {
 
             #region Initial checks
 
             if (Id.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(Id),          "The given tracker client identification must not be null or empty!");
+                throw new ArgumentNullException(nameof(Id), "The given unique tracker client identification must not be null or empty!");
 
             #endregion
 
@@ -117,6 +118,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
             this.Description            = Description ?? I18NString.Empty;
             this.HTTPServer             = HTTPServer  ?? throw new ArgumentNullException(nameof(HTTPServer),  "The given HTTP server must not be null!");
             this.URLPrefix              = URLPrefix   ?? DefaultURLPrefix;
+            this.DNSClient              = DNSClient   ?? new DNSClient();
+
             this._Logins                = new Dictionary<String, String>();
             this._LocalRoamingNetworks  = new ConcurrentDictionary<RoamingNetwork_Id, List<RoamingNetworkInfo>>();
 

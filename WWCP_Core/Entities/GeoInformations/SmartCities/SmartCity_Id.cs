@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            catch (Exception)
+            catch
             {
                 SmartCityId = null;
                 return false;
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            catch (Exception)
+            catch
             {
                 SmartCityId = null;
                 return false;

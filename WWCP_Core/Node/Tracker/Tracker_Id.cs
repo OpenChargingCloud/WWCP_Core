@@ -51,8 +51,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
     /// The unique identification of a tracker.
     /// </summary>
     public readonly struct Tracker_Id : IId,
-                                               IEquatable <Tracker_Id>,
-                                               IComparable<Tracker_Id>
+                                        IEquatable <Tracker_Id>,
+                                        IComparable<Tracker_Id>
 
     {
 
@@ -83,15 +83,14 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// The length of the tracker identificator.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new tracker identification.
-        /// based on the given string.
+        /// Create a new unique tracker identification based on the given string.
         /// </summary>
         private Tracker_Id(String Text)
         {
@@ -101,35 +100,47 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #endregion
 
 
-        #region (static) Parse   (Text)
+        #region (static) NewRandom(Length = 50)
 
         /// <summary>
-        /// Parse the given string as a tracker identification.
+        /// Create a new random tracker identification.
+        /// </summary>
+        /// <param name="Length">The expected length of the tracker identification.</param>
+        public static Tracker_Id NewRandom(Byte Length = 50)
+
+            => new(RandomExtensions.RandomString(Length));
+
+        #endregion
+
+        #region (static) Parse    (Text)
+
+        /// <summary>
+        /// Parse the given text as a tracker identification.
         /// </summary>
         /// <param name="Text">A text representation of a tracker identification.</param>
         public static Tracker_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out Tracker_Id trackerId))
+            if (TryParse(Text, out var trackerId))
                 return trackerId;
 
-            throw new ArgumentException("Invalid text representation of a tracker identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a tracker identification: '{Text}'!",
                                         nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Text)
+        #region (static) TryParse (Text)
 
         /// <summary>
-        /// Try to parse the given string as a tracker identification.
+        /// Try to parse the given text as a tracker identification.
         /// </summary>
         /// <param name="Text">A text representation of a tracker identification.</param>
         public static Tracker_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Tracker_Id trackerId))
+            if (TryParse(Text, out var trackerId))
                 return trackerId;
 
             return null;
@@ -138,7 +149,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 
         #endregion
 
-        #region (static) TryParse(Text, out TrackerId)
+        #region (static) TryParse (Text, out TrackerId)
 
         /// <summary>
         /// Parse the given string as a tracker identification.
@@ -187,7 +198,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region Operator == (TrackerId1, TrackerId2)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two tracker identifications for equality.
         /// </summary>
         /// <param name="TrackerId1">A tracker identification.</param>
         /// <param name="TrackerId2">Another tracker identification.</param>
@@ -202,7 +213,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region Operator != (TrackerId1, TrackerId2)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two tracker identifications for inequality.
         /// </summary>
         /// <param name="TrackerId1">A tracker identification.</param>
         /// <param name="TrackerId2">Another tracker identification.</param>
@@ -217,7 +228,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region Operator <  (TrackerId1, TrackerId2)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two tracker identifications.
         /// </summary>
         /// <param name="TrackerId1">A tracker identification.</param>
         /// <param name="TrackerId2">Another tracker identification.</param>
@@ -232,7 +243,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region Operator <= (TrackerId1, TrackerId2)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two tracker identifications.
         /// </summary>
         /// <param name="TrackerId1">A tracker identification.</param>
         /// <param name="TrackerId2">Another tracker identification.</param>
@@ -247,7 +258,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region Operator >  (TrackerId1, TrackerId2)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two tracker identifications.
         /// </summary>
         /// <param name="TrackerId1">A tracker identification.</param>
         /// <param name="TrackerId2">Another tracker identification.</param>
@@ -262,7 +273,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region Operator >= (TrackerId1, TrackerId2)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two tracker identifications.
         /// </summary>
         /// <param name="TrackerId1">A tracker identification.</param>
         /// <param name="TrackerId2">Another tracker identification.</param>
@@ -281,9 +292,9 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two tracker identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A tracker identification to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is Tracker_Id trackerId
@@ -296,9 +307,9 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region CompareTo(TrackerId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two tracker identifications.
         /// </summary>
-        /// <param name="TrackerId">An object to compare with.</param>
+        /// <param name="TrackerId">A tracker identification to compare with.</param>
         public Int32 CompareTo(Tracker_Id TrackerId)
 
             => String.Compare(InternalId,
@@ -314,10 +325,9 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two tracker identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A tracker identification to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is Tracker_Id trackerId &&
@@ -331,7 +341,6 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// Compares two tracker identifications for equality.
         /// </summary>
         /// <param name="TrackerId">A tracker identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Tracker_Id TrackerId)
 
             => String.Equals(InternalId,

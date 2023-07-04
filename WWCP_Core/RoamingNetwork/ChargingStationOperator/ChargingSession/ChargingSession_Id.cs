@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out ChargingSession_Id chargingSessionId))
                 return chargingSessionId;
 
-            throw new ArgumentException("Invalid text representation of a charging session identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a charging session identification: '{Text}'!",
                                         nameof(Text));
 
         }

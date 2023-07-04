@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The length of the charging connector identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out var chargingConnectorId))
                 return chargingConnectorId;
 
-            throw new ArgumentException("Invalid text representation of a charging connector identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a charging connector identification: '{Text}'!",
                                         nameof(Text));
 
         }
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.WWCP
                     ChargingConnectorId = new ChargingConnector_Id(Text);
                     return true;
                 }
-                catch (Exception)
+                catch
                 { }
             }
 
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.WWCP
                 ChargingConnectorId = new ChargingConnector_Id(Number.ToString());
                 return true;
             }
-            catch (Exception)
+            catch
             { }
 
             ChargingConnectorId = default;

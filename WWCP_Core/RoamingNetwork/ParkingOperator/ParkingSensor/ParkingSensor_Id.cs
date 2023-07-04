@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.WWCP
                 ParkingSpaceId = new ParkingSensor_Id(Text);
                 return true;
             }
-            catch (Exception)
+            catch
             {
                 ParkingSpaceId = null;
                 return false;

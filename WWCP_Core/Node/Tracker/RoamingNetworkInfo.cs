@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 
         public static RoamingNetworkInfo Create(this RoamingNetwork   RoamingNetwork,
                                                 Tracker_Id            TrackerId,
-                                                Node_Id               NodeId,
+                                                ChargingNode_Id               NodeId,
                                                 DateTime              NotBefore,
                                                 DateTime              NotAfter,
 
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public Tracker_Id           TrackerId           { get; }
 
 
-        public Node_Id              NodeId              { get; }
+        public ChargingNode_Id              NodeId              { get; }
 
         /// <summary>
         /// An URI for the roaming network.
@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region RoamingNetworkInfo(..., RoamingNetworkId, ...)
 
         public RoamingNetworkInfo(Tracker_Id            TrackerId,
-                                  Node_Id               NodeId,
+                                  ChargingNode_Id               NodeId,
                                   String                IncomingURL,
                                   DateTime              NotBefore,
                                   DateTime              NotAfter,
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region RoamingNetworkInfo(..., RoamingNetwork, ...)
 
         public RoamingNetworkInfo(Tracker_Id            TrackerId,
-                                  Node_Id               NodeId,
+                                  ChargingNode_Id               NodeId,
                                   String                IncomingURL,
                                   DateTime              NotBefore,
                                   DateTime              NotAfter,
