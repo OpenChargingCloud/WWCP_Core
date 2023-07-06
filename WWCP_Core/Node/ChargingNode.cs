@@ -19,6 +19,11 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using System.Collections;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using System.Collections.Concurrent;
+using System.Drawing;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -28,7 +33,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A charging node.
     /// </summary>
-    public class ChargingNode
+    public class ChargingNode : IRoamingNetworks
     {
 
         #region Data
@@ -72,21 +77,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">A multi-language description of this charging node.</param>
         /// 
         /// <param name="DNSClient">The DNS client used by the charging node.</param>
-        public ChargingNode(ChargingNode_Id  Id,
-                            I18NString?      Name          = null,
-                            I18NString?      Description   = null,
+        public ChargingNode(ChargingNode_Id?  Id            = null,
+                            I18NString?       Name          = null,
+                            I18NString?       Description   = null,
 
-                            DNSClient?       DNSClient     = null)
+                            DNSClient?        DNSClient     = null)
         {
 
             #region Initial checks
 
-            if (Id.IsNullOrEmpty)
+            if (Id.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Id), "The given unique charging node identification must not be null or empty!");
 
             #endregion
 
-            this.Id               = Id;
+            this.Id               = Id          ?? ChargingNode_Id.NewRandom();
             this.Name             = Name        ?? I18NString.Empty;
             this.Description      = Description ?? I18NString.Empty;
 
@@ -106,8 +111,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        //ToDo: Add Trackers
-
         #region Roaming Networks
 
         #region Data
@@ -122,12 +125,88 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region Events
+
+        public IVotingSender<RoamingNetworks, RoamingNetwork, Boolean> OnRoamingNetworkAddition
+            => roamingNetworks.OnRoamingNetworkAddition;
+
+        public IVotingSender<RoamingNetworks, RoamingNetwork, Boolean> OnRoamingNetworkRemoval
+            => roamingNetworks.OnRoamingNetworkRemoval;
 
         #endregion
 
 
-        //ToDo: Add HTTP Servers
+        public RoamingNetwork AddRoamingNetwork(RoamingNetwork RoamingNetwork)
+            => roamingNetworks.AddRoamingNetwork(RoamingNetwork);
+
+        public void AddRoamingNetworks(IEnumerable<RoamingNetwork> RoamingNetworks)
+            => roamingNetworks.AddRoamingNetworks(RoamingNetworks);
+
+        public RoamingNetwork? GetRoamingNetwork(RoamingNetwork_Id RoamingNetworkId)
+            => roamingNetworks.GetRoamingNetwork(RoamingNetworkId);
+
+        public Boolean TryGetRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, out RoamingNetwork? RoamingNetwork)
+            => roamingNetworks.TryGetRoamingNetwork(RoamingNetworkId,
+                                                    out RoamingNetwork);
+        public RoamingNetwork? RemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId)
+            => roamingNetworks.RemoveRoamingNetwork(RoamingNetworkId);
+
+        public Boolean RemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, out RoamingNetwork? RoamingNetwork)
+            => roamingNetworks.RemoveRoamingNetwork(RoamingNetworkId,
+                                                    out RoamingNetwork);
+
+
+        #region IEnumerable<RoamingNetwork>
+
+        IEnumerator<RoamingNetwork> IEnumerable<RoamingNetwork>.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #endregion
+
+        #region HTTP APIs
+
+        #region Data
+
+        private readonly ConcurrentDictionary<String, HTTPAPI> httpAPIs = new();
+
+        /// <summary>
+        /// An enumeration of all HTTP APIs.
+        /// </summary>
+        public IEnumerable<HTTPAPI> HTTPAPIs
+            => httpAPIs.Values;
+
+        #endregion
+
+        public Boolean AddHTTPAPI(String   HTTPAPIId,
+                                  HTTPAPI  HTTPAPI)
+        {
+
+            return httpAPIs.TryAdd(HTTPAPIId, HTTPAPI);
+
+        }
+
+        public HTTPAPI? GetHTTPAPI(String HTTPAPIId)
+        {
+
+            return httpAPIs.TryGet(HTTPAPIId);
+
+        }
+
+        #endregion
+
+
+
         //ToDo: Add HTTP WebSocket Servers
+        //ToDo: Add Trackers
         //ToDo: Add Overlay Networks
 
 

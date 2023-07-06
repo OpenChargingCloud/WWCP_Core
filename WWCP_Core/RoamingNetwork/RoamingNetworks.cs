@@ -30,10 +30,98 @@ using cloud.charging.open.protocols.WWCP.Networking;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    public static class RoamingNetworksExtensions
+    {
+
+        #region CreateNewRoamingNetwork(RoamingNetworkId, AuthorizatorId = null, Description = null, Configurator = null)
+
+        /// <summary>
+        /// Create and register a new roaming network having the given
+        /// unique roaming network identification.
+        /// </summary>
+        /// <param name="RoamingNetworkId">The unique identification of the new roaming network.</param>
+        /// <param name="Name">The multi-language name of the roaming network.</param>
+        /// <param name="Description">A multilanguage description of the roaming networks object.</param>
+        /// <param name="Configurator">An optional delegate to configure the new roaming network after its creation.</param>
+        /// <param name="InitialAdminStatus">The initial admin status of the roaming network.</param>
+        /// <param name="InitialStatus">The initial status of the roaming network.</param>
+        /// <param name="MaxAdminStatusScheduleSize">The maximum number of entries in the admin status history.</param>
+        /// <param name="MaxStatusScheduleSize">The maximum number of entries in the status history.</param>
+        /// <param name="ChargingStationSignatureGenerator">A delegate to sign a charging station.</param>
+        /// <param name="ChargingPoolSignatureGenerator">A delegate to sign a charging pool.</param>
+        /// <param name="ChargingStationOperatorSignatureGenerator">A delegate to sign a charging station operator.</param>
+        public static RoamingNetwork CreateNewRoamingNetwork(this IRoamingNetworks                      RoamingNetworks,
+                                                             RoamingNetwork_Id                          RoamingNetworkId,
+                                                             I18NString                                 Name,
+                                                             I18NString?                                Description                                 = null,
+                                                             Action<RoamingNetwork>?                    Configurator                                = null,
+                                                             RoamingNetworkAdminStatusTypes?            InitialAdminStatus                          = null,
+                                                             RoamingNetworkStatusTypes?                 InitialStatus                               = null,
+                                                             UInt16?                                    MaxAdminStatusScheduleSize                  = null,
+                                                             UInt16?                                    MaxStatusScheduleSize                       = null,
+
+                                                             ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator           = null,
+                                                             ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator              = null,
+                                                             ChargingStationOperatorSignatureDelegate?  ChargingStationOperatorSignatureGenerator   = null,
+
+                                                             IEnumerable<RoamingNetworkInfo>?           RoamingNetworkInfos                         = null,
+                                                             Boolean                                    DisableNetworkSync                          = false,
+                                                             String?                                    LoggingPath                                 = null)
+
+        {
+
+            var roamingNetwork = new RoamingNetwork(RoamingNetworkId,
+                                                    Name,
+                                                    Description,
+                                                    InitialAdminStatus,
+                                                    InitialStatus,
+                                                    MaxAdminStatusScheduleSize,
+                                                    MaxStatusScheduleSize,
+
+                                                    ChargingStationSignatureGenerator,
+                                                    ChargingPoolSignatureGenerator,
+                                                    ChargingStationOperatorSignatureGenerator,
+
+                                                    RoamingNetworkInfos,
+                                                    DisableNetworkSync,
+                                                    LoggingPath);
+
+            return RoamingNetworks.AddRoamingNetwork(roamingNetwork);
+
+        }
+
+        #endregion
+
+    }
+
+
+    public interface IRoamingNetworks : IEnumerable<RoamingNetwork>
+    {
+
+        IVotingSender<RoamingNetworks, RoamingNetwork, Boolean>  OnRoamingNetworkAddition    { get; }
+
+        IVotingSender<RoamingNetworks, RoamingNetwork, Boolean>  OnRoamingNetworkRemoval     { get; }
+
+
+        RoamingNetwork AddRoamingNetwork(RoamingNetwork RoamingNetwork);
+        void AddRoamingNetworks(IEnumerable<RoamingNetwork> RoamingNetworks);
+
+        RoamingNetwork? GetRoamingNetwork(RoamingNetwork_Id RoamingNetworkId);
+
+        Boolean TryGetRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, out RoamingNetwork? RoamingNetwork);
+
+        RoamingNetwork? RemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId);
+
+        Boolean RemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, out RoamingNetwork? RoamingNetwork);
+
+    }
+
+
+
     /// <summary>
     /// A collection of roaming networks, which simpifies the handling of multiple roadming networks.
     /// </summary>
-    public class RoamingNetworks : IEnumerable<RoamingNetwork>
+    public class RoamingNetworks : IRoamingNetworks
     {
 
         #region Data
@@ -91,80 +179,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region CreateNewRoamingNetwork(RoamingNetworkId, AuthorizatorId = null, Description = null, Configurator = null)
-
-        /// <summary>
-        /// Create and register a new roaming network having the given
-        /// unique roaming network identification.
-        /// </summary>
-        /// <param name="RoamingNetworkId">The unique identification of the new roaming network.</param>
-        /// <param name="Name">The multi-language name of the roaming network.</param>
-        /// <param name="Description">A multilanguage description of the roaming networks object.</param>
-        /// <param name="Configurator">An optional delegate to configure the new roaming network after its creation.</param>
-        /// <param name="AdminStatus">The initial admin status of the roaming network.</param>
-        /// <param name="Status">The initial status of the roaming network.</param>
-        /// <param name="MaxAdminStatusScheduleSize">The maximum number of entries in the admin status history.</param>
-        /// <param name="MaxStatusScheduleSize">The maximum number of entries in the status history.</param>
-        /// <param name="ChargingStationSignatureGenerator">A delegate to sign a charging station.</param>
-        /// <param name="ChargingPoolSignatureGenerator">A delegate to sign a charging pool.</param>
-        /// <param name="ChargingStationOperatorSignatureGenerator">A delegate to sign a charging station operator.</param>
-        public RoamingNetwork CreateNewRoamingNetwork(RoamingNetwork_Id                          RoamingNetworkId,
-                                                      I18NString                                 Name,
-                                                      I18NString?                                Description                                 = null,
-                                                      Action<RoamingNetwork>?                    Configurator                                = null,
-                                                      RoamingNetworkAdminStatusTypes?            AdminStatus                                 = null,
-                                                      RoamingNetworkStatusTypes?                 Status                                      = null,
-                                                      UInt16?                                    MaxAdminStatusScheduleSize                  = null,
-                                                      UInt16?                                    MaxStatusScheduleSize                       = null,
-
-                                                      ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator           = null,
-                                                      ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator              = null,
-                                                      ChargingStationOperatorSignatureDelegate?  ChargingStationOperatorSignatureGenerator   = null,
-
-                                                      IEnumerable<RoamingNetworkInfo>?           RoamingNetworkInfos                         = null,
-                                                      Boolean                                    DisableNetworkSync                          = false,
-                                                      String?                                    LoggingPath                                 = null)
-
-        {
-
-            #region Initial checks
-
-            if (roamingNetworks.ContainsKey(RoamingNetworkId))
-                throw new RoamingNetworkAlreadyExists(RoamingNetworkId);
-
-            #endregion
-
-            var roamingNetwork = new RoamingNetwork(RoamingNetworkId,
-                                                    Name,
-                                                    Description,
-                                                    AdminStatus,
-                                                    Status,
-                                                    MaxAdminStatusScheduleSize,
-                                                    MaxStatusScheduleSize,
-
-                                                    ChargingStationSignatureGenerator,
-                                                    ChargingPoolSignatureGenerator,
-                                                    ChargingStationOperatorSignatureGenerator,
-
-                                                    RoamingNetworkInfos,
-                                                    DisableNetworkSync,
-                                                    LoggingPath);
-
-            Configurator?.Invoke(roamingNetwork);
-
-            if (roamingNetworkAddition.SendVoting(this, roamingNetwork) &&
-                roamingNetworks.TryAdd(RoamingNetworkId, roamingNetwork))
-            {
-                roamingNetworkAddition.SendNotification(this, roamingNetwork);
-                return roamingNetwork;
-            }
-
-            throw new Exception();
-
-        }
-
-        #endregion
 
         #region AddRoamingNetwork(RoamingNetwork)
 

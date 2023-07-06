@@ -225,8 +225,8 @@ namespace cloud.charging.open.protocols.WWCP
                               I18NString?                                Description                                 = null,
                               RoamingNetworkAdminStatusTypes?            InitialAdminStatus                          = null,
                               RoamingNetworkStatusTypes?                 InitialStatus                               = null,
-                              UInt16?                                    MaxAdminStatusScheduleSize                      = null,
-                              UInt16?                                    MaxStatusScheduleSize                           = null,
+                              UInt16?                                    MaxAdminStatusScheduleSize                  = null,
+                              UInt16?                                    MaxStatusScheduleSize                       = null,
 
                               ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator           = null,
                               ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator              = null,
@@ -243,10 +243,10 @@ namespace cloud.charging.open.protocols.WWCP
                               UserDefinedDictionary?                     InternalData                                = null)
 
             : base(Id,
-                   Name                   ?? new I18NString(Languages.en, "RNTest1"),
-                   Description            ?? new I18NString(Languages.en, "A roaming network for testing purposes"),
-                   InitialAdminStatus     ?? RoamingNetworkAdminStatusTypes.Operational,
-                   InitialStatus          ?? RoamingNetworkStatusTypes.Available,
+                   Name                       ?? new I18NString(Languages.en, "RNTest1"),
+                   Description                ?? new I18NString(Languages.en, "A roaming network for testing purposes"),
+                   InitialAdminStatus         ?? RoamingNetworkAdminStatusTypes.Operational,
+                   InitialStatus              ?? RoamingNetworkStatusTypes.Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
                    DataSource,
