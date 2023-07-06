@@ -17,12 +17,12 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using System.Collections;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using System.Collections.Concurrent;
-using System.Drawing;
+
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
@@ -47,23 +47,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of this charging node.
         /// </summary>
-        public ChargingNode_Id  Id             { get; }
+        public ChargingNode_Id  Id                { get; }
 
         /// <summary>
         /// The multi-language name of this charging node.
         /// </summary>
-        public I18NString       Name           { get; }
+        public I18NString       Name              { get; }
 
         /// <summary>
         /// The multi-language description of this charging node.
         /// </summary>
-        public I18NString       Description    { get; }
+        public I18NString       Description       { get; }
+
+
+        /// <summary>
+        /// The optional default HTTP API.
+        /// </summary>
+        public HTTPAPI?         DefaultHTTPAPI    { get; }
 
 
         /// <summary>
         /// The DNS client used by the charging node.
         /// </summary>
-        public DNSClient        DNSClient      { get; }
+        public DNSClient        DNSClient         { get; }
 
         #endregion
 
@@ -76,12 +82,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Name">A multi-language name of this charging node.</param>
         /// <param name="Description">A multi-language description of this charging node.</param>
         /// 
+        /// <param name="DefaultHTTPAPI">An optional default HTTP API.</param>
+        /// 
         /// <param name="DNSClient">The DNS client used by the charging node.</param>
-        public ChargingNode(ChargingNode_Id?  Id            = null,
-                            I18NString?       Name          = null,
-                            I18NString?       Description   = null,
+        public ChargingNode(ChargingNode_Id?  Id               = null,
+                            I18NString?       Name             = null,
+                            I18NString?       Description      = null,
 
-                            DNSClient?        DNSClient     = null)
+                            HTTPAPI?          DefaultHTTPAPI   = null,
+
+                            DNSClient?        DNSClient        = null)
         {
 
             #region Initial checks
@@ -95,6 +105,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.Name             = Name        ?? I18NString.Empty;
             this.Description      = Description ?? I18NString.Empty;
 
+            this.DefaultHTTPAPI   = DefaultHTTPAPI;
+
             this.DNSClient        = DNSClient   ?? new DNSClient();
 
             unchecked
@@ -105,6 +117,10 @@ namespace cloud.charging.open.protocols.WWCP
                            this.Description.GetHashCode();
 
             }
+
+            if (this.DefaultHTTPAPI is not null)
+                AddHTTPAPI("default",
+                           this.DefaultHTTPAPI);
 
         }
 
