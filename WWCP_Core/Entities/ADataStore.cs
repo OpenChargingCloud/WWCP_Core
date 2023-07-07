@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean                           DisableNetworkSync      { get; }
 
 
-        public ChargingNode_Id                           NodeId                  { get; }
+        public NetworkServiceNode_Id             NodeId                  { get; }
 
         private readonly List<RoamingNetworkInfo> roamingNetworkInfos;
 
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.NodeId                        = ChargingNode_Id.Parse(Environment.MachineName);
+            this.NodeId                        = NetworkServiceNode_Id.Parse(Environment.MachineName);
 
             this.RoamingNetworkId              = RoamingNetworkId;
             this.roamingNetworkInfos           = RoamingNetworkInfos != null

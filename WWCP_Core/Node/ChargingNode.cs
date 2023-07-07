@@ -18,10 +18,10 @@
 #region Usings
 
 using System.Collections;
-using System.Collections.Concurrent;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
@@ -33,43 +33,15 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A charging node.
     /// </summary>
-    public class ChargingNode : IRoamingNetworks
+    public class ChargingNode : NetworkServiceNode,
+                                IRoamingNetworks
     {
 
         #region Data
 
-        
-
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// The unique identification of this charging node.
-        /// </summary>
-        public ChargingNode_Id  Id                { get; }
-
-        /// <summary>
-        /// The multi-language name of this charging node.
-        /// </summary>
-        public I18NString       Name              { get; }
-
-        /// <summary>
-        /// The multi-language description of this charging node.
-        /// </summary>
-        public I18NString       Description       { get; }
-
-
-        /// <summary>
-        /// The optional default HTTP API.
-        /// </summary>
-        public HTTPAPI?         DefaultHTTPAPI    { get; }
-
-
-        /// <summary>
-        /// The DNS client used by the charging node.
-        /// </summary>
-        public DNSClient        DNSClient         { get; }
 
         #endregion
 
@@ -85,42 +57,23 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DefaultHTTPAPI">An optional default HTTP API.</param>
         /// 
         /// <param name="DNSClient">The DNS client used by the charging node.</param>
-        public ChargingNode(ChargingNode_Id?  Id               = null,
-                            I18NString?       Name             = null,
-                            I18NString?       Description      = null,
+        public ChargingNode(NetworkServiceNode_Id?  Id               = null,
+                            I18NString?             Name             = null,
+                            I18NString?             Description      = null,
 
-                            HTTPAPI?          DefaultHTTPAPI   = null,
+                            HTTPAPI?                DefaultHTTPAPI   = null,
 
-                            DNSClient?        DNSClient        = null)
+                            DNSClient?              DNSClient        = null)
+
+            : base(Id,
+                   Name,
+                   Description,
+
+                   DefaultHTTPAPI,
+
+                   DNSClient)
+
         {
-
-            #region Initial checks
-
-            if (Id.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Id), "The given unique charging node identification must not be null or empty!");
-
-            #endregion
-
-            this.Id               = Id          ?? ChargingNode_Id.NewRandom();
-            this.Name             = Name        ?? I18NString.Empty;
-            this.Description      = Description ?? I18NString.Empty;
-
-            this.DefaultHTTPAPI   = DefaultHTTPAPI;
-
-            this.DNSClient        = DNSClient   ?? new DNSClient();
-
-            unchecked
-            {
-
-                hashCode = this.Id.         GetHashCode() * 5 ^
-                           this.Name.       GetHashCode() * 3 ^
-                           this.Description.GetHashCode();
-
-            }
-
-            if (this.DefaultHTTPAPI is not null)
-                AddHTTPAPI("default",
-                           this.DefaultHTTPAPI);
 
         }
 
@@ -188,50 +141,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region HTTP APIs
-
-        #region Data
-
-        private readonly ConcurrentDictionary<String, HTTPAPI> httpAPIs = new();
-
-        /// <summary>
-        /// An enumeration of all HTTP APIs.
-        /// </summary>
-        public IEnumerable<HTTPAPI> HTTPAPIs
-            => httpAPIs.Values;
-
-        #endregion
-
-        public Boolean AddHTTPAPI(String   HTTPAPIId,
-                                  HTTPAPI  HTTPAPI)
-        {
-
-            return httpAPIs.TryAdd(HTTPAPIId, HTTPAPI);
-
-        }
-
-        public HTTPAPI? GetHTTPAPI(String HTTPAPIId)
-        {
-
-            return httpAPIs.TryGet(HTTPAPIId);
-
-        }
-
-        #endregion
-
-
-
-        //ToDo: Add HTTP WebSocket Servers
-        //ToDo: Add Trackers
-        //ToDo: Add Overlay Networks
-
 
         #region Clone
 
         /// <summary>
         /// Clone this charging node.
         /// </summary>
-        public ChargingNode Clone
+        public new ChargingNode Clone
 
             => new (Id.Clone);
 
@@ -240,116 +156,116 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Operator overloading
 
-        #region Operator == (Node1, Node2)
+        #region Operator == (ChargingNode1, ChargingNode2)
 
         /// <summary>
         /// Compares two node identifications for equality.
         /// </summary>
-        /// <param name="Node1">A charging node.</param>
-        /// <param name="Node2">Another charging node.</param>
+        /// <param name="ChargingNode1">A charging node.</param>
+        /// <param name="ChargingNode2">Another charging node.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingNode Node1,
-                                           ChargingNode Node2)
+        public static Boolean operator == (ChargingNode ChargingNode1,
+                                           ChargingNode ChargingNode2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(Node1, Node2))
+            if (ReferenceEquals(ChargingNode1, ChargingNode2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (Node1 is null || Node2 is null)
+            if (ChargingNode1 is null || ChargingNode2 is null)
                 return false;
 
-            return Node1.Equals(Node2);
+            return ChargingNode1.Equals(ChargingNode2);
 
         }
 
         #endregion
 
-        #region Operator != (Node1, Node2)
+        #region Operator != (ChargingNode1, ChargingNode2)
 
         /// <summary>
         /// Compares two node identifications for inequality.
         /// </summary>
-        /// <param name="Node1">A charging node.</param>
-        /// <param name="Node2">Another charging node.</param>
+        /// <param name="ChargingNode1">A charging node.</param>
+        /// <param name="ChargingNode2">Another charging node.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingNode Node1,
-                                           ChargingNode Node2)
+        public static Boolean operator != (ChargingNode ChargingNode1,
+                                           ChargingNode ChargingNode2)
 
-            => !(Node1 == Node2);
+            => !(ChargingNode1 == ChargingNode2);
 
         #endregion
 
-        #region Operator <  (Node1, Node2)
+        #region Operator <  (ChargingNode1, ChargingNode2)
 
         /// <summary>
         /// Compares two node identifications.
         /// </summary>
-        /// <param name="Node1">A charging node.</param>
-        /// <param name="Node2">Another charging node.</param>
+        /// <param name="ChargingNode1">A charging node.</param>
+        /// <param name="ChargingNode2">Another charging node.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingNode Node1,
-                                          ChargingNode Node2)
+        public static Boolean operator < (ChargingNode ChargingNode1,
+                                          ChargingNode ChargingNode2)
         {
 
-            if (Node1 is null)
-                throw new ArgumentNullException(nameof(Node1), "The given charging node 1 must not be null!");
+            if (ChargingNode1 is null)
+                throw new ArgumentNullException(nameof(ChargingNode1), "The given charging node 1 must not be null!");
 
-            return Node1.CompareTo(Node2) < 0;
+            return ChargingNode1.CompareTo(ChargingNode2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (Node1, Node2)
+        #region Operator <= (ChargingNode1, ChargingNode2)
 
         /// <summary>
         /// Compares two node identifications.
         /// </summary>
-        /// <param name="Node1">A charging node.</param>
-        /// <param name="Node2">Another charging node.</param>
+        /// <param name="ChargingNode1">A charging node.</param>
+        /// <param name="ChargingNode2">Another charging node.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingNode Node1,
-                                           ChargingNode Node2)
+        public static Boolean operator <= (ChargingNode ChargingNode1,
+                                           ChargingNode ChargingNode2)
 
-            => !(Node1 > Node2);
+            => !(ChargingNode1 > ChargingNode2);
 
         #endregion
 
-        #region Operator >  (Node1, Node2)
+        #region Operator >  (ChargingNode1, ChargingNode2)
 
         /// <summary>
         /// Compares two node identifications.
         /// </summary>
-        /// <param name="Node1">A charging node.</param>
-        /// <param name="Node2">Another charging node.</param>
+        /// <param name="ChargingNode1">A charging node.</param>
+        /// <param name="ChargingNode2">Another charging node.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingNode Node1,
-                                          ChargingNode Node2)
+        public static Boolean operator > (ChargingNode ChargingNode1,
+                                          ChargingNode ChargingNode2)
         {
 
-            if (Node1 is null)
-                throw new ArgumentNullException(nameof(Node1), "The given charging node 1 must not be null!");
+            if (ChargingNode1 is null)
+                throw new ArgumentNullException(nameof(ChargingNode1), "The given charging node 1 must not be null!");
 
-            return Node1.CompareTo(Node2) > 0;
+            return ChargingNode1.CompareTo(ChargingNode2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (Node1, Node2)
+        #region Operator >= (ChargingNode1, ChargingNode2)
 
         /// <summary>
         /// Compares two node identifications.
         /// </summary>
-        /// <param name="Node1">A charging node.</param>
-        /// <param name="Node2">Another charging node.</param>
+        /// <param name="ChargingNode1">A charging node.</param>
+        /// <param name="ChargingNode2">Another charging node.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingNode Node1,
-                                           ChargingNode Node2)
+        public static Boolean operator >= (ChargingNode ChargingNode1,
+                                           ChargingNode ChargingNode2)
 
-            => !(Node1 < Node2);
+            => !(ChargingNode1 < ChargingNode2);
 
         #endregion
 

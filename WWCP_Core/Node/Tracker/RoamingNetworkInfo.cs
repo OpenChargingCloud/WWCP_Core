@@ -52,22 +52,22 @@ namespace cloud.charging.open.protocols.WWCP.Networking
     public static class Ext
     {
 
-        public static RoamingNetworkInfo Create(this RoamingNetwork   RoamingNetwork,
-                                                Tracker_Id            TrackerId,
-                                                ChargingNode_Id               NodeId,
-                                                DateTime              NotBefore,
-                                                DateTime              NotAfter,
+        public static RoamingNetworkInfo Create(this RoamingNetwork    RoamingNetwork,
+                                                Tracker_Id             TrackerId,
+                                                NetworkServiceNode_Id  NodeId,
+                                                DateTime               NotBefore,
+                                                DateTime               NotAfter,
 
-                                                Byte                  priority,
-                                                Byte                  weight,
-                                                IIPAddress            IPAddress,
-                                                String                hostname,
-                                                IPPort                port,
-                                                TransportTypes        transport,
-                                                String                URLPrefix,
-                                                HTTPContentType       contentType,
-                                                ProtocolTypes         protocolType,
-                                                IEnumerable<String>   PublicKeys)
+                                                Byte                   priority,
+                                                Byte                   weight,
+                                                IIPAddress             IPAddress,
+                                                String                 hostname,
+                                                IPPort                 port,
+                                                TransportTypes         transport,
+                                                String                 URLPrefix,
+                                                HTTPContentType        contentType,
+                                                ProtocolTypes          protocolType,
+                                                IEnumerable<String>    PublicKeys)
         {
 
             return new RoamingNetworkInfo(TrackerId,
@@ -101,65 +101,65 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// <summary>
         /// The identification of a remote tracker which sent this information.
         /// </summary>
-        public Tracker_Id           TrackerId           { get; }
+        public Tracker_Id             TrackerId           { get; }
 
 
-        public ChargingNode_Id              NodeId              { get; }
+        public NetworkServiceNode_Id  NodeId              { get; }
 
         /// <summary>
         /// An URI for the roaming network.
         /// </summary>
-        public String               IncomingURL         { get; }
+        public String                 IncomingURL         { get; }
 
         /// <summary>
         /// When this information becomes valid.
         /// </summary>
-        public DateTime             NotBefore           { get; }
+        public DateTime               NotBefore           { get; }
 
         /// <summary>
         /// When this information expires.
         /// </summary>
-        public DateTime             NotAfter            { get; }
+        public DateTime               NotAfter            { get; }
 
 
 
         /// <summary>
         /// The local roaming network.
         /// </summary>
-        public RoamingNetwork       RoamingNetwork      { get; }
+        public RoamingNetwork         RoamingNetwork      { get; }
 
         /// <summary>
         /// The identification of the roaming network.
         /// </summary>
-        public RoamingNetwork_Id    RoamingNetworkId    { get; }
+        public RoamingNetwork_Id      RoamingNetworkId    { get; }
 
 
 
         /// <summary>
         /// An URI for the roaming network.
         /// </summary>
-        public String               AnnouncedURI        { get; }
+        public String                 AnnouncedURI        { get; }
 
 
-        public Byte                 priority            { get; }
+        public Byte                   priority            { get; }
 
-        public Byte                 weight              { get; }
+        public Byte                   weight              { get; }
 
-        public IIPAddress           IPAddress           { get; }
+        public IIPAddress             IPAddress           { get; }
 
-        public String               hostname            { get; }
+        public String                 hostname            { get; }
 
-        public IPPort               port                { get; }
+        public IPPort                 port                { get; }
 
-        public TransportTypes       transport           { get; }
+        public TransportTypes         transport           { get; }
 
-        public String               URLPrefix           { get; }
+        public String                 URLPrefix           { get; }
 
-        public HTTPContentType      contentType         { get; }
+        public HTTPContentType        contentType         { get; }
 
-        public ProtocolTypes        protocolType        { get; }
+        public ProtocolTypes          protocolType        { get; }
 
-        public IEnumerable<String>  publicKeys          { get; }
+        public IEnumerable<String>    publicKeys          { get; }
 
         #endregion
 
@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region RoamingNetworkInfo(..., RoamingNetworkId, ...)
 
         public RoamingNetworkInfo(Tracker_Id            TrackerId,
-                                  ChargingNode_Id               NodeId,
+                                  NetworkServiceNode_Id               NodeId,
                                   String                IncomingURL,
                                   DateTime              NotBefore,
                                   DateTime              NotAfter,
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region RoamingNetworkInfo(..., RoamingNetwork, ...)
 
         public RoamingNetworkInfo(Tracker_Id            TrackerId,
-                                  ChargingNode_Id               NodeId,
+                                  NetworkServiceNode_Id               NodeId,
                                   String                IncomingURL,
                                   DateTime              NotBefore,
                                   DateTime              NotAfter,
