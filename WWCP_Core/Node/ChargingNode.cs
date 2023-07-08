@@ -57,17 +57,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DefaultHTTPAPI">An optional default HTTP API.</param>
         /// 
         /// <param name="DNSClient">The DNS client used by the charging node.</param>
-        public ChargingNode(NetworkServiceNode_Id?  Id               = null,
-                            I18NString?             Name             = null,
-                            I18NString?             Description      = null,
+        public ChargingNode(NetworkServiceNode_Id?       Id               = null,
+                            I18NString?                  Name             = null,
+                            I18NString?                  Description      = null,
 
-                            HTTPAPI?                DefaultHTTPAPI   = null,
+                            CryptoKeyInfo?               Identity         = null,
+                            IEnumerable<CryptoKeyInfo>?  Identities       = null,
 
-                            DNSClient?              DNSClient        = null)
+                            CryptoKeyInfo?               IdentityGroup    = null,
+                            IEnumerable<CryptoKeyInfo>?  IdentityGroups   = null,
+
+                            HTTPAPI?                     DefaultHTTPAPI   = null,
+
+                            DNSClient?                   DNSClient        = null)
 
             : base(Id,
                    Name,
                    Description,
+
+                   Identity,
+                   Identities,
+
+                   IdentityGroup,
+                   IdentityGroups,
 
                    DefaultHTTPAPI,
 
