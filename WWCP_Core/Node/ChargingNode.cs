@@ -61,10 +61,7 @@ namespace cloud.charging.open.protocols.WWCP
                             I18NString?                  Name             = null,
                             I18NString?                  Description      = null,
 
-                            CryptoKeyInfo?               Identity         = null,
                             IEnumerable<CryptoKeyInfo>?  Identities       = null,
-
-                            CryptoKeyInfo?               IdentityGroup    = null,
                             IEnumerable<CryptoKeyInfo>?  IdentityGroups   = null,
 
                             HTTPAPI?                     DefaultHTTPAPI   = null,
@@ -75,10 +72,7 @@ namespace cloud.charging.open.protocols.WWCP
                    Name,
                    Description,
 
-                   Identity,
                    Identities,
-
-                   IdentityGroup,
                    IdentityGroups,
 
                    DefaultHTTPAPI,
