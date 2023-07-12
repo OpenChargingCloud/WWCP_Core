@@ -65,12 +65,12 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// <param name="Name">A multi-language name of this metering calibration law agency.</param>
         /// <param name="Description">A multi-language description of this metering calibration law agency.</param>
         /// 
-        /// <param name="Identities">An optional enumeration of cryptographic identities of this metering calibration law agency.</param>
+        /// <param name="CryptoKeys">An optional enumeration of cryptographic identities of this metering calibration law agency.</param>
         public MeteringCalibrationLawAgency(MeteringCalibrationLawAgency_Id?  Id            = null,
                                             I18NString?                       Name          = null,
                                             I18NString?                       Description   = null,
 
-                                            IEnumerable<CryptoKeyInfo>?       Identities    = null)
+                                            IEnumerable<CryptoKeyInfo>?       CryptoKeys    = null)
         {
 
             #region Initial checks
@@ -84,8 +84,8 @@ namespace cloud.charging.open.protocols.WWCP.MCL
             this.Name             = Name        ?? I18NString.Empty;
             this.Description      = Description ?? I18NString.Empty;
 
-            if (Identities is not null)
-                foreach (var identity in Identities.Where(cryptoKey => cryptoKey.KeyUsages.Contains(CryptoKeyUsage.Identity)))
+            if (CryptoKeys is not null)
+                foreach (var identity in CryptoKeys.Where(cryptoKey => cryptoKey.KeyUsages.Contains(CryptoKeyUsage.Identity)))
                     AddCryptoKey(CryptoKeyUsage.Identity,
                                  identity);
 
