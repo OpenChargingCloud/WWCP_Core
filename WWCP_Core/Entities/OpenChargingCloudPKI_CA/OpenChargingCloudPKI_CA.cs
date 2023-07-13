@@ -69,10 +69,8 @@ namespace cloud.charging.open.protocols.WWCP.PKI
             this.Name         = Name        ?? I18NString.Empty;
             this.Description  = Description ?? I18NString.Empty;
 
-            if (CryptoKeys is not null)
-                foreach (var identity in CryptoKeys.Where(cryptoKey => cryptoKey.KeyUsages.Contains(CryptoKeyUsage.Identity)))
-                    AddCryptoKey(CryptoKeyUsage.Identity,
-                                 identity);
+            if (CryptoKeys is not null && CryptoKeys.Any())
+                AddCryptoKeys(CryptoKeys);
 
             unchecked
             {
@@ -89,11 +87,13 @@ namespace cloud.charging.open.protocols.WWCP.PKI
 
         #region Crypto Wallet
 
-        public Boolean AddCryptoKey(CryptoKeyUsage  CryptoKeyUsageId,
-                                    CryptoKeyInfo   CryptoKeyInfo)
+        public Boolean AddCryptoKey(CryptoKeyInfo CryptoKeyInfo)
 
-            => cryptoWallet.Add(CryptoKeyUsageId,
-                                CryptoKeyInfo);
+            => cryptoWallet.Add(CryptoKeyInfo);
+
+        public Boolean AddCryptoKeys(IEnumerable<CryptoKeyInfo> CryptoKeyInfos)
+
+            => cryptoWallet.Add(CryptoKeyInfos);
 
         public CryptoKeyInfo SignKey(CryptoKeyInfo CryptoKeyInfo)
 

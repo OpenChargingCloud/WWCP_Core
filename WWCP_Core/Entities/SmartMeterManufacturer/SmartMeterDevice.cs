@@ -95,9 +95,8 @@ namespace cloud.charging.open.protocols.WWCP.SMM
             this.Description      = Description ?? I18NString.Empty;
 
             if (Identities is not null)
-                foreach (var identity in Identities.Where(cryptoKey => cryptoKey.KeyUsages.Contains(CryptoKeyUsage.Identity)))
-                    AddCryptoKey(CryptoKeyUsage.Identity,
-                                 identity);
+                foreach (var identity in Identities)
+                    AddCryptoKey(identity);
 
             unchecked
             {
@@ -115,11 +114,9 @@ namespace cloud.charging.open.protocols.WWCP.SMM
 
         #region Crypto Wallet
 
-        public Boolean AddCryptoKey(CryptoKeyUsage  CryptoKeyUsageId,
-                                    CryptoKeyInfo   CryptoKeyInfo)
+        public Boolean AddCryptoKey(CryptoKeyInfo CryptoKeyInfo)
 
-            => cryptoWallet.Add(CryptoKeyUsageId,
-                                         CryptoKeyInfo);
+            => cryptoWallet.Add(CryptoKeyInfo);
 
         #endregion
 
