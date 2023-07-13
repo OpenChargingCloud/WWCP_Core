@@ -95,6 +95,11 @@ namespace cloud.charging.open.protocols.WWCP.PKI
             => cryptoWallet.Add(CryptoKeyUsageId,
                                 CryptoKeyInfo);
 
+        public CryptoKeyInfo SignKey(CryptoKeyInfo CryptoKeyInfo)
+
+            => cryptoWallet.SignKey(CryptoKeyInfo,
+                                    cryptoWallet.Where(key => key.KeyUsages.Contains(CryptoKeyUsage.Identity)).ToArray());
+
         #endregion
 
 

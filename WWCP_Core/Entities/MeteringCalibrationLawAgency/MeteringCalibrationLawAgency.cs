@@ -253,8 +253,8 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// <param name="Object">A metering calibration law agency to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is MeteringCalibrationLawAgency smartMeterManufacturer
-                   ? CompareTo(smartMeterManufacturer)
+            => Object is MeteringCalibrationLawAgency meteringCalibrationLawAgency
+                   ? CompareTo(meteringCalibrationLawAgency)
                    : throw new ArgumentException("The given object is not a metering calibration law agency!",
                                                  nameof(Object));
 
@@ -298,8 +298,8 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// <param name="Object">A metering calibration law agency to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is MeteringCalibrationLawAgency smartMeterManufacturer &&
-                   Equals(smartMeterManufacturer);
+            => Object is MeteringCalibrationLawAgency meteringCalibrationLawAgency &&
+                   Equals(meteringCalibrationLawAgency);
 
         #endregion
 
