@@ -66,11 +66,11 @@ namespace cloud.charging.open.protocols.WWCP.SMM
         /// <param name="Description">A multi-language description of this smart meter manufacturer.</param>
         /// 
         /// <param name="CryptoKeys">An optional enumeration of cryptographic identities of this smart meter manufacturer.</param>
-        public SmartMeterManufacturer(SmartMeterManufacturer_Id?   Id               = null,
-                                      I18NString?                  Name             = null,
-                                      I18NString?                  Description      = null,
+        public SmartMeterManufacturer(SmartMeterManufacturer_Id?   Id            = null,
+                                      I18NString?                  Name          = null,
+                                      I18NString?                  Description   = null,
 
-                                      IEnumerable<CryptoKeyInfo>?  CryptoKeys       = null)
+                                      IEnumerable<CryptoKeyInfo>?  CryptoKeys    = null)
         {
 
             #region Initial checks
