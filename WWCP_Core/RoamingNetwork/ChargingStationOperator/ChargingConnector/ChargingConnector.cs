@@ -31,11 +31,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this ChargingConnectors, IncludeParentIds = true)
 
-        public static JArray ToJSON(this IEnumerable<IChargingConnector>  ChargingConnectors,
-                                    Boolean                               Embedded = false)
+        public static JArray ToJSON(this IEnumerable<IChargingConnector>                 ChargingConnectors,
+                                    Boolean                                              Embedded                            = false,
+                                    CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null)
 
             => ChargingConnectors is not null && ChargingConnectors.Any()
-                   ? new JArray(ChargingConnectors.SafeSelect(chargingConnector => chargingConnector.ToJSON(Embedded)))
+                   ? new JArray(ChargingConnectors.SafeSelect(chargingConnector => chargingConnector.ToJSON(Embedded,
+                                                                                                            CustomChargingConnectorSerializer)))
                    : new JArray();
 
         #endregion

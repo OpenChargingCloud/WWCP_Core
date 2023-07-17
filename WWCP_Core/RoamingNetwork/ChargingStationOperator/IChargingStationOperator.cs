@@ -2111,7 +2111,8 @@ namespace cloud.charging.open.protocols.WWCP
                        CustomJObjectSerializerDelegate<IChargingStationOperator>?  CustomChargingStationOperatorSerializer   = null,
                        CustomJObjectSerializerDelegate<IChargingPool>?             CustomChargingPoolSerializer              = null,
                        CustomJObjectSerializerDelegate<IChargingStation>?          CustomChargingStationSerializer           = null,
-                       CustomJObjectSerializerDelegate<IEVSE>?                     CustomEVSESerializer                      = null);
+                       CustomJObjectSerializerDelegate<IEVSE>?                     CustomEVSESerializer                      = null,
+                       CustomJObjectSerializerDelegate<ChargingConnector>?         CustomChargingConnectorSerializer         = null);
 
 
     }

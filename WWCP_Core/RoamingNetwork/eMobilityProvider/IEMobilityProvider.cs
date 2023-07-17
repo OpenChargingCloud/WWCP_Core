@@ -118,30 +118,37 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        Task<CancelReservationResult> CancelReservation(ChargingReservation_Id ReservationId, ChargingReservationCancellationReason Reason, EMobilityProvider_Id? ProviderId = null, DateTime? Timestamp = null, CancellationToken CancellationToken = default, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null);
-        Boolean ContainseMobilityStation(eMobilityStation eMobilityStation);
-        Boolean ContainseMobilityStation(eMobilityStation_Id eMobilityStationId);
-        Boolean ContainseVehicle(EVehicle eVehicle);
-        Boolean ContainseVehicle(EVehicle_Id eVehicleId);
-        eMobilityStation CreateNeweMobilityStation(eMobilityStation_Id eMobilityStationId = null, Action<eMobilityStation> Configurator = null, RemoteEMobilityStationCreatorDelegate RemoteeMobilityStationCreator = null, eMobilityStationAdminStatusTypes AdminStatus = eMobilityStationAdminStatusTypes.Operational, Action<eMobilityStation> OnSuccess = null, Action<EMobilityProvider, eMobilityStation_Id> OnError = null);
-        EVehicle CreateNeweVehicle(EVehicle_Id eVehicleId = null, Action<EVehicle> Configurator = null, RemoteEVehicleCreatorDelegate RemoteeVehicleCreator = null, eVehicleAdminStatusTypes AdminStatus = eVehicleAdminStatusTypes.Operational, eVehicleStatusTypes Status = eVehicleStatusTypes.Available, Action<EVehicle> OnSuccess = null, Action<EMobilityProvider, EVehicle_Id> OnError = null);
-        eMobilityStation GeteMobilityStationById(eMobilityStation_Id eMobilityStationId);
-        EVehicle GetEVehicleById(EVehicle_Id eVehicleId);
-        Task<RemoteStartResult> RemoteStart(ChargingLocation ChargingLocation, ChargingProduct ChargingProduct = null, ChargingReservation_Id? ReservationId = null, ChargingSession_Id? SessionId = null, RemoteAuthentication RemoteAuthentication = null, DateTime? Timestamp = null, CancellationToken CancellationToken = default, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null);
-        Task<RemoteStopResult> RemoteStop(ChargingSession_Id SessionId, ReservationHandling? ReservationHandling = null, RemoteAuthentication RemoteAuthentication = null, DateTime? Timestamp = null, CancellationToken CancellationToken = default, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null);
-        eMobilityStation RemoveeMobilityStation(eMobilityStation_Id eMobilityStationId);
-        EVehicle RemoveEVehicle(EVehicle_Id eVehicleId);
-        Task<ReservationResult> Reserve(ChargingLocation ChargingLocation, ChargingReservationLevel ReservationLevel = ChargingReservationLevel.EVSE, DateTime? ReservationStartTime = null, TimeSpan? Duration = null, ChargingReservation_Id? ReservationId = null, ChargingReservation_Id? LinkedReservationId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, ChargingProduct? ChargingProduct = null, IEnumerable<AuthenticationToken>? AuthTokens = null, IEnumerable<EMobilityAccount_Id>? eMAIds = null, IEnumerable<UInt32>? PINs = null, DateTime? Timestamp = null, CancellationToken CancellationToken = default, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null);
+
+
+        Task<ReservationResult> Reserve(ChargingLocation ChargingLocation, ChargingReservationLevel ReservationLevel = ChargingReservationLevel.EVSE, DateTime? ReservationStartTime = null, TimeSpan? Duration = null, ChargingReservation_Id? ReservationId = null, ChargingReservation_Id? LinkedReservationId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, ChargingProduct? ChargingProduct = null, IEnumerable<AuthenticationToken>? AuthTokens = null, IEnumerable<EMobilityAccount_Id>? eMAIds = null, IEnumerable<UInt32>? PINs = null, DateTime? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default);
+        Task<CancelReservationResult> CancelReservation(ChargingReservation_Id ReservationId, ChargingReservationCancellationReason Reason, EMobilityProvider_Id? ProviderId = null, DateTime? Timestamp = null, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default);
+        Task<RemoteStartResult> RemoteStart(ChargingLocation ChargingLocation, ChargingProduct ChargingProduct = null, ChargingReservation_Id? ReservationId = null, ChargingSession_Id? SessionId = null, RemoteAuthentication RemoteAuthentication = null, DateTime? Timestamp = null, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default);
+        Task<RemoteStopResult> RemoteStop(ChargingSession_Id SessionId, ReservationHandling? ReservationHandling = null, RemoteAuthentication RemoteAuthentication = null, DateTime? Timestamp = null, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default);
+
+
         void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId, eMobilityStationAdminStatusTypes NewStatus, DateTime Timestamp);
         void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId, IEnumerable<Timestamped<eMobilityStationAdminStatusTypes>> StatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
         void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId, Timestamped<eMobilityStationAdminStatusTypes> NewStatus, Boolean SendUpstream = false);
+        eMobilityStation CreateNeweMobilityStation(eMobilityStation_Id eMobilityStationId = null, Action<eMobilityStation> Configurator = null, RemoteEMobilityStationCreatorDelegate RemoteeMobilityStationCreator = null, eMobilityStationAdminStatusTypes AdminStatus = eMobilityStationAdminStatusTypes.Operational, Action<eMobilityStation> OnSuccess = null, Action<EMobilityProvider, eMobilityStation_Id> OnError = null);
+        Boolean TryRemoveeMobilityStation(eMobilityStation_Id eMobilityStationId, out eMobilityStation eMobilityStation);
+        eMobilityStation RemoveeMobilityStation(eMobilityStation_Id eMobilityStationId);
+        Boolean ContainseMobilityStation(eMobilityStation eMobilityStation);
+        Boolean ContainseMobilityStation(eMobilityStation_Id eMobilityStationId);
+        Boolean TryGeteMobilityStationById(eMobilityStation_Id eMobilityStationId, out eMobilityStation eMobilityStation);
+        eMobilityStation GeteMobilityStationById(eMobilityStation_Id eMobilityStationId);
+
+
         void SetEVehicleAdminStatus(EVehicle_Id eVehicleId, eVehicleAdminStatusTypes NewStatus, DateTime Timestamp);
         void SetEVehicleAdminStatus(EVehicle_Id eVehicleId, IEnumerable<Timestamped<eVehicleAdminStatusTypes>> StatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
         void SeteVehicleAdminStatus(EVehicle_Id eVehicleId, Timestamped<eVehicleAdminStatusTypes> NewStatus, Boolean SendUpstream = false);
-        Boolean TryGeteMobilityStationById(eMobilityStation_Id eMobilityStationId, out eMobilityStation eMobilityStation);
-        Boolean TryGetEVehicleById(EVehicle_Id eVehicleId, out EVehicle eVehicle);
-        Boolean TryRemoveeMobilityStation(eMobilityStation_Id eMobilityStationId, out eMobilityStation eMobilityStation);
+        EVehicle CreateNeweVehicle(EVehicle_Id eVehicleId = null, Action<EVehicle> Configurator = null, RemoteEVehicleCreatorDelegate RemoteeVehicleCreator = null, eVehicleAdminStatusTypes AdminStatus = eVehicleAdminStatusTypes.Operational, eVehicleStatusTypes Status = eVehicleStatusTypes.Available, Action<EVehicle> OnSuccess = null, Action<EMobilityProvider, EVehicle_Id> OnError = null);
         Boolean TryRemoveEVehicle(EVehicle_Id eVehicleId, out EVehicle eVehicle);
+        EVehicle RemoveEVehicle(EVehicle_Id eVehicleId);
+        Boolean ContainseVehicle(EVehicle eVehicle);
+        Boolean ContainseVehicle(EVehicle_Id eVehicleId);
+        Boolean TryGetEVehicleById(EVehicle_Id eVehicleId, out EVehicle eVehicle);
+        EVehicle GetEVehicleById(EVehicle_Id eVehicleId);
+
 
     }
 

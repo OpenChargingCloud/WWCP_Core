@@ -2825,9 +2825,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public Task<ReservationResult>
 
             Reserve(DateTime?                          StartTime              = null,
@@ -2842,9 +2842,9 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,
-                    CancellationToken                  CancellationToken      = default,
                     EventTracking_Id?                  EventTrackingId        = null,
-                    TimeSpan?                          RequestTimeout         = null)
+                    TimeSpan?                          RequestTimeout         = null,
+                    CancellationToken                  CancellationToken      = default)
 
                 => Reserve(ChargingLocation.FromChargingPoolId(Id),
                            ChargingReservationLevel.ChargingPool,
@@ -2860,9 +2860,9 @@ namespace cloud.charging.open.protocols.WWCP
                            PINs,
 
                            Timestamp,
-                           CancellationToken,
                            EventTrackingId,
-                           RequestTimeout);
+                           RequestTimeout,
+                           CancellationToken);
 
         #endregion
 
@@ -2885,9 +2885,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<ReservationResult>
 
             Reserve(ChargingLocation                   ChargingLocation,
@@ -2904,9 +2904,9 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,
-                    CancellationToken                  CancellationToken      = default,
                     EventTracking_Id?                  EventTrackingId        = null,
-                    TimeSpan?                          RequestTimeout         = null)
+                    TimeSpan?                          RequestTimeout         = null,
+                    CancellationToken                  CancellationToken      = default)
 
         {
 
@@ -2981,9 +2981,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                    PINs,
 
                                                    Timestamp,
-                                                   CancellationToken,
                                                    EventTrackingId,
-                                                   RequestTimeout);
+                                                   RequestTimeout,
+                                                   CancellationToken);
 
                         if (result.Result == ReservationResultType.Success)
                         {
@@ -3063,9 +3063,9 @@ namespace cloud.charging.open.protocols.WWCP
         public Task<CancelReservationResult> CancelReservation(ChargingReservation_Id                 ReservationId,
                                                                ChargingReservationCancellationReason  Reason,
                                                                DateTime?                              Timestamp           = null,
-                                                               CancellationToken                      CancellationToken   = default,
                                                                EventTracking_Id?                      EventTrackingId     = null,
-                                                               TimeSpan?                              RequestTimeout      = null)
+                                                               TimeSpan?                              RequestTimeout      = null,
+                                                               CancellationToken                      CancellationToken   = default)
         {
             throw new NotImplementedException();
         }
@@ -3077,9 +3077,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Reason">A reason for this cancellation.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CancelReservationResult>
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
@@ -3087,9 +3087,9 @@ namespace cloud.charging.open.protocols.WWCP
                               EMobilityProvider_Id?                  ProviderId          = null,
 
                               DateTime?                              Timestamp           = null,
-                              CancellationToken                      CancellationToken   = default,
                               EventTracking_Id?                      EventTrackingId     = null,
-                              TimeSpan?                              RequestTimeout      = null)
+                              TimeSpan?                              RequestTimeout      = null,
+                              CancellationToken                      CancellationToken   = default)
 
         {
 
@@ -3144,9 +3144,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                              Reason,
 
                                                              Timestamp,
-                                                             CancellationToken,
                                                              EventTrackingId,
-                                                             RequestTimeout);
+                                                             RequestTimeout,
+                                                             CancellationToken);
 
                     }
 
@@ -3382,9 +3382,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public Task<RemoteStartResult>
 
             RemoteStart(ChargingProduct?         ChargingProduct        = null,
@@ -3394,9 +3394,9 @@ namespace cloud.charging.open.protocols.WWCP
                         RemoteAuthentication?    RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
-                        CancellationToken        CancellationToken      = default,
                         EventTracking_Id?        EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null)
+                        TimeSpan?                RequestTimeout         = null,
+                        CancellationToken        CancellationToken      = default)
 
 
                 => RemoteStart(ChargingLocation.FromChargingPoolId(Id),
@@ -3407,9 +3407,9 @@ namespace cloud.charging.open.protocols.WWCP
                                RemoteAuthentication,
 
                                Timestamp,
-                               CancellationToken,
                                EventTrackingId,
-                               RequestTimeout);
+                               RequestTimeout,
+                               CancellationToken);
 
         #endregion
 
@@ -3426,9 +3426,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<RemoteStartResult>
 
             RemoteStart(ChargingLocation         ChargingLocation,
@@ -3439,9 +3439,9 @@ namespace cloud.charging.open.protocols.WWCP
                         RemoteAuthentication?    RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
-                        CancellationToken        CancellationToken      = default,
                         EventTracking_Id?        EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null)
+                        TimeSpan?                RequestTimeout         = null,
+                        CancellationToken        CancellationToken      = default)
 
         {
 
@@ -3506,9 +3506,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                        RemoteAuthentication,
 
                                                        Timestamp,
-                                                       CancellationToken,
                                                        EventTrackingId,
-                                                       RequestTimeout);
+                                                       RequestTimeout,
+                                                       CancellationToken);
 
 
                         #region In case of success...
@@ -3596,9 +3596,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<RemoteStopResult>
 
             RemoteStop(ChargingSession_Id     SessionId,
@@ -3607,9 +3607,9 @@ namespace cloud.charging.open.protocols.WWCP
                        RemoteAuthentication?  RemoteAuthentication   = null,
 
                        DateTime?              Timestamp              = null,
-                       CancellationToken      CancellationToken      = default,
                        EventTracking_Id?      EventTrackingId        = null,
-                       TimeSpan?              RequestTimeout         = null)
+                       TimeSpan?              RequestTimeout         = null,
+                       CancellationToken      CancellationToken      = default)
 
         {
 
@@ -3671,9 +3671,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                          RemoteAuthentication,
 
                                                          Timestamp,
-                                                         CancellationToken,
                                                          EventTrackingId,
-                                                         RequestTimeout);
+                                                         RequestTimeout,
+                                                         CancellationToken);
 
                     }
 
@@ -3747,7 +3747,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                 ChargeDetailRecord  ChargeDetailRecord)
         {
 
-            if (ChargeDetailRecord != null)
+            if (ChargeDetailRecord is not null)
                 OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
 
         }
@@ -3763,16 +3763,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a JSON representation of the given charging pool.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station operator.</param>
-        public JObject ToJSON(Boolean                                             Embedded                          = false,
-                              InfoStatus                                          ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                              InfoStatus                                          ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                              InfoStatus                                          ExpandChargingStationIds          = InfoStatus.Expanded,
-                              InfoStatus                                          ExpandEVSEIds                     = InfoStatus.Hidden,
-                              InfoStatus                                          ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                              InfoStatus                                          ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                              CustomJObjectSerializerDelegate<IChargingPool>?     CustomChargingPoolSerializer      = null,
-                              CustomJObjectSerializerDelegate<IChargingStation>?  CustomChargingStationSerializer   = null,
-                              CustomJObjectSerializerDelegate<IEVSE>?             CustomEVSESerializer              = null)
+        public JObject ToJSON(Boolean                                              Embedded                            = false,
+                              InfoStatus                                           ExpandRoamingNetworkId              = InfoStatus.ShowIdOnly,
+                              InfoStatus                                           ExpandChargingStationOperatorId     = InfoStatus.ShowIdOnly,
+                              InfoStatus                                           ExpandChargingStationIds            = InfoStatus.Expanded,
+                              InfoStatus                                           ExpandEVSEIds                       = InfoStatus.Hidden,
+                              InfoStatus                                           ExpandBrandIds                      = InfoStatus.ShowIdOnly,
+                              InfoStatus                                           ExpandDataLicenses                  = InfoStatus.ShowIdOnly,
+                              CustomJObjectSerializerDelegate<IChargingPool>?      CustomChargingPoolSerializer        = null,
+                              CustomJObjectSerializerDelegate<IChargingStation>?   CustomChargingStationSerializer     = null,
+                              CustomJObjectSerializerDelegate<IEVSE>?              CustomEVSESerializer                = null,
+                              CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null)
         {
 
             try
@@ -3857,15 +3858,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                                          () => new JProperty("chargingStations",    ChargingStations.
                                                                                                  OrderBy(station   => station.Id).
-                                                                                                 ToJSON (Embedded:                         true,
-                                                                                                         ExpandRoamingNetworkId:           InfoStatus.Hidden,
-                                                                                                         ExpandChargingStationOperatorId:  InfoStatus.Hidden,
-                                                                                                         ExpandChargingPoolId:             InfoStatus.Hidden,
-                                                                                                         ExpandEVSEIds:                    InfoStatus.Expanded,
-                                                                                                         ExpandBrandIds:                   InfoStatus.ShowIdOnly,
-                                                                                                         ExpandDataLicenses:               InfoStatus.Hidden,
-                                                                                                         CustomChargingStationSerializer:  CustomChargingStationSerializer,
-                                                                                                         CustomEVSESerializer:             CustomEVSESerializer)))
+                                                                                                 ToJSON (Embedded:                           true,
+                                                                                                         ExpandRoamingNetworkId:             InfoStatus.Hidden,
+                                                                                                         ExpandChargingStationOperatorId:    InfoStatus.Hidden,
+                                                                                                         ExpandChargingPoolId:               InfoStatus.Hidden,
+                                                                                                         ExpandEVSEIds:                      InfoStatus.Expanded,
+                                                                                                         ExpandBrandIds:                     InfoStatus.ShowIdOnly,
+                                                                                                         ExpandDataLicenses:                 InfoStatus.Hidden,
+                                                                                                         CustomChargingStationSerializer:    CustomChargingStationSerializer,
+                                                                                                         CustomEVSESerializer:               CustomEVSESerializer,
+                                                                                                         CustomChargingConnectorSerializer:  CustomChargingConnectorSerializer)))
 
                                    : null,
 

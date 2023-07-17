@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.WWCP
         IId AuthId { get; }
 
 
-        #region AuthorizeStart
+        #region AuthorizeStart(LocalAuthentication, ...)
 
         /// <summary>
         /// Create an authorize start request at the given charging location.
@@ -46,9 +46,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         Task<AuthStartResult>
 
             AuthorizeStart(LocalAuthentication          LocalAuthentication,
@@ -59,13 +59,13 @@ namespace cloud.charging.open.protocols.WWCP
                            ChargingStationOperator_Id?  OperatorId            = null,
 
                            DateTime?                    Timestamp             = null,
-                           CancellationToken            CancellationToken     = default,
                            EventTracking_Id?            EventTrackingId       = null,
-                           TimeSpan?                    RequestTimeout        = null);
+                           TimeSpan?                    RequestTimeout        = null,
+                           CancellationToken            CancellationToken     = default);
 
         #endregion
 
-        #region AuthorizeStop
+        #region AuthorizeStop (SessionId, LocalAuthentication, ...)
 
         /// <summary>
         /// Create an authorize stop request at the given EVSE.
@@ -77,9 +77,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         Task<AuthStopResult>
 
             AuthorizeStop(ChargingSession_Id           SessionId,
@@ -89,9 +89,9 @@ namespace cloud.charging.open.protocols.WWCP
                           ChargingStationOperator_Id?  OperatorId            = null,
 
                           DateTime?                    Timestamp             = null,
-                          CancellationToken            CancellationToken     = default,
                           EventTracking_Id?            EventTrackingId       = null,
-                          TimeSpan?                    RequestTimeout        = null);
+                          TimeSpan?                    RequestTimeout        = null,
+                          CancellationToken            CancellationToken     = default);
 
         #endregion
 

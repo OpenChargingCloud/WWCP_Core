@@ -27,8 +27,6 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IChargingReservations
     {
 
-        #region Reservations
-
         TimeSpan  MaxReservationDuration    { get; set; }
 
         #region Events
@@ -99,9 +97,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         Task<ReservationResult>
 
             Reserve(ChargingLocation                   ChargingLocation,
@@ -118,9 +116,9 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,
-                    CancellationToken                  CancellationToken      = default,
                     EventTracking_Id?                  EventTrackingId        = null,
-                    TimeSpan?                          RequestTimeout         = null);
+                    TimeSpan?                          RequestTimeout         = null,
+                    CancellationToken                  CancellationToken      = default);
 
         #endregion
 
@@ -133,20 +131,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Reason">A reason for this cancellation.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         Task<CancelReservationResult>
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
 
                               DateTime?                              Timestamp           = null,
-                              CancellationToken                      CancellationToken   = default,
                               EventTracking_Id?                      EventTrackingId     = null,
-                              TimeSpan?                              RequestTimeout      = null);
-
-        #endregion
+                              TimeSpan?                              RequestTimeout      = null,
+                              CancellationToken                      CancellationToken   = default);
 
         #endregion
 
@@ -154,8 +150,6 @@ namespace cloud.charging.open.protocols.WWCP
 
     public interface IRemoteStartStop
     {
-
-        #region RemoteStart/-Stop
 
         #region RemoteStart(ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 
@@ -181,9 +175,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         Task<RemoteStartResult>
 
             RemoteStart(ChargingLocation         ChargingLocation,
@@ -194,9 +188,9 @@ namespace cloud.charging.open.protocols.WWCP
                         RemoteAuthentication?    RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
-                        CancellationToken        CancellationToken      = default,
                         EventTracking_Id?        EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null);
+                        TimeSpan?                RequestTimeout         = null,
+                        CancellationToken        CancellationToken      = default);
 
         #endregion
 
@@ -222,9 +216,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         Task<RemoteStopResult>
 
             RemoteStop(ChargingSession_Id     SessionId,
@@ -233,11 +227,9 @@ namespace cloud.charging.open.protocols.WWCP
                        RemoteAuthentication?  RemoteAuthentication   = null,
 
                        DateTime?              Timestamp              = null,
-                       CancellationToken      CancellationToken      = default,
                        EventTracking_Id?      EventTrackingId        = null,
-                       TimeSpan?              RequestTimeout         = null);
-
-        #endregion
+                       TimeSpan?              RequestTimeout         = null,
+                       CancellationToken      CancellationToken      = default);
 
         #endregion
 
@@ -245,8 +237,6 @@ namespace cloud.charging.open.protocols.WWCP
 
     public interface IChargingSessions
     {
-
-        #region Charging Sessions
 
         /// <summary>
         /// An event fired whenever a new charging session was created.
@@ -272,29 +262,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingSession">The charging session.</param>
         Boolean TryGetChargingSessionById(ChargingSession_Id ChargingSessionId, out ChargingSession? ChargingSession);
 
-        #endregion
-
     }
 
     public interface IChargeDetailRecords
     {
-
-        #region Charge Detail Records
 
         /// <summary>
         /// An event fired whenever a new charge detail record was created.
         /// </summary>
         event OnNewChargeDetailRecordDelegate  OnNewChargeDetailRecord;
 
-        #endregion
-
     }
 
 
     public interface ILocalChargingReservations : IChargingReservations
     {
-
-        #region Reserve(StartTime, Duration, ReservationId = null, ProviderId = null, ...)
 
         /// <summary>
         /// Start a charging session.
@@ -311,9 +293,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         Task<ReservationResult>
 
             Reserve(DateTime?                          StartTime              = null,
@@ -328,11 +310,9 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,
-                    CancellationToken                  CancellationToken      = default,
                     EventTracking_Id?                  EventTrackingId        = null,
-                    TimeSpan?                          RequestTimeout         = null);
-
-        #endregion
+                    TimeSpan?                          RequestTimeout         = null,
+                    CancellationToken                  CancellationToken      = default);
 
     }
 
@@ -351,9 +331,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         Task<RemoteStartResult>
 
             RemoteStart(ChargingProduct?         ChargingProduct        = null,
@@ -363,11 +343,12 @@ namespace cloud.charging.open.protocols.WWCP
                         RemoteAuthentication?    RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
-                        CancellationToken        CancellationToken      = default,
                         EventTracking_Id?        EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null);
+                        TimeSpan?                RequestTimeout         = null,
+                        CancellationToken        CancellationToken      = default);
 
         #endregion
+
 
     }
 

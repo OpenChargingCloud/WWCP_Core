@@ -506,9 +506,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                           ChargingStationOperator_Id?  OperatorId            = null,
 
                                                           DateTime?                    Timestamp             = null,
-                                                          CancellationToken            CancellationToken     = default,
                                                           EventTracking_Id?            EventTrackingId       = null,
-                                                          TimeSpan?                    RequestTimeout        = null)
+                                                          TimeSpan?                    RequestTimeout        = null,
+                                                          CancellationToken            CancellationToken     = default)
         {
 
             if (LocalAuthentication.AuthToken.HasValue &&
@@ -540,9 +540,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                         ChargingStationOperator_Id?  OperatorId            = null,
 
                                                         DateTime?                    Timestamp             = null,
-                                                        CancellationToken            CancellationToken     = default,
                                                         EventTracking_Id?            EventTrackingId       = null,
-                                                        TimeSpan?                    RequestTimeout        = null)
+                                                        TimeSpan?                    RequestTimeout        = null,
+                                                        CancellationToken            CancellationToken     = default)
         {
 
             if (LocalAuthentication.AuthToken.HasValue &&
@@ -590,9 +590,9 @@ namespace cloud.charging.open.protocols.WWCP
         public async Task<SendCDRsResult> ReceiveChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
 
                                                                      DateTime?                        Timestamp           = null,
-                                                                     CancellationToken                CancellationToken   = default,
                                                                      EventTracking_Id?                EventTrackingId     = null,
-                                                                     TimeSpan?                        RequestTimeout      = null)
+                                                                     TimeSpan?                        RequestTimeout      = null,
+                                                                     CancellationToken                CancellationToken   = default)
         {
 
             foreach (var chargeDetailRecord in ChargeDetailRecords)
@@ -742,9 +742,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                           RemoteAuthentication,
 
                                                           timestamp,
-                                                          CancellationToken,
                                                           eventTrackingId,
-                                                          requestTimeout);
+                                                          requestTimeout,
+                                                          CancellationToken);
 
 
                 switch (result.Result)
@@ -880,9 +880,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                          RemoteAuthentication,
 
                                                          Timestamp,
-                                                         CancellationToken,
                                                          EventTrackingId,
-                                                         RequestTimeout);
+                                                         RequestTimeout,
+                                                         CancellationToken);
 
                 switch (result.Result)
                 {
