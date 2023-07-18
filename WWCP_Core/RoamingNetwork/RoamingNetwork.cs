@@ -194,6 +194,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32                                      MaxAuthStopResultCacheElements                { get; set; }  = 1000;
 
         public HashSet<AuthenticationToken>               InvalidAuthenticationTokens                   { get; }       = new HashSet<AuthenticationToken>();
+        public HashSet<AuthenticationToken>               DoNotCacheAuthenticationTokens                { get; }       = new HashSet<AuthenticationToken>();
 
         public TimeSpan                                   AuthenticationRateLimitTimeSpan               { get; set; }  = TimeSpan.FromMinutes(5);
         public UInt16                                     AuthenticationRateLimitPerChargingLocation    { get; set; }  = 10;
@@ -7878,7 +7879,7 @@ namespace cloud.charging.open.protocols.WWCP
                     cachedAuthStartResult is not null)
                 {
 
-                    if (cachedAuthStartResult.CachedResultEndOfLifeTime > org.GraphDefined.Vanaheimr.Illias.Timestamp.Now + AuthenticationCacheTimeout)
+                    if (cachedAuthStartResult.CachedResultEndOfLifeTime > org.GraphDefined.Vanaheimr.Illias.Timestamp.Now)
                     {
 
                         result = cachedAuthStartResult.Result == AuthStartResultTypes.Authorized
@@ -7946,7 +7947,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     else
                         authenticationChargingLocationCounter.TryAdd(ChargingLocation,
-                                                                          new List<DateTime>() { org.GraphDefined.Vanaheimr.Illias.Timestamp.Now });
+                                                                     new List<DateTime>() { org.GraphDefined.Vanaheimr.Illias.Timestamp.Now });
 
                 }
 
@@ -7994,9 +7995,9 @@ namespace cloud.charging.open.protocols.WWCP
                 #region Maybe store the result within the cache
 
                 if (LocalAuthentication.AuthToken.HasValue &&
-                    //result.Result != AuthStartResultTypes.Authorized       &&
                     result.Result != AuthStartResultTypes.RateLimitReached &&
-                   !authStartResultCache.ContainsKey(LocalAuthentication.AuthToken.Value))
+                   !DoNotCacheAuthenticationTokens.Contains   (LocalAuthentication.AuthToken.Value) &&
+                   !authStartResultCache.          ContainsKey(LocalAuthentication.AuthToken.Value))
                 {
 
                     authStartResultCache.TryAdd(LocalAuthentication.AuthToken.Value,
