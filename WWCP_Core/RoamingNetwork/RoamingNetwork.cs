@@ -160,32 +160,40 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        public ChargingReservationsStore  ReservationsStore           { get; }
-        public ChargingSessionsStore      SessionsStore               { get; }
+        public ChargingReservationsStore                  ReservationsStore                             { get; }
+        public ChargingSessionsStore                      SessionsStore                                 { get; }
 
         /// <summary>
         /// A delegate to sign a charging station.
         /// </summary>
-        public ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator            { get; }
+        public ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator             { get; }
 
         /// <summary>
         /// A delegate to sign a charging pool.
         /// </summary>
-        public ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator               { get; }
+        public ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator                { get; }
 
         /// <summary>
         /// A delegate to sign a charging station operator.
         /// </summary>
-        public ChargingStationOperatorSignatureDelegate?  ChargingStationOperatorSignatureGenerator    { get; }
+        public ChargingStationOperatorSignatureDelegate?  ChargingStationOperatorSignatureGenerator     { get; }
 
 
         /// <summary>
         /// A delegate for filtering charge detail records.
         /// </summary>
-        public ChargeDetailRecordFilterDelegate?          ChargeDetailRecordFilter                     { get; }
+        public ChargeDetailRecordFilterDelegate?          ChargeDetailRecordFilter                      { get; }
 
 
-        public String                                     LoggingPath                                  { get; }
+        public String                                     LoggingPath                                   { get; }
+
+
+        public TimeSpan                                   AuthenticationCacheTimeout                    { get; set; }  = TimeSpan.FromMinutes(15);
+
+        public HashSet<AuthenticationToken>               InvalidAuthenticationTokens                   { get; }       = new HashSet<AuthenticationToken>();
+
+        public TimeSpan                                   AuthenticationRateLimitTimeSpan               { get; set; }  = TimeSpan.FromMinutes(5);
+        public UInt16                                     AuthenticationRateLimitPerChargingLocation    { get; set; }  = 10;
 
         #endregion
 
@@ -277,6 +285,9 @@ namespace cloud.charging.open.protocols.WWCP
             this.ChargingStationSignatureGenerator                  = ChargingStationSignatureGenerator;
             this.ChargingPoolSignatureGenerator                     = ChargingPoolSignatureGenerator;
             this.ChargingStationOperatorSignatureGenerator          = ChargingStationOperatorSignatureGenerator;
+
+            this.InvalidAuthenticationTokens.Add(AuthenticationToken.Parse("00000000"));
+            this.InvalidAuthenticationTokens.Add(AuthenticationToken.Parse("00000000000000"));
 
             #endregion
 
@@ -7710,6 +7721,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region AuthorizeStart/-Stop
 
+        #region Data
+
+        private readonly ConcurrentDictionary<AuthenticationToken, Tuple<AuthStartResult, DateTime>> localAuthenticationCache                    = new();
+        private readonly ConcurrentDictionary<ChargingLocation,    List<DateTime>>                   localAuthenticationChargingLocationCounter  = new();
+
+        #endregion
+
+
         #region OnAuthorizeStartRequest/-Response
 
         /// <summary>
@@ -7737,6 +7756,7 @@ namespace cloud.charging.open.protocols.WWCP
         public event OnAuthorizeStopResponseDelegate?  OnAuthorizeStopResponse;
 
         #endregion
+
 
         #region AuthorizeStart           (LocalAuthentication, ChargingLocation = null, ChargingProduct = null, SessionId = null, OperatorId = null, ...)
 
@@ -7776,6 +7796,8 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
             RequestTimeout  ??= TimeSpan.FromSeconds(10);
 
+            AuthStartResult? result = null;
+
             #endregion
 
             #region Send OnAuthorizeStartRequest event
@@ -7811,8 +7833,6 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            //ToDo: Fail when RFID UID == "00000000000000"
-
             //DebugX.LogT(String.Concat(
             //    "RoamingNetwork '",
             //    this.Id,
@@ -7823,39 +7843,185 @@ namespace cloud.charging.open.protocols.WWCP
             //    " -> ",
             //    _ISend2RemoteAuthorizeStartStop.Select(_ => _.AuthId).AggregateWith(", ")));
 
-            var result  = await _ISend2RemoteAuthorizeStartStop.
-                                    WhenFirst(Work:       async   sendAuthorizeStartStop => {
 
-                                                                      var authStartResult = await sendAuthorizeStartStop.AuthorizeStart(
-                                                                                                      LocalAuthentication,
-                                                                                                      ChargingLocation,
-                                                                                                      ChargingProduct,
-                                                                                                      SessionId,
-                                                                                                      CPOPartnerSessionId,
-                                                                                                      OperatorId,
+            try
+            {
 
-                                                                                                      Timestamp,
-                                                                                                      EventTrackingId,
-                                                                                                      RequestTimeout,
-                                                                                                      CancellationToken
-                                                                                                  );
+                #region Fail when AuthToken is invalid (e.g. "00000000", "00000000000000", ...)
 
-                                                                      return authStartResult;
+                if (LocalAuthentication.AuthToken.HasValue &&
+                    InvalidAuthenticationTokens.Contains(LocalAuthentication.AuthToken.Value))
+                {
 
-                                                                  },
+                    result = AuthStartResult.InvalidToken(
+                                 Id,
+                                 this,
+                                 SessionId,
+                                 I18NString.Create(Languages.en, $"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
+                                 TimeSpan.Zero
+                             );
 
-                                              VerifyResult:  result2                   => result2.Result == AuthStartResultTypes.Authorized ||
-                                                                                          result2.Result == AuthStartResultTypes.Blocked,
+                }
 
-                                              Timeout:       RequestTimeout.Value,
+                #endregion
 
-                                              OnException:   null,
+                #region Check whether there is a cached result from the last 15 minutes!
 
-                                              DefaultResult: runtime                   => AuthStartResult.NotAuthorized(Id,
-                                                                                                                        this,
-                                                                                                                        SessionId,
-                                                                                                                        Description:  I18NString.Create(Languages.en, "No authorization service returned a positiv result!"),
-                                                                                                                        Runtime:      runtime));
+                if (result is null &&
+                    LocalAuthentication.AuthToken.HasValue &&
+                    localAuthenticationCache.TryGetValue(LocalAuthentication.AuthToken.Value, out var timestampResult) &&
+                    timestampResult is not null)
+                {
+
+                    if (timestampResult.Item2 > org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationCacheTimeout)
+                    {
+                        if (timestampResult.Item1.Result != AuthStartResultTypes.Authorized)
+                            result = timestampResult.Item1;
+                    }
+                    else
+                        localAuthenticationCache.Remove(LocalAuthentication.AuthToken.Value, out _);
+
+                }
+
+                #endregion
+
+                #region Check rate limit per charging location
+
+                if (ChargingLocation is not null &&
+                    ChargingLocation.IsDefined())
+                {
+
+                    if (localAuthenticationChargingLocationCounter.TryGetValue(ChargingLocation, out var locationInfo))
+                    {
+
+                        if (locationInfo.First() > org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan)
+                            locationInfo.Add(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now);
+
+                        if (locationInfo.Count > AuthenticationRateLimitPerChargingLocation)
+                        {
+
+                            result = AuthStartResult.RateLimitReached(
+                                         Id,
+                                         this,
+                                         SessionId,
+                                         I18NString.Create(Languages.en, $"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
+                                         TimeSpan.Zero
+                                     );
+
+                        }
+
+                        do
+                        {
+
+                            var copy = locationInfo.ToArray();
+
+                            if (copy.First() < org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan)
+                                locationInfo.Remove(copy.First());
+
+                        } while (locationInfo.First() < org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan);
+
+                    }
+
+                    else
+                        localAuthenticationChargingLocationCounter.TryAdd(ChargingLocation,
+                                                                          new List<DateTime>() { org.GraphDefined.Vanaheimr.Illias.Timestamp.Now });
+
+                }
+
+                #endregion
+
+
+                #region Send the request to all authorization services
+
+                result  ??= await _ISend2RemoteAuthorizeStartStop.WhenFirst(
+                                      Work:       async    sendAuthorizeStartStop => {
+
+                                                               var authStartResult = await sendAuthorizeStartStop.AuthorizeStart(
+                                                                                               LocalAuthentication,
+                                                                                               ChargingLocation,
+                                                                                               ChargingProduct,
+                                                                                               SessionId,
+                                                                                               CPOPartnerSessionId,
+                                                                                               OperatorId,
+
+                                                                                               Timestamp,
+                                                                                               EventTrackingId,
+                                                                                               RequestTimeout,
+                                                                                               CancellationToken
+                                                                                           );
+
+                                                               return authStartResult;
+
+                                                           },
+
+                                      VerifyResult:   result2  => result2.Result == AuthStartResultTypes.Authorized ||
+                                                                  result2.Result == AuthStartResultTypes.Blocked,
+
+                                      Timeout:        RequestTimeout.Value,
+
+                                      OnException:    null,
+
+                                      DefaultResult:  runtime  => AuthStartResult.NotAuthorized(
+                                                                      Id,
+                                                                      this,
+                                                                      SessionId,
+                                                                      Description:  I18NString.Create(Languages.en, "No authorization service returned a positiv result!"),
+                                                                      Runtime:      runtime
+                                                                  )
+
+                                  ).
+                                  ConfigureAwait(false);
+
+                #endregion
+
+
+                #region Store a Non-Authorized result within the cache
+
+                if (LocalAuthentication.AuthToken.HasValue &&
+                    result.Result != AuthStartResultTypes.Authorized       &&
+                    result.Result != AuthStartResultTypes.RateLimitReached &&
+                   !localAuthenticationCache.ContainsKey(LocalAuthentication.AuthToken.Value))
+                {
+
+                    localAuthenticationCache.TryAdd(LocalAuthentication.AuthToken.Value,
+                                                    new Tuple<AuthStartResult, DateTime>(new AuthStartResult(
+                                                                                             result.AuthorizatorId,
+                                                                                             result.ISendAuthorizeStartStop,
+                                                                                             result.Result,
+                                                                                             ProviderId:  result.ProviderId,
+                                                                                             Runtime:     TimeSpan.Zero
+                                                                                         ),
+                                                                                         org.GraphDefined.Vanaheimr.Illias.Timestamp.Now));
+
+                }
+
+                #endregion
+
+                #region Purge the cache to avoid denial-of-service attacks!
+
+                if (localAuthenticationCache.Count > 2000)
+                {
+                    foreach (var oldEntries in localAuthenticationCache.OrderBy(kvp => kvp.Value.Item2).Take(1000).ToArray())
+                    {
+                        localAuthenticationCache.Remove(oldEntries.Key, out _);
+                    }
+                }
+
+                #endregion
+
+            }
+            catch (Exception e)
+            {
+
+                result = AuthStartResult.Error(
+                             Id,
+                             this,
+                             SessionId,
+                             I18NString.Create(Languages.en, e.Message),
+                             org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime
+                         );
+
+            }
 
 
             //DebugX.LogT(String.Concat(
@@ -7868,30 +8034,33 @@ namespace cloud.charging.open.protocols.WWCP
             //    ChargingLocation?.ToString() ?? "-",
             //    " => ", result));
 
+
             #region If Authorized...
 
             if (result.Result == AuthStartResultTypes.Authorized)
             {
 
                 if (!result.SessionId.HasValue)
-                    result  = AuthStartResult.Authorized(result.AuthorizatorId,
-                                                         result.ISendAuthorizeStartStop,
-                                                         ChargingSession_Id.NewRandom,
-                                                         result.EMPPartnerSessionId,
-                                                         result.ContractId,
-                                                         result.PrintedNumber,
-                                                         result.ExpiryDate,
-                                                         result.MaxkW,
-                                                         result.MaxkWh,
-                                                         result.MaxDuration,
-                                                         result.ChargingTariffs,
-                                                         result.ListOfAuthStopTokens,
-                                                         result.ListOfAuthStopPINs,
-                                                         result.ProviderId,
-                                                         result.Description,
-                                                         result.AdditionalInfo,
-                                                         result.NumberOfRetries,
-                                                         result.Runtime);
+                    result  = AuthStartResult.Authorized(
+                                  result.AuthorizatorId,
+                                  result.ISendAuthorizeStartStop,
+                                  ChargingSession_Id.NewRandom,
+                                  result.EMPPartnerSessionId,
+                                  result.ContractId,
+                                  result.PrintedNumber,
+                                  result.ExpiryDate,
+                                  result.MaxkW,
+                                  result.MaxkWh,
+                                  result.MaxDuration,
+                                  result.ChargingTariffs,
+                                  result.ListOfAuthStopTokens,
+                                  result.ListOfAuthStopPINs,
+                                  result.ProviderId,
+                                  result.Description,
+                                  result.AdditionalInfo,
+                                  result.NumberOfRetries,
+                                  result.Runtime
+                              );
 
 
                 // Store the upstream session id in order to contact the right authenticator at later requests!
@@ -8001,6 +8170,8 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
             RequestTimeout  ??= TimeSpan.FromSeconds(10);
 
+            AuthStopResult? result = null;
+
             #endregion
 
             #region Send OnAuthorizeStopRequest event
@@ -8034,14 +8205,79 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            AuthStopResult? result = null;
-
             try
             {
 
+                //ToDo: Add a cache here too?
+
+                #region Fail when AuthToken is invalid (e.g. "00000000", "00000000000000", ...)
+
+                if (LocalAuthentication.AuthToken.HasValue &&
+                    InvalidAuthenticationTokens.Contains(LocalAuthentication.AuthToken.Value))
+                {
+
+                    result = AuthStopResult.InvalidToken(
+                                 Id,
+                                 this,
+                                 SessionId,
+                                 I18NString.Create(Languages.en, $"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
+                                 TimeSpan.Zero
+                             );
+
+                }
+
+                #endregion
+
+                #region Check rate limit per charging location
+
+                if (ChargingLocation is not null &&
+                    ChargingLocation.IsDefined())
+                {
+
+                    if (localAuthenticationChargingLocationCounter.TryGetValue(ChargingLocation, out var locationInfo))
+                    {
+
+                        if (locationInfo.First() > org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan)
+                            locationInfo.Add(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now);
+
+                        if (locationInfo.Count > AuthenticationRateLimitPerChargingLocation)
+                        {
+
+                            result = AuthStopResult.RateLimitReached(
+                                         Id,
+                                         this,
+                                         SessionId,
+                                         I18NString.Create(Languages.en, $"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
+                                         TimeSpan.Zero
+                                     );
+
+                        }
+
+                        do
+                        {
+
+                            var copy = locationInfo.ToArray();
+
+                            if (copy.First() < org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan)
+                                locationInfo.Remove(copy.First());
+
+                        } while (locationInfo.First() < org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan);
+
+                    }
+
+                    else
+                        localAuthenticationChargingLocationCounter.TryAdd(ChargingLocation,
+                                                                          new List<DateTime>() { org.GraphDefined.Vanaheimr.Illias.Timestamp.Now });
+
+                }
+
+                #endregion
+
+
                 #region A matching charging session was found...
 
-                if (SessionsStore.TryGet(SessionId, out var chargingSession))
+                if (result is null &&
+                    SessionsStore.TryGet(SessionId, out var chargingSession))
                 {
 
                     //ToDo: Add a --useForce Option to overwrite!
@@ -8124,33 +8360,36 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Send the request to all authorization services
 
-                result ??= await _ISend2RemoteAuthorizeStartStop.
-                                     WhenFirst(Work:           iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
-                                                                                                AuthorizeStop(SessionId,
-                                                                                                              LocalAuthentication,
-                                                                                                              ChargingLocation,
-                                                                                                              CPOPartnerSessionId,
-                                                                                                              OperatorId,
+                result ??= await _ISend2RemoteAuthorizeStartStop.WhenFirst(
+                                     Work:           iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
+                                                                                      AuthorizeStop(SessionId,
+                                                                                                    LocalAuthentication,
+                                                                                                    ChargingLocation,
+                                                                                                    CPOPartnerSessionId,
+                                                                                                    OperatorId,
 
-                                                                                                              Timestamp,
-                                                                                                              EventTrackingId,
-                                                                                                              RequestTimeout,
-                                                                                                              CancellationToken),
+                                                                                                    Timestamp,
+                                                                                                    EventTrackingId,
+                                                                                                    RequestTimeout,
+                                                                                                    CancellationToken),
 
-                                               VerifyResult:   result2 => result2.Result == AuthStopResultTypes.Authorized ||
-                                                                          result2.Result == AuthStopResultTypes.Blocked,
+                                     VerifyResult:   result2 => result2.Result == AuthStopResultTypes.Authorized ||
+                                                                result2.Result == AuthStopResultTypes.Blocked,
 
-                                               Timeout:        RequestTimeout.Value,
+                                     Timeout:        RequestTimeout.Value,
 
-                                               OnException:    null,
+                                     OnException:    null,
 
-                                               DefaultResult:  runtime => AuthStopResult.NotAuthorized(Id,
-                                                                                                       this,
-                                                                                                       SessionId,
-                                                                                                       Description: I18NString.Create(Languages.en, "No authorization service returned a positiv result!"),
-                                                                                                       Runtime:     runtime)).
+                                     DefaultResult:  runtime => AuthStopResult.NotAuthorized(
+                                                                    Id,
+                                                                    this,
+                                                                    SessionId,
+                                                                    Description: I18NString.Create(Languages.en, "No authorization service returned a positiv result!"),
+                                                                    Runtime:     runtime
+                                                                )
 
-                                     ConfigureAwait(false);
+                                 ).
+                                 ConfigureAwait(false);
 
                 #endregion
 
@@ -8158,11 +8397,13 @@ namespace cloud.charging.open.protocols.WWCP
             catch (Exception e)
             {
 
-                result = AuthStopResult.Error(SessionId,
-                                              this,
-                                              SessionId,
-                                              I18NString.Create(Languages.en, e.Message),
-                                              org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime);
+                result = AuthStopResult.Error(
+                             SessionId,
+                             this,
+                             SessionId,
+                             I18NString.Create(Languages.en, e.Message),
+                             org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime
+                         );
 
             }
 
@@ -9140,11 +9381,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat("'",
-                             Name.FirstText(),
-                             "' (",
-                             Id.ToString(),
-                             ")");
+            => $"'{Name.FirstText()}' ({Id})";
 
         #endregion
 

@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (private) AuthStopResult(AuthorizatorId, ISendAuthorizeStartStop,    Result, ...)
+        #region (public)  AuthStopResult(AuthorizatorId, ISendAuthorizeStartStop,    Result, ...)
 
         /// <summary>
         /// Create a new abstract authorize stop result.
@@ -147,15 +147,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        protected AuthStopResult(IId                      AuthorizatorId,
-                                 ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                                 AuthStopResultTypes      Result,
-                                 ChargingSession_Id?      SessionId         = null,
-                                 EMobilityProvider_Id?    ProviderId        = null,
-                                 I18NString?              Description       = null,
-                                 I18NString?              AdditionalInfo    = null,
-                                 Byte                     NumberOfRetries   = 0,
-                                 TimeSpan?                Runtime           = null)
+        public AuthStopResult(IId                      AuthorizatorId,
+                              ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                              AuthStopResultTypes      Result,
+                              ChargingSession_Id?      SessionId         = null,
+                              EMobilityProvider_Id?    ProviderId        = null,
+                              I18NString?              Description       = null,
+                              I18NString?              AdditionalInfo    = null,
+                              Byte                     NumberOfRetries   = 0,
+                              TimeSpan?                Runtime           = null)
 
             : this(AuthorizatorId,
                    Result,
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (private) AuthStopResult(AuthorizatorId, IReceiveAuthorizeStartStop, Result, ...)
+        #region (public)  AuthStopResult(AuthorizatorId, IReceiveAuthorizeStartStop, Result, ...)
 
         /// <summary>
         /// Create a new abstract authorize stop result.
@@ -187,15 +187,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        protected AuthStopResult(IId                         AuthorizatorId,
-                                 IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                                 AuthStopResultTypes         Result,
-                                 ChargingSession_Id?         SessionId         = null,
-                                 EMobilityProvider_Id?       ProviderId        = null,
-                                 I18NString?                 Description       = null,
-                                 I18NString?                 AdditionalInfo    = null,
-                                 Byte                        NumberOfRetries   = 0,
-                                 TimeSpan?                   Runtime           = null)
+        public AuthStopResult(IId                         AuthorizatorId,
+                              IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                              AuthStopResultTypes         Result,
+                              ChargingSession_Id?         SessionId         = null,
+                              EMobilityProvider_Id?       ProviderId        = null,
+                              I18NString?                 Description       = null,
+                              I18NString?                 AdditionalInfo    = null,
+                              Byte                        NumberOfRetries   = 0,
+                              TimeSpan?                   Runtime           = null)
 
             : this(AuthorizatorId,
                    Result,
@@ -911,6 +911,60 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region (static) RateLimitReached    (AuthorizatorId, SessionId = null, Description = null, Runtime = null)
+
+        /// <summary>
+        /// The authorize stop operation reached a rate limit.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopResult
+
+            RateLimitReached(IId                      AuthorizatorId,
+                             ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                             ChargingSession_Id?      SessionId     = null,
+                             I18NString?              Description   = null,
+                             TimeSpan?                Runtime       = null)
+
+
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStopResultTypes.RateLimitReached,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Rate limit reached!"),
+                        Runtime:      Runtime);
+
+
+
+        /// <summary>
+        /// The authorize start operation reached a rate limit.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopResult
+
+            RateLimitReached(IId                         AuthorizatorId,
+                             IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                             ChargingSession_Id?         SessionId     = null,
+                             I18NString?                 Description   = null,
+                             TimeSpan?                   Runtime       = null)
+
+
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStopResultTypes.RateLimitReached,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "RateLimitReached!"),
+                        Runtime:      Runtime);
+
+        #endregion
+
         #region (static) Error               (AuthorizatorId, SessionId = null, Description = null, Runtime = null)
 
         /// <summary>
@@ -966,46 +1020,46 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region ToJSON(ResponseMapper = null)
+        #region ToJSON(CustomAuthStartResultSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="ResponseMapper">An optional response mapper delegate.</param>
-        public JObject ToJSON(Func<JObject, JObject> ResponseMapper = null)
+        /// <param name="CustomAuthStartResultSerializer">A delegate to serialize custom AuthStartResult JSON objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthStopResult>? CustomAuthStopResultSerializer = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                           new JProperty("result",                Result.        ToString()),
+                                 new JProperty("result",           Result.        ToString()),
 
                            SessionId.HasValue
-                               ? new JProperty("sessionId",       SessionId.     ToString())
+                               ? new JProperty("sessionId",        SessionId.     ToString())
                                : null,
 
                            ProviderId.HasValue
-                               ? new JProperty("providerId",      ProviderId.    ToString())
+                               ? new JProperty("providerId",       ProviderId.    ToString())
                                : null,
 
-                                 new JProperty("authorizatorId",  AuthorizatorId.ToString()),
+                                 new JProperty("authorizatorId",   AuthorizatorId.ToString()),
 
                            Description.IsNeitherNullNorEmpty()
-                               ? new JProperty("description",     Description.   ToJSON())
+                               ? new JProperty("description",      Description.   ToJSON())
                                : null,
 
-                           AdditionalInfo.IsNeitherNullNorEmpty()
-                               ? new JProperty("additionalInfo",  AdditionalInfo.ToJSON())
+                           AdditionalInfo is not null && AdditionalInfo.IsNeitherNullNorEmpty()
+                               ? new JProperty("additionalInfo",   AdditionalInfo.ToJSON())
                                : null,
 
                            Runtime.HasValue
-                               ? new JProperty("runtime",         Runtime.Value.TotalMilliseconds)
+                               ? new JProperty("runtime",          Runtime.Value.TotalMilliseconds)
                                : null
 
                        );
 
-            return ResponseMapper != null
-                       ? ResponseMapper(JSON)
-                       : JSON;
+            return CustomAuthStopResultSerializer is not null
+                       ? CustomAuthStopResultSerializer(this, json)
+                       : json;
 
         }
 
@@ -1017,14 +1071,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
 
-            if (ProviderId != null)
-                return String.Concat(Result.ToString(), ", ", ProviderId);
-
-            return String.Concat(Result.ToString());
-
-        }
+            => $"{Result}{(ProviderId is not null ? ", " + ProviderId : "")}";
 
         #endregion
 
@@ -1095,6 +1143,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// The authorize stop ran into a timeout between charging location and ev.
         /// </summary>
         StopChargingTimeout,
+
+        /// <summary>
+        /// Rate Limit Reached
+        /// </summary>
+        RateLimitReached,
 
         /// <summary>
         /// The remote stop operation led to an error.
