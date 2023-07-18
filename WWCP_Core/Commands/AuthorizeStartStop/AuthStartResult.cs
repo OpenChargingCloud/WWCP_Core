@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP
         public TimeSpan?                         CachedResultRemainingLifeTime
 
             => CachedResultEndOfLifeTime.HasValue
-                   ? Timestamp.Now - CachedResultEndOfLifeTime.Value
+                   ? CachedResultEndOfLifeTime.Value - Timestamp.Now
                    : null;
 
         /// <summary>
