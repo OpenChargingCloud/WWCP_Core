@@ -517,7 +517,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return authStartResult;
             }
 
-            return AuthStartResult.NotAuthorized(AuthorizatorId:            this.AuthId,
+            return AuthStartResult.NotAuthorized(AuthorizatorId:            AuthId,
                                                  ISendAuthorizeStartStop:   null,
                                                  SessionId:                 null,
 
@@ -552,6 +552,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (authStartResult.Result == AuthStartResultTypes.Authorized)
                     return AuthStopResult.Authorized(authStartResult.AuthorizatorId,
                                                      authStartResult.ISendAuthorizeStartStop,
+                                                     authStartResult.CachedResultEndOfLifeTime,
                                                      authStartResult.SessionId,
                                                      authStartResult.ProviderId,
                                                      authStartResult.Description,
@@ -562,6 +563,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (authStartResult.Result == AuthStartResultTypes.NotAuthorized)
                     return AuthStopResult.NotAuthorized(authStartResult.AuthorizatorId,
                                                         authStartResult.ISendAuthorizeStartStop,
+                                                        authStartResult.CachedResultEndOfLifeTime,
                                                         authStartResult.SessionId,
                                                         authStartResult.ProviderId,
                                                         authStartResult.Description,
@@ -571,7 +573,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            return AuthStopResult.NotAuthorized(AuthorizatorId:            this.AuthId,
+            return AuthStopResult.NotAuthorized(AuthorizatorId:            AuthId,
                                                 ISendAuthorizeStartStop:   null,
                                                 SessionId:                 null,
 

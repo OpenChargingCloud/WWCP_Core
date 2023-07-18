@@ -7856,6 +7856,7 @@ namespace cloud.charging.open.protocols.WWCP
                     result = AuthStartResult.InvalidToken(
                                  Id,
                                  this,
+                                 org.GraphDefined.Vanaheimr.Illias.Timestamp.Now + AuthenticationCacheTimeout,
                                  SessionId,
                                  I18NString.Create(Languages.en, $"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
                                  TimeSpan.Zero
@@ -7968,7 +7969,7 @@ namespace cloud.charging.open.protocols.WWCP
                                       DefaultResult:  runtime  => AuthStartResult.NotAuthorized(
                                                                       Id,
                                                                       this,
-                                                                      SessionId,
+                                                                      SessionId:    SessionId,
                                                                       Description:  I18NString.Create(Languages.en, "No authorization service returned a positiv result!"),
                                                                       Runtime:      runtime
                                                                   )
@@ -7992,8 +7993,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                              result.AuthorizatorId,
                                                                                              result.ISendAuthorizeStartStop,
                                                                                              result.Result,
-                                                                                             ProviderId:  result.ProviderId,
-                                                                                             Runtime:     TimeSpan.Zero
+                                                                                             CachedResultEndOfLifeTime:  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now + AuthenticationCacheTimeout,
+                                                                                             ProviderId:                 result.ProviderId,
+                                                                                             Runtime:                    TimeSpan.Zero
                                                                                          ),
                                                                                          org.GraphDefined.Vanaheimr.Illias.Timestamp.Now));
 
@@ -8020,9 +8022,9 @@ namespace cloud.charging.open.protocols.WWCP
                 result = AuthStartResult.Error(
                              Id,
                              this,
-                             SessionId,
-                             I18NString.Create(Languages.en, e.Message),
-                             org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime
+                             SessionId:    SessionId,
+                             Description:  I18NString.Create(Languages.en, e.Message),
+                             Runtime:      org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime
                          );
 
             }
@@ -8048,6 +8050,7 @@ namespace cloud.charging.open.protocols.WWCP
                     result  = AuthStartResult.Authorized(
                                   result.AuthorizatorId,
                                   result.ISendAuthorizeStartStop,
+                                  null,
                                   ChargingSession_Id.NewRandom,
                                   result.EMPPartnerSessionId,
                                   result.ContractId,
@@ -8223,9 +8226,9 @@ namespace cloud.charging.open.protocols.WWCP
                     result = AuthStopResult.InvalidToken(
                                  Id,
                                  this,
-                                 SessionId,
-                                 I18NString.Create(Languages.en, $"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
-                                 TimeSpan.Zero
+                                 SessionId:    SessionId,
+                                 Description:  I18NString.Create(Languages.en, $"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
+                                 Runtime:      TimeSpan.Zero
                              );
 
                 }
@@ -8292,8 +8295,8 @@ namespace cloud.charging.open.protocols.WWCP
                     if (chargingSession.SessionTime.EndTime.HasValue)
                         result = AuthStopResult.AlreadyStopped(SessionId,
                                                                this,
-                                                               SessionId,
-                                                               Runtime: org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime);
+                                                               SessionId:  SessionId,
+                                                               Runtime:    org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime);
 
                     else
                     {
@@ -8391,9 +8394,9 @@ namespace cloud.charging.open.protocols.WWCP
                                      DefaultResult:  runtime => AuthStopResult.NotAuthorized(
                                                                     Id,
                                                                     this,
-                                                                    SessionId,
-                                                                    Description: I18NString.Create(Languages.en, "No authorization service returned a positiv result!"),
-                                                                    Runtime:     runtime
+                                                                    SessionId:    SessionId,
+                                                                    Description:  I18NString.Create(Languages.en, "No authorization service returned a positiv result!"),
+                                                                    Runtime:      runtime
                                                                 )
 
                                  ).

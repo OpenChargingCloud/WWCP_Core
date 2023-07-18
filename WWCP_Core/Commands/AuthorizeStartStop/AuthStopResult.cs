@@ -37,52 +37,66 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The identification of the authorizing entity.
         /// </summary>
-        public IId                          AuthorizatorId                { get; }
+        public IId                          AuthorizatorId                   { get; }
 
         /// <summary>
         /// The entity asking for an authorization.
         /// </summary>
-        public ISendAuthorizeStartStop?     ISendAuthorizeStartStop       { get; }
+        public ISendAuthorizeStartStop?     ISendAuthorizeStartStop          { get; }
 
         /// <summary>
         /// The entity giving an authorization.
         /// </summary>
-        public IReceiveAuthorizeStartStop?  IReceiveAuthorizeStartStop    { get; }
+        public IReceiveAuthorizeStartStop?  IReceiveAuthorizeStartStop       { get; }
 
         /// <summary>
         /// The result of the authorize stop request.
         /// </summary>
-        public AuthStopResultTypes          Result                        { get; }
+        public AuthStopResultTypes          Result                           { get; }
+
+        /// <summary>
+        /// An optional timestamp until the result may be cached.
+        /// </summary>
+        public DateTime?                    CachedResultEndOfLifeTime        { get; set; }
+
+        /// <summary>
+        /// The optional remaining life time of a cached result.
+        /// </summary>
+        public TimeSpan?                    CachedResultRemainingLifeTime
+
+            => CachedResultEndOfLifeTime.HasValue
+                   ? Timestamp.Now - CachedResultEndOfLifeTime.Value
+                   : null;
 
         /// <summary>
         /// The optional charging session identification.
         /// </summary>
-        public ChargingSession_Id?          SessionId                     { get; }
+        public ChargingSession_Id?          SessionId                        { get; }
 
         /// <summary>
         /// The unique identification of the e-mobility provider.
         /// </summary>
-        public EMobilityProvider_Id?        ProviderId                    { get; }
+        public EMobilityProvider_Id?        ProviderId                       { get; }
 
         /// <summary>
         /// A optional description of the authorize stop result.
         /// </summary>
-        public I18NString                   Description                   { get; }
+        public I18NString                   Description                      { get; }
 
         /// <summary>
         /// An optional additional message.
         /// </summary>
-        public I18NString?                  AdditionalInfo                { get; }
+        public I18NString?                  AdditionalInfo                   { get; }
 
         /// <summary>
         /// Number of transmission retries.
         /// </summary>
-        public Byte                         NumberOfRetries               { get; }
+        public Byte                         NumberOfRetries                  { get; }
 
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?                    Runtime                       { get; }
+        public TimeSpan?                    Runtime                          { get; }
 
         #endregion
 
@@ -95,10 +109,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
         /// <param name="Result">The authorize start result type.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity asking for an authorization.</param>
         /// 
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// 
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
@@ -106,10 +122,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         private AuthStopResult(IId                          AuthorizatorId,
                                AuthStopResultTypes          Result,
+                               DateTime?                    CachedResultEndOfLifeTime    = null,
                                ISendAuthorizeStartStop?     ISendAuthorizeStartStop      = null,
                                IReceiveAuthorizeStartStop?  IReceiveAuthorizeStartStop   = null,
 
                                ChargingSession_Id?          SessionId                    = null,
+
                                EMobilityProvider_Id?        ProviderId                   = null,
                                I18NString?                  Description                  = null,
                                I18NString?                  AdditionalInfo               = null,
@@ -117,16 +135,19 @@ namespace cloud.charging.open.protocols.WWCP
                                TimeSpan?                    Runtime                      = null)
         {
 
-            this.AuthorizatorId              = AuthorizatorId ?? throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
-            this.ISendAuthorizeStartStop     = ISendAuthorizeStartStop;
-            this.IReceiveAuthorizeStartStop  = IReceiveAuthorizeStartStop;
-            this.Result                      = Result;
-            this.SessionId                   = SessionId;
-            this.ProviderId                  = ProviderId     ?? new EMobilityProvider_Id?();
-            this.Description                 = Description    ?? I18NString.Empty;
-            this.AdditionalInfo              = AdditionalInfo;
-            this.NumberOfRetries             = NumberOfRetries;
-            this.Runtime                     = Runtime;
+            this.AuthorizatorId                 = AuthorizatorId ?? throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
+            this.ISendAuthorizeStartStop        = ISendAuthorizeStartStop;
+            this.IReceiveAuthorizeStartStop     = IReceiveAuthorizeStartStop;
+            this.Result                         = Result;
+            this.CachedResultEndOfLifeTime  = CachedResultEndOfLifeTime;
+
+            this.SessionId                      = SessionId;
+
+            this.ProviderId                     = ProviderId     ?? new EMobilityProvider_Id?();
+            this.Description                    = Description    ?? I18NString.Empty;
+            this.AdditionalInfo                 = AdditionalInfo;
+            this.NumberOfRetries                = NumberOfRetries;
+            this.Runtime                        = Runtime;
 
         }
 
@@ -140,6 +161,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="Result">The authorize start result type.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
         /// 
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
@@ -150,18 +173,24 @@ namespace cloud.charging.open.protocols.WWCP
         public AuthStopResult(IId                      AuthorizatorId,
                               ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                               AuthStopResultTypes      Result,
-                              ChargingSession_Id?      SessionId         = null,
-                              EMobilityProvider_Id?    ProviderId        = null,
-                              I18NString?              Description       = null,
-                              I18NString?              AdditionalInfo    = null,
-                              Byte                     NumberOfRetries   = 0,
-                              TimeSpan?                Runtime           = null)
+                              DateTime?                CachedResultEndOfLifeTime   = null,
+
+                              ChargingSession_Id?      SessionId                   = null,
+
+                              EMobilityProvider_Id?    ProviderId                  = null,
+                              I18NString?              Description                 = null,
+                              I18NString?              AdditionalInfo              = null,
+                              Byte                     NumberOfRetries             = 0,
+                              TimeSpan?                Runtime                     = null)
 
             : this(AuthorizatorId,
                    Result,
+                   CachedResultEndOfLifeTime,
                    ISendAuthorizeStartStop,
                    null,
+
                    SessionId,
+
                    ProviderId,
                    Description,
                    AdditionalInfo,
@@ -180,6 +209,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
         /// <param name="Result">The authorize start result type.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
         /// 
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
@@ -190,18 +221,24 @@ namespace cloud.charging.open.protocols.WWCP
         public AuthStopResult(IId                         AuthorizatorId,
                               IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                               AuthStopResultTypes         Result,
-                              ChargingSession_Id?         SessionId         = null,
-                              EMobilityProvider_Id?       ProviderId        = null,
-                              I18NString?                 Description       = null,
-                              I18NString?                 AdditionalInfo    = null,
-                              Byte                        NumberOfRetries   = 0,
-                              TimeSpan?                   Runtime           = null)
+                              DateTime?                   CachedResultEndOfLifeTime   = null,
+
+                              ChargingSession_Id?         SessionId                   = null,
+
+                              EMobilityProvider_Id?       ProviderId                  = null,
+                              I18NString?                 Description                 = null,
+                              I18NString?                 AdditionalInfo              = null,
+                              Byte                        NumberOfRetries             = 0,
+                              TimeSpan?                   Runtime                     = null)
 
             : this(AuthorizatorId,
                    Result,
+                   CachedResultEndOfLifeTime,
                    null,
                    IReceiveAuthorizeStartStop,
+
                    SessionId,
+
                    ProviderId,
                    Description,
                    AdditionalInfo,
@@ -222,6 +259,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -229,14 +268,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             Unspecified(IId                      AuthorizatorId,
                         ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                        ChargingSession_Id?      SessionId     = null,
-                        I18NString?              Description   = null,
-                        TimeSpan?                Runtime       = null)
+                        DateTime?                CachedResultEndOfLifeTime   = null,
+
+                        ChargingSession_Id?      SessionId                   = null,
+                        I18NString?              Description                 = null,
+                        TimeSpan?                Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         ISendAuthorizeStartStop,
                         AuthStopResultTypes.Unspecified,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         Description:  Description,
                         Runtime:      Runtime);
@@ -248,6 +291,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -255,14 +300,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             Unspecified(IId                         AuthorizatorId,
                         IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                        ChargingSession_Id?         SessionId     = null,
-                        I18NString?                 Description   = null,
-                        TimeSpan?                   Runtime       = null)
+                        DateTime?                   CachedResultEndOfLifeTime   = null,
+
+                        ChargingSession_Id?         SessionId                   = null,
+                        I18NString?                 Description                 = null,
+                        TimeSpan?                   Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         IReceiveAuthorizeStartStop,
                         AuthStopResultTypes.Unspecified,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         Description:  Description,
                         Runtime:      Runtime);
@@ -276,6 +325,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -283,14 +334,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             AdminDown(IId                      AuthorizatorId,
                       ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                      ChargingSession_Id?      SessionId     = null,
-                      I18NString?              Description   = null,
-                      TimeSpan?                Runtime       = null)
+                      DateTime?                CachedResultEndOfLifeTime   = null,
+
+                      ChargingSession_Id?      SessionId                   = null,
+                      I18NString?              Description                 = null,
+                      TimeSpan?                Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         ISendAuthorizeStartStop,
                         AuthStopResultTypes.AdminDown,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "The authentication service was disabled by the administrator!"),
                         Runtime:      Runtime);
@@ -302,6 +357,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -309,14 +366,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             AdminDown(IId                         AuthorizatorId,
                       IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                      ChargingSession_Id?         SessionId     = null,
-                      I18NString?                 Description   = null,
-                      TimeSpan?                   Runtime       = null)
+                      DateTime?                   CachedResultEndOfLifeTime   = null,
+
+                      ChargingSession_Id?         SessionId                   = null,
+                      I18NString?                 Description                 = null,
+                      TimeSpan?                   Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         IReceiveAuthorizeStartStop,
                         AuthStopResultTypes.AdminDown,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "The authentication service was disabled by the administrator!"),
                         Runtime:      Runtime);
@@ -330,6 +391,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -337,14 +400,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             UnknownLocation(IId                      AuthorizatorId,
                             ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                            ChargingSession_Id?      SessionId     = null,
-                            I18NString?              Description   = null,
-                            TimeSpan?                Runtime       = null)
+                            DateTime?                CachedResultEndOfLifeTime   = null,
+
+                            ChargingSession_Id?      SessionId                   = null,
+                            I18NString?              Description                 = null,
+                            TimeSpan?                Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         ISendAuthorizeStartStop,
                         AuthStopResultTypes.UnknownLocation,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Unknown location!"),
                         Runtime:      Runtime);
@@ -356,6 +423,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -363,14 +432,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             UnknownLocation(IId                         AuthorizatorId,
                             IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                            ChargingSession_Id?         SessionId     = null,
-                            I18NString?                 Description   = null,
-                            TimeSpan?                   Runtime       = null)
+                            DateTime?                   CachedResultEndOfLifeTime   = null,
+
+                            ChargingSession_Id?         SessionId                   = null,
+                            I18NString?                 Description                 = null,
+                            TimeSpan?                   Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         IReceiveAuthorizeStartStop,
                         AuthStopResultTypes.UnknownLocation,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Unknown location!"),
                         Runtime:      Runtime);
@@ -384,6 +457,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -391,14 +466,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             InvalidToken(IId                      AuthorizatorId,
                          ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                         ChargingSession_Id?      SessionId     = null,
-                         I18NString?              Description   = null,
-                         TimeSpan?                Runtime       = null)
+                         DateTime?                CachedResultEndOfLifeTime   = null,
+
+                         ChargingSession_Id?      SessionId                   = null,
+                         I18NString?              Description                 = null,
+                         TimeSpan?                Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         ISendAuthorizeStartStop,
                         AuthStopResultTypes.InvalidToken,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Invalid token!"),
                         Runtime:      Runtime);
@@ -410,6 +489,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -417,14 +498,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             InvalidToken(IId                         AuthorizatorId,
                          IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                         ChargingSession_Id?         SessionId     = null,
-                         I18NString?                 Description   = null,
-                         TimeSpan?                   Runtime       = null)
+                         DateTime?                   CachedResultEndOfLifeTime   = null,
+
+                         ChargingSession_Id?         SessionId                   = null,
+                         I18NString?                 Description                 = null,
+                         TimeSpan?                   Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         IReceiveAuthorizeStartStop,
                         AuthStopResultTypes.InvalidToken,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Invalid token!"),
                         Runtime:      Runtime);
@@ -438,6 +523,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -445,14 +532,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             InvalidSessionId(IId                      AuthorizatorId,
                              ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                             ChargingSession_Id?      SessionId     = null,
-                             I18NString?              Description   = null,
-                             TimeSpan?                Runtime       = null)
+                             DateTime?                CachedResultEndOfLifeTime   = null,
+
+                             ChargingSession_Id?      SessionId                   = null,
+                             I18NString?              Description                 = null,
+                             TimeSpan?                Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         ISendAuthorizeStartStop,
                         AuthStopResultTypes.InvalidSessionId,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Invalid session identification!"),
                         Runtime:      Runtime);
@@ -464,6 +555,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -471,14 +564,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             InvalidSessionId(IId                         AuthorizatorId,
                              IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                             ChargingSession_Id?         SessionId     = null,
-                             I18NString?                 Description   = null,
-                             TimeSpan?                   Runtime       = null)
+                             DateTime?                   CachedResultEndOfLifeTime   = null,
+
+                             ChargingSession_Id?         SessionId                   = null,
+                             I18NString?                 Description                 = null,
+                             TimeSpan?                   Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         IReceiveAuthorizeStartStop,
                         AuthStopResultTypes.InvalidSessionId,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Invalid session identification!"),
                         Runtime:      Runtime);
@@ -492,6 +589,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -499,14 +598,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             AlreadyStopped(IId                      AuthorizatorId,
                            ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                           ChargingSession_Id?      SessionId     = null,
-                           I18NString?              Description   = null,
-                           TimeSpan?                Runtime       = null)
+                           DateTime?                CachedResultEndOfLifeTime   = null,
+
+                           ChargingSession_Id?      SessionId                   = null,
+                           I18NString?              Description                 = null,
+                           TimeSpan?                Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         ISendAuthorizeStartStop,
                         AuthStopResultTypes.AlreadyStopped,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Already stopped!"),
                         Runtime:      Runtime);
@@ -518,6 +621,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -525,14 +630,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             AlreadyStopped(IId                         AuthorizatorId,
                            IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                           ChargingSession_Id?         SessionId     = null,
-                           I18NString?                 Description   = null,
-                           TimeSpan?                   Runtime       = null)
+                           DateTime?                   CachedResultEndOfLifeTime   = null,
+
+                           ChargingSession_Id?         SessionId                   = null,
+                           I18NString?                 Description                 = null,
+                           TimeSpan?                   Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         IReceiveAuthorizeStartStop,
                         AuthStopResultTypes.AlreadyStopped,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Already stopped!"),
                         Runtime:      Runtime);
@@ -546,6 +655,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -553,14 +664,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             OutOfService(IId                      AuthorizatorId,
                          ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                         ChargingSession_Id?      SessionId     = null,
-                         I18NString?              Description   = null,
-                         TimeSpan?                Runtime       = null)
+                         DateTime?                CachedResultEndOfLifeTime   = null,
+
+                         ChargingSession_Id?      SessionId                   = null,
+                         I18NString?              Description                 = null,
+                         TimeSpan?                Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         ISendAuthorizeStartStop,
                         AuthStopResultTypes.OutOfService,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Out of service!"),
                         Runtime:      Runtime);
@@ -572,6 +687,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -579,14 +696,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             OutOfService(IId                         AuthorizatorId,
                          IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                         ChargingSession_Id?         SessionId     = null,
-                         I18NString?                 Description   = null,
-                         TimeSpan?                   Runtime       = null)
+                         DateTime?                   CachedResultEndOfLifeTime   = null,
+
+                         ChargingSession_Id?         SessionId                   = null,
+                         I18NString?                 Description                 = null,
+                         TimeSpan?                   Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         IReceiveAuthorizeStartStop,
                         AuthStopResultTypes.OutOfService,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Out of service!"),
                         Runtime:      Runtime);
@@ -600,6 +721,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
@@ -609,17 +732,21 @@ namespace cloud.charging.open.protocols.WWCP
 
             Authorized(IId                      AuthorizatorId,
                        ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                       ChargingSession_Id?      SessionId         = null,
-                       EMobilityProvider_Id?    ProviderId        = null,
-                       I18NString?              Description       = null,
-                       I18NString?              AdditionalInfo    = null,
-                       Byte                     NumberOfRetries   = 0,
-                       TimeSpan?                Runtime           = null)
+                       DateTime?                CachedResultEndOfLifeTime   = null,
+
+                       ChargingSession_Id?      SessionId                   = null,
+                       EMobilityProvider_Id?    ProviderId                  = null,
+                       I18NString?              Description                 = null,
+                       I18NString?              AdditionalInfo              = null,
+                       Byte                     NumberOfRetries             = 0,
+                       TimeSpan?                Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         ISendAuthorizeStartStop,
                         AuthStopResultTypes.Authorized,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         ProviderId,
                         Description ?? I18NString.Create(Languages.en, "Success!"),
@@ -634,6 +761,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
@@ -643,17 +772,21 @@ namespace cloud.charging.open.protocols.WWCP
 
             Authorized(IId                         AuthorizatorId,
                        IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                       ChargingSession_Id?         SessionId         = null,
-                       EMobilityProvider_Id?       ProviderId        = null,
-                       I18NString?                 Description       = null,
-                       I18NString?                 AdditionalInfo    = null,
-                       Byte                        NumberOfRetries   = 0,
-                       TimeSpan?                   Runtime           = null)
+                       DateTime?                   CachedResultEndOfLifeTime   = null,
+
+                       ChargingSession_Id?         SessionId                   = null,
+                       EMobilityProvider_Id?       ProviderId                  = null,
+                       I18NString?                 Description                 = null,
+                       I18NString?                 AdditionalInfo              = null,
+                       Byte                        NumberOfRetries             = 0,
+                       TimeSpan?                   Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         IReceiveAuthorizeStartStop,
                         AuthStopResultTypes.Authorized,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         ProviderId,
                         Description ?? I18NString.Create(Languages.en, "Success!"),
@@ -670,6 +803,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
@@ -679,17 +814,21 @@ namespace cloud.charging.open.protocols.WWCP
 
             NotAuthorized(IId                      AuthorizatorId,
                           ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                          ChargingSession_Id?      SessionId         = null,
-                          EMobilityProvider_Id?    ProviderId        = null,
-                          I18NString?              Description       = null,
-                          I18NString?              AdditionalInfo    = null,
-                          Byte                     NumberOfRetries   = 0,
-                          TimeSpan?                Runtime           = null)
+                          DateTime?                CachedResultEndOfLifeTime   = null,
+
+                          ChargingSession_Id?      SessionId                   = null,
+                          EMobilityProvider_Id?    ProviderId                  = null,
+                          I18NString?              Description                 = null,
+                          I18NString?              AdditionalInfo              = null,
+                          Byte                     NumberOfRetries             = 0,
+                          TimeSpan?                Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         ISendAuthorizeStartStop,
                         AuthStopResultTypes.NotAuthorized,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         ProviderId,
                         Description ?? I18NString.Create(Languages.en, "Not Authorized"),
@@ -704,6 +843,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
@@ -713,17 +854,21 @@ namespace cloud.charging.open.protocols.WWCP
 
             NotAuthorized(IId                         AuthorizatorId,
                           IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                          ChargingSession_Id?         SessionId         = null,
-                          EMobilityProvider_Id?       ProviderId        = null,
-                          I18NString?                 Description       = null,
-                          I18NString?                 AdditionalInfo    = null,
-                          Byte                        NumberOfRetries   = 0,
-                          TimeSpan?                   Runtime           = null)
+                          DateTime?                   CachedResultEndOfLifeTime   = null,
+
+                          ChargingSession_Id?         SessionId                   = null,
+                          EMobilityProvider_Id?       ProviderId                  = null,
+                          I18NString?                 Description                 = null,
+                          I18NString?                 AdditionalInfo              = null,
+                          Byte                        NumberOfRetries             = 0,
+                          TimeSpan?                   Runtime                     = null)
 
 
                 => new (AuthorizatorId,
                         IReceiveAuthorizeStartStop,
                         AuthStopResultTypes.NotAuthorized,
+                        CachedResultEndOfLifeTime,
+
                         SessionId,
                         ProviderId,
                         Description ?? I18NString.Create(Languages.en, "Not Authorized"),
@@ -740,6 +885,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
@@ -749,17 +896,21 @@ namespace cloud.charging.open.protocols.WWCP
 
             Blocked(IId                      AuthorizatorId,
                     ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                    ChargingSession_Id?      SessionId         = null,
-                    EMobilityProvider_Id?    ProviderId        = null,
-                    I18NString?              Description       = null,
-                    I18NString?              AdditionalInfo    = null,
-                    Byte                     NumberOfRetries   = 0,
-                    TimeSpan?                Runtime           = null)
+                    DateTime?                CachedResultEndOfLifeTime   = null,
+
+                    ChargingSession_Id?      SessionId                   = null,
+                    EMobilityProvider_Id?    ProviderId                  = null,
+                    I18NString?              Description                 = null,
+                    I18NString?              AdditionalInfo              = null,
+                    Byte                     NumberOfRetries             = 0,
+                    TimeSpan?                Runtime                     = null)
 
 
             => new (AuthorizatorId,
                     ISendAuthorizeStartStop,
                     AuthStopResultTypes.Blocked,
+                    CachedResultEndOfLifeTime,
+
                     SessionId,
                     ProviderId,
                     Description ?? I18NString.Create(Languages.en, "Blocked!"),
@@ -774,6 +925,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
@@ -783,17 +936,21 @@ namespace cloud.charging.open.protocols.WWCP
 
             Blocked(IId                         AuthorizatorId,
                     IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                    ChargingSession_Id?         SessionId         = null,
-                    EMobilityProvider_Id?       ProviderId        = null,
-                    I18NString?                 Description       = null,
-                    I18NString?                 AdditionalInfo    = null,
-                    Byte                        NumberOfRetries   = 0,
-                    TimeSpan?                   Runtime           = null)
+                    DateTime?                   CachedResultEndOfLifeTime   = null,
+
+                    ChargingSession_Id?         SessionId                   = null,
+                    EMobilityProvider_Id?       ProviderId                  = null,
+                    I18NString?                 Description                 = null,
+                    I18NString?                 AdditionalInfo              = null,
+                    Byte                        NumberOfRetries             = 0,
+                    TimeSpan?                   Runtime                     = null)
 
 
             => new (AuthorizatorId,
                     IReceiveAuthorizeStartStop,
                     AuthStopResultTypes.Blocked,
+                    CachedResultEndOfLifeTime,
+
                     SessionId,
                     ProviderId,
                     Description ?? I18NString.Create(Languages.en, "Blocked!"),
@@ -810,6 +967,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -817,6 +975,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             CommunicationTimeout(IId                      AuthorizatorId,
                                  ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+
                                  ChargingSession_Id?      SessionId     = null,
                                  I18NString?              Description   = null,
                                  TimeSpan?                Runtime       = null)
@@ -825,7 +984,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (AuthorizatorId,
                         ISendAuthorizeStartStop,
                         AuthStopResultTypes.CommunicationTimeout,
-                        SessionId,
+
+                        SessionId:    SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Communication timeout!"),
                         Runtime:      Runtime);
 
@@ -836,6 +996,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -843,6 +1004,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             CommunicationTimeout(IId                         AuthorizatorId,
                                  IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+
                                  ChargingSession_Id?         SessionId     = null,
                                  I18NString?                 Description   = null,
                                  TimeSpan?                   Runtime       = null)
@@ -851,7 +1013,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (AuthorizatorId,
                         IReceiveAuthorizeStartStop,
                         AuthStopResultTypes.CommunicationTimeout,
-                        SessionId,
+
+                        SessionId:    SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Communication timeout!"),
                         Runtime:      Runtime);
 
@@ -864,6 +1027,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -871,6 +1035,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             StopChargingTimeout(IId                      AuthorizatorId,
                                 ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+
                                 ChargingSession_Id?      SessionId     = null,
                                 I18NString?              Description   = null,
                                 TimeSpan?                Runtime       = null)
@@ -879,7 +1044,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (AuthorizatorId,
                         ISendAuthorizeStartStop,
                         AuthStopResultTypes.StopChargingTimeout,
-                        SessionId,
+
+                        SessionId:    SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Stop charging timeout!"),
                         Runtime:      Runtime);
 
@@ -890,6 +1056,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -897,6 +1064,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             StopChargingTimeout(IId                         AuthorizatorId,
                                 IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+
                                 ChargingSession_Id?         SessionId     = null,
                                 I18NString?                 Description   = null,
                                 TimeSpan?                   Runtime       = null)
@@ -905,7 +1073,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (AuthorizatorId,
                         IReceiveAuthorizeStartStop,
                         AuthStopResultTypes.StopChargingTimeout,
-                        SessionId,
+
+                        SessionId:    SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Stop charging timeout!"),
                         Runtime:      Runtime);
 
@@ -918,6 +1087,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -925,6 +1095,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             RateLimitReached(IId                      AuthorizatorId,
                              ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+
                              ChargingSession_Id?      SessionId     = null,
                              I18NString?              Description   = null,
                              TimeSpan?                Runtime       = null)
@@ -933,7 +1104,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (AuthorizatorId,
                         ISendAuthorizeStartStop,
                         AuthStopResultTypes.RateLimitReached,
-                        SessionId,
+
+                        SessionId:    SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Rate limit reached!"),
                         Runtime:      Runtime);
 
@@ -944,6 +1116,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -951,6 +1124,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             RateLimitReached(IId                         AuthorizatorId,
                              IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+
                              ChargingSession_Id?         SessionId     = null,
                              I18NString?                 Description   = null,
                              TimeSpan?                   Runtime       = null)
@@ -959,7 +1133,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (AuthorizatorId,
                         IReceiveAuthorizeStartStop,
                         AuthStopResultTypes.RateLimitReached,
-                        SessionId,
+
+                        SessionId:    SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "RateLimitReached!"),
                         Runtime:      Runtime);
 
@@ -972,6 +1147,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -979,6 +1155,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Error(IId                      AuthorizatorId,
                   ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+
                   ChargingSession_Id?      SessionId     = null,
                   I18NString?              Description   = null,
                   TimeSpan?                Runtime       = null)
@@ -987,7 +1164,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (AuthorizatorId,
                         ISendAuthorizeStartStop,
                         AuthStopResultTypes.Error,
-                        SessionId,
+
+                        SessionId:    SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Error!"),
                         Runtime:      Runtime);
 
@@ -998,6 +1176,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// 
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -1005,6 +1184,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Error(IId                         AuthorizatorId,
                   IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+
                   ChargingSession_Id?         SessionId     = null,
                   I18NString?                 Description   = null,
                   TimeSpan?                   Runtime       = null)
@@ -1013,7 +1193,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (AuthorizatorId,
                         IReceiveAuthorizeStartStop,
                         AuthStopResultTypes.Error,
-                        SessionId,
+
+                        SessionId:    SessionId,
                         Description:  Description ?? I18NString.Create(Languages.en, "Error!"),
                         Runtime:      Runtime);
 
@@ -1031,28 +1212,32 @@ namespace cloud.charging.open.protocols.WWCP
 
             var json = JSONObject.Create(
 
-                                 new JProperty("result",           Result.        ToString()),
+                                 new JProperty("result",                      Result.        ToString()),
+
+                           CachedResultEndOfLifeTime.HasValue
+                               ? new JProperty("cachedResultEndOfLifeTime",   CachedResultEndOfLifeTime.Value.ToIso8601())
+                               : null,
 
                            SessionId.HasValue
-                               ? new JProperty("sessionId",        SessionId.     ToString())
+                               ? new JProperty("sessionId",                   SessionId.     ToString())
                                : null,
 
                            ProviderId.HasValue
-                               ? new JProperty("providerId",       ProviderId.    ToString())
+                               ? new JProperty("providerId",                  ProviderId.    ToString())
                                : null,
 
-                                 new JProperty("authorizatorId",   AuthorizatorId.ToString()),
+                                 new JProperty("authorizatorId",              AuthorizatorId.ToString()),
 
                            Description.IsNeitherNullNorEmpty()
-                               ? new JProperty("description",      Description.   ToJSON())
+                               ? new JProperty("description",                 Description.   ToJSON())
                                : null,
 
                            AdditionalInfo is not null && AdditionalInfo.IsNeitherNullNorEmpty()
-                               ? new JProperty("additionalInfo",   AdditionalInfo.ToJSON())
+                               ? new JProperty("additionalInfo",              AdditionalInfo.ToJSON())
                                : null,
 
                            Runtime.HasValue
-                               ? new JProperty("runtime",          Runtime.Value.TotalMilliseconds)
+                               ? new JProperty("runtime",                     Runtime.                      Value.TotalMilliseconds)
                                : null
 
                        );
