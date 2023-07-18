@@ -188,7 +188,10 @@ namespace cloud.charging.open.protocols.WWCP
         public String                                     LoggingPath                                   { get; }
 
 
-        public TimeSpan                                   AuthenticationCacheTimeout                    { get; set; }  = TimeSpan.FromMinutes(15);
+        public TimeSpan                                   AuthenticationCacheTimeout                    { get; set; }  = TimeSpan.FromHours(1);
+
+        public Int32                                      MaxAuthStartResultCacheElements               { get; set; }  = 2000;
+        public Int32                                      MaxAuthStopResultCacheElements                { get; set; }  = 1000;
 
         public HashSet<AuthenticationToken>               InvalidAuthenticationTokens                   { get; }       = new HashSet<AuthenticationToken>();
 
@@ -7723,8 +7726,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data
 
-        private readonly ConcurrentDictionary<AuthenticationToken, Tuple<AuthStartResult, DateTime>> localAuthenticationCache                    = new();
-        private readonly ConcurrentDictionary<ChargingLocation,    List<DateTime>>                   localAuthenticationChargingLocationCounter  = new();
+        private readonly ConcurrentDictionary<AuthenticationToken, AuthStartResult> authStartResultCache                   = new();
+        private readonly ConcurrentDictionary<AuthenticationToken, AuthStopResult>  authStopResultCache                    = new();
+        private readonly ConcurrentDictionary<ChargingLocation,    List<DateTime>>  authenticationChargingLocationCounter  = new();
 
         #endregion
 
@@ -7866,21 +7870,34 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Check whether there is a cached result from the last 15 minutes!
+                #region Check whether there is a cached result
 
                 if (result is null &&
                     LocalAuthentication.AuthToken.HasValue &&
-                    localAuthenticationCache.TryGetValue(LocalAuthentication.AuthToken.Value, out var timestampResult) &&
-                    timestampResult is not null)
+                    authStartResultCache.TryGetValue(LocalAuthentication.AuthToken.Value, out var cachedAuthStartResult) &&
+                    cachedAuthStartResult is not null)
                 {
 
-                    if (timestampResult.Item2 > org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationCacheTimeout)
+                    if (cachedAuthStartResult.CachedResultEndOfLifeTime > org.GraphDefined.Vanaheimr.Illias.Timestamp.Now + AuthenticationCacheTimeout)
                     {
-                        if (timestampResult.Item1.Result != AuthStartResultTypes.Authorized)
-                            result = timestampResult.Item1;
+
+                        result = cachedAuthStartResult.Result == AuthStartResultTypes.Authorized
+
+                                     ? new AuthStartResult(
+                                           cachedAuthStartResult.AuthorizatorId,
+                                           cachedAuthStartResult.ISendAuthorizeStartStop,
+                                           AuthStartResultTypes.Authorized,
+                                           CachedResultEndOfLifeTime:  cachedAuthStartResult.CachedResultEndOfLifeTime,
+                                           SessionId:                  SessionId,
+                                           EMPPartnerSessionId:        ChargingSession_Id.NewRandom,
+                                           ProviderId:                 cachedAuthStartResult.ProviderId,
+                                           Runtime:                    TimeSpan.Zero
+                                       )
+
+                                     : cachedAuthStartResult;
                     }
                     else
-                        localAuthenticationCache.Remove(LocalAuthentication.AuthToken.Value, out _);
+                        authStartResultCache.Remove(LocalAuthentication.AuthToken.Value, out _);
 
                 }
 
@@ -7892,7 +7909,7 @@ namespace cloud.charging.open.protocols.WWCP
                     ChargingLocation.IsDefined())
                 {
 
-                    if (localAuthenticationChargingLocationCounter.TryGetValue(ChargingLocation, out var locationInfo))
+                    if (authenticationChargingLocationCounter.TryGetValue(ChargingLocation, out var locationInfo))
                     {
 
                         do
@@ -7928,7 +7945,7 @@ namespace cloud.charging.open.protocols.WWCP
                     }
 
                     else
-                        localAuthenticationChargingLocationCounter.TryAdd(ChargingLocation,
+                        authenticationChargingLocationCounter.TryAdd(ChargingLocation,
                                                                           new List<DateTime>() { org.GraphDefined.Vanaheimr.Illias.Timestamp.Now });
 
                 }
@@ -7939,25 +7956,19 @@ namespace cloud.charging.open.protocols.WWCP
                 #region Send the request to all authorization services
 
                 result  ??= await _ISend2RemoteAuthorizeStartStop.WhenFirst(
-                                      Work:       async    sendAuthorizeStartStop => {
+                                      Work:           sendAuthorizeStartStop => sendAuthorizeStartStop.AuthorizeStart(
+                                                                                    LocalAuthentication,
+                                                                                    ChargingLocation,
+                                                                                    ChargingProduct,
+                                                                                    SessionId,
+                                                                                    CPOPartnerSessionId,
+                                                                                    OperatorId,
 
-                                                               var authStartResult = await sendAuthorizeStartStop.AuthorizeStart(
-                                                                                               LocalAuthentication,
-                                                                                               ChargingLocation,
-                                                                                               ChargingProduct,
-                                                                                               SessionId,
-                                                                                               CPOPartnerSessionId,
-                                                                                               OperatorId,
-
-                                                                                               Timestamp,
-                                                                                               EventTrackingId,
-                                                                                               RequestTimeout,
-                                                                                               CancellationToken
-                                                                                           );
-
-                                                               return authStartResult;
-
-                                                           },
+                                                                                    Timestamp,
+                                                                                    EventTrackingId,
+                                                                                    RequestTimeout,
+                                                                                    CancellationToken
+                                                                                ),
 
                                       VerifyResult:   result2  => result2.Result == AuthStartResultTypes.Authorized ||
                                                                   result2.Result == AuthStartResultTypes.Blocked,
@@ -7980,24 +7991,23 @@ namespace cloud.charging.open.protocols.WWCP
                 #endregion
 
 
-                #region Store a Non-Authorized result within the cache
+                #region Maybe store the result within the cache
 
                 if (LocalAuthentication.AuthToken.HasValue &&
-                    result.Result != AuthStartResultTypes.Authorized       &&
+                    //result.Result != AuthStartResultTypes.Authorized       &&
                     result.Result != AuthStartResultTypes.RateLimitReached &&
-                   !localAuthenticationCache.ContainsKey(LocalAuthentication.AuthToken.Value))
+                   !authStartResultCache.ContainsKey(LocalAuthentication.AuthToken.Value))
                 {
 
-                    localAuthenticationCache.TryAdd(LocalAuthentication.AuthToken.Value,
-                                                    new Tuple<AuthStartResult, DateTime>(new AuthStartResult(
-                                                                                             result.AuthorizatorId,
-                                                                                             result.ISendAuthorizeStartStop,
-                                                                                             result.Result,
-                                                                                             CachedResultEndOfLifeTime:  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now + AuthenticationCacheTimeout,
-                                                                                             ProviderId:                 result.ProviderId,
-                                                                                             Runtime:                    TimeSpan.Zero
-                                                                                         ),
-                                                                                         org.GraphDefined.Vanaheimr.Illias.Timestamp.Now));
+                    authStartResultCache.TryAdd(LocalAuthentication.AuthToken.Value,
+                                                new AuthStartResult(
+                                                    AuthorizatorId:             result.AuthorizatorId,
+                                                    ISendAuthorizeStartStop:    result.ISendAuthorizeStartStop,
+                                                    Result:                     result.Result,
+                                                    CachedResultEndOfLifeTime:  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now + AuthenticationCacheTimeout,
+                                                    ProviderId:                 result.ProviderId,
+                                                    Runtime:                    TimeSpan.Zero
+                                                ));
 
                 }
 
@@ -8005,11 +8015,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Purge the cache to avoid denial-of-service attacks!
 
-                if (localAuthenticationCache.Count > 2000)
+                if (authStartResultCache.Count > MaxAuthStartResultCacheElements)
                 {
-                    foreach (var oldEntries in localAuthenticationCache.OrderBy(kvp => kvp.Value.Item2).Take(1000).ToArray())
+                    foreach (var oldEntries in authStartResultCache.OrderBy(kvp => kvp.Value.CachedResultEndOfLifeTime).Take(MaxAuthStartResultCacheElements/4).ToArray())
                     {
-                        localAuthenticationCache.Remove(oldEntries.Key, out _);
+                        authStartResultCache.Remove(oldEntries.Key, out _);
                     }
                 }
 
@@ -8241,7 +8251,7 @@ namespace cloud.charging.open.protocols.WWCP
                     ChargingLocation.IsDefined())
                 {
 
-                    if (localAuthenticationChargingLocationCounter.TryGetValue(ChargingLocation, out var locationInfo))
+                    if (authenticationChargingLocationCounter.TryGetValue(ChargingLocation, out var locationInfo))
                     {
 
                         do
@@ -8277,7 +8287,7 @@ namespace cloud.charging.open.protocols.WWCP
                     }
 
                     else
-                        localAuthenticationChargingLocationCounter.TryAdd(ChargingLocation,
+                        authenticationChargingLocationCounter.TryAdd(ChargingLocation,
                                                                           new List<DateTime>() { org.GraphDefined.Vanaheimr.Illias.Timestamp.Now });
 
                 }
@@ -8372,17 +8382,18 @@ namespace cloud.charging.open.protocols.WWCP
                 #region Send the request to all authorization services
 
                 result ??= await _ISend2RemoteAuthorizeStartStop.WhenFirst(
-                                     Work:           iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
-                                                                                      AuthorizeStop(SessionId,
-                                                                                                    LocalAuthentication,
-                                                                                                    ChargingLocation,
-                                                                                                    CPOPartnerSessionId,
-                                                                                                    OperatorId,
+                                     Work:           sendAuthorizeStartStop => sendAuthorizeStartStop.AuthorizeStop(
+                                                                                   SessionId,
+                                                                                   LocalAuthentication,
+                                                                                   ChargingLocation,
+                                                                                   CPOPartnerSessionId,
+                                                                                   OperatorId,
 
-                                                                                                    Timestamp,
-                                                                                                    EventTrackingId,
-                                                                                                    RequestTimeout,
-                                                                                                    CancellationToken),
+                                                                                   Timestamp,
+                                                                                   EventTrackingId,
+                                                                                   RequestTimeout,
+                                                                                   CancellationToken
+                                                                               ),
 
                                      VerifyResult:   result2 => result2.Result == AuthStopResultTypes.Authorized ||
                                                                 result2.Result == AuthStopResultTypes.Blocked,
