@@ -7894,31 +7894,35 @@ namespace cloud.charging.open.protocols.WWCP
                     if (localAuthenticationChargingLocationCounter.TryGetValue(ChargingLocation, out var locationInfo))
                     {
 
-                        if (locationInfo.First() > org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan)
-                            locationInfo.Add(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now);
-
-                        if (locationInfo.Count > AuthenticationRateLimitPerChargingLocation)
-                        {
-
-                            result = AuthStartResult.RateLimitReached(
-                                         Id,
-                                         this,
-                                         SessionId,
-                                         I18NString.Create(Languages.en, $"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
-                                         TimeSpan.Zero
-                                     );
-
-                        }
-
                         do
                         {
 
-                            var copy = locationInfo.ToArray();
+                            if (locationInfo.First() < org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan)
+                                locationInfo.Remove(locationInfo.First());
 
-                            if (copy.First() < org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan)
-                                locationInfo.Remove(copy.First());
+                        } while (locationInfo.Any() && locationInfo.First() < org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan);
 
-                        } while (locationInfo.First() < org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan);
+
+                        if (locationInfo.Any())
+                        {
+
+                            if (locationInfo.First() > org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan)
+                                locationInfo.Add(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now);
+
+                            if (locationInfo.Count > AuthenticationRateLimitPerChargingLocation)
+                            {
+
+                                result = AuthStartResult.RateLimitReached(
+                                             Id,
+                                             this,
+                                             SessionId,
+                                             I18NString.Create(Languages.en, $"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
+                                             TimeSpan.Zero
+                                         );
+
+                            }
+
+                        }
 
                     }
 
@@ -8024,15 +8028,15 @@ namespace cloud.charging.open.protocols.WWCP
             }
 
 
-            //DebugX.LogT(String.Concat(
-            //    "RN AuthStart Response: '",
-            //    result?.ISendAuthorizeStartStop?.   AuthId?.ToString() ?? "-",
-            //    "' / '",
-            //    result?.IReceiveAuthorizeStartStop?.AuthId?.ToString() ?? "-",
-            //    "': ", LocalAuthentication,
-            //    " @ ",
-            //    ChargingLocation?.ToString() ?? "-",
-            //    " => ", result));
+            DebugX.LogT(String.Concat(
+                "RN AuthStart Response: '",
+                result?.ISendAuthorizeStartStop?.   AuthId?.ToString() ?? "-",
+                "' / '",
+                result?.IReceiveAuthorizeStartStop?.AuthId?.ToString() ?? "-",
+                "': ", LocalAuthentication,
+                " @ ",
+                ChargingLocation?.ToString() ?? "-",
+                " => ", result));
 
 
             #region If Authorized...
@@ -8237,31 +8241,35 @@ namespace cloud.charging.open.protocols.WWCP
                     if (localAuthenticationChargingLocationCounter.TryGetValue(ChargingLocation, out var locationInfo))
                     {
 
-                        if (locationInfo.First() > org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan)
-                            locationInfo.Add(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now);
-
-                        if (locationInfo.Count > AuthenticationRateLimitPerChargingLocation)
-                        {
-
-                            result = AuthStopResult.RateLimitReached(
-                                         Id,
-                                         this,
-                                         SessionId,
-                                         I18NString.Create(Languages.en, $"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
-                                         TimeSpan.Zero
-                                     );
-
-                        }
-
                         do
                         {
 
-                            var copy = locationInfo.ToArray();
+                            if (locationInfo.First() < org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan)
+                                locationInfo.Remove(locationInfo.First());
 
-                            if (copy.First() < org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan)
-                                locationInfo.Remove(copy.First());
+                        } while (locationInfo.Any() && locationInfo.First() < org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan);
 
-                        } while (locationInfo.First() < org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan);
+
+                        if (locationInfo.Any())
+                        {
+
+                            if (locationInfo.First() > org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - AuthenticationRateLimitTimeSpan)
+                                locationInfo.Add(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now);
+
+                            if (locationInfo.Count > AuthenticationRateLimitPerChargingLocation)
+                            {
+
+                                result = AuthStopResult.RateLimitReached(
+                                             Id,
+                                             this,
+                                             SessionId,
+                                             I18NString.Create(Languages.en, $"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
+                                             TimeSpan.Zero
+                                         );
+
+                            }
+
+                        }
 
                     }
 
