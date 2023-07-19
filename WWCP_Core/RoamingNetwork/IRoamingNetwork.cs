@@ -282,6 +282,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        IAdminStatus<RoamingNetworkAdminStatusTypes>,
                                        IStatus<RoamingNetworkStatusTypes>,
                                        ISendAuthorizeStartStop,
+                                       IAuthorizeStartStopCache,
                                        IRemoteStartStop,
                                        IChargingReservations,
                                        IChargingSessions,

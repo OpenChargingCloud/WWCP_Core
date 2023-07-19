@@ -32,6 +32,15 @@ namespace cloud.charging.open.protocols.WWCP
     public class AuthStartResult
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of the object.
+        /// </summary>
+        public const String JSONLDContext = "https://open.charging.cloud/contexts/wwcp+json/authStartResult";
+
+        #endregion
+
         #region Properties
 
         /// <summary>
@@ -1591,16 +1600,22 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region ToJSON(CustomAuthStartResultSerializer = null)
+        #region ToJSON(Embedded = false, CustomAuthStartResultSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
         /// <param name="CustomAuthStartResultSerializer">A delegate to serialize custom AuthStartResult JSON objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthStartResult>? CustomAuthStartResultSerializer = null)
+        public JObject ToJSON(Boolean                                            Embedded                          = false,
+                              CustomJObjectSerializerDelegate<AuthStartResult>?  CustomAuthStartResultSerializer   = null)
         {
 
             var json = JSONObject.Create(
+
+                           !Embedded
+                               ? new JProperty("@context",                    JSONLDContext)
+                               : null,
 
                                  new JProperty("result",                      Result.        ToString()),
 

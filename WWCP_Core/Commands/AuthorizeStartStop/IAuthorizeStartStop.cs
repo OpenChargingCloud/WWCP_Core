@@ -281,6 +281,20 @@ namespace cloud.charging.open.protocols.WWCP
 
     }
 
+    /// <summary>
+    /// The interface for sending AuthStart/-Stop requests.
+    /// </summary>
+    public interface IAuthorizeStartStopCache
+    {
+
+        IEnumerable<KeyValuePair<AuthenticationToken, AuthStartResult>>  CachedAuthStartResults    { get; }
+        IEnumerable<KeyValuePair<AuthenticationToken, AuthStopResult>>   CachedAuthStopResults     { get; }
+
+        Task ClearAuthStartResultCache();
+        Task ClearAuthStopResultCache();
+
+    }
+
 
     /// <summary>
     /// The interface for sending AuthStart/-Stop requests.

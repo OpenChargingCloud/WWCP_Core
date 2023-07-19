@@ -7731,6 +7731,12 @@ namespace cloud.charging.open.protocols.WWCP
         private readonly ConcurrentDictionary<AuthenticationToken, AuthStopResult>  authStopResultCache                    = new();
         private readonly ConcurrentDictionary<ChargingLocation,    List<DateTime>>  authenticationChargingLocationCounter  = new();
 
+        public IEnumerable<KeyValuePair<AuthenticationToken, AuthStartResult>>  CachedAuthStartResults
+            => authStartResultCache;
+
+        public IEnumerable<KeyValuePair<AuthenticationToken, AuthStopResult>>   CachedAuthStopResults
+            => authStopResultCache;
+
         #endregion
 
 
@@ -8469,6 +8475,23 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
+        #region ClearAuthStartResultCache()
+        public async Task ClearAuthStartResultCache()
+        {
+            authStartResultCache.Clear();
+        }
+
+        #endregion
+
+        #region ClearAuthStopResultCache()
+        public async Task ClearAuthStopResultCache()
+        {
+            authStopResultCache.Clear();
+        }
+
+        #endregion
+
         #endregion
 
         #region RemoteStart/-Stop
@@ -9071,20 +9094,20 @@ namespace cloud.charging.open.protocols.WWCP
 
             var JSON = JSONObject.Create(
 
-                         new JProperty("@id", Id.ToString()),
+                               new JProperty("@id",             Id.         ToString()),
 
                          !Embedded
-                             ? new JProperty("@context", JSONLDContext)
+                             ? new JProperty("@context",        JSONLDContext)
                              : null,
 
-                         new JProperty("name", Name.ToJSON()),
+                               new JProperty("name",            Name.       ToJSON()),
 
                          Description.IsNeitherNullNorEmpty()
-                             ? new JProperty("description", Description.ToJSON())
+                             ? new JProperty("description",     Description.ToJSON())
                              : null,
 
                          DataSource is not null && DataSource.IsNeitherNullNorEmpty()
-                             ? new JProperty("dataSource", DataSource)
+                             ? new JProperty("dataSource",      DataSource)
                              : null,
 
                          DataLicenses.Any()
