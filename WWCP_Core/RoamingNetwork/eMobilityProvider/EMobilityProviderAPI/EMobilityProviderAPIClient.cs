@@ -274,6 +274,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="RemoteURL">The remote URL of the HTTP endpoint to connect to.</param>
         /// <param name="VirtualHostname">An optional HTTP virtual hostname.</param>
         /// <param name="Description">An optional description of this CPO client.</param>
+        /// <param name="PreferIPv4">Prefer IPv4 instead of IPv6.</param>
         /// <param name="RemoteCertificateValidator">The remote SSL/TLS certificate validator.</param>
         /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
         /// <param name="ClientCert">The SSL/TLS client certificate to use of HTTP authentication.</param>
@@ -281,6 +282,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="RequestTimeout">An optional request timeout.</param>
         /// <param name="TransmissionRetryDelay">The delay between transmission retries.</param>
         /// <param name="MaxNumberOfRetries">The maximum number of transmission retries for HTTP request.</param>
+        /// <param name="InternalBufferSize">An optional size of the internal buffers.</param>
         /// <param name="DisableLogging">Disable all logging.</param>
         /// <param name="LoggingPath">The logging path.</param>
         /// <param name="LoggingContext">An optional context for logging.</param>
@@ -289,15 +291,16 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         public EMobilityProviderAPIClient(URL                                   RemoteURL,
                                           HTTPHostname?                         VirtualHostname              = null,
                                           String?                               Description                  = null,
+                                          Boolean?                              PreferIPv4                   = null,
                                           RemoteCertificateValidationCallback?  RemoteCertificateValidator   = null,
                                           LocalCertificateSelectionCallback?    ClientCertificateSelector    = null,
                                           X509Certificate?                      ClientCert                   = null,
                                           SslProtocols?                         TLSProtocol                  = null,
-                                          Boolean?                              PreferIPv4                   = null,
                                           String                                HTTPUserAgent                = DefaultHTTPUserAgent,
                                           TimeSpan?                             RequestTimeout               = null,
                                           TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
-                                          UInt16?                               MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
+                                          UInt16?                               MaxNumberOfRetries           = null,
+                                          UInt32?                               InternalBufferSize           = null,
                                           Boolean?                              DisableLogging               = false,
                                           String?                               LoggingPath                  = null,
                                           String                                LoggingContext               = "",//EMobilityProviderAPIClientLogger.DefaultContext,
@@ -307,15 +310,16 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
             : base(RemoteURL,
                    VirtualHostname,
                    Description,
+                   PreferIPv4,
                    RemoteCertificateValidator,
                    ClientCertificateSelector,
                    ClientCert,
                    TLSProtocol,
-                   PreferIPv4,
-                   HTTPUserAgent       ?? DefaultHTTPUserAgent,
+                   HTTPUserAgent ?? DefaultHTTPUserAgent,
                    RequestTimeout,
                    TransmissionRetryDelay,
-                   MaxNumberOfRetries  ?? DefaultMaxNumberOfRetries,
+                   MaxNumberOfRetries,
+                   InternalBufferSize,
                    false,
                    DisableLogging,
                    null,
@@ -401,18 +405,19 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                     #region Upstream HTTP request...
 
-                    var HTTPResponse = await HTTPClientFactory.Create(RemoteURL,
+                    var httpResponse = await HTTPClientFactory.Create(RemoteURL,
                                                                       VirtualHostname,
                                                                       Description,
+                                                                      PreferIPv4,
                                                                       RemoteCertificateValidator,
                                                                       ClientCertificateSelector,
                                                                       ClientCert,
                                                                       TLSProtocol,
-                                                                      PreferIPv4,
                                                                       HTTPUserAgent,
                                                                       RequestTimeout,
                                                                       TransmissionRetryDelay,
                                                                       MaxNumberOfRetries,
+                                                                      InternalBufferSize,
                                                                       UseHTTPPipelining,
                                                                       DisableLogging,
                                                                       null,
@@ -439,24 +444,24 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                     #endregion
 
 
-                    if (HTTPResponse.HTTPStatusCode == HTTPStatusCode.OK)
+                    if (httpResponse.HTTPStatusCode == HTTPStatusCode.OK)
                     {
 
-                        if (HTTPResponse.ContentType == HTTPContentType.JSON_UTF8 &&
-                            HTTPResponse.HTTPBody is not null &&
-                            HTTPResponse.HTTPBody.Length > 0)
+                        if (httpResponse.ContentType == HTTPContentType.JSON_UTF8 &&
+                            httpResponse.HTTPBody is not null &&
+                            httpResponse.HTTPBody.Length > 0)
                         {
 
                             try
                             {
 
                                 if (RemoteStartResponse.TryParse(Request,
-                                                                 JObject.Parse(HTTPResponse.HTTPBody.ToUTF8String()),
-                                                                 HTTPResponse.Timestamp,
-                                                                 HTTPResponse.Runtime,
+                                                                 JObject.Parse(httpResponse.HTTPBody.ToUTF8String()),
+                                                                 httpResponse.Timestamp,
+                                                                 httpResponse.Runtime,
                                                                  out response,
                                                                  out var errorResponse,
-                                                                 HTTPResponse,
+                                                                 httpResponse,
                                                                  CustomRemoteStartResponseParser) &&
                                     response is not null)
                                 {
@@ -472,15 +477,15 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                 response = new RemoteStartResponse(
                                                Request,
                                                RemoteStartResultTypes.Error,
-                                               HTTPResponse.EventTrackingId,
-                                               HTTPResponse.Timestamp,
+                                               httpResponse.EventTrackingId,
+                                               httpResponse.Timestamp,
                                                null,
                                                I18NString.Create(Languages.en, e.Message),
                                                e.StackTrace,
                                                Array.Empty<Warning>(),
                                                null, // CustomData
-                                               HTTPResponse.Runtime,
-                                               HTTPResponse
+                                               httpResponse.Runtime,
+                                               httpResponse
                                            );
 
                             }
@@ -492,11 +497,11 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                     }
 
-                    if (HTTPResponse.HTTPStatusCode == HTTPStatusCode.BadRequest)
+                    if (httpResponse.HTTPStatusCode == HTTPStatusCode.BadRequest)
                     {
 
-                        if (HTTPResponse.ContentType == HTTPContentType.JSON_UTF8 &&
-                            HTTPResponse.HTTPBody.Length > 0)
+                        if (httpResponse.ContentType == HTTPContentType.JSON_UTF8 &&
+                            httpResponse.HTTPBody.Length > 0)
                         {
 
                             // HTTP/1.1 400 BadRequest
@@ -537,10 +542,10 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                             response = new RemoteStartResponse(Request,
                                                                RemoteStartResultTypes.BadRequest,
-                                                               HTTPResponse.EventTrackingId,
-                                                               HTTPResponse.Timestamp,
-                                                               Runtime:      HTTPResponse.Runtime,
-                                                               HTTPResponse: HTTPResponse);
+                                                               httpResponse.EventTrackingId,
+                                                               httpResponse.Timestamp,
+                                                               Runtime:      httpResponse.Runtime,
+                                                               HTTPResponse: httpResponse);
 
                             //}
 
@@ -550,7 +555,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                     }
 
-                    if (HTTPResponse.HTTPStatusCode == HTTPStatusCode.Forbidden)
+                    if (httpResponse.HTTPStatusCode == HTTPStatusCode.Forbidden)
                     {
 
                         // Hubject firewall problem!
@@ -559,7 +564,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                     }
 
-                    if (HTTPResponse.HTTPStatusCode == HTTPStatusCode.Unauthorized)
+                    if (httpResponse.HTTPStatusCode == HTTPStatusCode.Unauthorized)
                     {
 
                         // HTTP/1.1 401 Unauthorized
@@ -599,10 +604,10 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                         response = new RemoteStartResponse(Request,
                                                          RemoteStartResultTypes.Unauthorized,
-                                                         HTTPResponse.EventTrackingId,
-                                                         HTTPResponse.Timestamp,
-                                                         Runtime:      HTTPResponse.Runtime,
-                                                         HTTPResponse: HTTPResponse);
+                                                         httpResponse.EventTrackingId,
+                                                         httpResponse.Timestamp,
+                                                         Runtime:      httpResponse.Runtime,
+                                                         HTTPResponse: httpResponse);
 
                         //            result = RemoteStartResponse.Failed(Request,
                         //                                                                                     new Acknowledgement<RemoteStartRequest>(
@@ -657,7 +662,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                     }
 
-                    if (HTTPResponse.HTTPStatusCode == HTTPStatusCode.RequestTimeout)
+                    if (httpResponse.HTTPStatusCode == HTTPStatusCode.RequestTimeout)
                     { }
 
                 }
@@ -790,18 +795,19 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                     #region Upstream HTTP request...
 
-                    var HTTPResponse = await HTTPClientFactory.Create(RemoteURL,
+                    var httpResponse = await HTTPClientFactory.Create(RemoteURL,
                                                                       VirtualHostname,
                                                                       Description,
+                                                                      PreferIPv4,
                                                                       RemoteCertificateValidator,
                                                                       ClientCertificateSelector,
                                                                       ClientCert,
                                                                       TLSProtocol,
-                                                                      PreferIPv4,
                                                                       HTTPUserAgent,
                                                                       RequestTimeout,
                                                                       TransmissionRetryDelay,
                                                                       MaxNumberOfRetries,
+                                                                      InternalBufferSize,
                                                                       UseHTTPPipelining,
                                                                       DisableLogging,
                                                                       null,
@@ -828,23 +834,23 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                     #endregion
 
 
-                    if (HTTPResponse.HTTPStatusCode == HTTPStatusCode.OK)
+                    if (httpResponse.HTTPStatusCode == HTTPStatusCode.OK)
                     {
 
-                        if (HTTPResponse.ContentType == HTTPContentType.JSON_UTF8 &&
-                            HTTPResponse.HTTPBody.Length > 0)
+                        if (httpResponse.ContentType == HTTPContentType.JSON_UTF8 &&
+                            httpResponse.HTTPBody.Length > 0)
                         {
 
                             try
                             {
 
                                 if (RemoteStopResponse.TryParse(Request,
-                                                                JObject.Parse(HTTPResponse.HTTPBody.ToUTF8String()),
-                                                                HTTPResponse.Timestamp,
-                                                                HTTPResponse.Runtime,
+                                                                JObject.Parse(httpResponse.HTTPBody.ToUTF8String()),
+                                                                httpResponse.Timestamp,
+                                                                httpResponse.Runtime,
                                                                 out response,
                                                                 out var errorResponse,
-                                                                HTTPResponse,
+                                                                httpResponse,
                                                                 CustomRemoteStopResponseParser) &&
                                     response is not null)
                                 {
@@ -860,8 +866,8 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                 response = new RemoteStopResponse(
                                                Request,
                                                RemoteStopResultTypes.Error,
-                                               HTTPResponse.EventTrackingId,
-                                               HTTPResponse.Timestamp,
+                                               httpResponse.EventTrackingId,
+                                               httpResponse.Timestamp,
                                                Request.ChargingSessionId,
                                                null,
                                                null,
@@ -871,8 +877,8 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                e.StackTrace,
                                                Array.Empty<Warning>(),
                                                null, // CustomData
-                                               HTTPResponse.Runtime,
-                                               HTTPResponse
+                                               httpResponse.Runtime,
+                                               httpResponse
                                            );
 
                             }
@@ -884,11 +890,11 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                     }
 
-                    if (HTTPResponse.HTTPStatusCode == HTTPStatusCode.BadRequest)
+                    if (httpResponse.HTTPStatusCode == HTTPStatusCode.BadRequest)
                     {
 
-                        if (HTTPResponse.ContentType == HTTPContentType.JSON_UTF8 &&
-                            HTTPResponse.HTTPBody.Length > 0)
+                        if (httpResponse.ContentType == HTTPContentType.JSON_UTF8 &&
+                            httpResponse.HTTPBody.Length > 0)
                         {
 
                             // HTTP/1.1 400 BadRequest
@@ -929,11 +935,11 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                                 response = new RemoteStopResponse(Request,
                                                                   RemoteStopResultTypes.BadRequest,
-                                                                  HTTPResponse.EventTrackingId,
-                                                                  HTTPResponse.Timestamp,
+                                                                  httpResponse.EventTrackingId,
+                                                                  httpResponse.Timestamp,
                                                                   Request.ChargingSessionId,
-                                                                  Runtime:      HTTPResponse.Runtime,
-                                                                  HTTPResponse: HTTPResponse);
+                                                                  Runtime:      httpResponse.Runtime,
+                                                                  HTTPResponse: httpResponse);
 
                             //}
 
@@ -943,7 +949,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                     }
 
-                    if (HTTPResponse.HTTPStatusCode == HTTPStatusCode.Forbidden)
+                    if (httpResponse.HTTPStatusCode == HTTPStatusCode.Forbidden)
                     {
 
                         // Hubject firewall problem!
@@ -952,7 +958,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                     }
 
-                    if (HTTPResponse.HTTPStatusCode == HTTPStatusCode.Unauthorized)
+                    if (httpResponse.HTTPStatusCode == HTTPStatusCode.Unauthorized)
                     {
 
                         // HTTP/1.1 401 Unauthorized
@@ -992,11 +998,11 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                         response = new RemoteStopResponse(Request,
                                                           RemoteStopResultTypes.Unauthorized,
-                                                          HTTPResponse.EventTrackingId,
-                                                          HTTPResponse.Timestamp,
+                                                          httpResponse.EventTrackingId,
+                                                          httpResponse.Timestamp,
                                                           Request.ChargingSessionId,
-                                                          Runtime:      HTTPResponse.Runtime,
-                                                          HTTPResponse: HTTPResponse);
+                                                          Runtime:      httpResponse.Runtime,
+                                                          HTTPResponse: httpResponse);
 
                         //            response = OICPResult<Acknowledgement<RemoteStopRequest>>.Failed(Request,
                         //                                                                                    new Acknowledgement<RemoteStopRequest>(
@@ -1051,7 +1057,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                     }
 
-                    if (HTTPResponse.HTTPStatusCode == HTTPStatusCode.RequestTimeout)
+                    if (httpResponse.HTTPStatusCode == HTTPStatusCode.RequestTimeout)
                     { }
 
                 }
