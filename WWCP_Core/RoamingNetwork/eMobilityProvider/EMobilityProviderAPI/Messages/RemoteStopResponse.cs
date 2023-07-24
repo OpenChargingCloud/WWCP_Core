@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                            (this.CustomData?.        GetHashCode() ?? 0) *  5 ^
 
                             this.Runtime.            GetHashCode()       *  3 ^
-                            this.HTTPResponse?.      GetHashCode() ?? 0;
+                           (this.HTTPResponse?.      GetHashCode() ?? 0);
 
             }
 

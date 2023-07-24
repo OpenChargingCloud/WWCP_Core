@@ -549,7 +549,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override Int32 GetHashCode()
 
             => OperatorId.               GetHashCode() ^
-               Suffix?.Replace("*", "")?.GetHashCode() ?? 0;
+              (Suffix?.Replace("*", "")?.GetHashCode() ?? 0);
 
         #endregion
 

@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.WWCP
                        (PublicKey?.                  GetHashCode() ?? 0) *  7 ^
                        (Certificate?.                GetHashCode() ?? 0) *  5 ^
                        (AuthMethod?.                 GetHashCode() ?? 0) *  3 ^
-                        Description?.                GetHashCode() ?? 0;
+                       (Description?.                GetHashCode() ?? 0);
 
             }
         }

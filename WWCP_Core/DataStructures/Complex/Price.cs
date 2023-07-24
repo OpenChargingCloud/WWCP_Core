@@ -462,7 +462,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 return Base.GetHashCode() * 3 ^
-                       VAT?.GetHashCode() ?? 0;
+                      (VAT?.GetHashCode() ?? 0);
 
             }
         }

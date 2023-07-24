@@ -545,9 +545,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => OperatorId.               GetHashCode() ^
-               Suffix?.Replace("*", "")?.GetHashCode() ?? 0;
+                return OperatorId.               GetHashCode() ^
+                      (Suffix?.Replace("*", "")?.GetHashCode() ?? 0);
+
+            }
+        }
 
         #endregion
 
