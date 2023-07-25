@@ -116,18 +116,27 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The JSON-LD context of the object.
         /// </summary>
-        public const String JSONLDContext                   = "https://open.charging.cloud/contexts/wwcp+json/roamingNetwork";
+        public const               String                                             JSONLDContext                          = "https://open.charging.cloud/contexts/wwcp+json/roamingNetwork";
 
-        protected static readonly  SemaphoreSlim  eMobilityProvidersSemaphore            = new (1, 1);
-        protected static readonly  SemaphoreSlim  chargingStationOperatorsSemaphore      = new (1, 1);
+        protected static readonly  SemaphoreSlim                                      eMobilityProvidersSemaphore            = new (1, 1);
+        protected static readonly  SemaphoreSlim                                      chargingStationOperatorsSemaphore      = new (1, 1);
 
-        protected static readonly  TimeSpan       SemaphoreSlimTimeout                   = TimeSpan.FromSeconds(5);
+        protected static readonly  TimeSpan                                           SemaphoreSlimTimeout                   = TimeSpan.FromSeconds(5);
 
-        protected static readonly  Byte           MinEMobilityProviderIdLength           = 5;
-        protected static readonly  Byte           MinEMobilityProviderNameLength         = 5;
+        protected static readonly  Byte                                               MinEMobilityProviderIdLength           = 5;
+        protected static readonly  Byte                                               MinEMobilityProviderNameLength         = 5;
 
-        protected static readonly  Byte           MinChargingStationOperatorIdLength     = 5;
-        protected static readonly  Byte           MinChargingStationOperatorNameLength   = 5;
+        protected static readonly  Byte                                               MinChargingStationOperatorIdLength     = 5;
+        protected static readonly  Byte                                               MinChargingStationOperatorNameLength   = 5;
+
+
+        private readonly           PriorityList<ISendPOIData>                         _ISendData                             = new ();
+        private readonly           PriorityList<ISendAdminStatus>                     _ISendAdminStatus                      = new ();
+        private readonly           PriorityList<ISendStatus>                          _ISendStatus                           = new ();
+        private readonly           PriorityList<ISendAuthorizeStartStop>              _ISend2RemoteAuthorizeStartStop        = new ();
+        private readonly           PriorityList<ISendChargeDetailRecords>             _IRemoteSendChargeDetailRecord         = new ();
+
+        private readonly           ConcurrentDictionary<UInt32, IEMPRoamingProvider>  eMobilityRoamingServices;
 
         #endregion
 
@@ -139,14 +148,95 @@ namespace cloud.charging.open.protocols.WWCP
         IId ISendChargeDetailRecords.SendChargeDetailRecordsId
             => Id;
 
-        public Boolean DisableAuthentication            { get; set; }
+        public Boolean                                    DisableSendChargeDetailRecords               { get; set; }
 
-        public Boolean DisableSendChargeDetailRecords   { get; set; }
-
-        public Boolean DisableNetworkSync               { get; set; }
+        public Boolean                                    DisableNetworkSync                           { get; set; }
 
 
-        #region DataLicense
+        public ChargingReservationsStore                  ReservationsStore                            { get; }
+        public ChargingSessionsStore                      SessionsStore                                { get; }
+
+
+        /// <summary>
+        /// A delegate for filtering charge detail records.
+        /// </summary>
+        public ChargeDetailRecordFilterDelegate?          ChargeDetailRecordFilter                     { get; }
+
+
+        #region Authentication
+
+        public Boolean                                    DisableAuthentication                        { get; set; }
+
+        #region Authentication cache
+
+        /// <summary>
+        /// Whether to disable authentication cache.
+        /// </summary>
+        public Boolean                                    DisableAuthenticationCache                   { get; set; }
+
+        /// <summary>
+        /// The timeout of cached authentication elements.
+        /// </summary>
+        public TimeSpan                                   AuthenticationCacheTimeout                   { get; set; }
+
+        /// <summary>
+        /// The maximum number of AuthStartResults stored within the authentication cache.
+        /// </summary>
+        public UInt32                                     MaxAuthStartResultCacheElements              { get; set; }
+
+        /// <summary>
+        /// The maximum number of AuthStartResults stored within the authentication cache.
+        /// </summary>
+        public UInt32                                     MaxAuthStopResultCacheElements               { get; set; }
+
+        public HashSet<AuthenticationToken>               InvalidAuthenticationTokens                  { get; }       = new HashSet<AuthenticationToken>();
+        public HashSet<AuthenticationToken>               DoNotCacheAuthenticationTokens               { get; }       = new HashSet<AuthenticationToken>();
+
+        #endregion
+
+        #region Authentication rate limit
+
+        /// <summary>
+        /// Whether to disable authentication rate limiting.
+        /// </summary>
+        public Boolean                                    DisableAuthenticationRateLimit                { get; set; }
+
+        /// <summary>
+        /// The timeout of rate limited authentications.
+        /// </summary>
+        public TimeSpan                                   AuthenticationRateLimitTimeSpan               { get; set; }
+
+        /// <summary>
+        /// The number of authentications per charging location before rate limits apply.
+        /// </summary>
+        public UInt16                                     AuthenticationRateLimitPerChargingLocation    { get; set; }
+
+        #endregion
+
+        #endregion
+
+        #region Crypto
+
+        /// <summary>
+        /// A delegate to sign a charging station.
+        /// </summary>
+        public ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator            { get; }
+
+        /// <summary>
+        /// A delegate to sign a charging pool.
+        /// </summary>
+        public ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator               { get; }
+
+        /// <summary>
+        /// A delegate to sign a charging station operator.
+        /// </summary>
+        public ChargingStationOperatorSignatureDelegate?  ChargingStationOperatorSignatureGenerator    { get; }
+
+        #endregion
+
+        public String                                     LoggingPath                                  { get; }
+
+        #region Data licenses
 
         private ReactiveSet<OpenDataLicense> dataLicenses;
 
@@ -158,46 +248,6 @@ namespace cloud.charging.open.protocols.WWCP
             => dataLicenses;
 
         #endregion
-
-
-        public ChargingReservationsStore                  ReservationsStore                             { get; }
-        public ChargingSessionsStore                      SessionsStore                                 { get; }
-
-        /// <summary>
-        /// A delegate to sign a charging station.
-        /// </summary>
-        public ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator             { get; }
-
-        /// <summary>
-        /// A delegate to sign a charging pool.
-        /// </summary>
-        public ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator                { get; }
-
-        /// <summary>
-        /// A delegate to sign a charging station operator.
-        /// </summary>
-        public ChargingStationOperatorSignatureDelegate?  ChargingStationOperatorSignatureGenerator     { get; }
-
-
-        /// <summary>
-        /// A delegate for filtering charge detail records.
-        /// </summary>
-        public ChargeDetailRecordFilterDelegate?          ChargeDetailRecordFilter                      { get; }
-
-
-        public String                                     LoggingPath                                   { get; }
-
-
-        public TimeSpan                                   AuthenticationCacheTimeout                    { get; set; }  = TimeSpan.FromHours(1);
-
-        public Int32                                      MaxAuthStartResultCacheElements               { get; set; }  = 2000;
-        public Int32                                      MaxAuthStopResultCacheElements                { get; set; }  = 1000;
-
-        public HashSet<AuthenticationToken>               InvalidAuthenticationTokens                   { get; }       = new HashSet<AuthenticationToken>();
-        public HashSet<AuthenticationToken>               DoNotCacheAuthenticationTokens                { get; }       = new HashSet<AuthenticationToken>();
-
-        public TimeSpan                                   AuthenticationRateLimitTimeSpan               { get; set; }  = TimeSpan.FromMinutes(5);
-        public UInt16                                     AuthenticationRateLimitPerChargingLocation    { get; set; }  = 10;
 
         #endregion
 
@@ -213,30 +263,49 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="InitialStatus">The initial status of the roaming network.</param>
         /// <param name="MaxAdminStatusScheduleSize">The maximum number of entries in the admin status history.</param>
         /// <param name="MaxStatusScheduleSize">The maximum number of entries in the status history.</param>
+        /// 
+        /// <param name="DisableAuthenticationCache">Whether to disable authentication cache.</param>
+        /// <param name="AuthenticationCacheTimeout">The timeout of cached authentication elements.</param>
+        /// <param name="MaxAuthStartResultCacheElements">The maximum number of AuthStartResults stored within the authentication cache.</param>
+        /// <param name="MaxAuthStopResultCacheElements">The maximum number of AuthStartResults stored within the authentication cache.</param>
+        /// 
+        /// <param name="DisableAuthenticationRateLimit">Whether to disable authentication rate limiting.</param>
+        /// <param name="AuthenticationRateLimitTimeSpan">The timeout of rate limited authentications.</param>
+        /// <param name="AuthenticationRateLimitPerChargingLocation">The number of authentications per charging location before rate limits apply.</param>
+        /// 
         /// <param name="ChargingStationSignatureGenerator">A delegate to sign a charging station.</param>
         /// <param name="ChargingPoolSignatureGenerator">A delegate to sign a charging pool.</param>
         /// <param name="ChargingStationOperatorSignatureGenerator">A delegate to sign a charging station operator.</param>
         public RoamingNetwork(RoamingNetwork_Id                          Id,
-                              I18NString?                                Name                                        = null,
-                              I18NString?                                Description                                 = null,
-                              RoamingNetworkAdminStatusTypes?            InitialAdminStatus                          = null,
-                              RoamingNetworkStatusTypes?                 InitialStatus                               = null,
-                              UInt16?                                    MaxAdminStatusScheduleSize                  = null,
-                              UInt16?                                    MaxStatusScheduleSize                       = null,
+                              I18NString?                                Name                                         = null,
+                              I18NString?                                Description                                  = null,
+                              RoamingNetworkAdminStatusTypes?            InitialAdminStatus                           = null,
+                              RoamingNetworkStatusTypes?                 InitialStatus                                = null,
+                              UInt16?                                    MaxAdminStatusScheduleSize                   = null,
+                              UInt16?                                    MaxStatusScheduleSize                        = null,
 
-                              ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator           = null,
-                              ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator              = null,
-                              ChargingStationOperatorSignatureDelegate?  ChargingStationOperatorSignatureGenerator   = null,
+                              Boolean?                                   DisableAuthenticationCache                   = false,
+                              TimeSpan?                                  AuthenticationCacheTimeout                   = null,
+                              UInt32?                                    MaxAuthStartResultCacheElements              = null,
+                              UInt32?                                    MaxAuthStopResultCacheElements               = null,
 
-                              IEnumerable<RoamingNetworkInfo>?           RoamingNetworkInfos                         = null,
-                              Boolean                                    DisableNetworkSync                          = true,
-                              String?                                    LoggingPath                                 = null,
+                              Boolean?                                   DisableAuthenticationRateLimit               = true,
+                              TimeSpan?                                  AuthenticationRateLimitTimeSpan              = null,
+                              UInt16?                                    AuthenticationRateLimitPerChargingLocation   = null,
 
-                              String?                                    DataSource                                  = null,
-                              DateTime?                                  LastChange                                  = null,
+                              ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator            = null,
+                              ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator               = null,
+                              ChargingStationOperatorSignatureDelegate?  ChargingStationOperatorSignatureGenerator    = null,
 
-                              JObject?                                   CustomData                                  = null,
-                              UserDefinedDictionary?                     InternalData                                = null)
+                              IEnumerable<RoamingNetworkInfo>?           RoamingNetworkInfos                          = null,
+                              Boolean                                    DisableNetworkSync                           = true,
+                              String?                                    LoggingPath                                  = null,
+
+                              String?                                    DataSource                                   = null,
+                              DateTime?                                  LastChange                                   = null,
+
+                              JObject?                                   CustomData                                   = null,
+                              UserDefinedDictionary?                     InternalData                                 = null)
 
             : base(Id,
                    Name                       ?? new I18NString(Languages.en, "RNTest1"),
@@ -254,44 +323,61 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this.dataLicenses                                       = new ReactiveSet<OpenDataLicense>();
+            this.dataLicenses                                = new ReactiveSet<OpenDataLicense>();
 
-            this.empRoamingProviders                                = new ConcurrentDictionary<EMPRoamingProvider_Id,                IEMPRoamingProvider>();
-            this._eMobilityRoamingServices                          = new ConcurrentDictionary<UInt32,                               IEMPRoamingProvider>();
-            this.eMobilityProviders                                 = new EntityHashSet<IRoamingNetwork, EMobilityProvider_Id,       IEMobilityProvider>      (this);
+            this.empRoamingProviders                         = new ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider>();
+            this.eMobilityRoamingServices                    = new ConcurrentDictionary<UInt32,                IEMPRoamingProvider>();
+            this.eMobilityProviders                          = new EntityHashSet       <IRoamingNetwork,       EMobilityProvider_Id,       IEMobilityProvider>      (this);
 
-            this.csoRoamingProviders                                = new ConcurrentDictionary<CSORoamingProvider_Id,                ICSORoamingProvider>();
-            this.chargingStationOperators                           = new EntityHashSet<IRoamingNetwork, ChargingStationOperator_Id, IChargingStationOperator>(this);
+            this.csoRoamingProviders                         = new ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>();
+            this.chargingStationOperators                    = new EntityHashSet       <IRoamingNetwork,       ChargingStationOperator_Id, IChargingStationOperator>(this);
 
-            this.parkingOperators                                   = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
-            this.smartCities                                       = new EntityHashSet<RoamingNetwork, SmartCity_Id,               SmartCityProxy>         (this);
-            this.navigationProviders                               = new EntityHashSet<RoamingNetwork, NavigationProvider_Id,      NavigationProvider>     (this);
-            this.gridOperators                                      = new EntityHashSet<RoamingNetwork, GridOperator_Id,            GridOperator>           (this);
+            this.parkingOperators                            = new EntityHashSet       <RoamingNetwork,        ParkingOperator_Id,         ParkingOperator>         (this);
+            this.smartCities                                 = new EntityHashSet       <RoamingNetwork,        SmartCity_Id,               SmartCityProxy>          (this);
+            this.navigationProviders                         = new EntityHashSet       <RoamingNetwork,        NavigationProvider_Id,      NavigationProvider>      (this);
+            this.gridOperators                               = new EntityHashSet       <RoamingNetwork,        GridOperator_Id,            GridOperator>            (this);
 
-            //this._PushEVSEDataToOperatorRoamingServices             = new ConcurrentDictionary<UInt32, IPushData>();
-            //this._PushEVSEStatusToOperatorRoamingServices           = new ConcurrentDictionary<UInt32, IPushStatus>();
+            //this._PushEVSEDataToOperatorRoamingServices      = new ConcurrentDictionary<UInt32, IPushData>();
+            //this._PushEVSEStatusToOperatorRoamingServices    = new ConcurrentDictionary<UInt32, IPushStatus>();
 
-            this.LoggingPath                                        = LoggingPath ?? AppContext.BaseDirectory;
+            this.LoggingPath                                 = LoggingPath ?? AppContext.BaseDirectory;
             Directory.CreateDirectory(this.LoggingPath);
 
-            this.DisableNetworkSync                                 = DisableNetworkSync;
+            this.DisableNetworkSync                          = DisableNetworkSync;
 
-            this.ReservationsStore                                  = new ChargingReservationsStore(this.Id,
-                                                                                                    DisableNetworkSync:   true,
-                                                                                                    LoggingPath:          this.LoggingPath);
+            this.ReservationsStore                           = new ChargingReservationsStore(this.Id,
+                                                                                             DisableNetworkSync:   true,
+                                                                                             LoggingPath:          this.LoggingPath);
 
-            this.SessionsStore                                      = new ChargingSessionsStore    (this,
-                                                                                                    ReloadDataOnStart:    false,
-                                                                                                    RoamingNetworkInfos:  RoamingNetworkInfos,
-                                                                                                    DisableNetworkSync:   DisableNetworkSync,
-                                                                                                    LoggingPath:          this.LoggingPath);
+            this.SessionsStore                               = new ChargingSessionsStore    (this,
+                                                                                             ReloadDataOnStart:    false,
+                                                                                             RoamingNetworkInfos:  RoamingNetworkInfos,
+                                                                                             DisableNetworkSync:   DisableNetworkSync,
+                                                                                             LoggingPath:          this.LoggingPath);
 
-            this.ChargingStationSignatureGenerator                  = ChargingStationSignatureGenerator;
-            this.ChargingPoolSignatureGenerator                     = ChargingPoolSignatureGenerator;
-            this.ChargingStationOperatorSignatureGenerator          = ChargingStationOperatorSignatureGenerator;
+            this.ChargingStationSignatureGenerator           = ChargingStationSignatureGenerator;
+            this.ChargingPoolSignatureGenerator              = ChargingPoolSignatureGenerator;
+            this.ChargingStationOperatorSignatureGenerator   = ChargingStationOperatorSignatureGenerator;
+
+            #endregion
+
+            #region Init authentication cache
+
+            this.DisableAuthenticationCache                  = DisableAuthenticationCache                 ?? false;
+            this.AuthenticationCacheTimeout                  = AuthenticationCacheTimeout                 ?? TimeSpan.FromHours(1);
+            this.MaxAuthStartResultCacheElements             = MaxAuthStartResultCacheElements            ?? 2000;
+            this.MaxAuthStopResultCacheElements              = MaxAuthStopResultCacheElements             ?? 1000;
 
             this.InvalidAuthenticationTokens.Add(AuthenticationToken.Parse("00000000"));
             this.InvalidAuthenticationTokens.Add(AuthenticationToken.Parse("00000000000000"));
+
+            #endregion
+
+            #region Init authentication rate limit
+
+            this.DisableAuthenticationRateLimit              = DisableAuthenticationRateLimit             ?? true;
+            this.AuthenticationRateLimitTimeSpan             = AuthenticationRateLimitTimeSpan            ?? TimeSpan.FromMinutes(5);
+            this.AuthenticationRateLimitPerChargingLocation  = AuthenticationRateLimitPerChargingLocation ?? 10;
 
             #endregion
 
@@ -329,15 +415,6 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
-
-
-        private readonly PriorityList<ISendPOIData>              _ISendData                        = new ();
-        private readonly PriorityList<ISendAdminStatus>          _ISendAdminStatus                 = new ();
-        private readonly PriorityList<ISendStatus>               _ISendStatus                      = new ();
-        private readonly PriorityList<ISendAuthorizeStartStop>   _ISend2RemoteAuthorizeStartStop   = new ();
-        private readonly PriorityList<ISendChargeDetailRecords>  _IRemoteSendChargeDetailRecord    = new ();
-
-        private readonly ConcurrentDictionary<UInt32, IEMPRoamingProvider> _eMobilityRoamingServices;
 
 
         #region Data/(Admin-)Status management
@@ -479,8 +556,8 @@ namespace cloud.charging.open.protocols.WWCP
                     EMPRoamingProviderAddition.SendNotification(this, EMPRoamingProvider);
 
                     SetRoamingProviderPriority(EMPRoamingProvider,
-                                               _eMobilityRoamingServices.Count > 0
-                                                   ? _eMobilityRoamingServices.Keys.Max() + 1
+                                               eMobilityRoamingServices.Count > 0
+                                                   ? eMobilityRoamingServices.Keys.Max() + 1
                                                    : 10);
 
                     return EMPRoamingProvider;
@@ -504,7 +581,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean SetRoamingProviderPriority(IEMPRoamingProvider  eMobilityRoamingService,
                                                   UInt32               Priority)
 
-            => _eMobilityRoamingServices.TryAdd(Priority, eMobilityRoamingService);
+            => eMobilityRoamingServices.TryAdd(Priority, eMobilityRoamingService);
 
         #endregion
 
@@ -7844,17 +7921,6 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            //DebugX.LogT(String.Concat(
-            //    "RoamingNetwork '",
-            //    this.Id,
-            //    "' AuthorizeStart request: ",
-            //    LocalAuthentication,
-            //    " @ ",
-            //    ChargingLocation?.ToString() ?? "-",
-            //    " -> ",
-            //    _ISend2RemoteAuthorizeStartStop.Select(_ => _.AuthId).AggregateWith(", ")));
-
-
             try
             {
 
@@ -7880,6 +7946,7 @@ namespace cloud.charging.open.protocols.WWCP
                 #region Check whether there is a cached result
 
                 if (result is null &&
+                   !DisableAuthenticationCache &&
                     LocalAuthentication.AuthToken.HasValue &&
                     authStartResultCache.TryGetValue(LocalAuthentication.AuthToken.Value, out var cachedAuthStartResult) &&
                     cachedAuthStartResult is not null)
@@ -7913,7 +7980,8 @@ namespace cloud.charging.open.protocols.WWCP
                 #region Check rate limit per charging location
 
                 if (ChargingLocation is not null &&
-                    ChargingLocation.IsDefined())
+                    ChargingLocation.IsDefined() &&
+                   !DisableAuthenticationRateLimit)
                 {
 
                     if (authenticationChargingLocationCounter.TryGetValue(ChargingLocation, out var locationInfo))
@@ -8000,10 +8068,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Maybe store the result within the cache
 
-                if (LocalAuthentication.AuthToken.HasValue &&
-                    result.Result != AuthStartResultTypes.RateLimitReached &&
-                   !DoNotCacheAuthenticationTokens.Contains   (LocalAuthentication.AuthToken.Value) &&
-                   !authStartResultCache.          ContainsKey(LocalAuthentication.AuthToken.Value))
+                if (!DisableAuthenticationCache &&
+                     LocalAuthentication.AuthToken.HasValue &&
+                     result.Result != AuthStartResultTypes.RateLimitReached &&
+                    !DoNotCacheAuthenticationTokens.Contains   (LocalAuthentication.AuthToken.Value) &&
+                    !authStartResultCache.          ContainsKey(LocalAuthentication.AuthToken.Value))
                 {
 
                     authStartResultCache.TryAdd(LocalAuthentication.AuthToken.Value,
@@ -8022,7 +8091,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Purge the cache to avoid denial-of-service attacks!
 
-                if (authStartResultCache.Count > MaxAuthStartResultCacheElements)
+                if (!DisableAuthenticationCache &&
+                     authStartResultCache.Count > MaxAuthStartResultCacheElements)
                 {
                     foreach (var oldEntries in authStartResultCache.OrderBy(kvp => kvp.Value.CachedResultEndOfLifeTime).Take(MaxAuthStartResultCacheElements/4).ToArray())
                     {
@@ -8045,17 +8115,6 @@ namespace cloud.charging.open.protocols.WWCP
                          );
 
             }
-
-
-            //DebugX.LogT(String.Concat(
-            //    "RN AuthStart Response: '",
-            //    result?.ISendAuthorizeStartStop?.   AuthId?.ToString() ?? "-",
-            //    "' / '",
-            //    result?.IReceiveAuthorizeStartStop?.AuthId?.ToString() ?? "-",
-            //    "': ", LocalAuthentication,
-            //    " @ ",
-            //    ChargingLocation?.ToString() ?? "-",
-            //    " => ", result));
 
 
             #region If Authorized...

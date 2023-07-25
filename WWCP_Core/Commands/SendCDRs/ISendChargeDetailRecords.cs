@@ -36,24 +36,24 @@ namespace cloud.charging.open.protocols.WWCP
     public interface ISendChargeDetailRecords
     {
 
-        IId                               SendChargeDetailRecordsId         { get; }
+        IId                                SendChargeDetailRecordsId         { get; }
 
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        Boolean                           DisableSendChargeDetailRecords    { get; set; }
+        Boolean                            DisableSendChargeDetailRecords    { get; set; }
 
 
         /// <summary>
         /// A delegate for filtering charge detail records.
         /// </summary>
-        ChargeDetailRecordFilterDelegate  ChargeDetailRecordFilter          { get; }
+        ChargeDetailRecordFilterDelegate?  ChargeDetailRecordFilter          { get; }
 
         /// <summary>
         /// An event fired whenever a charge detail record had been sent upstream.
         /// </summary>
-        event OnSendCDRsResponseDelegate  OnSendCDRsResponse;
+        event OnSendCDRsResponseDelegate   OnSendCDRsResponse;
         // Events?
 
 

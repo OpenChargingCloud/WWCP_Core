@@ -3637,22 +3637,22 @@ namespace cloud.charging.open.protocols.WWCP
 
                 var json = JSONObject.Create(
 
-                               new JProperty("@id", Id.ToString()),
+                                     new JProperty("@id",           Id.         ToString()),
 
                                !Embedded
-                                   ? new JProperty("@context",    JSONLDContext)
+                                   ? new JProperty("@context",      JSONLDContext)
                                    : null,
 
                                Name.       IsNeitherNullNorEmpty()
-                                   ? new JProperty("name",        Name.ToJSON())
+                                   ? new JProperty("name",          Name.       ToJSON())
                                    : null,
 
                                Description.IsNeitherNullNorEmpty()
-                                   ? new JProperty("description", Description.ToJSON())
+                                   ? new JProperty("description",   Description.ToJSON())
                                    : null,
 
                                (!Embedded || DataSource   != ChargingPool.DataSource)
-                                   ? new JProperty("dataSource", DataSource)
+                                   ? new JProperty("dataSource",    DataSource)
                                    : null,
 
                                (!Embedded || DataLicenses != ChargingPool.DataLicenses)
@@ -3669,8 +3669,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                                          ExpandChargingPoolIds:             InfoStatus.Hidden,
                                                                                                                                          ExpandChargingStationIds:          InfoStatus.Hidden,
                                                                                                                                          ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                                         ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                                         ExpandDataLicenses:                InfoStatus.Hidden)))
+                                                                                                                                         ExpandBrandIds:                    ExpandBrandIds,
+                                                                                                                                         ExpandDataLicenses:                ExpandDataLicenses)))
                                    : null,
 
                                ExpandChargingStationOperatorId != InfoStatus.Hidden && Operator is not null
@@ -3681,8 +3681,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                                          ExpandChargingPoolIds:             InfoStatus.Hidden,
                                                                                                                                          ExpandChargingStationIds:          InfoStatus.Hidden,
                                                                                                                                          ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                                         ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                                         ExpandDataLicenses:                InfoStatus.Hidden)))
+                                                                                                                                         ExpandBrandIds:                    ExpandBrandIds,
+                                                                                                                                         ExpandDataLicenses:                ExpandDataLicenses)))
                                    : null,
 
                                ExpandChargingPoolId != InfoStatus.Hidden && ChargingPool is not null
@@ -3693,12 +3693,12 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                                      ExpandChargingStationOperatorId:   InfoStatus.Hidden,
                                                                                                                                      ExpandChargingStationIds:          InfoStatus.Hidden,
                                                                                                                                      ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                                     ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                                     ExpandDataLicenses:                InfoStatus.Hidden)))
+                                                                                                                                     ExpandBrandIds:                    ExpandBrandIds,
+                                                                                                                                     ExpandDataLicenses:                ExpandDataLicenses)))
                                    : null,
 
-                               (!Embedded || GeoLocation         != ChargingPool.GeoLocation)         ? new JProperty("geoLocation",          (GeoLocation ?? ChargingPool.GeoLocation).Value.  ToJSON()) : null,
-                               (!Embedded || Address             != ChargingPool.Address)             ? new JProperty("address",              (Address     ?? ChargingPool.Address).            ToJSON()) : null,
+                               (!Embedded || GeoLocation         != ChargingPool.GeoLocation)         ? new JProperty("geoLocation",          (GeoLocation ?? ChargingPool.GeoLocation).Value.  ToJSON(Embedded: true)) : null,
+                               (!Embedded || Address             != ChargingPool.Address)             ? new JProperty("address",              (Address     ?? ChargingPool.Address).            ToJSON(Embedded: true)) : null,
                                (!Embedded || AuthenticationModes != ChargingPool.AuthenticationModes) ? new JProperty("authenticationModes",  AuthenticationModes.ToJSON())   : null,
                                (!Embedded || HotlinePhoneNumber  != ChargingPool.HotlinePhoneNumber)  ? new JProperty("hotlinePhoneNumber",   HotlinePhoneNumber. ToString()) : null,
                                (!Embedded || OpeningTimes        != ChargingPool.OpeningTimes)        ? new JProperty("openingTimes",         OpeningTimes.       ToJSON())   : null,
@@ -3718,8 +3718,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                       ExpandChargingStationOperatorId:    InfoStatus.Hidden,
                                                                                       ExpandChargingPoolId:               InfoStatus.Hidden,
                                                                                       ExpandChargingStationId:            InfoStatus.Hidden,
-                                                                                      ExpandBrandIds:                     InfoStatus.ShowIdOnly,
-                                                                                      ExpandDataLicenses:                 InfoStatus.Hidden,
+                                                                                      ExpandBrandIds:                     ExpandBrandIds,
+                                                                                      ExpandDataLicenses:                 ExpandDataLicenses,
                                                                                       CustomEVSESerializer:               CustomEVSESerializer,
                                                                                       CustomChargingConnectorSerializer:  CustomChargingConnectorSerializer).
                                                                               Where  (evse => evse != null))))
@@ -3738,7 +3738,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          () => new JProperty("brands",
                                                              new JArray(Brands.OrderBy(brand => brand.Id).
                                                                                ToJSON (Embedded:            true,
-                                                                                       ExpandDataLicenses:  InfoStatus.ShowIdOnly))))
+                                                                                       ExpandDataLicenses:  ExpandDataLicenses))))
 
                                    : null
 
@@ -3762,7 +3762,6 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
-
 
 
         #region UpdateWith(OtherChargingStation)

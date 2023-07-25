@@ -53,20 +53,29 @@ namespace cloud.charging.open.protocols.WWCP
         public static RoamingNetwork CreateNewRoamingNetwork(this IRoamingNetworks                      RoamingNetworks,
                                                              RoamingNetwork_Id                          RoamingNetworkId,
                                                              I18NString                                 Name,
-                                                             I18NString?                                Description                                 = null,
-                                                             Action<RoamingNetwork>?                    Configurator                                = null,
-                                                             RoamingNetworkAdminStatusTypes?            InitialAdminStatus                          = null,
-                                                             RoamingNetworkStatusTypes?                 InitialStatus                               = null,
-                                                             UInt16?                                    MaxAdminStatusScheduleSize                  = null,
-                                                             UInt16?                                    MaxStatusScheduleSize                       = null,
+                                                             I18NString?                                Description                                  = null,
+                                                             Action<RoamingNetwork>?                    Configurator                                 = null,
+                                                             RoamingNetworkAdminStatusTypes?            InitialAdminStatus                           = null,
+                                                             RoamingNetworkStatusTypes?                 InitialStatus                                = null,
+                                                             UInt16?                                    MaxAdminStatusScheduleSize                   = null,
+                                                             UInt16?                                    MaxStatusScheduleSize                        = null,
 
-                                                             ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator           = null,
-                                                             ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator              = null,
-                                                             ChargingStationOperatorSignatureDelegate?  ChargingStationOperatorSignatureGenerator   = null,
+                                                             Boolean?                                   DisableAuthenticationCache                   = false,
+                                                             TimeSpan?                                  AuthenticationCacheTimeout                   = null,
+                                                             UInt32?                                    MaxAuthStartResultCacheElements              = null,
+                                                             UInt32?                                    MaxAuthStopResultCacheElements               = null,
 
-                                                             IEnumerable<RoamingNetworkInfo>?           RoamingNetworkInfos                         = null,
-                                                             Boolean                                    DisableNetworkSync                          = false,
-                                                             String?                                    LoggingPath                                 = null)
+                                                             Boolean?                                   DisableAuthenticationRateLimit               = true,
+                                                             TimeSpan?                                  AuthenticationRateLimitTimeSpan              = null,
+                                                             UInt16?                                    AuthenticationRateLimitPerChargingLocation   = null,
+
+                                                             ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator            = null,
+                                                             ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator               = null,
+                                                             ChargingStationOperatorSignatureDelegate?  ChargingStationOperatorSignatureGenerator    = null,
+
+                                                             IEnumerable<RoamingNetworkInfo>?           RoamingNetworkInfos                          = null,
+                                                             Boolean                                    DisableNetworkSync                           = false,
+                                                             String?                                    LoggingPath                                  = null)
 
         {
 
@@ -77,6 +86,15 @@ namespace cloud.charging.open.protocols.WWCP
                                                     InitialStatus,
                                                     MaxAdminStatusScheduleSize,
                                                     MaxStatusScheduleSize,
+
+                                                    DisableAuthenticationCache,
+                                                    AuthenticationCacheTimeout,
+                                                    MaxAuthStartResultCacheElements,
+                                                    MaxAuthStopResultCacheElements,
+
+                                                    DisableAuthenticationRateLimit,
+                                                    AuthenticationRateLimitTimeSpan,
+                                                    AuthenticationRateLimitPerChargingLocation,
 
                                                     ChargingStationSignatureGenerator,
                                                     ChargingPoolSignatureGenerator,

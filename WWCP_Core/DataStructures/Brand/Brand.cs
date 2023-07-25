@@ -92,40 +92,37 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
-        /// The unique identification of the brand.
+        /// The unique identification of this brand.
         /// </summary>
-        public Brand_Id                  Id              { get; }
+        public Brand_Id                      Id              { get; }
 
         /// <summary>
-        /// The multi-language brand name.
+        /// The multi-language name of this brand.
         /// </summary>
-        public I18NString                Name            { get; }
+        public I18NString                    Name            { get; }
 
         /// <summary>
-        /// The multi-language brand description.
+        /// The optional multi-language description of this brand.
         /// </summary>
-        public I18NString                Description     { get; }
+        public I18NString                    Description     { get; }
 
         /// <summary>
-        /// The optional URL of the logo of this brand.
+        /// The optional URL of a logo of this brand.
         /// </summary>
         [Optional]
-        public URL?                      Logo            { get; }
+        public URL?                          Logo            { get; }
 
         /// <summary>
-        /// The homepage of this brand.
+        /// The optional homepage of this brand.
         /// </summary>
         [Optional]
-        public URL?                      Homepage        { get; }
+        public URL?                          Homepage        { get; }
 
         /// <summary>
         /// The optional data licenses of this brand.
         /// </summary>
         [Optional]
         public IEnumerable<OpenDataLicense>  DataLicenses    { get; }
-
-        public DateTime LastChange
-            => throw new NotImplementedException();
 
         #endregion
 
@@ -187,30 +184,30 @@ namespace cloud.charging.open.protocols.WWCP
 
             var json = JSONObject.Create(
 
-                           Embedded
-                               ? new JProperty("@context",      JSONLDContext)
+                           !Embedded
+                               ? new JProperty("@context",       JSONLDContext)
                                : null,
 
-                           new JProperty("id",                  Id.         ToString()),
-                           new JProperty("name",                Name.       ToJSON()),
+                                 new JProperty("id",             Id.         ToString()),
+                                 new JProperty("name",           Name.       ToJSON()),
 
                            Description.IsNeitherNullNorEmpty()
-                               ? new JProperty("description",   Description.ToJSON())
+                               ? new JProperty("description",    Description.ToJSON())
                                : null,
 
                            Logo.IsNotNullOrEmpty()
-                               ? new JProperty("logo",          Logo.       ToString())
+                               ? new JProperty("logo",           Logo.       ToString())
                                : null,
 
                            Homepage.IsNotNullOrEmpty()
-                               ? new JProperty("homepage",      Homepage.   ToString())
+                               ? new JProperty("homepage",       Homepage.   ToString())
                                : null,
 
                            DataLicenses.Any()
-                               ? new JProperty("dataLicenses",  ExpandDataLicenses.Switch(
-                                                                    () => new JArray(DataLicenses.Select(dataLicense => dataLicense.Id.ToString())),
-                                                                    () => new JArray(DataLicenses.Select(dataLicense => dataLicense.ToJSON()))
-                                                                ))
+                               ? new JProperty("dataLicenses",   ExpandDataLicenses.Switch(
+                                                                     () => new JArray(DataLicenses.Select(dataLicense => dataLicense.Id.ToString())),
+                                                                     () => new JArray(DataLicenses.Select(dataLicense => dataLicense.ToJSON()))
+                                                                 ))
                                : null
 
                        );

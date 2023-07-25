@@ -2559,8 +2559,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                         ExpandChargingPoolIds:             InfoStatus.Hidden,
                                                                                                                         ExpandChargingStationIds:          InfoStatus.Hidden,
                                                                                                                         ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                        ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                        ExpandDataLicenses:                InfoStatus.Hidden)))
+                                                                                                                        ExpandBrandIds:                    ExpandBrandIds,
+                                                                                                                        ExpandDataLicenses:                ExpandDataLicenses)))
                                    : null,
 
                                ExpandChargingStationOperatorId != InfoStatus.Hidden && Operator is not null
@@ -2571,8 +2571,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                   ExpandChargingPoolIds:             InfoStatus.Hidden,
                                                                                                                   ExpandChargingStationIds:          InfoStatus.Hidden,
                                                                                                                   ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                  ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                  ExpandDataLicenses:                InfoStatus.Hidden)))
+                                                                                                                  ExpandBrandIds:                    ExpandBrandIds,
+                                                                                                                  ExpandDataLicenses:                ExpandDataLicenses)))
                                    : null,
 
                                ExpandChargingPoolId != InfoStatus.Hidden && ChargingPool is not null
@@ -2583,8 +2583,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                       ExpandChargingStationOperatorId:   InfoStatus.Hidden,
                                                                                                                       ExpandChargingStationIds:          InfoStatus.Hidden,
                                                                                                                       ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                      ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                      ExpandDataLicenses:                InfoStatus.Hidden)))
+                                                                                                                      ExpandBrandIds:                    ExpandBrandIds,
+                                                                                                                      ExpandDataLicenses:                ExpandDataLicenses)))
                                    : null,
 
                                ExpandChargingStationId != InfoStatus.Hidden && ChargingStation is not null
@@ -2594,8 +2594,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                          ExpandRoamingNetworkId:            InfoStatus.Hidden,
                                                                                                                          ExpandChargingStationOperatorId:   InfoStatus.Hidden,
                                                                                                                          ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                         ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                         ExpandDataLicenses:                InfoStatus.Hidden)))
+                                                                                                                         ExpandBrandIds:                    ExpandBrandIds,
+                                                                                                                         ExpandDataLicenses:                ExpandDataLicenses)))
                                    : null,
 
                                !Embedded && ChargingStation is not null && ChargingPool is not null && (ChargingStation.GeoLocation.HasValue || ChargingPool.GeoLocation.HasValue)

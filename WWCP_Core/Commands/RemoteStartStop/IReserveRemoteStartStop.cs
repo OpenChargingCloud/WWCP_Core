@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a new charging session was created.
         /// </summary>
-        event OnNewChargingSessionDelegate     OnNewChargingSession;
+        event OnNewChargingSessionDelegate OnNewChargingSession;
 
 
         /// <summary>
