@@ -20,7 +20,6 @@
 using NUnit.Framework;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using cloud.charging.open.protocols.WWCP.Networking;
 
 #endregion
 

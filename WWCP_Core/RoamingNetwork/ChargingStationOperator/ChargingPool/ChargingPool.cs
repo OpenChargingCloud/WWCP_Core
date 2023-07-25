@@ -60,14 +60,14 @@ namespace cloud.charging.open.protocols.WWCP
         private readonly        Decimal   EPSILON                                          = 0.01m;
 
         /// <summary>
-        /// The default max size of the charging pool (aggregated charging station) status list.
-        /// </summary>
-        public const            UInt16    DefaultMaxChargingPoolStatusScheduleSize         = 15;
-
-        /// <summary>
         /// The default max size of the charging pool admin status list.
         /// </summary>
         public const            UInt16    DefaultMaxChargingPoolAdminStatusScheduleSize    = 15;
+
+        /// <summary>
+        /// The default max size of the charging pool (aggregated charging station) status list.
+        /// </summary>
+        public const            UInt16    DefaultMaxChargingPoolStatusScheduleSize         = 15;
 
         /// <summary>
         /// The maximum time span for a reservation.

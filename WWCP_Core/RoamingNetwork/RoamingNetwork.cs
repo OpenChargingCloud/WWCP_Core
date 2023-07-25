@@ -8313,8 +8313,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Check rate limit per charging location
 
-                if (ChargingLocation is not null &&
-                    ChargingLocation.IsDefined())
+                if (!DisableAuthenticationRateLimit &&
+                     ChargingLocation is not null &&
+                     ChargingLocation.IsDefined())
                 {
 
                     if (authenticationChargingLocationCounter.TryGetValue(ChargingLocation, out var locationInfo))

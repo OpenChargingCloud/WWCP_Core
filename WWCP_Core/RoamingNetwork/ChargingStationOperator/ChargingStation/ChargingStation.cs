@@ -17,19 +17,16 @@
 
 #region Usings
 
-using System.Diagnostics;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
-using System.Linq.Expressions;
+
 using social.OpenData.UsersAPI;
 
 #endregion
@@ -59,14 +56,14 @@ namespace cloud.charging.open.protocols.WWCP
         private readonly        Decimal   EPSILON                                             = 0.01m;
 
         /// <summary>
-        /// The default max size of the charging station (aggregated EVSE) status list.
-        /// </summary>
-        public const            UInt16    DefaultMaxChargingStationStatusScheduleSize         = 15;
-
-        /// <summary>
         /// The default max size of the charging station admin status list.
         /// </summary>
         public const            UInt16    DefaultMaxChargingStationAdminStatusScheduleSize    = 15;
+
+        /// <summary>
+        /// The default max size of the charging station (aggregated EVSE) status list.
+        /// </summary>
+        public const            UInt16    DefaultMaxChargingStationStatusScheduleSize         = 15;
 
         /// <summary>
         /// The maximum time span for a reservation.

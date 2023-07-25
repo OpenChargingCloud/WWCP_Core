@@ -80,24 +80,24 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
             if (roamingNetwork is not null)
             {
 
-                var rn = new WWCP.RoamingNetwork(
-                             Id:                  RoamingNetwork_Id.Parse("TEST"),
-                             Name:                I18NString.Create(Languages.en, "TESTNET"),
-                             Description:         I18NString.Create(Languages.en, "A roaming network for testing"),
-                             DisableNetworkSync:  true
-                         );
+                var roamingNetwork = new WWCP.RoamingNetwork(
+                                             Id:                  RoamingNetwork_Id.Parse("TEST"),
+                                             Name:                I18NString.Create(Languages.en, "TESTNET"),
+                                             Description:         I18NString.Create(Languages.en, "A roaming network for testing"),
+                                             DisableNetworkSync:  true
+                                         );
 
-                Assert.IsNotNull(rn);
+                Assert.IsNotNull(roamingNetwork);
 
-                if (rn is not null)
+                if (roamingNetwork is not null)
                 {
 
-                    Assert.AreEqual ("TEST",                                      rn.Id.         ToString());
-                    Assert.AreEqual ("TESTNET",                                   rn.Name.       FirstText());
-                    Assert.AreEqual ("A roaming network for testing",             rn.Description.FirstText());
+                    Assert.AreEqual ("TEST",                                      roamingNetwork.Id.         ToString());
+                    Assert.AreEqual ("TESTNET",                                   roamingNetwork.Name.       FirstText());
+                    Assert.AreEqual ("A roaming network for testing",             roamingNetwork.Description.FirstText());
 
-                    Assert.AreEqual (RoamingNetworkAdminStatusTypes.Operational,  rn.AdminStatus);
-                    Assert.AreEqual (RoamingNetworkStatusTypes.Available,         rn.Status);
+                    Assert.AreEqual (RoamingNetworkAdminStatusTypes.Operational,  roamingNetwork.AdminStatus);
+                    Assert.AreEqual (RoamingNetworkStatusTypes.Available,         roamingNetwork.Status);
 
                 }
 

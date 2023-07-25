@@ -185,17 +185,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The JSON-LD context of the object.
         /// </summary>
-        public const String JSONLDContext                   = "https://open.charging.cloud/contexts/wwcp+json/chargingStationOperator";
+        public const String  JSONLDContext                                               = "https://open.charging.cloud/contexts/wwcp+json/chargingStationOperator";
 
         /// <summary>
-        /// The default max size of the admin status list.
+        /// The default max size of the charging station operator admin status list.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusScheduleSize   = 15;
+        public const UInt16  DefaultMaxChargingStationOperatorAdminStatusScheduleSize    = 15;
 
         /// <summary>
-        /// The default max size of the status list.
+        /// The default max size of the charging station operator (aggregated charging station) status list.
         /// </summary>
-        public const UInt16 DefaultMaxStatusScheduleSize        = 15;
+        public const UInt16  DefaultMaxChargingStationOperatorStatusScheduleSize         = 15;
 
         #endregion
 
@@ -461,8 +461,8 @@ namespace cloud.charging.open.protocols.WWCP
                                        RemoteChargingStationOperatorCreatorDelegate?          RemoteChargingStationOperatorCreator   = null,
                                        Timestamped<ChargingStationOperatorAdminStatusTypes>?  InitialAdminStatus                     = null,
                                        Timestamped<ChargingStationOperatorStatusTypes>?       InitialStatus                          = null,
-                                       UInt16                                                 MaxAdminStatusScheduleSize             = DefaultMaxAdminStatusScheduleSize,
-                                       UInt16                                                 MaxStatusScheduleSize                  = DefaultMaxStatusScheduleSize,
+                                       UInt16?                                                MaxAdminStatusScheduleSize             = DefaultMaxAdminStatusScheduleSize,
+                                       UInt16?                                                MaxStatusScheduleSize                  = DefaultMaxStatusScheduleSize,
 
                                        JObject?                                               CustomData                             = null,
                                        UserDefinedDictionary?                                 InternalData                           = null)
@@ -474,10 +474,10 @@ namespace cloud.charging.open.protocols.WWCP
                    null,
                    null,
                    null,
-                   InitialAdminStatus,
-                   InitialStatus,
-                   MaxAdminStatusScheduleSize,
-                   MaxStatusScheduleSize,
+                   InitialAdminStatus         ?? ChargingStationOperatorAdminStatusTypes.Operational,
+                   InitialStatus              ?? ChargingStationOperatorStatusTypes.Available,
+                   MaxAdminStatusScheduleSize ?? DefaultMaxChargingStationOperatorAdminStatusScheduleSize,
+                   MaxStatusScheduleSize      ?? DefaultMaxChargingStationOperatorStatusScheduleSize,
                    null,
                    null,
                    CustomData,
