@@ -1,11 +1,19 @@
 # WWCP Core
 
-The *World Wide Charging Protocol Suite* is a collection of protocols in order to
-connect market actors in the field of e-mobility solutions via *scalable and secure
-Internet protocols*. This repository defines the fundamental core concepts, entities
-and data structures and comes with a reference implementation of virtual EVSEs, charging
-stations, charging pools, charging station operators, e-mobility providers, roaming networks
-and more, to enable continous integration tests within e-mobility roaming networks.
+The *World Wide Charging Protocol Suite* is a suite of protocols that provides a unified architecture,
+designed to link all stakeholders in electric mobility and energy networks through scalable, secure
+and semantic Internet protocols.
+
+Unlike traditional e-mobility protocols, the WWCP Suite prioritizes IT security, privacy, transparency,
+metrology, and semantics in an extensively connected open environment. Therefore the suite also
+emphasizes interoperability with existing protocols and both backward and forward compatibility within
+its own framework.
+
+This repository lays down the bedrock concepts, entities, and data structures, and provides a reference
+implementation of virtual components like Electric Vehicle Supply Equipment (EVSEs), charging stations,
+charging pools, charging station operators, e-mobility service providers, roaming networks, national
+access points and more. These components are designed to facilitate continuous integration testing and
+penetration testing within e-mobility roaming networks.
 
 #### Related Projects
 
@@ -30,7 +38,7 @@ The following projects are no longer in active devlopment, but left for educatio
 
 #### Requirements & Configuration
 
-1. You will need .NET6
+1. You will need .NET7
 2. (Stress) tested under Debian GNU/Linux running in a KVM environment on AMD Ryzen 9 16-Core Zen3 machines
 
 
