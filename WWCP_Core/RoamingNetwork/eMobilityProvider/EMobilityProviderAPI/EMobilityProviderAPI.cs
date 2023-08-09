@@ -17,9 +17,7 @@
 
 #region Usings
 
-using System.Net.Security;
 using System.Security.Authentication;
-using System.Collections.Concurrent;
 
 using Newtonsoft.Json.Linq;
 
@@ -191,50 +189,49 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
         #region Constructor(s)
 
-        public EMobilityProviderAPI(VirtualEMobilityProvider              EMobilityProvider,
+        public EMobilityProviderAPI(VirtualEMobilityProvider             EMobilityProvider,
 
-                                    HTTPHostname?                         HTTPHostname                       = null,
-                                    String?                               ExternalDNSName                    = null,
-                                    IPPort?                               HTTPServerPort                     = null,
-                                    HTTPPath?                             BasePath                           = null,
-                                    String?                               HTTPServerName                     = DefaultHTTPServerName,
+                                    HTTPHostname?                        HTTPHostname                 = null,
+                                    String?                              ExternalDNSName              = null,
+                                    IPPort?                              HTTPServerPort               = null,
+                                    HTTPPath?                            BasePath                     = null,
+                                    String?                              HTTPServerName               = DefaultHTTPServerName,
 
-                                    HTTPPath?                             URLPathPrefix                      = null,
-                                    String?                               HTTPServiceName                    = DefaultHTTPServiceName,
-                                    String?                               HTMLTemplate                       = null,
-                                    JObject?                              APIVersionHashes                   = null,
+                                    HTTPPath?                            URLPathPrefix                = null,
+                                    String?                              HTTPServiceName              = DefaultHTTPServiceName,
+                                    String?                              HTMLTemplate                 = null,
+                                    JObject?                             APIVersionHashes             = null,
 
-                                    ServerCertificateSelectorDelegate?    ServerCertificateSelector          = null,
-                                    RemoteCertificateValidationCallback?  ClientCertificateValidator         = null,
-                                    LocalCertificateSelectionCallback?    ClientCertificateSelector          = null,
-                                    SslProtocols?                         AllowedTLSProtocols                = null,
-                                    Boolean?                              ClientCertificateRequired          = null,
-                                    Boolean?                              CheckCertificateRevocation         = null,
+                                    ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+                                    RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
+                                    LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+                                    SslProtocols?                        AllowedTLSProtocols          = null,
+                                    Boolean?                             ClientCertificateRequired    = null,
+                                    Boolean?                             CheckCertificateRevocation   = null,
 
-                                    String?                               ServerThreadName                   = null,
-                                    ThreadPriority?                       ServerThreadPriority               = null,
-                                    Boolean?                              ServerThreadIsBackground           = null,
+                                    ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
+                                    ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
+                                    Boolean?                             ServerThreadIsBackground     = null,
+                                    ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
+                                    TimeSpan?                            ConnectionTimeout            = null,
+                                    UInt32?                              MaxClientConnections         = null,
 
-                                    ConnectionIdBuilder?                  ConnectionIdBuilder                = null,
-                                    TimeSpan?                             ConnectionTimeout                  = null,
-                                    UInt32?                               MaxClientConnections               = null,
+                                    Boolean?                             DisableMaintenanceTasks      = null,
+                                    TimeSpan?                            MaintenanceInitialDelay      = null,
+                                    TimeSpan?                            MaintenanceEvery             = null,
 
-                                    Boolean?                              DisableMaintenanceTasks            = null,
-                                    TimeSpan?                             MaintenanceInitialDelay            = null,
-                                    TimeSpan?                             MaintenanceEvery                   = null,
+                                    Boolean?                             DisableWardenTasks           = null,
+                                    TimeSpan?                            WardenInitialDelay           = null,
+                                    TimeSpan?                            WardenCheckEvery             = null,
 
-                                    Boolean?                              DisableWardenTasks                 = null,
-                                    TimeSpan?                             WardenInitialDelay                 = null,
-                                    TimeSpan?                             WardenCheckEvery                   = null,
-
-                                    Boolean?                              IsDevelopment                      = null,
-                                    IEnumerable<String>?                  DevelopmentServers                 = null,
-                                    Boolean?                              DisableLogging                     = null,
-                                    String?                               LoggingPath                        = null,
-                                    String?                               LogfileName                        = DefaultLogfileName,
-                                    LogfileCreatorDelegate?               LogfileCreator                     = null,
-                                    DNSClient?                            DNSClient                          = null,
-                                    Boolean                               AutoStart                          = false)
+                                    Boolean?                             IsDevelopment                = null,
+                                    IEnumerable<String>?                 DevelopmentServers           = null,
+                                    Boolean?                             DisableLogging               = null,
+                                    String?                              LoggingPath                  = null,
+                                    String?                              LogfileName                  = DefaultLogfileName,
+                                    LogfileCreatorDelegate?              LogfileCreator               = null,
+                                    DNSClient?                           DNSClient                    = null,
+                                    Boolean                              AutoStart                    = false)
 
             : base(HTTPHostname,
                    ExternalDNSName,
@@ -254,10 +251,9 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                    ClientCertificateRequired,
                    CheckCertificateRevocation,
 
-                   ServerThreadName,
-                   ServerThreadPriority,
+                   ServerThreadNameCreator,
+                   ServerThreadPrioritySetter,
                    ServerThreadIsBackground,
-
                    ConnectionIdBuilder,
                    ConnectionTimeout,
                    MaxClientConnections,
