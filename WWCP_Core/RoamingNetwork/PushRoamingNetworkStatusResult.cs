@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An object implementing ISendStatus.
         /// </summary>
-        public IPushStatus?                             ISendStatus                             { get; }
+        public ISendStatus?                             ISendStatus                             { get; }
 
         /// <summary>
         /// An object implementing IReceiveStatus.
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         internal PushRoamingNetworkStatusResult(IId                                       AuthId,
-                                                IPushStatus                               ISendStatus,
+                                                ISendStatus                               ISendStatus,
                                                 PushRoamingNetworkStatusResultTypes       Result,
                                                 String?                                   Description                           = null,
                                                 IEnumerable<RoamingNetworkStatusUpdate>?  RejectedRoamingNetworkStatusUpdates   = null,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushRoamingNetworkStatusResult
 
             Success(IId                    AuthId,
-                    IPushStatus            ISendStatus,
+                    ISendStatus            ISendStatus,
                     String?                Description   = null,
                     IEnumerable<Warning>?  Warnings      = null,
                     TimeSpan?              Runtime       = null)
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushRoamingNetworkStatusResult
 
             Enqueued(IId                    AuthId,
-                     IPushStatus            ISendStatus,
+                     ISendStatus            ISendStatus,
                      String?                Description   = null,
                      IEnumerable<Warning>?  Warnings      = null,
                      TimeSpan?              Runtime       = null)
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushRoamingNetworkStatusResult
 
             NoOperation(IId                    AuthId,
-                        IPushStatus            ISendStatus,
+                        ISendStatus            ISendStatus,
                         String?                Description   = null,
                         IEnumerable<Warning>?  Warnings      = null,
                         TimeSpan?              Runtime       = null)
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushRoamingNetworkStatusResult
 
             OutOfService(IId                                      AuthId,
-                         IPushStatus                              ISendStatus,
+                         ISendStatus                              ISendStatus,
                          IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
                          String?                                  Description   = null,
                          IEnumerable<Warning>?                    Warnings      = null,
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushRoamingNetworkStatusResult
 
             AdminDown(IId                                      AuthId,
-                      IPushStatus                              ISendStatus,
+                      ISendStatus                              ISendStatus,
                       IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
                       String?                                  Description   = null,
                       IEnumerable<Warning>?                    Warnings      = null,
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushRoamingNetworkStatusResult
 
             Error(IId                                       AuthId,
-                  IPushStatus                               ISendStatus,
+                  ISendStatus                               ISendStatus,
                   IEnumerable<RoamingNetworkStatusUpdate>?  RejectedRoamingNetworkStatusUpdates   = null,
                   String?                                   Description                           = null,
                   IEnumerable<Warning>?                     Warnings                              = null,
@@ -409,7 +409,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushRoamingNetworkStatusResult
 
             LockTimeout(IId                                      AuthId,
-                        IPushStatus                              ISendStatus,
+                        ISendStatus                              ISendStatus,
                         IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
                         String?                                  Description   = null,
                         IEnumerable<Warning>?                    Warnings      = null,
@@ -430,7 +430,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Flatten(AuthId, ISendStatus, PushRoamingNetworkStatusResults, Runtime)
 
         public static PushRoamingNetworkStatusResult Flatten(IId                                          AuthId,
-                                                             IPushStatus                                  ISendStatus,
+                                                             ISendStatus                                  ISendStatus,
                                                              IEnumerable<PushRoamingNetworkStatusResult>  PushRoamingNetworkStatusResults,
                                                              TimeSpan                                     Runtime)
         {

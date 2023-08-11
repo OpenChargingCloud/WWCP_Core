@@ -24,13 +24,13 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public interface IPushStatus
+    public interface ISendStatus
     {
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        Boolean  DisablePushStatus   { get; set; }
+        Boolean  DisableSendStatus   { get; set; }
 
 
         #region OnEVSEStatusPush/-Pushed

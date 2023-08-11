@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An object implementing ISendAdminStatus.
         /// </summary>
-        public IPushAdminStatus?                           ISendAdminStatus                           { get; }
+        public ISendAdminStatus?                           ISendAdminStatus                           { get; }
 
         /// <summary>
         /// An object implementing IReceiveAdminStatus.
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         internal PushChargingPoolAdminStatusResult(IId                                          AuthId,
-                                                   IPushAdminStatus                             ISendAdminStatus,
+                                                   ISendAdminStatus                             ISendAdminStatus,
                                                    PushChargingPoolAdminStatusResultTypes       Result,
                                                    String?                                      Description                              = null,
                                                    IEnumerable<ChargingPoolAdminStatusUpdate>?  RejectedChargingPoolAdminStatusUpdates   = null,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolAdminStatusResult
 
             Success(IId                    AuthId,
-                    IPushAdminStatus       ISendAdminStatus,
+                    ISendAdminStatus       ISendAdminStatus,
                     String?                Description   = null,
                     IEnumerable<Warning>?  Warnings      = null,
                     TimeSpan?              Runtime       = null)
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolAdminStatusResult
 
             Enqueued(IId                    AuthId,
-                     IPushAdminStatus       ISendAdminStatus,
+                     ISendAdminStatus       ISendAdminStatus,
                      String?                Description   = null,
                      IEnumerable<Warning>?  Warnings      = null,
                      TimeSpan?              Runtime       = null)
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolAdminStatusResult
 
             NoOperation(IId                    AuthId,
-                        IPushAdminStatus       ISendAdminStatus,
+                        ISendAdminStatus       ISendAdminStatus,
                         String?                Description   = null,
                         IEnumerable<Warning>?  Warnings      = null,
                         TimeSpan?              Runtime       = null)
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolAdminStatusResult
 
             OutOfService(IId                                                    AuthId,
-                         IPushAdminStatus                                       ISendAdminStatus,
+                         ISendAdminStatus                                       ISendAdminStatus,
                          IEnumerable<ChargingPoolAdminStatusUpdate>  RejectedChargingPoolAdminStatusUpdates,
                          String?                                                Description   = null,
                          IEnumerable<Warning>?                                  Warnings      = null,
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolAdminStatusResult
 
             AdminDown(IId                                                    AuthId,
-                      IPushAdminStatus                                       ISendAdminStatus,
+                      ISendAdminStatus                                       ISendAdminStatus,
                       IEnumerable<ChargingPoolAdminStatusUpdate>  RejectedChargingPoolAdminStatusUpdates,
                       String?                                                Description   = null,
                       IEnumerable<Warning>?                                  Warnings      = null,
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolAdminStatusResult
 
             Error(IId                                                     AuthId,
-                  IPushAdminStatus                                        ISendAdminStatus,
+                  ISendAdminStatus                                        ISendAdminStatus,
                   IEnumerable<ChargingPoolAdminStatusUpdate>?  RejectedChargingPoolAdminStatusUpdates   = null,
                   String?                                                 Description                                         = null,
                   IEnumerable<Warning>?                                   Warnings                                            = null,
@@ -409,7 +409,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolAdminStatusResult
 
             LockTimeout(IId                                                    AuthId,
-                        IPushAdminStatus                                       ISendAdminStatus,
+                        ISendAdminStatus                                       ISendAdminStatus,
                         IEnumerable<ChargingPoolAdminStatusUpdate>  RejectedChargingPoolAdminStatusUpdates,
                         String?                                                Description   = null,
                         IEnumerable<Warning>?                                  Warnings      = null,
@@ -430,7 +430,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Flatten(AuthId, ISendAdminStatus, PushChargingPoolAdminStatusResults, Runtime)
 
         public static PushChargingPoolAdminStatusResult Flatten(IId                                                        AuthId,
-                                                                           IPushAdminStatus                                           ISendAdminStatus,
+                                                                           ISendAdminStatus                                           ISendAdminStatus,
                                                                            IEnumerable<PushChargingPoolAdminStatusResult>  PushChargingPoolAdminStatusResults,
                                                                            TimeSpan                                                   Runtime)
         {

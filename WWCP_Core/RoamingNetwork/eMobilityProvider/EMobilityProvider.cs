@@ -299,9 +299,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         public EMobilityProviderPriority Priority { get; set; }
 
-        public Boolean DisablePushAdminStatus { get; set; }
+        public Boolean DisableSendAdminStatus { get; set; }
 
-        public Boolean DisablePushStatus { get; set; }
+        public Boolean DisableSendStatus { get; set; }
 
         public Boolean DisableSendChargeDetailRecords { get; set; }
 
@@ -1692,7 +1692,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         async Task<PushEVSEAdminStatusResult>
 
-            IPushAdminStatus.UpdateEVSEAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  EVSEAdminStatusUpdates,
+            ISendAdminStatus.UpdateEVSEAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  EVSEAdminStatusUpdates,
                                                    TransmissionTypes                   TransmissionType,
 
                                                    DateTime?                           Timestamp,
@@ -1726,13 +1726,13 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateAdminStatus(EVSEAdminStatusUpdates,
+            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateEVSEAdminStatus(EVSEAdminStatusUpdates,
 
-                                                                         Timestamp,
-                                                                         CancellationToken,
-                                                                         EventTrackingId,
-                                                                         RequestTimeout);
+                                                                             Timestamp,
+                                                                             EventTrackingId,
+                                                                             RequestTimeout,
+                                                                             CancellationToken);
 
             else
                 result = PushEVSEAdminStatusResult.OutOfService(Id,
@@ -1774,7 +1774,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushChargingStationAdminStatusResult>
 
-            IPushAdminStatus.UpdateChargingStationAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  ChargingStationAdminStatusUpdates,
+            ISendAdminStatus.UpdateChargingStationAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  ChargingStationAdminStatusUpdates,
                                                               TransmissionTypes                              TransmissionType,
 
                                                               DateTime?                                      Timestamp,
@@ -1808,13 +1808,13 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateAdminStatus(ChargingStationAdminStatusUpdates,
+            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateChargingStationAdminStatus(ChargingStationAdminStatusUpdates,
 
-                                                                         Timestamp,
-                                                                         CancellationToken,
-                                                                         EventTrackingId,
-                                                                         RequestTimeout);
+                                                                                        Timestamp,
+                                                                                        EventTrackingId,
+                                                                                        RequestTimeout,
+                                                                                        CancellationToken);
 
             else
                 result = PushChargingStationAdminStatusResult.OutOfService(Id,
@@ -1856,7 +1856,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushChargingPoolAdminStatusResult>
 
-            IPushAdminStatus.UpdateChargingPoolAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  ChargingPoolAdminStatusUpdates,
+            ISendAdminStatus.UpdateChargingPoolAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  ChargingPoolAdminStatusUpdates,
                                                            TransmissionTypes                           TransmissionType,
 
                                                            DateTime?                                   Timestamp,
@@ -1890,13 +1890,13 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateAdminStatus(ChargingPoolAdminStatusUpdates,
+            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateChargingPoolAdminStatus(ChargingPoolAdminStatusUpdates,
 
-                                                                         Timestamp,
-                                                                         CancellationToken,
-                                                                         EventTrackingId,
-                                                                         RequestTimeout);
+                                                                                     Timestamp,
+                                                                                     EventTrackingId,
+                                                                                     RequestTimeout,
+                                                                                     CancellationToken);
 
             else
                 result = PushChargingPoolAdminStatusResult.OutOfService(Id,
@@ -1938,7 +1938,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushChargingStationOperatorAdminStatusResult>
 
-            IPushAdminStatus.UpdateChargingStationOperatorAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  ChargingStationOperatorAdminStatusUpdates,
+            ISendAdminStatus.UpdateChargingStationOperatorAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  ChargingStationOperatorAdminStatusUpdates,
                                                                       TransmissionTypes                                      TransmissionType,
 
                                                                       DateTime?                                              Timestamp,
@@ -1972,13 +1972,13 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateAdminStatus(ChargingStationOperatorAdminStatusUpdates,
+            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateChargingStationOperatorAdminStatus(ChargingStationOperatorAdminStatusUpdates,
 
-                                                                         Timestamp,
-                                                                         CancellationToken,
-                                                                         EventTrackingId,
-                                                                         RequestTimeout);
+                                                                                                Timestamp,
+                                                                                                EventTrackingId,
+                                                                                                RequestTimeout,
+                                                                                                CancellationToken);
 
             else
                 result = PushChargingStationOperatorAdminStatusResult.OutOfService(Id,
@@ -2020,7 +2020,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushRoamingNetworkAdminStatusResult>
 
-            IPushAdminStatus.UpdateRoamingNetworkAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  RoamingNetworkAdminStatusUpdates,
+            ISendAdminStatus.UpdateRoamingNetworkAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  RoamingNetworkAdminStatusUpdates,
                                                              TransmissionTypes                             TransmissionType,
 
                                                              DateTime?                                     Timestamp,
@@ -2054,13 +2054,13 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateAdminStatus(RoamingNetworkAdminStatusUpdates,
+            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateRoamingNetworkAdminStatus(RoamingNetworkAdminStatusUpdates,
 
-                                                                         Timestamp,
-                                                                         CancellationToken,
-                                                                         EventTrackingId,
-                                                                         RequestTimeout);
+                                                                                       Timestamp,
+                                                                                       EventTrackingId,
+                                                                                       RequestTimeout,
+                                                                                       CancellationToken);
 
             else
                 result = PushRoamingNetworkAdminStatusResult.OutOfService(Id,
@@ -2105,7 +2105,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         async Task<PushEVSEStatusResult>
 
-            IPushStatus.UpdateEVSEStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
+            ISendStatus.UpdateEVSEStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
                                          TransmissionTypes              TransmissionType,
 
                                          DateTime?                      Timestamp,
@@ -2139,13 +2139,13 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateStatus(StatusUpdates,
+            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateEVSEStatus(StatusUpdates,
 
-                                                                    Timestamp,
-                                                                    CancellationToken,
-                                                                    EventTrackingId,
-                                                                    RequestTimeout);
+                                                                        Timestamp,
+                                                                        EventTrackingId,
+                                                                        RequestTimeout,
+                                                                        CancellationToken);
 
             else
                 result = PushEVSEStatusResult.NoOperation(Id, this);
@@ -2185,7 +2185,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         async Task<PushChargingStationStatusResult>
 
-            IPushStatus.UpdateChargingStationStatus(IEnumerable<ChargingStationStatusUpdate>  ChargingStationStatusUpdates,
+            ISendStatus.UpdateChargingStationStatus(IEnumerable<ChargingStationStatusUpdate>  ChargingStationStatusUpdates,
                                                     TransmissionTypes                         TransmissionType,
 
                                                     DateTime?                                 Timestamp,
@@ -2219,13 +2219,13 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateStatus(ChargingStationStatusUpdates,
+            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateChargingStationStatus(ChargingStationStatusUpdates,
 
-                                                                    Timestamp,
-                                                                    CancellationToken,
-                                                                    EventTrackingId,
-                                                                    RequestTimeout);
+                                                                                   Timestamp,
+                                                                                   EventTrackingId,
+                                                                                   RequestTimeout,
+                                                                                   CancellationToken);
 
             else
                 result = PushChargingStationStatusResult.NoOperation(Id, this);
@@ -2265,7 +2265,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         async Task<PushChargingPoolStatusResult>
 
-            IPushStatus.UpdateChargingPoolStatus(IEnumerable<ChargingPoolStatusUpdate>  ChargingPoolStatusUpdates,
+            ISendStatus.UpdateChargingPoolStatus(IEnumerable<ChargingPoolStatusUpdate>  ChargingPoolStatusUpdates,
                                                  TransmissionTypes                      TransmissionType,
 
                                                  DateTime?                              Timestamp,
@@ -2299,13 +2299,13 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateStatus(ChargingPoolStatusUpdates,
+            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateChargingPoolStatus(ChargingPoolStatusUpdates,
 
-                                                                    Timestamp,
-                                                                    CancellationToken,
-                                                                    EventTrackingId,
-                                                                    RequestTimeout);
+                                                                                Timestamp,
+                                                                                EventTrackingId,
+                                                                                RequestTimeout,
+                                                                                CancellationToken);
 
             else
                 result = PushChargingPoolStatusResult.NoOperation(Id, this);
@@ -2345,7 +2345,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         async Task<PushChargingStationOperatorStatusResult>
 
-            IPushStatus.UpdateChargingStationOperatorStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  ChargingStationOperatorStatus,
+            ISendStatus.UpdateChargingStationOperatorStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  ChargingStationOperatorStatus,
                                                             TransmissionTypes                                 TransmissionType,
 
                                                             DateTime?                                         Timestamp,
@@ -2379,13 +2379,13 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateStatus(ChargingStationOperatorStatus,
+            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateChargingStationOperatorStatus(ChargingStationOperatorStatus,
 
-                                                                    Timestamp,
-                                                                    CancellationToken,
-                                                                    EventTrackingId,
-                                                                    RequestTimeout);
+                                                                                           Timestamp,
+                                                                                           EventTrackingId,
+                                                                                           RequestTimeout,
+                                                                                           CancellationToken);
 
             else
                 result = PushChargingStationOperatorStatusResult.NoOperation(Id, this);
@@ -2425,7 +2425,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushRoamingNetworkStatusResult>
 
-            IPushStatus.UpdateRoamingNetworkStatus(IEnumerable<RoamingNetworkStatusUpdate>  RoamingNetworkStatus,
+            ISendStatus.UpdateRoamingNetworkStatus(IEnumerable<RoamingNetworkStatusUpdate>  RoamingNetworkStatus,
                                                    TransmissionTypes                        TransmissionType,
 
                                                    DateTime?                                Timestamp,
@@ -2459,13 +2459,13 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateStatus(RoamingNetworkStatus,
+            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateRoamingNetworkStatus(RoamingNetworkStatus,
 
-                                                                    Timestamp,
-                                                                    CancellationToken,
-                                                                    EventTrackingId,
-                                                                    RequestTimeout);
+                                                                                  Timestamp,
+                                                                                  EventTrackingId,
+                                                                                  RequestTimeout,
+                                                                                  CancellationToken);
 
             else
                 result = PushRoamingNetworkStatusResult.NoOperation(Id, this);

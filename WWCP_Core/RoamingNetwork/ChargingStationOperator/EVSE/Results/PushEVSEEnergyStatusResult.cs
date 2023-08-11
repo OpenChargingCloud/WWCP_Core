@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An object implementing ISendEnergyStatus.
         /// </summary>
-        public IPushEnergyStatus?                   ISendEnergyStatus                  { get; }
+        public ISendEnergyStatus?                   ISendEnergyStatus                  { get; }
 
         /// <summary>
         /// An object implementing IReceiveEnergyStatus.
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         internal PushEVSEEnergyStatusResult(IId                                   AuthId,
-                                            IPushEnergyStatus                     ISendEnergyStatus,
+                                            ISendEnergyStatus                     ISendEnergyStatus,
                                             PushEVSEEnergyStatusResultTypes       Result,
                                             String?                               Description                       = null,
                                             IEnumerable<EVSEEnergyStatusUpdate>?  RejectedEVSEEnergyStatusUpdates   = null,
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEEnergyStatusResult
 
             Success(IId                    AuthId,
-                    IPushEnergyStatus            ISendEnergyStatus,
+                    ISendEnergyStatus            ISendEnergyStatus,
                     String?                Description    = null,
                     IEnumerable<Warning>?  Warnings       = null,
                     TimeSpan?              Runtime        = null)
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEEnergyStatusResult
 
             Enqueued(IId                    AuthId,
-                     IPushEnergyStatus            ISendEnergyStatus,
+                     ISendEnergyStatus            ISendEnergyStatus,
                      String?                Description    = null,
                      IEnumerable<Warning>?  Warnings       = null,
                      TimeSpan?              Runtime        = null)
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEEnergyStatusResult
 
             NoOperation(IId                             AuthId,
-                        IPushEnergyStatus                     ISendEnergyStatus,
+                        ISendEnergyStatus                     ISendEnergyStatus,
                         String?                         Description                 = null,
                         IEnumerable<EVSEEnergyStatusUpdate>?  RejectedEVSEEnergyStatusUpdates   = null,
                         IEnumerable<Warning>?           Warnings                    = null,
@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEEnergyStatusResult
 
             OutOfService(IId                            AuthId,
-                         IPushEnergyStatus                    ISendEnergyStatus,
+                         ISendEnergyStatus                    ISendEnergyStatus,
                          IEnumerable<EVSEEnergyStatusUpdate>  RejectedEVSEEnergyStatusUpdates,
                          String?                        Description    = null,
                          IEnumerable<Warning>?          Warnings       = null,
@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEEnergyStatusResult
 
             AdminDown(IId                            AuthId,
-                      IPushEnergyStatus                    ISendEnergyStatus,
+                      ISendEnergyStatus                    ISendEnergyStatus,
                       IEnumerable<EVSEEnergyStatusUpdate>  RejectedEVSEEnergyStatusUpdates,
                       String?                        Description   = null,
                       IEnumerable<Warning>?          Warnings      = null,
@@ -358,7 +358,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEEnergyStatusResult
 
             Error(IId                             AuthId,
-                  IPushEnergyStatus                     ISendEnergyStatus,
+                  ISendEnergyStatus                     ISendEnergyStatus,
                   IEnumerable<EVSEEnergyStatusUpdate>?  RejectedEVSEs   = null,
                   String?                         Description     = null,
                   IEnumerable<Warning>?           Warnings        = null,
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEEnergyStatusResult
 
             Failed(IId                             AuthId,
-                   IPushEnergyStatus                     ISendEnergyStatus,
+                   ISendEnergyStatus                     ISendEnergyStatus,
                    IEnumerable<EVSEEnergyStatusUpdate>?  RejectedEVSEs   = null,
                    String?                         Description     = null,
                    IEnumerable<Warning>?           Warnings        = null,
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEEnergyStatusResult
 
             LockTimeout(IId                    AuthId,
-                        IPushEnergyStatus            ISendEnergyStatus,
+                        ISendEnergyStatus            ISendEnergyStatus,
                         String?                Description    = null,
                         IEnumerable<Warning>?  Warnings       = null,
                         TimeSpan?              Runtime        = null)
@@ -455,7 +455,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Flatten(...)
 
         public static PushEVSEEnergyStatusResult Flatten(IId                                AuthId,
-                                                   IPushEnergyStatus                        ISendEnergyStatus,
+                                                   ISendEnergyStatus                        ISendEnergyStatus,
                                                    IEnumerable<PushEVSEEnergyStatusResult>  PushEVSEEnergyStatusResults,
                                                    TimeSpan                           Runtime)
         {

@@ -25,8 +25,8 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     public interface ISend2RemoteSmartCity  : IPushPOIData,
-                                              IPushAdminStatus,
-                                              IPushStatus
+                                              ISendAdminStatus,
+                                              ISendStatus
                                              //IRemoteAuthorizeStartStop,
                                              //IRemoteSendChargeDetailRecord
 

@@ -131,8 +131,8 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         private readonly           PriorityList<IPushPOIData>                         _ISendData                             = new ();
-        private readonly           PriorityList<IPushAdminStatus>                     _ISendAdminStatus                      = new ();
-        private readonly           PriorityList<IPushStatus>                          _ISendStatus                           = new ();
+        private readonly           PriorityList<ISendAdminStatus>                     _ISendAdminStatus                      = new ();
+        private readonly           PriorityList<ISendStatus>                          _ISendStatus                           = new ();
         private readonly           PriorityList<ISendAuthorizeStartStop>              _ISend2RemoteAuthorizeStartStop        = new ();
         private readonly           PriorityList<ISendChargeDetailRecords>             _IRemoteSendChargeDetailRecord         = new ();
 

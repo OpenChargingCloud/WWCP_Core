@@ -60,8 +60,8 @@ namespace cloud.charging.open.protocols.WWCP
         ChargeDetailRecordFilterDelegate ChargeDetailRecordFilter { get; }
         ReactiveSet<OpenDataLicense> DataLicenses { get; set; }
         Boolean DisableAuthentication { get; set; }
-        Boolean DisablePushAdminStatus { get; set; }
-        Boolean DisablePushStatus { get; set; }
+        Boolean DisableSendAdminStatus { get; set; }
+        Boolean DisableSendStatus { get; set; }
         Boolean DisableSendChargeDetailRecords { get; set; }
         SimpleEMailAddress? EMailAddress { get; set; }
         IEnumerable<KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusTypes>> EMobilityStationAdminStatus { get; }

@@ -27,105 +27,119 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IReceiveAdminStatus
     {
 
-        #region UpdateAdminStatus(AdminStatusUpdates, ...)
-
-        /// <summary>
-        /// Update the given enumeration of EVSE admin status updates.
-        /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of EVSE admin status updates.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEAdminStatusResult>
-
-            UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
-
-                              DateTime?                           Timestamp           = null,
-                              CancellationToken                   CancellationToken   = default,
-                              EventTracking_Id?                   EventTrackingId     = null,
-                              TimeSpan?                           RequestTimeout      = null);
+        // AdminStatusUpdate events?
 
 
-        /// <summary>
-        /// Update the given enumeration of charging station admin status updates.
-        /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of charging station admin status updates.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushChargingStationAdminStatusResult>
-
-            UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
-
-                              DateTime?                                      Timestamp           = null,
-                              CancellationToken                              CancellationToken   = default,
-                              EventTracking_Id?                              EventTrackingId     = null,
-                              TimeSpan?                                      RequestTimeout      = null);
-
-
-        /// <summary>
-        /// Update the given enumeration of charging pool admin status updates.
-        /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of charging pool admin status updates.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushChargingPoolAdminStatusResult>
-
-            UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
-
-                              DateTime?                                   Timestamp           = null,
-                              CancellationToken                           CancellationToken   = default,
-                              EventTracking_Id?                           EventTrackingId     = null,
-                              TimeSpan?                                   RequestTimeout      = null);
-
-
-        /// <summary>
-        /// Update the given enumeration of charging station operator admin status updates.
-        /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of charging station operator admin status updates.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushChargingStationOperatorAdminStatusResult>
-
-            UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
-
-                              DateTime?                                              Timestamp           = null,
-                              CancellationToken                                      CancellationToken   = default,
-                              EventTracking_Id?                                      EventTrackingId     = null,
-                              TimeSpan?                                              RequestTimeout      = null);
-
+        #region UpdateRoamingNetworkAdminStatus         (RoamingNetworkAdminStatusUpdates, ...)
 
         /// <summary>
         /// Update the given enumeration of roaming network admin status updates.
         /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of roaming network admin status updates.</param>
+        /// <param name="RoamingNetworkAdminStatusUpdates">An enumeration of roaming network admin status updates.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         Task<PushRoamingNetworkAdminStatusResult>
 
-            UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
+            UpdateRoamingNetworkAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  RoamingNetworkAdminStatusUpdates,
 
-                              DateTime?                                     Timestamp           = null,
-                              CancellationToken                             CancellationToken   = default,
-                              EventTracking_Id?                             EventTrackingId     = null,
-                              TimeSpan?                                     RequestTimeout      = null);
+                                            DateTime?                                     Timestamp           = null,
+                                            EventTracking_Id?                             EventTrackingId     = null,
+                                            TimeSpan?                                     RequestTimeout      = null,
+                                            CancellationToken                             CancellationToken   = default);
 
         #endregion
 
-        // AdminUpdate events?
+        #region UpdateChargingStationOperatorAdminStatus(ChargingStationOperatorAdminStatusUpdates, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging station operator admin status updates.
+        /// </summary>
+        /// <param name="ChargingStationOperatorAdminStatusUpdates">An enumeration of charging station operator admin status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<PushChargingStationOperatorAdminStatusResult>
+
+            UpdateChargingStationOperatorAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  ChargingStationOperatorAdminStatusUpdates,
+
+                                                     DateTime?                                              Timestamp           = null,
+                                                     EventTracking_Id?                                      EventTrackingId     = null,
+                                                     TimeSpan?                                              RequestTimeout      = null,
+                                                     CancellationToken                                      CancellationToken   = default);
+
+        #endregion
+
+        #region UpdateChargingPoolAdminStatus           (ChargingPoolAdminStatusUpdates, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging pool admin status updates.
+        /// </summary>
+        /// <param name="ChargingPoolAdminStatusUpdates">An enumeration of charging pool admin status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<PushChargingPoolAdminStatusResult>
+
+            UpdateChargingPoolAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  ChargingPoolAdminStatusUpdates,
+
+                                          DateTime?                                   Timestamp           = null,
+                                          EventTracking_Id?                           EventTrackingId     = null,
+                                          TimeSpan?                                   RequestTimeout      = null,
+                                          CancellationToken                           CancellationToken   = default);
+
+        #endregion
+
+        #region UpdateChargingStationAdminStatus        (ChargingStationAdminStatusUpdates, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging station admin status updates.
+        /// </summary>
+        /// <param name="ChargingStationAdminStatusUpdates">An enumeration of charging station admin status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<PushChargingStationAdminStatusResult>
+
+            UpdateChargingStationAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  ChargingStationAdminStatusUpdates,
+
+                                             DateTime?                                      Timestamp           = null,
+                                             EventTracking_Id?                              EventTrackingId     = null,
+                                             TimeSpan?                                      RequestTimeout      = null,
+                                             CancellationToken                              CancellationToken   = default);
+
+        #endregion
+
+        #region UpdateEVSEAdminStatus                   (EVSEAdminStatusUpdates, ...)
+
+        /// <summary>
+        /// Update the given enumeration of EVSE admin status updates.
+        /// </summary>
+        /// <param name="EVSEAdminStatusUpdates">An enumeration of EVSE admin status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<PushEVSEAdminStatusResult>
+
+            UpdateEVSEAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  EVSEAdminStatusUpdates,
+
+                                  DateTime?                           Timestamp           = null,
+                                  EventTracking_Id?                   EventTrackingId     = null,
+                                  TimeSpan?                           RequestTimeout      = null,
+                                  CancellationToken                   CancellationToken   = default);
+
+        #endregion
+
 
     }
 

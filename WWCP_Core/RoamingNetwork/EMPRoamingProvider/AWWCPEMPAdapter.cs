@@ -33,9 +33,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                          EMPRoamingProviderStatusTypes>,
                                                                   //IEMPRoamingProvider,
                                                                   IPushPOIData,
-                                                                  IPushAdminStatus,
-                                                                  IPushStatus,
-                                                                  IPushEnergyStatus
+                                                                  ISendAdminStatus,
+                                                                  ISendStatus,
+                                                                  ISendEnergyStatus
     {
 
         #region Data
@@ -173,12 +173,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                                   DisablePushAdminStatus               { get; set; }
+        public Boolean                                   DisableSendAdminStatus               { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                                   DisablePushStatus                    { get; set; }
+        public Boolean                                   DisableSendStatus                    { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                                   DisablePushEnergyStatus              { get; set; }
+        public Boolean                                   DisableSendEnergyStatus              { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
@@ -403,10 +403,10 @@ namespace cloud.charging.open.protocols.WWCP
             this.ChargeDetailRecordFilter                        = ChargeDetailRecordFilter          ?? (chargeDetailRecord => ChargeDetailRecordFilters.forward);
 
             this.DisablePushData                                 = DisablePushData;
-            this.DisablePushAdminStatus                          = DisablePushAdminStatus;
-            this.DisablePushStatus                               = DisablePushStatus;
+            this.DisableSendAdminStatus                          = DisablePushAdminStatus;
+            this.DisableSendStatus                               = DisablePushStatus;
             this.DisableEVSEStatusRefresh                        = DisableEVSEStatusRefresh;
-            this.DisablePushEnergyStatus                         = DisablePushEnergyStatus;
+            this.DisableSendEnergyStatus                         = DisablePushEnergyStatus;
             this.DisableAuthentication                           = DisableAuthentication;
             this.DisableSendChargeDetailRecords                  = DisableSendChargeDetailRecords;
 
@@ -2342,7 +2342,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         protected async Task<PushEVSEAdminStatusResult>
 
-            UpdateStatus(IPushAdminStatus                    Sender,
+            UpdateStatus(ISendAdminStatus                    Sender,
                          IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
 
                          DateTime?                           Timestamp,
@@ -2358,7 +2358,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return PushEVSEAdminStatusResult.NoOperation(Id,
                                                              Sender);
 
-            if (DisablePushStatus)
+            if (DisableSendStatus)
                 return PushEVSEAdminStatusResult.AdminDown(Id,
                                                            Sender,
                                                            AdminStatusUpdates);
@@ -2529,7 +2529,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         private void FlushEVSEFastStatus(Object State)
         {
-            if (!DisablePushStatus)
+            if (!DisableSendStatus)
                 FlushEVSEFastStatus2(State).Wait();
         }
 
