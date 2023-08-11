@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An object implementing ISendStatus.
         /// </summary>
-        public ISendAdminStatus?                   ISendAdminStatus                  { get; }
+        public IPushAdminStatus?                   ISendAdminStatus                  { get; }
 
         /// <summary>
         /// An object implementing IReceiveStatus.
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         internal PushEVSEAdminStatusResult(IId                             AuthId,
-                                      ISendAdminStatus                     ISendAdminStatus,
+                                      IPushAdminStatus                     ISendAdminStatus,
                                       PushEVSEAdminStatusResultTypes       Result,
                                       String?                              Description                      = null,
                                       IEnumerable<EVSEAdminStatusUpdate>?  RejectedEVSEAdminStatusUpdates   = null,
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEAdminStatusResult
 
             Success(IId                    AuthId,
-                    ISendAdminStatus       ISendAdminStatus,
+                    IPushAdminStatus       ISendAdminStatus,
                     String?                Description   = null,
                     IEnumerable<Warning>?  Warnings      = null,
                     TimeSpan?              Runtime       = null)
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEAdminStatusResult
 
             Enqueued(IId                   AuthId,
-                     ISendAdminStatus           ISendAdminStatus,
+                     IPushAdminStatus           ISendAdminStatus,
                      String                Description    = null,
                      IEnumerable<Warning>  Warnings       = null,
                      TimeSpan?             Runtime        = null)
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEAdminStatusResult
 
             NoOperation(IId                   AuthId,
-                        ISendAdminStatus           ISendAdminStatus,
+                        IPushAdminStatus           ISendAdminStatus,
                         String                Description    = null,
                         IEnumerable<Warning>  Warnings       = null,
                         TimeSpan?             Runtime        = null)
@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEAdminStatusResult
 
             OutOfService(IId                                 AuthId,
-                         ISendAdminStatus                    ISendAdminStatus,
+                         IPushAdminStatus                    ISendAdminStatus,
                          IEnumerable<EVSEAdminStatusUpdate>  RejectedEVSEAdminStatusUpdates,
                          String                              Description    = null,
                          IEnumerable<Warning>                Warnings       = null,
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEAdminStatusResult
 
             OutOfService(IId                                       AuthId,
-                         ISendAdminStatus                               ISendAdminStatus,
+                         IPushAdminStatus                               ISendAdminStatus,
                          IEnumerable<ChargingStationAdminStatusUpdate>  RejectedEVSEAdminStatusUpdates,
                          String                                    Description    = null,
                          IEnumerable<Warning>                      Warnings       = null,
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEAdminStatusResult
 
             OutOfService(IId                                    AuthId,
-                         ISendAdminStatus                            ISendAdminStatus,
+                         IPushAdminStatus                            ISendAdminStatus,
                          IEnumerable<ChargingPoolAdminStatusUpdate>  RejectedEVSEAdminStatusUpdates,
                          String                                 Description    = null,
                          IEnumerable<Warning>                   Warnings       = null,
@@ -410,7 +410,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEAdminStatusResult
 
             AdminDown(IId                            AuthId,
-                      ISendAdminStatus                    ISendAdminStatus,
+                      IPushAdminStatus                    ISendAdminStatus,
                       IEnumerable<EVSEAdminStatusUpdate>  RejectedEVSEAdminStatusUpdates,
                       String                         Description    = null,
                       IEnumerable<Warning>           Warnings       = null,
@@ -448,7 +448,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEAdminStatusResult
 
             AdminDown(IId                                       AuthId,
-                      ISendAdminStatus                               ISendAdminStatus,
+                      IPushAdminStatus                               ISendAdminStatus,
                       IEnumerable<ChargingStationAdminStatusUpdate>  RejectedEVSEAdminStatusUpdates,
                       String                                    Description    = null,
                       IEnumerable<Warning>                      Warnings       = null,
@@ -486,7 +486,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEAdminStatusResult
 
             AdminDown(IId                                    AuthId,
-                      ISendAdminStatus                            ISendAdminStatus,
+                      IPushAdminStatus                            ISendAdminStatus,
                       IEnumerable<ChargingPoolAdminStatusUpdate>  RejectedEVSEAdminStatusUpdates,
                       String                                 Description    = null,
                       IEnumerable<Warning>                   Warnings       = null,
@@ -527,7 +527,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEAdminStatusResult
 
             Error(IId                                  AuthId,
-                  ISendAdminStatus                     ISendAdminStatus,
+                  IPushAdminStatus                     ISendAdminStatus,
                   IEnumerable<EVSEAdminStatusUpdate>?  RejectedEVSEs   = null,
                   String?                              Description     = null,
                   IEnumerable<Warning>?                Warnings        = null,
@@ -564,7 +564,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region LockTimeout
 
         public static PushEVSEAdminStatusResult LockTimeout(IId                   AuthId,
-                                                       ISendAdminStatus           ISendAdminStatus,
+                                                       IPushAdminStatus           ISendAdminStatus,
                                                        String                Description    = null,
                                                        IEnumerable<Warning>  Warnings       = null,
                                                        TimeSpan?             Runtime        = null)
@@ -582,7 +582,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         public static PushEVSEAdminStatusResult Flatten(IId                                     AuthId,
-                                                        ISendAdminStatus                        ISendAdminStatus,
+                                                        IPushAdminStatus                        ISendAdminStatus,
                                                         IEnumerable<PushEVSEAdminStatusResult>  PushEVSEAdminStatusResults,
                                                         TimeSpan                                Runtime)
         {

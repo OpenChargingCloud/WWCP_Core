@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The object implementing SendPOIData.
         /// </summary>
-        public ISendPOIData?                          SendPOIData        { get; }
+        public IPushPOIData?                          SendPOIData        { get; }
 
         /// <summary>
         /// The object implementing ReceivePOIData.
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public PushEVSEDataResult(IId                                     AuthId,
-                                  ISendPOIData                            SendPOIData,
+                                  IPushPOIData                            SendPOIData,
                                   PushDataResultTypes                     Result,
                                   IEnumerable<PushSingleEVSEDataResult>?  SuccessfulEVSEs   = null,
                                   IEnumerable<PushSingleEVSEDataResult>?  RejectedEVSEs     = null,
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEDataResult
 
             AdminDown(IId                    AuthId,
-                      ISendPOIData           SendPOIData,
+                      IPushPOIData           SendPOIData,
                       IEnumerable<IEVSE>     RejectedEVSEs,
                       String?                Description   = null,
                       IEnumerable<Warning>?  Warnings      = null,
@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEDataResult
 
             Success(IId                    AuthId,
-                    ISendPOIData           SendPOIData,
+                    IPushPOIData           SendPOIData,
                     IEnumerable<IEVSE>     SuccessfulEVSEs,
                     String?                Description       = null,
                     IEnumerable<Warning>?  Warnings          = null,
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEDataResult
 
             Enqueued(IId                    AuthId,
-                     ISendPOIData           SendPOIData,
+                     IPushPOIData           SendPOIData,
                      IEnumerable<IEVSE>     EnqueuedEVSEs,
                      String?                Description   = null,
                      IEnumerable<Warning>?  Warnings      = null,
@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEDataResult
 
             NoOperation(IId                    AuthId,
-                        ISendPOIData           SendPOIData,
+                        IPushPOIData           SendPOIData,
                         IEnumerable<IEVSE>     RejectedEVSEs,
                         String?                Description   = null,
                         IEnumerable<Warning>?  Warnings      = null,
@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEDataResult
 
             LockTimeout(IId                    AuthId,
-                        ISendPOIData           SendPOIData,
+                        IPushPOIData           SendPOIData,
                         IEnumerable<IEVSE>     RejectedEVSEs,
                         String?                Description   = null,
                         IEnumerable<Warning>?  Warnings      = null,
@@ -448,7 +448,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEDataResult
 
             Timeout(IId                    AuthId,
-                    ISendPOIData           SendPOIData,
+                    IPushPOIData           SendPOIData,
                     IEnumerable<IEVSE>     RejectedEVSEs,
                     String?                Description   = null,
                     IEnumerable<Warning>?  Warnings      = null,
@@ -471,7 +471,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEDataResult
 
             Error(IId                                     AuthId,
-                  ISendPOIData                            SendPOIData,
+                  IPushPOIData                            SendPOIData,
                   IEnumerable<PushSingleEVSEDataResult>?  RejectedEVSEs   = null,
                   String?                                 Description     = null,
                   IEnumerable<Warning>?                   Warnings        = null,
@@ -531,7 +531,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
         public IId                                               Id                            { get; }
 
-        public ISendPOIData?                                     SendPOIData                   { get; }
+        public IPushPOIData?                                     SendPOIData                   { get; }
 
         public IReceivePOIData?                                  ReceivePOIData                { get; }
 
@@ -579,7 +579,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public PushChargingStationDataResult(IId                                                Id,
-                                             ISendPOIData                                       SendPOIData,
+                                             IPushPOIData                                       SendPOIData,
                                              PushDataResultTypes                                Result,
                                              IEnumerable<PushSingleChargingStationDataResult>?  SuccessfulChargingStations   = null,
                                              IEnumerable<PushSingleChargingStationDataResult>?  RejectedChargingStations     = null,
@@ -663,7 +663,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingStationDataResult
 
             AdminDown(IId                            AuthId,
-                      ISendPOIData                   SendPOIData,
+                      IPushPOIData                   SendPOIData,
                       IEnumerable<IChargingStation>  RejectedChargingStations,
                       String?                        Description   = null,
                       IEnumerable<Warning>?          Warnings      = null,
@@ -704,7 +704,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingStationDataResult
 
             Success(IId                            AuthId,
-                    ISendPOIData                   SendPOIData,
+                    IPushPOIData                   SendPOIData,
                     IEnumerable<IChargingStation>  SuccessfulChargingStations,
                     String?                        Description   = null,
                     IEnumerable<Warning>?          Warnings      = null,
@@ -745,7 +745,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingStationDataResult
 
             Enqueued(IId                            AuthId,
-                     ISendPOIData                   SendPOIData,
+                     IPushPOIData                   SendPOIData,
                      IEnumerable<IChargingStation>  SuccessfulChargingStations,
                      String?                        Description   = null,
                      IEnumerable<Warning>?          Warnings      = null,
@@ -767,7 +767,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingStationDataResult
 
             NoOperation(IId                            AuthId,
-                        ISendPOIData                   SendPOIData,
+                        IPushPOIData                   SendPOIData,
                         IEnumerable<IChargingStation>  RejectedChargingStations,
                         String?                        Description   = null,
                         IEnumerable<Warning>?          Warnings      = null,
@@ -808,7 +808,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingStationDataResult
 
             LockTimeout(IId                            AuthId,
-                        ISendPOIData                   SendPOIData,
+                        IPushPOIData                   SendPOIData,
                         IEnumerable<IChargingStation>  RejectedChargingStations,
                         String?                        Description   = null,
                         IEnumerable<Warning>?          Warnings      = null,
@@ -831,7 +831,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingStationDataResult
 
             Timeout(IId                            AuthId,
-                    ISendPOIData                   SendPOIData,
+                    IPushPOIData                   SendPOIData,
                     IEnumerable<IChargingStation>  RejectedChargingStations,
                     String?                        Description   = null,
                     IEnumerable<Warning>?          Warnings      = null,
@@ -854,7 +854,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingStationDataResult
 
             Error(IId                                               AuthId,
-                  ISendPOIData                                      SendPOIData,
+                  IPushPOIData                                      SendPOIData,
                   IEnumerable<PushSingleChargingStationDataResult>  RejectedChargingStations,
                   String?                                           Description     = null,
                   IEnumerable<Warning>?                             Warnings        = null,
@@ -938,7 +938,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public IId                                               Id                         { get; }
 
-        public ISendPOIData?                                     SendPOIData                { get; }
+        public IPushPOIData?                                     SendPOIData                { get; }
 
         public IReceivePOIData?                                  ReceivePOIData             { get; }
 
@@ -986,7 +986,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public PushChargingPoolDataResult(IId                                             Id,
-                                          ISendPOIData                                    SendPOIData,
+                                          IPushPOIData                                    SendPOIData,
                                           PushDataResultTypes                             Result,
                                           IEnumerable<PushSingleChargingPoolDataResult>?  SuccessfulChargingPools   = null,
                                           IEnumerable<PushSingleChargingPoolDataResult>?  RejectedChargingPools     = null,
@@ -1070,7 +1070,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolDataResult
 
             AdminDown(IId                         AuthId,
-                      ISendPOIData                SendPOIData,
+                      IPushPOIData                SendPOIData,
                       IEnumerable<IChargingPool>  RejectedChargingPools,
                       String?                     Description   = null,
                       IEnumerable<Warning>?       Warnings      = null,
@@ -1111,7 +1111,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolDataResult
 
             Success(IId                         AuthId,
-                    ISendPOIData                SendPOIData,
+                    IPushPOIData                SendPOIData,
                     IEnumerable<IChargingPool>  SuccessfulChargingPools,
                     String?                     Description   = null,
                     IEnumerable<Warning>?       Warnings      = null,
@@ -1152,7 +1152,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolDataResult
 
             Enqueued(IId                         AuthId,
-                     ISendPOIData                SendPOIData,
+                     IPushPOIData                SendPOIData,
                      IEnumerable<IChargingPool>  SuccessfulChargingPools,
                      String?                     Description   = null,
                      IEnumerable<Warning>?       Warnings      = null,
@@ -1174,7 +1174,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolDataResult
 
             NoOperation(IId                         AuthId,
-                        ISendPOIData                SendPOIData,
+                        IPushPOIData                SendPOIData,
                         IEnumerable<IChargingPool>  RejectedChargingPools,
                         String?                     Description   = null,
                         IEnumerable<Warning>?       Warnings      = null,
@@ -1215,7 +1215,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolDataResult
 
             LockTimeout(IId                         AuthId,
-                        ISendPOIData                SendPOIData,
+                        IPushPOIData                SendPOIData,
                         IEnumerable<IChargingPool>  RejectedChargingPools,
                         String?                     Description   = null,
                         IEnumerable<Warning>?       Warnings      = null,
@@ -1238,7 +1238,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolDataResult
 
             Timeout(IId                         AuthId,
-                    ISendPOIData                SendPOIData,
+                    IPushPOIData                SendPOIData,
                     IEnumerable<IChargingPool>  RejectedChargingPools,
                     String?                     Description   = null,
                     IEnumerable<Warning>?       Warnings      = null,
@@ -1261,7 +1261,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolDataResult
 
             Error(IId                                             AuthId,
-                  ISendPOIData                                    SendPOIData,
+                  IPushPOIData                                    SendPOIData,
                   IEnumerable<PushSingleChargingPoolDataResult>?  RejectedChargingPools   = null,
                   String?                                         Description             = null,
                   IEnumerable<Warning>?                           Warnings                = null,

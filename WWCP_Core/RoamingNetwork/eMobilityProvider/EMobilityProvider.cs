@@ -43,16 +43,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data
 
-        /// <summary>
-        /// The default max size of the admin status list.
-        /// </summary>
-        public const UInt16 DefaultMaxAdminStatusScheduleSize   = 15;
-
-        /// <summary>
-        /// The default max size of the status list.
-        /// </summary>
-        public const UInt16 DefaultMaxStatusScheduleSize        = 15;
-
         #endregion
 
         #region Properties
@@ -1688,35 +1678,31 @@ namespace cloud.charging.open.protocols.WWCP
 
         //private IRemotePushStatus AsIPushStatus2Remote  => this;
 
-        #region UpdateAdminStatus(AdminStatusUpdates, ...)
+        #region UpdateEVSEAdminStatus(EVSEAdminStatusUpdates, ...)
 
         /// <summary>
         /// Receive EVSE admin status updates.
         /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of EVSE admin status updates.</param>
+        /// <param name="EVSEAdminStatusUpdates">An enumeration of EVSE admin status updates.</param>
         /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         async Task<PushEVSEAdminStatusResult>
 
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate> AdminStatusUpdates,
-                                                 TransmissionTypes TransmissionType,
+            IPushAdminStatus.UpdateEVSEAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  EVSEAdminStatusUpdates,
+                                                   TransmissionTypes                   TransmissionType,
 
-                                                 DateTime? Timestamp,
-                                                 CancellationToken CancellationToken,
-                                                 EventTracking_Id? EventTrackingId,
-                                                 TimeSpan? RequestTimeout)
+                                                   DateTime?                           Timestamp,
+                                                   EventTracking_Id?                   EventTrackingId,
+                                                   TimeSpan?                           RequestTimeout,
+                                                   CancellationToken                   CancellationToken)
 
         {
 
             #region Initial checks
-
-            if (AdminStatusUpdates == null)
-                throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of EVSE admin status updates must not be null!");
-
 
             PushEVSEAdminStatusResult result;
 
@@ -1741,7 +1727,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateAdminStatus(AdminStatusUpdates,
+                result = await RemoteEMobilityProvider.UpdateAdminStatus(EVSEAdminStatusUpdates,
 
                                                                          Timestamp,
                                                                          CancellationToken,
@@ -1750,8 +1736,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             else
                 result = PushEVSEAdminStatusResult.OutOfService(Id,
-                                                            this,
-                                                            AdminStatusUpdates);
+                                                                this,
+                                                                EVSEAdminStatusUpdates);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -1777,9 +1763,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// Receive EVSE admin status updates.
+        /// Receive charging station admin status updates.
         /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of EVSE admin status updates.</param>
+        /// <param name="ChargingStationAdminStatusUpdates">An enumeration of charging station admin status updates.</param>
         /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1788,21 +1774,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushChargingStationAdminStatusResult>
 
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate> AdminStatusUpdates,
-                                               TransmissionTypes TransmissionType,
+            IPushAdminStatus.UpdateChargingStationAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  ChargingStationAdminStatusUpdates,
+                                                              TransmissionTypes                              TransmissionType,
 
-                                               DateTime? Timestamp,
-                                               CancellationToken CancellationToken,
-                                               EventTracking_Id? EventTrackingId,
-                                               TimeSpan? RequestTimeout)
+                                                              DateTime?                                      Timestamp,
+                                                              EventTracking_Id?                              EventTrackingId,
+                                                              TimeSpan?                                      RequestTimeout,
+                                                              CancellationToken                              CancellationToken)
 
         {
 
             #region Initial checks
-
-            if (AdminStatusUpdates == null)
-                throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of charging station admin status updates must not be null!");
-
 
             PushChargingStationAdminStatusResult result;
 
@@ -1827,7 +1809,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateAdminStatus(AdminStatusUpdates,
+                result = await RemoteEMobilityProvider.UpdateAdminStatus(ChargingStationAdminStatusUpdates,
 
                                                                          Timestamp,
                                                                          CancellationToken,
@@ -1837,7 +1819,7 @@ namespace cloud.charging.open.protocols.WWCP
             else
                 result = PushChargingStationAdminStatusResult.OutOfService(Id,
                                                                            this,
-                                                                           AdminStatusUpdates);
+                                                                           ChargingStationAdminStatusUpdates);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -1865,7 +1847,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Receive charging pool admin status updates.
         /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of charging pool admin status updates.</param>
+        /// <param name="ChargingPoolAdminStatusUpdates">An enumeration of charging pool admin status updates.</param>
         /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1874,21 +1856,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushChargingPoolAdminStatusResult>
 
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate> AdminStatusUpdates,
-                                               TransmissionTypes TransmissionType,
+            IPushAdminStatus.UpdateChargingPoolAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  ChargingPoolAdminStatusUpdates,
+                                                           TransmissionTypes                           TransmissionType,
 
-                                               DateTime? Timestamp,
-                                               CancellationToken CancellationToken,
-                                               EventTracking_Id? EventTrackingId,
-                                               TimeSpan? RequestTimeout)
+                                                           DateTime?                                   Timestamp,
+                                                           EventTracking_Id?                           EventTrackingId,
+                                                           TimeSpan?                                   RequestTimeout,
+                                                           CancellationToken                           CancellationToken)
 
         {
 
             #region Initial checks
-
-            if (AdminStatusUpdates == null)
-                throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of charging pool admin status updates must not be null!");
-
 
             PushChargingPoolAdminStatusResult result;
 
@@ -1913,7 +1891,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateAdminStatus(AdminStatusUpdates,
+                result = await RemoteEMobilityProvider.UpdateAdminStatus(ChargingPoolAdminStatusUpdates,
 
                                                                          Timestamp,
                                                                          CancellationToken,
@@ -1923,7 +1901,7 @@ namespace cloud.charging.open.protocols.WWCP
             else
                 result = PushChargingPoolAdminStatusResult.OutOfService(Id,
                                                                         this,
-                                                                        AdminStatusUpdates);
+                                                                        ChargingPoolAdminStatusUpdates);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -1951,7 +1929,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Receive charging station operator admin status updates.
         /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of charging station operator admin status updates.</param>
+        /// <param name="ChargingStationOperatorAdminStatusUpdates">An enumeration of charging station operator admin status updates.</param>
         /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1960,21 +1938,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushChargingStationOperatorAdminStatusResult>
 
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate> AdminStatusUpdates,
-                                               TransmissionTypes TransmissionType,
+            IPushAdminStatus.UpdateChargingStationOperatorAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  ChargingStationOperatorAdminStatusUpdates,
+                                                                      TransmissionTypes                                      TransmissionType,
 
-                                               DateTime? Timestamp,
-                                               CancellationToken CancellationToken,
-                                               EventTracking_Id? EventTrackingId,
-                                               TimeSpan? RequestTimeout)
+                                                                      DateTime?                                              Timestamp,
+                                                                      EventTracking_Id?                                      EventTrackingId,
+                                                                      TimeSpan?                                              RequestTimeout,
+                                                                      CancellationToken                                      CancellationToken)
 
         {
 
             #region Initial checks
-
-            if (AdminStatusUpdates == null)
-                throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of charging station operator admin status updates must not be null!");
-
 
             PushChargingStationOperatorAdminStatusResult result;
 
@@ -1999,7 +1973,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateAdminStatus(AdminStatusUpdates,
+                result = await RemoteEMobilityProvider.UpdateAdminStatus(ChargingStationOperatorAdminStatusUpdates,
 
                                                                          Timestamp,
                                                                          CancellationToken,
@@ -2009,7 +1983,7 @@ namespace cloud.charging.open.protocols.WWCP
             else
                 result = PushChargingStationOperatorAdminStatusResult.OutOfService(Id,
                                                                                    this,
-                                                                                   AdminStatusUpdates);
+                                                                                   ChargingStationOperatorAdminStatusUpdates);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -2037,7 +2011,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Receive roaming network admin status updates.
         /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of roaming network admin status updates.</param>
+        /// <param name="RoamingNetworkAdminStatusUpdates">An enumeration of roaming network admin status updates.</param>
         /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -2046,21 +2020,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushRoamingNetworkAdminStatusResult>
 
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate> AdminStatusUpdates,
-                                               TransmissionTypes TransmissionType,
+            IPushAdminStatus.UpdateRoamingNetworkAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  RoamingNetworkAdminStatusUpdates,
+                                                             TransmissionTypes                             TransmissionType,
 
-                                               DateTime? Timestamp,
-                                               CancellationToken CancellationToken,
-                                               EventTracking_Id? EventTrackingId,
-                                               TimeSpan? RequestTimeout)
+                                                             DateTime?                                     Timestamp,
+                                                             EventTracking_Id?                             EventTrackingId,
+                                                             TimeSpan?                                     RequestTimeout,
+                                                             CancellationToken                             CancellationToken)
 
         {
 
             #region Initial checks
-
-            if (AdminStatusUpdates == null)
-                throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of roaming network admin status updates must not be null!");
-
 
             PushRoamingNetworkAdminStatusResult result;
 
@@ -2085,7 +2055,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateAdminStatus(AdminStatusUpdates,
+                result = await RemoteEMobilityProvider.UpdateAdminStatus(RoamingNetworkAdminStatusUpdates,
 
                                                                          Timestamp,
                                                                          CancellationToken,
@@ -2095,7 +2065,7 @@ namespace cloud.charging.open.protocols.WWCP
             else
                 result = PushRoamingNetworkAdminStatusResult.OutOfService(Id,
                                                                           this,
-                                                                          AdminStatusUpdates);
+                                                                          RoamingNetworkAdminStatusUpdates);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -2130,26 +2100,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         async Task<PushEVSEStatusResult>
 
-            ISendStatus.UpdateStatus(IEnumerable<EVSEStatusUpdate> StatusUpdates,
-                                            TransmissionTypes TransmissionType,
+            IPushStatus.UpdateEVSEStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
+                                         TransmissionTypes              TransmissionType,
 
-                                            DateTime? Timestamp,
-                                            CancellationToken CancellationToken,
-                                            EventTracking_Id? EventTrackingId,
-                                            TimeSpan? RequestTimeout)
+                                         DateTime?                      Timestamp,
+                                         EventTracking_Id?              EventTrackingId,
+                                         TimeSpan?                      RequestTimeout,
+                                         CancellationToken              CancellationToken)
 
         {
 
             #region Initial checks
-
-            if (StatusUpdates == null)
-                throw new ArgumentNullException(nameof(StatusUpdates), "The given enumeration of EVSE status updates must not be null!");
-
 
             PushEVSEStatusResult result;
 
@@ -2210,30 +2176,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Receive charging station status updates.
         /// </summary>
-        /// <param name="StatusUpdates">An enumeration of charging station status updates.</param>
+        /// <param name="ChargingStationStatusUpdates">An enumeration of charging station status updates.</param>
         /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         async Task<PushChargingStationStatusResult>
 
-            ISendStatus.UpdateStatus(IEnumerable<ChargingStationStatusUpdate> StatusUpdates,
-                                     TransmissionTypes TransmissionType,
+            IPushStatus.UpdateChargingStationStatus(IEnumerable<ChargingStationStatusUpdate>  ChargingStationStatusUpdates,
+                                                    TransmissionTypes                         TransmissionType,
 
-                                     DateTime? Timestamp,
-                                     CancellationToken CancellationToken,
-                                     EventTracking_Id? EventTrackingId,
-                                     TimeSpan? RequestTimeout)
+                                                    DateTime?                                 Timestamp,
+                                                    EventTracking_Id?                         EventTrackingId,
+                                                    TimeSpan?                                 RequestTimeout,
+                                                    CancellationToken                         CancellationToken)
 
         {
 
             #region Initial checks
-
-            if (StatusUpdates == null)
-                throw new ArgumentNullException(nameof(StatusUpdates), "The given enumeration of charging station status updates must not be null!");
-
 
             PushChargingStationStatusResult result;
 
@@ -2258,7 +2220,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateStatus(StatusUpdates,
+                result = await RemoteEMobilityProvider.UpdateStatus(ChargingStationStatusUpdates,
 
                                                                     Timestamp,
                                                                     CancellationToken,
@@ -2294,30 +2256,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Receive charging pool status updates.
         /// </summary>
-        /// <param name="StatusUpdates">An enumeration of charging pool status updates.</param>
+        /// <param name="ChargingPoolStatusUpdates">An enumeration of charging pool status updates.</param>
         /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         async Task<PushChargingPoolStatusResult>
 
-            ISendStatus.UpdateStatus(IEnumerable<ChargingPoolStatusUpdate> StatusUpdates,
-                                     TransmissionTypes TransmissionType,
+            IPushStatus.UpdateChargingPoolStatus(IEnumerable<ChargingPoolStatusUpdate>  ChargingPoolStatusUpdates,
+                                                 TransmissionTypes                      TransmissionType,
 
-                                     DateTime? Timestamp,
-                                     CancellationToken CancellationToken,
-                                     EventTracking_Id? EventTrackingId,
-                                     TimeSpan? RequestTimeout)
+                                                 DateTime?                              Timestamp,
+                                                 EventTracking_Id?                      EventTrackingId,
+                                                 TimeSpan?                              RequestTimeout,
+                                                 CancellationToken                      CancellationToken)
 
         {
 
             #region Initial checks
-
-            if (StatusUpdates == null)
-                throw new ArgumentNullException(nameof(StatusUpdates), "The given enumeration of charging pool status updates must not be null!");
-
 
             PushChargingPoolStatusResult result;
 
@@ -2342,7 +2300,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateStatus(StatusUpdates,
+                result = await RemoteEMobilityProvider.UpdateStatus(ChargingPoolStatusUpdates,
 
                                                                     Timestamp,
                                                                     CancellationToken,
@@ -2378,30 +2336,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Receive charging station operator status updates.
         /// </summary>
-        /// <param name="StatusUpdates">An enumeration of charging station operator status updates.</param>
+        /// <param name="ChargingStationOperatorStatus">An enumeration of charging station operator status updates.</param>
         /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         async Task<PushChargingStationOperatorStatusResult>
 
-            ISendStatus.UpdateStatus(IEnumerable<ChargingStationOperatorStatusUpdate> StatusUpdates,
-                                     TransmissionTypes TransmissionType,
+            IPushStatus.UpdateChargingStationOperatorStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  ChargingStationOperatorStatus,
+                                                            TransmissionTypes                                 TransmissionType,
 
-                                     DateTime? Timestamp,
-                                     CancellationToken CancellationToken,
-                                     EventTracking_Id? EventTrackingId,
-                                     TimeSpan? RequestTimeout)
+                                                            DateTime?                                         Timestamp,
+                                                            EventTracking_Id?                                 EventTrackingId,
+                                                            TimeSpan?                                         RequestTimeout,
+                                                            CancellationToken                                 CancellationToken)
 
         {
 
             #region Initial checks
-
-            if (StatusUpdates == null)
-                throw new ArgumentNullException(nameof(StatusUpdates), "The given enumeration of charging station operator status updates must not be null!");
-
 
             PushChargingStationOperatorStatusResult result;
 
@@ -2426,7 +2380,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateStatus(StatusUpdates,
+                result = await RemoteEMobilityProvider.UpdateStatus(ChargingStationOperatorStatus,
 
                                                                     Timestamp,
                                                                     CancellationToken,
@@ -2462,7 +2416,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Receive roaming network status updates.
         /// </summary>
-        /// <param name="StatusUpdates">An enumeration of roaming network status updates.</param>
+        /// <param name="RoamingNetworkStatus">An enumeration of roaming network status updates.</param>
         /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -2471,21 +2425,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushRoamingNetworkStatusResult>
 
-            ISendStatus.UpdateStatus(IEnumerable<RoamingNetworkStatusUpdate> StatusUpdates,
-                                     TransmissionTypes TransmissionType,
+            IPushStatus.UpdateRoamingNetworkStatus(IEnumerable<RoamingNetworkStatusUpdate>  RoamingNetworkStatus,
+                                                   TransmissionTypes                        TransmissionType,
 
-                                     DateTime? Timestamp,
-                                     CancellationToken CancellationToken,
-                                     EventTracking_Id? EventTrackingId,
-                                     TimeSpan? RequestTimeout)
+                                                   DateTime?                                Timestamp,
+                                                   EventTracking_Id?                        EventTrackingId,
+                                                   TimeSpan?                                RequestTimeout,
+                                                   CancellationToken                        CancellationToken)
 
         {
 
             #region Initial checks
-
-            if (StatusUpdates == null)
-                throw new ArgumentNullException(nameof(StatusUpdates), "The given enumeration of roaming network status updates must not be null!");
-
 
             PushRoamingNetworkStatusResult result;
 
@@ -2510,7 +2460,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             if (!DisablePushStatus && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.UpdateStatus(StatusUpdates,
+                result = await RemoteEMobilityProvider.UpdateStatus(RoamingNetworkStatus,
 
                                                                     Timestamp,
                                                                     CancellationToken,

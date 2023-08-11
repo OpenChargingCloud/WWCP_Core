@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An object implementing ISendStatus.
         /// </summary>
-        public ISendStatus?                   ISendStatus                  { get; }
+        public IPushStatus?                   ISendStatus                  { get; }
 
         /// <summary>
         /// An object implementing IReceiveStatus.
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         internal PushEVSEStatusResult(IId                             AuthId,
-                                      ISendStatus                     ISendStatus,
+                                      IPushStatus                     ISendStatus,
                                       PushEVSEStatusResultTypes       Result,
                                       String?                         Description                 = null,
                                       IEnumerable<EVSEStatusUpdate>?  RejectedEVSEStatusUpdates   = null,
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEStatusResult
 
             Success(IId                    AuthId,
-                    ISendStatus            ISendStatus,
+                    IPushStatus            ISendStatus,
                     String?                Description    = null,
                     IEnumerable<Warning>?  Warnings       = null,
                     TimeSpan?              Runtime        = null)
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEStatusResult
 
             Enqueued(IId                    AuthId,
-                     ISendStatus            ISendStatus,
+                     IPushStatus            ISendStatus,
                      String?                Description    = null,
                      IEnumerable<Warning>?  Warnings       = null,
                      TimeSpan?              Runtime        = null)
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEStatusResult
 
             NoOperation(IId                             AuthId,
-                        ISendStatus                     ISendStatus,
+                        IPushStatus                     ISendStatus,
                         String?                         Description                 = null,
                         IEnumerable<EVSEStatusUpdate>?  RejectedEVSEStatusUpdates   = null,
                         IEnumerable<Warning>?           Warnings                    = null,
@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEStatusResult
 
             OutOfService(IId                            AuthId,
-                         ISendStatus                    ISendStatus,
+                         IPushStatus                    ISendStatus,
                          IEnumerable<EVSEStatusUpdate>  RejectedEVSEStatusUpdates,
                          String?                        Description    = null,
                          IEnumerable<Warning>?          Warnings       = null,
@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEStatusResult
 
             AdminDown(IId                            AuthId,
-                      ISendStatus                    ISendStatus,
+                      IPushStatus                    ISendStatus,
                       IEnumerable<EVSEStatusUpdate>  RejectedEVSEStatusUpdates,
                       String?                        Description   = null,
                       IEnumerable<Warning>?          Warnings      = null,
@@ -358,7 +358,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEStatusResult
 
             Error(IId                             AuthId,
-                  ISendStatus                     ISendStatus,
+                  IPushStatus                     ISendStatus,
                   IEnumerable<EVSEStatusUpdate>?  RejectedEVSEs   = null,
                   String?                         Description     = null,
                   IEnumerable<Warning>?           Warnings        = null,
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEStatusResult
 
             Failed(IId                             AuthId,
-                   ISendStatus                     ISendStatus,
+                   IPushStatus                     ISendStatus,
                    IEnumerable<EVSEStatusUpdate>?  RejectedEVSEs   = null,
                    String?                         Description     = null,
                    IEnumerable<Warning>?           Warnings        = null,
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEStatusResult
 
             LockTimeout(IId                    AuthId,
-                        ISendStatus            ISendStatus,
+                        IPushStatus            ISendStatus,
                         String?                Description    = null,
                         IEnumerable<Warning>?  Warnings       = null,
                         TimeSpan?              Runtime        = null)
@@ -455,7 +455,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Flatten(...)
 
         public static PushEVSEStatusResult Flatten(IId                                AuthId,
-                                                   ISendStatus                        ISendStatus,
+                                                   IPushStatus                        ISendStatus,
                                                    IEnumerable<PushEVSEStatusResult>  PushEVSEStatusResults,
                                                    TimeSpan                           Runtime)
         {

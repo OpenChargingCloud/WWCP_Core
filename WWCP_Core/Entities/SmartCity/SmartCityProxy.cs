@@ -485,28 +485,22 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean  DisablePushStatus         { get; set; }
 
 
-        #region (Set/Add/Update/Delete) EVSE(s)...
+        #region (Set/Add/Update/Delete) Roaming network...
 
-        public IncludeEVSEIdDelegate  IncludeEVSEIds    { get; set; }
-
-        public IncludeEVSEDelegate    IncludeEVSEs      { get; set; }
-
-
-        #region SetStaticData   (EVSE, TransmissionType = Enqueue, ...)
+        #region SetStaticData   (RoamingNetwork, ...)
 
         /// <summary>
-        /// Set the given EVSE as new static EVSE data at the OICP server.
+        /// Set the EVSE data of the given roaming network as new static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="EVSE">An EVSE to upload.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// <param name="RoamingNetwork">A roaming network.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        async Task<PushEVSEDataResult>
 
-            ISendPOIData.SetStaticData(IEVSE               EVSE,
+            IPushPOIData.AddOrUpdateRoamingNetwork(IRoamingNetwork     RoamingNetwork,
                                        TransmissionTypes   TransmissionType,
 
                                        DateTime?           Timestamp,
@@ -516,27 +510,26 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, new IEVSE[] { EVSE }));
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
         #endregion
 
-        #region AddStaticData   (EVSE, TransmissionType = Enqueue, ...)
+        #region AddStaticData   (RoamingNetwork, ...)
 
         /// <summary>
-        /// Add the given EVSE to the static EVSE data at the OICP server.
+        /// Add the EVSE data of the given roaming network to the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="EVSE">An EVSE to upload.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// <param name="RoamingNetwork">A roaming network.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        async Task<PushEVSEDataResult>
 
-            ISendPOIData.AddStaticData(IEVSE               EVSE,
+            IPushPOIData.AddRoamingNetwork(IRoamingNetwork     RoamingNetwork,
                                        TransmissionTypes   TransmissionType,
 
                                        DateTime?           Timestamp,
@@ -546,31 +539,26 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, new IEVSE[] { EVSE }));
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
         #endregion
 
-        #region UpdateStaticData(EVSE, PropertyName = null, OldValue = null, NewValue = null, TransmissionType = Enqueue, ...)
+        #region UpdateStaticData(RoamingNetwork, ...)
 
         /// <summary>
-        /// Update the static data of the given EVSE.
-        /// The EVSE can be uploaded as a whole, or just a single property of the EVSE.
+        /// Update the EVSE data of the given roaming network within the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="EVSE">An EVSE to update.</param>
-        /// <param name="PropertyName">The name of the EVSE property to update.</param>
-        /// <param name="OldValue">The old value of the EVSE property to update.</param>
-        /// <param name="NewValue">The new value of the EVSE property to update.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE update directly or enqueue it for a while.</param>
+        /// <param name="RoamingNetwork">A roaming network.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        async Task<PushEVSEDataResult>
 
-            ISendPOIData.UpdateStaticData(IEVSE               EVSE,
+            IPushPOIData.UpdateRoamingNetwork(IRoamingNetwork     RoamingNetwork,
                                           String              PropertyName,
                                           Object?             NewValue,
                                           Object?             OldValue,
@@ -584,27 +572,26 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, new IEVSE[] { EVSE }));
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
         #endregion
 
-        #region DeleteStaticData(EVSE, TransmissionType = Enqueue, ...)
+        #region DeleteStaticData(RoamingNetwork, ...)
 
         /// <summary>
-        /// Delete the static data of the given EVSE.
+        /// Delete the EVSE data of the given roaming network from the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="EVSE">An EVSE to delete.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE deletion directly or enqueue it for a while.</param>
+        /// <param name="RoamingNetwork">A roaming network to upload.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        async Task<PushEVSEDataResult>
 
-            ISendPOIData.DeleteStaticData(IEVSE               EVSE,
+            IPushPOIData.DeleteRoamingNetwork(IRoamingNetwork     RoamingNetwork,
                                           TransmissionTypes   TransmissionType,
 
                                           DateTime?           Timestamp,
@@ -614,516 +601,373 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, new IEVSE[] { EVSE }));
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
         #endregion
 
 
-        #region SetStaticData   (EVSEs, ...)
+        #region UpdateRoamingNetworkAdminStatus(RoamingNetworkAdminStatusUpdates, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Set the given enumeration of EVSEs as new static EVSE data at the OICP server.
+        /// Update the given enumeration of roaming network admin status updates.
         /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="RoamingNetworkAdminStatusUpdates">An enumeration of roaming network admin status updates.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        async Task<PushRoamingNetworkAdminStatusResult>
 
-            ISendPOIData.SetStaticData(IEnumerable<IEVSE>  EVSEs,
-                                       TransmissionTypes   TransmissionType,
+            IPushAdminStatus.UpdateRoamingNetworkAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  RoamingNetworkAdminStatusUpdates,
+                                                             TransmissionTypes                             TransmissionType,
 
-                                       DateTime?           Timestamp,
-                                       CancellationToken   CancellationToken,
-                                       EventTracking_Id?   EventTrackingId,
-                                       TimeSpan?           RequestTimeout)
+                                                             DateTime?                                     Timestamp,
+                                                             EventTracking_Id?                             EventTrackingId,
+                                                             TimeSpan?                                     RequestTimeout,
+                                                             CancellationToken                             CancellationToken)
 
         {
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, EVSEs));
+            return PushRoamingNetworkAdminStatusResult.NoOperation(Id, this);
 
         }
 
         #endregion
 
-        #region AddStaticData   (EVSEs, ...)
+        #region UpdateRoamingNetworkStatus     (RoamingNetworkStatusUpdates,      TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Add the given enumeration of EVSEs to the static EVSE data at the OICP server.
+        /// Update the given enumeration of roaming network status updates.
         /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="RoamingNetworkStatusUpdates">An enumeration of roaming network status updates.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        async Task<PushRoamingNetworkStatusResult>
 
-            ISendPOIData.AddStaticData(IEnumerable<IEVSE>  EVSEs,
-                                       TransmissionTypes   TransmissionType,
+            IPushStatus.UpdateRoamingNetworkStatus(IEnumerable<RoamingNetworkStatusUpdate>  RoamingNetworkStatusUpdates,
+                                                   TransmissionTypes                        TransmissionType,
 
-                                       DateTime?           Timestamp,
-                                       CancellationToken   CancellationToken,
-                                       EventTracking_Id?   EventTrackingId,
-                                       TimeSpan?           RequestTimeout)
+                                                   DateTime?                                Timestamp,
+                                                   EventTracking_Id?                        EventTrackingId,
+                                                   TimeSpan?                                RequestTimeout,
+                                                   CancellationToken                        CancellationToken)
 
         {
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, EVSEs));
+            return PushRoamingNetworkStatusResult.NoOperation(Id, this);
 
         }
 
         #endregion
 
-        #region UpdateStaticData(EVSEs, ...)
+        #endregion
+
+        #region (Set/Add/Update/Delete) Charging station operator(s)...
+
+        public IncludeChargingStationOperatorIdDelegate  IncludeChargingStationOperatorIds    { get; set; }
+
+        public IncludeChargingStationOperatorDelegate    IncludeChargingStationOperators      { get; set; }
+
+
+        #region SetStaticData   (ChargingStationOperator, ...)
 
         /// <summary>
-        /// Update the given enumeration of EVSEs within the static EVSE data at the OICP server.
+        /// Set the EVSE data of the given charging station operator as new static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        async Task<PushEVSEDataResult>
 
-            ISendPOIData.UpdateStaticData(IEnumerable<IEVSE>  EVSEs,
-                                          TransmissionTypes   TransmissionType,
+            IPushPOIData.SetStaticData(IChargingStationOperator  ChargingStationOperator,
+                                       TransmissionTypes         TransmissionType,
 
-                                          DateTime?           Timestamp,
-                                          CancellationToken   CancellationToken,
-                                          EventTracking_Id?   EventTrackingId,
-                                          TimeSpan?           RequestTimeout)
+                                       DateTime?                 Timestamp,
+                                       CancellationToken         CancellationToken,
+                                       EventTracking_Id?         EventTrackingId,
+                                       TimeSpan?                 RequestTimeout)
 
         {
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, EVSEs));
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
         #endregion
 
-        #region DeleteStaticData(EVSEs, ...)
+        #region AddStaticData   (ChargingStationOperator, ...)
 
         /// <summary>
-        /// Delete the given enumeration of EVSEs from the static EVSE data at the OICP server.
+        /// Add the EVSE data of the given charging station operator to the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        async Task<PushEVSEDataResult>
 
-            ISendPOIData.DeleteStaticData(IEnumerable<IEVSE>  EVSEs,
-                                          TransmissionTypes   TransmissionType,
+            IPushPOIData.AddChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
+                                       TransmissionTypes         TransmissionType,
 
-                                          DateTime?           Timestamp,
-                                          CancellationToken   CancellationToken,
-                                          EventTracking_Id?   EventTrackingId,
-                                          TimeSpan?           RequestTimeout)
+                                       DateTime?                 Timestamp,
+                                       CancellationToken         CancellationToken,
+                                       EventTracking_Id?         EventTrackingId,
+                                       TimeSpan?                 RequestTimeout)
 
         {
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, EVSEs));
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
         #endregion
 
-
-        #region UpdateAdminStatus(AdminStatusUpdates, TransmissionType = Enqueue, ...)
+        #region UpdateStaticData(ChargingStationOperator, ...)
 
         /// <summary>
-        /// Update the given enumeration of EVSE admin status updates.
+        /// Update the EVSE data of the given charging station operator within the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of EVSE admin status updates.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEAdminStatusResult>
+        async Task<PushEVSEDataResult>
 
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
-                                               TransmissionTypes                   TransmissionType,
+            IPushPOIData.UpdateChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
+                                          String                    PropertyName,
+                                          Object?                   NewValue,
+                                          Object?                   OldValue,
+                                          Context?                  DataSource,
+                                          TransmissionTypes         TransmissionType,
 
-                                               DateTime?                           Timestamp,
-                                               CancellationToken                   CancellationToken,
-                                               EventTracking_Id?                   EventTrackingId,
-                                               TimeSpan?                           RequestTimeout)
-
+                                          DateTime?                 Timestamp,
+                                          CancellationToken         CancellationToken,
+                                          EventTracking_Id          EventTrackingId,
+                                          TimeSpan?                 RequestTimeout)
 
         {
 
-            return Task.FromResult(PushEVSEAdminStatusResult.OutOfService(Id,
-                                                                      this,
-                                                                      AdminStatusUpdates));
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
         #endregion
 
-        #region UpdateStatus     (StatusUpdates,      TransmissionType = Enqueue, ...)
+        #region DeleteStaticData(ChargingStationOperator, ...)
 
         /// <summary>
-        /// Update the given enumeration of EVSE status updates.
+        /// Delete the EVSE data of the given charging station operator from the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="StatusUpdates">An enumeration of EVSE status updates.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE status updates directly or enqueue it for a while.</param>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEStatusResult>
+        async Task<PushEVSEDataResult>
 
-            ISendStatus.UpdateStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
-                                     TransmissionTypes              TransmissionType,
+            IPushPOIData.DeleteChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
+                                          TransmissionTypes         TransmissionType,
 
-                                     DateTime?                      Timestamp,
-                                     CancellationToken              CancellationToken,
-                                     EventTracking_Id               EventTrackingId,
-                                     TimeSpan?                      RequestTimeout)
+                                          DateTime?                 Timestamp,
+                                          CancellationToken         CancellationToken,
+                                          EventTracking_Id?         EventTrackingId,
+                                          TimeSpan?                 RequestTimeout)
 
         {
 
-            #region Initial checks
-
-            if (StatusUpdates == null || !StatusUpdates.Any())
-                return Task.FromResult(PushEVSEStatusResult.NoOperation(Id, this));
-
-            #endregion
-
-            return Task.FromResult(PushEVSEStatusResult.NoOperation(Id, this));
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
         #endregion
 
-        #endregion
 
-        #region (Set/Add/Update/Delete) Charging station(s)...
-
-        public IncludeChargingStationIdDelegate  IncludeChargingStationIds    { get; set; }
-
-        public IncludeChargingStationDelegate    IncludeChargingStations      { get; set; }
-
-
-        #region SetStaticData   (ChargingStation, TransmissionType = Enqueue, ...)
+        #region SetStaticData   (ChargingStationOperators, ...)
 
         /// <summary>
-        /// Set the EVSE data of the given charging station as new static EVSE data at the OICP server.
+        /// Set the EVSE data of the given enumeration of charging station operators as new static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushChargingStationDataResult>
+        async Task<PushEVSEDataResult>
 
-            ISendPOIData.SetStaticData(IChargingStation    ChargingStation,
-                                       TransmissionTypes   TransmissionType,
+            IPushPOIData.AddOrUpdateChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                       TransmissionTypes                      TransmissionType,
 
-                                       DateTime?           Timestamp,
-                                       CancellationToken   CancellationToken,
-                                       EventTracking_Id?   EventTrackingId,
-                                       TimeSpan?           RequestTimeout)
+                                       DateTime?                              Timestamp,
+                                       CancellationToken                      CancellationToken,
+                                       EventTracking_Id?                      EventTrackingId,
+                                       TimeSpan?                              RequestTimeout)
 
         {
 
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new IChargingStation[] { ChargingStation }));
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
         #endregion
 
-        #region AddStaticData   (ChargingStation, TransmissionType = Enqueue, ...)
+        #region AddStaticData   (ChargingStationOperators, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given charging station to the static EVSE data at the OICP server.
+        /// Add the EVSE data of the given enumeration of charging station operators to the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushChargingStationDataResult>
+        async Task<PushEVSEDataResult>
 
-            ISendPOIData.AddStaticData(IChargingStation    ChargingStation,
-                                       TransmissionTypes   TransmissionType,
+            IPushPOIData.AddChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                       TransmissionTypes                      TransmissionType,
 
-                                       DateTime?           Timestamp,
-                                       CancellationToken   CancellationToken,
-                                       EventTracking_Id?   EventTrackingId,
-                                       TimeSpan?           RequestTimeout)
+                                       DateTime?                              Timestamp,
+                                       CancellationToken                      CancellationToken,
+                                       EventTracking_Id?                      EventTrackingId,
+                                       TimeSpan?                              RequestTimeout)
 
         {
 
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new IChargingStation[] { ChargingStation }));
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
         #endregion
 
-        #region UpdateStaticData(ChargingStation, PropertyName = null, OldValue = null, NewValue = null, TransmissionType = Enqueue, ...)
+        #region UpdateStaticData(ChargingStationOperators, ...)
 
         /// <summary>
-        /// Update the EVSE data of the given charging station within the static EVSE data at the OICP server.
+        /// Update the EVSE data of the given enumeration of charging station operators within the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        /// <param name="PropertyName">The name of the charging station property to update.</param>
-        /// <param name="OldValue">The old value of the charging station property to update.</param>
-        /// <param name="NewValue">The new value of the charging station property to update.</param>
-        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushChargingStationDataResult>
+        async Task<PushEVSEDataResult>
 
-            ISendPOIData.UpdateStaticData(IChargingStation    ChargingStation,
-                                          String              PropertyName,
-                                          Object?             NewValue,
-                                          Object?             OldValue,
-                                          Context?            DataSource,
-                                          TransmissionTypes   TransmissionType,
+            IPushPOIData.UpdateChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                          TransmissionTypes                      TransmissionType,
 
-                                          DateTime?           Timestamp,
-                                          CancellationToken   CancellationToken,
-                                          EventTracking_Id?   EventTrackingId,
-                                          TimeSpan?           RequestTimeout)
+                                          DateTime?                              Timestamp,
+                                          CancellationToken                      CancellationToken,
+                                          EventTracking_Id?                      EventTrackingId,
+                                          TimeSpan?                              RequestTimeout)
 
         {
 
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new IChargingStation[] { ChargingStation }));
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
         #endregion
 
-        #region DeleteStaticData(ChargingStation, TransmissionType = Enqueue, ...)
+        #region DeleteStaticData(ChargingStationOperators, ...)
 
         /// <summary>
-        /// Delete the EVSE data of the given charging station from the static EVSE data at the OICP server.
+        /// Delete the EVSE data of the given enumeration of charging station operators from the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushChargingStationDataResult>
+        async Task<PushEVSEDataResult>
 
-            ISendPOIData.DeleteStaticData(IChargingStation    ChargingStation,
-                                          TransmissionTypes   TransmissionType,
+            IPushPOIData.DeleteChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                          TransmissionTypes                      TransmissionType,
 
-                                          DateTime?           Timestamp,
-                                          CancellationToken   CancellationToken,
-                                          EventTracking_Id?   EventTrackingId,
-                                          TimeSpan?           RequestTimeout)
+                                          DateTime?                              Timestamp,
+                                          CancellationToken                      CancellationToken,
+                                          EventTracking_Id?                      EventTrackingId,
+                                          TimeSpan?                              RequestTimeout)
 
         {
 
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new IChargingStation[] { ChargingStation }));
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
         #endregion
 
 
-        #region SetStaticData   (ChargingStations, TransmissionType = Enqueue, ...)
+        #region UpdateChargingStationOperatorAdminStatus(ChargingStationOperatorAdminStatusUpdates, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Set the EVSE data of the given enumeration of charging stations as new static EVSE data at the OICP server.
+        /// Update the given enumeration of charging station operator admin status updates.
         /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
-        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
+        /// <param name="ChargingStationOperatorAdminStatusUpdates">An enumeration of charging station operator admin status updates.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushChargingStationDataResult>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        async Task<PushChargingStationOperatorAdminStatusResult>
 
-            ISendPOIData.SetStaticData(IEnumerable<IChargingStation>  ChargingStations,
-                                       TransmissionTypes              TransmissionType,
+            IPushAdminStatus.UpdateChargingStationOperatorAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  ChargingStationOperatorAdminStatusUpdates,
+                                                                      TransmissionTypes                                      TransmissionType,
 
-                                       DateTime?                      Timestamp,
-                                       CancellationToken              CancellationToken,
-                                       EventTracking_Id?              EventTrackingId,
-                                       TimeSpan?                      RequestTimeout)
+                                                                      DateTime?                                              Timestamp,
+                                                                      EventTracking_Id?                                      EventTrackingId,
+                                                                      TimeSpan?                                              RequestTimeout,
+                                                                      CancellationToken                                      CancellationToken)
 
         {
 
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
+            return PushChargingStationOperatorAdminStatusResult.NoOperation(Id, this);
 
         }
 
         #endregion
 
-        #region AddStaticData   (ChargingStations, TransmissionType = Enqueue, ...)
+        #region UpdateChargingStationOperatorStatus     (ChargingStationOperatorStatusUpdates,      TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given enumeration of charging stations to the static EVSE data at the OICP server.
+        /// Update the given enumeration of charging station operator status updates.
         /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
-        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
+        /// <param name="ChargingStationOperatorStatusUpdates">An enumeration of charging station operator status updates.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushChargingStationDataResult>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        async Task<PushChargingStationOperatorStatusResult>
 
-            ISendPOIData.AddStaticData(IEnumerable<IChargingStation>  ChargingStations,
-                                       TransmissionTypes              TransmissionType,
+            IPushStatus.UpdateChargingStationOperatorStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  ChargingStationOperatorStatusUpdates,
+                                                            TransmissionTypes                                 TransmissionType,
 
-
-                                       DateTime?                      Timestamp,
-                                       CancellationToken              CancellationToken,
-                                       EventTracking_Id?              EventTrackingId,
-                                       TimeSpan?                      RequestTimeout)
+                                                            DateTime?                                         Timestamp,
+                                                            EventTracking_Id?                                 EventTrackingId,
+                                                            TimeSpan?                                         RequestTimeout,
+                                                            CancellationToken                                 CancellationToken)
 
         {
 
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
+            return PushChargingStationOperatorStatusResult.NoOperation(Id, this);
 
         }
-
-        #endregion
-
-        #region UpdateStaticData(ChargingStations, TransmissionType = Enqueue, ...)
-
-        /// <summary>
-        /// Update the EVSE data of the given enumeration of charging stations within the static EVSE data at the OICP server.
-        /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
-        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushChargingStationDataResult>
-
-            ISendPOIData.UpdateStaticData(IEnumerable<IChargingStation>  ChargingStations,
-                                          TransmissionTypes              TransmissionType,
-
-                                          DateTime?                      Timestamp,
-                                          CancellationToken              CancellationToken,
-                                          EventTracking_Id?              EventTrackingId,
-                                          TimeSpan?                      RequestTimeout)
-
-        {
-
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
-
-        }
-
-        #endregion
-
-        #region DeleteStaticData(ChargingStations, TransmissionType = Enqueue, ...)
-
-        /// <summary>
-        /// Delete the EVSE data of the given enumeration of charging stations from the static EVSE data at the OICP server.
-        /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
-        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushChargingStationDataResult>
-
-            ISendPOIData.DeleteStaticData(IEnumerable<IChargingStation>  ChargingStations,
-                                          TransmissionTypes              TransmissionType,
-
-                                          DateTime?                      Timestamp,
-                                          CancellationToken              CancellationToken,
-                                          EventTracking_Id?              EventTrackingId,
-                                          TimeSpan?                      RequestTimeout)
-
-        {
-
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
-
-        }
-
-        #endregion
-
-
-        #region UpdateAdminStatus(AdminStatusUpdates, TransmissionType = Enqueue, ...)
-
-        /// <summary>
-        /// Update the given enumeration of charging station admin status updates.
-        /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of charging station admin status updates.</param>
-        /// <param name="TransmissionType">Whether to send the charging station admin status updates directly or enqueue it for a while.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushChargingStationAdminStatusResult>
-
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
-                                               TransmissionTypes                              TransmissionType,
-
-                                               DateTime?                                      Timestamp,
-                                               CancellationToken                              CancellationToken,
-                                               EventTracking_Id?                              EventTrackingId,
-                                               TimeSpan?                                      RequestTimeout)
-
-
-        {
-
-            return Task.FromResult(PushChargingStationAdminStatusResult.OutOfService(Id,
-                                                                                     this,
-                                                                                     AdminStatusUpdates));
-
-        }
-
-        #endregion
-
-        #region UpdateStatus     (StatusUpdates,      TransmissionType = Enqueue, ...)
-
-        /// <summary>
-        /// Update the given enumeration of charging station status updates.
-        /// </summary>
-        /// <param name="StatusUpdates">An enumeration of charging station status updates.</param>
-        /// <param name="TransmissionType">Whether to send the charging station status updates directly or enqueue it for a while.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushChargingStationStatusResult>
-
-            ISendStatus.UpdateStatus(IEnumerable<ChargingStationStatusUpdate>  StatusUpdates,
-                                     TransmissionTypes                         TransmissionType,
-
-                                     DateTime?                                 Timestamp,
-                                     CancellationToken                         CancellationToken,
-                                     EventTracking_Id                          EventTrackingId,
-                                     TimeSpan?                                 RequestTimeout)
-
-
-                => Task.FromResult(PushChargingStationStatusResult.NoOperation(Id, this));
 
         #endregion
 
@@ -1150,7 +994,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingPoolDataResult>
 
-            ISendPOIData.SetStaticData(IChargingPool       ChargingPool,
+            IPushPOIData.SetStaticData(IChargingPool       ChargingPool,
                                        TransmissionTypes   TransmissionType,
 
                                        DateTime?           Timestamp,
@@ -1180,7 +1024,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingPoolDataResult>
 
-            ISendPOIData.AddStaticData(IChargingPool       ChargingPool,
+            IPushPOIData.AddChargingPool(IChargingPool       ChargingPool,
                                        TransmissionTypes   TransmissionType,
 
                                        DateTime?           Timestamp,
@@ -1213,7 +1057,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingPoolDataResult>
 
-            ISendPOIData.UpdateStaticData(IChargingPool       ChargingPool,
+            IPushPOIData.UpdateChargingPool(IChargingPool       ChargingPool,
                                           String              PropertyName,
                                           Object?             NewValue,
                                           Object?             OldValue,
@@ -1247,7 +1091,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingPoolDataResult>
 
-            ISendPOIData.DeleteStaticData(IChargingPool       ChargingPool,
+            IPushPOIData.DeleteChargingPool(IChargingPool       ChargingPool,
                                           TransmissionTypes   TransmissionType,
 
                                           DateTime?           Timestamp,
@@ -1278,7 +1122,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingPoolDataResult>
 
-            ISendPOIData.SetStaticData(IEnumerable<IChargingPool>  ChargingPools,
+            IPushPOIData.AddOrUpdateChargingPools(IEnumerable<IChargingPool>  ChargingPools,
                                        TransmissionTypes           TransmissionType,
 
                                        DateTime?                   Timestamp,
@@ -1308,7 +1152,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingPoolDataResult>
 
-            ISendPOIData.AddStaticData(IEnumerable<IChargingPool>  ChargingPools,
+            IPushPOIData.AddChargingPools(IEnumerable<IChargingPool>  ChargingPools,
                                        TransmissionTypes           TransmissionType,
 
                                        DateTime?                   Timestamp,
@@ -1338,7 +1182,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingPoolDataResult>
 
-            ISendPOIData.UpdateStaticData(IEnumerable<IChargingPool>  ChargingPools,
+            IPushPOIData.UpdateChargingPools(IEnumerable<IChargingPool>  ChargingPools,
                                           TransmissionTypes           TransmissionType,
 
                                           DateTime?                   Timestamp,
@@ -1368,7 +1212,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingPoolDataResult>
 
-            ISendPOIData.DeleteStaticData(IEnumerable<IChargingPool>  ChargingPools,
+            IPushPOIData.DeleteChargingPools(IEnumerable<IChargingPool>  ChargingPools,
                                           TransmissionTypes           TransmissionType,
 
                                           DateTime?                   Timestamp,
@@ -1385,58 +1229,58 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region UpdateAdminStatus(AdminStatusUpdates, TransmissionType = Enqueue, ...)
+        #region UpdateChargingPoolAdminStatus(ChargingPoolAdminStatusUpdates, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging pool admin status updates.
         /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of charging pool admin status updates.</param>
+        /// <param name="ChargingPoolAdminStatusUpdates">An enumeration of charging pool admin status updates.</param>
         /// <param name="TransmissionType">Whether to send the charging pool admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         Task<PushChargingPoolAdminStatusResult>
 
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
-                                               TransmissionTypes                           TransmissionType,
+            IPushAdminStatus.UpdateChargingPoolAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  ChargingPoolAdminStatusUpdates,
+                                                           TransmissionTypes                           TransmissionType,
 
-                                               DateTime?                                   Timestamp,
-                                               CancellationToken                           CancellationToken,
-                                               EventTracking_Id?                           EventTrackingId,
-                                               TimeSpan?                                   RequestTimeout)
+                                                           DateTime?                                   Timestamp,
+                                                           EventTracking_Id?                           EventTrackingId,
+                                                           TimeSpan?                                   RequestTimeout,
+                                                           CancellationToken                           CancellationToken)
         {
 
             return Task.FromResult(PushChargingPoolAdminStatusResult.OutOfService(Id,
                                                                                   this,
-                                                                                  AdminStatusUpdates));
+                                                                                  ChargingPoolAdminStatusUpdates));
 
         }
 
         #endregion
 
-        #region UpdateStatus     (StatusUpdates,      TransmissionType = Enqueue, ...)
+        #region UpdateChargingPoolStatus     (ChargingPoolStatusUpdates,      TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging pool status updates.
         /// </summary>
-        /// <param name="StatusUpdates">An enumeration of charging pool status updates.</param>
+        /// <param name="ChargingPoolStatusUpdates">An enumeration of charging pool status updates.</param>
         /// <param name="TransmissionType">Whether to send the charging pool status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         Task<PushChargingPoolStatusResult>
 
-            ISendStatus.UpdateStatus(IEnumerable<ChargingPoolStatusUpdate>  StatusUpdates,
-                                     TransmissionTypes                      TransmissionType,
+            IPushStatus.UpdateChargingPoolStatus(IEnumerable<ChargingPoolStatusUpdate>  ChargingPoolStatusUpdates,
+                                                 TransmissionTypes                      TransmissionType,
 
-                                     DateTime?                              Timestamp,
-                                     CancellationToken                      CancellationToken,
-                                     EventTracking_Id?                      EventTrackingId,
-                                     TimeSpan?                              RequestTimeout)
+                                                 DateTime?                              Timestamp,
+                                                 EventTracking_Id?                      EventTrackingId,
+                                                 TimeSpan?                              RequestTimeout,
+                                                 CancellationToken                      CancellationToken)
 
 
                 => Task.FromResult(PushChargingPoolStatusResult.NoOperation(Id, this));
@@ -1445,327 +1289,28 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (Set/Add/Update/Delete) Charging station operator(s)...
+        #region (Set/Add/Update/Delete) Charging station(s)...
 
-        public IncludeChargingStationOperatorIdDelegate  IncludeChargingStationOperatorIds    { get; set; }
+        public IncludeChargingStationIdDelegate  IncludeChargingStationIds    { get; set; }
 
-        public IncludeChargingStationOperatorDelegate    IncludeChargingStationOperators      { get; set; }
+        public IncludeChargingStationDelegate    IncludeChargingStations      { get; set; }
 
 
-        #region SetStaticData   (ChargingStationOperator, ...)
+        #region SetStaticData   (ChargingStation, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Set the EVSE data of the given charging station operator as new static EVSE data at the OICP server.
+        /// Set the EVSE data of the given charging station as new static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
-            ISendPOIData.SetStaticData(IChargingStationOperator  ChargingStationOperator,
-                                       TransmissionTypes         TransmissionType,
-
-                                       DateTime?                 Timestamp,
-                                       CancellationToken         CancellationToken,
-                                       EventTracking_Id?         EventTrackingId,
-                                       TimeSpan?                 RequestTimeout)
-
-        {
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
-
-        #endregion
-
-        #region AddStaticData   (ChargingStationOperator, ...)
-
-        /// <summary>
-        /// Add the EVSE data of the given charging station operator to the static EVSE data at the OICP server.
-        /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
-
-            ISendPOIData.AddStaticData(IChargingStationOperator  ChargingStationOperator,
-                                       TransmissionTypes         TransmissionType,
-
-                                       DateTime?                 Timestamp,
-                                       CancellationToken         CancellationToken,
-                                       EventTracking_Id?         EventTrackingId,
-                                       TimeSpan?                 RequestTimeout)
-
-        {
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
-
-        #endregion
-
-        #region UpdateStaticData(ChargingStationOperator, ...)
-
-        /// <summary>
-        /// Update the EVSE data of the given charging station operator within the static EVSE data at the OICP server.
-        /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
-
-            ISendPOIData.UpdateStaticData(IChargingStationOperator  ChargingStationOperator,
-                                          String                    PropertyName,
-                                          Object?                   NewValue,
-                                          Object?                   OldValue,
-                                          Context?                  DataSource,
-                                          TransmissionTypes         TransmissionType,
-
-                                          DateTime?                 Timestamp,
-                                          CancellationToken         CancellationToken,
-                                          EventTracking_Id          EventTrackingId,
-                                          TimeSpan?                 RequestTimeout)
-
-        {
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
-
-        #endregion
-
-        #region DeleteStaticData(ChargingStationOperator, ...)
-
-        /// <summary>
-        /// Delete the EVSE data of the given charging station operator from the static EVSE data at the OICP server.
-        /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
-
-            ISendPOIData.DeleteStaticData(IChargingStationOperator  ChargingStationOperator,
-                                          TransmissionTypes         TransmissionType,
-
-                                          DateTime?                 Timestamp,
-                                          CancellationToken         CancellationToken,
-                                          EventTracking_Id?         EventTrackingId,
-                                          TimeSpan?                 RequestTimeout)
-
-        {
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
-
-        #endregion
-
-
-        #region SetStaticData   (ChargingStationOperators, ...)
-
-        /// <summary>
-        /// Set the EVSE data of the given enumeration of charging station operators as new static EVSE data at the OICP server.
-        /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
-
-            ISendPOIData.SetStaticData(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
-                                       TransmissionTypes                      TransmissionType,
-
-                                       DateTime?                              Timestamp,
-                                       CancellationToken                      CancellationToken,
-                                       EventTracking_Id?                      EventTrackingId,
-                                       TimeSpan?                              RequestTimeout)
-
-        {
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
-
-        #endregion
-
-        #region AddStaticData   (ChargingStationOperators, ...)
-
-        /// <summary>
-        /// Add the EVSE data of the given enumeration of charging station operators to the static EVSE data at the OICP server.
-        /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
-
-            ISendPOIData.AddStaticData(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
-                                       TransmissionTypes                      TransmissionType,
-
-                                       DateTime?                              Timestamp,
-                                       CancellationToken                      CancellationToken,
-                                       EventTracking_Id?                      EventTrackingId,
-                                       TimeSpan?                              RequestTimeout)
-
-        {
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
-
-        #endregion
-
-        #region UpdateStaticData(ChargingStationOperators, ...)
-
-        /// <summary>
-        /// Update the EVSE data of the given enumeration of charging station operators within the static EVSE data at the OICP server.
-        /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
-
-            ISendPOIData.UpdateStaticData(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
-                                          TransmissionTypes                      TransmissionType,
-
-                                          DateTime?                              Timestamp,
-                                          CancellationToken                      CancellationToken,
-                                          EventTracking_Id?                      EventTrackingId,
-                                          TimeSpan?                              RequestTimeout)
-
-        {
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
-
-        #endregion
-
-        #region DeleteStaticData(ChargingStationOperators, ...)
-
-        /// <summary>
-        /// Delete the EVSE data of the given enumeration of charging station operators from the static EVSE data at the OICP server.
-        /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
-
-            ISendPOIData.DeleteStaticData(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
-                                          TransmissionTypes                      TransmissionType,
-
-                                          DateTime?                              Timestamp,
-                                          CancellationToken                      CancellationToken,
-                                          EventTracking_Id?                      EventTrackingId,
-                                          TimeSpan?                              RequestTimeout)
-
-        {
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
-
-        #endregion
-
-
-        #region UpdateChargingStationOperatorAdminStatus(AdminStatusUpdates, TransmissionType = Enqueue, ...)
-
-        /// <summary>
-        /// Update the given enumeration of charging station operator admin status updates.
-        /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of charging station operator admin status updates.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushChargingStationOperatorAdminStatusResult>
-
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
-                                               TransmissionTypes                                      TransmissionType,
-
-                                               DateTime?                                              Timestamp,
-                                               CancellationToken                                      CancellationToken,
-                                               EventTracking_Id?                                      EventTrackingId,
-                                               TimeSpan?                                              RequestTimeout)
-
-        {
-
-            return PushChargingStationOperatorAdminStatusResult.NoOperation(Id, this);
-
-        }
-
-        #endregion
-
-        #region UpdateChargingStationOperatorStatus     (StatusUpdates,      TransmissionType = Enqueue, ...)
-
-        /// <summary>
-        /// Update the given enumeration of charging station operator status updates.
-        /// </summary>
-        /// <param name="StatusUpdates">An enumeration of charging station operator status updates.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushChargingStationOperatorStatusResult>
-
-            ISendStatus.UpdateStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  StatusUpdates,
-                                     TransmissionTypes                                 TransmissionType,
-
-                                     DateTime?                                         Timestamp,
-                                     CancellationToken                                 CancellationToken,
-                                     EventTracking_Id?                                 EventTrackingId,
-                                     TimeSpan?                                         RequestTimeout)
-
-        {
-
-            return PushChargingStationOperatorStatusResult.NoOperation(Id, this);
-
-        }
-
-        #endregion
-
-        #endregion
-
-        #region (Set/Add/Update/Delete) Roaming network...
-
-        #region SetStaticData   (RoamingNetwork, ...)
-
-        /// <summary>
-        /// Set the EVSE data of the given roaming network as new static EVSE data at the OICP server.
-        /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
-
-            ISendPOIData.SetStaticData(IRoamingNetwork     RoamingNetwork,
+            IPushPOIData.AddOrUpdateChargingStation(IChargingStation    ChargingStation,
                                        TransmissionTypes   TransmissionType,
 
                                        DateTime?           Timestamp,
@@ -1775,26 +1320,27 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new IChargingStation[] { ChargingStation }));
 
         }
 
         #endregion
 
-        #region AddStaticData   (RoamingNetwork, ...)
+        #region AddStaticData   (ChargingStation, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given roaming network to the static EVSE data at the OICP server.
+        /// Add the EVSE data of the given charging station to the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
-            ISendPOIData.AddStaticData(IRoamingNetwork     RoamingNetwork,
+            IPushPOIData.AddChargingStation(IChargingStation    ChargingStation,
                                        TransmissionTypes   TransmissionType,
 
                                        DateTime?           Timestamp,
@@ -1804,26 +1350,30 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new IChargingStation[] { ChargingStation }));
 
         }
 
         #endregion
 
-        #region UpdateStaticData(RoamingNetwork, ...)
+        #region UpdateStaticData(ChargingStation, PropertyName = null, OldValue = null, NewValue = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Update the EVSE data of the given roaming network within the static EVSE data at the OICP server.
+        /// Update the EVSE data of the given charging station within the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="PropertyName">The name of the charging station property to update.</param>
+        /// <param name="OldValue">The old value of the charging station property to update.</param>
+        /// <param name="NewValue">The new value of the charging station property to update.</param>
+        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
-            ISendPOIData.UpdateStaticData(IRoamingNetwork     RoamingNetwork,
+            IPushPOIData.UpdateChargingStation(IChargingStation    ChargingStation,
                                           String              PropertyName,
                                           Object?             NewValue,
                                           Object?             OldValue,
@@ -1837,26 +1387,27 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new IChargingStation[] { ChargingStation }));
 
         }
 
         #endregion
 
-        #region DeleteStaticData(RoamingNetwork, ...)
+        #region DeleteStaticData(ChargingStation, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Delete the EVSE data of the given roaming network from the static EVSE data at the OICP server.
+        /// Delete the EVSE data of the given charging station from the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="RoamingNetwork">A roaming network to upload.</param>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
-            ISendPOIData.DeleteStaticData(IRoamingNetwork     RoamingNetwork,
+            IPushPOIData.DeleteStaticData(IChargingStation    ChargingStation,
                                           TransmissionTypes   TransmissionType,
 
                                           DateTime?           Timestamp,
@@ -1866,66 +1417,639 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new IChargingStation[] { ChargingStation }));
 
         }
 
         #endregion
 
 
-        #region UpdateRoamingNetworkAdminStatus(AdminStatusUpdates, TransmissionType = Enqueue, ...)
+        #region SetStaticData   (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Update the given enumeration of roaming network admin status updates.
+        /// Set the EVSE data of the given enumeration of charging stations as new static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="AdminStatusUpdates">An enumeration of roaming network admin status updates.</param>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushRoamingNetworkAdminStatusResult>
+        Task<PushChargingStationDataResult>
 
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
-                                               TransmissionTypes                             TransmissionType,
+            IPushPOIData.AddOrUpdateChargingStations(IEnumerable<IChargingStation>  ChargingStations,
+                                       TransmissionTypes              TransmissionType,
 
-                                               DateTime?                                     Timestamp,
-                                               CancellationToken                             CancellationToken,
-                                               EventTracking_Id?                             EventTrackingId,
-                                               TimeSpan?                                     RequestTimeout)
+                                       DateTime?                      Timestamp,
+                                       CancellationToken              CancellationToken,
+                                       EventTracking_Id?              EventTrackingId,
+                                       TimeSpan?                      RequestTimeout)
 
         {
 
-            return PushRoamingNetworkAdminStatusResult.NoOperation(Id, this);
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
 
         }
 
         #endregion
 
-        #region UpdateRoamingNetworkStatus     (StatusUpdates,      TransmissionType = Enqueue, ...)
+        #region AddStaticData   (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Update the given enumeration of roaming network status updates.
+        /// Add the EVSE data of the given enumeration of charging stations to the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="StatusUpdates">An enumeration of roaming network status updates.</param>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushRoamingNetworkStatusResult>
+        Task<PushChargingStationDataResult>
 
-            ISendStatus.UpdateStatus(IEnumerable<RoamingNetworkStatusUpdate>  StatusUpdates,
-                                     TransmissionTypes                        TransmissionType,
+            IPushPOIData.AddChargingStations(IEnumerable<IChargingStation>  ChargingStations,
+                                       TransmissionTypes              TransmissionType,
 
-                                     DateTime?                                Timestamp,
-                                     CancellationToken                        CancellationToken,
-                                     EventTracking_Id?                        EventTrackingId,
-                                     TimeSpan?                                RequestTimeout)
+
+                                       DateTime?                      Timestamp,
+                                       CancellationToken              CancellationToken,
+                                       EventTracking_Id?              EventTrackingId,
+                                       TimeSpan?                      RequestTimeout)
 
         {
 
-            return PushRoamingNetworkStatusResult.NoOperation(Id, this);
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
+
+        }
+
+        #endregion
+
+        #region UpdateStaticData(ChargingStations, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Update the EVSE data of the given enumeration of charging stations within the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<PushChargingStationDataResult>
+
+            IPushPOIData.UpdateChargingStations(IEnumerable<IChargingStation>  ChargingStations,
+                                          TransmissionTypes              TransmissionType,
+
+                                          DateTime?                      Timestamp,
+                                          CancellationToken              CancellationToken,
+                                          EventTracking_Id?              EventTrackingId,
+                                          TimeSpan?                      RequestTimeout)
+
+        {
+
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
+
+        }
+
+        #endregion
+
+        #region DeleteStaticData(ChargingStations, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Delete the EVSE data of the given enumeration of charging stations from the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<PushChargingStationDataResult>
+
+            IPushPOIData.DeleteChargingStations(IEnumerable<IChargingStation>  ChargingStations,
+                                          TransmissionTypes              TransmissionType,
+
+                                          DateTime?                      Timestamp,
+                                          CancellationToken              CancellationToken,
+                                          EventTracking_Id?              EventTrackingId,
+                                          TimeSpan?                      RequestTimeout)
+
+        {
+
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
+
+        }
+
+        #endregion
+
+
+        #region UpdateChargingStationAdminStatus(ChargingStationAdminStatusUpdates, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging station admin status updates.
+        /// </summary>
+        /// <param name="ChargingStationAdminStatusUpdates">An enumeration of charging station admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the charging station admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<PushChargingStationAdminStatusResult>
+
+            IPushAdminStatus.UpdateChargingStationAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  ChargingStationAdminStatusUpdates,
+                                                              TransmissionTypes                              TransmissionType,
+
+                                                              DateTime?                                      Timestamp,
+                                                              EventTracking_Id?                              EventTrackingId,
+                                                              TimeSpan?                                      RequestTimeout,
+                                                              CancellationToken                              CancellationToken)
+
+
+        {
+
+            return Task.FromResult(PushChargingStationAdminStatusResult.OutOfService(Id,
+                                                                                     this,
+                                                                                     ChargingStationAdminStatusUpdates));
+
+        }
+
+        #endregion
+
+        #region UpdateChargingStationStatus     (ChargingStationStatusUpdates,      TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging station status updates.
+        /// </summary>
+        /// <param name="ChargingStationStatusUpdates">An enumeration of charging station status updates.</param>
+        /// <param name="TransmissionType">Whether to send the charging station status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<PushChargingStationStatusResult>
+
+            IPushStatus.UpdateChargingStationStatus(IEnumerable<ChargingStationStatusUpdate>  ChargingStationStatusUpdates,
+                                                    TransmissionTypes                         TransmissionType,
+
+                                                    DateTime?                                 Timestamp,
+                                                    EventTracking_Id                          EventTrackingId,
+                                                    TimeSpan?                                 RequestTimeout,
+                                                    CancellationToken                         CancellationToken)
+
+
+                => Task.FromResult(PushChargingStationStatusResult.NoOperation(Id, this));
+
+        #endregion
+
+        #endregion
+
+        #region (Set/Add/Update/Delete) EVSE(s)...
+
+        public IncludeEVSEIdDelegate  IncludeEVSEIds    { get; set; }
+
+        public IncludeEVSEDelegate    IncludeEVSEs      { get; set; }
+
+
+        #region AddEVSE           (EVSE,  TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Add the given EVSE.
+        /// </summary>
+        /// <param name="EVSE">An EVSE to add.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<PushEVSEDataResult>
+
+            AddEVSE(IEVSE              EVSE,
+                    TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
+
+                    DateTime?          Timestamp           = null,
+                    EventTracking_Id?  EventTrackingId     = null,
+                    TimeSpan?          RequestTimeout      = null,
+                    CancellationToken  CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       PushEVSEDataResult.NoOperation(
+                           AuthId:         Id,
+                           SendPOIData:    this,
+                           RejectedEVSEs:  Array.Empty<IEVSE>(),
+                           Description:    null,
+                           Warnings:       null,
+                           Runtime:        null
+                       )
+                   );
+
+        #endregion
+
+        #region AddEVSEIfNotExists(EVSE,  TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Add the given EVSE, if it does not already exist.
+        /// </summary>
+        /// <param name="EVSE">An EVSE to add.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<PushEVSEDataResult>
+
+            AddEVSEIfNotExists(IEVSE              EVSE,
+                               TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
+
+                               DateTime?          Timestamp           = null,
+                               EventTracking_Id?  EventTrackingId     = null,
+                               TimeSpan?          RequestTimeout      = null,
+                               CancellationToken  CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       PushEVSEDataResult.NoOperation(
+                           AuthId:         Id,
+                           SendPOIData:    this,
+                           RejectedEVSEs:  Array.Empty<IEVSE>(),
+                           Description:    null,
+                           Warnings:       null,
+                           Runtime:        null
+                       )
+                   );
+
+        #endregion
+
+        #region AddOrUpdateEVSE   (EVSE,  TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Add or update the given EVSE.
+        /// </summary>
+        /// <param name="EVSE">An EVSE to add or update.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<PushEVSEDataResult>
+
+            AddOrUpdateEVSE(IEVSE              EVSE,
+                            TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
+
+                            DateTime?          Timestamp           = null,
+                            EventTracking_Id?  EventTrackingId     = null,
+                            TimeSpan?          RequestTimeout      = null,
+                            CancellationToken  CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       PushEVSEDataResult.NoOperation(
+                           AuthId:         Id,
+                           SendPOIData:    this,
+                           RejectedEVSEs:  Array.Empty<IEVSE>(),
+                           Description:    null,
+                           Warnings:       null,
+                           Runtime:        null
+                       )
+                   );
+
+        #endregion
+
+        #region UpdateEVSE        (EVSE,  PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Update the given EVSE.
+        /// </summary>
+        /// <param name="EVSE">An EVSE to update.</param>
+        /// <param name="PropertyName">The name of the EVSE property to update.</param>
+        /// <param name="NewValue">The new value of the EVSE property to update.</param>
+        /// <param name="OldValue">The optional old value of the EVSE property to update.</param>
+        /// <param name="DataSource">An optional data source or context for the EVSE property update.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<PushEVSEDataResult>
+
+            UpdateEVSE(IEVSE              EVSE,
+                       String             PropertyName,
+                       Object?            NewValue,
+                       Object?            OldValue            = null,
+                       Context?           DataSource          = null,
+                       TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
+
+                       DateTime?          Timestamp           = null,
+                       EventTracking_Id?  EventTrackingId     = null,
+                       TimeSpan?          RequestTimeout      = null,
+                       CancellationToken  CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       PushEVSEDataResult.NoOperation(
+                           AuthId:         Id,
+                           SendPOIData:    this,
+                           RejectedEVSEs:  Array.Empty<IEVSE>(),
+                           Description:    null,
+                           Warnings:       null,
+                           Runtime:        null
+                       )
+                   );
+
+        #endregion
+
+        #region DeleteEVSE        (EVSE,  TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Delete the given EVSE.
+        /// </summary>
+        /// <param name="EVSE">An EVSE to delete.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE deletion directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<PushEVSEDataResult>
+
+            DeleteEVSE(IEVSE              EVSE,
+                       TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
+
+                       DateTime?          Timestamp           = null,
+                       EventTracking_Id?  EventTrackingId     = null,
+                       TimeSpan?          RequestTimeout      = null,
+                       CancellationToken  CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       PushEVSEDataResult.NoOperation(
+                           AuthId:         Id,
+                           SendPOIData:    this,
+                           RejectedEVSEs:  Array.Empty<IEVSE>(),
+                           Description:    null,
+                           Warnings:       null,
+                           Runtime:        null
+                       )
+                   );
+
+        #endregion
+
+
+        #region AddEVSEs          (EVSEs, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Add the given enumeration of EVSEs.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<PushEVSEDataResult>
+
+            AddEVSEs(IEnumerable<IEVSE>  EVSEs,
+                     TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+
+                     DateTime?           Timestamp           = null,
+                     EventTracking_Id?   EventTrackingId     = null,
+                     TimeSpan?           RequestTimeout      = null,
+                     CancellationToken   CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       PushEVSEDataResult.NoOperation(
+                           AuthId:         Id,
+                           SendPOIData:    this,
+                           RejectedEVSEs:  Array.Empty<IEVSE>(),
+                           Description:    null,
+                           Warnings:       null,
+                           Runtime:        null
+                       )
+                   );
+
+        #endregion
+
+        #region AddEVSEsIfNotExist(EVSEs, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Add the given enumeration of EVSEs, if they do not already exist.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs to add, if they do not already exist.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<PushEVSEDataResult>
+
+            AddEVSEsIfNotExist(IEnumerable<IEVSE>  EVSEs,
+                               TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+
+                               DateTime?           Timestamp           = null,
+                               EventTracking_Id?   EventTrackingId     = null,
+                               TimeSpan?           RequestTimeout      = null,
+                               CancellationToken   CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       PushEVSEDataResult.NoOperation(
+                           AuthId:         Id,
+                           SendPOIData:    this,
+                           RejectedEVSEs:  Array.Empty<IEVSE>(),
+                           Description:    null,
+                           Warnings:       null,
+                           Runtime:        null
+                       )
+                   );
+
+        #endregion
+
+        #region AddOrUpdateEVSEs  (EVSEs, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Add or update the given enumeration of EVSEs.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs to add or update.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<PushEVSEDataResult>
+
+            AddOrUpdateEVSEs(IEnumerable<IEVSE>  EVSEs,
+                             TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+
+                             DateTime?           Timestamp           = null,
+                             EventTracking_Id?   EventTrackingId     = null,
+                             TimeSpan?           RequestTimeout      = null,
+                             CancellationToken   CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       PushEVSEDataResult.NoOperation(
+                           AuthId:         Id,
+                           SendPOIData:    this,
+                           RejectedEVSEs:  Array.Empty<IEVSE>(),
+                           Description:    null,
+                           Warnings:       null,
+                           Runtime:        null
+                       )
+                   );
+
+        #endregion
+
+        #region UpdateEVSEs       (EVSEs, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Update the given enumeration of EVSEs.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs to update.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<PushEVSEDataResult>
+
+            UpdateEVSEs(IEnumerable<IEVSE>  EVSEs,
+                        TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+
+                        DateTime?           Timestamp           = null,
+                        EventTracking_Id?   EventTrackingId     = null,
+                        TimeSpan?           RequestTimeout      = null,
+                        CancellationToken   CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       PushEVSEDataResult.NoOperation(
+                           AuthId:         Id,
+                           SendPOIData:    this,
+                           RejectedEVSEs:  Array.Empty<IEVSE>(),
+                           Description:    null,
+                           Warnings:       null,
+                           Runtime:        null
+                       )
+                   );
+
+        #endregion
+
+        #region DeleteEVSEs       (EVSEs, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Delete the given enumeration of EVSEs.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs to delete.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<PushEVSEDataResult>
+
+            DeleteEVSEs(IEnumerable<IEVSE>  EVSEs,
+                        TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+
+                        DateTime?           Timestamp           = null,
+                        EventTracking_Id?   EventTrackingId     = null,
+                        TimeSpan?           RequestTimeout      = null,
+                        CancellationToken   CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       PushEVSEDataResult.NoOperation(
+                           AuthId:         Id,
+                           SendPOIData:    this,
+                           RejectedEVSEs:  Array.Empty<IEVSE>(),
+                           Description:    null,
+                           Warnings:       null,
+                           Runtime:        null
+                       )
+                   );
+
+        #endregion
+
+
+        #region UpdateEVSEAdminStatus(EVSEAdminStatusUpdates, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Update the given enumeration of EVSE admin status updates.
+        /// </summary>
+        /// <param name="EVSEAdminStatusUpdates">An enumeration of EVSE admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<PushEVSEAdminStatusResult>
+
+            IPushAdminStatus.UpdateEVSEAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  EVSEAdminStatusUpdates,
+                                                   TransmissionTypes                   TransmissionType,
+
+                                                   DateTime?                           Timestamp,
+                                                   EventTracking_Id?                   EventTrackingId,
+                                                   TimeSpan?                           RequestTimeout,
+                                                   CancellationToken                   CancellationToken)
+
+
+        {
+
+            return Task.FromResult(PushEVSEAdminStatusResult.OutOfService(Id,
+                                                                          this,
+                                                                          EVSEAdminStatusUpdates));
+
+        }
+
+        #endregion
+
+        #region UpdateEVSEStatus     (EVSEStatusUpdates,      TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Update the given enumeration of EVSE status updates.
+        /// </summary>
+        /// <param name="EVSEStatusUpdates">An enumeration of EVSE status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<PushEVSEStatusResult>
+
+            IPushStatus.UpdateEVSEStatus(IEnumerable<EVSEStatusUpdate>  EVSEStatusUpdates,
+                                         TransmissionTypes              TransmissionType,
+
+                                         DateTime?                      Timestamp,
+                                         EventTracking_Id               EventTrackingId,
+                                         TimeSpan?                      RequestTimeout,
+                                         CancellationToken              CancellationToken)
+
+        {
+
+            #region Initial checks
+
+            if (EVSEStatusUpdates == null || !EVSEStatusUpdates.Any())
+                return Task.FromResult(PushEVSEStatusResult.NoOperation(Id, this));
+
+            #endregion
+
+            return Task.FromResult(PushEVSEStatusResult.NoOperation(Id, this));
 
         }
 
@@ -2025,12 +2149,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #endregion
-
-
-
-
-
-
 
 
 

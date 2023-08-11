@@ -130,9 +130,9 @@ namespace cloud.charging.open.protocols.WWCP
         protected static readonly  Byte                                               MinChargingStationOperatorNameLength   = 5;
 
 
-        private readonly           PriorityList<ISendPOIData>                         _ISendData                             = new ();
-        private readonly           PriorityList<ISendAdminStatus>                     _ISendAdminStatus                      = new ();
-        private readonly           PriorityList<ISendStatus>                          _ISendStatus                           = new ();
+        private readonly           PriorityList<IPushPOIData>                         _ISendData                             = new ();
+        private readonly           PriorityList<IPushAdminStatus>                     _ISendAdminStatus                      = new ();
+        private readonly           PriorityList<IPushStatus>                          _ISendStatus                           = new ();
         private readonly           PriorityList<ISendAuthorizeStartStop>              _ISend2RemoteAuthorizeStartStop        = new ();
         private readonly           PriorityList<ISendChargeDetailRecords>             _IRemoteSendChargeDetailRecord         = new ();
 
@@ -1659,7 +1659,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.AddStaticData(ChargingStationOperator));
+                var results = _ISendData.WhenAll(iSendData => iSendData.AddChargingStationOperator(ChargingStationOperator));
 
             }
             catch (Exception e)
@@ -1699,7 +1699,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.UpdateStaticData(ChargingStationOperator,
+                var results = _ISendData.WhenAll(iSendData => iSendData.UpdateChargingStationOperator(ChargingStationOperator,
                                                                                          PropertyName,
                                                                                          OldValue,
                                                                                          NewValue));
@@ -1742,7 +1742,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.DeleteStaticData(ChargingStationOperator));
+                var results = _ISendData.WhenAll(iSendData => iSendData.DeleteChargingStationOperator(ChargingStationOperator));
 
             }
             catch (Exception e)
@@ -3297,14 +3297,14 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateAdminStatus(new ChargingStationOperatorAdminStatusUpdate[] {
-                                                                                                                   new ChargingStationOperatorAdminStatusUpdate(
-                                                                                                                       ChargingStationOperator.Id,
-                                                                                                                       OldAdminStatus,
-                                                                                                                       NewAdminStatus
-                                                                                                                   )
-                                                                                                               },
-                                                                                                               EventTrackingId: EventTrackingId));
+                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateChargingStationOperatorAdminStatus(new[] {
+                                                                                                                                          new ChargingStationOperatorAdminStatusUpdate(
+                                                                                                                                              ChargingStationOperator.Id,
+                                                                                                                                              OldAdminStatus,
+                                                                                                                                              NewAdminStatus
+                                                                                                                                          )
+                                                                                                                                      },
+                                                                                                                                      EventTrackingId: EventTrackingId));
 
             }
             catch (Exception e)
@@ -3392,14 +3392,14 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateStatus(new ChargingStationOperatorStatusUpdate[] {
-                                                                                               new ChargingStationOperatorStatusUpdate(
-                                                                                                   ChargingStationOperator.Id,
-                                                                                                   OldStatus,
-                                                                                                   NewStatus
-                                                                                               )
-                                                                                           },
-                                                                                           EventTrackingId: EventTrackingId));
+                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateChargingStationOperatorStatus(new[] {
+                                                                                                                      new ChargingStationOperatorStatusUpdate(
+                                                                                                                          ChargingStationOperator.Id,
+                                                                                                                          OldStatus,
+                                                                                                                          NewStatus
+                                                                                                                      )
+                                                                                                                  },
+                                                                                                                  EventTrackingId: EventTrackingId));
 
             }
             catch (Exception e)
@@ -3476,7 +3476,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.AddStaticData(ChargingPool));
+                var results = _ISendData.WhenAll(iSendData => iSendData.AddChargingPool(ChargingPool));
 
             }
             catch (Exception e)
@@ -3528,7 +3528,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.UpdateStaticData(ChargingPool,
+                var results = _ISendData.WhenAll(iSendData => iSendData.UpdateChargingPool(ChargingPool,
                                                                                          PropertyName,
                                                                                          NewValue,
                                                                                          OldValue,
@@ -3571,7 +3571,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.DeleteStaticData(ChargingPool));
+                var results = _ISendData.WhenAll(iSendData => iSendData.DeleteChargingPool(ChargingPool));
 
             }
             catch (Exception e)
@@ -3799,15 +3799,15 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateAdminStatus(new[] {
-                                                                                                                   new ChargingPoolAdminStatusUpdate(
-                                                                                                                       ChargingPool.Id,
-                                                                                                                       NewAdminStatus,
-                                                                                                                       OldAdminStatus,
-                                                                                                                       DataSource
-                                                                                                                   )
-                                                                                                               },
-                                                                                                               EventTrackingId: EventTrackingId));
+                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateChargingPoolAdminStatus(new[] {
+                                                                                                                               new ChargingPoolAdminStatusUpdate(
+                                                                                                                                   ChargingPool.Id,
+                                                                                                                                   NewAdminStatus,
+                                                                                                                                   OldAdminStatus,
+                                                                                                                                   DataSource
+                                                                                                                               )
+                                                                                                                           },
+                                                                                                                           EventTrackingId: EventTrackingId));
 
             }
             catch (Exception e)
@@ -3897,15 +3897,15 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateStatus(new[] {
-                                                                                               new ChargingPoolStatusUpdate(
-                                                                                                   ChargingPool.Id,
-                                                                                                   NewStatus,
-                                                                                                   OldStatus,
-                                                                                                   DataSource
-                                                                                               )
-                                                                                           },
-                                                                                           EventTrackingId: EventTrackingId));
+                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateChargingPoolStatus(new[] {
+                                                                                                           new ChargingPoolStatusUpdate(
+                                                                                                               ChargingPool.Id,
+                                                                                                               NewStatus,
+                                                                                                               OldStatus,
+                                                                                                               DataSource
+                                                                                                           )
+                                                                                                       },
+                                                                                                       EventTrackingId: EventTrackingId));
 
             }
             catch (Exception e)
@@ -3983,7 +3983,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.AddStaticData(ChargingStation,
+                var results = _ISendData.WhenAll(iSendData => iSendData.AddChargingStation(ChargingStation,
                                                                                       EventTrackingId: EventTrackingId));
 
             }
@@ -4036,7 +4036,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.UpdateStaticData(ChargingStation,
+                var results = _ISendData.WhenAll(iSendData => iSendData.UpdateChargingStation(ChargingStation,
                                                                                          PropertyName,
                                                                                          NewValue,
                                                                                          OldValue,
@@ -4080,7 +4080,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.DeleteStaticData(ChargingStation));
+                var results = _ISendData.WhenAll(iSendData => iSendData.DeleteChargingStation(ChargingStation));
 
             }
             catch (Exception e)
@@ -4340,15 +4340,15 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateAdminStatus(new[] {
-                                                                                                                   new ChargingStationAdminStatusUpdate(
-                                                                                                                       ChargingStation.Id,
-                                                                                                                       NewAdminStatus,
-                                                                                                                       OldAdminStatus,
-                                                                                                                       DataSource
-                                                                                                                   )
-                                                                                                               },
-                                                                                                               EventTrackingId: EventTrackingId));
+                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateChargingStationAdminStatus(new[] {
+                                                                                                                                  new ChargingStationAdminStatusUpdate(
+                                                                                                                                      ChargingStation.Id,
+                                                                                                                                      NewAdminStatus,
+                                                                                                                                      OldAdminStatus,
+                                                                                                                                      DataSource
+                                                                                                                                  )
+                                                                                                                              },
+                                                                                                                              EventTrackingId: EventTrackingId));
 
             }
             catch (Exception e)
@@ -4457,15 +4457,15 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateStatus(new[] {
-                                                                                               new ChargingStationStatusUpdate(
-                                                                                                   ChargingStation.Id,
-                                                                                                   NewStatus,
-                                                                                                   OldStatus,
-                                                                                                   DataSource
-                                                                                               )
-                                                                                           },
-                                                                                           EventTrackingId: EventTrackingId));
+                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateChargingStationStatus(new[] {
+                                                                                                              new ChargingStationStatusUpdate(
+                                                                                                                  ChargingStation.Id,
+                                                                                                                  NewStatus,
+                                                                                                                  OldStatus,
+                                                                                                                  DataSource
+                                                                                                              )
+                                                                                                          },
+                                                                                                          EventTrackingId: EventTrackingId));
 
             }
             catch (Exception e)
@@ -4543,7 +4543,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.AddStaticData(EVSE,
+                var results = _ISendData.WhenAll(iSendData => iSendData.AddEVSE(EVSE,
                                                                                       EventTrackingId: EventTrackingId));
 
             }
@@ -4586,7 +4586,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 var results = _ISendData.WhenAll(iSendData => iSendData.
-                                                                  UpdateStaticData(EVSE,
+                                                                  UpdateEVSE(EVSE,
                                                                                    PropertyName,
                                                                                    NewValue,
                                                                                    OldValue,
@@ -4641,7 +4641,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.DeleteStaticData(EVSE));
+                var results = _ISendData.WhenAll(iSendData => iSendData.DeleteEVSE(EVSE));
 
             }
             catch (Exception e)
@@ -4871,15 +4871,15 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateAdminStatus(new[] {
-                                                                                                                   new EVSEAdminStatusUpdate(
-                                                                                                                       EVSE.Id,
-                                                                                                                       NewAdminStatus,
-                                                                                                                       OldAdminStatus,
-                                                                                                                       DataSource
-                                                                                                                   )
-                                                                                                               },
-                                                                                                               EventTrackingId: EventTrackingId));
+                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateEVSEAdminStatus(new[] {
+                                                                                                                       new EVSEAdminStatusUpdate(
+                                                                                                                           EVSE.Id,
+                                                                                                                           NewAdminStatus,
+                                                                                                                           OldAdminStatus,
+                                                                                                                           DataSource
+                                                                                                                       )
+                                                                                                                   },
+                                                                                                                   EventTrackingId: EventTrackingId));
 
 
                 var onEVSEAdminStatusChanged = OnEVSEAdminStatusChanged;
@@ -5090,15 +5090,15 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateStatus(new[] {
-                                                                                               new EVSEStatusUpdate(
-                                                                                                   EVSE.Id,
-                                                                                                   NewStatus,
-                                                                                                   OldStatus,
-                                                                                                   DataSource
-                                                                                               )
-                                                                                           },
-                                                                                           EventTrackingId: EventTrackingId));
+                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateEVSEStatus(new[] {
+                                                                                                   new EVSEStatusUpdate(
+                                                                                                       EVSE.Id,
+                                                                                                       NewStatus,
+                                                                                                       OldStatus,
+                                                                                                       DataSource
+                                                                                                   )
+                                                                                               },
+                                                                                               EventTrackingId: EventTrackingId));
 
 
                 var onEVSEStatusChanged = OnEVSEStatusChanged;

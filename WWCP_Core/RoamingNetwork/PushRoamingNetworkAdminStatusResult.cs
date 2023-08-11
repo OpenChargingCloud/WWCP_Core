@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An object implementing ISendAdminStatus.
         /// </summary>
-        public ISendAdminStatus?                             ISendAdminStatus                             { get; }
+        public IPushAdminStatus?                             ISendAdminStatus                             { get; }
 
         /// <summary>
         /// An object implementing IReceiveAdminStatus.
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         internal PushRoamingNetworkAdminStatusResult(IId                                            AuthId,
-                                                     ISendAdminStatus                               ISendAdminStatus,
+                                                     IPushAdminStatus                               ISendAdminStatus,
                                                      PushRoamingNetworkAdminStatusResultTypes       Result,
                                                      String?                                        Description                                = null,
                                                      IEnumerable<RoamingNetworkAdminStatusUpdate>?  RejectedRoamingNetworkAdminStatusUpdates   = null,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushRoamingNetworkAdminStatusResult
 
             Success(IId                    AuthId,
-                    ISendAdminStatus       ISendAdminStatus,
+                    IPushAdminStatus       ISendAdminStatus,
                     String?                Description   = null,
                     IEnumerable<Warning>?  Warnings      = null,
                     TimeSpan?              Runtime       = null)
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushRoamingNetworkAdminStatusResult
 
             Enqueued(IId                    AuthId,
-                     ISendAdminStatus       ISendAdminStatus,
+                     IPushAdminStatus       ISendAdminStatus,
                      String?                Description   = null,
                      IEnumerable<Warning>?  Warnings      = null,
                      TimeSpan?              Runtime       = null)
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushRoamingNetworkAdminStatusResult
 
             NoOperation(IId                    AuthId,
-                        ISendAdminStatus       ISendAdminStatus,
+                        IPushAdminStatus       ISendAdminStatus,
                         String?                Description   = null,
                         IEnumerable<Warning>?  Warnings      = null,
                         TimeSpan?              Runtime       = null)
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushRoamingNetworkAdminStatusResult
 
             OutOfService(IId                                           AuthId,
-                         ISendAdminStatus                              ISendAdminStatus,
+                         IPushAdminStatus                              ISendAdminStatus,
                          IEnumerable<RoamingNetworkAdminStatusUpdate>  RejectedRoamingNetworkAdminStatusUpdates,
                          String?                                       Description   = null,
                          IEnumerable<Warning>?                         Warnings      = null,
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushRoamingNetworkAdminStatusResult
 
             AdminDown(IId                                           AuthId,
-                      ISendAdminStatus                              ISendAdminStatus,
+                      IPushAdminStatus                              ISendAdminStatus,
                       IEnumerable<RoamingNetworkAdminStatusUpdate>  RejectedRoamingNetworkAdminStatusUpdates,
                       String?                                       Description   = null,
                       IEnumerable<Warning>?                         Warnings      = null,
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushRoamingNetworkAdminStatusResult
 
             Error(IId                                            AuthId,
-                  ISendAdminStatus                               ISendAdminStatus,
+                  IPushAdminStatus                               ISendAdminStatus,
                   IEnumerable<RoamingNetworkAdminStatusUpdate>?  RejectedRoamingNetworkAdminStatusUpdates   = null,
                   String?                                        Description                                = null,
                   IEnumerable<Warning>?                          Warnings                                   = null,
@@ -409,7 +409,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushRoamingNetworkAdminStatusResult
 
             LockTimeout(IId                                           AuthId,
-                        ISendAdminStatus                              ISendAdminStatus,
+                        IPushAdminStatus                              ISendAdminStatus,
                         IEnumerable<RoamingNetworkAdminStatusUpdate>  RejectedRoamingNetworkAdminStatusUpdates,
                         String?                                       Description   = null,
                         IEnumerable<Warning>?                         Warnings      = null,
@@ -430,7 +430,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Flatten(AuthId, ISendAdminStatus, PushRoamingNetworkAdminStatusResults, Runtime)
 
         public static PushRoamingNetworkAdminStatusResult Flatten(IId                                               AuthId,
-                                                                  ISendAdminStatus                                  ISendAdminStatus,
+                                                                  IPushAdminStatus                                  ISendAdminStatus,
                                                                   IEnumerable<PushRoamingNetworkAdminStatusResult>  PushRoamingNetworkAdminStatusResults,
                                                                   TimeSpan                                          Runtime)
         {

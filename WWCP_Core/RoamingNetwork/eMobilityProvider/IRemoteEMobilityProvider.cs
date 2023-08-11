@@ -32,8 +32,8 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     public interface ISend2RemoteEMobilityProvider : //IRemotePushData,
-                                                     ISendAdminStatus,
-                                                     ISendStatus,
+                                                     IPushAdminStatus,
+                                                     IPushStatus,
                                                      ISendAuthorizeStartStop,
                                                      ISendChargeDetailRecords
 

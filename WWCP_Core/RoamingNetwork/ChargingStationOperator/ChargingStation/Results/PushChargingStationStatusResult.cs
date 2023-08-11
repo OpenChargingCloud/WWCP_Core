@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An object implementing ISendStatus.
         /// </summary>
-        public ISendStatus?                              ISendStatus                              { get; }
+        public IPushStatus?                              ISendStatus                              { get; }
 
         /// <summary>
         /// An object implementing IReceiveStatus.
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         internal PushChargingStationStatusResult(IId                                        AuthId,
-                                                 ISendStatus                                ISendStatus,
+                                                 IPushStatus                                ISendStatus,
                                                  PushChargingStationStatusResultTypes       Result,
                                                  String?                                    Description                            = null,
                                                  IEnumerable<ChargingStationStatusUpdate>?  RejectedChargingStationStatusUpdates   = null,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingStationStatusResult
 
             Success(IId                    AuthId,
-                    ISendStatus            ISendStatus,
+                    IPushStatus            ISendStatus,
                     String?                Description   = null,
                     IEnumerable<Warning>?  Warnings      = null,
                     TimeSpan?              Runtime       = null)
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingStationStatusResult
 
             Enqueued(IId                    AuthId,
-                     ISendStatus            ISendStatus,
+                     IPushStatus            ISendStatus,
                      String?                Description   = null,
                      IEnumerable<Warning>?  Warnings      = null,
                      TimeSpan?              Runtime       = null)
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingStationStatusResult
 
             NoOperation(IId                    AuthId,
-                        ISendStatus            ISendStatus,
+                        IPushStatus            ISendStatus,
                         String?                Description   = null,
                         IEnumerable<Warning>?  Warnings      = null,
                         TimeSpan?              Runtime       = null)
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingStationStatusResult
 
             OutOfService(IId                                       AuthId,
-                         ISendStatus                               ISendStatus,
+                         IPushStatus                               ISendStatus,
                          IEnumerable<ChargingStationStatusUpdate>  RejectedChargingStationStatusUpdates,
                          String?                                   Description   = null,
                          IEnumerable<Warning>?                     Warnings      = null,
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingStationStatusResult
 
             AdminDown(IId                                       AuthId,
-                      ISendStatus                               ISendStatus,
+                      IPushStatus                               ISendStatus,
                       IEnumerable<ChargingStationStatusUpdate>  RejectedChargingStationStatusUpdates,
                       String?                                   Description   = null,
                       IEnumerable<Warning>?                     Warnings      = null,
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingStationStatusResult
 
             Error(IId                                        AuthId,
-                  ISendStatus                                ISendStatus,
+                  IPushStatus                                ISendStatus,
                   IEnumerable<ChargingStationStatusUpdate>?  RejectedChargingStationStatusUpdates   = null,
                   String?                                    Description                            = null,
                   IEnumerable<Warning>?                      Warnings                               = null,
@@ -409,7 +409,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingStationStatusResult
 
             LockTimeout(IId                                       AuthId,
-                        ISendStatus                               ISendStatus,
+                        IPushStatus                               ISendStatus,
                         IEnumerable<ChargingStationStatusUpdate>  RejectedChargingStationStatusUpdates,
                         String?                                   Description   = null,
                         IEnumerable<Warning>?                     Warnings      = null,
@@ -430,7 +430,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Flatten(AuthId, ISendStatus, PushChargingStationStatusResults, Runtime)
 
         public static PushChargingStationStatusResult Flatten(IId                                           AuthId,
-                                                              ISendStatus                                   ISendStatus,
+                                                              IPushStatus                                   ISendStatus,
                                                               IEnumerable<PushChargingStationStatusResult>  PushChargingStationStatusResults,
                                                               TimeSpan                                      Runtime)
         {

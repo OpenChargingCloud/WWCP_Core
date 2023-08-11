@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An object implementing ISendEnergyStatus.
         /// </summary>
-        public ISendEnergyStatus?                              ISendEnergyStatus                             { get; }
+        public IPushEnergyStatus?                              ISendEnergyStatus                             { get; }
 
         /// <summary>
         /// An object implementing IReceiveEnergyStatus.
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         internal PushChargingPoolEnergyStatusResult(IId                                              AuthId,
-                                                       ISendEnergyStatus                                ISendEnergyStatus,
+                                                       IPushEnergyStatus                                ISendEnergyStatus,
                                                        PushChargingPoolEnergyStatusResultTypes       Result,
                                                        String?                                          Description                                  = null,
                                                        IEnumerable<ChargingPoolEnergyStatusUpdate>?  RejectedChargingPoolEnergyStatusUpdates   = null,
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolEnergyStatusResult
 
             Success(IId                    AuthId,
-                    ISendEnergyStatus      ISendEnergyStatus,
+                    IPushEnergyStatus      ISendEnergyStatus,
                     String?                Description    = null,
                     IEnumerable<Warning>?  Warnings       = null,
                     TimeSpan?              Runtime        = null)
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolEnergyStatusResult
 
             Enqueued(IId                    AuthId,
-                     ISendEnergyStatus            ISendEnergyStatus,
+                     IPushEnergyStatus            ISendEnergyStatus,
                      String?                Description    = null,
                      IEnumerable<Warning>?  Warnings       = null,
                      TimeSpan?              Runtime        = null)
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolEnergyStatusResult
 
             NoOperation(IId                             AuthId,
-                        ISendEnergyStatus                     ISendEnergyStatus,
+                        IPushEnergyStatus                     ISendEnergyStatus,
                         String?                         Description                 = null,
                         IEnumerable<ChargingPoolEnergyStatusUpdate>?  RejectedChargingPoolEnergyStatusUpdates   = null,
                         IEnumerable<Warning>?           Warnings                    = null,
@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolEnergyStatusResult
 
             OutOfService(IId                            AuthId,
-                         ISendEnergyStatus                    ISendEnergyStatus,
+                         IPushEnergyStatus                    ISendEnergyStatus,
                          IEnumerable<ChargingPoolEnergyStatusUpdate>  RejectedChargingPoolEnergyStatusUpdates,
                          String?                        Description    = null,
                          IEnumerable<Warning>?          Warnings       = null,
@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolEnergyStatusResult
 
             AdminDown(IId                            AuthId,
-                      ISendEnergyStatus                    ISendEnergyStatus,
+                      IPushEnergyStatus                    ISendEnergyStatus,
                       IEnumerable<ChargingPoolEnergyStatusUpdate>  RejectedChargingPoolEnergyStatusUpdates,
                       String?                        Description   = null,
                       IEnumerable<Warning>?          Warnings      = null,
@@ -358,7 +358,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolEnergyStatusResult
 
             Error(IId                             AuthId,
-                  ISendEnergyStatus                     ISendEnergyStatus,
+                  IPushEnergyStatus                     ISendEnergyStatus,
                   IEnumerable<ChargingPoolEnergyStatusUpdate>?  RejectedChargingPools   = null,
                   String?                         Description     = null,
                   IEnumerable<Warning>?           Warnings        = null,
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolEnergyStatusResult
 
             Failed(IId                             AuthId,
-                   ISendEnergyStatus                     ISendEnergyStatus,
+                   IPushEnergyStatus                     ISendEnergyStatus,
                    IEnumerable<ChargingPoolEnergyStatusUpdate>?  RejectedChargingPools   = null,
                    String?                         Description     = null,
                    IEnumerable<Warning>?           Warnings        = null,
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushChargingPoolEnergyStatusResult
 
             LockTimeout(IId                    AuthId,
-                        ISendEnergyStatus            ISendEnergyStatus,
+                        IPushEnergyStatus            ISendEnergyStatus,
                         String?                Description    = null,
                         IEnumerable<Warning>?  Warnings       = null,
                         TimeSpan?              Runtime        = null)
@@ -455,7 +455,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Flatten(...)
 
         public static PushChargingPoolEnergyStatusResult Flatten(IId                                AuthId,
-                                                   ISendEnergyStatus                        ISendEnergyStatus,
+                                                   IPushEnergyStatus                        ISendEnergyStatus,
                                                    IEnumerable<PushChargingPoolEnergyStatusResult>  PushChargingPoolEnergyStatusResults,
                                                    TimeSpan                           Runtime)
         {

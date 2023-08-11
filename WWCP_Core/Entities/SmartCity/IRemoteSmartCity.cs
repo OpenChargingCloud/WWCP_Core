@@ -24,9 +24,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public interface ISend2RemoteSmartCity  : ISendPOIData,
-                                              ISendAdminStatus,
-                                              ISendStatus
+    public interface ISend2RemoteSmartCity  : IPushPOIData,
+                                              IPushAdminStatus,
+                                              IPushStatus
                                              //IRemoteAuthorizeStartStop,
                                              //IRemoteSendChargeDetailRecord
 
