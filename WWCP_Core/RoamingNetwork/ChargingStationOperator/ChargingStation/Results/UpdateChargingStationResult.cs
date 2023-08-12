@@ -29,96 +29,70 @@ namespace cloud.charging.open.protocols.WWCP
     public class UpdateChargingStationResult : AEnitityResult<IChargingStation, ChargingStation_Id>
     {
 
-        public IChargingStation? ChargingStation
+        #region Properties
+
+        public IChargingStation?  ChargingStation
             => Object;
 
+        public IChargingPool?     ChargingPool    { get; internal set; }
 
-        public UpdateChargingStationResult(IChargingStation  ChargingStation,
-                                           EventTracking_Id  EventTrackingId,
-                                           Boolean           IsSuccess,
-                                           String?           Argument           = null,
-                                           I18NString?       ErrorDescription   = null)
+        #endregion
+
+        #region Constructor(s)
+
+        public UpdateChargingStationResult(IChargingStation       ChargingStation,
+                                           PushDataResultTypes    Result,
+                                           EventTracking_Id?      EventTrackingId   = null,
+                                           IId?                   AuthId            = null,
+                                           Object?                SendPOIData       = null,
+                                           IChargingPool?         ChargingPool      = null,
+                                           I18NString?            Description       = null,
+                                           IEnumerable<Warning>?  Warnings          = null,
+                                           TimeSpan?              Runtime           = null)
 
             : base(ChargingStation,
+                   Result,
                    EventTrackingId,
-                   IsSuccess,
-                   Argument,
-                   ErrorDescription)
+                   AuthId,
+                   SendPOIData,
+                   Description,
+                   Warnings,
+                   Runtime)
 
-        { }
+        {
 
+            this.ChargingPool = ChargingPool;
 
-        public static UpdateChargingStationResult Success(IChargingStation  ChargingStation,
-                                                          EventTracking_Id  EventTrackingId)
+        }
 
-            => new (ChargingStation,
-                    EventTrackingId,
-                    true,
-                    null,
-                    null);
+        #endregion
 
 
-        public static UpdateChargingStationResult ArgumentError(IChargingStation  ChargingStation,
-                                                                EventTracking_Id  EventTrackingId,
-                                                                String            Argument,
-                                                                String            Description)
+        #region (static) NoOperation
 
-            => new (ChargingStation,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ));
+        public static UpdateChargingStationResult
 
-        public static UpdateChargingStationResult ArgumentError(IChargingStation  ChargingStation,
-                                                                EventTracking_Id  EventTrackingId,
-                                                                String            Argument,
-                                                                I18NString        Description)
+            NoOperation(IChargingStation       ChargingStation,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   AuthId            = null,
+                        Object?                SendPOIData       = null,
+                        IChargingPool?         ChargingPool      = null,
+                        I18NString?            Description       = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
 
-            => new (ChargingStation,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    Description);
+                => new (ChargingStation,
+                        PushDataResultTypes.NoOperation,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        Description,
+                        Warnings,
+                        Runtime);
 
+        #endregion
 
-        public static UpdateChargingStationResult Failed(IChargingStation  ChargingStation,
-                                                         EventTracking_Id  EventTrackingId,
-                                                         String            Description)
-
-            => new (ChargingStation,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ));
-
-        public static UpdateChargingStationResult Failed(IChargingStation  ChargingStation,
-                                                         EventTracking_Id  EventTrackingId,
-                                                         I18NString        Description)
-
-            => new (ChargingStation,
-                    EventTrackingId,
-                    false,
-                    null,
-                    Description);
-
-        public static UpdateChargingStationResult Failed(IChargingStation  ChargingStation,
-                                                         EventTracking_Id  EventTrackingId,
-                                                         Exception         Exception)
-
-            => new (ChargingStation,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Exception.Message
-                    ));
 
     }
 

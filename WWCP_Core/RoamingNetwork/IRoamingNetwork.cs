@@ -400,7 +400,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                 EventTracking_Id?                          EventTrackingId                                   = null,
                                                                                                 User_Id?                                   CurrentUserId                                     = null);
 
-        Task<AddChargingStationOperatorIfNotExistsResult> AddChargingStationOperatorIfNotExists(ChargingStationOperator                    ChargingStationOperator,
+        Task<AddChargingStationOperatorResult>            AddChargingStationOperatorIfNotExists(ChargingStationOperator                    ChargingStationOperator,
                                                                                                 Boolean                                    SkipNewUserNotifications                          = false,
                                                                                                 OnChargingStationOperatorAddedDelegate?    OnAdded                                           = null,
                                                                                                 EventTracking_Id?                          EventTrackingId                                   = null,
@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                 EventTracking_Id?                          EventTrackingId                                   = null,
                                                                                                 User_Id?                                   CurrentUserId                                     = null);
 
-        Task<RemoveChargingStationOperatorResult>         RemoveChargingStationOperator        (ChargingStationOperator                    ChargingStationOperator,
+        Task<DeleteChargingStationOperatorResult>         RemoveChargingStationOperator        (ChargingStationOperator                    ChargingStationOperator,
                                                                                                 Boolean                                    SkipChargingStationOperatorRemovedNotifications   = false,
                                                                                                 OnChargingStationOperatorRemovedDelegate?  OnRemoved                                         = null,
                                                                                                 EventTracking_Id?                          EventTrackingId                                   = null,

@@ -38,6 +38,13 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// A delegate for filtering roaming networks.
+    /// </summary>
+    /// <param name="RoamingNetwork">A roaming network to include.</param>
+    public delegate Boolean IncludeRoamingNetworkDelegate(RoamingNetwork RoamingNetwork);
+
+
+    /// <summary>
     /// Extension methods for the roaming networks.
     /// </summary>
     public static class RoamingNetworkExtensions
@@ -130,11 +137,18 @@ namespace cloud.charging.open.protocols.WWCP
         protected static readonly  Byte                                               MinChargingStationOperatorNameLength   = 5;
 
 
-        private readonly           PriorityList<IPushPOIData>                         _ISendData                             = new ();
-        private readonly           PriorityList<ISendAdminStatus>                     _ISendAdminStatus                      = new ();
-        private readonly           PriorityList<ISendStatus>                          _ISendStatus                           = new ();
-        private readonly           PriorityList<ISendAuthorizeStartStop>              _ISend2RemoteAuthorizeStartStop        = new ();
-        private readonly           PriorityList<ISendChargeDetailRecords>             _IRemoteSendChargeDetailRecord         = new ();
+        private readonly           PriorityList<ISendRoamingNetworkData>              allSendRoamingNetworkData              = new ();
+        private readonly           PriorityList<ISendChargingStationOperatorData>     allSendChargingStationOperatorData     = new ();
+        private readonly           PriorityList<ISendChargingPoolData>                allSendChargingPoolData                = new ();
+        private readonly           PriorityList<ISendChargingStationData>             allSendChargingStationData             = new ();
+        private readonly           PriorityList<ISendEVSEData>                        allSendEVSEData                        = new ();
+
+        private readonly           PriorityList<ISendAdminStatus>                     allSendAdminStatus                     = new ();
+        private readonly           PriorityList<ISendStatus>                          allSendStatus                          = new ();
+        private readonly           PriorityList<ISendEnergyStatus>                    allSendEnergyStatus                    = new ();
+
+        private readonly           PriorityList<ISendAuthorizeStartStop>              allSend2RemoteAuthorizeStartStop       = new ();
+        private readonly           PriorityList<ISendChargeDetailRecords>             allRemoteSendChargeDetailRecord        = new ();
 
         private readonly           ConcurrentDictionary<UInt32, IEMPRoamingProvider>  eMobilityRoamingServices;
 
@@ -547,11 +561,18 @@ namespace cloud.charging.open.protocols.WWCP
                 if (empRoamingProviders.TryAdd(EMPRoamingProvider.Id, EMPRoamingProvider))
                 {
 
-                    _ISendData.Add                     (EMPRoamingProvider);
-                    _ISendAdminStatus.Add              (EMPRoamingProvider);
-                    _ISendStatus.Add                   (EMPRoamingProvider);
-                    _ISend2RemoteAuthorizeStartStop.Add(EMPRoamingProvider);
-                    _IRemoteSendChargeDetailRecord.Add (EMPRoamingProvider);
+                    allSendRoamingNetworkData.         Add(EMPRoamingProvider);
+                    allSendChargingStationOperatorData.Add(EMPRoamingProvider);
+                    allSendChargingPoolData.           Add(EMPRoamingProvider);
+                    allSendChargingStationData.        Add(EMPRoamingProvider);
+                    allSendEVSEData.                   Add(EMPRoamingProvider);
+
+                    allSendAdminStatus.                Add(EMPRoamingProvider);
+                    allSendStatus.                     Add(EMPRoamingProvider);
+                    allSendEnergyStatus.               Add(EMPRoamingProvider);
+
+                    allSend2RemoteAuthorizeStartStop.  Add(EMPRoamingProvider);
+                    allRemoteSendChargeDetailRecord.   Add(EMPRoamingProvider);
 
                     EMPRoamingProviderAddition.SendNotification(this, EMPRoamingProvider);
 
@@ -1056,10 +1077,10 @@ namespace cloud.charging.open.protocols.WWCP
                 //EMobilityProvider.OnEVSERemoval.            OnVoting         += (timestamp, station, evse, vote)  => EVSERemoval.            SendVoting      (timestamp, station, evse, vote);
                 //EMobilityProvider.OnEVSERemoval.            OnNotification   += (timestamp, station, evse)        => EVSERemoval.            SendNotification(timestamp, station, evse);
 
-                _ISendAdminStatus.Add              (EMobilityProvider);
-                _ISendStatus.Add                   (EMobilityProvider);
-                _ISend2RemoteAuthorizeStartStop.Add(EMobilityProvider);
-                _IRemoteSendChargeDetailRecord.Add (EMobilityProvider);
+                allSendAdminStatus.Add              (EMobilityProvider);
+                allSendStatus.Add                   (EMobilityProvider);
+                allSend2RemoteAuthorizeStartStop.Add(EMobilityProvider);
+                allRemoteSendChargeDetailRecord.Add (EMobilityProvider);
 
                 EMobilityProvider.OnNewReservation                           += SendNewReservation;
                 EMobilityProvider.OnReservationCanceled                      += SendReservationCanceled;
@@ -1659,7 +1680,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.AddChargingStationOperator(ChargingStationOperator));
+                var results = allSendChargingStationOperatorData.WhenAll(target => target.AddChargingStationOperator(ChargingStationOperator));
 
             }
             catch (Exception e)
@@ -1699,10 +1720,10 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.UpdateChargingStationOperator(ChargingStationOperator,
-                                                                                         PropertyName,
-                                                                                         OldValue,
-                                                                                         NewValue));
+                var results = allSendChargingStationOperatorData.WhenAll(target => target.UpdateChargingStationOperator(ChargingStationOperator,
+                                                                                                                        PropertyName,
+                                                                                                                        OldValue,
+                                                                                                                        NewValue));
 
             }
             catch (Exception e)
@@ -1742,7 +1763,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.DeleteChargingStationOperator(ChargingStationOperator));
+                var results = allSendChargingStationOperatorData.WhenAll(target => target.DeleteChargingStationOperator(ChargingStationOperator));
 
             }
             catch (Exception e)
@@ -1793,34 +1814,54 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (chargingStationOperators.ContainsId(ChargingStationOperator.Id))
                 return AddChargingStationOperatorResult.ArgumentError(
-                           ChargingStationOperator,
-                           eventTrackingId,
-                           nameof(ChargingStationOperator),
-                           $"The given charging station operator identification '{ChargingStationOperator.Id}' already exists!"
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              I18NString.Create(
+                                                         Languages.en,
+                                                         $"The given charging station operator identification '{ChargingStationOperator.Id}' already exists!"
+                                                     )
                        );
 
             if (ChargingStationOperator.Id.Length < MinChargingStationOperatorIdLength)
                 return AddChargingStationOperatorResult.ArgumentError(
-                           ChargingStationOperator,
-                           eventTrackingId,
-                           nameof(ChargingStationOperator),
-                           $"The given charging station operator identification '{ChargingStationOperator.Id}' is too short!"
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              I18NString.Create(
+                                                         Languages.en,
+                                                         $"The given charging station operator identification '{ChargingStationOperator.Id}' is too short!"
+                                                     )
                        );
 
             if (ChargingStationOperator.Name.IsNullOrEmpty())
                 return AddChargingStationOperatorResult.ArgumentError(
-                           ChargingStationOperator,
-                           eventTrackingId,
-                           nameof(User),
-                           "The given charging station operator name must not be null!"
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              I18NString.Create(
+                                                         Languages.en,
+                                                         $"The given charging station operator name must not be null or empty!"
+                                                     )
                        );
 
             if (ChargingStationOperator.Name.FirstText().Length < MinChargingStationOperatorNameLength)
                 return AddChargingStationOperatorResult.ArgumentError(
-                           ChargingStationOperator,
-                           eventTrackingId,
-                           nameof(ChargingStationOperator),
-                           $"The given charging station operator name '{ChargingStationOperator.Name}' is too short!"
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              I18NString.Create(
+                                                         Languages.en,
+                                                         $"The given charging station operator name '{ChargingStationOperator.Name}' is too short!"
+                                                     )
                        );
 
             //User.API = this;
@@ -1941,11 +1982,14 @@ namespace cloud.charging.open.protocols.WWCP
                 catch (Exception e)
                 {
 
-                    DebugX.LogException(e, $"{nameof(RoamingNetwork)}.{nameof(AddChargingStationOperator)}({ChargingStationOperator.Id}, ...)" );
-
-                    return AddChargingStationOperatorResult.Failed(ChargingStationOperator,
-                                                                   eventTrackingId,
-                                                                   e);
+                    return AddChargingStationOperatorResult.Error(
+                               ChargingStationOperator:  ChargingStationOperator,
+                               Exception:                e,
+                               EventTrackingId:          eventTrackingId,
+                               AuthId:                   Id,
+                               SendPOIData:              this,
+                               RoamingNetwork:           this
+                           );
 
                 }
                 finally
@@ -1959,9 +2003,14 @@ namespace cloud.charging.open.protocols.WWCP
                 }
             }
 
-            return AddChargingStationOperatorResult.Failed(ChargingStationOperator,
-                                                           eventTrackingId,
-                                                           "Internal locking failed!");
+            return AddChargingStationOperatorResult.LockTimeout(
+                       ChargingStationOperator:  ChargingStationOperator,
+                       Timeout:                  SemaphoreSlimTimeout,
+                       EventTrackingId:          eventTrackingId,
+                       AuthId:                   Id,
+                       SendPOIData:              this,
+                       RoamingNetwork:           this
+                   );
 
         }
 
@@ -1981,7 +2030,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnAdded">A delegate run whenever the charging station operator has been added successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        protected internal async Task<AddChargingStationOperatorIfNotExistsResult>
+        protected internal async Task<AddChargingStationOperatorResult>
 
             _AddChargingStationOperatorIfNotExists(ChargingStationOperator                  ChargingStationOperator,
                                                    Boolean                                  SkipNewChargingStationOperatorNotifications   = false,
@@ -1994,40 +2043,57 @@ namespace cloud.charging.open.protocols.WWCP
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
             //if (User.API is not null && User.API != this)
-            //    return AddChargingStationOperatorIfNotExistsResult.ArgumentError(User,
+            //    return AddChargingStationOperatorResult.ArgumentError(User,
             //                                                  eventTrackingId,
             //                                                  nameof(User),
             //                                                  "The given user is already attached to another API!");
 
             if (chargingStationOperators.TryGet(ChargingStationOperator.Id, out var existingChargingStationOperator) && existingChargingStationOperator is not null)
-                return AddChargingStationOperatorIfNotExistsResult.Success(
-                           existingChargingStationOperator,
-                           AddedOrIgnored.Ignored,
-                           eventTrackingId
+                return AddChargingStationOperatorResult.Exists(
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this
                        );
 
             if (ChargingStationOperator.Id.Length < MinChargingStationOperatorIdLength)
-                return AddChargingStationOperatorIfNotExistsResult.ArgumentError(
-                           ChargingStationOperator,
-                           eventTrackingId,
-                           nameof(User),
-                           $"The given charging station operator identification '{ChargingStationOperator.Id}' is too short!"
+                return AddChargingStationOperatorResult.ArgumentError(
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              I18NString.Create(
+                                                         Languages.en,
+                                                         $"The given charging station operator identification '{ChargingStationOperator.Id}' is too short!"
+                                                     )
                        );
 
             if (ChargingStationOperator.Name.IsNullOrEmpty())
-                return AddChargingStationOperatorIfNotExistsResult.ArgumentError(
-                           ChargingStationOperator,
-                           eventTrackingId,
-                           nameof(ChargingStationOperator),
-                           "The given charging station operator name must not be null!"
+                return AddChargingStationOperatorResult.ArgumentError(
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              I18NString.Create(
+                                                         Languages.en,
+                                                         $"The given charging station operator name must not be null or empty!"
+                                                     )
                        );
 
             if (ChargingStationOperator.Name.FirstText().Length < MinChargingStationOperatorNameLength)
-                return AddChargingStationOperatorIfNotExistsResult.ArgumentError(
-                           ChargingStationOperator,
-                           eventTrackingId,
-                           nameof(ChargingStationOperator),
-                           $"The given user name '{ChargingStationOperator.Name}' is too short!"
+                return AddChargingStationOperatorResult.ArgumentError(
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              I18NString.Create(
+                                                         Languages.en,
+                                                         $"The given user name '{ChargingStationOperator.Name}' is too short!"
+                                                     )
                        );
 
             //ChargingStationOperator.API = this;
@@ -2063,10 +2129,12 @@ namespace cloud.charging.open.protocols.WWCP
             //                            CurrentUserId);
 
 
-            return AddChargingStationOperatorIfNotExistsResult.Success(
-                       ChargingStationOperator,
-                       AddedOrIgnored.Added,
-                       eventTrackingId
+            return AddChargingStationOperatorResult.Success(
+                       ChargingStationOperator:  ChargingStationOperator,
+                       EventTrackingId:          eventTrackingId,
+                       AuthId:                   Id,
+                       SendPOIData:              this,
+                       RoamingNetwork:           this
                    );
 
         }
@@ -2083,7 +2151,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnAdded">A delegate run whenever the user has been added successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public async Task<AddChargingStationOperatorIfNotExistsResult>
+        public async Task<AddChargingStationOperatorResult>
 
             AddChargingStationOperatorIfNotExists(ChargingStationOperator                  ChargingStationOperator,
                                                   Boolean                                  SkipNewUserNotifications   = false,
@@ -2110,12 +2178,13 @@ namespace cloud.charging.open.protocols.WWCP
                 catch (Exception e)
                 {
 
-                    DebugX.LogException(e);
-
-                    return AddChargingStationOperatorIfNotExistsResult.Failed(
-                               ChargingStationOperator,
-                               eventTrackingId,
-                               e
+                    return AddChargingStationOperatorResult.Error(
+                               ChargingStationOperator:  ChargingStationOperator,
+                               Exception:                e,
+                               EventTrackingId:          eventTrackingId,
+                               AuthId:                   Id,
+                               SendPOIData:              this,
+                               RoamingNetwork:           this
                            );
 
                 }
@@ -2130,10 +2199,13 @@ namespace cloud.charging.open.protocols.WWCP
                 }
             }
 
-            return AddChargingStationOperatorIfNotExistsResult.Failed(
-                       ChargingStationOperator,
-                       eventTrackingId,
-                       "Internal locking failed!"
+            return AddChargingStationOperatorResult.LockTimeout(
+                       ChargingStationOperator:  ChargingStationOperator,
+                       Timeout:                  SemaphoreSlimTimeout,
+                       EventTrackingId:          eventTrackingId,
+                       AuthId:                   Id,
+                       SendPOIData:              this,
+                       RoamingNetwork:           this
                    );
 
         }
@@ -2147,7 +2219,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (protected internal) _AddOrUpdateChargingStationOperator(ChargingStationOperator, ..., OnAdded = null, OnUpdated = null, ...)
 
         /// <summary>
-        /// Add or update the given user to/within the API.
+        /// Add or update the given charging station operator to/within the API.
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
         /// <param name="SkipNewChargingStationOperatorNotifications">Do not send notifications for this charging station operator addition.</param>
@@ -2177,26 +2249,41 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (ChargingStationOperator.Id.Length < MinChargingStationOperatorIdLength)
                 return AddOrUpdateChargingStationOperatorResult.ArgumentError(
-                           ChargingStationOperator,
-                           eventTrackingId,
-                           nameof(ChargingStationOperator),
-                           $"The given user identification '{ChargingStationOperator.Id}' is too short!"
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              I18NString.Create(
+                                                         Languages.en,
+                                                         $"The given charging station operator identification '{ChargingStationOperator.Id}' is too short!"
+                                                     )
                        );
 
             if (ChargingStationOperator.Name.IsNullOrEmpty())
                 return AddOrUpdateChargingStationOperatorResult.ArgumentError(
-                           ChargingStationOperator,
-                           eventTrackingId,
-                           nameof(ChargingStationOperator),
-                           "The given user name must not be null!"
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              I18NString.Create(
+                                                         Languages.en,
+                                                         $"The given charging station operator name must not be null or empty!"
+                                                     )
                        );
 
             if (ChargingStationOperator.Name.FirstText().Length < MinChargingStationOperatorNameLength)
                 return AddOrUpdateChargingStationOperatorResult.ArgumentError(
-                           ChargingStationOperator,
-                           eventTrackingId,
-                           nameof(ChargingStationOperator),
-                           $"The given user name '{ChargingStationOperator.Name}' is too short!"
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              I18NString.Create(
+                                                         Languages.en,
+                                                         $"The given charging station operator name '{ChargingStationOperator.Name}' is too short!"
+                                                     )
                        );
 
             //ChargingStationOperator.API = this;
@@ -2242,10 +2329,12 @@ namespace cloud.charging.open.protocols.WWCP
                 //                            eventTrackingId,
                 //                            CurrentUserId);
 
-                return AddOrUpdateChargingStationOperatorResult.Success(
-                           ChargingStationOperator,
-                           AddedOrUpdated.Add,
-                           eventTrackingId
+                return AddOrUpdateChargingStationOperatorResult.Added(
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this
                        );
 
             }
@@ -2273,10 +2362,12 @@ namespace cloud.charging.open.protocols.WWCP
                 //                            eventTrackingId,
                 //                            CurrentUserId);
 
-                return AddOrUpdateChargingStationOperatorResult.Success(
-                           ChargingStationOperator,
-                           AddedOrUpdated.Update,
-                           eventTrackingId
+                return AddOrUpdateChargingStationOperatorResult.Updated(
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this
                        );
 
             }
@@ -2330,10 +2421,13 @@ namespace cloud.charging.open.protocols.WWCP
 
                     DebugX.LogException(e);
 
-                    return AddOrUpdateChargingStationOperatorResult.Failed(
-                               ChargingStationOperator,
-                               eventTrackingId,
-                               e
+                    return AddOrUpdateChargingStationOperatorResult.Error(
+                               ChargingStationOperator:  ChargingStationOperator,
+                               Exception:                e,
+                               EventTrackingId:          eventTrackingId,
+                               AuthId:                   Id,
+                               SendPOIData:              this,
+                               RoamingNetwork:           this
                            );
 
                 }
@@ -2348,10 +2442,13 @@ namespace cloud.charging.open.protocols.WWCP
                 }
             }
 
-            return AddOrUpdateChargingStationOperatorResult.Failed(
-                       ChargingStationOperator,
-                       eventTrackingId,
-                       "Internal locking failed!"
+            return AddOrUpdateChargingStationOperatorResult.LockTimeout(
+                       ChargingStationOperator:  ChargingStationOperator,
+                       Timeout:                  SemaphoreSlimTimeout,
+                       EventTrackingId:          eventTrackingId,
+                       AuthId:                   Id,
+                       SendPOIData:              this,
+                       RoamingNetwork:           this
                    );
 
         }
@@ -2392,10 +2489,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (!_TryGetChargingStationOperatorById(NewChargingStationOperator.Id, out var oldChargingStationOperator))
                 return UpdateChargingStationOperatorResult.ArgumentError(
-                           NewChargingStationOperator,
-                           eventTrackingId,
-                           nameof(NewChargingStationOperator),
-                           $"The given user '{NewChargingStationOperator.Id}' does not exists in this API!"
+                           ChargingStationOperator:  NewChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              I18NString.Create(
+                                                         Languages.en,
+                                                         $"The given user '{NewChargingStationOperator.Id}' does not exists in this API!"
+                                                     )
                        );
 
             //if (ChargingStationOperator.API is not null && ChargingStationOperator.API != this)
@@ -2444,8 +2546,11 @@ namespace cloud.charging.open.protocols.WWCP
             //                            CurrentUserId);
 
             return UpdateChargingStationOperatorResult.Success(
-                       NewChargingStationOperator,
-                       eventTrackingId
+                       ChargingStationOperator:  NewChargingStationOperator,
+                       EventTrackingId:          eventTrackingId,
+                       AuthId:                   Id,
+                       SendPOIData:              this,
+                       RoamingNetwork:           this
                    );
 
         }
@@ -2489,12 +2594,13 @@ namespace cloud.charging.open.protocols.WWCP
                 catch (Exception e)
                 {
 
-                    DebugX.LogException(e);
-
-                    return UpdateChargingStationOperatorResult.Failed(
-                               NewChargingStationOperator,
-                               eventTrackingId,
-                               e
+                    return UpdateChargingStationOperatorResult.Error(
+                               ChargingStationOperator:  NewChargingStationOperator,
+                               Exception:                e,
+                               EventTrackingId:          eventTrackingId,
+                               AuthId:                   Id,
+                               SendPOIData:              this,
+                               RoamingNetwork:           this
                            );
 
                 }
@@ -2509,10 +2615,13 @@ namespace cloud.charging.open.protocols.WWCP
                 }
             }
 
-            return UpdateChargingStationOperatorResult.Failed(
-                       NewChargingStationOperator,
-                       eventTrackingId,
-                       "Internal locking failed!"
+            return UpdateChargingStationOperatorResult.LockTimeout(
+                       ChargingStationOperator:  NewChargingStationOperator,
+                       Timeout:                  SemaphoreSlimTimeout,
+                       EventTrackingId:          eventTrackingId,
+                       AuthId:                   Id,
+                       SendPOIData:              this,
+                       RoamingNetwork:           this
                    );
 
         }
@@ -2546,10 +2655,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (!_ChargingStationOperatorExists(ChargingStationOperator.Id))
                 return UpdateChargingStationOperatorResult.ArgumentError(
-                           ChargingStationOperator,
-                           eventTrackingId,
-                           nameof(ChargingStationOperator),
-                           $"The given user '{ChargingStationOperator.Id}' does not exists in this API!"
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              I18NString.Create(
+                                                         Languages.en,
+                                                         $"The given user '{ChargingStationOperator.Id}' does not exists in this API!"
+                                                     )
                        );
 
             //if (ChargingStationOperator.API != this)
@@ -2560,10 +2674,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (UpdateDelegate is null)
                 return UpdateChargingStationOperatorResult.ArgumentError(
-                           ChargingStationOperator,
-                           eventTrackingId,
-                           nameof(UpdateDelegate),
-                           "The given update delegate must not be null!"
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              I18NString.Create(
+                                                         Languages.en,
+                                                         $"The given update delegate must not be null!"
+                                                     )
                        );
 
 
@@ -2610,8 +2729,11 @@ namespace cloud.charging.open.protocols.WWCP
             //                            CurrentUserId);
 
             return UpdateChargingStationOperatorResult.Success(
-                       ChargingStationOperator,
-                       eventTrackingId
+                       ChargingStationOperator:  ChargingStationOperator,
+                       EventTrackingId:          eventTrackingId,
+                       AuthId:                   Id,
+                       SendPOIData:              this,
+                       RoamingNetwork:           this
                    );
 
         }
@@ -2658,12 +2780,13 @@ namespace cloud.charging.open.protocols.WWCP
                 catch (Exception e)
                 {
 
-                    DebugX.LogException(e);
-
-                    return UpdateChargingStationOperatorResult.Failed(
-                               ChargingStationOperator,
-                               eventTrackingId,
-                               e
+                    return UpdateChargingStationOperatorResult.Error(
+                               ChargingStationOperator:  ChargingStationOperator,
+                               Exception:                e,
+                               EventTrackingId:          eventTrackingId,
+                               AuthId:                   Id,
+                               SendPOIData:              this,
+                               RoamingNetwork:           this
                            );
 
                 }
@@ -2678,10 +2801,13 @@ namespace cloud.charging.open.protocols.WWCP
                 }
             }
 
-            return UpdateChargingStationOperatorResult.Failed(
-                       ChargingStationOperator,
-                       eventTrackingId,
-                       "Internal locking failed!"
+            return UpdateChargingStationOperatorResult.LockTimeout(
+                       ChargingStationOperator:  ChargingStationOperator,
+                       Timeout:                  SemaphoreSlimTimeout,
+                       EventTrackingId:          eventTrackingId,
+                       AuthId:                   Id,
+                       SendPOIData:              this,
+                       RoamingNetwork:           this
                    );
 
         }
@@ -2725,7 +2851,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnRemoved">A delegate run whenever the charging station operator has been removed successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        protected internal async Task<RemoveChargingStationOperatorResult>
+        protected internal async Task<DeleteChargingStationOperatorResult>
 
             _RemoveChargingStationOperator(ChargingStationOperator                    ChargingStationOperator,
                                            Boolean                                    SkipChargingStationOperatorRemovedNotifications   = false,
@@ -2746,21 +2872,29 @@ namespace cloud.charging.open.protocols.WWCP
             //           );
 
             if (!chargingStationOperators.ContainsId(ChargingStationOperator.Id))
-                return RemoveChargingStationOperatorResult.ArgumentError(
-                           ChargingStationOperator,
-                           eventTrackingId,
-                           nameof(ChargingStationOperator),
-                           "The given user does not exists in this API!"
+                return DeleteChargingStationOperatorResult.ArgumentError(
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              I18NString.Create(
+                                                         Languages.en,
+                                                         $"The given user does not exists in this API!"
+                                                     )
                        );
 
 
             var canBeRemoved  = _CanRemoveChargingStationOperator(ChargingStationOperator);
 
             if (canBeRemoved is not null)
-                return RemoveChargingStationOperatorResult.Failed(
-                           ChargingStationOperator,
-                           eventTrackingId,
-                           canBeRemoved
+                return DeleteChargingStationOperatorResult.CanNotBeRemoved(
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          eventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           RoamingNetwork:           this,
+                           Description:              canBeRemoved
                        );
 
 
@@ -2799,9 +2933,12 @@ namespace cloud.charging.open.protocols.WWCP
             //                            CurrentChargingStationOperatorId);
 
 
-            return RemoveChargingStationOperatorResult.Success(
-                       ChargingStationOperator,
-                       eventTrackingId
+            return DeleteChargingStationOperatorResult.Success(
+                       ChargingStationOperator:  ChargingStationOperator,
+                       EventTrackingId:          eventTrackingId,
+                       AuthId:                   Id,
+                       SendPOIData:              this,
+                       RoamingNetwork:           this
                    );
 
         }
@@ -2817,7 +2954,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnRemoved">A delegate run whenever the charging station operator has been removed successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public async Task<RemoveChargingStationOperatorResult>
+        public async Task<DeleteChargingStationOperatorResult>
 
             RemoveChargingStationOperator(ChargingStationOperator                    ChargingStationOperator,
                                           Boolean                                    SkipChargingStationOperatorRemovedNotifications   = false,
@@ -2844,12 +2981,13 @@ namespace cloud.charging.open.protocols.WWCP
                 catch (Exception e)
                 {
 
-                    DebugX.LogException(e);
-
-                    return RemoveChargingStationOperatorResult.Failed(
-                               ChargingStationOperator,
-                               eventTrackingId,
-                               e
+                    return DeleteChargingStationOperatorResult.Error(
+                               ChargingStationOperator:  ChargingStationOperator,
+                               Exception:                e,
+                               EventTrackingId:          eventTrackingId,
+                               AuthId:                   Id,
+                               SendPOIData:              this,
+                               RoamingNetwork:           this
                            );
 
                 }
@@ -2864,10 +3002,13 @@ namespace cloud.charging.open.protocols.WWCP
                 }
             }
 
-            return RemoveChargingStationOperatorResult.Failed(
-                       ChargingStationOperator,
-                       eventTrackingId,
-                       "Internal locking failed!"
+            return DeleteChargingStationOperatorResult.LockTimeout(
+                       ChargingStationOperator:  ChargingStationOperator,
+                       Timeout:                  SemaphoreSlimTimeout,
+                       EventTrackingId:          eventTrackingId,
+                       AuthId:                   Id,
+                       SendPOIData:              this,
+                       RoamingNetwork:           this
                    );
 
         }
@@ -3297,7 +3438,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateChargingStationOperatorAdminStatus(new[] {
+                var results = allSendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateChargingStationOperatorAdminStatus(new[] {
                                                                                                                                           new ChargingStationOperatorAdminStatusUpdate(
                                                                                                                                               ChargingStationOperator.Id,
                                                                                                                                               OldAdminStatus,
@@ -3392,7 +3533,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateChargingStationOperatorStatus(new[] {
+                var results = allSendStatus.WhenAll(iSendStatus => iSendStatus.UpdateChargingStationOperatorStatus(new[] {
                                                                                                                       new ChargingStationOperatorStatusUpdate(
                                                                                                                           ChargingStationOperator.Id,
                                                                                                                           OldStatus,
@@ -3476,7 +3617,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.AddChargingPool(ChargingPool));
+                var results = allSendChargingPoolData.WhenAll(target => target.AddChargingPool(ChargingPool));
 
             }
             catch (Exception e)
@@ -3528,11 +3669,11 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.UpdateChargingPool(ChargingPool,
-                                                                                         PropertyName,
-                                                                                         NewValue,
-                                                                                         OldValue,
-                                                                                         DataSource));
+                var results = allSendChargingPoolData.WhenAll(target => target.UpdateChargingPool(ChargingPool,
+                                                                                                  PropertyName,
+                                                                                                  NewValue,
+                                                                                                  OldValue,
+                                                                                                  DataSource));
 
             }
             catch (Exception e)
@@ -3571,7 +3712,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.DeleteChargingPool(ChargingPool));
+                var results = allSendChargingPoolData.WhenAll(target => target.DeleteChargingPool(ChargingPool));
 
             }
             catch (Exception e)
@@ -3799,7 +3940,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateChargingPoolAdminStatus(new[] {
+                var results = allSendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateChargingPoolAdminStatus(new[] {
                                                                                                                                new ChargingPoolAdminStatusUpdate(
                                                                                                                                    ChargingPool.Id,
                                                                                                                                    NewAdminStatus,
@@ -3897,7 +4038,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateChargingPoolStatus(new[] {
+                var results = allSendStatus.WhenAll(iSendStatus => iSendStatus.UpdateChargingPoolStatus(new[] {
                                                                                                            new ChargingPoolStatusUpdate(
                                                                                                                ChargingPool.Id,
                                                                                                                NewStatus,
@@ -3983,8 +4124,8 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.AddChargingStation(ChargingStation,
-                                                                                      EventTrackingId: EventTrackingId));
+                var results = allSendChargingStationData.WhenAll(target => target.AddChargingStation(ChargingStation,
+                                                                                                     EventTrackingId: EventTrackingId));
 
             }
             catch (Exception e)
@@ -4036,11 +4177,11 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.UpdateChargingStation(ChargingStation,
-                                                                                         PropertyName,
-                                                                                         NewValue,
-                                                                                         OldValue,
-                                                                                         DataSource));
+                var results = allSendChargingStationData.WhenAll(iSendData => iSendData.UpdateChargingStation(ChargingStation,
+                                                                                                              PropertyName,
+                                                                                                              NewValue,
+                                                                                                              OldValue,
+                                                                                                              DataSource));
 
             }
             catch (Exception e)
@@ -4080,7 +4221,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.DeleteChargingStation(ChargingStation));
+                var results = allSendChargingStationData.WhenAll(target => target.DeleteChargingStation(ChargingStation));
 
             }
             catch (Exception e)
@@ -4340,7 +4481,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateChargingStationAdminStatus(new[] {
+                var results = allSendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateChargingStationAdminStatus(new[] {
                                                                                                                                   new ChargingStationAdminStatusUpdate(
                                                                                                                                       ChargingStation.Id,
                                                                                                                                       NewAdminStatus,
@@ -4457,7 +4598,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateChargingStationStatus(new[] {
+                var results = allSendStatus.WhenAll(iSendStatus => iSendStatus.UpdateChargingStationStatus(new[] {
                                                                                                               new ChargingStationStatusUpdate(
                                                                                                                   ChargingStation.Id,
                                                                                                                   NewStatus,
@@ -4543,8 +4684,8 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.AddEVSE(EVSE,
-                                                                                      EventTrackingId: EventTrackingId));
+                var results = allSendEVSEData.WhenAll(target => target.AddEVSE(EVSE,
+                                                                               EventTrackingId: EventTrackingId));
 
             }
             catch (Exception e)
@@ -4585,13 +4726,12 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.
-                                                                  UpdateEVSE(EVSE,
-                                                                                   PropertyName,
-                                                                                   NewValue,
-                                                                                   OldValue,
-                                                                                   DataSource,
-                                                                                   EventTrackingId: EventTrackingId));
+                var results = allSendEVSEData.WhenAll(target => target.UpdateEVSE(EVSE,
+                                                                                  PropertyName,
+                                                                                  NewValue,
+                                                                                  OldValue,
+                                                                                  DataSource,
+                                                                                  EventTrackingId: EventTrackingId));
 
 
                 var onEVSEDataChanged = OnEVSEDataChanged;
@@ -4641,7 +4781,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.DeleteEVSE(EVSE));
+                var results = allSendEVSEData.WhenAll(target => target.DeleteEVSE(EVSE));
 
             }
             catch (Exception e)
@@ -4871,7 +5011,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateEVSEAdminStatus(new[] {
+                var results = allSendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateEVSEAdminStatus(new[] {
                                                                                                                        new EVSEAdminStatusUpdate(
                                                                                                                            EVSE.Id,
                                                                                                                            NewAdminStatus,
@@ -5090,7 +5230,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateEVSEStatus(new[] {
+                var results = allSendStatus.WhenAll(iSendStatus => iSendStatus.UpdateEVSEStatus(new[] {
                                                                                                    new EVSEStatusUpdate(
                                                                                                        EVSE.Id,
                                                                                                        NewStatus,
@@ -7203,7 +7343,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 var cdrTargets = new Dictionary<ISendChargeDetailRecords, List<ChargeDetailRecord>>();
 
-                foreach (var isendcdr in _IRemoteSendChargeDetailRecord)
+                foreach (var isendcdr in allRemoteSendChargeDetailRecord)
                     cdrTargets.Add(isendcdr, new List<ChargeDetailRecord>());
 
                 #endregion
@@ -7263,7 +7403,7 @@ namespace cloud.charging.open.protocols.WWCP
                     {
 
                         var empRoamingProviderId      = cdr.EMPRoamingProviderId.ToString();
-                        var empRoamingProviderForCDR  = _IRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == empRoamingProviderId) as IEMPRoamingProvider;
+                        var empRoamingProviderForCDR  = allRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == empRoamingProviderId) as IEMPRoamingProvider;
 
                         if (empRoamingProviderForCDR is not null)
                         {
@@ -7301,7 +7441,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         if (chargingSession.EMPRoamingProviderStart   is null &&
                             chargingSession.EMPRoamingProviderIdStart is not null)
-                            chargingSession.EMPRoamingProviderStart = _IRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == chargingSession.EMPRoamingProviderIdStart.ToString()) as IEMPRoamingProvider;
+                            chargingSession.EMPRoamingProviderStart = allRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == chargingSession.EMPRoamingProviderIdStart.ToString()) as IEMPRoamingProvider;
 
                         if (chargingSession.EMPRoamingProviderStart is not null &&
                             chargingSession.EMPRoamingProviderStart is IEMPRoamingProvider empRoamingProviderForCDR)
@@ -7909,7 +8049,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                 ChargingProduct,
                                                 SessionId,
                                                 CPOPartnerSessionId,
-                                                _ISend2RemoteAuthorizeStartStop,
+                                                allSend2RemoteAuthorizeStartStop,
                                                 RequestTimeout);
 
             }
@@ -8030,7 +8170,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Send the request to all authorization services
 
-                result  ??= await _ISend2RemoteAuthorizeStartStop.WhenFirst(
+                result  ??= await allSend2RemoteAuthorizeStartStop.WhenFirst(
                                       Work:           sendAuthorizeStartStop => sendAuthorizeStartStop.AuthorizeStart(
                                                                                     LocalAuthentication,
                                                                                     ChargingLocation,
@@ -8198,7 +8338,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                  ChargingProduct,
                                                  SessionId,
                                                  CPOPartnerSessionId,
-                                                 _ISend2RemoteAuthorizeStartStop,
+                                                 allSend2RemoteAuthorizeStartStop,
                                                  RequestTimeout,
                                                  result,
                                                  endTime - startTime);
@@ -8448,7 +8588,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Send the request to all authorization services
 
-                result ??= await _ISend2RemoteAuthorizeStartStop.WhenFirst(
+                result ??= await allSend2RemoteAuthorizeStartStop.WhenFirst(
                                      Work:           sendAuthorizeStartStop => sendAuthorizeStartStop.AuthorizeStop(
                                                                                    SessionId,
                                                                                    LocalAuthentication,

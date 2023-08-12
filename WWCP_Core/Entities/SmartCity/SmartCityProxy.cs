@@ -472,22 +472,43 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean  DisablePushData           { get; set; }
+        public Boolean  DisablePushData            { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean  DisableSendAdminStatus    { get; set; }
+        public Boolean  DisableSendAdminStatus     { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean  DisableSendStatus         { get; set; }
+        public Boolean  DisableSendStatus          { get; set; }
+
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        public Boolean  DisableSendEnergyStatus    { get; set; }
 
 
-        #region (Set/Add/Update/Delete) Roaming network...
+        #region (Set/Add/Update/Delete) Roaming network(s)...
 
-        #region AddRoamingNetwork        (RoamingNetwork, ...)
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        public Boolean                          DisableSendRoamingNetworkData    { get; set; }
+
+        /// <summary>
+        /// Only include roaming network identifications matching the given delegate.
+        /// </summary>
+        public IncludeRoamingNetworkIdDelegate  IncludeRoamingNetworkIds         { get; }
+
+        /// <summary>
+        /// Only include roaming network matching the given delegate.
+        /// </summary>
+        public IncludeRoamingNetworkDelegate    IncludeRoamingNetworks           { get; }
+
+
+        #region AddRoamingNetwork           (RoamingNetwork, ...)
 
         /// <summary>
         /// Add the EVSE data of the given roaming network to the static EVSE data at the OICP server.
@@ -498,25 +519,62 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<AddRoamingNetworkResult>
 
-            IPushPOIData.AddRoamingNetwork(IRoamingNetwork     RoamingNetwork,
-                                           TransmissionTypes   TransmissionType,
+            ISendRoamingNetworkData.AddRoamingNetwork(IRoamingNetwork     RoamingNetwork,
+                                                      TransmissionTypes   TransmissionType,
 
-                                           DateTime?           Timestamp,
-                                           EventTracking_Id?   EventTrackingId,
-                                           TimeSpan?           RequestTimeout,
-                                           CancellationToken   CancellationToken)
+                                                      DateTime?           Timestamp,
+                                                      EventTracking_Id?   EventTrackingId,
+                                                      TimeSpan?           RequestTimeout,
+                                                      CancellationToken   CancellationToken)
 
-        {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
+                => Task.FromResult(
+                       AddRoamingNetworkResult.NoOperation(
+                           RoamingNetwork:   RoamingNetwork,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
 
         #endregion
 
-        #region AddOrUpdateRoamingNetwork(RoamingNetwork, ...)
+        #region AddRoamingNetworkIfNotExists(RoamingNetwork, ...)
+
+        /// <summary>
+        /// Add the EVSE data of the given roaming network to the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="RoamingNetwork">A roaming network.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<AddRoamingNetworkResult>
+
+            ISendRoamingNetworkData.AddRoamingNetworkIfNotExists(IRoamingNetwork     RoamingNetwork,
+                                                                 TransmissionTypes   TransmissionType,
+
+                                                                 DateTime?           Timestamp,
+                                                                 EventTracking_Id?   EventTrackingId,
+                                                                 TimeSpan?           RequestTimeout,
+                                                                 CancellationToken   CancellationToken)
+
+
+                => Task.FromResult(
+                       AddRoamingNetworkResult.NoOperation(
+                           RoamingNetwork:   RoamingNetwork,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
+
+        #endregion
+
+        #region AddOrUpdateRoamingNetwork   (RoamingNetwork, ...)
 
         /// <summary>
         /// Set the EVSE data of the given roaming network as new static EVSE data at the OICP server.
@@ -527,25 +585,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<AddOrUpdateRoamingNetworkResult>
 
-            IPushPOIData.AddOrUpdateRoamingNetwork(IRoamingNetwork     RoamingNetwork,
-                                                   TransmissionTypes   TransmissionType,
+            ISendRoamingNetworkData.AddOrUpdateRoamingNetwork(IRoamingNetwork     RoamingNetwork,
+                                                              TransmissionTypes   TransmissionType,
 
-                                                   DateTime?           Timestamp,
-                                                   EventTracking_Id?   EventTrackingId,
-                                                   TimeSpan?           RequestTimeout,
-                                                   CancellationToken   CancellationToken)
+                                                              DateTime?           Timestamp,
+                                                              EventTracking_Id?   EventTrackingId,
+                                                              TimeSpan?           RequestTimeout,
+                                                              CancellationToken   CancellationToken)
 
-        {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
+                => Task.FromResult(
+                       AddOrUpdateRoamingNetworkResult.NoOperation(
+                           RoamingNetwork:   RoamingNetwork,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
 
         #endregion
 
-        #region UpdateRoamingNetwork     (RoamingNetwork, ...)
+        #region UpdateRoamingNetwork        (RoamingNetwork, ...)
 
         /// <summary>
         /// Update the EVSE data of the given roaming network within the static EVSE data at the OICP server.
@@ -556,29 +618,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<UpdateRoamingNetworkResult>
 
-            IPushPOIData.UpdateRoamingNetwork(IRoamingNetwork     RoamingNetwork,
-                                              String              PropertyName,
-                                              Object?             NewValue,
-                                              Object?             OldValue,
-                                              Context?            DataSource,
-                                              TransmissionTypes   TransmissionType,
+            ISendRoamingNetworkData.UpdateRoamingNetwork(IRoamingNetwork     RoamingNetwork,
+                                                         String              PropertyName,
+                                                         Object?             NewValue,
+                                                         Object?             OldValue,
+                                                         Context?            DataSource,
+                                                         TransmissionTypes   TransmissionType,
 
-                                              DateTime?           Timestamp,
-                                              EventTracking_Id?   EventTrackingId,
-                                              TimeSpan?           RequestTimeout,
-                                              CancellationToken   CancellationToken)
+                                                         DateTime?           Timestamp,
+                                                         EventTracking_Id?   EventTrackingId,
+                                                         TimeSpan?           RequestTimeout,
+                                                         CancellationToken   CancellationToken)
 
-        {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
+                => Task.FromResult(
+                       UpdateRoamingNetworkResult.NoOperation(
+                           RoamingNetwork:   RoamingNetwork,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
 
         #endregion
 
-        #region DeleteRoamingNetwork     (RoamingNetwork, ...)
+        #region DeleteRoamingNetwork        (RoamingNetwork, ...)
 
         /// <summary>
         /// Delete the EVSE data of the given roaming network from the static EVSE data at the OICP server.
@@ -589,21 +655,196 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<DeleteRoamingNetworkResult>
 
-            IPushPOIData.DeleteRoamingNetwork(IRoamingNetwork     RoamingNetwork,
-                                              TransmissionTypes   TransmissionType,
+            ISendRoamingNetworkData.DeleteRoamingNetwork(IRoamingNetwork     RoamingNetwork,
+                                                         TransmissionTypes   TransmissionType,
 
-                                              DateTime?           Timestamp,
-                                              EventTracking_Id?   EventTrackingId,
-                                              TimeSpan?           RequestTimeout,
-                                              CancellationToken   CancellationToken)
+                                                         DateTime?           Timestamp,
+                                                         EventTracking_Id?   EventTrackingId,
+                                                         TimeSpan?           RequestTimeout,
+                                                         CancellationToken   CancellationToken)
 
-        {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
+                => Task.FromResult(
+                       DeleteRoamingNetworkResult.NoOperation(
+                           RoamingNetwork:   RoamingNetwork,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
 
-        }
+        #endregion
+
+
+        #region AddRoamingNetworks          (RoamingNetworks, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Add the given enumeration of roaming networks.
+        /// </summary>
+        /// <param name="RoamingNetworks">An enumeration of roaming networks.</param>
+        /// <param name="TransmissionType">Whether to send the roaming network directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<AddRoamingNetworksResult>
+
+            AddRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
+                               TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
+
+                               DateTime?                     Timestamp           = null,
+                               EventTracking_Id?             EventTrackingId     = null,
+                               TimeSpan?                     RequestTimeout      = null,
+                               CancellationToken             CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       AddRoamingNetworksResult.NoOperation(
+                           RejectedRoamingNetworks:  RoamingNetworks,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           EventTrackingId:          EventTrackingId
+                       )
+                   );
+
+        #endregion
+
+        #region AddRoamingNetworksIfNotExist(RoamingNetworks, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Add the given enumeration of roaming networks, if they do not already exist.
+        /// </summary>
+        /// <param name="RoamingNetworks">An enumeration of roaming networks to add, if they do not already exist.</param>
+        /// <param name="TransmissionType">Whether to send the roaming network directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<AddRoamingNetworksResult>
+
+            AddRoamingNetworksIfNotExist(IEnumerable<IRoamingNetwork>  RoamingNetworks,
+                                         TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
+
+                                         DateTime?                     Timestamp           = null,
+                                         EventTracking_Id?             EventTrackingId     = null,
+                                         TimeSpan?                     RequestTimeout      = null,
+                                         CancellationToken             CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       AddRoamingNetworksResult.NoOperation(
+                           RejectedRoamingNetworks:  RoamingNetworks,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           EventTrackingId:          EventTrackingId
+                       )
+                   );
+
+        #endregion
+
+        #region AddOrUpdateRoamingNetworks  (RoamingNetworks, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Add or update the given enumeration of roaming networks.
+        /// </summary>
+        /// <param name="RoamingNetworks">An enumeration of roaming networks to add or update.</param>
+        /// <param name="TransmissionType">Whether to send the roaming network directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<AddOrUpdateRoamingNetworksResult>
+
+            AddOrUpdateRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
+                                       TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
+
+                                       DateTime?                     Timestamp           = null,
+                                       EventTracking_Id?             EventTrackingId     = null,
+                                       TimeSpan?                     RequestTimeout      = null,
+                                       CancellationToken             CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       AddOrUpdateRoamingNetworksResult.NoOperation(
+                           RejectedRoamingNetworks:  RoamingNetworks,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           EventTrackingId:          EventTrackingId
+                       )
+                   );
+
+        #endregion
+
+        #region UpdateRoamingNetworks       (RoamingNetworks, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Update the given enumeration of roaming networks.
+        /// </summary>
+        /// <param name="RoamingNetworks">An enumeration of roaming networks to update.</param>
+        /// <param name="TransmissionType">Whether to send the roaming network directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<UpdateRoamingNetworksResult>
+
+            UpdateRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
+                                  TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
+
+                                  DateTime?                     Timestamp           = null,
+                                  EventTracking_Id?             EventTrackingId     = null,
+                                  TimeSpan?                     RequestTimeout      = null,
+                                  CancellationToken             CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       UpdateRoamingNetworksResult.NoOperation(
+                           RejectedRoamingNetworks:  RoamingNetworks,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           EventTrackingId:          EventTrackingId
+                       )
+                   );
+
+        #endregion
+
+        #region DeleteRoamingNetworks       (RoamingNetworks, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Delete the given enumeration of roaming networks.
+        /// </summary>
+        /// <param name="RoamingNetworks">An enumeration of roaming networks to delete.</param>
+        /// <param name="TransmissionType">Whether to send the roaming network directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<DeleteRoamingNetworksResult>
+
+            DeleteRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
+                                  TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
+
+                                  DateTime?                     Timestamp           = null,
+                                  EventTracking_Id?             EventTrackingId     = null,
+                                  TimeSpan?                     RequestTimeout      = null,
+                                  CancellationToken             CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       DeleteRoamingNetworksResult.NoOperation(
+                           RejectedRoamingNetworks:  RoamingNetworks,
+                           AuthId:                   Id,
+                           SendPOIData:              this,
+                           EventTrackingId:          EventTrackingId
+                       )
+                   );
 
         #endregion
 
@@ -670,12 +911,23 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (Set/Add/Update/Delete) Charging station operator(s)...
 
-        public IncludeChargingStationOperatorIdDelegate  IncludeChargingStationOperatorIds    { get; set; }
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        public Boolean                                   DisableSendChargingStationOperatorData    { get; set; }
 
-        public IncludeChargingStationOperatorDelegate    IncludeChargingStationOperators      { get; set; }
+        /// <summary>
+        /// Only include charging station identifications matching the given delegate.
+        /// </summary>
+        public IncludeChargingStationOperatorIdDelegate  IncludeChargingStationOperatorIds         { get; }
+
+        /// <summary>
+        /// Only include charging stations matching the given delegate.
+        /// </summary>
+        public IncludeChargingStationOperatorDelegate    IncludeChargingStationOperators           { get; }
 
 
-        #region AddChargingStationOperator         (ChargingStationOperator, ...)
+        #region AddChargingStationOperator           (ChargingStationOperator, ...)
 
         /// <summary>
         /// Add the EVSE data of the given charging station operator to the static EVSE data at the OICP server.
@@ -686,25 +938,62 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<AddChargingStationOperatorResult>
 
-            IPushPOIData.AddChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
-                                                    TransmissionTypes         TransmissionType,
+            ISendChargingStationOperatorData.AddChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
+                                                                        TransmissionTypes         TransmissionType,
 
-                                                    DateTime?                 Timestamp,
-                                                    EventTracking_Id?         EventTrackingId,
-                                                    TimeSpan?                 RequestTimeout,
-                                                    CancellationToken         CancellationToken)
+                                                                        DateTime?                 Timestamp,
+                                                                        EventTracking_Id?         EventTrackingId,
+                                                                        TimeSpan?                 RequestTimeout,
+                                                                        CancellationToken         CancellationToken)
 
-        {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
+                => Task.FromResult(
+                       AddChargingStationOperatorResult.NoOperation(
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          EventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this
+                       )
+                   );
 
         #endregion
 
-        #region AddOrUpdateChargingStationOperator (ChargingStationOperator, ...)
+        #region AddChargingStationOperatorIfNotExists(ChargingStationOperator, ...)
+
+        /// <summary>
+        /// Add the EVSE data of the given charging station operator to the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<AddChargingStationOperatorResult>
+
+            ISendChargingStationOperatorData.AddChargingStationOperatorIfNotExists(IChargingStationOperator  ChargingStationOperator,
+                                                                                   TransmissionTypes         TransmissionType,
+
+                                                                                   DateTime?                 Timestamp,
+                                                                                   EventTracking_Id?         EventTrackingId,
+                                                                                   TimeSpan?                 RequestTimeout,
+                                                                                   CancellationToken         CancellationToken)
+
+
+                => Task.FromResult(
+                       AddChargingStationOperatorResult.NoOperation(
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          EventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this
+                       )
+                   );
+
+        #endregion
+
+        #region AddOrUpdateChargingStationOperator   (ChargingStationOperator, ...)
 
         /// <summary>
         /// Set the EVSE data of the given charging station operator as new static EVSE data at the OICP server.
@@ -715,25 +1004,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<AddOrUpdateChargingStationOperatorResult>
 
-            IPushPOIData.AddOrUpdateChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
-                                                            TransmissionTypes         TransmissionType,
+            ISendChargingStationOperatorData.AddOrUpdateChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
+                                                                                TransmissionTypes         TransmissionType,
 
-                                                            DateTime?                 Timestamp,
-                                                            EventTracking_Id?         EventTrackingId,
-                                                            TimeSpan?                 RequestTimeout,
-                                                            CancellationToken         CancellationToken)
+                                                                                DateTime?                 Timestamp,
+                                                                                EventTracking_Id?         EventTrackingId,
+                                                                                TimeSpan?                 RequestTimeout,
+                                                                                CancellationToken         CancellationToken)
 
-        {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
+                => Task.FromResult(
+                       AddOrUpdateChargingStationOperatorResult.NoOperation(
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          EventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this
+                       )
+                   );
 
         #endregion
 
-        #region UpdateChargingStationOperator      (ChargingStationOperator, ...)
+        #region UpdateChargingStationOperator        (ChargingStationOperator, ...)
 
         /// <summary>
         /// Update the EVSE data of the given charging station operator within the static EVSE data at the OICP server.
@@ -744,29 +1037,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<UpdateChargingStationOperatorResult>
 
-            IPushPOIData.UpdateChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
-                                                       String                    PropertyName,
-                                                       Object?                   NewValue,
-                                                       Object?                   OldValue,
-                                                       Context?                  DataSource,
-                                                       TransmissionTypes         TransmissionType,
+            ISendChargingStationOperatorData.UpdateChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
+                                                                           String                    PropertyName,
+                                                                           Object?                   NewValue,
+                                                                           Object?                   OldValue,
+                                                                           Context?                  DataSource,
+                                                                           TransmissionTypes         TransmissionType,
 
-                                                       DateTime?                 Timestamp,
-                                                       EventTracking_Id          EventTrackingId,
-                                                       TimeSpan?                 RequestTimeout,
-                                                       CancellationToken         CancellationToken)
+                                                                           DateTime?                 Timestamp,
+                                                                           EventTracking_Id?         EventTrackingId,
+                                                                           TimeSpan?                 RequestTimeout,
+                                                                           CancellationToken         CancellationToken)
 
-        {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
+                => Task.FromResult(
+                       UpdateChargingStationOperatorResult.NoOperation(
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          EventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this
+                       )
+                   );
 
         #endregion
 
-        #region DeleteChargingStationOperator      (ChargingStationOperator, ...)
+        #region DeleteChargingStationOperator        (ChargingStationOperator, ...)
 
         /// <summary>
         /// Delete the EVSE data of the given charging station operator from the static EVSE data at the OICP server.
@@ -777,26 +1074,30 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<DeleteChargingStationOperatorResult>
 
-            IPushPOIData.DeleteChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
-                                                       TransmissionTypes         TransmissionType,
+            ISendChargingStationOperatorData.DeleteChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
+                                                                           TransmissionTypes         TransmissionType,
 
-                                                       DateTime?                 Timestamp,
-                                                       EventTracking_Id?         EventTrackingId,
-                                                       TimeSpan?                 RequestTimeout,
-                                                       CancellationToken         CancellationToken)
+                                                                           DateTime?                 Timestamp,
+                                                                           EventTracking_Id?         EventTrackingId,
+                                                                           TimeSpan?                 RequestTimeout,
+                                                                           CancellationToken         CancellationToken)
 
-        {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
+                => Task.FromResult(
+                       DeleteChargingStationOperatorResult.NoOperation(
+                           ChargingStationOperator:  ChargingStationOperator,
+                           EventTrackingId:          EventTrackingId,
+                           AuthId:                   Id,
+                           SendPOIData:              this
+                       )
+                   );
 
         #endregion
 
 
-        #region AddChargingStationOperators        (ChargingStationOperators, ...)
+        #region AddChargingStationOperators          (ChargingStationOperators, ...)
 
         /// <summary>
         /// Add the EVSE data of the given enumeration of charging station operators to the static EVSE data at the OICP server.
@@ -807,25 +1108,62 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<AddChargingStationOperatorsResult>
 
-            IPushPOIData.AddChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
-                                                     TransmissionTypes                      TransmissionType,
+            ISendChargingStationOperatorData.AddChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                                                         TransmissionTypes                      TransmissionType,
 
-                                                     DateTime?                              Timestamp,
-                                                     EventTracking_Id?                      EventTrackingId,
-                                                     TimeSpan?                              RequestTimeout,
-                                                     CancellationToken                      CancellationToken)
+                                                                         DateTime?                              Timestamp,
+                                                                         EventTracking_Id?                      EventTrackingId,
+                                                                         TimeSpan?                              RequestTimeout,
+                                                                         CancellationToken                      CancellationToken)
 
-        {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
+                => Task.FromResult(
+                       AddChargingStationOperatorsResult.NoOperation(
+                           RejectedChargingStationOperators:  ChargingStationOperators,
+                           AuthId:                            Id,
+                           SendPOIData:                       this,
+                           EventTrackingId:                   EventTrackingId
+                       )
+                   );
 
         #endregion
 
-        #region AddOrUpdateChargingStationOperators(ChargingStationOperators, ...)
+        #region AddChargingStationOperatorsIfNotExist(ChargingStationOperators, ...)
+
+        /// <summary>
+        /// Add the EVSE data of the given enumeration of charging station operators to the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<AddChargingStationOperatorsResult>
+
+            ISendChargingStationOperatorData.AddChargingStationOperatorsIfNotExist(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                                                                   TransmissionTypes                      TransmissionType,
+
+                                                                                   DateTime?                              Timestamp,
+                                                                                   EventTracking_Id?                      EventTrackingId,
+                                                                                   TimeSpan?                              RequestTimeout,
+                                                                                   CancellationToken                      CancellationToken)
+
+
+                => Task.FromResult(
+                       AddChargingStationOperatorsResult.NoOperation(
+                           RejectedChargingStationOperators:  ChargingStationOperators,
+                           AuthId:                            Id,
+                           SendPOIData:                       this,
+                           EventTrackingId:                   EventTrackingId
+                       )
+                   );
+
+        #endregion
+
+        #region AddOrUpdateChargingStationOperators  (ChargingStationOperators, ...)
 
         /// <summary>
         /// Set the EVSE data of the given enumeration of charging station operators as new static EVSE data at the OICP server.
@@ -836,25 +1174,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<AddOrUpdateChargingStationOperatorsResult>
 
-            IPushPOIData.AddOrUpdateChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
-                                                             TransmissionTypes                      TransmissionType,
+            ISendChargingStationOperatorData.AddOrUpdateChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                                                                 TransmissionTypes                      TransmissionType,
 
-                                                             DateTime?                              Timestamp,
-                                                             EventTracking_Id?                      EventTrackingId,
-                                                             TimeSpan?                              RequestTimeout,
-                                                             CancellationToken                      CancellationToken)
+                                                                                 DateTime?                              Timestamp,
+                                                                                 EventTracking_Id?                      EventTrackingId,
+                                                                                 TimeSpan?                              RequestTimeout,
+                                                                                 CancellationToken                      CancellationToken)
 
-        {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
+                => Task.FromResult(
+                       AddOrUpdateChargingStationOperatorsResult.NoOperation(
+                           RejectedChargingStationOperators:  ChargingStationOperators,
+                           AuthId:                            Id,
+                           SendPOIData:                       this,
+                           EventTrackingId:                   EventTrackingId
+                       )
+                   );
 
         #endregion
 
-        #region UpdateChargingStationOperators     (ChargingStationOperators, ...)
+        #region UpdateChargingStationOperators       (ChargingStationOperators, ...)
 
         /// <summary>
         /// Update the EVSE data of the given enumeration of charging station operators within the static EVSE data at the OICP server.
@@ -865,25 +1207,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<UpdateChargingStationOperatorsResult>
 
-            IPushPOIData.UpdateChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
-                                                        TransmissionTypes                      TransmissionType,
+            ISendChargingStationOperatorData.UpdateChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                                                            TransmissionTypes                      TransmissionType,
 
-                                                        DateTime?                              Timestamp,
-                                                        EventTracking_Id?                      EventTrackingId,
-                                                        TimeSpan?                              RequestTimeout,
-                                                        CancellationToken                      CancellationToken)
+                                                                            DateTime?                              Timestamp,
+                                                                            EventTracking_Id?                      EventTrackingId,
+                                                                            TimeSpan?                              RequestTimeout,
+                                                                            CancellationToken                      CancellationToken)
 
-        {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
+                => Task.FromResult(
+                       UpdateChargingStationOperatorsResult.NoOperation(
+                           RejectedChargingStationOperators:  ChargingStationOperators,
+                           AuthId:                            Id,
+                           SendPOIData:                       this,
+                           EventTrackingId:                   EventTrackingId
+                       )
+                   );
 
         #endregion
 
-        #region DeleteChargingStationOperators     (ChargingStationOperators, ...)
+        #region DeleteChargingStationOperators       (ChargingStationOperators, ...)
 
         /// <summary>
         /// Delete the EVSE data of the given enumeration of charging station operators from the static EVSE data at the OICP server.
@@ -894,21 +1240,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<DeleteChargingStationOperatorsResult>
 
-            IPushPOIData.DeleteChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
-                                                        TransmissionTypes                      TransmissionType,
+            ISendChargingStationOperatorData.DeleteChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                                                            TransmissionTypes                      TransmissionType,
 
-                                                        DateTime?                              Timestamp,
-                                                        EventTracking_Id?                      EventTrackingId,
-                                                        TimeSpan?                              RequestTimeout,
-                                                        CancellationToken                      CancellationToken)
+                                                                            DateTime?                              Timestamp,
+                                                                            EventTracking_Id?                      EventTrackingId,
+                                                                            TimeSpan?                              RequestTimeout,
+                                                                            CancellationToken                      CancellationToken)
 
-        {
 
-            return PushEVSEDataResult.NoOperation(Id, this, null);
-
-        }
+                => Task.FromResult(
+                       DeleteChargingStationOperatorsResult.NoOperation(
+                           RejectedChargingStationOperators:  ChargingStationOperators,
+                           AuthId:                            Id,
+                           SendPOIData:                       this,
+                           EventTrackingId:                   EventTrackingId
+                       )
+                   );
 
         #endregion
 
@@ -975,12 +1325,23 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (Set/Add/Update/Delete) Charging pool(s)...
 
-        public IncludeChargingPoolIdDelegate  IncludeChargingPoolIds    { get; set; }
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        public Boolean                        DisableSendChargingPoolData    { get; set; }
 
-        public IncludeChargingPoolDelegate    IncludeChargingPools      { get; set; }
+        /// <summary>
+        /// Only include charging pool identifications matching the given delegate.
+        /// </summary>
+        public IncludeChargingPoolIdDelegate  IncludeChargingPoolIds         { get; }
+
+        /// <summary>
+        /// Only include charging pools matching the given delegate.
+        /// </summary>
+        public IncludeChargingPoolDelegate    IncludeChargingPools           { get; }
 
 
-        #region AddChargingPool         (ChargingPool, TransmissionType = Enqueue, ...)
+        #region AddChargingPool           (ChargingPool, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the EVSE data of the given charging pool to the static EVSE data at the OICP server.
@@ -992,25 +1353,63 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingPoolDataResult>
+        Task<AddChargingPoolResult>
 
-            IPushPOIData.AddChargingPool(IChargingPool       ChargingPool,
-                                         TransmissionTypes   TransmissionType,
+            ISendChargingPoolData.AddChargingPool(IChargingPool       ChargingPool,
+                                                  TransmissionTypes   TransmissionType,
 
-                                         DateTime?           Timestamp,
-                                         EventTracking_Id?   EventTrackingId,
-                                         TimeSpan?           RequestTimeout,
-                                         CancellationToken   CancellationToken)
+                                                  DateTime?           Timestamp,
+                                                  EventTracking_Id?   EventTrackingId,
+                                                  TimeSpan?           RequestTimeout,
+                                                  CancellationToken   CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, new[] { ChargingPool }));
-
-        }
+                => Task.FromResult(
+                       AddChargingPoolResult.NoOperation(
+                           ChargingPool:     ChargingPool,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
 
         #endregion
 
-        #region AddOrUpdateChargingPool (ChargingPool, TransmissionType = Enqueue, ...)
+        #region AddChargingPoolIfNotExists(ChargingPool, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Add the EVSE data of the given charging pool to the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<AddChargingPoolResult>
+
+            ISendChargingPoolData.AddChargingPoolIfNotExists(IChargingPool       ChargingPool,
+                                                             TransmissionTypes   TransmissionType,
+
+                                                             DateTime?           Timestamp,
+                                                             EventTracking_Id?   EventTrackingId,
+                                                             TimeSpan?           RequestTimeout,
+                                                             CancellationToken   CancellationToken)
+
+
+                => Task.FromResult(
+                       AddChargingPoolResult.NoOperation(
+                           ChargingPool:     ChargingPool,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
+
+        #endregion
+
+        #region AddOrUpdateChargingPool   (ChargingPool, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Set the EVSE data of the given charging pool as new static EVSE data at the OICP server.
@@ -1022,25 +1421,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingPoolDataResult>
+        Task<AddOrUpdateChargingPoolResult>
 
-            IPushPOIData.AddOrUpdateChargingPool(IChargingPool       ChargingPool,
-                                                 TransmissionTypes   TransmissionType,
+            ISendChargingPoolData.AddOrUpdateChargingPool(IChargingPool       ChargingPool,
+                                                          TransmissionTypes   TransmissionType,
 
-                                                 DateTime?           Timestamp,
-                                                 EventTracking_Id?   EventTrackingId,
-                                                 TimeSpan?           RequestTimeout,
-                                                 CancellationToken   CancellationToken)
+                                                          DateTime?           Timestamp,
+                                                          EventTracking_Id?   EventTrackingId,
+                                                          TimeSpan?           RequestTimeout,
+                                                          CancellationToken   CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, new[] { ChargingPool }));
-
-        }
+                => Task.FromResult(
+                       AddOrUpdateChargingPoolResult.NoOperation(
+                           ChargingPool:     ChargingPool,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
 
         #endregion
 
-        #region UpdateChargingPool      (ChargingPool, PropertyName = null, OldValue = null, NewValue = null, TransmissionType = Enqueue, ...)
+        #region UpdateChargingPool        (ChargingPool, PropertyName = null, OldValue = null, NewValue = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the EVSE data of the given charging pool within the static EVSE data at the OICP server.
@@ -1055,29 +1458,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingPoolDataResult>
+        Task<UpdateChargingPoolResult>
 
-            IPushPOIData.UpdateChargingPool(IChargingPool       ChargingPool,
-                                            String              PropertyName,
-                                            Object?             NewValue,
-                                            Object?             OldValue,
-                                            Context?            DataSource,
-                                            TransmissionTypes   TransmissionType,
+            ISendChargingPoolData.UpdateChargingPool(IChargingPool       ChargingPool,
+                                                     String              PropertyName,
+                                                     Object?             NewValue,
+                                                     Object?             OldValue,
+                                                     Context?            DataSource,
+                                                     TransmissionTypes   TransmissionType,
 
-                                            DateTime?           Timestamp,
-                                            EventTracking_Id?   EventTrackingId,
-                                            TimeSpan?           RequestTimeout,
-                                            CancellationToken   CancellationToken)
+                                                     DateTime?           Timestamp,
+                                                     EventTracking_Id?   EventTrackingId,
+                                                     TimeSpan?           RequestTimeout,
+                                                     CancellationToken   CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, new[] { ChargingPool }));
-
-        }
+                => Task.FromResult(
+                       UpdateChargingPoolResult.NoOperation(
+                           ChargingPool:     ChargingPool,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
 
         #endregion
 
-        #region DeleteChargingPool      (ChargingPool, TransmissionType = Enqueue, ...)
+        #region DeleteChargingPool        (ChargingPool, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the EVSE data of the given charging pool from the static EVSE data at the OICP server.
@@ -1089,26 +1496,30 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingPoolDataResult>
+        Task<DeleteChargingPoolResult>
 
-            IPushPOIData.DeleteChargingPool(IChargingPool       ChargingPool,
-                                            TransmissionTypes   TransmissionType,
+            ISendChargingPoolData.DeleteChargingPool(IChargingPool       ChargingPool,
+                                                     TransmissionTypes   TransmissionType,
 
-                                            DateTime?           Timestamp,
-                                            EventTracking_Id?   EventTrackingId,
-                                            TimeSpan?           RequestTimeout,
-                                            CancellationToken   CancellationToken)
+                                                     DateTime?           Timestamp,
+                                                     EventTracking_Id?   EventTrackingId,
+                                                     TimeSpan?           RequestTimeout,
+                                                     CancellationToken   CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, new[] { ChargingPool }));
-
-        }
+                => Task.FromResult(
+                       DeleteChargingPoolResult.NoOperation(
+                           ChargingPool:     ChargingPool,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
 
         #endregion
 
 
-        #region AddChargingPools        (ChargingPools, TransmissionType = Enqueue, ...)
+        #region AddChargingPools          (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the EVSE data of the given enumeration of charging pools to the static EVSE data at the OICP server.
@@ -1120,25 +1531,63 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingPoolDataResult>
+        Task<AddChargingPoolsResult>
 
-            IPushPOIData.AddChargingPools(IEnumerable<IChargingPool>  ChargingPools,
-                                          TransmissionTypes           TransmissionType,
+            ISendChargingPoolData.AddChargingPools(IEnumerable<IChargingPool>  ChargingPools,
+                                                   TransmissionTypes           TransmissionType,
 
-                                          DateTime?                   Timestamp,
-                                          EventTracking_Id?           EventTrackingId,
-                                          TimeSpan?                   RequestTimeout,
-                                          CancellationToken           CancellationToken)
+                                                   DateTime?                   Timestamp,
+                                                   EventTracking_Id?           EventTrackingId,
+                                                   TimeSpan?                   RequestTimeout,
+                                                   CancellationToken           CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, ChargingPools));
-
-        }
+                => Task.FromResult(
+                       AddChargingPoolsResult.NoOperation(
+                           RejectedChargingPools:  ChargingPools,
+                           AuthId:                 Id,
+                           SendPOIData:            this,
+                           EventTrackingId:        EventTrackingId
+                       )
+                   );
 
         #endregion
 
-        #region AddOrUpdateChargingPools(ChargingPools, TransmissionType = Enqueue, ...)
+        #region AddChargingPoolsIfNotExist(ChargingPools, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Add the EVSE data of the given enumeration of charging pools to the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<AddChargingPoolsResult>
+
+            ISendChargingPoolData.AddChargingPoolsIfNotExist(IEnumerable<IChargingPool>  ChargingPools,
+                                                             TransmissionTypes           TransmissionType,
+
+                                                             DateTime?                   Timestamp,
+                                                             EventTracking_Id?           EventTrackingId,
+                                                             TimeSpan?                   RequestTimeout,
+                                                             CancellationToken           CancellationToken)
+
+
+                => Task.FromResult(
+                       AddChargingPoolsResult.NoOperation(
+                           RejectedChargingPools:  ChargingPools,
+                           AuthId:                 Id,
+                           SendPOIData:            this,
+                           EventTrackingId:        EventTrackingId
+                       )
+                   );
+
+        #endregion
+
+        #region AddOrUpdateChargingPools  (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Set the EVSE data of the given enumeration of charging pools as new static EVSE data at the OICP server.
@@ -1150,25 +1599,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingPoolDataResult>
+        Task<AddOrUpdateChargingPoolsResult>
 
-            IPushPOIData.AddOrUpdateChargingPools(IEnumerable<IChargingPool>  ChargingPools,
-                                                  TransmissionTypes           TransmissionType,
+            ISendChargingPoolData.AddOrUpdateChargingPools(IEnumerable<IChargingPool>  ChargingPools,
+                                                           TransmissionTypes           TransmissionType,
 
-                                                  DateTime?                   Timestamp,
-                                                  EventTracking_Id?           EventTrackingId,
-                                                  TimeSpan?                   RequestTimeout,
-                                                  CancellationToken           CancellationToken)
+                                                           DateTime?                   Timestamp,
+                                                           EventTracking_Id?           EventTrackingId,
+                                                           TimeSpan?                   RequestTimeout,
+                                                           CancellationToken           CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, ChargingPools));
-
-        }
+                => Task.FromResult(
+                       AddOrUpdateChargingPoolsResult.NoOperation(
+                           RejectedChargingPools:  ChargingPools,
+                           AuthId:                 Id,
+                           SendPOIData:            this,
+                           EventTrackingId:        EventTrackingId
+                       )
+                   );
 
         #endregion
 
-        #region UpdateChargingPools     (ChargingPools, TransmissionType = Enqueue, ...)
+        #region UpdateChargingPools       (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the EVSE data of the given enumeration of charging pools within the static EVSE data at the OICP server.
@@ -1180,25 +1633,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingPoolDataResult>
+        Task<UpdateChargingPoolsResult>
 
-            IPushPOIData.UpdateChargingPools(IEnumerable<IChargingPool>  ChargingPools,
-                                             TransmissionTypes           TransmissionType,
+            ISendChargingPoolData.UpdateChargingPools(IEnumerable<IChargingPool>  ChargingPools,
+                                                      TransmissionTypes           TransmissionType,
 
-                                             DateTime?                   Timestamp,
-                                             EventTracking_Id?           EventTrackingId,
-                                             TimeSpan?                   RequestTimeout,
-                                             CancellationToken           CancellationToken)
+                                                      DateTime?                   Timestamp,
+                                                      EventTracking_Id?           EventTrackingId,
+                                                      TimeSpan?                   RequestTimeout,
+                                                      CancellationToken           CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, ChargingPools));
-
-        }
+                => Task.FromResult(
+                       UpdateChargingPoolsResult.NoOperation(
+                           RejectedChargingPools:  ChargingPools,
+                           AuthId:                 Id,
+                           SendPOIData:            this,
+                           EventTrackingId:        EventTrackingId
+                       )
+                   );
 
         #endregion
 
-        #region DeleteChargingPools     (ChargingPools, TransmissionType = Enqueue, ...)
+        #region DeleteChargingPools       (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the EVSE data of the given enumeration of charging pools from the static EVSE data at the OICP server.
@@ -1210,26 +1667,30 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingPoolDataResult>
+        Task<DeleteChargingPoolsResult>
 
-            IPushPOIData.DeleteChargingPools(IEnumerable<IChargingPool>  ChargingPools,
-                                             TransmissionTypes           TransmissionType,
+            ISendChargingPoolData.DeleteChargingPools(IEnumerable<IChargingPool>  ChargingPools,
+                                                      TransmissionTypes           TransmissionType,
 
-                                             DateTime?                   Timestamp,
-                                             EventTracking_Id?           EventTrackingId,
-                                             TimeSpan?                   RequestTimeout,
-                                             CancellationToken           CancellationToken)
+                                                      DateTime?                   Timestamp,
+                                                      EventTracking_Id?           EventTrackingId,
+                                                      TimeSpan?                   RequestTimeout,
+                                                      CancellationToken           CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, ChargingPools));
-
-        }
+                => Task.FromResult(
+                       DeleteChargingPoolsResult.NoOperation(
+                           RejectedChargingPools:  ChargingPools,
+                           AuthId:                 Id,
+                           SendPOIData:            this,
+                           EventTrackingId:        EventTrackingId
+                       )
+                   );
 
         #endregion
 
 
-        #region UpdateChargingPoolAdminStatus(ChargingPoolAdminStatusUpdates, TransmissionType = Enqueue, ...)
+        #region UpdateChargingPoolAdminStatus (ChargingPoolAdminStatusUpdates,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging pool admin status updates.
@@ -1260,7 +1721,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingPoolStatus     (ChargingPoolStatusUpdates,      TransmissionType = Enqueue, ...)
+        #region UpdateChargingPoolStatus      (ChargingPoolStatusUpdates,       TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging pool status updates.
@@ -1287,16 +1748,58 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region UpdateChargingPoolEnergyStatus(ChargingPoolEnergyStatusUpdates, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging pool admin status updates.
+        /// </summary>
+        /// <param name="ChargingPoolEnergyStatusUpdates">An enumeration of charging pool admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<PushChargingPoolEnergyStatusResult>
+
+            ISendEnergyStatus.UpdateChargingPoolEnergyStatus(IEnumerable<ChargingPoolEnergyStatusUpdate>  ChargingPoolEnergyStatusUpdates,
+                                                             TransmissionTypes                            TransmissionType,
+
+                                                             DateTime?                                    Timestamp,
+                                                             EventTracking_Id?                            EventTrackingId,
+                                                             TimeSpan?                                    RequestTimeout,
+                                                             CancellationToken                            CancellationToken)
+        {
+
+            return Task.FromResult(PushChargingPoolEnergyStatusResult.OutOfService(Id,
+                                                                                   this,
+                                                                                   ChargingPoolEnergyStatusUpdates));
+
+        }
+
+        #endregion
+
         #endregion
 
         #region (Set/Add/Update/Delete) Charging station(s)...
 
-        public IncludeChargingStationIdDelegate  IncludeChargingStationIds    { get; set; }
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        public Boolean                           DisableSendChargingStationData    { get; set; }
 
-        public IncludeChargingStationDelegate    IncludeChargingStations      { get; set; }
+        /// <summary>
+        /// Only include charging station identifications matching the given delegate.
+        /// </summary>
+        public IncludeChargingStationIdDelegate  IncludeChargingStationIds         { get; }
+
+        /// <summary>
+        /// Only include charging stations matching the given delegate.
+        /// </summary>
+        public IncludeChargingStationDelegate    IncludeChargingStations           { get; }
 
 
-        #region AddChargingStation         (ChargingStation, TransmissionType = Enqueue, ...)
+        #region AddChargingStation           (ChargingStation, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the EVSE data of the given charging station to the static EVSE data at the OICP server.
@@ -1308,25 +1811,63 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingStationDataResult>
+        Task<AddChargingStationResult>
 
-            IPushPOIData.AddChargingStation(IChargingStation    ChargingStation,
-                                            TransmissionTypes   TransmissionType,
+            ISendChargingStationData.AddChargingStation(IChargingStation    ChargingStation,
+                                                        TransmissionTypes   TransmissionType,
 
-                                            DateTime?           Timestamp,
-                                            EventTracking_Id?   EventTrackingId,
-                                            TimeSpan?           RequestTimeout,
-                                            CancellationToken   CancellationToken)
+                                                        DateTime?           Timestamp,
+                                                        EventTracking_Id?   EventTrackingId,
+                                                        TimeSpan?           RequestTimeout,
+                                                        CancellationToken   CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new[] { ChargingStation }));
-
-        }
+                => Task.FromResult(
+                       AddChargingStationResult.NoOperation(
+                           ChargingStation:  ChargingStation,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
 
         #endregion
 
-        #region AddOrUpdateChargingStation (ChargingStation, TransmissionType = Enqueue, ...)
+        #region AddChargingStationIfNotExists(ChargingStation, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Add the EVSE data of the given charging station to the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<AddChargingStationResult>
+
+            ISendChargingStationData.AddChargingStationIfNotExists(IChargingStation    ChargingStation,
+                                                                   TransmissionTypes   TransmissionType,
+
+                                                                   DateTime?           Timestamp,
+                                                                   EventTracking_Id?   EventTrackingId,
+                                                                   TimeSpan?           RequestTimeout,
+                                                                   CancellationToken   CancellationToken)
+
+
+                => Task.FromResult(
+                       AddChargingStationResult.NoOperation(
+                           ChargingStation:  ChargingStation,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
+
+        #endregion
+
+        #region AddOrUpdateChargingStation   (ChargingStation, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Set the EVSE data of the given charging station as new static EVSE data at the OICP server.
@@ -1338,25 +1879,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingStationDataResult>
+        Task<AddOrUpdateChargingStationResult>
 
-            IPushPOIData.AddOrUpdateChargingStation(IChargingStation    ChargingStation,
-                                                    TransmissionTypes   TransmissionType,
+            ISendChargingStationData.AddOrUpdateChargingStation(IChargingStation    ChargingStation,
+                                                                TransmissionTypes   TransmissionType,
 
-                                                    DateTime?           Timestamp,
-                                                    EventTracking_Id?   EventTrackingId,
-                                                    TimeSpan?           RequestTimeout,
-                                                    CancellationToken   CancellationToken)
+                                                                DateTime?           Timestamp,
+                                                                EventTracking_Id?   EventTrackingId,
+                                                                TimeSpan?           RequestTimeout,
+                                                                CancellationToken   CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new[] { ChargingStation }));
-
-        }
+                => Task.FromResult(
+                       AddOrUpdateChargingStationResult.NoOperation(
+                           ChargingStation:  ChargingStation,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
 
         #endregion
 
-        #region UpdateChargingStation      (ChargingStation, PropertyName = null, OldValue = null, NewValue = null, TransmissionType = Enqueue, ...)
+        #region UpdateChargingStation        (ChargingStation, PropertyName = null, OldValue = null, NewValue = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the EVSE data of the given charging station within the static EVSE data at the OICP server.
@@ -1371,29 +1916,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingStationDataResult>
+        Task<UpdateChargingStationResult>
 
-            IPushPOIData.UpdateChargingStation(IChargingStation    ChargingStation,
-                                               String              PropertyName,
-                                               Object?             NewValue,
-                                               Object?             OldValue,
-                                               Context?            DataSource,
-                                               TransmissionTypes   TransmissionType,
+            ISendChargingStationData.UpdateChargingStation(IChargingStation    ChargingStation,
+                                                           String              PropertyName,
+                                                           Object?             NewValue,
+                                                           Object?             OldValue,
+                                                           Context?            DataSource,
+                                                           TransmissionTypes   TransmissionType,
 
-                                               DateTime?           Timestamp,
-                                               EventTracking_Id?   EventTrackingId,
-                                               TimeSpan?           RequestTimeout,
-                                               CancellationToken   CancellationToken)
+                                                           DateTime?           Timestamp,
+                                                           EventTracking_Id?   EventTrackingId,
+                                                           TimeSpan?           RequestTimeout,
+                                                           CancellationToken   CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new[] { ChargingStation }));
-
-        }
+                => Task.FromResult(
+                       UpdateChargingStationResult.NoOperation(
+                           ChargingStation:  ChargingStation,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
 
         #endregion
 
-        #region DeleteChargingStation      (ChargingStation, TransmissionType = Enqueue, ...)
+        #region DeleteChargingStation        (ChargingStation, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the EVSE data of the given charging station from the static EVSE data at the OICP server.
@@ -1405,26 +1954,30 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingStationDataResult>
+        Task<DeleteChargingStationResult>
 
-            IPushPOIData.DeleteChargingStation(IChargingStation    ChargingStation,
-                                               TransmissionTypes   TransmissionType,
+            ISendChargingStationData.DeleteChargingStation(IChargingStation    ChargingStation,
+                                                           TransmissionTypes   TransmissionType,
 
-                                               DateTime?           Timestamp,
-                                               EventTracking_Id?   EventTrackingId,
-                                               TimeSpan?           RequestTimeout,
-                                               CancellationToken   CancellationToken)
+                                                           DateTime?           Timestamp,
+                                                           EventTracking_Id?   EventTrackingId,
+                                                           TimeSpan?           RequestTimeout,
+                                                           CancellationToken   CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new[] { ChargingStation }));
-
-        }
+                => Task.FromResult(
+                       DeleteChargingStationResult.NoOperation(
+                           ChargingStation:  ChargingStation,
+                           EventTrackingId:  EventTrackingId,
+                           AuthId:           Id,
+                           SendPOIData:      this
+                       )
+                   );
 
         #endregion
 
 
-        #region AddChargingStations        (ChargingStations, TransmissionType = Enqueue, ...)
+        #region AddChargingStations          (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the EVSE data of the given enumeration of charging stations to the static EVSE data at the OICP server.
@@ -1436,26 +1989,65 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingStationDataResult>
+        Task<AddChargingStationsResult>
 
-            IPushPOIData.AddChargingStations(IEnumerable<IChargingStation>  ChargingStations,
-                                             TransmissionTypes              TransmissionType,
+            ISendChargingStationData.AddChargingStations(IEnumerable<IChargingStation>  ChargingStations,
+                                                         TransmissionTypes              TransmissionType,
 
 
-                                             DateTime?                      Timestamp,
-                                             EventTracking_Id?              EventTrackingId,
-                                             TimeSpan?                      RequestTimeout,
-                                             CancellationToken              CancellationToken)
+                                                         DateTime?                      Timestamp,
+                                                         EventTracking_Id?              EventTrackingId,
+                                                         TimeSpan?                      RequestTimeout,
+                                                         CancellationToken              CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
-
-        }
+                => Task.FromResult(
+                       AddChargingStationsResult.NoOperation(
+                           RejectedChargingStations:  ChargingStations,
+                           AuthId:                    Id,
+                           SendPOIData:               this,
+                           EventTrackingId:           EventTrackingId
+                       )
+                   );
 
         #endregion
 
-        #region AddOrUpdateChargingStations(ChargingStations, TransmissionType = Enqueue, ...)
+        #region AddChargingStationsIfNotExist(ChargingStations, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Add the EVSE data of the given enumeration of charging stations to the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<AddChargingStationsResult>
+
+            ISendChargingStationData.AddChargingStationsIfNotExist(IEnumerable<IChargingStation>  ChargingStations,
+                                                                   TransmissionTypes              TransmissionType,
+
+
+                                                                   DateTime?                      Timestamp,
+                                                                   EventTracking_Id?              EventTrackingId,
+                                                                   TimeSpan?                      RequestTimeout,
+                                                                   CancellationToken              CancellationToken)
+
+
+                => Task.FromResult(
+                       AddChargingStationsResult.NoOperation(
+                           RejectedChargingStations:  ChargingStations,
+                           AuthId:                    Id,
+                           SendPOIData:               this,
+                           EventTrackingId:           EventTrackingId
+                       )
+                   );
+
+        #endregion
+
+        #region AddOrUpdateChargingStations  (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Set the EVSE data of the given enumeration of charging stations as new static EVSE data at the OICP server.
@@ -1467,25 +2059,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingStationDataResult>
+        Task<AddOrUpdateChargingStationsResult>
 
-            IPushPOIData.AddOrUpdateChargingStations(IEnumerable<IChargingStation>  ChargingStations,
-                                                     TransmissionTypes              TransmissionType,
+            ISendChargingStationData.AddOrUpdateChargingStations(IEnumerable<IChargingStation>  ChargingStations,
+                                                                 TransmissionTypes              TransmissionType,
 
-                                                     DateTime?                      Timestamp,
-                                                     EventTracking_Id?              EventTrackingId,
-                                                     TimeSpan?                      RequestTimeout,
-                                                     CancellationToken              CancellationToken)
+                                                                 DateTime?                      Timestamp,
+                                                                 EventTracking_Id?              EventTrackingId,
+                                                                 TimeSpan?                      RequestTimeout,
+                                                                 CancellationToken              CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
-
-        }
+                => Task.FromResult(
+                       AddOrUpdateChargingStationsResult.NoOperation(
+                           RejectedChargingStations:  ChargingStations,
+                           AuthId:                    Id,
+                           SendPOIData:               this,
+                           EventTrackingId:           EventTrackingId
+                       )
+                   );
 
         #endregion
 
-        #region UpdateChargingStations     (ChargingStations, TransmissionType = Enqueue, ...)
+        #region UpdateChargingStations       (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the EVSE data of the given enumeration of charging stations within the static EVSE data at the OICP server.
@@ -1497,25 +2093,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingStationDataResult>
+        Task<UpdateChargingStationsResult>
 
-            IPushPOIData.UpdateChargingStations(IEnumerable<IChargingStation>  ChargingStations,
-                                                TransmissionTypes              TransmissionType,
+            ISendChargingStationData.UpdateChargingStations(IEnumerable<IChargingStation>  ChargingStations,
+                                                            TransmissionTypes              TransmissionType,
 
-                                                DateTime?                      Timestamp,
-                                                EventTracking_Id?              EventTrackingId,
-                                                TimeSpan?                      RequestTimeout,
-                                                CancellationToken              CancellationToken)
+                                                            DateTime?                      Timestamp,
+                                                            EventTracking_Id?              EventTrackingId,
+                                                            TimeSpan?                      RequestTimeout,
+                                                            CancellationToken              CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
-
-        }
+                => Task.FromResult(
+                       UpdateChargingStationsResult.NoOperation(
+                           RejectedChargingStations:  ChargingStations,
+                           AuthId:                    Id,
+                           SendPOIData:               this,
+                           EventTrackingId:           EventTrackingId
+                       )
+                   );
 
         #endregion
 
-        #region DeleteChargingStations     (ChargingStations, TransmissionType = Enqueue, ...)
+        #region DeleteChargingStations       (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the EVSE data of the given enumeration of charging stations from the static EVSE data at the OICP server.
@@ -1527,26 +2127,30 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        Task<PushChargingStationDataResult>
+        Task<DeleteChargingStationsResult>
 
-            IPushPOIData.DeleteChargingStations(IEnumerable<IChargingStation>  ChargingStations,
-                                                TransmissionTypes              TransmissionType,
+            ISendChargingStationData.DeleteChargingStations(IEnumerable<IChargingStation>  ChargingStations,
+                                                            TransmissionTypes              TransmissionType,
 
-                                                DateTime?                      Timestamp,
-                                                EventTracking_Id?              EventTrackingId,
-                                                TimeSpan?                      RequestTimeout,
-                                                CancellationToken              CancellationToken)
+                                                            DateTime?                      Timestamp,
+                                                            EventTracking_Id?              EventTrackingId,
+                                                            TimeSpan?                      RequestTimeout,
+                                                            CancellationToken              CancellationToken)
 
-        {
 
-            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
-
-        }
+                => Task.FromResult(
+                       DeleteChargingStationsResult.NoOperation(
+                           RejectedChargingStations:  ChargingStations,
+                           AuthId:                    Id,
+                           SendPOIData:               this,
+                           EventTrackingId:           EventTrackingId
+                       )
+                   );
 
         #endregion
 
 
-        #region UpdateChargingStationAdminStatus(ChargingStationAdminStatusUpdates, TransmissionType = Enqueue, ...)
+        #region UpdateChargingStationAdminStatus (ChargingStationAdminStatusUpdates,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station admin status updates.
@@ -1579,7 +2183,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingStationStatus     (ChargingStationStatusUpdates,      TransmissionType = Enqueue, ...)
+        #region UpdateChargingStationStatus      (ChargingStationStatusUpdates,       TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station status updates.
@@ -1606,13 +2210,57 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region UpdateChargingStationEnergyStatus(ChargingStationEnergyStatusUpdates, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging station admin status updates.
+        /// </summary>
+        /// <param name="ChargingStationEnergyStatusUpdates">An enumeration of charging station admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the charging station admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<PushChargingStationEnergyStatusResult>
+
+            ISendEnergyStatus.UpdateChargingStationEnergyStatus(IEnumerable<ChargingStationEnergyStatusUpdate>  ChargingStationEnergyStatusUpdates,
+                                                               TransmissionTypes                                TransmissionType,
+
+                                                               DateTime?                                        Timestamp,
+                                                               EventTracking_Id?                                EventTrackingId,
+                                                               TimeSpan?                                        RequestTimeout,
+                                                               CancellationToken                                CancellationToken)
+
+
+        {
+
+            return Task.FromResult(PushChargingStationEnergyStatusResult.OutOfService(Id,
+                                                                                      this,
+                                                                                      ChargingStationEnergyStatusUpdates));
+
+        }
+
+        #endregion
+
         #endregion
 
         #region (Set/Add/Update/Delete) EVSE(s)...
 
-        public IncludeEVSEIdDelegate  IncludeEVSEIds    { get; set; }
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        public Boolean                DisableSendEVSEData    { get; set; }
 
-        public IncludeEVSEDelegate    IncludeEVSEs      { get; set; }
+        /// <summary>
+        /// Only include EVSE identifications matching the given delegate.
+        /// </summary>
+        public IncludeEVSEIdDelegate  IncludeEVSEIds         { get; }
+
+        /// <summary>
+        /// Only include EVSEs matching the given delegate.
+        /// </summary>
+        public IncludeEVSEDelegate    IncludeEVSEs           { get; }
 
 
         #region AddEVSE           (EVSE,  TransmissionType = Enqueue, ...)
@@ -1627,7 +2275,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public virtual Task<PushEVSEDataResult>
+        public virtual Task<AddEVSEResult>
 
             AddEVSE(IEVSE              EVSE,
                     TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
@@ -1639,13 +2287,11 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 => Task.FromResult(
-                       PushEVSEDataResult.NoOperation(
-                           AuthId:         Id,
-                           SendPOIData:    this,
-                           RejectedEVSEs:  Array.Empty<IEVSE>(),
-                           Description:    null,
-                           Warnings:       null,
-                           Runtime:        null
+                       AddEVSEResult.NoOperation(
+                           EVSE:             EVSE,
+                           EventTrackingId:  EventTracking_Id.New,
+                           AuthId:           Id,
+                           SendPOIData:      this
                        )
                    );
 
@@ -1663,7 +2309,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public virtual Task<PushEVSEDataResult>
+        public virtual Task<AddEVSEResult>
 
             AddEVSEIfNotExists(IEVSE              EVSE,
                                TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
@@ -1675,13 +2321,11 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 => Task.FromResult(
-                       PushEVSEDataResult.NoOperation(
-                           AuthId:         Id,
-                           SendPOIData:    this,
-                           RejectedEVSEs:  Array.Empty<IEVSE>(),
-                           Description:    null,
-                           Warnings:       null,
-                           Runtime:        null
+                       AddEVSEResult.NoOperation(
+                           EVSE:             EVSE,
+                           EventTrackingId:  EventTracking_Id.New,
+                           AuthId:           Id,
+                           SendPOIData:      this
                        )
                    );
 
@@ -1699,7 +2343,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public virtual Task<PushEVSEDataResult>
+        public virtual Task<AddOrUpdateEVSEResult>
 
             AddOrUpdateEVSE(IEVSE              EVSE,
                             TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
@@ -1711,13 +2355,11 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 => Task.FromResult(
-                       PushEVSEDataResult.NoOperation(
-                           AuthId:         Id,
-                           SendPOIData:    this,
-                           RejectedEVSEs:  Array.Empty<IEVSE>(),
-                           Description:    null,
-                           Warnings:       null,
-                           Runtime:        null
+                       AddOrUpdateEVSEResult.NoOperation(
+                           EVSE:             EVSE,
+                           EventTrackingId:  EventTracking_Id.New,
+                           AuthId:           Id,
+                           SendPOIData:      this
                        )
                    );
 
@@ -1739,7 +2381,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public virtual Task<PushEVSEDataResult>
+        public virtual Task<UpdateEVSEResult>
 
             UpdateEVSE(IEVSE              EVSE,
                        String             PropertyName,
@@ -1755,13 +2397,11 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 => Task.FromResult(
-                       PushEVSEDataResult.NoOperation(
-                           AuthId:         Id,
-                           SendPOIData:    this,
-                           RejectedEVSEs:  Array.Empty<IEVSE>(),
-                           Description:    null,
-                           Warnings:       null,
-                           Runtime:        null
+                       UpdateEVSEResult.NoOperation(
+                           EVSE:             EVSE,
+                           EventTrackingId:  EventTracking_Id.New,
+                           AuthId:           Id,
+                           SendPOIData:      this
                        )
                    );
 
@@ -1779,7 +2419,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public virtual Task<PushEVSEDataResult>
+        public virtual Task<DeleteEVSEResult>
 
             DeleteEVSE(IEVSE              EVSE,
                        TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
@@ -1791,13 +2431,11 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 => Task.FromResult(
-                       PushEVSEDataResult.NoOperation(
-                           AuthId:         Id,
-                           SendPOIData:    this,
-                           RejectedEVSEs:  Array.Empty<IEVSE>(),
-                           Description:    null,
-                           Warnings:       null,
-                           Runtime:        null
+                       DeleteEVSEResult.NoOperation(
+                           EVSE:             EVSE,
+                           EventTrackingId:  EventTracking_Id.New,
+                           AuthId:           Id,
+                           SendPOIData:      this
                        )
                    );
 
@@ -1816,7 +2454,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public virtual Task<PushEVSEDataResult>
+        public virtual Task<AddEVSEsResult>
 
             AddEVSEs(IEnumerable<IEVSE>  EVSEs,
                      TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
@@ -1828,13 +2466,11 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 => Task.FromResult(
-                       PushEVSEDataResult.NoOperation(
-                           AuthId:         Id,
-                           SendPOIData:    this,
-                           RejectedEVSEs:  Array.Empty<IEVSE>(),
-                           Description:    null,
-                           Warnings:       null,
-                           Runtime:        null
+                       AddEVSEsResult.NoOperation(
+                           RejectedEVSEs:    EVSEs,
+                           AuthId:           Id,
+                           SendPOIData:      this,
+                           EventTrackingId:  EventTrackingId
                        )
                    );
 
@@ -1852,7 +2488,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public virtual Task<PushEVSEDataResult>
+        public virtual Task<AddEVSEsResult>
 
             AddEVSEsIfNotExist(IEnumerable<IEVSE>  EVSEs,
                                TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
@@ -1864,13 +2500,11 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 => Task.FromResult(
-                       PushEVSEDataResult.NoOperation(
-                           AuthId:         Id,
-                           SendPOIData:    this,
-                           RejectedEVSEs:  Array.Empty<IEVSE>(),
-                           Description:    null,
-                           Warnings:       null,
-                           Runtime:        null
+                       AddEVSEsResult.NoOperation(
+                           RejectedEVSEs:    EVSEs,
+                           AuthId:           Id,
+                           SendPOIData:      this,
+                           EventTrackingId:  EventTrackingId
                        )
                    );
 
@@ -1888,7 +2522,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public virtual Task<PushEVSEDataResult>
+        public virtual Task<AddOrUpdateEVSEsResult>
 
             AddOrUpdateEVSEs(IEnumerable<IEVSE>  EVSEs,
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
@@ -1900,13 +2534,11 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 => Task.FromResult(
-                       PushEVSEDataResult.NoOperation(
-                           AuthId:         Id,
-                           SendPOIData:    this,
-                           RejectedEVSEs:  Array.Empty<IEVSE>(),
-                           Description:    null,
-                           Warnings:       null,
-                           Runtime:        null
+                       AddOrUpdateEVSEsResult.NoOperation(
+                           RejectedEVSEs:    EVSEs,
+                           AuthId:           Id,
+                           SendPOIData:      this,
+                           EventTrackingId:  EventTrackingId
                        )
                    );
 
@@ -1924,7 +2556,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public virtual Task<PushEVSEDataResult>
+        public virtual Task<UpdateEVSEsResult>
 
             UpdateEVSEs(IEnumerable<IEVSE>  EVSEs,
                         TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
@@ -1936,13 +2568,11 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 => Task.FromResult(
-                       PushEVSEDataResult.NoOperation(
-                           AuthId:         Id,
-                           SendPOIData:    this,
-                           RejectedEVSEs:  Array.Empty<IEVSE>(),
-                           Description:    null,
-                           Warnings:       null,
-                           Runtime:        null
+                       UpdateEVSEsResult.NoOperation(
+                           RejectedEVSEs:    EVSEs,
+                           AuthId:           Id,
+                           SendPOIData:      this,
+                           EventTrackingId:  EventTrackingId
                        )
                    );
 
@@ -1960,7 +2590,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public virtual Task<PushEVSEDataResult>
+        public virtual Task<DeleteEVSEsResult>
 
             DeleteEVSEs(IEnumerable<IEVSE>  EVSEs,
                         TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
@@ -1972,20 +2602,18 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 => Task.FromResult(
-                       PushEVSEDataResult.NoOperation(
-                           AuthId:         Id,
-                           SendPOIData:    this,
-                           RejectedEVSEs:  Array.Empty<IEVSE>(),
-                           Description:    null,
-                           Warnings:       null,
-                           Runtime:        null
+                       DeleteEVSEsResult.NoOperation(
+                           RejectedEVSEs:    EVSEs,
+                           AuthId:           Id,
+                           SendPOIData:      this,
+                           EventTrackingId:  EventTrackingId
                        )
                    );
 
         #endregion
 
 
-        #region UpdateEVSEAdminStatus(EVSEAdminStatusUpdates, TransmissionType = Enqueue, ...)
+        #region UpdateEVSEAdminStatus (EVSEAdminStatusUpdates,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of EVSE admin status updates.
@@ -2018,7 +2646,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateEVSEStatus     (EVSEStatusUpdates,      TransmissionType = Enqueue, ...)
+        #region UpdateEVSEStatus      (EVSEStatusUpdates,       TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of EVSE status updates.
@@ -2036,7 +2664,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          TransmissionTypes              TransmissionType,
 
                                          DateTime?                      Timestamp,
-                                         EventTracking_Id               EventTrackingId,
+                                         EventTracking_Id?              EventTrackingId,
                                          TimeSpan?                      RequestTimeout,
                                          CancellationToken              CancellationToken)
 
@@ -2055,6 +2683,39 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region UpdateEVSEEnergyStatus(EVSEEnergyStatusUpdates, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Update the given enumeration of EVSE admin status updates.
+        /// </summary>
+        /// <param name="EVSEEnergyStatusUpdates">An enumeration of EVSE admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<PushEVSEEnergyStatusResult>
+
+            ISendEnergyStatus.UpdateEVSEEnergyStatus(IEnumerable<EVSEEnergyStatusUpdate>  EVSEEnergyStatusUpdates,
+                                                     TransmissionTypes                    TransmissionType,
+
+                                                     DateTime?                            Timestamp,
+                                                     EventTracking_Id?                    EventTrackingId,
+                                                     TimeSpan?                            RequestTimeout,
+                                                     CancellationToken                    CancellationToken)
+
+
+        {
+
+            return Task.FromResult(PushEVSEEnergyStatusResult.OutOfService(Id,
+                                                                           this,
+                                                                           EVSEEnergyStatusUpdates));
+
+        }
+
+        #endregion
+
         #endregion
 
         #endregion
@@ -2064,87 +2725,80 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EnqueueEVSEStatusUpdate(EVSE, OldStatus, NewStatus)
 
-        /// <summary>
-        /// Enqueue the given EVSE status for a delayed upload.
-        /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        /// <param name="OldStatus">The old status of the EVSE.</param>
-        /// <param name="NewStatus">The new status of the EVSE.</param>
-        public Task<PushEVSEDataResult>
+        ///// <summary>
+        ///// Enqueue the given EVSE status for a delayed upload.
+        ///// </summary>
+        ///// <param name="EVSE">An EVSE.</param>
+        ///// <param name="OldStatus">The old status of the EVSE.</param>
+        ///// <param name="NewStatus">The new status of the EVSE.</param>
+        //public Task<PushEVSEStatusResult>
 
-            EnqueueEVSEStatusUpdate(EVSE                         EVSE,
-                                    Timestamped<EVSEStatusTypes>  OldStatus,
-                                    Timestamped<EVSEStatusTypes>  NewStatus)
+        //    EnqueueEVSEStatusUpdate(EVSE                          EVSE,
+        //                            Timestamped<EVSEStatusTypes>  OldStatus,
+        //                            Timestamped<EVSEStatusTypes>  NewStatus)
 
-        {
+        //{
 
-            #region Initial checks
+        //    return Task.FromResult(PushEVSEStatusResult.NoOperation(Id, this, null));
 
-            if (EVSE == null)
-                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
-
-        }
+        //}
 
         #endregion
 
 
         #region EnqueueChargingPoolDataUpdate(ChargingPool, PropertyName, OldValue, NewValue)
 
-        /// <summary>
-        /// Enqueue the given EVSE data for a delayed upload.
-        /// </summary>
-        /// <param name="ChargingPool">A charging station.</param>
-        public Task<PushEVSEDataResult>
+        ///// <summary>
+        ///// Enqueue the given EVSE data for a delayed upload.
+        ///// </summary>
+        ///// <param name="ChargingPool">A charging station.</param>
+        //public Task<PushEVSEDataResult>
 
-            EnqueueChargingPoolDataUpdate(ChargingPool  ChargingPool,
-                                          String        PropertyName,
-                                          Object        OldValue,
-                                          Object        NewValue)
+        //    EnqueueChargingPoolDataUpdate(ChargingPool  ChargingPool,
+        //                                  String        PropertyName,
+        //                                  Object        OldValue,
+        //                                  Object        NewValue)
 
-        {
+        //{
 
-            #region Initial checks
+        //    #region Initial checks
 
-            if (ChargingPool == null)
-                throw new ArgumentNullException(nameof(ChargingPool), "The given charging station must not be null!");
+        //    if (ChargingPool == null)
+        //        throw new ArgumentNullException(nameof(ChargingPool), "The given charging station must not be null!");
 
-            #endregion
+        //    #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+        //    return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
-        }
+        //}
 
         #endregion
 
         #region EnqueueChargingStationDataUpdate(ChargingStation, PropertyName, OldValue, NewValue)
 
-        /// <summary>
-        /// Enqueue the given EVSE data for a delayed upload.
-        /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        public Task<PushEVSEDataResult>
+        ///// <summary>
+        ///// Enqueue the given EVSE data for a delayed upload.
+        ///// </summary>
+        ///// <param name="ChargingStation">A charging station.</param>
+        //public Task<PushEVSEDataResult>
 
-            EnqueueChargingStationDataUpdate(ChargingStation  ChargingStation,
-                                             String           PropertyName,
-                                             Object           OldValue,
-                                             Object           NewValue)
+        //    EnqueueChargingStationDataUpdate(ChargingStation  ChargingStation,
+        //                                     String           PropertyName,
+        //                                     Object           OldValue,
+        //                                     Object           NewValue)
 
-        {
+        //{
 
-            #region Initial checks
+        //    #region Initial checks
 
-            if (ChargingStation == null)
-                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
+        //    if (ChargingStation == null)
+        //        throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
 
-            #endregion
+        //    #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+        //    return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
-        }
+        //}
 
         #endregion
 
@@ -2376,36 +3030,6 @@ namespace cloud.charging.open.protocols.WWCP
         public override String ToString()
 
             => "Smart City " + Id;
-
-        public Task<PushEVSEDataResult> UpdateStaticData(ChargingStation ChargingStation, string PropertyName = null, object OldValue = null, object NewValue = null, TransmissionTypes TransmissionType = TransmissionTypes.Enqueue, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PushEVSEDataResult> UpdateStaticData(ChargingPool ChargingPool, string PropertyName = null, object OldValue = null, object NewValue = null, TransmissionTypes TransmissionType = TransmissionTypes.Enqueue, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PushEVSEDataResult> SetStaticData(ChargingStation ChargingStation, TransmissionTypes TransmissionType = TransmissionTypes.Enqueue, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PushEVSEDataResult> AddStaticData(ChargingStation ChargingStation, TransmissionTypes TransmissionType = TransmissionTypes.Enqueue, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PushEVSEDataResult> SetStaticData(ChargingPool ChargingPool, TransmissionTypes TransmissionType = TransmissionTypes.Enqueue, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PushEVSEDataResult> AddStaticData(ChargingPool ChargingPool, TransmissionTypes TransmissionType = TransmissionTypes.Enqueue, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
 
         #endregion
 

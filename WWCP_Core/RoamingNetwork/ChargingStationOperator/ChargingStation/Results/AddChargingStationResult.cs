@@ -29,24 +29,35 @@ namespace cloud.charging.open.protocols.WWCP
     public class AddChargingStationResult : AEnitityResult<IChargingStation, ChargingStation_Id>
     {
 
-        public IChargingStation? ChargingStation
+        #region Properties
+
+        public IChargingStation?  ChargingStation
             => Object;
 
-        public IChargingPool?    ChargingPool    { get; internal set; }
+        public IChargingPool?     ChargingPool    { get; internal set; }
 
+        #endregion
 
-        public AddChargingStationResult(IChargingStation  ChargingStation,
-                                        EventTracking_Id  EventTrackingId,
-                                        Boolean           IsSuccess,
-                                        String?           Argument           = null,
-                                        I18NString?       ErrorDescription   = null,
-                                        IChargingPool?    ChargingPool       = null)
+        #region Constructor(s)
+
+        public AddChargingStationResult(IChargingStation       ChargingStation,
+                                        PushDataResultTypes    Result,
+                                        EventTracking_Id?      EventTrackingId   = null,
+                                        IId?                   AuthId            = null,
+                                        Object?                SendPOIData       = null,
+                                        IChargingPool?         ChargingPool      = null,
+                                        I18NString?            Description       = null,
+                                        IEnumerable<Warning>?  Warnings          = null,
+                                        TimeSpan?              Runtime           = null)
 
             : base(ChargingStation,
+                   Result,
                    EventTrackingId,
-                   IsSuccess,
-                   Argument,
-                   ErrorDescription)
+                   AuthId,
+                   SendPOIData,
+                   Description,
+                   Warnings,
+                   Runtime)
 
         {
 
@@ -54,102 +65,34 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-
-        public static AddChargingStationResult Success(IChargingStation  ChargingStation,
-                                                       EventTracking_Id  EventTrackingId,
-                                                       IChargingPool?    ChargingPool   = null)
-
-            => new (ChargingStation,
-                    EventTrackingId,
-                    true,
-                    null,
-                    null,
-                    ChargingPool);
+        #endregion
 
 
-        public static AddChargingStationResult ArgumentError(IChargingStation  ChargingStation,
-                                                             EventTracking_Id  EventTrackingId,
-                                                             String            Argument,
-                                                             String            Description)
+        #region (static) NoOperation
 
-            => new (ChargingStation,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ));
+        public static AddChargingStationResult
 
-        public static AddChargingStationResult ArgumentError(IChargingStation  ChargingStation,
-                                                             EventTracking_Id  EventTrackingId,
-                                                             String            Argument,
-                                                             I18NString        Description)
+            NoOperation(IChargingStation       ChargingStation,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   AuthId            = null,
+                        Object?                SendPOIData       = null,
+                        IChargingPool?         ChargingPool      = null,
+                        I18NString?            Description       = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
 
-            => new (ChargingStation,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    Description);
+                => new (ChargingStation,
+                        PushDataResultTypes.NoOperation,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        Description,
+                        Warnings,
+                        Runtime);
 
+        #endregion
 
-        public static AddChargingStationResult NoOperation(IChargingStation  ChargingStation,
-                                                           EventTracking_Id  EventTrackingId,
-                                                           String            Description,
-                                                           IChargingPool?    ChargingPool   = null)
-
-            => new (ChargingStation,
-                    EventTrackingId,
-                    true,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ),
-                    ChargingPool);
-
-
-        public static AddChargingStationResult Failed(IChargingStation  ChargingStation,
-                                                      EventTracking_Id  EventTrackingId,
-                                                      String            Description,
-                                                      IChargingPool?    ChargingPool   = null)
-
-            => new (ChargingStation,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ),
-                    ChargingPool);
-
-        public static AddChargingStationResult Failed(IChargingStation  ChargingStation,
-                                                      EventTracking_Id  EventTrackingId,
-                                                      I18NString        Description,
-                                                      IChargingPool?    ChargingPool   = null)
-
-            => new (ChargingStation,
-                    EventTrackingId,
-                    false,
-                    null,
-                    Description,
-                    ChargingPool);
-
-        public static AddChargingStationResult Failed(IChargingStation  ChargingStation,
-                                                      EventTracking_Id  EventTrackingId,
-                                                      Exception         Exception,
-                                                      IChargingPool?    ChargingPool   = null)
-
-            => new (ChargingStation,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Exception.Message
-                    ),
-                    ChargingPool);
 
     }
 

@@ -885,7 +885,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SkipRemovedNotifications">Whether to skip sending the 'OnRemoved' event.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        Task<RemoveChargingPoolResult> RemoveChargingPool(ChargingPool_Id                                      Id,
+        Task<DeleteChargingPoolResult> RemoveChargingPool(ChargingPool_Id                                      Id,
 
                                                           Action<IChargingPool,            EventTracking_Id>?  OnSuccess                  = null,
                                                           Action<IChargingStationOperator, EventTracking_Id>?  OnError                    = null,

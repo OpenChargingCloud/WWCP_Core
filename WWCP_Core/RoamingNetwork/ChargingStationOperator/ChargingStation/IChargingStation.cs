@@ -1094,7 +1094,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SkipRemovedNotifications">Whether to skip sending the 'OnRemoved' event.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        Task<RemoveEVSEResult> RemoveEVSE(EVSE_Id                                             Id,
+        Task<DeleteEVSEResult> RemoveEVSE(EVSE_Id                                             Id,
 
                                           Action<IEVSE,                   EventTracking_Id>?  OnSuccess                  = null,
                                           Action<IChargingStation, IEVSE, EventTracking_Id>?  OnError                    = null,

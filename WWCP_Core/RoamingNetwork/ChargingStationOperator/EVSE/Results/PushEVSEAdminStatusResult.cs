@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEAdminStatusResult
 
             NoOperation(IId                   AuthId,
-                        ISendAdminStatus           ISendAdminStatus,
+                        ISendAdminStatus      ISendAdminStatus,
                         String                Description    = null,
                         IEnumerable<Warning>  Warnings       = null,
                         TimeSpan?             Runtime        = null)

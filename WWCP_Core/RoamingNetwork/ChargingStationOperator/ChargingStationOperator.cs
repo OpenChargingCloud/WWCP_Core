@@ -1358,7 +1358,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SkipRemovedNotifications">Whether to skip sending the 'OnRemoved' event.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public async Task<RemoveChargingPoolResult> RemoveChargingPool(ChargingPool_Id                                      ChargingPoolId,
+        public async Task<DeleteChargingPoolResult> RemoveChargingPool(ChargingPool_Id                                      ChargingPoolId,
 
                                                                        Action<IChargingPool,            EventTracking_Id>?  OnRemoveSuccess                = null,
                                                                        Action<IChargingStationOperator, EventTracking_Id>?  OnError                        = null,
@@ -1377,7 +1377,7 @@ namespace cloud.charging.open.protocols.WWCP
                 chargingPool is not null)
             {
 
-                return RemoveChargingPoolResult.Success(
+                return DeleteChargingPoolResult.Success(
                            chargingPool,
                            EventTrackingId,
                            this
@@ -1385,7 +1385,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            return RemoveChargingPoolResult.Failed(ChargingPoolId,
+            return DeleteChargingPoolResult.Failed(ChargingPoolId,
                                                    EventTrackingId,
                                                    "");
 

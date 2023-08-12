@@ -29,24 +29,35 @@ namespace cloud.charging.open.protocols.WWCP
     public class AddEVSEResult : AEnitityResult<IEVSE, EVSE_Id>
     {
 
-        public IEVSE? EVSE
+        #region Properties
+
+        public IEVSE?             EVSE
             => Object;
 
         public IChargingStation?  ChargingStation    { get; internal set; }
 
+        #endregion
 
-        public AddEVSEResult(IEVSE              EVSE,
-                             EventTracking_Id   EventTrackingId,
-                             Boolean            IsSuccess,
-                             String?            Argument           = null,
-                             I18NString?        ErrorDescription   = null,
-                             IChargingStation?  ChargingStation    = null)
+        #region Constructor(s)
+
+        public AddEVSEResult(IEVSE                  EVSE,
+                             PushDataResultTypes    Result,
+                             EventTracking_Id?      EventTrackingId   = null,
+                             IId?                   AuthId            = null,
+                             Object?                SendPOIData       = null,
+                             IChargingStation?      ChargingStation   = null,
+                             I18NString?            Description       = null,
+                             IEnumerable<Warning>?  Warnings          = null,
+                             TimeSpan?              Runtime           = null)
 
             : base(EVSE,
+                   Result,
                    EventTrackingId,
-                   IsSuccess,
-                   Argument,
-                   ErrorDescription)
+                   AuthId,
+                   SendPOIData,
+                   Description,
+                   Warnings,
+                   Runtime)
 
         {
 
@@ -54,102 +65,288 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-
-        public static AddEVSEResult Success(IEVSE              EVSE,
-                                            EventTracking_Id   EventTrackingId,
-                                            IChargingStation?  ChargingStation   = null)
-
-            => new (EVSE,
-                    EventTrackingId,
-                    true,
-                    null,
-                    null,
-                    ChargingStation);
+        #endregion
 
 
-        public static AddEVSEResult ArgumentError(IEVSE             EVSE,
-                                                  EventTracking_Id  EventTrackingId,
-                                                  String            Argument,
-                                                  String            Description)
+        //public static AddEVSEResult Success(IEVSE              EVSE,
+        //                                    EventTracking_Id   EventTrackingId,
+        //                                    IChargingStation?  ChargingStation   = null)
 
-            => new (EVSE,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ));
-
-        public static AddEVSEResult ArgumentError(IEVSE             EVSE,
-                                                  EventTracking_Id  EventTrackingId,
-                                                  String            Argument,
-                                                  I18NString        Description)
-
-            => new (EVSE,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    Description);
+        //    => new (EVSE,
+        //            EventTrackingId,
+        //            true,
+        //            null,
+        //            null,
+        //            ChargingStation);
 
 
-        public static AddEVSEResult NoOperation(IEVSE              EVSE,
-                                                EventTracking_Id   EventTrackingId,
-                                                String             Description,
-                                                IChargingStation?  ChargingStation   = null)
+        //public static AddEVSEResult ArgumentError(IEVSE             EVSE,
+        //                                          EventTracking_Id  EventTrackingId,
+        //                                          String            Argument,
+        //                                          String            Description)
 
-            => new (EVSE,
-                    EventTrackingId,
-                    true,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ),
-                    ChargingStation);
+        //    => new (EVSE,
+        //            EventTrackingId,
+        //            false,
+        //            Argument,
+        //            I18NString.Create(
+        //                Languages.en,
+        //                Description
+        //            ));
+
+        //public static AddEVSEResult ArgumentError(IEVSE             EVSE,
+        //                                          EventTracking_Id  EventTrackingId,
+        //                                          String            Argument,
+        //                                          I18NString        Description)
+
+        //    => new (EVSE,
+        //            EventTrackingId,
+        //            false,
+        //            Argument,
+        //            Description);
 
 
-        public static AddEVSEResult Failed(IEVSE              EVSE,
-                                           EventTracking_Id   EventTrackingId,
-                                           String             Description,
-                                           IChargingStation?  ChargingStation   = null)
+        //public static AddEVSEResult NoOperation(IEVSE              EVSE,
+        //                                        EventTracking_Id   EventTrackingId,
+        //                                        String             Description,
+        //                                        IChargingStation?  ChargingStation   = null)
 
-            => new (EVSE,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ),
-                    ChargingStation);
+        //    => new (EVSE,
+        //            EventTrackingId,
+        //            true,
+        //            null,
+        //            I18NString.Create(
+        //                Languages.en,
+        //                Description
+        //            ),
+        //            ChargingStation);
 
-        public static AddEVSEResult Failed(IEVSE              EVSE,
-                                           EventTracking_Id   EventTrackingId,
-                                           I18NString         Description,
-                                           IChargingStation?  ChargingStation   = null)
 
-            => new (EVSE,
-                    EventTrackingId,
-                    false,
-                    null,
-                    Description,
-                    ChargingStation);
+        //public static AddEVSEResult Failed(IEVSE              EVSE,
+        //                                   EventTracking_Id   EventTrackingId,
+        //                                   String             Description,
+        //                                   IChargingStation?  ChargingStation   = null)
 
-        public static AddEVSEResult Failed(IEVSE              EVSE,
-                                           EventTracking_Id   EventTrackingId,
-                                           Exception          Exception,
-                                           IChargingStation?  ChargingStation   = null)
+        //    => new (EVSE,
+        //            EventTrackingId,
+        //            false,
+        //            null,
+        //            I18NString.Create(
+        //                Languages.en,
+        //                Description
+        //            ),
+        //            ChargingStation);
 
-            => new (EVSE,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Exception.Message
-                    ),
-                    ChargingStation);
+        //public static AddEVSEResult Failed(IEVSE              EVSE,
+        //                                   EventTracking_Id   EventTrackingId,
+        //                                   I18NString         Description,
+        //                                   IChargingStation?  ChargingStation   = null)
+
+        //    => new (EVSE,
+        //            EventTrackingId,
+        //            false,
+        //            null,
+        //            Description,
+        //            ChargingStation);
+
+        //public static AddEVSEResult Failed(IEVSE              EVSE,
+        //                                   EventTracking_Id   EventTrackingId,
+        //                                   Exception          Exception,
+        //                                   IChargingStation?  ChargingStation   = null)
+
+        //    => new (EVSE,
+        //            EventTrackingId,
+        //            false,
+        //            null,
+        //            I18NString.Create(
+        //                Languages.en,
+        //                Exception.Message
+        //            ),
+        //            ChargingStation);
+
+
+        #region (static) NoOperation
+
+        public static AddEVSEResult
+
+            NoOperation(IEVSE                  EVSE,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   AuthId            = null,
+                        Object?                SendPOIData       = null,
+                        IChargingStation?      ChargingStation   = null,
+                        I18NString?            Description       = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.NoOperation,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) ArgumentError(...)
+
+        public static AddEVSEResult
+
+            ArgumentError(IEVSE                  EVSE,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   AuthId            = null,
+                          Object?                SendPOIData       = null,
+                          IChargingStation?      ChargingStation   = null,
+                          I18NString?            Description       = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Enqueued(...)
+
+        public static AddEVSEResult
+
+            Enqueued(IEVSE                  EVSE,
+                     EventTracking_Id?      EventTrackingId   = null,
+                     IId?                   AuthId            = null,
+                     Object?                SendPOIData       = null,
+                     IChargingStation?      ChargingStation   = null,
+                     I18NString?            Description       = null,
+                     IEnumerable<Warning>?  Warnings          = null,
+                     TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.Enqueued,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Success(...)
+
+        public static AddEVSEResult
+
+            Success(IEVSE                  EVSE,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   AuthId            = null,
+                    Object?                SendPOIData       = null,
+                    IChargingStation?      ChargingStation   = null,
+                    I18NString?            Description       = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.Success,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) Error(ChargingStationOperator, Description, ...)
+
+        public static AddEVSEResult
+
+            Error(IEVSE                  EVSE,
+                  I18NString             Description,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IChargingStation?      ChargingStation   = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error(ChargingStationOperator, Exception,   ...)
+
+        public static AddEVSEResult
+
+            Error(IEVSE                  EVSE,
+                  Exception              Exception,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IChargingStation?      ChargingStation   = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        I18NString.Create(
+                            Languages.en,
+                            Exception.Message
+                        ),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout(Timeout, ...)
+
+        public static AddEVSEResult
+
+            LockTimeout(IEVSE                  EVSE,
+                        TimeSpan               Timeout,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   AuthId            = null,
+                        Object?                SendPOIData       = null,
+                        IChargingStation?      ChargingStation   = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.LockTimeout,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        I18NString.Create(
+                            Languages.en,
+                            $"Lock timeout after {Timeout.TotalSeconds} seconds!"
+                        ),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
 
     }
 

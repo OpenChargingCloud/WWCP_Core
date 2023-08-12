@@ -29,96 +29,202 @@ namespace cloud.charging.open.protocols.WWCP
     public class UpdateChargingStationOperatorResult : AEnitityResult<IChargingStationOperator, ChargingStationOperator_Id>
     {
 
-        public IChargingStationOperator? ChargingStationOperator
+        #region Properties
+
+        public IChargingStationOperator?  ChargingStationOperator
             => Object;
 
+        public IRoamingNetwork?           RoamingNetwork    { get; internal set; }
+
+        #endregion
+
+        #region Constructor(s)
 
         public UpdateChargingStationOperatorResult(IChargingStationOperator  ChargingStationOperator,
-                                                   EventTracking_Id          EventTrackingId,
-                                                   Boolean                   IsSuccess,
-                                                   String?                   Argument           = null,
-                                                   I18NString?               ErrorDescription   = null)
+                                                   PushDataResultTypes       Result,
+                                                   EventTracking_Id?         EventTrackingId   = null,
+                                                   IId?                      AuthId            = null,
+                                                   Object?                   SendPOIData       = null,
+                                                   IRoamingNetwork?          RoamingNetwork    = null,
+                                                   I18NString?               Description       = null,
+                                                   IEnumerable<Warning>?     Warnings          = null,
+                                                   TimeSpan?                 Runtime           = null)
 
             : base(ChargingStationOperator,
+                   Result,
                    EventTrackingId,
-                   IsSuccess,
-                   Argument,
-                   ErrorDescription)
+                   AuthId,
+                   SendPOIData,
+                   Description,
+                   Warnings,
+                   Runtime)
 
-        { }
+        {
 
+            this.RoamingNetwork = RoamingNetwork;
 
-        public static UpdateChargingStationOperatorResult Success(IChargingStationOperator  ChargingStationOperator,
-                                                                  EventTracking_Id          EventTrackingId)
+        }
 
-            => new (ChargingStationOperator,
-                    EventTrackingId,
-                    true,
-                    null,
-                    null);
+        #endregion
 
 
-        public static UpdateChargingStationOperatorResult ArgumentError(IChargingStationOperator  ChargingStationOperator,
-                                                                        EventTracking_Id          EventTrackingId,
-                                                                        String                    Argument,
-                                                                        String                    Description)
+        #region (static) NoOperation
 
-            => new (ChargingStationOperator,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ));
+        public static UpdateChargingStationOperatorResult
 
-        public static UpdateChargingStationOperatorResult ArgumentError(IChargingStationOperator  ChargingStationOperator,
-                                                                        EventTracking_Id          EventTrackingId,
-                                                                        String                    Argument,
-                                                                        I18NString                Description)
+            NoOperation(IChargingStationOperator  ChargingStationOperator,
+                        EventTracking_Id?         EventTrackingId   = null,
+                        IId?                      AuthId            = null,
+                        Object?                   SendPOIData       = null,
+                        IRoamingNetwork?          RoamingNetwork    = null,
+                        I18NString?               Description       = null,
+                        IEnumerable<Warning>?     Warnings          = null,
+                        TimeSpan?                 Runtime           = null)
 
-            => new (ChargingStationOperator,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    Description);
+                => new (ChargingStationOperator,
+                        PushDataResultTypes.NoOperation,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        RoamingNetwork,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) ArgumentError(...)
+
+        public static UpdateChargingStationOperatorResult
+
+            ArgumentError(IChargingStationOperator  ChargingStationOperator,
+                          EventTracking_Id?         EventTrackingId   = null,
+                          IId?                      AuthId            = null,
+                          Object?                   SendPOIData       = null,
+                          IRoamingNetwork?          RoamingNetwork    = null,
+                          I18NString?               Description       = null,
+                          IEnumerable<Warning>?     Warnings          = null,
+                          TimeSpan?                 Runtime           = null)
+
+                => new (ChargingStationOperator,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        RoamingNetwork,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Success(...)
+
+        public static UpdateChargingStationOperatorResult
+
+            Success(IChargingStationOperator  ChargingStationOperator,
+                    EventTracking_Id?         EventTrackingId   = null,
+                    IId?                      AuthId            = null,
+                    Object?                   SendPOIData       = null,
+                    IRoamingNetwork?          RoamingNetwork    = null,
+                    I18NString?               Description       = null,
+                    IEnumerable<Warning>?     Warnings          = null,
+                    TimeSpan?                 Runtime           = null)
+
+                => new (ChargingStationOperator,
+                        PushDataResultTypes.Success,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        RoamingNetwork,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
 
 
-        public static UpdateChargingStationOperatorResult Failed(IChargingStationOperator  ChargingStationOperator,
-                                                                 EventTracking_Id          EventTrackingId,
-                                                                 String                    Description)
+        #region (static) Error(ChargingStationOperator, Description, ...)
 
-            => new (ChargingStationOperator,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ));
+        public static UpdateChargingStationOperatorResult
 
-        public static UpdateChargingStationOperatorResult Failed(IChargingStationOperator  ChargingStationOperator,
-                                                                 EventTracking_Id          EventTrackingId,
-                                                                 I18NString                Description)
+            Error(IChargingStationOperator  ChargingStationOperator,
+                  I18NString                Description,
+                  EventTracking_Id?         EventTrackingId   = null,
+                  IId?                      AuthId            = null,
+                  Object?                   SendPOIData       = null,
+                  IRoamingNetwork?          RoamingNetwork    = null,
+                  IEnumerable<Warning>?     Warnings          = null,
+                  TimeSpan?                 Runtime           = null)
 
-            => new (ChargingStationOperator,
-                    EventTrackingId,
-                    false,
-                    null,
-                    Description);
+                => new (ChargingStationOperator,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        RoamingNetwork,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-        public static UpdateChargingStationOperatorResult Failed(IChargingStationOperator  ChargingStationOperator,
-                                                                 EventTracking_Id          EventTrackingId,
-                                                                 Exception                 Exception)
+        #endregion
 
-            => new (ChargingStationOperator,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Exception.Message
-                    ));
+        #region (static) Error(ChargingStationOperator, Exception,   ...)
+
+        public static UpdateChargingStationOperatorResult
+
+            Error(IChargingStationOperator  ChargingStationOperator,
+                  Exception                 Exception,
+                  EventTracking_Id?         EventTrackingId   = null,
+                  IId?                      AuthId            = null,
+                  Object?                   SendPOIData       = null,
+                  IRoamingNetwork?          RoamingNetwork    = null,
+                  IEnumerable<Warning>?     Warnings          = null,
+                  TimeSpan?                 Runtime           = null)
+
+                => new (ChargingStationOperator,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        RoamingNetwork,
+                        I18NString.Create(
+                            Languages.en,
+                            Exception.Message
+                        ),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout(Timeout, ...)
+
+        public static UpdateChargingStationOperatorResult
+
+            LockTimeout(IChargingStationOperator  ChargingStationOperator,
+                        TimeSpan                  Timeout,
+                        EventTracking_Id?         EventTrackingId   = null,
+                        IId?                      AuthId            = null,
+                        Object?                   SendPOIData       = null,
+                        IRoamingNetwork?          RoamingNetwork    = null,
+                        IEnumerable<Warning>?     Warnings          = null,
+                        TimeSpan?                 Runtime           = null)
+
+                => new (ChargingStationOperator,
+                        PushDataResultTypes.LockTimeout,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        RoamingNetwork,
+                        I18NString.Create(
+                            Languages.en,
+                            $"Lock timeout after {Timeout.TotalSeconds} seconds!"
+                        ),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
 
     }
 

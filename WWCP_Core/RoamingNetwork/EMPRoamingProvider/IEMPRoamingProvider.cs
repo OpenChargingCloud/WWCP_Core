@@ -27,10 +27,16 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The interface of all e-mobility provider roaming providers.
     /// </summary>
-    public interface IEMPRoamingProvider : IPushPOIData,
+    public interface IEMPRoamingProvider : ISendRoamingNetworkData,
+                                           ISendChargingStationOperatorData,
+                                           ISendChargingPoolData,
+                                           ISendChargingStationData,
+                                           ISendEVSEData,
+
                                            ISendAdminStatus,
                                            ISendStatus,
                                            ISendEnergyStatus,
+
                                            ISendAuthorizeStartStop,
                                            ISendChargeDetailRecords
 

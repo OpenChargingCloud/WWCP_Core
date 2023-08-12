@@ -3082,7 +3082,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             throw new NotImplementedException();
         }
 
-        public Task<RemoveChargingStationResult> RemoveChargingStation(ChargingStation_Id ChargingStationId, EventTracking_Id EventTrackingId, User_Id? CurrentUserId)
+        public Task<DeleteChargingStationResult> RemoveChargingStation(ChargingStation_Id ChargingStationId, EventTracking_Id EventTrackingId, User_Id? CurrentUserId)
         {
             throw new NotImplementedException();
         }
@@ -3132,7 +3132,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             throw new NotImplementedException();
         }
 
-        public Task<RemoveChargingStationResult> RemoveChargingStation(ChargingStation_Id Id, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, Boolean SkipRemovedNotifications = false, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        public Task<DeleteChargingStationResult> RemoveChargingStation(ChargingStation_Id Id, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, Boolean SkipRemovedNotifications = false, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
         {
             throw new NotImplementedException();
         }

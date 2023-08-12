@@ -29,27 +29,38 @@ namespace cloud.charging.open.protocols.WWCP
     public class AddOrUpdateEVSEResult : AEnitityResult<IEVSE, EVSE_Id>
     {
 
-        public IEVSE? EVSE
+        #region Properties
+
+        public IEVSE?             EVSE
             => Object;
 
         public IChargingStation?  ChargingStation    { get; internal set; }
 
         public AddedOrUpdated?    AddedOrUpdated     { get; internal set; }
 
+        #endregion
 
-        public AddOrUpdateEVSEResult(IEVSE              EVSE,
-                                     EventTracking_Id   EventTrackingId,
-                                     Boolean            IsSuccess,
-                                     String?            Argument           = null,
-                                     I18NString?        ErrorDescription   = null,
-                                     IChargingStation?  ChargingStation    = null,
-                                     AddedOrUpdated?    AddedOrUpdated     = null)
+        #region Constructor(s)
+
+        public AddOrUpdateEVSEResult(IEVSE                  EVSE,
+                                     PushDataResultTypes    Result,
+                                     EventTracking_Id?      EventTrackingId   = null,
+                                     IId?                   AuthId            = null,
+                                     Object?                SendPOIData       = null,
+                                     IChargingStation?      ChargingStation   = null,
+                                     AddedOrUpdated?        AddedOrUpdated    = null,
+                                     I18NString?            Description       = null,
+                                     IEnumerable<Warning>?  Warnings          = null,
+                                     TimeSpan?              Runtime           = null)
 
             : base(EVSE,
+                   Result,
                    EventTrackingId,
-                   IsSuccess,
-                   Argument,
-                   ErrorDescription)
+                   AuthId,
+                   SendPOIData,
+                   Description,
+                   Warnings,
+                   Runtime)
 
         {
 
@@ -58,124 +69,225 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public AddOrUpdateEVSEResult(EVSE_Id            Id,
-                                     EventTracking_Id   EventTrackingId,
-                                     Boolean            IsSuccess,
-                                     String?            Argument           = null,
-                                     I18NString?        ErrorDescription   = null,
-                                     IChargingStation?  ChargingStation    = null,
-                                     AddedOrUpdated?    AddedOrUpdated     = null)
-
-            : base(Id,
-                   EventTrackingId,
-                   IsSuccess,
-                   Argument,
-                   ErrorDescription)
-
-        {
-
-            this.ChargingStation  = ChargingStation;
-            this.AddedOrUpdated   = AddedOrUpdated;
-
-        }
+        #endregion
 
 
-        public static AddOrUpdateEVSEResult Success(IEVSE              EVSE,
-                                                    AddedOrUpdated     AddedOrUpdated,
-                                                    EventTracking_Id   EventTrackingId,
-                                                    IChargingStation?  ChargingStation   = null)
+        #region (static) NoOperation
 
-            => new (EVSE,
-                    EventTrackingId,
-                    true,
-                    null,
-                    null,
-                    ChargingStation,
-                    AddedOrUpdated);
+        public static AddOrUpdateEVSEResult
 
+            NoOperation(IEVSE                  EVSE,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   AuthId            = null,
+                        Object?                SendPOIData       = null,
+                        IChargingStation?      ChargingStation   = null,
+                        I18NString?            Description       = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
 
-        public static AddOrUpdateEVSEResult ArgumentError(IEVSE             EVSE,
-                                                          EventTracking_Id  EventTrackingId,
-                                                          String            Argument,
-                                                          String            Description)
+                => new (EVSE,
+                        PushDataResultTypes.NoOperation,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        social.OpenData.UsersAPI.AddedOrUpdated.NoOperation,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-            => new (EVSE,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ));
-
-        public static AddOrUpdateEVSEResult ArgumentError(IEVSE             EVSE,
-                                                          EventTracking_Id  EventTrackingId,
-                                                          String            Argument,
-                                                          I18NString        Description)
-
-            => new (EVSE,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    Description);
+        #endregion
 
 
-        public static AddOrUpdateEVSEResult Failed(EVSE_Id            Id,
-                                                   EventTracking_Id   EventTrackingId,
-                                                   String             Description,
-                                                   IChargingStation?  ChargingStation   = null)
+        #region (static) ArgumentError(...)
 
-            => new (Id,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ),
-                    ChargingStation);
+        public static AddOrUpdateEVSEResult
 
-        public static AddOrUpdateEVSEResult Failed(IEVSE              EVSE,
-                                                   EventTracking_Id   EventTrackingId,
-                                                   String             Description,
-                                                   IChargingStation?  ChargingStation   = null)
+            ArgumentError(IEVSE                  EVSE,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   AuthId            = null,
+                          Object?                SendPOIData       = null,
+                          IChargingStation?      ChargingStation   = null,
+                          I18NString?            Description       = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
 
-            => new (EVSE,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ),
-                    ChargingStation);
+                => new (EVSE,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        social.OpenData.UsersAPI.AddedOrUpdated.Failed,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-        public static AddOrUpdateEVSEResult Failed(IEVSE              EVSE,
-                                                   EventTracking_Id   EventTrackingId,
-                                                   I18NString         Description,
-                                                   IChargingStation?  ChargingStation   = null)
+        #endregion
 
-            => new (EVSE,
-                    EventTrackingId,
-                    false,
-                    null,
-                    Description,
-                    ChargingStation);
+        #region (static) Enqueued(...)
 
-        public static AddOrUpdateEVSEResult Failed(IEVSE              EVSE,
-                                                   EventTracking_Id   EventTrackingId,
-                                                   Exception          Exception,
-                                                   IChargingStation?  ChargingStation   = null)
+        public static AddOrUpdateEVSEResult
 
-            => new (EVSE,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Exception.Message
-                    ),
-                    ChargingStation);
+            Enqueued(IEVSE                  EVSE,
+                     EventTracking_Id?      EventTrackingId   = null,
+                     IId?                   AuthId            = null,
+                     Object?                SendPOIData       = null,
+                     IChargingStation?      ChargingStation   = null,
+                     I18NString?            Description       = null,
+                     IEnumerable<Warning>?  Warnings          = null,
+                     TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.Enqueued,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        social.OpenData.UsersAPI.AddedOrUpdated.Enqueued,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Added(...)
+
+        public static AddOrUpdateEVSEResult
+
+            Added(IEVSE                  EVSE,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IChargingStation?      ChargingStation   = null,
+                  I18NString?            Description       = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.Success,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        social.OpenData.UsersAPI.AddedOrUpdated.Add,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Updated(...)
+
+        public static AddOrUpdateEVSEResult
+
+            Updated(IEVSE                  EVSE,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   AuthId            = null,
+                    Object?                SendPOIData       = null,
+                    IChargingStation?      ChargingStation   = null,
+                    I18NString?            Description       = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.Success,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        social.OpenData.UsersAPI.AddedOrUpdated.Update,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) Error(ChargingStationOperator, Description, ...)
+
+        public static AddOrUpdateEVSEResult
+
+            Error(IEVSE                  EVSE,
+                  I18NString             Description,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IChargingStation?      ChargingStation   = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        social.OpenData.UsersAPI.AddedOrUpdated.Failed,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error(ChargingStationOperator, Exception,   ...)
+
+        public static AddOrUpdateEVSEResult
+
+            Error(IEVSE                  EVSE,
+                  Exception              Exception,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IChargingStation?      ChargingStation   = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        social.OpenData.UsersAPI.AddedOrUpdated.Failed,
+                        I18NString.Create(
+                            Languages.en,
+                            Exception.Message
+                        ),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout(Timeout, ...)
+
+        public static AddOrUpdateEVSEResult
+
+            LockTimeout(IEVSE                  EVSE,
+                        TimeSpan               Timeout,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   AuthId            = null,
+                        Object?                SendPOIData       = null,
+                        IChargingStation?      ChargingStation   = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.LockTimeout,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        social.OpenData.UsersAPI.AddedOrUpdated.Failed,
+                        I18NString.Create(
+                            Languages.en,
+                            $"Lock timeout after {Timeout.TotalSeconds} seconds!"
+                        ),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
 
     }
 

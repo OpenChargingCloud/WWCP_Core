@@ -2920,7 +2920,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             throw new NotImplementedException();
         }
 
-        public Task<RemoveEVSEResult> RemoveEVSE(EVSE_Id Id, Action<IEVSE, EventTracking_Id>? OnSuccess = null, Action<IChargingStation, IEVSE, EventTracking_Id>? OnError = null, Boolean SkipRemovedNotifications = false, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        public Task<DeleteEVSEResult> RemoveEVSE(EVSE_Id Id, Action<IEVSE, EventTracking_Id>? OnSuccess = null, Action<IChargingStation, IEVSE, EventTracking_Id>? OnError = null, Boolean SkipRemovedNotifications = false, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
         {
             throw new NotImplementedException();
         }

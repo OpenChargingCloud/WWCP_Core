@@ -47,9 +47,16 @@ namespace cloud.charging.open.protocols.WWCP
     }
 
 
-    public interface IRemoteEMobilityProvider : IReceivePOIData,
+    public interface IRemoteEMobilityProvider : IReceiveRoamingNetworkData,
+                                                IReceiveChargingStationOperatorData,
+                                                IReceiveChargingPoolData,
+                                                IReceiveChargingStationData,
+                                                IReceiveEVSEData,
+
                                                 IReceiveAdminStatus,
                                                 IReceiveStatus,
+                                                IReceiveEnergyStatus,
+
                                                 IReceiveAuthorizeStartStop,
                                                 IReceiveChargeDetailRecords
 

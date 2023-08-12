@@ -25,6 +25,13 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// A delegate for filtering roaming network identifications.
+    /// </summary>
+    /// <param name="RoamingNetworkId">A roaming network identification to include.</param>
+    public delegate Boolean IncludeRoamingNetworkIdDelegate(RoamingNetwork_Id RoamingNetworkId);
+
+
+    /// <summary>
     /// Extension methods for roaming network identifications.
     /// </summary>
     public static class RoamingNetworkIdExtensions

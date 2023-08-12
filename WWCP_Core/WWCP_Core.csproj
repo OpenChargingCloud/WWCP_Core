@@ -19,4 +19,10 @@
     <ProjectReference Include="..\..\UsersAPI\UsersAPI\UsersAPI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\Enitites\EMobilityProvider\" />
+    <Folder Include="Interfaces\Enitites\EnergyMeter\" />
+    <Folder Include="Interfaces\ChargingSession\" />
+  </ItemGroup>
+
 </Project>

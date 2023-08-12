@@ -24,9 +24,16 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public interface ISend2RemoteSmartCity  : IPushPOIData,
+    public interface ISend2RemoteSmartCity  : ISendRoamingNetworkData,
+                                              ISendChargingStationOperatorData,
+                                              ISendChargingPoolData,
+                                              ISendChargingStationData,
+                                              ISendEVSEData,
+
                                               ISendAdminStatus,
-                                              ISendStatus
+                                              ISendStatus,
+                                              ISendEnergyStatus
+
                                              //IRemoteAuthorizeStartStop,
                                              //IRemoteSendChargeDetailRecord
 
@@ -48,9 +55,16 @@ namespace cloud.charging.open.protocols.WWCP
 
     }
 
-    public interface IRemoteSmartCity  : IReceivePOIData,
+    public interface IRemoteSmartCity  : IReceiveRoamingNetworkData,
+                                         IReceiveChargingStationOperatorData,
+                                         IReceiveChargingPoolData,
+                                         IReceiveChargingStationData,
+                                         IReceiveEVSEData,
+
                                          IReceiveAdminStatus,
-                                         IReceiveStatus
+                                         IReceiveStatus,
+                                         IReceiveEnergyStatus
+
                                         //IRemoteAuthorizeStartStop,
                                         //IRemoteSendChargeDetailRecord
 
