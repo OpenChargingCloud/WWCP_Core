@@ -18,14 +18,16 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of a delete EVSE request.
+    /// </summary>
     public class DeleteEVSEResult : AEnitityResult<IEVSE, EVSE_Id>
     {
 
@@ -94,7 +96,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation
+        #region (static) NoOperation  (EVSE, ...)
 
         public static DeleteEVSEResult
 
@@ -117,25 +119,180 @@ namespace cloud.charging.open.protocols.WWCP
                         Warnings,
                         Runtime);
 
+        #endregion
+
+
+        #region (static) Enqueued     (EVSE, ...)
 
         public static DeleteEVSEResult
 
-            NoOperation(EVSE_Id                EVSEId,
-                        EventTracking_Id?      EventTrackingId   = null,
-                        IId?                   AuthId            = null,
-                        Object?                SendPOIData       = null,
-                        IChargingStation?      ChargingStation   = null,
-                        I18NString?            Description       = null,
-                        IEnumerable<Warning>?  Warnings          = null,
-                        TimeSpan?              Runtime           = null)
+            Enqueued(IEVSE                  EVSE,
+                     EventTracking_Id?      EventTrackingId   = null,
+                     IId?                   AuthId            = null,
+                     Object?                SendPOIData       = null,
+                     IChargingStation?      ChargingStation   = null,
+                     I18NString?            Description       = null,
+                     IEnumerable<Warning>?  Warnings          = null,
+                     TimeSpan?              Runtime           = null)
 
-                => new (EVSEId,
-                        PushDataResultTypes.NoOperation,
+                => new (EVSE,
+                        PushDataResultTypes.Enqueued,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
                         ChargingStation,
                         Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Success      (EVSE, ...)
+
+        public static DeleteEVSEResult
+
+            Success(IEVSE                  EVSE,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   AuthId            = null,
+                    Object?                SendPOIData       = null,
+                    IChargingStation?      ChargingStation   = null,
+                    I18NString?            Description       = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.Success,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) ArgumentError(EVSE,   Description, ...)
+
+        public static DeleteEVSEResult
+
+            ArgumentError(IEVSE                  EVSE,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   AuthId            = null,
+                          Object?                SendPOIData       = null,
+                          IChargingStation?      ChargingStation   = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) ArgumentError(EVSEId, Description, ...)
+
+        public static DeleteEVSEResult
+
+            ArgumentError(EVSE_Id                EVSEId,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   AuthId            = null,
+                          Object?                SendPOIData       = null,
+                          IChargingStation?      ChargingStation   = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+                => new (EVSEId,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (EVSE,   Description, ...)
+
+        public static DeleteEVSEResult
+
+            Error(IEVSE                  EVSE,
+                  I18NString             Description,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IChargingStation?      ChargingStation   = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (EVSE,   Exception,   ...)
+
+        public static DeleteEVSEResult
+
+            Error(IEVSE                  EVSE,
+                  Exception              Exception,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IChargingStation?      ChargingStation   = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        Exception.Message.ToI18NString(Languages.en),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout  (EVSE,   Timeout,     ...)
+
+        public static DeleteEVSEResult
+
+            LockTimeout(IEVSE                  EVSE,
+                        TimeSpan               Timeout,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   AuthId            = null,
+                        Object?                SendPOIData       = null,
+                        IChargingStation?      ChargingStation   = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.LockTimeout,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(Languages.en),
                         Warnings,
                         Runtime);
 

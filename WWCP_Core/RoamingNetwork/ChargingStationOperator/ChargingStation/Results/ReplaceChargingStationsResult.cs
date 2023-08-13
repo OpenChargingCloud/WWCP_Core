@@ -26,24 +26,24 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The results of an add or update charging stations request.
+    /// The results of a replace charging stations request.
     /// </summary>
-    public class AddOrUpdateChargingStationsResult : AEnititiesResult<AddOrUpdateChargingStationResult,
-                                                                      IChargingStation,
-                                                                      ChargingStation_Id>
+    public class ReplaceChargingStationsResult : AEnititiesResult<AddOrUpdateChargingStationResult,
+                                                                  IChargingStation,
+                                                                  ChargingStation_Id>
     {
 
         #region Constructor(s)
 
-        public AddOrUpdateChargingStationsResult(PushDataResultTypes                             Result,
-                                                 IEnumerable<AddOrUpdateChargingStationResult>?  SuccessfulChargingStations   = null,
-                                                 IEnumerable<AddOrUpdateChargingStationResult>?  RejectedChargingStations     = null,
-                                                 IId?                                            AuthId                       = null,
-                                                 Object?                                         SendPOIData                  = null,
-                                                 EventTracking_Id?                               EventTrackingId              = null,
-                                                 I18NString?                                     Description                  = null,
-                                                 IEnumerable<Warning>?                           Warnings                     = null,
-                                                 TimeSpan?                                       Runtime                      = null)
+        public ReplaceChargingStationsResult(PushDataResultTypes                             Result,
+                                             IEnumerable<AddOrUpdateChargingStationResult>?  SuccessfulChargingStations   = null,
+                                             IEnumerable<AddOrUpdateChargingStationResult>?  RejectedChargingStations     = null,
+                                             IId?                                            AuthId                       = null,
+                                             Object?                                         SendPOIData                  = null,
+                                             EventTracking_Id?                               EventTrackingId              = null,
+                                             I18NString?                                     Description                  = null,
+                                             IEnumerable<Warning>?                           Warnings                     = null,
+                                             TimeSpan?                                       Runtime                      = null)
 
             : base(Result,
                    SuccessfulChargingStations,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) NoOperation  (RejectedChargingStations,   ...)
 
-        public static AddOrUpdateChargingStationsResult
+        public static ReplaceChargingStationsResult
 
             NoOperation(IEnumerable<IChargingStation>  RejectedChargingStations,
                         IId?                           AuthId            = null,
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Enqueued     (SuccessfulChargingStations, ...)
 
-        public static AddOrUpdateChargingStationsResult
+        public static ReplaceChargingStationsResult
 
             Enqueued(IEnumerable<IChargingStation>  SuccessfulChargingStations,
                      IId?                           AuthId            = null,
@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Added        (SuccessfulChargingStations, ...)
 
-        public static AddOrUpdateChargingStationsResult
+        public static ReplaceChargingStationsResult
 
             Added(IEnumerable<IChargingStation>  SuccessfulChargingStations,
                   IId?                           AuthId            = null,
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Updated      (SuccessfulChargingStations, ...)
 
-        public static AddOrUpdateChargingStationsResult
+        public static ReplaceChargingStationsResult
 
             Updated(IEnumerable<IChargingStation>  SuccessfulChargingStations,
                     IId?                           AuthId            = null,
@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) ArgumentError(RejectedChargingStations, Description, ...)
 
-        public static AddOrUpdateChargingStationsResult
+        public static ReplaceChargingStationsResult
 
             ArgumentError(IEnumerable<IChargingStation>  RejectedChargingStations,
                           I18NString                     Description,
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Error        (RejectedChargingStations, Description, ...)
 
-        public static AddOrUpdateChargingStationsResult
+        public static ReplaceChargingStationsResult
 
             Error(IEnumerable<IChargingStation>  RejectedChargingStations,
                   I18NString                     Description,
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Error        (RejectedChargingStations, Exception,   ...)
 
-        public static AddOrUpdateChargingStationsResult
+        public static ReplaceChargingStationsResult
 
             Error(IEnumerable<IChargingStation>  RejectedChargingStations,
                   Exception                      Exception,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) LockTimeout  (RejectedChargingStations, Timeout, ...)
 
-        public static AddOrUpdateChargingStationsResult
+        public static ReplaceChargingStationsResult
 
             LockTimeout(IEnumerable<IChargingStation>  RejectedChargingStations,
                         TimeSpan                       Timeout,

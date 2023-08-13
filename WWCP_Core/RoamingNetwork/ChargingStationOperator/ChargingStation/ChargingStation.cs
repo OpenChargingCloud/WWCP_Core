@@ -1869,10 +1869,14 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingStationId) => false);
 
             if (EVSE.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, EVSE.Id))
-                return AddEVSEResult.Failed(EVSE,
-                                            EventTrackingId,
-                                            $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!",
-                                            this);
+                return AddEVSEResult.ArgumentError(
+                           EVSE,
+                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             #endregion
 
@@ -1888,9 +1892,13 @@ namespace cloud.charging.open.protocols.WWCP
                 OnSuccess?.Invoke(EVSE,
                                   EventTrackingId);
 
-                return AddEVSEResult.Success(EVSE,
-                                             EventTrackingId,
-                                             this);
+                return AddEVSEResult.Success(
+                           EVSE,
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             }
 
@@ -1898,10 +1906,14 @@ namespace cloud.charging.open.protocols.WWCP
                             EVSE,
                             EventTrackingId);
 
-            return AddEVSEResult.Failed(EVSE,
-                                        EventTrackingId,
-                                        "Error!",
-                                        this);
+            return AddEVSEResult.Error(
+                       EVSE,
+                       "Error!".ToI18NString(Languages.en),
+                       EventTrackingId,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 
@@ -1936,10 +1948,14 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingStationId) => false);
 
             if (EVSE.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, EVSE.Id))
-                return AddEVSEResult.Failed(EVSE,
-                                            EventTrackingId,
-                                            $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!",
-                                            this);
+                return AddEVSEResult.ArgumentError(
+                           EVSE,
+                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             #endregion
 
@@ -1955,16 +1971,23 @@ namespace cloud.charging.open.protocols.WWCP
                 OnSuccess?.Invoke(EVSE,
                                   EventTrackingId);
 
-                return AddEVSEResult.Success(EVSE,
-                                             EventTrackingId,
-                                             this);
+                return AddEVSEResult.Success(
+                           EVSE,
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             }
 
-            return AddEVSEResult.NoOperation(EVSE,
-                                             EventTrackingId,
-                                             "Error!",
-                                             this);
+            return AddEVSEResult.NoOperation(
+                       EVSE,
+                       EventTrackingId,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 
@@ -2003,10 +2026,14 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, evseId) => false);
 
             if (EVSE.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, EVSE.Id))
-                return AddOrUpdateEVSEResult.Failed(null,
-                                                    EventTrackingId,
-                                                    $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!",
-                                                    this);
+                return AddOrUpdateEVSEResult.ArgumentError(
+                           EVSE,
+                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             #endregion
 
@@ -2031,9 +2058,13 @@ namespace cloud.charging.open.protocols.WWCP
                                             existingEVSE,
                                             EventTrackingId);
 
-                    return AddOrUpdateEVSEResult.Success(EVSE,
-                                                         AddedOrUpdated.Update,
-                                                         EventTrackingId);
+                    return AddOrUpdateEVSEResult.Updated(
+                               EVSE,
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
                 else
@@ -2043,10 +2074,14 @@ namespace cloud.charging.open.protocols.WWCP
                                     EVSE,
                                     EventTrackingId);
 
-                    return AddOrUpdateEVSEResult.Failed(EVSE,
-                                                        EventTrackingId,
-                                                        "Error!",
-                                                        this);
+                    return AddOrUpdateEVSEResult.Error(
+                               EVSE,
+                               "Error!".ToI18NString(Languages.en),
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
 
@@ -2068,9 +2103,13 @@ namespace cloud.charging.open.protocols.WWCP
                     OnAdditionSuccess?.Invoke(EVSE,
                                               EventTrackingId);
 
-                    return AddOrUpdateEVSEResult.Success(EVSE,
-                                                         AddedOrUpdated.Add,
-                                                         EventTrackingId);
+                    return AddOrUpdateEVSEResult.Added(
+                               EVSE,
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
                 else
@@ -2080,10 +2119,14 @@ namespace cloud.charging.open.protocols.WWCP
                                     EVSE,
                                     EventTrackingId);
 
-                    return AddOrUpdateEVSEResult.Failed(EVSE,
-                                                        EventTrackingId,
-                                                        "Error!",
-                                                        this);
+                    return AddOrUpdateEVSEResult.Error(
+                               EVSE,
+                               "Error!".ToI18NString(Languages.en),
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
 
@@ -2124,9 +2167,14 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, evseId) => false);
 
             if (EVSE.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, EVSE.Id))
-                return UpdateEVSEResult.Failed(null,
-                                               EventTrackingId,
-                                               $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!");
+                return UpdateEVSEResult.ArgumentError(
+                           EVSE,
+                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             #endregion
 
@@ -2151,8 +2199,13 @@ namespace cloud.charging.open.protocols.WWCP
                                       existingEVSE,
                                       EventTrackingId);
 
-                    return UpdateEVSEResult.Success(EVSE,
-                                                    EventTrackingId);
+                    return UpdateEVSEResult.Success(
+                               EVSE,
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
                 else
@@ -2162,18 +2215,28 @@ namespace cloud.charging.open.protocols.WWCP
                                     EVSE,
                                     EventTrackingId);
 
-                    return UpdateEVSEResult.Failed(EVSE,
-                                                   EventTrackingId,
-                                                   "Error!");
+                    return UpdateEVSEResult.Error(
+                               EVSE,
+                               "Error!".ToI18NString(Languages.en),
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
 
             }
 
             else
-                return UpdateEVSEResult.Failed(EVSE,
-                                               EventTrackingId,
-                                               "Error!");
+                return UpdateEVSEResult.Error(
+                           EVSE,
+                           "Error!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
         }
 
@@ -2212,9 +2275,14 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, evseId) => false);
 
             if (EVSE.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, EVSE.Id))
-                return UpdateEVSEResult.Failed(null,
-                                               EventTrackingId,
-                                               $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!");
+                return UpdateEVSEResult.ArgumentError(
+                           EVSE,
+                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             #endregion
 
@@ -2239,8 +2307,13 @@ namespace cloud.charging.open.protocols.WWCP
                                       existingEVSE,
                                       EventTrackingId);
 
-                    return UpdateEVSEResult.Success(EVSE,
-                                                    EventTrackingId);
+                    return UpdateEVSEResult.Success(
+                               EVSE,
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
                 else
@@ -2250,18 +2323,28 @@ namespace cloud.charging.open.protocols.WWCP
                                     EVSE,
                                     EventTrackingId);
 
-                    return UpdateEVSEResult.Failed(EVSE,
-                                                   EventTrackingId,
-                                                   "Error!");
+                    return UpdateEVSEResult.Error(
+                               EVSE,
+                               "Error!".ToI18NString(Languages.en),
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
 
             }
 
             else
-                return UpdateEVSEResult.Failed(EVSE,
-                                               EventTrackingId,
-                                               "Error!");
+                return UpdateEVSEResult.Error(
+                           EVSE,
+                           "Error!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
         }
 
@@ -2306,15 +2389,25 @@ namespace cloud.charging.open.protocols.WWCP
                 OnSuccess?.Invoke(evse,
                                   EventTrackingId);
 
-                return DeleteEVSEResult.Success(evse,
-                                                EventTrackingId);
+                return DeleteEVSEResult.Success(
+                           evse,
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             }
 
 
-            return DeleteEVSEResult.Failed(Id,
-                                           EventTrackingId,
-                                           "");
+            return DeleteEVSEResult.ArgumentError(
+                       Id,
+                       "error".ToI18NString(Languages.en),
+                       EventTrackingId,
+                       this.Id,
+                       this,
+                       this
+                   );
 
         }
 

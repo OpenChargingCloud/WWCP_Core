@@ -26,22 +26,22 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The result of an update EVSE request.
+    /// The results of an replace EVSEs request.
     /// </summary>
-    public class UpdateEVSEsResult : AEnititiesResult<UpdateEVSEResult, IEVSE, EVSE_Id>
+    public class ReplaceEVSEsResult : AEnititiesResult<AddOrUpdateEVSEResult, IEVSE, EVSE_Id>
     {
 
         #region Constructor(s)
 
-        public UpdateEVSEsResult(PushDataResultTypes             Result,
-                                 IEnumerable<UpdateEVSEResult>?  SuccessfulEVSEs   = null,
-                                 IEnumerable<UpdateEVSEResult>?  RejectedEVSEs     = null,
-                                 IId?                            AuthId            = null,
-                                 Object?                         SendPOIData       = null,
-                                 EventTracking_Id?               EventTrackingId   = null,
-                                 I18NString?                     Description       = null,
-                                 IEnumerable<Warning>?           Warnings          = null,
-                                 TimeSpan?                       Runtime           = null)
+        public ReplaceEVSEsResult(PushDataResultTypes                  Result,
+                                  IEnumerable<AddOrUpdateEVSEResult>?  SuccessfulEVSEs   = null,
+                                  IEnumerable<AddOrUpdateEVSEResult>?  RejectedEVSEs     = null,
+                                  IId?                                 AuthId            = null,
+                                  Object?                              SendPOIData       = null,
+                                  EventTracking_Id?                    EventTrackingId   = null,
+                                  I18NString?                          Description       = null,
+                                  IEnumerable<Warning>?                Warnings          = null,
+                                  TimeSpan?                            Runtime           = null)
 
             : base(Result,
                    SuccessfulEVSEs,
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) NoOperation  (RejectedEVSEs,   ...)
 
-        public static UpdateEVSEsResult
+        public static ReplaceEVSEsResult
 
             NoOperation(IEnumerable<IEVSE>     RejectedEVSEs,
                         IId?                   AuthId            = null,
@@ -75,11 +75,11 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
             return new (PushDataResultTypes.NoOperation,
-                        Array.Empty<UpdateEVSEResult>(),
-                        RejectedEVSEs.Select(evse => UpdateEVSEResult.NoOperation(evse,
-                                                                                    EventTrackingId,
-                                                                                    AuthId,
-                                                                                    SendPOIData)),
+                        Array.Empty<AddOrUpdateEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.NoOperation(evse,
+                                                                                        EventTrackingId,
+                                                                                        AuthId,
+                                                                                        SendPOIData)),
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Enqueued     (SuccessfulEVSEs, ...)
 
-        public static UpdateEVSEsResult
+        public static ReplaceEVSEsResult
 
             Enqueued(IEnumerable<IEVSE>     SuccessfulEVSEs,
                      IId?                   AuthId            = null,
@@ -109,11 +109,11 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
             return new (PushDataResultTypes.Enqueued,
-                        SuccessfulEVSEs.Select(evse => UpdateEVSEResult.Enqueued(evse,
-                                                                                 EventTrackingId,
-                                                                                 AuthId,
-                                                                                 SendPOIData)),
-                        Array.Empty<UpdateEVSEResult>(),
+                        SuccessfulEVSEs.Select(evse => AddOrUpdateEVSEResult.Enqueued(evse,
+                                                                                      EventTrackingId,
+                                                                                      AuthId,
+                                                                                      SendPOIData)),
+                        Array.Empty<AddOrUpdateEVSEResult>(),
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
@@ -125,11 +125,44 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Success      (SuccessfulEVSEs, ...)
+        #region (static) Added        (SuccessfulEVSEs, ...)
 
-        public static UpdateEVSEsResult
+        public static ReplaceEVSEsResult
 
-            Success(IEnumerable<IEVSE>     SuccessfulEVSEs,
+            Added(IEnumerable<IEVSE>     SuccessfulEVSEs,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  I18NString?            Description       = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Success,
+                        SuccessfulEVSEs.Select(evse => AddOrUpdateEVSEResult.Added(evse,
+                                                                                   EventTrackingId,
+                                                                                   AuthId,
+                                                                                   SendPOIData)),
+                        Array.Empty<AddOrUpdateEVSEResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Updated      (SuccessfulEVSEs, ...)
+
+        public static ReplaceEVSEsResult
+
+            Updated(IEnumerable<IEVSE>     SuccessfulEVSEs,
                     IId?                   AuthId            = null,
                     Object?                SendPOIData       = null,
                     EventTracking_Id?      EventTrackingId   = null,
@@ -142,11 +175,11 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
             return new (PushDataResultTypes.Success,
-                        SuccessfulEVSEs.Select(evse => UpdateEVSEResult.Success(evse,
-                                                                                EventTrackingId,
-                                                                                AuthId,
-                                                                                SendPOIData)),
-                        Array.Empty<UpdateEVSEResult>(),
+                        SuccessfulEVSEs.Select(evse => AddOrUpdateEVSEResult.Updated(evse,
+                                                                                     EventTrackingId,
+                                                                                     AuthId,
+                                                                                     SendPOIData)),
+                        Array.Empty<AddOrUpdateEVSEResult>(),
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
@@ -161,7 +194,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) ArgumentError(RejectedEVSEs, Description, ...)
 
-        public static UpdateEVSEsResult
+        public static ReplaceEVSEsResult
 
             ArgumentError(IEnumerable<IEVSE>     RejectedEVSEs,
                           I18NString             Description,
@@ -175,13 +208,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Error,
-                        Array.Empty<UpdateEVSEResult>(),
-                        RejectedEVSEs.Select(evse => UpdateEVSEResult.ArgumentError(evse,
-                                                                                    Description,
-                                                                                    EventTrackingId,
-                                                                                    AuthId,
-                                                                                    SendPOIData)),
+            return new (PushDataResultTypes.ArgumentError,
+                        Array.Empty<AddOrUpdateEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.ArgumentError(evse,
+                                                                                         Description,
+                                                                                         EventTrackingId,
+                                                                                         AuthId,
+                                                                                         SendPOIData)),
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
@@ -195,7 +228,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Error        (RejectedEVSEs, Description, ...)
 
-        public static UpdateEVSEsResult
+        public static ReplaceEVSEsResult
 
             Error(IEnumerable<IEVSE>     RejectedEVSEs,
                   I18NString             Description,
@@ -210,12 +243,12 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
             return new (PushDataResultTypes.Error,
-                        Array.Empty<UpdateEVSEResult>(),
-                        RejectedEVSEs.Select(evse => UpdateEVSEResult.Error(evse,
-                                                                            Description,
-                                                                            EventTrackingId,
-                                                                            AuthId,
-                                                                            SendPOIData)),
+                        Array.Empty<AddOrUpdateEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.Error(evse,
+                                                                                 Description,
+                                                                                 EventTrackingId,
+                                                                                 AuthId,
+                                                                                 SendPOIData)),
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
@@ -229,7 +262,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Error        (RejectedEVSEs, Exception,   ...)
 
-        public static UpdateEVSEsResult
+        public static ReplaceEVSEsResult
 
             Error(IEnumerable<IEVSE>     RejectedEVSEs,
                   Exception              Exception,
@@ -244,12 +277,12 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
             return new (PushDataResultTypes.Error,
-                        Array.Empty<UpdateEVSEResult>(),
-                        RejectedEVSEs.Select(evse => UpdateEVSEResult.Error(evse,
-                                                                            Exception,
-                                                                            EventTrackingId,
-                                                                            AuthId,
-                                                                            SendPOIData)),
+                        Array.Empty<AddOrUpdateEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.Error(evse,
+                                                                                 Exception,
+                                                                                 EventTrackingId,
+                                                                                 AuthId,
+                                                                                 SendPOIData)),
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
@@ -263,7 +296,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) LockTimeout  (RejectedEVSEs, Timeout, ...)
 
-        public static UpdateEVSEsResult
+        public static ReplaceEVSEsResult
 
             LockTimeout(IEnumerable<IEVSE>     RejectedEVSEs,
                         TimeSpan               Timeout,
@@ -279,12 +312,12 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
             return new (PushDataResultTypes.LockTimeout,
-                        Array.Empty<UpdateEVSEResult>(),
-                        RejectedEVSEs.Select(evse => UpdateEVSEResult.LockTimeout(evse,
-                                                                                  Timeout,
-                                                                                  EventTrackingId,
-                                                                                  AuthId,
-                                                                                  SendPOIData)),
+                        Array.Empty<AddOrUpdateEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.LockTimeout(evse,
+                                                                                       Timeout,
+                                                                                       EventTrackingId,
+                                                                                       AuthId,
+                                                                                       SendPOIData)),
                         AuthId,
                         SendPOIData,
                         EventTrackingId,

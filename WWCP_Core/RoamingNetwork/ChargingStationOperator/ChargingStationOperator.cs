@@ -944,10 +944,14 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingPoolId) => false);
 
             if (ChargingPool.Id.OperatorId != this.Id && !AllowInconsistentOperatorIds(this.Id, ChargingPool.Id))
-                return AddChargingPoolResult.Failed(ChargingPool,
-                                                    EventTrackingId,
-                                                    $"The operator identification of the given charging pool '{ChargingPool.Id.OperatorId}' is invalid!",
-                                                    this);
+                return AddChargingPoolResult.ArgumentError(
+                           ChargingPool,
+                           $"The operator identification of the given charging pool '{ChargingPool.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             #endregion
 
@@ -964,9 +968,13 @@ namespace cloud.charging.open.protocols.WWCP
                 OnSuccess?.Invoke(ChargingPool,
                                   EventTrackingId);
 
-                return AddChargingPoolResult.Success(ChargingPool,
-                                                     EventTrackingId,
-                                                     this);
+                return AddChargingPoolResult.Success(
+                           ChargingPool,
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             }
 
@@ -974,10 +982,14 @@ namespace cloud.charging.open.protocols.WWCP
                             ChargingPool,
                             EventTrackingId);
 
-            return AddChargingPoolResult.Failed(ChargingPool,
-                                                EventTrackingId,
-                                                "Could not add the given charging pool!",
-                                                this);
+            return AddChargingPoolResult.Error(
+                       ChargingPool,
+                       "Could not add the given charging pool!".ToI18NString(Languages.en),
+                       EventTrackingId,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 
@@ -1012,10 +1024,14 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingPoolId) => false);
 
             if (ChargingPool.Id.OperatorId != Id && !AllowInconsistentOperatorIds(Id, ChargingPool.Id))
-                return AddChargingPoolResult.Failed(ChargingPool,
-                                                    EventTrackingId,
-                                                    $"The operator identification of the given charging pool '{ChargingPool.Id.OperatorId}' is invalid!",
-                                                    this);
+                return AddChargingPoolResult.ArgumentError(
+                           ChargingPool,
+                           $"The operator identification of the given charging pool '{ChargingPool.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             #endregion
 
@@ -1031,15 +1047,23 @@ namespace cloud.charging.open.protocols.WWCP
                 OnSuccess?.Invoke(ChargingPool,
                                   EventTrackingId);
 
-                return AddChargingPoolResult.Success(ChargingPool,
-                                                     EventTrackingId,
-                                                     this);
+                return AddChargingPoolResult.Success(
+                           ChargingPool,
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             }
 
-            return AddChargingPoolResult.NoOperation(ChargingPool,
-                                                     EventTrackingId,
-                                                     ChargingStationOperator: this);
+            return AddChargingPoolResult.NoOperation(
+                       ChargingPool,
+                       EventTrackingId,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 
@@ -1078,10 +1102,14 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingPoolId) => false);
 
             if (ChargingPool.Id.OperatorId != this.Id && !AllowInconsistentOperatorIds(this.Id, ChargingPool.Id))
-                return AddOrUpdateChargingPoolResult.Failed(null,
-                                                            EventTrackingId,
-                                                            $"The operator identification of the given charging pool '{ChargingPool.Id.OperatorId}' is invalid!",
-                                                            this);
+                return AddOrUpdateChargingPoolResult.ArgumentError(
+                           ChargingPool,
+                           $"The operator identification of the given charging pool '{ChargingPool.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             #endregion
 
@@ -1110,9 +1138,13 @@ namespace cloud.charging.open.protocols.WWCP
                                             existingChargingPool,
                                             EventTrackingId);
 
-                    return AddOrUpdateChargingPoolResult.Success(ChargingPool,
-                                                                 AddedOrUpdated.Update,
-                                                                 EventTrackingId);
+                    return AddOrUpdateChargingPoolResult.Updated(
+                               ChargingPool,
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
                 else
@@ -1122,10 +1154,14 @@ namespace cloud.charging.open.protocols.WWCP
                                     ChargingPool,
                                     EventTrackingId);
 
-                    return AddOrUpdateChargingPoolResult.Failed(ChargingPool,
-                                                                EventTrackingId,
-                                                                "Error!",
-                                                                this);
+                    return AddOrUpdateChargingPoolResult.Error(
+                               ChargingPool,
+                               "Error!".ToI18NString(Languages.en),
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
 
@@ -1146,9 +1182,13 @@ namespace cloud.charging.open.protocols.WWCP
                     OnAdditionSuccess?.Invoke(ChargingPool,
                                               EventTrackingId);
 
-                    return AddOrUpdateChargingPoolResult.Success(ChargingPool,
-                                                                 AddedOrUpdated.Add,
-                                                                 EventTrackingId);
+                    return AddOrUpdateChargingPoolResult.Added(
+                               ChargingPool,
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
                 else
@@ -1158,10 +1198,14 @@ namespace cloud.charging.open.protocols.WWCP
                                     ChargingPool,
                                     EventTrackingId);
 
-                    return AddOrUpdateChargingPoolResult.Failed(ChargingPool,
-                                                                EventTrackingId,
-                                                                "Error!",
-                                                                this);
+                    return AddOrUpdateChargingPoolResult.Error(
+                               ChargingPool,
+                               "Error!".ToI18NString(Languages.en),
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
 
@@ -1199,10 +1243,14 @@ namespace cloud.charging.open.protocols.WWCP
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
             if (!TryGetChargingPoolById(ChargingPool.Id, out var OldChargingPool))
-                return UpdateChargingPoolResult.ArgumentError(ChargingPool,
-                                                              eventTrackingId,
-                                                              nameof(ChargingPool),
-                                                              "The given charging pool '" + ChargingPool.Id + "' does not exists in this API!");
+                return UpdateChargingPoolResult.ArgumentError(
+                           ChargingPool,
+                           $"The given charging pool '{ChargingPool.Id}' does not exists in this API!".ToI18NString(Languages.en),
+                           eventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             //if (ChargingPool.API is not null && ChargingPool.API != this)
             //    return UpdateChargingPoolResult.ArgumentError(ChargingPool,
@@ -1290,10 +1338,14 @@ namespace cloud.charging.open.protocols.WWCP
                 oldChargingPool is null)
             {
 
-                return UpdateChargingPoolResult.ArgumentError(oldChargingPool,
-                                                              EventTrackingId,
-                                                              nameof(ChargingPool),
-                                                              $"The given charging pool '{ChargingPoolId}' does not exists!");
+                return UpdateChargingPoolResult.ArgumentError(
+                           ChargingPoolId,
+                           $"The given charging pool '{ChargingPoolId}' does not exists!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             }
 
@@ -1380,14 +1432,21 @@ namespace cloud.charging.open.protocols.WWCP
                 return DeleteChargingPoolResult.Success(
                            chargingPool,
                            EventTrackingId,
+                           Id,
+                           this,
                            this
                        );
 
             }
 
-            return DeleteChargingPoolResult.Failed(ChargingPoolId,
-                                                   EventTrackingId,
-                                                   "");
+            return DeleteChargingPoolResult.ArgumentError(
+                       ChargingPoolId,
+                       "error".ToI18NString(Languages.en),
+                       EventTrackingId,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 

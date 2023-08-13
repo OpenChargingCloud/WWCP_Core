@@ -1607,10 +1607,14 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingStationId) => false);
 
             if (ChargingStation.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, ChargingStation.Id))
-                return AddChargingStationResult.Failed(ChargingStation,
-                                                       EventTrackingId,
-                                                       $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!",
-                                                       this);
+                return AddChargingStationResult.ArgumentError(
+                           ChargingStation,
+                           $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             #endregion
 
@@ -1626,9 +1630,13 @@ namespace cloud.charging.open.protocols.WWCP
                 OnSuccess?.Invoke(ChargingStation,
                                   EventTrackingId);
 
-                return AddChargingStationResult.Success(ChargingStation,
-                                                        EventTrackingId,
-                                                        this);
+                return AddChargingStationResult.Success(
+                           ChargingStation,
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             }
 
@@ -1636,10 +1644,14 @@ namespace cloud.charging.open.protocols.WWCP
                             ChargingStation,
                             EventTrackingId);
 
-            return AddChargingStationResult.Failed(ChargingStation,
-                                                   EventTrackingId,
-                                                   "Error!",
-                                                   this);
+            return AddChargingStationResult.Error(
+                       ChargingStation,
+                       "Error!".ToI18NString(Languages.en),
+                       EventTrackingId,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 
@@ -1674,10 +1686,14 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingStationId) => false);
 
             if (ChargingStation.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, ChargingStation.Id))
-                return AddChargingStationResult.Failed(ChargingStation,
-                                                       EventTrackingId,
-                                                       $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!",
-                                                       this);
+                return AddChargingStationResult.ArgumentError(
+                           ChargingStation,
+                           $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             #endregion
 
@@ -1695,16 +1711,23 @@ namespace cloud.charging.open.protocols.WWCP
                                   EventTrackingId);
                 //ChargingStationAddition.SendNotification(Timestamp.Now, this, ChargingStation);
 
-                return AddChargingStationResult.Success(ChargingStation,
-                                                        EventTrackingId,
-                                                        this);
+                return AddChargingStationResult.Success(
+                           ChargingStation,
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             }
 
-            return AddChargingStationResult.NoOperation(ChargingStation,
-                                                        EventTrackingId,
-                                                        String.Empty,
-                                                        this);
+            return AddChargingStationResult.NoOperation(
+                       ChargingStation,
+                       EventTrackingId,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 
@@ -1743,10 +1766,14 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingStationId) => false);
 
             if (ChargingStation.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, ChargingStation.Id))
-                return AddOrUpdateChargingStationResult.Failed(null,
-                                                               EventTrackingId,
-                                                               $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!",
-                                                               this);
+                return AddOrUpdateChargingStationResult.ArgumentError(
+                           ChargingStation,
+                           $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             #endregion
 
@@ -1771,9 +1798,13 @@ namespace cloud.charging.open.protocols.WWCP
                                             existingChargingStation,
                                             EventTrackingId);
 
-                    return AddOrUpdateChargingStationResult.Success(ChargingStation,
-                                                                    AddedOrUpdated.Update,
-                                                                    EventTrackingId);
+                    return AddOrUpdateChargingStationResult.Updated(
+                               ChargingStation,
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
                 else
@@ -1783,10 +1814,14 @@ namespace cloud.charging.open.protocols.WWCP
                                     ChargingStation,
                                     EventTrackingId);
 
-                    return AddOrUpdateChargingStationResult.Failed(ChargingStation,
-                                                                   EventTrackingId,
-                                                                   "Error!",
-                                                                   this);
+                    return AddOrUpdateChargingStationResult.Error(
+                               ChargingStation,
+                               "Error!".ToI18NString(Languages.en),
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
 
@@ -1808,9 +1843,13 @@ namespace cloud.charging.open.protocols.WWCP
                     OnAdditionSuccess?.Invoke(ChargingStation,
                                               EventTrackingId);
 
-                    return AddOrUpdateChargingStationResult.Success(ChargingStation,
-                                                                    AddedOrUpdated.Add,
-                                                                    EventTrackingId);
+                    return AddOrUpdateChargingStationResult.Added(
+                               ChargingStation,
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
                 else
@@ -1820,10 +1859,14 @@ namespace cloud.charging.open.protocols.WWCP
                                     ChargingStation,
                                     EventTrackingId);
 
-                    return AddOrUpdateChargingStationResult.Failed(ChargingStation,
-                                                                   EventTrackingId,
-                                                                   "Error!",
-                                                                   this);
+                    return AddOrUpdateChargingStationResult.Error(
+                               ChargingStation,
+                               "Error!".ToI18NString(Languages.en),
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
 
@@ -1864,9 +1907,14 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingStationId) => false);
 
             if (ChargingStation.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, ChargingStation.Id))
-                return UpdateChargingStationResult.Failed(null,
-                                                          EventTrackingId,
-                                                          $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!");
+                return UpdateChargingStationResult.ArgumentError(
+                           ChargingStation,
+                           $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             #endregion
 
@@ -1891,8 +1939,13 @@ namespace cloud.charging.open.protocols.WWCP
                                             existingChargingStation,
                                             EventTrackingId);
 
-                    return UpdateChargingStationResult.Success(ChargingStation,
-                                                               EventTrackingId);
+                    return UpdateChargingStationResult.Success(
+                               ChargingStation,
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
                 else
@@ -1902,17 +1955,27 @@ namespace cloud.charging.open.protocols.WWCP
                                     ChargingStation,
                                     EventTrackingId);
 
-                    return UpdateChargingStationResult.Failed(ChargingStation,
-                                                              EventTrackingId,
-                                                              "Error!");
+                    return UpdateChargingStationResult.Error(
+                               ChargingStation,
+                               "Error!".ToI18NString(Languages.en),
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
 
             }
             else
-                return UpdateChargingStationResult.Failed(ChargingStation,
-                                                          EventTrackingId,
-                                                          "Error!");
+                return UpdateChargingStationResult.Error(
+                           ChargingStation,
+                           "Error!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
         }
 
@@ -1951,9 +2014,14 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingStationId) => false);
 
             if (ChargingStation.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, ChargingStation.Id))
-                return UpdateChargingStationResult.Failed(null,
-                                                          EventTrackingId,
-                                                          $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!");
+                return UpdateChargingStationResult.ArgumentError(
+                           ChargingStation,
+                           $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             #endregion
 
@@ -1989,17 +2057,27 @@ namespace cloud.charging.open.protocols.WWCP
                                     ChargingStation,
                                     EventTrackingId);
 
-                    return UpdateChargingStationResult.Failed(ChargingStation,
-                                                              EventTrackingId,
-                                                              "Error!");
+                    return UpdateChargingStationResult.Error(
+                               ChargingStation,
+                               "Error!".ToI18NString(Languages.en),
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
 
             }
             else
-                return UpdateChargingStationResult.Failed(ChargingStation,
-                                                          EventTrackingId,
-                                                          "Error!");
+                return UpdateChargingStationResult.Error(
+                           ChargingStation,
+                           "Error!".ToI18NString(Languages.en),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
         }
 
@@ -2044,15 +2122,25 @@ namespace cloud.charging.open.protocols.WWCP
                 OnSuccess?.Invoke(chargingStation,
                                   EventTrackingId);
 
-                return DeleteChargingStationResult.Success(chargingStation,
-                                                           EventTrackingId);
+                return DeleteChargingStationResult.Success(
+                           chargingStation,
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             }
 
 
-            return DeleteChargingStationResult.Failed(Id,
-                                                      EventTrackingId,
-                                                      "");
+            return DeleteChargingStationResult.ArgumentError(
+                       Id,
+                       "Error!".ToI18NString(Languages.en),
+                       EventTrackingId,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 

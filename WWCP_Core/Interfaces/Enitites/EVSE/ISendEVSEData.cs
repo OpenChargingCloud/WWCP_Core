@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Add the given EVSE, if it does not already exist.
         /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
+        /// <param name="EVSE">An EVSE to add, if it does not already exist.</param>
         /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Add the given enumeration of EVSEs.
         /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="EVSEs">An enumeration of EVSEs to add.</param>
         /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -270,6 +270,31 @@ namespace cloud.charging.open.protocols.WWCP
                         EventTracking_Id?   EventTrackingId     = null,
                         TimeSpan?           RequestTimeout      = null,
                         CancellationToken   CancellationToken   = default);
+
+        #endregion
+
+        #region ReplaceEVSEs      (EVSEs, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Replace the given enumeration of EVSEs.
+        /// EVSEs not included will be deleted.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs to replace.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<ReplaceEVSEsResult>
+
+            ReplaceEVSEs(IEnumerable<IEVSE>  EVSEs,
+                         TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+
+                         DateTime?           Timestamp           = null,
+                         EventTracking_Id?   EventTrackingId     = null,
+                         TimeSpan?           RequestTimeout      = null,
+                         CancellationToken   CancellationToken   = default);
 
         #endregion
 

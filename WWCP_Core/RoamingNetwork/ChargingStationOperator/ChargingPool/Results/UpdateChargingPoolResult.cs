@@ -18,14 +18,16 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of an update charging pool request.
+    /// </summary>
     public class UpdateChargingPoolResult : AEnitityResult<IChargingPool, ChargingPool_Id>
     {
 
@@ -65,10 +67,35 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
+        public UpdateChargingPoolResult(ChargingPool_Id            ChargingPoolId,
+                                        PushDataResultTypes        Result,
+                                        EventTracking_Id?          EventTrackingId           = null,
+                                        IId?                       AuthId                    = null,
+                                        Object?                    SendPOIData               = null,
+                                        IChargingStationOperator?  ChargingStationOperator   = null,
+                                        I18NString?                Description               = null,
+                                        IEnumerable<Warning>?      Warnings                  = null,
+                                        TimeSpan?                  Runtime                   = null)
+
+            : base(ChargingPoolId,
+                   Result,
+                   EventTrackingId,
+                   AuthId,
+                   SendPOIData,
+                   Description,
+                   Warnings,
+                   Runtime)
+
+        {
+
+            this.ChargingStationOperator = ChargingStationOperator;
+
+        }
+
         #endregion
 
 
-        #region (static) NoOperation
+        #region (static) NoOperation  (ChargingPool, ...)
 
         public static UpdateChargingPoolResult
 
@@ -94,7 +121,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Enqueued(...)
+        #region (static) Enqueued     (ChargingPool, ...)
 
         public static UpdateChargingPoolResult
 
@@ -119,8 +146,83 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region (static) Success      (ChargingPool, ...)
 
-        #region (static) Error(ChargingStationOperator, Description, ...)
+        public static UpdateChargingPoolResult
+
+            Success(IChargingPool              ChargingPool,
+                    EventTracking_Id?          EventTrackingId           = null,
+                    IId?                       AuthId                    = null,
+                    Object?                    SendPOIData               = null,
+                    IChargingStationOperator?  ChargingStationOperator   = null,
+                    I18NString?                Description               = null,
+                    IEnumerable<Warning>?      Warnings                  = null,
+                    TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingPool,
+                        PushDataResultTypes.Success,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStationOperator,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) ArgumentError(ChargingPool,   Description, ...)
+
+        public static UpdateChargingPoolResult
+
+            ArgumentError(IChargingPool              ChargingPool,
+                          I18NString                 Description,
+                          EventTracking_Id?          EventTrackingId           = null,
+                          IId?                       AuthId                    = null,
+                          Object?                    SendPOIData               = null,
+                          IChargingStationOperator?  ChargingStationOperator   = null,
+                          IEnumerable<Warning>?      Warnings                  = null,
+                          TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingPool,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStationOperator,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) ArgumentError(ChargingPoolId, Description, ...)
+
+        public static UpdateChargingPoolResult
+
+            ArgumentError(ChargingPool_Id            ChargingPoolId,
+                          I18NString                 Description,
+                          EventTracking_Id?          EventTrackingId           = null,
+                          IId?                       AuthId                    = null,
+                          Object?                    SendPOIData               = null,
+                          IChargingStationOperator?  ChargingStationOperator   = null,
+                          IEnumerable<Warning>?      Warnings                  = null,
+                          TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingPoolId,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStationOperator,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargingPool,   Description, ...)
 
         public static UpdateChargingPoolResult
 
@@ -145,13 +247,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Error(ChargingStationOperator, Exception,   ...)
+        #region (static) Error        (ChargingPool,   Exception,   ...)
 
         public static UpdateChargingPoolResult
 
             Error(IChargingPool              ChargingPool,
                   Exception                  Exception,
-                  EventTracking_Id?          EventTrackingId           = null,
+                  EventTracking_Id?          EventTrackingId   = null,
                   IId?                       AuthId                    = null,
                   Object?                    SendPOIData               = null,
                   IChargingStationOperator?  ChargingStationOperator   = null,
@@ -164,16 +266,13 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStationOperator,
-                        I18NString.Create(
-                            Languages.en,
-                            Exception.Message
-                        ),
+                        Exception.Message.ToI18NString(Languages.en),
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) LockTimeout(Timeout, ...)
+        #region (static) LockTimeout  (Timeout, ...)
 
         public static UpdateChargingPoolResult
 
@@ -192,10 +291,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStationOperator,
-                        I18NString.Create(
-                            Languages.en,
-                            $"Lock timeout after {Timeout.TotalSeconds} seconds!"
-                        ),
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(Languages.en),
                         Warnings,
                         Runtime);
 

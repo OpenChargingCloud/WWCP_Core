@@ -18,14 +18,16 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of an add charging station request.
+    /// </summary>
     public class AddChargingStationResult : AEnitityResult<IChargingStation, ChargingStation_Id>
     {
 
@@ -68,7 +70,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation
+        #region (static) NoOperation  (ChargingStation, ...)
 
         public static AddChargingStationResult
 
@@ -88,6 +90,158 @@ namespace cloud.charging.open.protocols.WWCP
                         SendPOIData,
                         ChargingPool,
                         Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) Enqueued     (ChargingStation, ...)
+
+        public static AddChargingStationResult
+
+            Enqueued(IChargingStation       ChargingStation,
+                     EventTracking_Id?      EventTrackingId   = null,
+                     IId?                   AuthId            = null,
+                     Object?                SendPOIData       = null,
+                     IChargingPool?         ChargingPool      = null,
+                     I18NString?            Description       = null,
+                     IEnumerable<Warning>?  Warnings          = null,
+                     TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        PushDataResultTypes.Enqueued,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Success      (ChargingStation, ...)
+
+        public static AddChargingStationResult
+
+            Success(IChargingStation       ChargingStation,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   AuthId            = null,
+                    Object?                SendPOIData       = null,
+                    IChargingPool?         ChargingPool      = null,
+                    I18NString?            Description       = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        PushDataResultTypes.Success,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) ArgumentError(ChargingStation, Description, ...)
+
+        public static AddChargingStationResult
+
+            ArgumentError(IChargingStation       ChargingStation,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   AuthId            = null,
+                          Object?                SendPOIData       = null,
+                          IChargingPool?         ChargingPool      = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargingStation, Description, ...)
+
+        public static AddChargingStationResult
+
+            Error(IChargingStation       ChargingStation,
+                  I18NString             Description,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IChargingPool?         ChargingPool      = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargingStation, Exception,   ...)
+
+        public static AddChargingStationResult
+
+            Error(IChargingStation       ChargingStation,
+                  Exception              Exception,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IChargingPool?         ChargingPool      = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        Exception.Message.ToI18NString(Languages.en),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout  (ChargingStation, Timeout,     ...)
+
+        public static AddChargingStationResult
+
+            LockTimeout(IChargingStation       ChargingStation,
+                        TimeSpan               Timeout,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   AuthId            = null,
+                        Object?                SendPOIData       = null,
+                        IChargingPool?         ChargingPool      = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        PushDataResultTypes.LockTimeout,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(Languages.en),
                         Warnings,
                         Runtime);
 

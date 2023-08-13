@@ -18,14 +18,16 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The results of an update charging pools request.
+    /// </summary>
     public class UpdateChargingPoolsResult : AEnititiesResult<UpdateChargingPoolResult,
                                                               IChargingPool,
                                                               ChargingPool_Id>
@@ -58,7 +60,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation
+        #region (static) NoOperation  (RejectedChargingPools,   ...)
 
         public static UpdateChargingPoolsResult
 
@@ -70,29 +72,231 @@ namespace cloud.charging.open.protocols.WWCP
                         IEnumerable<Warning>?       Warnings          = null,
                         TimeSpan?                   Runtime           = null)
 
-            {
+        {
 
-                EventTrackingId ??= EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
-                return new (PushDataResultTypes.NoOperation,
-                            Array.Empty<UpdateChargingPoolResult>(),
-                            RejectedChargingPools.Select(chargingPool => UpdateChargingPoolResult.NoOperation(chargingPool,
-                                                                                                              EventTrackingId,
-                                                                                                              AuthId,
-                                                                                                              SendPOIData)),
-                            AuthId,
-                            SendPOIData,
-                            EventTrackingId,
-                            Description,
-                            Warnings,
-                            Runtime);
+            return new (PushDataResultTypes.NoOperation,
+                        Array.Empty<UpdateChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => UpdateChargingPoolResult.NoOperation(chargingPool,
+                                                                                                          EventTrackingId,
+                                                                                                          AuthId,
+                                                                                                          SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-            }
+        }
 
         #endregion
 
 
+        #region (static) Enqueued     (SuccessfulChargingPools, ...)
 
+        public static UpdateChargingPoolsResult
+
+            Enqueued(IEnumerable<IChargingPool>  SuccessfulChargingPools,
+                     IId?                        AuthId            = null,
+                     Object?                     SendPOIData       = null,
+                     EventTracking_Id?           EventTrackingId   = null,
+                     I18NString?                 Description       = null,
+                     IEnumerable<Warning>?       Warnings          = null,
+                     TimeSpan?                   Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Enqueued,
+                        SuccessfulChargingPools.Select(chargingPool => UpdateChargingPoolResult.Enqueued(chargingPool,
+                                                                                                         EventTrackingId,
+                                                                                                         AuthId,
+                                                                                                         SendPOIData)),
+                        Array.Empty<UpdateChargingPoolResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Success      (SuccessfulChargingPools, ...)
+
+        public static UpdateChargingPoolsResult
+
+            Success(IEnumerable<IChargingPool>  SuccessfulChargingPools,
+                    IId?                        AuthId            = null,
+                    Object?                     SendPOIData       = null,
+                    EventTracking_Id?           EventTrackingId   = null,
+                    I18NString?                 Description       = null,
+                    IEnumerable<Warning>?       Warnings          = null,
+                    TimeSpan?                   Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Success,
+                        SuccessfulChargingPools.Select(chargingPool => UpdateChargingPoolResult.Success(chargingPool,
+                                                                                                        EventTrackingId,
+                                                                                                        AuthId,
+                                                                                                        SendPOIData)),
+                        Array.Empty<UpdateChargingPoolResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+
+        #region (static) ArgumentError(RejectedChargingPools, Description, ...)
+
+        public static UpdateChargingPoolsResult
+
+            ArgumentError(IEnumerable<IChargingPool>  RejectedChargingPools,
+                          I18NString                  Description,
+                          EventTracking_Id?           EventTrackingId   = null,
+                          IId?                        AuthId            = null,
+                          Object?                     SendPOIData       = null,
+                          IEnumerable<Warning>?       Warnings          = null,
+                          TimeSpan?                   Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.ArgumentError,
+                        Array.Empty<UpdateChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => UpdateChargingPoolResult.ArgumentError(chargingPool,
+                                                                                                            Description,
+                                                                                                            EventTrackingId,
+                                                                                                            AuthId,
+                                                                                                            SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Error        (RejectedChargingPools, Description, ...)
+
+        public static UpdateChargingPoolsResult
+
+            Error(IEnumerable<IChargingPool>  RejectedChargingPools,
+                  I18NString                  Description,
+                  EventTracking_Id?           EventTrackingId   = null,
+                  IId?                        AuthId            = null,
+                  Object?                     SendPOIData       = null,
+                  IEnumerable<Warning>?       Warnings          = null,
+                  TimeSpan?                   Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Error,
+                        Array.Empty<UpdateChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => UpdateChargingPoolResult.Error(chargingPool,
+                                                                                                    Description,
+                                                                                                    EventTrackingId,
+                                                                                                    AuthId,
+                                                                                                    SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Error        (RejectedChargingPools, Exception,   ...)
+
+        public static UpdateChargingPoolsResult
+
+            Error(IEnumerable<IChargingPool>  RejectedChargingPools,
+                  Exception                   Exception,
+                  EventTracking_Id?           EventTrackingId   = null,
+                  IId?                        AuthId            = null,
+                  Object?                     SendPOIData       = null,
+                  IEnumerable<Warning>?       Warnings          = null,
+                  TimeSpan?                   Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Error,
+                        Array.Empty<UpdateChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => UpdateChargingPoolResult.Error(chargingPool,
+                                                                                                    Exception,
+                                                                                                    EventTrackingId,
+                                                                                                    AuthId,
+                                                                                                    SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Exception.Message.ToI18NString(Languages.en),
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) LockTimeout  (RejectedChargingPools, Timeout, ...)
+
+        public static UpdateChargingPoolsResult
+
+            LockTimeout(IEnumerable<IChargingPool>  RejectedChargingPools,
+                        TimeSpan                    Timeout,
+                        IId?                        AuthId            = null,
+                        Object?                     SendPOIData       = null,
+                        EventTracking_Id?           EventTrackingId   = null,
+                        I18NString?                 Description       = null,
+                        IEnumerable<Warning>?       Warnings          = null,
+                        TimeSpan?                   Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.LockTimeout,
+                        Array.Empty<UpdateChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => UpdateChargingPoolResult.LockTimeout(chargingPool,
+                                                                                                          Timeout,
+                                                                                                          EventTrackingId,
+                                                                                                          AuthId,
+                                                                                                          SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
 
 
     }

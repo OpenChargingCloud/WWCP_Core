@@ -1327,7 +1327,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Add the given charging pool.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ChargingPool">A charging pool to add.</param>
         /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1359,9 +1359,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddChargingPoolIfNotExists(ChargingPool,  TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Add the given charging pool.
+        /// Add the given charging pool, if it does not already exist.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ChargingPool">A charging pool to add, if it does not already exist.</param>
         /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1393,9 +1393,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddOrUpdateChargingPool   (ChargingPool,  TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Set the EVSE data of the given charging pool as new static EVSE data.
+        /// Add or update the given charging pool.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ChargingPool">A charging pool to add or update.</param>
         /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1427,9 +1427,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region UpdateChargingPool        (ChargingPool,  PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Update the EVSE data of the given charging pool within the static EVSE data.
+        /// Update the given charging pool.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ChargingPool">A charging pool to update.</param>
         /// <param name="PropertyName">The name of the charging pool property to update.</param>
         /// <param name="NewValue">The new value of the charging pool property to update.</param>
         /// <param name="OldValue">The optional old value of the charging pool property to update.</param>
@@ -1469,9 +1469,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region DeleteChargingPool        (ChargingPool,  TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Delete the EVSE data of the given charging pool from the static EVSE data.
+        /// Delete the given charging pool.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ChargingPool">A charging pool to delete.</param>
         /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1504,9 +1504,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddChargingPools          (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given enumeration of charging pools.
+        /// Add the given enumeration of charging pools.
         /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="ChargingPools">An enumeration of charging pools to add.</param>
         /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1538,9 +1538,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddChargingPoolsIfNotExist(ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given enumeration of charging pools.
+        /// Add the given enumeration of charging pools, if they do not already exist.
         /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="ChargingPools">An enumeration of charging pools to add, if they do not already exist.</param>
         /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1572,9 +1572,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddOrUpdateChargingPools  (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Set the EVSE data of the given enumeration of charging pools as new static EVSE data.
+        /// Add or update the given enumeration of charging pools.
         /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="ChargingPools">An enumeration of charging pools to add or update.</param>
         /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1606,9 +1606,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region UpdateChargingPools       (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Update the EVSE data of the given enumeration of charging pools within the static EVSE data.
+        /// Update the given enumeration of charging pools.
         /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="ChargingPools">An enumeration of charging pools to update.</param>
         /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1637,12 +1637,47 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region ReplaceChargingPools      (ChargingPools, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Replace the given enumeration of charging pools.
+        /// Charging pools not included will be deleted.
+        /// </summary>
+        /// <param name="ChargingPools">An enumeration of charging stations to replace.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<ReplaceChargingPoolsResult>
+
+            ReplaceChargingPools(IEnumerable<IChargingPool>  ChargingPools,
+                                 TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,
+
+                                 DateTime?                   Timestamp           = null,
+                                 EventTracking_Id?           EventTrackingId     = null,
+                                 TimeSpan?                   RequestTimeout      = null,
+                                 CancellationToken           CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       ReplaceChargingPoolsResult.NoOperation(
+                           RejectedChargingPools:  ChargingPools,
+                           AuthId:                 Id,
+                           SendPOIData:            this,
+                           EventTrackingId:        EventTrackingId
+                       )
+                   );
+
+        #endregion
+
         #region DeleteChargingPools       (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Delete the EVSE data of the given enumeration of charging pools from the static EVSE data.
+        /// DDelete the given enumeration of charging pools.
         /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="ChargingPools">An enumeration of charging pools to delete.</param>
         /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1791,9 +1826,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddChargingStation           (ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given charging station.
+        /// Add the given charging station.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="ChargingStation">A charging station to add.</param>
         /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1825,9 +1860,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddChargingStationIfNotExists(ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given charging station.
+        /// Add the given charging station, if it does not already exist.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="ChargingStation">A charging station to add, if it does not already exist.</param>
         /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1859,9 +1894,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddOrUpdateChargingStation   (ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Set the EVSE data of the given charging station as new static EVSE data.
+        /// Add or update the given charging station.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="ChargingStation">A charging station to add or update.</param>
         /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1893,9 +1928,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region UpdateChargingStation        (ChargingStation,  PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Update the EVSE data of the given charging station within the static EVSE data.
+        /// Update the given charging station.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="ChargingStation">A charging station to update.</param>
         /// <param name="PropertyName">The name of the charging station property to update.</param>
         /// <param name="NewValue">The new value of the charging station property to update.</param>
         /// <param name="OldValue">The optional old value of the charging station property to update.</param>
@@ -1935,9 +1970,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region DeleteChargingStation        (ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Delete the EVSE data of the given charging station from the static EVSE data.
+        /// Delete the given charging station.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="ChargingStation">A charging station to delete.</param>
         /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -1970,9 +2005,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddChargingStations          (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given enumeration of charging stations.
+        /// Add the given enumeration of charging stations.
         /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="ChargingStations">An enumeration of charging stations to add.</param>
         /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -2004,9 +2039,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddChargingStationsIfNotExist(ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given enumeration of charging stations.
+        /// Add the given enumeration of charging stations, if they do not already exist.
         /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="ChargingStations">An enumeration of charging stations to add, if they do not already exist.</param>
         /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -2038,9 +2073,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddOrUpdateChargingStations  (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Set the EVSE data of the given enumeration of charging stations as new static EVSE data.
+        /// Add or update the given enumeration of charging stations.
         /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="ChargingStations">An enumeration of charging stations to add or update.</param>
         /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -2072,9 +2107,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region UpdateChargingStations       (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Update the EVSE data of the given enumeration of charging stations within the static EVSE data.
+        /// Update the given enumeration of charging stations.
         /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="ChargingStations">An enumeration of charging stations to update.</param>
         /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -2103,12 +2138,47 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region ReplaceChargingStations      (ChargingStations, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Replace the given enumeration of charging stations.
+        /// Charging stations not included will be deleted.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations to replace.</param>
+        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public virtual Task<ReplaceChargingStationsResult>
+
+            ReplaceChargingStations(IEnumerable<IChargingStation>  ChargingStations,
+                                    TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
+
+                                    DateTime?                      Timestamp           = null,
+                                    EventTracking_Id?              EventTrackingId     = null,
+                                    TimeSpan?                      RequestTimeout      = null,
+                                    CancellationToken              CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       ReplaceChargingStationsResult.NoOperation(
+                           RejectedChargingStations:  ChargingStations,
+                           AuthId:                    Id,
+                           SendPOIData:               this,
+                           EventTrackingId:           EventTrackingId
+                       )
+                   );
+
+        #endregion
+
         #region DeleteChargingStations       (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
-        /// Delete the EVSE data of the given enumeration of charging stations from the static EVSE data.
+        /// Delete the given enumeration of charging stations.
         /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="ChargingStations">An enumeration of charging stations to delete.</param>
         /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -2438,7 +2508,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Add the given enumeration of EVSEs.
         /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="EVSEs">An enumeration of EVSEs to add.</param>
         /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -2560,6 +2630,41 @@ namespace cloud.charging.open.protocols.WWCP
 
                 => Task.FromResult(
                        UpdateEVSEsResult.NoOperation(
+                           RejectedEVSEs:    EVSEs,
+                           AuthId:           Id,
+                           SendPOIData:      this,
+                           EventTrackingId:  EventTrackingId
+                       )
+                   );
+
+        #endregion
+
+        #region ReplaceEVSEs      (EVSEs, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Replace the given enumeration of EVSEs.
+        /// EVSEs not included will be deleted.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs to replace.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<ReplaceEVSEsResult>
+
+            ReplaceEVSEs(IEnumerable<IEVSE>  EVSEs,
+                         TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+
+                         DateTime?           Timestamp           = null,
+                         EventTracking_Id?   EventTrackingId     = null,
+                         TimeSpan?           RequestTimeout      = null,
+                         CancellationToken   CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       ReplaceEVSEsResult.NoOperation(
                            RejectedEVSEs:    EVSEs,
                            AuthId:           Id,
                            SendPOIData:      this,

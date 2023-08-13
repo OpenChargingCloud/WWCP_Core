@@ -18,8 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -91,7 +90,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         RoamingNetwork,
-                        social.OpenData.UsersAPI.AddedOrUpdated.NoOperation,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.NoOperation,
                         Description,
                         Warnings,
                         Runtime);
@@ -117,7 +116,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         RoamingNetwork,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Failed,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
                         Description,
                         Warnings,
                         Runtime);
@@ -143,7 +142,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         RoamingNetwork,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Add,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Add,
                         Description,
                         Warnings,
                         Runtime);
@@ -169,7 +168,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         RoamingNetwork,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Update,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Update,
                         Description,
                         Warnings,
                         Runtime);
@@ -196,7 +195,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         RoamingNetwork,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Failed,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
                         Description,
                         Warnings,
                         Runtime);
@@ -222,7 +221,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         RoamingNetwork,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Failed,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
                         I18NString.Create(
                             Languages.en,
                             Exception.Message
@@ -251,7 +250,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         RoamingNetwork,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Failed,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
                         I18NString.Create(
                             Languages.en,
                             $"Lock timeout after {Timeout.TotalSeconds} seconds!"

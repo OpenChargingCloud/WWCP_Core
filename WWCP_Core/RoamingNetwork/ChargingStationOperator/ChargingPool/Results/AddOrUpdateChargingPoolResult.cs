@@ -18,14 +18,16 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of an add or update charging pool request.
+    /// </summary>
     public class AddOrUpdateChargingPoolResult : AEnitityResult<IChargingPool, ChargingPool_Id>
     {
 
@@ -72,7 +74,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation
+        #region (static) NoOperation  (ChargingPool, ...)
 
         public static AddOrUpdateChargingPoolResult
 
@@ -91,7 +93,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStationOperator,
-                        social.OpenData.UsersAPI.AddedOrUpdated.NoOperation,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.NoOperation,
                         Description,
                         Warnings,
                         Runtime);
@@ -99,86 +101,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) ArgumentError(...)
-
-        public static AddOrUpdateChargingPoolResult
-
-            ArgumentError(IChargingPool              ChargingPool,
-                          EventTracking_Id?          EventTrackingId           = null,
-                          IId?                       AuthId                    = null,
-                          Object?                    SendPOIData               = null,
-                          IChargingStationOperator?  ChargingStationOperator   = null,
-                          I18NString?                Description               = null,
-                          IEnumerable<Warning>?      Warnings                  = null,
-                          TimeSpan?                  Runtime                   = null)
-
-                => new (ChargingPool,
-                        PushDataResultTypes.ArgumentError,
-                        EventTrackingId,
-                        AuthId,
-                        SendPOIData,
-                        ChargingStationOperator,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Failed,
-                        Description,
-                        Warnings,
-                        Runtime);
-
-        #endregion
-
-
-        #region (static) Added(...)
-
-        public static AddOrUpdateChargingPoolResult
-
-            Added(IChargingPool              ChargingPool,
-                  EventTracking_Id?          EventTrackingId           = null,
-                  IId?                       AuthId                    = null,
-                  Object?                    SendPOIData               = null,
-                  IChargingStationOperator?  ChargingStationOperator   = null,
-                  I18NString?                Description               = null,
-                  IEnumerable<Warning>?      Warnings                  = null,
-                  TimeSpan?                  Runtime                   = null)
-
-                => new (ChargingPool,
-                        PushDataResultTypes.Success,
-                        EventTrackingId,
-                        AuthId,
-                        SendPOIData,
-                        ChargingStationOperator,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Add,
-                        Description,
-                        Warnings,
-                        Runtime);
-
-        #endregion
-
-        #region (static) Updated(...)
-
-        public static AddOrUpdateChargingPoolResult
-
-            Updated(IChargingPool              ChargingPool,
-                    EventTracking_Id?          EventTrackingId           = null,
-                    IId?                       AuthId                    = null,
-                    Object?                    SendPOIData               = null,
-                    IChargingStationOperator?  ChargingStationOperator   = null,
-                    I18NString?                Description               = null,
-                    IEnumerable<Warning>?      Warnings                  = null,
-                    TimeSpan?                  Runtime                   = null)
-
-                => new (ChargingPool,
-                        PushDataResultTypes.Success,
-                        EventTrackingId,
-                        AuthId,
-                        SendPOIData,
-                        ChargingStationOperator,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Update,
-                        Description,
-                        Warnings,
-                        Runtime);
-
-        #endregion
-
-        #region (static) Enqueued(...)
+        #region (static) Enqueued     (ChargingPool, ...)
 
         public static AddOrUpdateChargingPoolResult
 
@@ -197,7 +120,59 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStationOperator,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Enqueued,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Enqueued,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Added        (ChargingPool, ...)
+
+        public static AddOrUpdateChargingPoolResult
+
+            Added(IChargingPool              ChargingPool,
+                  EventTracking_Id?          EventTrackingId           = null,
+                  IId?                       AuthId                    = null,
+                  Object?                    SendPOIData               = null,
+                  IChargingStationOperator?  ChargingStationOperator   = null,
+                  I18NString?                Description               = null,
+                  IEnumerable<Warning>?      Warnings                  = null,
+                  TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingPool,
+                        PushDataResultTypes.Success,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStationOperator,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Add,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Updated      (ChargingPool, ...)
+
+        public static AddOrUpdateChargingPoolResult
+
+            Updated(IChargingPool              ChargingPool,
+                    EventTracking_Id?          EventTrackingId           = null,
+                    IId?                       AuthId                    = null,
+                    Object?                    SendPOIData               = null,
+                    IChargingStationOperator?  ChargingStationOperator   = null,
+                    I18NString?                Description               = null,
+                    IEnumerable<Warning>?      Warnings                  = null,
+                    TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingPool,
+                        PushDataResultTypes.Success,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStationOperator,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Update,
                         Description,
                         Warnings,
                         Runtime);
@@ -205,7 +180,33 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Error(ChargingStationOperator, Description, ...)
+        #region (static) ArgumentError(ChargingPool, Description, ...)
+
+        public static AddOrUpdateChargingPoolResult
+
+            ArgumentError(IChargingPool              ChargingPool,
+                          I18NString                 Description,
+                          EventTracking_Id?          EventTrackingId           = null,
+                          IId?                       AuthId                    = null,
+                          Object?                    SendPOIData               = null,
+                          IChargingStationOperator?  ChargingStationOperator   = null,
+                          IEnumerable<Warning>?      Warnings                  = null,
+                          TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingPool,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStationOperator,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargingPool, Description, ...)
 
         public static AddOrUpdateChargingPoolResult
 
@@ -224,20 +225,20 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStationOperator,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Update,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
                         Description,
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) Error(ChargingStationOperator, Exception,   ...)
+        #region (static) Error        (ChargingPool, Exception,   ...)
 
         public static AddOrUpdateChargingPoolResult
 
             Error(IChargingPool              ChargingPool,
                   Exception                  Exception,
-                  EventTracking_Id?          EventTrackingId           = null,
+                  EventTracking_Id?          EventTrackingId   = null,
                   IId?                       AuthId                    = null,
                   Object?                    SendPOIData               = null,
                   IChargingStationOperator?  ChargingStationOperator   = null,
@@ -250,17 +251,14 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStationOperator,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Update,
-                        I18NString.Create(
-                            Languages.en,
-                            Exception.Message
-                        ),
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        Exception.Message.ToI18NString(Languages.en),
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) LockTimeout(Timeout, ...)
+        #region (static) LockTimeout  (Timeout, ...)
 
         public static AddOrUpdateChargingPoolResult
 
@@ -279,11 +277,8 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStationOperator,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Failed,
-                        I18NString.Create(
-                            Languages.en,
-                            $"Lock timeout after {Timeout.TotalSeconds} seconds!"
-                        ),
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(Languages.en),
                         Warnings,
                         Runtime);
 

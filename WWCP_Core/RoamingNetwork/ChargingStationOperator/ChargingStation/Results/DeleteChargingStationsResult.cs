@@ -18,14 +18,16 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The results of a delete charging stations request.
+    /// </summary>
     public class DeleteChargingStationsResult : AEnititiesResult<DeleteChargingStationResult, IChargingStation, ChargingStation_Id>
     {
 
@@ -56,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation
+        #region (static) NoOperation  (RejectedChargingStations,   ...)
 
         public static DeleteChargingStationsResult
 
@@ -68,24 +70,229 @@ namespace cloud.charging.open.protocols.WWCP
                         IEnumerable<Warning>?          Warnings          = null,
                         TimeSpan?                      Runtime           = null)
 
-            {
+        {
 
-                EventTrackingId ??= EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
-                return new (PushDataResultTypes.NoOperation,
-                            Array.Empty<DeleteChargingStationResult>(),
-                            RejectedChargingStations.Select(chargingStation => DeleteChargingStationResult.NoOperation(chargingStation,
-                                                                                                                       EventTrackingId,
-                                                                                                                       AuthId,
-                                                                                                                       SendPOIData)),
-                            AuthId,
-                            SendPOIData,
-                            EventTrackingId,
-                            Description,
-                            Warnings,
-                            Runtime);
+            return new (PushDataResultTypes.NoOperation,
+                        Array.Empty<DeleteChargingStationResult>(),
+                        RejectedChargingStations.Select(chargingStation => DeleteChargingStationResult.NoOperation(chargingStation,
+                                                                                                                    EventTrackingId,
+                                                                                                                    AuthId,
+                                                                                                                    SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-            }
+        }
+
+        #endregion
+
+
+        #region (static) Enqueued     (SuccessfulChargingStations, ...)
+
+        public static DeleteChargingStationsResult
+
+            Enqueued(IEnumerable<IChargingStation>  SuccessfulChargingStations,
+                     IId?                           AuthId            = null,
+                     Object?                        SendPOIData       = null,
+                     EventTracking_Id?              EventTrackingId   = null,
+                     I18NString?                    Description       = null,
+                     IEnumerable<Warning>?          Warnings          = null,
+                     TimeSpan?                      Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Enqueued,
+                        SuccessfulChargingStations.Select(chargingStation => DeleteChargingStationResult.Enqueued(chargingStation,
+                                                                                                                  EventTrackingId,
+                                                                                                                  AuthId,
+                                                                                                                  SendPOIData)),
+                        Array.Empty<DeleteChargingStationResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Success      (SuccessfulChargingStations, ...)
+
+        public static DeleteChargingStationsResult
+
+            Success(IEnumerable<IChargingStation>  SuccessfulChargingStations,
+                    IId?                           AuthId            = null,
+                    Object?                        SendPOIData       = null,
+                    EventTracking_Id?              EventTrackingId   = null,
+                    I18NString?                    Description       = null,
+                    IEnumerable<Warning>?          Warnings          = null,
+                    TimeSpan?                      Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Success,
+                        SuccessfulChargingStations.Select(chargingStation => DeleteChargingStationResult.Success(chargingStation,
+                                                                                                                 EventTrackingId,
+                                                                                                                 AuthId,
+                                                                                                                 SendPOIData)),
+                        Array.Empty<DeleteChargingStationResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+
+        #region (static) ArgumentError(RejectedChargingStations, Description, ...)
+
+        public static DeleteChargingStationsResult
+
+            ArgumentError(IEnumerable<IChargingStation>  RejectedChargingStations,
+                          I18NString                     Description,
+                          EventTracking_Id?              EventTrackingId   = null,
+                          IId?                           AuthId            = null,
+                          Object?                        SendPOIData       = null,
+                          IEnumerable<Warning>?          Warnings          = null,
+                          TimeSpan?                      Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.ArgumentError,
+                        Array.Empty<DeleteChargingStationResult>(),
+                        RejectedChargingStations.Select(chargingStation => DeleteChargingStationResult.ArgumentError(chargingStation,
+                                                                                                                     Description,
+                                                                                                                     EventTrackingId,
+                                                                                                                     AuthId,
+                                                                                                                     SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Error        (RejectedChargingStations, Description, ...)
+
+        public static DeleteChargingStationsResult
+
+            Error(IEnumerable<IChargingStation>  RejectedChargingStations,
+                  I18NString                     Description,
+                  EventTracking_Id?              EventTrackingId   = null,
+                  IId?                           AuthId            = null,
+                  Object?                        SendPOIData       = null,
+                  IEnumerable<Warning>?          Warnings          = null,
+                  TimeSpan?                      Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Error,
+                        Array.Empty<DeleteChargingStationResult>(),
+                        RejectedChargingStations.Select(chargingStation => DeleteChargingStationResult.Error(chargingStation,
+                                                                                                             Description,
+                                                                                                             EventTrackingId,
+                                                                                                             AuthId,
+                                                                                                             SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Error        (RejectedChargingStations, Exception,   ...)
+
+        public static DeleteChargingStationsResult
+
+            Error(IEnumerable<IChargingStation>  RejectedChargingStations,
+                  Exception                      Exception,
+                  EventTracking_Id?              EventTrackingId   = null,
+                  IId?                           AuthId            = null,
+                  Object?                        SendPOIData       = null,
+                  IEnumerable<Warning>?          Warnings          = null,
+                  TimeSpan?                      Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Error,
+                        Array.Empty<DeleteChargingStationResult>(),
+                        RejectedChargingStations.Select(chargingStation => DeleteChargingStationResult.Error(chargingStation,
+                                                                                                             Exception,
+                                                                                                             EventTrackingId,
+                                                                                                             AuthId,
+                                                                                                             SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Exception.Message.ToI18NString(Languages.en),
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) LockTimeout  (RejectedChargingStations, Timeout, ...)
+
+        public static DeleteChargingStationsResult
+
+            LockTimeout(IEnumerable<IChargingStation>  RejectedChargingStations,
+                        TimeSpan                       Timeout,
+                        IId?                           AuthId            = null,
+                        Object?                        SendPOIData       = null,
+                        EventTracking_Id?              EventTrackingId   = null,
+                        I18NString?                    Description       = null,
+                        IEnumerable<Warning>?          Warnings          = null,
+                        TimeSpan?                      Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.LockTimeout,
+                        Array.Empty<DeleteChargingStationResult>(),
+                        RejectedChargingStations.Select(chargingStation => DeleteChargingStationResult.LockTimeout(chargingStation,
+                                                                                                                   Timeout,
+                                                                                                                   EventTrackingId,
+                                                                                                                   AuthId,
+                                                                                                                   SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
 
         #endregion
 

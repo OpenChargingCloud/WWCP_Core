@@ -18,8 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -85,7 +84,7 @@ namespace cloud.charging.open.protocols.WWCP
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
-                        social.OpenData.UsersAPI.AddedOrUpdated.NoOperation,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.NoOperation,
                         Description,
                         Warnings,
                         Runtime);

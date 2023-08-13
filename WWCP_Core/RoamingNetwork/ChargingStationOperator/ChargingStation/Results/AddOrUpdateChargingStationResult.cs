@@ -18,14 +18,16 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of an add or update charging station request.
+    /// </summary>
     public class AddOrUpdateChargingStationResult : AEnitityResult<IChargingStation, ChargingStation_Id>
     {
 
@@ -72,7 +74,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation
+        #region (static) NoOperation  (ChargingStation, ...)
 
         public static AddOrUpdateChargingStationResult
 
@@ -91,8 +93,192 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingPool,
-                        social.OpenData.UsersAPI.AddedOrUpdated.NoOperation,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.NoOperation,
                         Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) Enqueued     (ChargingStation, ...)
+
+        public static AddOrUpdateChargingStationResult
+
+            Enqueued(IChargingStation       ChargingStation,
+                     EventTracking_Id?      EventTrackingId   = null,
+                     IId?                   AuthId            = null,
+                     Object?                SendPOIData       = null,
+                     IChargingPool?         ChargingPool      = null,
+                     I18NString?            Description       = null,
+                     IEnumerable<Warning>?  Warnings          = null,
+                     TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        PushDataResultTypes.Enqueued,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Enqueued,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Added        (ChargingStation, ...)
+
+        public static AddOrUpdateChargingStationResult
+
+            Added(IChargingStation       ChargingStation,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IChargingPool?         ChargingPool      = null,
+                  I18NString?            Description       = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        PushDataResultTypes.Success,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Add,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Updated      (ChargingStation, ...)
+
+        public static AddOrUpdateChargingStationResult
+
+            Updated(IChargingStation       ChargingStation,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   AuthId            = null,
+                    Object?                SendPOIData       = null,
+                    IChargingPool?         ChargingPool      = null,
+                    I18NString?            Description       = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        PushDataResultTypes.Success,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Update,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) ArgumentError(ChargingStation, Description, ...)
+
+        public static AddOrUpdateChargingStationResult
+
+            ArgumentError(IChargingStation       ChargingStation,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   AuthId            = null,
+                          Object?                SendPOIData       = null,
+                          IChargingPool?         ChargingPool      = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargingStation, Description, ...)
+
+        public static AddOrUpdateChargingStationResult
+
+            Error(IChargingStation       ChargingStation,
+                  I18NString             Description,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IChargingPool?         ChargingPool      = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargingStation, Exception,   ...)
+
+        public static AddOrUpdateChargingStationResult
+
+            Error(IChargingStation       ChargingStation,
+                  Exception              Exception,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IChargingPool?         ChargingPool      = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        Exception.Message.ToI18NString(Languages.en),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout  (ChargingStation, Timeout,     ...)
+
+        public static AddOrUpdateChargingStationResult
+
+            LockTimeout(IChargingStation       ChargingStation,
+                        TimeSpan               Timeout,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   AuthId            = null,
+                        Object?                SendPOIData       = null,
+                        IChargingPool?         ChargingPool      = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        PushDataResultTypes.LockTimeout,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(Languages.en),
                         Warnings,
                         Runtime);
 

@@ -1655,6 +1655,41 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region ReplaceChargingPools      (ChargingPools, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Replace the given enumeration of charging pools.
+        /// Charging pools not included will be deleted.
+        /// </summary>
+        /// <param name="ChargingPools">An enumeration of charging stations to replace.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<ReplaceChargingPoolsResult>
+
+            ISendChargingPoolData.ReplaceChargingPools(IEnumerable<IChargingPool>  ChargingPools,
+                                                       TransmissionTypes           TransmissionType,
+
+                                                       DateTime?                   Timestamp,
+                                                       EventTracking_Id?           EventTrackingId,
+                                                       TimeSpan?                   RequestTimeout,
+                                                       CancellationToken           CancellationToken)
+
+
+                => Task.FromResult(
+                       ReplaceChargingPoolsResult.NoOperation(
+                           RejectedChargingPools:  ChargingPools,
+                           AuthId:                 Id,
+                           SendPOIData:            this,
+                           EventTrackingId:        EventTrackingId
+                       )
+                   );
+
+        #endregion
+
         #region DeleteChargingPools       (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
@@ -2106,6 +2141,41 @@ namespace cloud.charging.open.protocols.WWCP
 
                 => Task.FromResult(
                        UpdateChargingStationsResult.NoOperation(
+                           RejectedChargingStations:  ChargingStations,
+                           AuthId:                    Id,
+                           SendPOIData:               this,
+                           EventTrackingId:           EventTrackingId
+                       )
+                   );
+
+        #endregion
+
+        #region ReplaceChargingStations      (ChargingStations, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Replace the given enumeration of charging stations.
+        /// Charging stations not included will be deleted.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations to replace.</param>
+        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<ReplaceChargingStationsResult>
+
+            ISendChargingStationData.ReplaceChargingStations(IEnumerable<IChargingStation>  ChargingStations,
+                                                             TransmissionTypes              TransmissionType,
+
+                                                             DateTime?                      Timestamp,
+                                                             EventTracking_Id?              EventTrackingId,
+                                                             TimeSpan?                      RequestTimeout,
+                                                             CancellationToken              CancellationToken)
+
+
+                => Task.FromResult(
+                       ReplaceChargingStationsResult.NoOperation(
                            RejectedChargingStations:  ChargingStations,
                            AuthId:                    Id,
                            SendPOIData:               this,
@@ -2569,6 +2639,41 @@ namespace cloud.charging.open.protocols.WWCP
 
                 => Task.FromResult(
                        UpdateEVSEsResult.NoOperation(
+                           RejectedEVSEs:    EVSEs,
+                           AuthId:           Id,
+                           SendPOIData:      this,
+                           EventTrackingId:  EventTrackingId
+                       )
+                   );
+
+        #endregion
+
+        #region ReplaceEVSEs      (EVSEs, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Replace the given enumeration of EVSEs.
+        /// EVSEs not included will be deleted.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs to replace.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public virtual Task<ReplaceEVSEsResult>
+
+            ReplaceEVSEs(IEnumerable<IEVSE>  EVSEs,
+                         TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+
+                         DateTime?           Timestamp           = null,
+                         EventTracking_Id?   EventTrackingId     = null,
+                         TimeSpan?           RequestTimeout      = null,
+                         CancellationToken   CancellationToken   = default)
+
+
+                => Task.FromResult(
+                       ReplaceEVSEsResult.NoOperation(
                            RejectedEVSEs:    EVSEs,
                            AuthId:           Id,
                            SendPOIData:      this,

@@ -18,14 +18,16 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The results of an add EVSEs request.
+    /// </summary>
     public class AddEVSEsResult : AEnititiesResult<AddEVSEResult, IEVSE, EVSE_Id>
     {
 
@@ -56,43 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        //public static AddEVSEsResult Success(IEnumerable<AEnitityResult<IEVSE, EVSE_Id>>  AddEVSEResults,
-        //                                     EventTracking_Id                             EventTrackingId)
-
-        //    => new (AddEVSEResults,
-        //            EventTrackingId,
-        //            true,
-        //            null,
-        //            null);
-
-        //public static AddEVSEsResult NoOperation(IEnumerable<AEnitityResult<IEVSE, EVSE_Id>>  AddEVSEResults,
-        //                                         EventTracking_Id                             EventTrackingId,
-        //                                         String                                       Description)
-
-        //    => new (AddEVSEResults,
-        //            EventTrackingId,
-        //            true,
-        //            null,
-        //            I18NString.Create(
-        //                Languages.en,
-        //                Description
-        //            ));
-
-
-        //public static AddEVSEsResult Failed(IEnumerable<AEnitityResult<IEVSE, EVSE_Id>>  AddEVSEResults,
-        //                                    EventTracking_Id                             EventTrackingId,
-        //                                    String                                       Description)
-
-        //    => new (AddEVSEResults,
-        //            EventTrackingId,
-        //            false,
-        //            null,
-        //            I18NString.Create(
-        //                Languages.en,
-        //                Description
-        //            ));
-
-        #region (static) NoOperation
+        #region (static) NoOperation  (RejectedEVSEs,   ...)
 
         public static AddEVSEsResult
 
@@ -104,24 +70,229 @@ namespace cloud.charging.open.protocols.WWCP
                         IEnumerable<Warning>?  Warnings          = null,
                         TimeSpan?              Runtime           = null)
 
-            {
+        {
 
-                EventTrackingId ??= EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
-                return new (PushDataResultTypes.NoOperation,
-                            Array.Empty<AddEVSEResult>(),
-                            RejectedEVSEs.Select(evse => AddEVSEResult.NoOperation(evse,
-                                                                                   EventTrackingId,
-                                                                                   AuthId,
-                                                                                   SendPOIData)),
-                            AuthId,
-                            SendPOIData,
-                            EventTrackingId,
-                            Description,
-                            Warnings,
-                            Runtime);
+            return new (PushDataResultTypes.NoOperation,
+                        Array.Empty<AddEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddEVSEResult.NoOperation(evse,
+                                                                                EventTrackingId,
+                                                                                AuthId,
+                                                                                SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-            }
+        }
+
+        #endregion
+
+
+        #region (static) Enqueued     (SuccessfulEVSEs, ...)
+
+        public static AddEVSEsResult
+
+            Enqueued(IEnumerable<IEVSE>     SuccessfulEVSEs,
+                     IId?                   AuthId            = null,
+                     Object?                SendPOIData       = null,
+                     EventTracking_Id?      EventTrackingId   = null,
+                     I18NString?            Description       = null,
+                     IEnumerable<Warning>?  Warnings          = null,
+                     TimeSpan?              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Enqueued,
+                        SuccessfulEVSEs.Select(evse => AddEVSEResult.Enqueued(evse,
+                                                                                EventTrackingId,
+                                                                                AuthId,
+                                                                                SendPOIData)),
+                        Array.Empty<AddEVSEResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Success      (SuccessfulEVSEs, ...)
+
+        public static AddEVSEsResult
+
+            Success(IEnumerable<IEVSE>     SuccessfulEVSEs,
+                    IId?                   AuthId            = null,
+                    Object?                SendPOIData       = null,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    I18NString?            Description       = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Success,
+                        SuccessfulEVSEs.Select(evse => AddEVSEResult.Success(evse,
+                                                                                EventTrackingId,
+                                                                                AuthId,
+                                                                                SendPOIData)),
+                        Array.Empty<AddEVSEResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+
+        #region (static) ArgumentError(RejectedEVSEs, Description, ...)
+
+        public static AddEVSEsResult
+
+            ArgumentError(IEnumerable<IEVSE>     RejectedEVSEs,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   AuthId            = null,
+                          Object?                SendPOIData       = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.ArgumentError,
+                        Array.Empty<AddEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddEVSEResult.ArgumentError(evse,
+                                                                                 Description,
+                                                                                 EventTrackingId,
+                                                                                 AuthId,
+                                                                                 SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Error        (RejectedEVSEs, Description, ...)
+
+        public static AddEVSEsResult
+
+            Error(IEnumerable<IEVSE>     RejectedEVSEs,
+                  I18NString             Description,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Error,
+                        Array.Empty<AddEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddEVSEResult.Error(evse,
+                                                                         Description,
+                                                                         EventTrackingId,
+                                                                         AuthId,
+                                                                         SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Error        (RejectedEVSEs, Exception,   ...)
+
+        public static AddEVSEsResult
+
+            Error(IEnumerable<IEVSE>     RejectedEVSEs,
+                  Exception              Exception,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Error,
+                        Array.Empty<AddEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddEVSEResult.Error(evse,
+                                                                         Exception,
+                                                                         EventTrackingId,
+                                                                         AuthId,
+                                                                         SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Exception.Message.ToI18NString(Languages.en),
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) LockTimeout  (RejectedEVSEs, Timeout, ...)
+
+        public static AddEVSEsResult
+
+            LockTimeout(IEnumerable<IEVSE>     RejectedEVSEs,
+                        TimeSpan               Timeout,
+                        IId?                   AuthId            = null,
+                        Object?                SendPOIData       = null,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        I18NString?            Description       = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.LockTimeout,
+                        Array.Empty<AddEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddEVSEResult.LockTimeout(evse,
+                                                                               Timeout,
+                                                                               EventTrackingId,
+                                                                               AuthId,
+                                                                               SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
 
         #endregion
 

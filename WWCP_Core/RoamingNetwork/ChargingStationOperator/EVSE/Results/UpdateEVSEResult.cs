@@ -18,14 +18,16 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of an update EVSE request.
+    /// </summary>
     public class UpdateEVSEResult : AEnitityResult<IEVSE, EVSE_Id>
     {
 
@@ -65,84 +67,36 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
+
+        public UpdateEVSEResult(EVSE_Id                EVSEId,
+                                PushDataResultTypes    Result,
+                                EventTracking_Id?      EventTrackingId   = null,
+                                IId?                   AuthId            = null,
+                                Object?                SendPOIData       = null,
+                                IChargingStation?      ChargingStation   = null,
+                                I18NString?            Description       = null,
+                                IEnumerable<Warning>?  Warnings          = null,
+                                TimeSpan?              Runtime           = null)
+
+            : base(EVSEId,
+                   Result,
+                   EventTrackingId,
+                   AuthId,
+                   SendPOIData,
+                   Description,
+                   Warnings,
+                   Runtime)
+
+        {
+
+            this.ChargingStation = ChargingStation;
+
+        }
+
         #endregion
 
 
-        //public static UpdateEVSEResult Success(IEVSE             EVSE,
-        //                                       EventTracking_Id  EventTrackingId)
-
-        //    => new (EVSE,
-        //            EventTrackingId,
-        //            true,
-        //            null,
-        //            null);
-
-
-        //public static UpdateEVSEResult ArgumentError(IEVSE             EVSE,
-        //                                             EventTracking_Id  EventTrackingId,
-        //                                             String            Argument,
-        //                                             String            Description)
-
-        //    => new (EVSE,
-        //            EventTrackingId,
-        //            false,
-        //            Argument,
-        //            I18NString.Create(
-        //                Languages.en,
-        //                Description
-        //            ));
-
-        //public static UpdateEVSEResult ArgumentError(IEVSE             EVSE,
-        //                                             EventTracking_Id  EventTrackingId,
-        //                                             String            Argument,
-        //                                             I18NString        Description)
-
-        //    => new (EVSE,
-        //            EventTrackingId,
-        //            false,
-        //            Argument,
-        //            Description);
-
-
-        //public static UpdateEVSEResult Failed(IEVSE             EVSE,
-        //                                      EventTracking_Id  EventTrackingId,
-        //                                      String            Description)
-
-        //    => new (EVSE,
-        //            EventTrackingId,
-        //            false,
-        //            null,
-        //            I18NString.Create(
-        //                Languages.en,
-        //                Description
-        //            ));
-
-        //public static UpdateEVSEResult Failed(IEVSE             EVSE,
-        //                                      EventTracking_Id  EventTrackingId,
-        //                                      I18NString        Description)
-
-        //    => new (EVSE,
-        //            EventTrackingId,
-        //            false,
-        //            null,
-        //            Description);
-
-        //public static UpdateEVSEResult Failed(IEVSE             EVSE,
-        //                                      EventTracking_Id  EventTrackingId,
-        //                                      Exception         Exception)
-
-        //    => new (EVSE,
-        //            EventTrackingId,
-        //            false,
-        //            null,
-        //            I18NString.Create(
-        //                Languages.en,
-        //                Exception.Message
-        //            ));
-
-
-
-        #region (static) NoOperation
+        #region (static) NoOperation  (EVSE, ...)
 
         public static UpdateEVSEResult
 
@@ -167,32 +121,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) ArgumentError(...)
 
-        public static UpdateEVSEResult
-
-            ArgumentError(IEVSE                  EVSE,
-                          EventTracking_Id?      EventTrackingId   = null,
-                          IId?                   AuthId            = null,
-                          Object?                SendPOIData       = null,
-                          IChargingStation?      ChargingStation   = null,
-                          I18NString?            Description       = null,
-                          IEnumerable<Warning>?  Warnings          = null,
-                          TimeSpan?              Runtime           = null)
-
-                => new (EVSE,
-                        PushDataResultTypes.ArgumentError,
-                        EventTrackingId,
-                        AuthId,
-                        SendPOIData,
-                        ChargingStation,
-                        Description,
-                        Warnings,
-                        Runtime);
-
-        #endregion
-
-        #region (static) Enqueued(...)
+        #region (static) Enqueued     (EVSE, ...)
 
         public static UpdateEVSEResult
 
@@ -217,7 +147,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Success(...)
+        #region (static) Success      (EVSE, ...)
 
         public static UpdateEVSEResult
 
@@ -243,7 +173,57 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Error(ChargingStationOperator, Description, ...)
+        #region (static) ArgumentError(EVSE,   Description, ...)
+
+        public static UpdateEVSEResult
+
+            ArgumentError(IEVSE                  EVSE,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   AuthId            = null,
+                          Object?                SendPOIData       = null,
+                          IChargingStation?      ChargingStation   = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) ArgumentError(EVSEId, Description, ...)
+
+        public static UpdateEVSEResult
+
+            ArgumentError(EVSE_Id                EVSEId,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   AuthId            = null,
+                          Object?                SendPOIData       = null,
+                          IChargingStation?      ChargingStation   = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+                => new (EVSEId,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (EVSE,   Description, ...)
 
         public static UpdateEVSEResult
 
@@ -268,7 +248,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Error(ChargingStationOperator, Exception,   ...)
+        #region (static) Error        (EVSE,   Exception,   ...)
 
         public static UpdateEVSEResult
 
@@ -287,16 +267,13 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStation,
-                        I18NString.Create(
-                            Languages.en,
-                            Exception.Message
-                        ),
+                        Exception.Message.ToI18NString(Languages.en),
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) LockTimeout(Timeout, ...)
+        #region (static) LockTimeout  (EVSE,   Timeout,     ...)
 
         public static UpdateEVSEResult
 
@@ -315,10 +292,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStation,
-                        I18NString.Create(
-                            Languages.en,
-                            $"Lock timeout after {Timeout.TotalSeconds} seconds!"
-                        ),
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(Languages.en),
                         Warnings,
                         Runtime);
 

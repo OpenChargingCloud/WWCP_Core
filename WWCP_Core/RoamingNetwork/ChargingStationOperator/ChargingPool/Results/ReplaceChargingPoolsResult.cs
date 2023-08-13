@@ -26,22 +26,24 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The results of a delete charging pools request.
+    /// The results of a replace charging pools request.
     /// </summary>
-    public class DeleteChargingPoolsResult : AEnititiesResult<DeleteChargingPoolResult, IChargingPool, ChargingPool_Id>
+    public class ReplaceChargingPoolsResult : AEnititiesResult<AddOrUpdateChargingPoolResult,
+                                                               IChargingPool,
+                                                               ChargingPool_Id>
     {
 
         #region Constructor(s)
 
-        public DeleteChargingPoolsResult(PushDataResultTypes                     Result,
-                                         IEnumerable<DeleteChargingPoolResult>?  SuccessfulChargingPools   = null,
-                                         IEnumerable<DeleteChargingPoolResult>?  RejectedChargingPools     = null,
-                                         IId?                                    AuthId                    = null,
-                                         Object?                                 SendPOIData               = null,
-                                         EventTracking_Id?                       EventTrackingId           = null,
-                                         I18NString?                             Description               = null,
-                                         IEnumerable<Warning>?                   Warnings                  = null,
-                                         TimeSpan?                               Runtime                   = null)
+        public ReplaceChargingPoolsResult(PushDataResultTypes                          Result,
+                                          IEnumerable<AddOrUpdateChargingPoolResult>?  SuccessfulChargingPools   = null,
+                                          IEnumerable<AddOrUpdateChargingPoolResult>?  RejectedChargingPools     = null,
+                                          IId?                                         AuthId                    = null,
+                                          Object?                                      SendPOIData               = null,
+                                          EventTracking_Id?                            EventTrackingId           = null,
+                                          I18NString?                                  Description               = null,
+                                          IEnumerable<Warning>?                        Warnings                  = null,
+                                          TimeSpan?                                    Runtime                   = null)
 
             : base(Result,
                    SuccessfulChargingPools,
@@ -60,7 +62,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) NoOperation  (RejectedChargingPools,   ...)
 
-        public static DeleteChargingPoolsResult
+        public static ReplaceChargingPoolsResult
 
             NoOperation(IEnumerable<IChargingPool>  RejectedChargingPools,
                         IId?                        AuthId            = null,
@@ -75,11 +77,11 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
             return new (PushDataResultTypes.NoOperation,
-                        Array.Empty<DeleteChargingPoolResult>(),
-                        RejectedChargingPools.Select(chargingPool => DeleteChargingPoolResult.NoOperation(chargingPool,
-                                                                                                          EventTrackingId,
-                                                                                                          AuthId,
-                                                                                                          SendPOIData)),
+                        Array.Empty<AddOrUpdateChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => AddOrUpdateChargingPoolResult.NoOperation(chargingPool,
+                                                                                                               EventTrackingId,
+                                                                                                               AuthId,
+                                                                                                               SendPOIData)),
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
@@ -94,7 +96,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Enqueued     (SuccessfulChargingPools, ...)
 
-        public static DeleteChargingPoolsResult
+        public static ReplaceChargingPoolsResult
 
             Enqueued(IEnumerable<IChargingPool>  SuccessfulChargingPools,
                      IId?                        AuthId            = null,
@@ -109,11 +111,11 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
             return new (PushDataResultTypes.Enqueued,
-                        SuccessfulChargingPools.Select(chargingPool => DeleteChargingPoolResult.Enqueued(chargingPool,
-                                                                                                         EventTrackingId,
-                                                                                                         AuthId,
-                                                                                                         SendPOIData)),
-                        Array.Empty<DeleteChargingPoolResult>(),
+                        SuccessfulChargingPools.Select(chargingPool => AddOrUpdateChargingPoolResult.Enqueued(chargingPool,
+                                                                                                              EventTrackingId,
+                                                                                                              AuthId,
+                                                                                                              SendPOIData)),
+                        Array.Empty<AddOrUpdateChargingPoolResult>(),
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
@@ -125,11 +127,44 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Success      (SuccessfulChargingPools, ...)
+        #region (static) Added        (SuccessfulChargingPools, ...)
 
-        public static DeleteChargingPoolsResult
+        public static ReplaceChargingPoolsResult
 
-            Success(IEnumerable<IChargingPool>  SuccessfulChargingPools,
+            Added(IEnumerable<IChargingPool>  SuccessfulChargingPools,
+                  IId?                        AuthId            = null,
+                  Object?                     SendPOIData       = null,
+                  EventTracking_Id?           EventTrackingId   = null,
+                  I18NString?                 Description       = null,
+                  IEnumerable<Warning>?       Warnings          = null,
+                  TimeSpan?                   Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Success,
+                        SuccessfulChargingPools.Select(chargingPool => AddOrUpdateChargingPoolResult.Added(chargingPool,
+                                                                                                           EventTrackingId,
+                                                                                                           AuthId,
+                                                                                                           SendPOIData)),
+                        Array.Empty<AddOrUpdateChargingPoolResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Updated      (SuccessfulChargingPools, ...)
+
+        public static ReplaceChargingPoolsResult
+
+            Updated(IEnumerable<IChargingPool>  SuccessfulChargingPools,
                     IId?                        AuthId            = null,
                     Object?                     SendPOIData       = null,
                     EventTracking_Id?           EventTrackingId   = null,
@@ -142,11 +177,11 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
             return new (PushDataResultTypes.Success,
-                        SuccessfulChargingPools.Select(chargingPool => DeleteChargingPoolResult.Success(chargingPool,
-                                                                                                        EventTrackingId,
-                                                                                                        AuthId,
-                                                                                                        SendPOIData)),
-                        Array.Empty<DeleteChargingPoolResult>(),
+                        SuccessfulChargingPools.Select(chargingPool => AddOrUpdateChargingPoolResult.Updated(chargingPool,
+                                                                                                             EventTrackingId,
+                                                                                                             AuthId,
+                                                                                                             SendPOIData)),
+                        Array.Empty<AddOrUpdateChargingPoolResult>(),
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
@@ -161,7 +196,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) ArgumentError(RejectedChargingPools, Description, ...)
 
-        public static DeleteChargingPoolsResult
+        public static ReplaceChargingPoolsResult
 
             ArgumentError(IEnumerable<IChargingPool>  RejectedChargingPools,
                           I18NString                  Description,
@@ -176,12 +211,12 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
             return new (PushDataResultTypes.ArgumentError,
-                        Array.Empty<DeleteChargingPoolResult>(),
-                        RejectedChargingPools.Select(chargingPool => DeleteChargingPoolResult.ArgumentError(chargingPool,
-                                                                                                            Description,
-                                                                                                            EventTrackingId,
-                                                                                                            AuthId,
-                                                                                                            SendPOIData)),
+                        Array.Empty<AddOrUpdateChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => AddOrUpdateChargingPoolResult.ArgumentError(chargingPool,
+                                                                                                                 Description,
+                                                                                                                 EventTrackingId,
+                                                                                                                 AuthId,
+                                                                                                                 SendPOIData)),
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
@@ -195,7 +230,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Error        (RejectedChargingPools, Description, ...)
 
-        public static DeleteChargingPoolsResult
+        public static ReplaceChargingPoolsResult
 
             Error(IEnumerable<IChargingPool>  RejectedChargingPools,
                   I18NString                  Description,
@@ -210,12 +245,12 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
             return new (PushDataResultTypes.Error,
-                        Array.Empty<DeleteChargingPoolResult>(),
-                        RejectedChargingPools.Select(chargingPool => DeleteChargingPoolResult.Error(chargingPool,
-                                                                                                    Description,
-                                                                                                    EventTrackingId,
-                                                                                                    AuthId,
-                                                                                                    SendPOIData)),
+                        Array.Empty<AddOrUpdateChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => AddOrUpdateChargingPoolResult.Error(chargingPool,
+                                                                                                         Description,
+                                                                                                         EventTrackingId,
+                                                                                                         AuthId,
+                                                                                                         SendPOIData)),
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
@@ -229,7 +264,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Error        (RejectedChargingPools, Exception,   ...)
 
-        public static DeleteChargingPoolsResult
+        public static ReplaceChargingPoolsResult
 
             Error(IEnumerable<IChargingPool>  RejectedChargingPools,
                   Exception                   Exception,
@@ -244,12 +279,12 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
             return new (PushDataResultTypes.Error,
-                        Array.Empty<DeleteChargingPoolResult>(),
-                        RejectedChargingPools.Select(chargingPool => DeleteChargingPoolResult.Error(chargingPool,
-                                                                                                    Exception,
-                                                                                                    EventTrackingId,
-                                                                                                    AuthId,
-                                                                                                    SendPOIData)),
+                        Array.Empty<AddOrUpdateChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => AddOrUpdateChargingPoolResult.Error(chargingPool,
+                                                                                                         Exception,
+                                                                                                         EventTrackingId,
+                                                                                                         AuthId,
+                                                                                                         SendPOIData)),
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
@@ -263,7 +298,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) LockTimeout  (RejectedChargingPools, Timeout, ...)
 
-        public static DeleteChargingPoolsResult
+        public static ReplaceChargingPoolsResult
 
             LockTimeout(IEnumerable<IChargingPool>  RejectedChargingPools,
                         TimeSpan                    Timeout,
@@ -279,12 +314,12 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
             return new (PushDataResultTypes.LockTimeout,
-                        Array.Empty<DeleteChargingPoolResult>(),
-                        RejectedChargingPools.Select(chargingPool => DeleteChargingPoolResult.LockTimeout(chargingPool,
-                                                                                                          Timeout,
-                                                                                                          EventTrackingId,
-                                                                                                          AuthId,
-                                                                                                          SendPOIData)),
+                        Array.Empty<AddOrUpdateChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => AddOrUpdateChargingPoolResult.LockTimeout(chargingPool,
+                                                                                                               Timeout,
+                                                                                                               EventTrackingId,
+                                                                                                               AuthId,
+                                                                                                               SendPOIData)),
                         AuthId,
                         SendPOIData,
                         EventTrackingId,

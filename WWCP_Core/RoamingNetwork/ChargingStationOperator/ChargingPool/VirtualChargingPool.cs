@@ -1333,23 +1333,25 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #endregion
 
-            var Now              = Timestamp.Now;
-            var _VirtualStation  = new VirtualChargingStation(ChargingStationId,
-                                                              RoamingNetwork,
-                                                              Name,
-                                                              Description,
-                                                              InitialAdminStatus ?? ChargingStationAdminStatusTypes.Operational,
-                                                              InitialStatus      ?? ChargingStationStatusTypes.     Available,
-                                                              EllipticCurve,
-                                                              PrivateKey,
-                                                              PublicKeyCertificates,
-                                                              SelfCheckTimeSpan,
-                                                              MaxAdminStatusScheduleSize,
-                                                              MaxStatusScheduleSize);
+            var Now             = Timestamp.Now;
+            var virtualStation  = new VirtualChargingStation(
+                                      ChargingStationId,
+                                      RoamingNetwork,
+                                      Name,
+                                      Description,
+                                      InitialAdminStatus ?? ChargingStationAdminStatusTypes.Operational,
+                                      InitialStatus      ?? ChargingStationStatusTypes.     Available,
+                                      EllipticCurve,
+                                      PrivateKey,
+                                      PublicKeyCertificates,
+                                      SelfCheckTimeSpan,
+                                      MaxAdminStatusScheduleSize,
+                                      MaxStatusScheduleSize
+                                  );
 
-            Configurator?.Invoke(_VirtualStation);
+            Configurator?.Invoke(virtualStation);
 
-            if (chargingStations.Add(_VirtualStation))
+            if (chargingStations.Add(virtualStation))
             {
 
                 //_VirtualEVSE.OnPropertyChanged        += (Timestamp, Sender, PropertyName, OldValue, NewValue)
@@ -1361,13 +1363,26 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 //_VirtualEVSE.OnNewChargingSession     += SendNewChargingSession;
                 //_VirtualEVSE.OnNewChargeDetailRecord  += SendNewChargeDetailRecord;
 
-                OnSuccess?.Invoke(_VirtualStation);
+                OnSuccess?.Invoke(virtualStation);
 
-                return AddChargingStationResult.Success(_VirtualStation, EventTracking_Id.New);
+                return AddChargingStationResult.Success(
+                           virtualStation,
+                           EventTracking_Id.New,
+                           Id,
+                           this,
+                           this
+                       );
 
             }
 
-            return AddChargingStationResult.Failed(_VirtualStation, EventTracking_Id.New, "");
+            return AddChargingStationResult.Error(
+                       virtualStation,
+                       "error".ToI18NString(Languages.en),
+                       EventTracking_Id.New,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 

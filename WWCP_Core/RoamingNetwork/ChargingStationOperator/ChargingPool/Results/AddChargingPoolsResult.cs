@@ -18,14 +18,16 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The results of an add charging pools request.
+    /// </summary>
     public class AddChargingPoolsResult : AEnititiesResult<AddChargingPoolResult,
                                                            IChargingPool,
                                                            ChargingPool_Id>
@@ -58,7 +60,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation
+        #region (static) NoOperation  (RejectedChargingPools,   ...)
 
         public static AddChargingPoolsResult
 
@@ -70,164 +72,198 @@ namespace cloud.charging.open.protocols.WWCP
                         IEnumerable<Warning>?       Warnings          = null,
                         TimeSpan?                   Runtime           = null)
 
-            {
+        {
 
-                EventTrackingId ??= EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
-                return new (PushDataResultTypes.NoOperation,
-                            Array.Empty<AddChargingPoolResult>(),
-                            RejectedChargingPools.Select(chargingPool => AddChargingPoolResult.NoOperation(chargingPool,
-                                                                                                           EventTrackingId,
-                                                                                                           AuthId,
-                                                                                                           SendPOIData)),
-                            AuthId,
-                            SendPOIData,
-                            EventTrackingId,
-                            Description,
-                            Warnings,
-                            Runtime);
-
-            }
-
-        #endregion
-
-        #region (static) ArgumentError(...)
-
-        public static AddOrUpdateChargingStationOperatorResult
-
-            ArgumentError(IChargingStationOperator  ChargingStationOperator,
-                          EventTracking_Id?         EventTrackingId   = null,
-                          IId?                      AuthId            = null,
-                          Object?                   SendPOIData       = null,
-                          IRoamingNetwork?          RoamingNetwork    = null,
-                          I18NString?               Description       = null,
-                          IEnumerable<Warning>?     Warnings          = null,
-                          TimeSpan?                 Runtime           = null)
-
-                => new (ChargingStationOperator,
-                        PushDataResultTypes.ArgumentError,
-                        EventTrackingId,
+            return new (PushDataResultTypes.NoOperation,
+                        Array.Empty<AddChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => AddChargingPoolResult.NoOperation(chargingPool,
+                                                                                                       EventTrackingId,
+                                                                                                       AuthId,
+                                                                                                       SendPOIData)),
                         AuthId,
                         SendPOIData,
-                        RoamingNetwork,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Failed,
+                        EventTrackingId,
                         Description,
                         Warnings,
                         Runtime);
 
+        }
+
         #endregion
 
-        #region (static) Added(...)
 
-        public static AddOrUpdateChargingStationOperatorResult
+        #region (static) Enqueued     (SuccessfulChargingPools, ...)
 
-            Added(IChargingStationOperator  ChargingStationOperator,
-                  EventTracking_Id?         EventTrackingId   = null,
-                  IId?                      AuthId            = null,
-                  Object?                   SendPOIData       = null,
-                  IRoamingNetwork?          RoamingNetwork    = null,
-                  I18NString?               Description       = null,
-                  IEnumerable<Warning>?     Warnings          = null,
-                  TimeSpan?                 Runtime           = null)
+        public static AddChargingPoolsResult
 
-                => new (ChargingStationOperator,
-                        PushDataResultTypes.Success,
-                        EventTrackingId,
+            Enqueued(IEnumerable<IChargingPool>  SuccessfulChargingPools,
+                     IId?                        AuthId            = null,
+                     Object?                     SendPOIData       = null,
+                     EventTracking_Id?           EventTrackingId   = null,
+                     I18NString?                 Description       = null,
+                     IEnumerable<Warning>?       Warnings          = null,
+                     TimeSpan?                   Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Enqueued,
+                        SuccessfulChargingPools.Select(chargingPool => AddChargingPoolResult.Enqueued(chargingPool,
+                                                                                                      EventTrackingId,
+                                                                                                      AuthId,
+                                                                                                      SendPOIData)),
+                        Array.Empty<AddChargingPoolResult>(),
                         AuthId,
                         SendPOIData,
-                        RoamingNetwork,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Add,
+                        EventTrackingId,
                         Description,
                         Warnings,
                         Runtime);
 
+        }
+
         #endregion
 
-        #region (static) Updated(...)
+        #region (static) Success      (SuccessfulChargingPools, ...)
 
-        public static AddOrUpdateChargingStationOperatorResult
+        public static AddChargingPoolsResult
 
-            Updated(IChargingStationOperator  ChargingStationOperator,
-                    EventTracking_Id?         EventTrackingId   = null,
-                    IId?                      AuthId            = null,
-                    Object?                   SendPOIData       = null,
-                    IRoamingNetwork?          RoamingNetwork    = null,
-                    I18NString?               Description       = null,
-                    IEnumerable<Warning>?     Warnings          = null,
-                    TimeSpan?                 Runtime           = null)
+            Success(IEnumerable<IChargingPool>  SuccessfulChargingPools,
+                    IId?                        AuthId            = null,
+                    Object?                     SendPOIData       = null,
+                    EventTracking_Id?           EventTrackingId   = null,
+                    I18NString?                 Description       = null,
+                    IEnumerable<Warning>?       Warnings          = null,
+                    TimeSpan?                   Runtime           = null)
 
-                => new (ChargingStationOperator,
-                        PushDataResultTypes.Success,
-                        EventTrackingId,
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Success,
+                        SuccessfulChargingPools.Select(chargingPool => AddChargingPoolResult.Success(chargingPool,
+                                                                                                     EventTrackingId,
+                                                                                                     AuthId,
+                                                                                                     SendPOIData)),
+                        Array.Empty<AddChargingPoolResult>(),
                         AuthId,
                         SendPOIData,
-                        RoamingNetwork,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Update,
+                        EventTrackingId,
                         Description,
                         Warnings,
                         Runtime);
 
+        }
+
         #endregion
 
 
-        #region (static) Error(ChargingStationOperator, Description, ...)
+        #region (static) ArgumentError(RejectedChargingPools, Description, ...)
 
-        public static AddOrUpdateChargingStationOperatorResult
+        public static AddChargingPoolsResult
 
-            Error(IChargingStationOperator  ChargingStationOperator,
-                  I18NString                Description,
-                  EventTracking_Id?         EventTrackingId   = null,
-                  IId?                      AuthId            = null,
-                  Object?                   SendPOIData       = null,
-                  IRoamingNetwork?          RoamingNetwork    = null,
-                  IEnumerable<Warning>?     Warnings          = null,
-                  TimeSpan?                 Runtime           = null)
+            ArgumentError(IEnumerable<IChargingPool>  RejectedChargingPools,
+                          I18NString                  Description,
+                          EventTracking_Id?           EventTrackingId   = null,
+                          IId?                        AuthId            = null,
+                          Object?                     SendPOIData       = null,
+                          IEnumerable<Warning>?       Warnings          = null,
+                          TimeSpan?                   Runtime           = null)
 
-                => new (ChargingStationOperator,
-                        PushDataResultTypes.Error,
-                        EventTrackingId,
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.ArgumentError,
+                        Array.Empty<AddChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => AddChargingPoolResult.ArgumentError(chargingPool,
+                                                                                                         Description,
+                                                                                                         EventTrackingId,
+                                                                                                         AuthId,
+                                                                                                         SendPOIData)),
                         AuthId,
                         SendPOIData,
-                        RoamingNetwork,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Failed,
+                        EventTrackingId,
                         Description,
                         Warnings,
                         Runtime);
 
+        }
+
         #endregion
 
-        #region (static) Error(ChargingStationOperator, Exception,   ...)
+        #region (static) Error        (RejectedChargingPools, Description, ...)
 
-        public static AddOrUpdateChargingStationOperatorResult
+        public static AddChargingPoolsResult
 
-            Error(IChargingStationOperator  ChargingStationOperator,
-                  Exception                 Exception,
-                  EventTracking_Id?         EventTrackingId   = null,
-                  IId?                      AuthId            = null,
-                  Object?                   SendPOIData       = null,
-                  IRoamingNetwork?          RoamingNetwork    = null,
-                  IEnumerable<Warning>?     Warnings          = null,
-                  TimeSpan?                 Runtime           = null)
+            Error(IEnumerable<IChargingPool>  RejectedChargingPools,
+                  I18NString                  Description,
+                  EventTracking_Id?           EventTrackingId   = null,
+                  IId?                        AuthId            = null,
+                  Object?                     SendPOIData       = null,
+                  IEnumerable<Warning>?       Warnings          = null,
+                  TimeSpan?                   Runtime           = null)
 
-                => new (ChargingStationOperator,
-                        PushDataResultTypes.Error,
-                        EventTrackingId,
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Error,
+                        Array.Empty<AddChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => AddChargingPoolResult.Error(chargingPool,
+                                                                                                 Description,
+                                                                                                 EventTrackingId,
+                                                                                                 AuthId,
+                                                                                                 SendPOIData)),
                         AuthId,
                         SendPOIData,
-                        RoamingNetwork,
-                        social.OpenData.UsersAPI.AddedOrUpdated.Failed,
-                        I18NString.Create(
-                            Languages.en,
-                            Exception.Message
-                        ),
+                        EventTrackingId,
+                        Description,
                         Warnings,
                         Runtime);
 
+        }
+
         #endregion
 
+        #region (static) Error        (RejectedChargingPools, Exception,   ...)
 
+        public static AddChargingPoolsResult
 
-        #region (static) LockTimeout(Timeout, ...)
+            Error(IEnumerable<IChargingPool>  RejectedChargingPools,
+                  Exception                   Exception,
+                  EventTracking_Id?           EventTrackingId   = null,
+                  IId?                        AuthId            = null,
+                  Object?                     SendPOIData       = null,
+                  IEnumerable<Warning>?       Warnings          = null,
+                  TimeSpan?                   Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Error,
+                        Array.Empty<AddChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => AddChargingPoolResult.Error(chargingPool,
+                                                                                                 Exception,
+                                                                                                 EventTrackingId,
+                                                                                                 AuthId,
+                                                                                                 SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Exception.Message.ToI18NString(Languages.en),
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) LockTimeout  (RejectedChargingPools, Timeout, ...)
 
         public static AddChargingPoolsResult
 
@@ -236,10 +272,15 @@ namespace cloud.charging.open.protocols.WWCP
                         IId?                        AuthId            = null,
                         Object?                     SendPOIData       = null,
                         EventTracking_Id?           EventTrackingId   = null,
+                        I18NString?                 Description       = null,
                         IEnumerable<Warning>?       Warnings          = null,
                         TimeSpan?                   Runtime           = null)
 
-                => new (PushDataResultTypes.LockTimeout,
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.LockTimeout,
                         Array.Empty<AddChargingPoolResult>(),
                         RejectedChargingPools.Select(chargingPool => AddChargingPoolResult.LockTimeout(chargingPool,
                                                                                                        Timeout,
@@ -249,15 +290,13 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
-                        I18NString.Create(
-                            Languages.en,
-                            $"Lock timeout after {Timeout.TotalSeconds} seconds!"
-                        ),
+                        Description,
                         Warnings,
                         Runtime);
 
-        #endregion
+        }
 
+        #endregion
 
 
     }

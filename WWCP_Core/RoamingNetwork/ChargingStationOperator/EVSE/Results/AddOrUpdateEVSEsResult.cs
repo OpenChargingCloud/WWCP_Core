@@ -18,14 +18,16 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The results of an add or update EVSEs request.
+    /// </summary>
     public class AddOrUpdateEVSEsResult : AEnititiesResult<AddOrUpdateEVSEResult, IEVSE, EVSE_Id>
     {
 
@@ -56,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation
+        #region (static) NoOperation  (RejectedEVSEs,   ...)
 
         public static AddOrUpdateEVSEsResult
 
@@ -68,24 +70,262 @@ namespace cloud.charging.open.protocols.WWCP
                         IEnumerable<Warning>?  Warnings          = null,
                         TimeSpan?              Runtime           = null)
 
-            {
+        {
 
-                EventTrackingId ??= EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
-                return new (PushDataResultTypes.NoOperation,
-                            Array.Empty<AddOrUpdateEVSEResult>(),
-                            RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.NoOperation(evse,
-                                                                                           EventTrackingId,
-                                                                                           AuthId,
-                                                                                           SendPOIData)),
-                            AuthId,
-                            SendPOIData,
-                            EventTrackingId,
-                            Description,
-                            Warnings,
-                            Runtime);
+            return new (PushDataResultTypes.NoOperation,
+                        Array.Empty<AddOrUpdateEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.NoOperation(evse,
+                                                                                        EventTrackingId,
+                                                                                        AuthId,
+                                                                                        SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-            }
+        }
+
+        #endregion
+
+
+        #region (static) Enqueued     (SuccessfulEVSEs, ...)
+
+        public static AddOrUpdateEVSEsResult
+
+            Enqueued(IEnumerable<IEVSE>     SuccessfulEVSEs,
+                     IId?                   AuthId            = null,
+                     Object?                SendPOIData       = null,
+                     EventTracking_Id?      EventTrackingId   = null,
+                     I18NString?            Description       = null,
+                     IEnumerable<Warning>?  Warnings          = null,
+                     TimeSpan?              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Enqueued,
+                        SuccessfulEVSEs.Select(evse => AddOrUpdateEVSEResult.Enqueued(evse,
+                                                                                      EventTrackingId,
+                                                                                      AuthId,
+                                                                                      SendPOIData)),
+                        Array.Empty<AddOrUpdateEVSEResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Added        (SuccessfulEVSEs, ...)
+
+        public static AddOrUpdateEVSEsResult
+
+            Added(IEnumerable<IEVSE>     SuccessfulEVSEs,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  I18NString?            Description       = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Success,
+                        SuccessfulEVSEs.Select(evse => AddOrUpdateEVSEResult.Added(evse,
+                                                                                   EventTrackingId,
+                                                                                   AuthId,
+                                                                                   SendPOIData)),
+                        Array.Empty<AddOrUpdateEVSEResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Updated      (SuccessfulEVSEs, ...)
+
+        public static AddOrUpdateEVSEsResult
+
+            Updated(IEnumerable<IEVSE>     SuccessfulEVSEs,
+                    IId?                   AuthId            = null,
+                    Object?                SendPOIData       = null,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    I18NString?            Description       = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Success,
+                        SuccessfulEVSEs.Select(evse => AddOrUpdateEVSEResult.Updated(evse,
+                                                                                     EventTrackingId,
+                                                                                     AuthId,
+                                                                                     SendPOIData)),
+                        Array.Empty<AddOrUpdateEVSEResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+
+        #region (static) ArgumentError(RejectedEVSEs, Description, ...)
+
+        public static AddOrUpdateEVSEsResult
+
+            ArgumentError(IEnumerable<IEVSE>     RejectedEVSEs,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   AuthId            = null,
+                          Object?                SendPOIData       = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.ArgumentError,
+                        Array.Empty<AddOrUpdateEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.ArgumentError(evse,
+                                                                                         Description,
+                                                                                         EventTrackingId,
+                                                                                         AuthId,
+                                                                                         SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Error        (RejectedEVSEs, Description, ...)
+
+        public static AddOrUpdateEVSEsResult
+
+            Error(IEnumerable<IEVSE>     RejectedEVSEs,
+                  I18NString             Description,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Error,
+                        Array.Empty<AddOrUpdateEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.Error(evse,
+                                                                                 Description,
+                                                                                 EventTrackingId,
+                                                                                 AuthId,
+                                                                                 SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Error        (RejectedEVSEs, Exception,   ...)
+
+        public static AddOrUpdateEVSEsResult
+
+            Error(IEnumerable<IEVSE>     RejectedEVSEs,
+                  Exception              Exception,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Error,
+                        Array.Empty<AddOrUpdateEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.Error(evse,
+                                                                                 Exception,
+                                                                                 EventTrackingId,
+                                                                                 AuthId,
+                                                                                 SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Exception.Message.ToI18NString(Languages.en),
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) LockTimeout  (RejectedEVSEs, Timeout, ...)
+
+        public static AddOrUpdateEVSEsResult
+
+            LockTimeout(IEnumerable<IEVSE>     RejectedEVSEs,
+                        TimeSpan               Timeout,
+                        IId?                   AuthId            = null,
+                        Object?                SendPOIData       = null,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        I18NString?            Description       = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.LockTimeout,
+                        Array.Empty<AddOrUpdateEVSEResult>(),
+                        RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.LockTimeout(evse,
+                                                                                       Timeout,
+                                                                                       EventTrackingId,
+                                                                                       AuthId,
+                                                                                       SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
 
         #endregion
 
