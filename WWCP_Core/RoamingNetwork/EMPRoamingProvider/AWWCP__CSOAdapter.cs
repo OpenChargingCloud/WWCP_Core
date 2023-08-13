@@ -22,17 +22,15 @@ using Org.BouncyCastle.Crypto.Parameters;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
-using social.OpenData.UsersAPI;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public abstract class AWWCPEMPAdapter<TChargeDetailRecords> : ACryptoEMobilityEntity<EMPRoamingProvider_Id,
+    public abstract class AWWCP__CSOAdapter<TChargeDetailRecords> : ACryptoEMobilityEntity<EMPRoamingProvider_Id,
                                                                                          EMPRoamingProviderAdminStatusTypes,
                                                                                          EMPRoamingProviderStatusTypes>,
-                                                                  //IEMPRoamingProvider,
 
                                                                   ISendRoamingNetworkData,
                                                                   ISendChargingStationOperatorData,
@@ -223,7 +221,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region OnWWCPCPOAdapterException
 
         public delegate Task OnWWCPCPOAdapterExceptionDelegate(DateTime             Timestamp,
-                                                               AWWCPEMPAdapter<TChargeDetailRecords>      Sender,
+                                                               AWWCP__CSOAdapter<TChargeDetailRecords>      Sender,
                                                                Exception            Exception);
 
         public event OnWWCPCPOAdapterExceptionDelegate OnWWCPCPOAdapterException;
@@ -233,11 +231,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region FlushEVSEDataAndStatusQueues
 
-        public delegate void FlushEVSEDataAndStatusQueuesStartedDelegate(AWWCPEMPAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushEVSEDataAndStatusQueuesStartedDelegate(AWWCP__CSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEDataAndStatusQueuesStartedDelegate? FlushEVSEDataAndStatusQueuesStartedEvent;
 
-        public delegate void FlushEVSEDataAndStatusQueuesFinishedDelegate(AWWCPEMPAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushEVSEDataAndStatusQueuesFinishedDelegate(AWWCP__CSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEDataAndStatusQueuesFinishedDelegate? FlushEVSEDataAndStatusQueuesFinishedEvent;
 
@@ -245,11 +243,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region FlushEVSEFastStatusQueues
 
-        public delegate void FlushEVSEFastStatusQueuesStartedDelegate(AWWCPEMPAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushEVSEFastStatusQueuesStartedDelegate(AWWCP__CSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEFastStatusQueuesStartedDelegate? FlushEVSEFastStatusQueuesStartedEvent;
 
-        public delegate void FlushEVSEFastStatusQueuesFinishedDelegate(AWWCPEMPAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushEVSEFastStatusQueuesFinishedDelegate(AWWCP__CSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEFastStatusQueuesFinishedDelegate? FlushEVSEFastStatusQueuesFinishedEvent;
 
@@ -257,11 +255,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region FlushChargeDetailRecordsQueues
 
-        public delegate void FlushChargeDetailRecordsQueuesStartedDelegate(AWWCPEMPAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushChargeDetailRecordsQueuesStartedDelegate(AWWCP__CSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
 
         public event FlushChargeDetailRecordsQueuesStartedDelegate? FlushChargeDetailRecordsQueuesStartedEvent;
 
-        public delegate void FlushChargeDetailRecordsQueuesFinishedDelegate(AWWCPEMPAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushChargeDetailRecordsQueuesFinishedDelegate(AWWCP__CSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
         public event FlushChargeDetailRecordsQueuesFinishedDelegate? FlushChargeDetailRecordsQueuesFinishedEvent;
 
@@ -299,7 +297,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DisablePushStatus">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisableAuthentication">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisableSendChargeDetailRecords">This service can be disabled, e.g. for debugging reasons.</param>
-        protected AWWCPEMPAdapter(EMPRoamingProvider_Id                      Id,
+        protected AWWCP__CSOAdapter(EMPRoamingProvider_Id                      Id,
                                   IRoamingNetwork                            RoamingNetwork,
 
                                   I18NString?                                Name                                = null,
