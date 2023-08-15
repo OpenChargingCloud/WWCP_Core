@@ -1187,6 +1187,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region Energy Meters
+
+        /// <summary>
+        /// Return all charging stations registered within this charing pool.
+        /// </summary>
+        IEnumerable<IEnergyMeter> EnergyMeters { get; }
+
+        #endregion
+
 
         /// <summary>
         /// Update this charging pool with the data of the other charging pool.

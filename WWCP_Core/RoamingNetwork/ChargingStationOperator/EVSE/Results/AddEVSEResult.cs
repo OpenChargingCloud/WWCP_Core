@@ -70,6 +70,31 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region (static) AdminDown    (EVSE, ...)
+
+        public static AddEVSEResult
+
+            AdminDown(IEVSE                  EVSE,
+                      EventTracking_Id?      EventTrackingId   = null,
+                      IId?                   AuthId            = null,
+                      Object?                SendPOIData       = null,
+                      IChargingStation?      ChargingStation   = null,
+                      I18NString?            Description       = null,
+                      IEnumerable<Warning>?  Warnings          = null,
+                      TimeSpan?              Runtime           = null)
+
+                => new (EVSE,
+                        PushDataResultTypes.AdminDown,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
         #region (static) NoOperation  (EVSE, ...)
 
         public static AddEVSEResult
@@ -216,7 +241,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStation,
-                        Exception.Message.ToI18NString(Languages.en),
+                        Exception.Message.ToI18NString(),
                         Warnings,
                         Runtime);
 
@@ -241,7 +266,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStation,
-                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(Languages.en),
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,
                         Runtime);
 

@@ -70,6 +70,31 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region (static) AdminDown    (ChargingPool, ...)
+
+        public static AddChargingPoolResult
+
+            AdminDown(IChargingPool              ChargingPool,
+                      EventTracking_Id?          EventTrackingId           = null,
+                      IId?                       AuthId                    = null,
+                      Object?                    SendPOIData               = null,
+                      IChargingStationOperator?  ChargingStationOperator   = null,
+                      I18NString?                Description               = null,
+                      IEnumerable<Warning>?      Warnings                  = null,
+                      TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingPool,
+                        PushDataResultTypes.AdminDown,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStationOperator,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
         #region (static) NoOperation  (ChargingPool, ...)
 
         public static AddChargingPoolResult
@@ -216,7 +241,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStationOperator,
-                        Exception.Message.ToI18NString(Languages.en),
+                        Exception.Message.ToI18NString(),
                         Warnings,
                         Runtime);
 
@@ -241,7 +266,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStationOperator,
-                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(Languages.en),
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,
                         Runtime);
 

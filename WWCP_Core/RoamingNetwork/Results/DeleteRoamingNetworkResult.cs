@@ -25,6 +25,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of a delete roaming network request.
+    /// </summary>
     public class DeleteRoamingNetworkResult : AEnitityResult<IRoamingNetwork, RoamingNetwork_Id>
     {
 
@@ -81,7 +84,30 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation
+        #region (static) AdminDown      (RoamingNetwork, ...)
+
+        public static DeleteRoamingNetworkResult
+
+            AdminDown(IRoamingNetwork        RoamingNetwork,
+                      EventTracking_Id?      EventTrackingId   = null,
+                      IId?                   AuthId            = null,
+                      Object?                SendPOIData       = null,
+                      I18NString?            Description       = null,
+                      IEnumerable<Warning>?  Warnings          = null,
+                      TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.AdminDown,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) NoOperation    (RoamingNetwork, ...)
 
         public static DeleteRoamingNetworkResult
 
@@ -102,23 +128,167 @@ namespace cloud.charging.open.protocols.WWCP
                         Warnings,
                         Runtime);
 
+        #endregion
+
+
+        #region (static) Enqueued       (RoamingNetwork, ...)
 
         public static DeleteRoamingNetworkResult
 
-            NoOperation(RoamingNetwork_Id      RoamingNetworkId,
-                        EventTracking_Id?      EventTrackingId   = null,
-                        IId?                   AuthId            = null,
-                        Object?                SendPOIData       = null,
-                        I18NString?            Description       = null,
-                        IEnumerable<Warning>?  Warnings          = null,
-                        TimeSpan?              Runtime           = null)
+            Enqueued(IRoamingNetwork        RoamingNetwork,
+                     EventTracking_Id?      EventTrackingId   = null,
+                     IId?                   AuthId            = null,
+                     Object?                SendPOIData       = null,
+                     I18NString?            Description       = null,
+                     IEnumerable<Warning>?  Warnings          = null,
+                     TimeSpan?              Runtime           = null)
 
-                => new (RoamingNetworkId,
-                        PushDataResultTypes.NoOperation,
+                => new (RoamingNetwork,
+                        PushDataResultTypes.Enqueued,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
                         Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Success        (RoamingNetwork, ...)
+
+        public static DeleteRoamingNetworkResult
+
+            Success(IRoamingNetwork        RoamingNetwork,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   AuthId            = null,
+                    Object?                SendPOIData       = null,
+                    I18NString?            Description       = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.Success,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) CanNotBeRemoved(RoamingNetwork, ...)
+
+        public static DeleteRoamingNetworkResult
+
+            CanNotBeRemoved(IRoamingNetwork        RoamingNetwork,
+                            EventTracking_Id?      EventTrackingId   = null,
+                            IId?                   AuthId            = null,
+                            Object?                SendPOIData       = null,
+                            I18NString?            Description       = null,
+                            IEnumerable<Warning>?  Warnings          = null,
+                            TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.CanNotBeRemoved,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) ArgumentError  (RoamingNetwork, Description, ...)
+
+        public static DeleteRoamingNetworkResult
+
+            ArgumentError(IRoamingNetwork        RoamingNetwork,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   AuthId            = null,
+                          Object?                SendPOIData       = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error          (RoamingNetwork, Description, ...)
+
+        public static DeleteRoamingNetworkResult
+
+            Error(IRoamingNetwork        RoamingNetwork,
+                  I18NString             Description,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error          (RoamingNetwork, Exception,   ...)
+
+        public static DeleteRoamingNetworkResult
+
+            Error(IRoamingNetwork        RoamingNetwork,
+                  Exception              Exception,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        Exception.Message.ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout    (RoamingNetwork, Timeout,     ...)
+
+        public static DeleteRoamingNetworkResult
+
+            LockTimeout(IRoamingNetwork        RoamingNetwork,
+                        TimeSpan               Timeout,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   AuthId            = null,
+                        Object?                SendPOIData       = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.LockTimeout,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,
                         Runtime);
 

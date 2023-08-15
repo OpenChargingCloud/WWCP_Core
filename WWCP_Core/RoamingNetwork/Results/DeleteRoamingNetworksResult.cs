@@ -25,6 +25,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of a delete roaming networks request.
+    /// </summary>
     public class DeleteRoamingNetworksResult : AEnititiesResult<DeleteRoamingNetworkResult, IRoamingNetwork, RoamingNetwork_Id>
     {
 
@@ -55,7 +58,40 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation
+        #region (static) AdminDown    (RejectedRoamingNetworks,   ...)
+
+        public static DeleteRoamingNetworksResult
+
+            AdminDown(IEnumerable<IRoamingNetwork>  RejectedRoamingNetworks,
+                      IId?                          AuthId            = null,
+                      Object?                       SendPOIData       = null,
+                      EventTracking_Id?             EventTrackingId   = null,
+                      I18NString?                   Description       = null,
+                      IEnumerable<Warning>?         Warnings          = null,
+                      TimeSpan?                     Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.AdminDown,
+                        Array.Empty<DeleteRoamingNetworkResult>(),
+                        RejectedRoamingNetworks.Select(chargingStationOperator => DeleteRoamingNetworkResult.AdminDown(chargingStationOperator,
+                                                                                                                       EventTrackingId,
+                                                                                                                       AuthId,
+                                                                                                                       SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) NoOperation  (RejectedRoamingNetworks,   ...)
 
         public static DeleteRoamingNetworksResult
 
@@ -67,24 +103,229 @@ namespace cloud.charging.open.protocols.WWCP
                         IEnumerable<Warning>?         Warnings          = null,
                         TimeSpan?                     Runtime           = null)
 
-            {
+        {
 
-                EventTrackingId ??= EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
-                return new (PushDataResultTypes.NoOperation,
-                            Array.Empty<DeleteRoamingNetworkResult>(),
-                            RejectedRoamingNetworks.Select(evse => DeleteRoamingNetworkResult.NoOperation(evse,
-                                                                                                          EventTrackingId,
-                                                                                                          AuthId,
-                                                                                                          SendPOIData)),
-                            AuthId,
-                            SendPOIData,
-                            EventTrackingId,
-                            Description,
-                            Warnings,
-                            Runtime);
+            return new (PushDataResultTypes.NoOperation,
+                        Array.Empty<DeleteRoamingNetworkResult>(),
+                        RejectedRoamingNetworks.Select(chargingStationOperator => DeleteRoamingNetworkResult.NoOperation(chargingStationOperator,
+                                                                                                                         EventTrackingId,
+                                                                                                                         AuthId,
+                                                                                                                         SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-            }
+        }
+
+        #endregion
+
+
+        #region (static) Enqueued     (SuccessfulChargingPools, ...)
+
+        public static DeleteRoamingNetworksResult
+
+            Enqueued(IEnumerable<IRoamingNetwork>  SuccessfulChargingPools,
+                     IId?                          AuthId            = null,
+                     Object?                       SendPOIData       = null,
+                     EventTracking_Id?             EventTrackingId   = null,
+                     I18NString?                   Description       = null,
+                     IEnumerable<Warning>?         Warnings          = null,
+                     TimeSpan?                     Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Enqueued,
+                        SuccessfulChargingPools.Select(chargingStationOperator => DeleteRoamingNetworkResult.Enqueued(chargingStationOperator,
+                                                                                                                      EventTrackingId,
+                                                                                                                      AuthId,
+                                                                                                                      SendPOIData)),
+                        Array.Empty<DeleteRoamingNetworkResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Success      (SuccessfulChargingPools, ...)
+
+        public static DeleteRoamingNetworksResult
+
+            Success(IEnumerable<IRoamingNetwork>  SuccessfulChargingPools,
+                    IId?                          AuthId            = null,
+                    Object?                       SendPOIData       = null,
+                    EventTracking_Id?             EventTrackingId   = null,
+                    I18NString?                   Description       = null,
+                    IEnumerable<Warning>?         Warnings          = null,
+                    TimeSpan?                     Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Success,
+                        SuccessfulChargingPools.Select(chargingStationOperator => DeleteRoamingNetworkResult.Success(chargingStationOperator,
+                                                                                                                     EventTrackingId,
+                                                                                                                     AuthId,
+                                                                                                                     SendPOIData)),
+                        Array.Empty<DeleteRoamingNetworkResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+
+        #region (static) ArgumentError(RejectedRoamingNetworks, Description, ...)
+
+        public static DeleteRoamingNetworksResult
+
+            ArgumentError(IEnumerable<IRoamingNetwork>  RejectedRoamingNetworks,
+                          I18NString                    Description,
+                          EventTracking_Id?             EventTrackingId   = null,
+                          IId?                          AuthId            = null,
+                          Object?                       SendPOIData       = null,
+                          IEnumerable<Warning>?         Warnings          = null,
+                          TimeSpan?                     Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.ArgumentError,
+                        Array.Empty<DeleteRoamingNetworkResult>(),
+                        RejectedRoamingNetworks.Select(chargingStationOperator => DeleteRoamingNetworkResult.ArgumentError(chargingStationOperator,
+                                                                                                                           Description,
+                                                                                                                           EventTrackingId,
+                                                                                                                           AuthId,
+                                                                                                                           SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Error        (RejectedRoamingNetworks, Description, ...)
+
+        public static DeleteRoamingNetworksResult
+
+            Error(IEnumerable<IRoamingNetwork>  RejectedRoamingNetworks,
+                  I18NString                    Description,
+                  EventTracking_Id?             EventTrackingId   = null,
+                  IId?                          AuthId            = null,
+                  Object?                       SendPOIData       = null,
+                  IEnumerable<Warning>?         Warnings          = null,
+                  TimeSpan?                     Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Error,
+                        Array.Empty<DeleteRoamingNetworkResult>(),
+                        RejectedRoamingNetworks.Select(chargingStationOperator => DeleteRoamingNetworkResult.Error(chargingStationOperator,
+                                                                                                                   Description,
+                                                                                                                   EventTrackingId,
+                                                                                                                   AuthId,
+                                                                                                                   SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Error        (RejectedRoamingNetworks, Exception,   ...)
+
+        public static DeleteRoamingNetworksResult
+
+            Error(IEnumerable<IRoamingNetwork>  RejectedRoamingNetworks,
+                  Exception                     Exception,
+                  EventTracking_Id?             EventTrackingId   = null,
+                  IId?                          AuthId            = null,
+                  Object?                       SendPOIData       = null,
+                  IEnumerable<Warning>?         Warnings          = null,
+                  TimeSpan?                     Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Error,
+                        Array.Empty<DeleteRoamingNetworkResult>(),
+                        RejectedRoamingNetworks.Select(chargingStationOperator => DeleteRoamingNetworkResult.Error(chargingStationOperator,
+                                                                                                                   Exception,
+                                                                                                                   EventTrackingId,
+                                                                                                                   AuthId,
+                                                                                                                   SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Exception.Message.ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) LockTimeout  (RejectedRoamingNetworks, Timeout,     ...)
+
+        public static DeleteRoamingNetworksResult
+
+            LockTimeout(IEnumerable<IRoamingNetwork>  RejectedRoamingNetworks,
+                        TimeSpan                      Timeout,
+                        IId?                          AuthId            = null,
+                        Object?                       SendPOIData       = null,
+                        EventTracking_Id?             EventTrackingId   = null,
+                        I18NString?                   Description       = null,
+                        IEnumerable<Warning>?         Warnings          = null,
+                        TimeSpan?                     Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.LockTimeout,
+                        Array.Empty<DeleteRoamingNetworkResult>(),
+                        RejectedRoamingNetworks.Select(chargingStationOperator => DeleteRoamingNetworkResult.LockTimeout(chargingStationOperator,
+                                                                                                                         Timeout,
+                                                                                                                         EventTrackingId,
+                                                                                                                         AuthId,
+                                                                                                                         SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
 
         #endregion
 

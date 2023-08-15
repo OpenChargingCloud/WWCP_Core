@@ -74,6 +74,32 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region (static) AdminDown    (ChargingStation, ...)
+
+        public static AddOrUpdateChargingStationResult
+
+            AdminDown(IChargingStation       ChargingStation,
+                      EventTracking_Id?      EventTrackingId   = null,
+                      IId?                   AuthId            = null,
+                      Object?                SendPOIData       = null,
+                      IChargingPool?         ChargingPool      = null,
+                      I18NString?            Description       = null,
+                      IEnumerable<Warning>?  Warnings          = null,
+                      TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        PushDataResultTypes.AdminDown,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingPool,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.NoOperation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
         #region (static) NoOperation  (ChargingStation, ...)
 
         public static AddOrUpdateChargingStationResult
@@ -252,7 +278,7 @@ namespace cloud.charging.open.protocols.WWCP
                         SendPOIData,
                         ChargingPool,
                         org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
-                        Exception.Message.ToI18NString(Languages.en),
+                        Exception.Message.ToI18NString(),
                         Warnings,
                         Runtime);
 
@@ -278,7 +304,7 @@ namespace cloud.charging.open.protocols.WWCP
                         SendPOIData,
                         ChargingPool,
                         org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
-                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(Languages.en),
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,
                         Runtime);
 

@@ -58,6 +58,39 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region (static) AdminDown    (RejectedChargingPools,   ...)
+
+        public static DeleteChargingPoolsResult
+
+            AdminDown(IEnumerable<IChargingPool>  RejectedChargingPools,
+                      IId?                        AuthId            = null,
+                      Object?                     SendPOIData       = null,
+                      EventTracking_Id?           EventTrackingId   = null,
+                      I18NString?                 Description       = null,
+                      IEnumerable<Warning>?       Warnings          = null,
+                      TimeSpan?                   Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.AdminDown,
+                        Array.Empty<DeleteChargingPoolResult>(),
+                        RejectedChargingPools.Select(chargingPool => DeleteChargingPoolResult.AdminDown(chargingPool,
+                                                                                                        EventTrackingId,
+                                                                                                        AuthId,
+                                                                                                        SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
         #region (static) NoOperation  (RejectedChargingPools,   ...)
 
         public static DeleteChargingPoolsResult
@@ -253,7 +286,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
-                        Exception.Message.ToI18NString(Languages.en),
+                        Exception.Message.ToI18NString(),
                         Warnings,
                         Runtime);
 

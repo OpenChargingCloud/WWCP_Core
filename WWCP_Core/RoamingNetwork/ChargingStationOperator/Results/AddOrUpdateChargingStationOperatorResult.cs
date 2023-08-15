@@ -25,6 +25,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of an add or update charging station operator request.
+    /// </summary>
     public class AddOrUpdateChargingStationOperatorResult : AEnitityResult<IChargingStationOperator, ChargingStationOperator_Id>
     {
 
@@ -71,7 +74,33 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation
+        #region (static) AdminDown    (ChargingStationOperator, ...)
+
+        public static AddOrUpdateChargingStationOperatorResult
+
+            AdminDown(IChargingStationOperator  ChargingStationOperator,
+                      EventTracking_Id?         EventTrackingId   = null,
+                      IId?                      AuthId            = null,
+                      Object?                   SendPOIData       = null,
+                      IRoamingNetwork?          RoamingNetwork    = null,
+                      I18NString?               Description       = null,
+                      IEnumerable<Warning>?     Warnings          = null,
+                      TimeSpan?                 Runtime           = null)
+
+                => new (ChargingStationOperator,
+                        PushDataResultTypes.AdminDown,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        RoamingNetwork,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.NoOperation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) NoOperation  (ChargingStationOperator, ...)
 
         public static AddOrUpdateChargingStationOperatorResult
 
@@ -97,33 +126,34 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) ArgumentError(...)
+
+        #region (static) Enqueued     (ChargingStationOperator, ...)
 
         public static AddOrUpdateChargingStationOperatorResult
 
-            ArgumentError(IChargingStationOperator  ChargingStationOperator,
-                          EventTracking_Id?         EventTrackingId   = null,
-                          IId?                      AuthId            = null,
-                          Object?                   SendPOIData       = null,
-                          IRoamingNetwork?          RoamingNetwork    = null,
-                          I18NString?               Description       = null,
-                          IEnumerable<Warning>?     Warnings          = null,
-                          TimeSpan?                 Runtime           = null)
+            Enqueued(IChargingStationOperator  ChargingStationOperator,
+                     EventTracking_Id?         EventTrackingId   = null,
+                     IId?                      AuthId            = null,
+                     Object?                   SendPOIData       = null,
+                     IRoamingNetwork?          RoamingNetwork    = null,
+                     I18NString?               Description       = null,
+                     IEnumerable<Warning>?     Warnings          = null,
+                     TimeSpan?                 Runtime           = null)
 
                 => new (ChargingStationOperator,
-                        PushDataResultTypes.ArgumentError,
+                        PushDataResultTypes.Enqueued,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
                         RoamingNetwork,
-                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Enqueued,
                         Description,
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) Added(...)
+        #region (static) Added        (ChargingStationOperator,...)
 
         public static AddOrUpdateChargingStationOperatorResult
 
@@ -149,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Updated(...)
+        #region (static) Updated      (ChargingStationOperator,...)
 
         public static AddOrUpdateChargingStationOperatorResult
 
@@ -176,7 +206,33 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Error(ChargingStationOperator, Description, ...)
+        #region (static) ArgumentError(ChargingStationOperator, Description, ...)
+
+        public static AddOrUpdateChargingStationOperatorResult
+
+            ArgumentError(IChargingStationOperator  ChargingStationOperator,
+                          I18NString                Description,
+                          EventTracking_Id?         EventTrackingId   = null,
+                          IId?                      AuthId            = null,
+                          Object?                   SendPOIData       = null,
+                          IRoamingNetwork?          RoamingNetwork    = null,
+                          IEnumerable<Warning>?     Warnings          = null,
+                          TimeSpan?                 Runtime           = null)
+
+                => new (ChargingStationOperator,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        RoamingNetwork,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargingStationOperator, Description, ...)
 
         public static AddOrUpdateChargingStationOperatorResult
 
@@ -202,7 +258,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Error(ChargingStationOperator, Exception,   ...)
+        #region (static) Error        (ChargingStationOperator, Exception,   ...)
 
         public static AddOrUpdateChargingStationOperatorResult
 
@@ -222,16 +278,13 @@ namespace cloud.charging.open.protocols.WWCP
                         SendPOIData,
                         RoamingNetwork,
                         org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
-                        I18NString.Create(
-                            Languages.en,
-                            Exception.Message
-                        ),
+                        Exception.Message.ToI18NString(),
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) LockTimeout(Timeout, ...)
+        #region (static) LockTimeout  (ChargingStationOperator, Timeout,     ...)
 
         public static AddOrUpdateChargingStationOperatorResult
 
@@ -244,22 +297,18 @@ namespace cloud.charging.open.protocols.WWCP
                         IEnumerable<Warning>?     Warnings          = null,
                         TimeSpan?                 Runtime           = null)
 
-                => new (ChargingStationOperator,
+                => new(ChargingStationOperator,
                         PushDataResultTypes.LockTimeout,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
                         RoamingNetwork,
                         org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
-                        I18NString.Create(
-                            Languages.en,
-                            $"Lock timeout after {Timeout.TotalSeconds} seconds!"
-                        ),
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,
                         Runtime);
 
         #endregion
-
 
 
     }

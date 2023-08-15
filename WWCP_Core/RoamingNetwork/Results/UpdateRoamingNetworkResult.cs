@@ -25,6 +25,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of an update roaming network request.
+    /// </summary>
     public class UpdateRoamingNetworkResult : AEnitityResult<IRoamingNetwork, RoamingNetwork_Id>
     {
 
@@ -60,7 +63,30 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation
+        #region (static) AdminDown    (RoamingNetwork, ...)
+
+        public static UpdateRoamingNetworkResult
+
+            AdminDown(IRoamingNetwork        RoamingNetwork,
+                      EventTracking_Id?      EventTrackingId   = null,
+                      IId?                   AuthId            = null,
+                      Object?                SendPOIData       = null,
+                      I18NString?            Description       = null,
+                      IEnumerable<Warning>?  Warnings          = null,
+                      TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.AdminDown,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) NoOperation  (RoamingNetwork, ...)
 
         public static UpdateRoamingNetworkResult
 
@@ -78,6 +104,169 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) Enqueued     (RoamingNetwork, ...)
+
+        public static UpdateRoamingNetworkResult
+
+            Enqueued(IRoamingNetwork        RoamingNetwork,
+                     EventTracking_Id?      EventTrackingId   = null,
+                     IId?                   AuthId            = null,
+                     Object?                SendPOIData       = null,
+                     I18NString?            Description       = null,
+                     IEnumerable<Warning>?  Warnings          = null,
+                     TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.Enqueued,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Success      (RoamingNetwork, ...)
+
+        public static UpdateRoamingNetworkResult
+
+            Success(IRoamingNetwork        RoamingNetwork,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   AuthId            = null,
+                    Object?                SendPOIData       = null,
+                    I18NString?            Description       = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.Success,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Exists(...)
+
+        public static UpdateRoamingNetworkResult
+
+            Exists(IRoamingNetwork        RoamingNetwork,
+                   EventTracking_Id?      EventTrackingId   = null,
+                   IId?                   AuthId            = null,
+                   Object?                SendPOIData       = null,
+                   I18NString?            Description       = null,
+                   IEnumerable<Warning>?  Warnings          = null,
+                   TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.Exists,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) ArgumentError(RoamingNetwork, Description, ...)
+
+        public static UpdateRoamingNetworkResult
+
+            ArgumentError(IRoamingNetwork        RoamingNetwork,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   AuthId            = null,
+                          Object?                SendPOIData       = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (RoamingNetwork, Description, ...)
+
+        public static UpdateRoamingNetworkResult
+
+            Error(IRoamingNetwork        RoamingNetwork,
+                  I18NString             Description,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (RoamingNetwork, Exception,   ...)
+
+        public static UpdateRoamingNetworkResult
+
+            Error(IRoamingNetwork        RoamingNetwork,
+                  Exception              Exception,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   AuthId            = null,
+                  Object?                SendPOIData       = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.Error,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        Exception.Message.ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout  (RoamingNetwork, Timeout,     ...)
+
+        public static UpdateRoamingNetworkResult
+
+            LockTimeout(IRoamingNetwork        RoamingNetwork,
+                        TimeSpan               Timeout,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   AuthId            = null,
+                        Object?                SendPOIData       = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        PushDataResultTypes.LockTimeout,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,
                         Runtime);
 

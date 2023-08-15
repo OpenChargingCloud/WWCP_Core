@@ -1377,7 +1377,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             return AddChargingStationResult.Error(
                        virtualStation,
-                       "error".ToI18NString(Languages.en),
+                       "error".ToI18NString(),
                        EventTracking_Id.New,
                        Id,
                        this,
@@ -1483,6 +1483,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         }
 
         #endregion
+
+        #endregion
+
+        #region Energy Meters
+
+        /// <summary>
+        /// Return all charging stations registered within this charing pool.
+        /// </summary>
+        public IEnumerable<IEnergyMeter> EnergyMeters { get; }
 
         #endregion
 

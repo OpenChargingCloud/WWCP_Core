@@ -25,6 +25,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of an add or update charging station operators request.
+    /// </summary>
     public class AddOrUpdateChargingStationOperatorsResult : AEnititiesResult<AddOrUpdateChargingStationOperatorResult,
                                                                               IChargingStationOperator,
                                                                               ChargingStationOperator_Id>
@@ -57,7 +60,40 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation
+        #region (static) AdminDown    (RejectedChargingStationOperators,   ...)
+
+        public static AddOrUpdateChargingStationOperatorsResult
+
+            AdminDown(IEnumerable<IChargingStationOperator>  RejectedChargingStationOperators,
+                      IId?                                   AuthId            = null,
+                      Object?                                SendPOIData       = null,
+                      EventTracking_Id?                      EventTrackingId   = null,
+                      I18NString?                            Description       = null,
+                      IEnumerable<Warning>?                  Warnings          = null,
+                      TimeSpan?                              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.AdminDown,
+                        Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
+                        RejectedChargingStationOperators.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.AdminDown(chargingStationOperator,
+                                                                                                                                              EventTrackingId,
+                                                                                                                                              AuthId,
+                                                                                                                                              SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) NoOperation  (RejectedChargingStationOperators,   ...)
 
         public static AddOrUpdateChargingStationOperatorsResult
 
@@ -69,24 +105,262 @@ namespace cloud.charging.open.protocols.WWCP
                         IEnumerable<Warning>?                  Warnings          = null,
                         TimeSpan?                              Runtime           = null)
 
-            {
+        {
 
-                EventTrackingId ??= EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
-                return new (PushDataResultTypes.NoOperation,
-                            Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
-                            RejectedChargingStationOperators.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.NoOperation(chargingStationOperator,
-                                                                                                                                                    EventTrackingId,
-                                                                                                                                                    AuthId,
-                                                                                                                                                    SendPOIData)),
-                            AuthId,
-                            SendPOIData,
-                            EventTrackingId,
-                            Description,
-                            Warnings,
-                            Runtime);
+            return new (PushDataResultTypes.NoOperation,
+                        Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
+                        RejectedChargingStationOperators.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.NoOperation(chargingStationOperator,
+                                                                                                                                                EventTrackingId,
+                                                                                                                                                AuthId,
+                                                                                                                                                SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-            }
+        }
+
+        #endregion
+
+
+        #region (static) Enqueued     (SuccessfulChargingPools, ...)
+
+        public static AddOrUpdateChargingStationOperatorsResult
+
+            Enqueued(IEnumerable<IChargingStationOperator>  SuccessfulChargingPools,
+                     IId?                                   AuthId            = null,
+                     Object?                                SendPOIData       = null,
+                     EventTracking_Id?                      EventTrackingId   = null,
+                     I18NString?                            Description       = null,
+                     IEnumerable<Warning>?                  Warnings          = null,
+                     TimeSpan?                              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Enqueued,
+                        SuccessfulChargingPools.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.Enqueued(chargingStationOperator,
+                                                                                                                                    EventTrackingId,
+                                                                                                                                    AuthId,
+                                                                                                                                    SendPOIData)),
+                        Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Added        (SuccessfulChargingPools, ...)
+
+        public static AddOrUpdateChargingStationOperatorsResult
+
+            Added(IEnumerable<IChargingStationOperator>  SuccessfulChargingPools,
+                  IId?                                   AuthId            = null,
+                  Object?                                SendPOIData       = null,
+                  EventTracking_Id?                      EventTrackingId   = null,
+                  I18NString?                            Description       = null,
+                  IEnumerable<Warning>?                  Warnings          = null,
+                  TimeSpan?                              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Success,
+                        SuccessfulChargingPools.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.Added(chargingStationOperator,
+                                                                                                                                 EventTrackingId,
+                                                                                                                                 AuthId,
+                                                                                                                                 SendPOIData)),
+                        Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Updated      (SuccessfulChargingPools, ...)
+
+        public static AddOrUpdateChargingStationOperatorsResult
+
+            Updated(IEnumerable<IChargingStationOperator>  SuccessfulChargingPools,
+                    IId?                                   AuthId            = null,
+                    Object?                                SendPOIData       = null,
+                    EventTracking_Id?                      EventTrackingId   = null,
+                    I18NString?                            Description       = null,
+                    IEnumerable<Warning>?                  Warnings          = null,
+                    TimeSpan?                              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Success,
+                        SuccessfulChargingPools.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.Updated(chargingStationOperator,
+                                                                                                                                   EventTrackingId,
+                                                                                                                                   AuthId,
+                                                                                                                                   SendPOIData)),
+                        Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+
+        #region (static) ArgumentError(RejectedChargingStationOperators, Description, ...)
+
+        public static AddOrUpdateChargingStationOperatorsResult
+
+            ArgumentError(IEnumerable<IChargingStationOperator>  RejectedChargingStationOperators,
+                          I18NString                             Description,
+                          EventTracking_Id?                      EventTrackingId   = null,
+                          IId?                                   AuthId            = null,
+                          Object?                                SendPOIData       = null,
+                          IEnumerable<Warning>?                  Warnings          = null,
+                          TimeSpan?                              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.ArgumentError,
+                        Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
+                        RejectedChargingStationOperators.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.ArgumentError(chargingStationOperator,
+                                                                                                                                                  Description,
+                                                                                                                                                  EventTrackingId,
+                                                                                                                                                  AuthId,
+                                                                                                                                                  SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Error        (RejectedChargingStationOperators, Description, ...)
+
+        public static AddOrUpdateChargingStationOperatorsResult
+
+            Error(IEnumerable<IChargingStationOperator>  RejectedChargingStationOperators,
+                  I18NString                             Description,
+                  EventTracking_Id?                      EventTrackingId   = null,
+                  IId?                                   AuthId            = null,
+                  Object?                                SendPOIData       = null,
+                  IEnumerable<Warning>?                  Warnings          = null,
+                  TimeSpan?                              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Error,
+                        Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
+                        RejectedChargingStationOperators.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.Error(chargingStationOperator,
+                                                                                                                                          Description,
+                                                                                                                                          EventTrackingId,
+                                                                                                                                          AuthId,
+                                                                                                                                          SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) Error        (RejectedChargingStationOperators, Exception,   ...)
+
+        public static AddOrUpdateChargingStationOperatorsResult
+
+            Error(IEnumerable<IChargingStationOperator>  RejectedChargingStationOperators,
+                  Exception                              Exception,
+                  EventTracking_Id?                      EventTrackingId   = null,
+                  IId?                                   AuthId            = null,
+                  Object?                                SendPOIData       = null,
+                  IEnumerable<Warning>?                  Warnings          = null,
+                  TimeSpan?                              Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.Error,
+                        Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
+                        RejectedChargingStationOperators.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.Error(chargingStationOperator,
+                                                                                                                                          Exception,
+                                                                                                                                          EventTrackingId,
+                                                                                                                                          AuthId,
+                                                                                                                                          SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Exception.Message.ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
+        #region (static) LockTimeout  (RejectedChargingStationOperators, Timeout,     ...)
+
+        public static AddOrUpdateChargingStationOperatorsResult
+
+            LockTimeout(IEnumerable<IChargingStationOperator>  RejectedChargingStationOperators,
+                        TimeSpan                    Timeout,
+                        IId?                        AuthId            = null,
+                        Object?                     SendPOIData       = null,
+                        EventTracking_Id?           EventTrackingId   = null,
+                        I18NString?                 Description       = null,
+                        IEnumerable<Warning>?       Warnings          = null,
+                        TimeSpan?                   Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.LockTimeout,
+                        Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
+                        RejectedChargingStationOperators.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.LockTimeout(chargingStationOperator,
+                                                                                                                                                Timeout,
+                                                                                                                                                EventTrackingId,
+                                                                                                                                                AuthId,
+                                                                                                                                                SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
 
         #endregion
 

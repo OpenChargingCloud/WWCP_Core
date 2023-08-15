@@ -2813,16 +2813,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSE">An EVSE to compare with.</param>
         public Int32 CompareTo(EVSE? EVSE)
-        {
 
-            if (EVSE is null)
-                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
+            => CompareTo(EVSE as IEVSE);
 
-            return Id.CompareTo(EVSE.Id);
-
-            //ToDo: Compare more properties!
-
-        }
 
         /// <summary>
         /// Compares two EVSEs.
@@ -2867,8 +2860,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE">An EVSE to compare with.</param>
         public Boolean Equals(EVSE? EVSE)
 
-            => EVSE is not null &&
-                   Id.Equals(EVSE.Id);
+            => Equals(EVSE as IEVSE);
+
 
         /// <summary>
         /// Compares two EVSEs for equality.

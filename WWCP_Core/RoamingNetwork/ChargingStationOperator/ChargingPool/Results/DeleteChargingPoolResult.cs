@@ -96,7 +96,32 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation  (ChargingPool, ...)
+        #region (static) AdminDown      (ChargingPool, ...)
+
+        public static DeleteChargingPoolResult
+
+            AdminDown(IChargingPool              ChargingPool,
+                      EventTracking_Id?          EventTrackingId           = null,
+                      IId?                       AuthId                    = null,
+                      Object?                    SendPOIData               = null,
+                      IChargingStationOperator?  ChargingStationOperator   = null,
+                      I18NString?                Description               = null,
+                      IEnumerable<Warning>?      Warnings                  = null,
+                      TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingPool,
+                        PushDataResultTypes.AdminDown,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStationOperator,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) NoOperation    (ChargingPool, ...)
 
         public static DeleteChargingPoolResult
 
@@ -122,7 +147,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Enqueued     (ChargingPool, ...)
+        #region (static) Enqueued       (ChargingPool, ...)
 
         public static DeleteChargingPoolResult
 
@@ -147,7 +172,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Success      (ChargingPool, ...)
+        #region (static) Success        (ChargingPool, ...)
 
         public static DeleteChargingPoolResult
 
@@ -173,7 +198,33 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) ArgumentError(ChargingPool,   Description, ...)
+        #region (static) CanNotBeRemoved(ChargingPool, ...)
+
+        public static DeleteChargingPoolResult
+
+            CanNotBeRemoved(IChargingPool              ChargingPool,
+                            EventTracking_Id?          EventTrackingId           = null,
+                            IId?                       AuthId                    = null,
+                            Object?                    SendPOIData               = null,
+                            IChargingStationOperator?  ChargingStationOperator   = null,
+                            I18NString?                Description               = null,
+                            IEnumerable<Warning>?      Warnings                  = null,
+                            TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingPool,
+                        PushDataResultTypes.CanNotBeRemoved,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        ChargingStationOperator,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) ArgumentError  (ChargingPool,   Description, ...)
 
         public static DeleteChargingPoolResult
 
@@ -198,7 +249,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) ArgumentError(ChargingPoolId, Description, ...)
+        #region (static) ArgumentError  (ChargingPoolId, Description, ...)
 
         public static DeleteChargingPoolResult
 
@@ -223,7 +274,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Error        (ChargingPool,   Description, ...)
+        #region (static) Error          (ChargingPool,   Description, ...)
 
         public static DeleteChargingPoolResult
 
@@ -248,7 +299,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Error        (ChargingPool,   Exception,   ...)
+        #region (static) Error          (ChargingPool,   Exception,   ...)
 
         public static DeleteChargingPoolResult
 
@@ -267,13 +318,13 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStationOperator,
-                        Exception.Message.ToI18NString(Languages.en),
+                        Exception.Message.ToI18NString(),
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) LockTimeout  (ChargingPool,   Timeout, ...)
+        #region (static) LockTimeout    (ChargingPool,   Timeout, ...)
 
         public static DeleteChargingPoolResult
 
@@ -292,7 +343,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         ChargingStationOperator,
-                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(Languages.en),
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,
                         Runtime);
 

@@ -60,6 +60,39 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region (static) AdminDown    (RejectedChargingStations,   ...)
+
+        public static ReplaceChargingStationsResult
+
+            AdminDown(IEnumerable<IChargingStation>  RejectedChargingStations,
+                      IId?                           AuthId            = null,
+                      Object?                        SendPOIData       = null,
+                      EventTracking_Id?              EventTrackingId   = null,
+                      I18NString?                    Description       = null,
+                      IEnumerable<Warning>?          Warnings          = null,
+                      TimeSpan?                      Runtime           = null)
+
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            return new (PushDataResultTypes.AdminDown,
+                        Array.Empty<AddOrUpdateChargingStationResult>(),
+                        RejectedChargingStations.Select(evse => AddOrUpdateChargingStationResult.AdminDown(evse,
+                                                                                                           EventTrackingId,
+                                                                                                           AuthId,
+                                                                                                           SendPOIData)),
+                        AuthId,
+                        SendPOIData,
+                        EventTrackingId,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        }
+
+        #endregion
+
         #region (static) NoOperation  (RejectedChargingStations,   ...)
 
         public static ReplaceChargingStationsResult
@@ -288,7 +321,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         EventTrackingId,
-                        Exception.Message.ToI18NString(Languages.en),
+                        Exception.Message.ToI18NString(),
                         Warnings,
                         Runtime);
 

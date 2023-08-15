@@ -110,13 +110,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// All brands registered for this charging station.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<Brand>            Brands          { get; }
+        public ReactiveSet<Brand>            Brands                      { get; }
 
         /// <summary>
         /// The license of the charging station data.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<OpenDataLicense>  DataLicenses    { get; }
+        public ReactiveSet<OpenDataLicense>  DataLicenses                { get; }
 
 
         #region Address
@@ -670,6 +670,11 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+        /// <summary>
+        /// An optional energy meter located at the energy source of this charging station.
+        /// </summary>
+        public IEnergyMeter?                           UpstreamEnergyMeter      { get; set; }
 
 
         #region MaxCurrent
@@ -1871,7 +1876,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (EVSE.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, EVSE.Id))
                 return AddEVSEResult.ArgumentError(
                            EVSE,
-                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(),
                            EventTrackingId,
                            Id,
                            this,
@@ -1908,7 +1913,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             return AddEVSEResult.Error(
                        EVSE,
-                       "Error!".ToI18NString(Languages.en),
+                       "Error!".ToI18NString(),
                        EventTrackingId,
                        Id,
                        this,
@@ -1950,7 +1955,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (EVSE.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, EVSE.Id))
                 return AddEVSEResult.ArgumentError(
                            EVSE,
-                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(),
                            EventTrackingId,
                            Id,
                            this,
@@ -2028,7 +2033,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (EVSE.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, EVSE.Id))
                 return AddOrUpdateEVSEResult.ArgumentError(
                            EVSE,
-                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(),
                            EventTrackingId,
                            Id,
                            this,
@@ -2076,7 +2081,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     return AddOrUpdateEVSEResult.Error(
                                EVSE,
-                               "Error!".ToI18NString(Languages.en),
+                               "Error!".ToI18NString(),
                                EventTrackingId,
                                Id,
                                this,
@@ -2121,7 +2126,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     return AddOrUpdateEVSEResult.Error(
                                EVSE,
-                               "Error!".ToI18NString(Languages.en),
+                               "Error!".ToI18NString(),
                                EventTrackingId,
                                Id,
                                this,
@@ -2169,7 +2174,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (EVSE.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, EVSE.Id))
                 return UpdateEVSEResult.ArgumentError(
                            EVSE,
-                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(),
                            EventTrackingId,
                            Id,
                            this,
@@ -2217,7 +2222,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     return UpdateEVSEResult.Error(
                                EVSE,
-                               "Error!".ToI18NString(Languages.en),
+                               "Error!".ToI18NString(),
                                EventTrackingId,
                                Id,
                                this,
@@ -2231,7 +2236,7 @@ namespace cloud.charging.open.protocols.WWCP
             else
                 return UpdateEVSEResult.Error(
                            EVSE,
-                           "Error!".ToI18NString(Languages.en),
+                           "Error!".ToI18NString(),
                            EventTrackingId,
                            Id,
                            this,
@@ -2277,7 +2282,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (EVSE.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, EVSE.Id))
                 return UpdateEVSEResult.ArgumentError(
                            EVSE,
-                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(Languages.en),
+                           $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!".ToI18NString(),
                            EventTrackingId,
                            Id,
                            this,
@@ -2325,7 +2330,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     return UpdateEVSEResult.Error(
                                EVSE,
-                               "Error!".ToI18NString(Languages.en),
+                               "Error!".ToI18NString(),
                                EventTrackingId,
                                Id,
                                this,
@@ -2339,7 +2344,7 @@ namespace cloud.charging.open.protocols.WWCP
             else
                 return UpdateEVSEResult.Error(
                            EVSE,
-                           "Error!".ToI18NString(Languages.en),
+                           "Error!".ToI18NString(),
                            EventTrackingId,
                            Id,
                            this,
@@ -2402,7 +2407,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             return DeleteEVSEResult.ArgumentError(
                        Id,
-                       "error".ToI18NString(Languages.en),
+                       "error".ToI18NString(),
                        EventTrackingId,
                        this.Id,
                        this,
@@ -4042,9 +4047,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation">A charging station to compare with.</param>
         public Int32 CompareTo(ChargingStation? ChargingStation)
 
-            => ChargingStation is not null
-                   ? Id.CompareTo(ChargingStation.Id)
-                   : throw new ArgumentException("The given object is not a ChargingStation!", nameof(ChargingStation));
+            => CompareTo(ChargingStation as IChargingStation);
+
 
         /// <summary>
         /// Compares two charging stations.
@@ -4083,8 +4087,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation">A charging station to compare with.</param>
         public Boolean Equals(ChargingStation? ChargingStation)
 
-            => ChargingStation is not null &&
-               Id.Equals(ChargingStation.Id);
+            => Equals(ChargingStation as IChargingStation);
+
 
         /// <summary>
         /// Compares two charging stations for equality.
@@ -4093,6 +4097,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(IChargingStation? IChargingStation)
 
             => IChargingStation is not null &&
+
                Id.Equals(IChargingStation.Id);
 
         #endregion

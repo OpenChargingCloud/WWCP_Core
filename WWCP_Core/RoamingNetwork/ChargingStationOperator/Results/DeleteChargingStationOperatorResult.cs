@@ -25,6 +25,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of a delete charging station operator request.
+    /// </summary>
     public class DeleteChargingStationOperatorResult : AEnitityResult<IChargingStationOperator, ChargingStationOperator_Id>
     {
 
@@ -64,10 +67,61 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
+
+        public DeleteChargingStationOperatorResult(ChargingStationOperator_Id  ChargingStationOperatorId,
+                                                   PushDataResultTypes         Result,
+                                                   EventTracking_Id?           EventTrackingId   = null,
+                                                   IId?                        AuthId            = null,
+                                                   Object?                     SendPOIData       = null,
+                                                   IRoamingNetwork?            RoamingNetwork    = null,
+                                                   I18NString?                 Description       = null,
+                                                   IEnumerable<Warning>?       Warnings          = null,
+                                                   TimeSpan?                   Runtime           = null)
+
+            : base(ChargingStationOperatorId,
+                   Result,
+                   EventTrackingId,
+                   AuthId,
+                   SendPOIData,
+                   Description,
+                   Warnings,
+                   Runtime)
+
+        {
+
+            this.RoamingNetwork = RoamingNetwork;
+
+        }
+
         #endregion
 
 
-        #region (static) NoOperation(...)
+        #region (static) AdminDown      (ChargingStationOperator, ...)
+
+        public static DeleteChargingStationOperatorResult
+
+            AdminDown(IChargingStationOperator  ChargingStationOperator,
+                      EventTracking_Id?         EventTrackingId   = null,
+                      IId?                      AuthId            = null,
+                      Object?                   SendPOIData       = null,
+                      IRoamingNetwork?          RoamingNetwork    = null,
+                      I18NString?               Description       = null,
+                      IEnumerable<Warning>?     Warnings          = null,
+                      TimeSpan?                 Runtime           = null)
+
+                => new (ChargingStationOperator,
+                        PushDataResultTypes.AdminDown,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        RoamingNetwork,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) NoOperation    (ChargingStationOperator, ...)
 
         public static DeleteChargingStationOperatorResult
 
@@ -92,21 +146,22 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) ArgumentError(...)
+
+        #region (static) Enqueued       (ChargingStationOperator, ...)
 
         public static DeleteChargingStationOperatorResult
 
-            ArgumentError(IChargingStationOperator  ChargingStationOperator,
-                          EventTracking_Id?         EventTrackingId   = null,
-                          IId?                      AuthId            = null,
-                          Object?                   SendPOIData       = null,
-                          IRoamingNetwork?          RoamingNetwork    = null,
-                          I18NString?               Description       = null,
-                          IEnumerable<Warning>?     Warnings          = null,
-                          TimeSpan?                 Runtime           = null)
+            Enqueued(IChargingStationOperator  ChargingStationOperator,
+                     EventTracking_Id?         EventTrackingId   = null,
+                     IId?                      AuthId            = null,
+                     Object?                   SendPOIData       = null,
+                     IRoamingNetwork?          RoamingNetwork    = null,
+                     I18NString?               Description       = null,
+                     IEnumerable<Warning>?     Warnings          = null,
+                     TimeSpan?                 Runtime           = null)
 
                 => new (ChargingStationOperator,
-                        PushDataResultTypes.ArgumentError,
+                        PushDataResultTypes.Enqueued,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -117,7 +172,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Success(...)
+        #region (static) Success        (ChargingStationOperator, ...)
 
         public static DeleteChargingStationOperatorResult
 
@@ -143,7 +198,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) CanNotBeRemoved(...)
+        #region (static) CanNotBeRemoved(ChargingStationOperator, ...)
 
         public static DeleteChargingStationOperatorResult
 
@@ -169,7 +224,57 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Error(ChargingStationOperator, Description, ...)
+        #region (static) ArgumentError  (ChargingStationOperator,   Description, ...)
+
+        public static DeleteChargingStationOperatorResult
+
+            ArgumentError(IChargingStationOperator  ChargingStationOperator,
+                          I18NString                Description,
+                          EventTracking_Id?         EventTrackingId   = null,
+                          IId?                      AuthId            = null,
+                          Object?                   SendPOIData       = null,
+                          IRoamingNetwork?          RoamingNetwork    = null,
+                          IEnumerable<Warning>?     Warnings          = null,
+                          TimeSpan?                 Runtime           = null)
+
+                => new (ChargingStationOperator,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        RoamingNetwork,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) ArgumentError  (ChargingStationOperatorId, Description, ...)
+
+        public static DeleteChargingStationOperatorResult
+
+            ArgumentError(ChargingStationOperator_Id  ChargingStationOperatorId,
+                          I18NString                  Description,
+                          EventTracking_Id?           EventTrackingId   = null,
+                          IId?                        AuthId            = null,
+                          Object?                     SendPOIData       = null,
+                          IRoamingNetwork?            RoamingNetwork    = null,
+                          IEnumerable<Warning>?       Warnings          = null,
+                          TimeSpan?                   Runtime           = null)
+
+                => new (ChargingStationOperatorId,
+                        PushDataResultTypes.ArgumentError,
+                        EventTrackingId,
+                        AuthId,
+                        SendPOIData,
+                        RoamingNetwork,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error          (ChargingStationOperator,   Description, ...)
 
         public static DeleteChargingStationOperatorResult
 
@@ -194,7 +299,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Error(ChargingStationOperator, Exception,   ...)
+        #region (static) Error          (ChargingStationOperator,   Exception,   ...)
 
         public static DeleteChargingStationOperatorResult
 
@@ -213,16 +318,13 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         RoamingNetwork,
-                        I18NString.Create(
-                            Languages.en,
-                            Exception.Message
-                        ),
+                        Exception.Message.ToI18NString(),
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) LockTimeout(Timeout, ...)
+        #region (static) LockTimeout    (ChargingStationOperator,   Timeout,     ...)
 
         public static DeleteChargingStationOperatorResult
 
@@ -241,10 +343,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthId,
                         SendPOIData,
                         RoamingNetwork,
-                        I18NString.Create(
-                            Languages.en,
-                            $"Lock timeout after {Timeout.TotalSeconds} seconds!"
-                        ),
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,
                         Runtime);
 
