@@ -30,12 +30,12 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IReceiveChargingPoolData
     {
 
-        #region AddChargingPool           (ChargingPool, ...)
+        #region AddChargingPool           (ChargingPool,  ...)
 
         /// <summary>
-        /// Add the EVSE data of the given charging pool to the static EVSE data.
+        /// Add the given charging pool.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ChargingPool">A charging pool to add.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -52,12 +52,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddChargingPoolIfNotExists(ChargingPool, ...)
+        #region AddChargingPoolIfNotExists(ChargingPool,  ...)
 
         /// <summary>
-        /// Add the EVSE data of the given charging pool to the static EVSE data.
+        /// Add the given charging pool, if it does not already exist.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ChargingPool">A charging pool to add, if it does not already exist.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -74,12 +74,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateChargingPool   (ChargingPool, ...)
+        #region AddOrUpdateChargingPool   (ChargingPool,  ...)
 
         /// <summary>
-        /// Set the EVSE data of the given charging pool as new static EVSE data.
+        /// Add or update the given charging pool.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ChargingPool">A charging pool to add or update.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -99,9 +99,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region UpdateChargingPool        (ChargingPool,  PropertyName, NewValue, OldValue = null, DataSource = null, ...)
 
         /// <summary>
-        /// Update the data of the given charging pool.
+        /// Update the given charging pool.
+        /// The charging pool can be uploaded as a whole, or just a single property of the charging pool.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ChargingPool">A charging pool to update.</param>
         /// <param name="PropertyName">The name of the charging pool property to update.</param>
         /// <param name="NewValue">The new value of the charging pool property to update.</param>
         /// <param name="OldValue">The optional old value of the charging pool property to update.</param>
@@ -126,12 +127,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteChargingPool        (ChargingPool, ...)
+        #region DeleteChargingPool        (ChargingPool,  ...)
 
         /// <summary>
-        /// Delete the EVSE data of the given charging pool from the static EVSE data.
+        /// Delete the given charging pool.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ChargingPool">A charging pool to delete.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -152,9 +153,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddChargingPools          (ChargingPools, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given enumeration of charging pools to the static EVSE data.
+        /// Add the given enumeration of charging pools.
         /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="ChargingPools">An enumeration of charging pools to add.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -174,9 +175,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddChargingPoolsIfNotExist(ChargingPools, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given enumeration of charging pools to the static EVSE data.
+        /// Add the given enumeration of charging pools, if they do not already exist.
         /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="ChargingPools">An enumeration of charging pools to add, if they do not already exist.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -196,9 +197,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddOrUpdateChargingPools  (ChargingPools, ...)
 
         /// <summary>
-        /// Set the EVSE data of the given enumeration of charging pools as new static EVSE data.
+        /// Add or update the given enumeration of charging pools.
         /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="ChargingPools">An enumeration of charging pools to add or update.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -218,9 +219,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region UpdateChargingPools       (ChargingPools, ...)
 
         /// <summary>
-        /// Update the EVSE data of the given enumeration of charging pools.
+        /// Update the given enumeration of charging pools.
         /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="ChargingPools">An enumeration of charging pools to update.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -240,9 +241,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region DeleteChargingPools       (ChargingPools, ...)
 
         /// <summary>
-        /// Delete the EVSE data of the given enumeration of charging pools from the static EVSE data.
+        /// Delete the given enumeration of charging pools.
         /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="ChargingPools">An enumeration of charging pools to delete.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>

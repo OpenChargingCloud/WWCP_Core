@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            DateTime?                                    Timestamp           = null,
                                            EventTracking_Id?                            EventTrackingId     = null,
                                            TimeSpan?                                    RequestTimeout      = null,
-                                           CancellationToken?                           CancellationToken   = null);
+                                           CancellationToken                            CancellationToken   = default);
 
         #endregion
 
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               DateTime?                                       Timestamp           = null,
                                               EventTracking_Id?                               EventTrackingId     = null,
                                               TimeSpan?                                       RequestTimeout      = null,
-                                              CancellationToken?                              CancellationToken   = null);
+                                              CancellationToken                               CancellationToken   = default);
 
         #endregion
 
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    DateTime?                            Timestamp           = null,
                                    EventTracking_Id?                    EventTrackingId     = null,
                                    TimeSpan?                            RequestTimeout      = null,
-                                   CancellationToken?                   CancellationToken   = null);
+                                   CancellationToken                    CancellationToken   = default);
 
         #endregion
 

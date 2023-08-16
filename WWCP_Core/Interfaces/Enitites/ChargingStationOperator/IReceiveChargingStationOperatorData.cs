@@ -30,12 +30,12 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IReceiveChargingStationOperatorData
     {
 
-        #region AddChargingStationOperator           (ChargingStationOperator, ...)
+        #region AddChargingStationOperator           (ChargingStationOperator,  ...)
 
         /// <summary>
-        /// Add the EVSE data of the given charging station operator to the static EVSE data.
+        /// Add the given charging station operator.
         /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="ChargingStationOperator">A charging station operator to add.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -52,12 +52,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddChargingStationOperatorIfNotExists(ChargingStationOperator, ...)
+        #region AddChargingStationOperatorIfNotExists(ChargingStationOperator,  ...)
 
         /// <summary>
-        /// Add the EVSE data of the given charging station operator to the static EVSE data.
+        /// Add the given charging station operator, if it does not already exist.
         /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="ChargingStationOperator">A charging station operator to add, if it does not already exist.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -74,12 +74,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateChargingStationOperator   (ChargingStationOperator, ...)
+        #region AddOrUpdateChargingStationOperator   (ChargingStationOperator,  ...)
 
         /// <summary>
-        /// Set the EVSE data of the given charging station operator as new static EVSE data.
+        /// Add or update the given charging station operator.
         /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="ChargingStationOperator">A charging station operator to add or update.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -96,12 +96,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingStationOperator        (ChargingStationOperator, PropertyName, NewValue, OldValue = null, DataSource = null, ...)
+        #region UpdateChargingStationOperator        (ChargingStationOperator,  PropertyName, NewValue, OldValue = null, DataSource = null, ...)
 
         /// <summary>
-        /// Update the EVSE data of the given charging station operator.
+        /// Update the given charging station operator.
+        /// The charging station operator can be uploaded as a whole, or just a single property of the charging station operator.
         /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="ChargingStationOperator">A charging station operator to update.</param>
         /// <param name="PropertyName">The name of the charging station operator property to update.</param>
         /// <param name="NewValue">The new value of the charging station operator property to update.</param>
         /// <param name="OldValue">The optional old value of the charging station operator property to update.</param>
@@ -126,12 +127,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteChargingStationOperator        (ChargingStationOperator, ...)
+        #region DeleteChargingStationOperator        (ChargingStationOperator,  ...)
 
         /// <summary>
-        /// Delete the EVSE data of the given charging station operator from the static EVSE data.
+        /// Delete the given charging station operator.
         /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="ChargingStationOperator">A charging station operator to delete.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -152,10 +153,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddChargingStationOperators          (ChargingStationOperators, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given enumeration of charging station operators to the static EVSE data.
+        /// Add the given enumeration of charging station operators.
         /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
-        /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators to add.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -175,9 +175,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddChargingStationOperatorsIfNotExist(ChargingStationOperators, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given enumeration of charging station operators to the static EVSE data.
+        /// Add the given enumeration of charging station operators, if they do not already exist.
         /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators to add, if they do not already exist.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -197,9 +197,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddOrUpdateChargingStationOperators  (ChargingStationOperators, ...)
 
         /// <summary>
-        /// Set the EVSE data of the given enumeration of charging station operators as new static EVSE data.
+        /// Add or update the given enumeration of charging station operators.
         /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators to add or update.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -219,9 +219,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region UpdateChargingStationOperators       (ChargingStationOperators, ...)
 
         /// <summary>
-        /// Update the EVSE data of the given enumeration of charging station operators.
+        /// Update the given enumeration of charging station operators.
         /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators to update.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -241,9 +241,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region DeleteChargingStationOperators       (ChargingStationOperators, ...)
 
         /// <summary>
-        /// Delete the EVSE data of the given enumeration of charging station operators from the static EVSE data.
+        /// Delete the given enumeration of charging station operators.
         /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators to delete.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>

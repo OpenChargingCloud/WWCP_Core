@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IReceiveEVSEData
     {
 
-        #region AddEVSE           (EVSE, ...)
+        #region AddEVSE           (EVSE,  ...)
 
         /// <summary>
         /// Add the given EVSE.
@@ -52,12 +52,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddEVSEIfNotExists(EVSE, ...)
+        #region AddEVSEIfNotExists(EVSE,  ...)
 
         /// <summary>
         /// Add the given EVSE, if it does not already exist.
         /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
+        /// <param name="EVSE">An EVSE to add, if it does not already exist.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -74,12 +74,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateEVSE   (EVSE, ...)
+        #region AddOrUpdateEVSE   (EVSE,  ...)
 
         /// <summary>
         /// Add or update the given EVSE.
         /// </summary>
-        /// <param name="EVSE">An EVSE to add or udpate.</param>
+        /// <param name="EVSE">An EVSE to add or update.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteEVSE        (EVSE, ...)
+        #region DeleteEVSE        (EVSE,  ...)
 
         /// <summary>
         /// Delete the given EVSE.
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Add the given enumeration of EVSEs.
         /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="EVSEs">An enumeration of EVSEs to add.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>

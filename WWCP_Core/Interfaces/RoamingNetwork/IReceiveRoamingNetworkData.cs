@@ -30,12 +30,12 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IReceiveRoamingNetworkData
     {
 
-        #region AddRoamingNetwork           (RoamingNetwork, ...)
+        #region AddRoamingNetwork           (RoamingNetwork,  ...)
 
         /// <summary>
-        /// Upload the static data of the given roaming network.
+        /// Add the given roaming network.
         /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
+        /// <param name="RoamingNetwork">A roaming network to add.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -52,12 +52,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddRoamingNetworkIfNotExists(RoamingNetwork, ...)
+        #region AddRoamingNetworkIfNotExists(RoamingNetwork,  ...)
 
         /// <summary>
-        /// Upload the static data of the given roaming network.
+        /// Add the given roaming network, if it does not already exist.
         /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
+        /// <param name="RoamingNetwork">A roaming network to add, if it does not already exist.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -74,12 +74,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateRoamingNetwork   (RoamingNetwork, ...)
+        #region AddOrUpdateRoamingNetwork   (RoamingNetwork,  ...)
 
         /// <summary>
-        /// Upload the static data of the given roaming network.
+        /// Add or update the given roaming network.
         /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
+        /// <param name="RoamingNetwork">A roaming network to add or update.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -96,12 +96,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateRoamingNetwork        (RoamingNetwork, PropertyName, NewValue, OldValue = null, DataSource = null, ...)
+        #region UpdateRoamingNetwork        (RoamingNetwork,  PropertyName, NewValue, OldValue = null, DataSource = null, ...)
 
         /// <summary>
-        /// Upload the static data of the given roaming network.
+        /// Update the given roaming network.
+        /// The roaming network can be uploaded as a whole, or just a single property of the roaming network.
         /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
+        /// <param name="RoamingNetwork">A roaming network to update.</param>
         /// <param name="PropertyName">The name of the roaming network property to update.</param>
         /// <param name="NewValue">The new value of the roaming network property to update.</param>
         /// <param name="OldValue">The optinal old value of the roaming network property to update.</param>
@@ -126,12 +127,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteRoamingNetwork        (RoamingNetwork, ...)
+        #region DeleteRoamingNetwork        (RoamingNetwork,  ...)
 
         /// <summary>
-        /// Upload the static data of the given roaming network.
+        /// Delete the given roaming network.
         /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
+        /// <param name="RoamingNetwork">A roaming network to delete.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -154,7 +155,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Add the given enumeration of roaming networks.
         /// </summary>
-        /// <param name="RoamingNetworks">An enumeration of roaming networks.</param>
+        /// <param name="RoamingNetworks">An enumeration of roaming networks to add.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>

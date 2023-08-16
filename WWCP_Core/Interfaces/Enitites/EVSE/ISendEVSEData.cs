@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Add or update the given EVSE.
         /// </summary>
-        /// <param name="EVSE">An EVSE to add or udpate.</param>
+        /// <param name="EVSE">An EVSE to add or update.</param>
         /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>

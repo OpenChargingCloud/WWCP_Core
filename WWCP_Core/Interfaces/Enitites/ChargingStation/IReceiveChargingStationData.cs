@@ -30,12 +30,12 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IReceiveChargingStationData
     {
 
-        #region AddChargingStation           (ChargingStation, ...)
+        #region AddChargingStation           (ChargingStation,  ...)
 
         /// <summary>
-        /// Add the EVSE data of the given charging station to the static EVSE data.
+        /// Add the given charging station.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="ChargingStation">A charging station to add.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -52,12 +52,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddChargingStationIfNotExists(ChargingStation, ...)
+        #region AddChargingStationIfNotExists(ChargingStation,  ...)
 
         /// <summary>
-        /// Add the EVSE data of the given charging station to the static EVSE data.
+        /// Add the given charging station, if it does not already exist.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="ChargingStation">A charging station to add, if it does not already exist.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -74,12 +74,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateChargingStation   (ChargingStation, ...)
+        #region AddOrUpdateChargingStation   (ChargingStation,  ...)
 
         /// <summary>
-        /// Set the EVSE data of the given charging station as new static EVSE data.
+        /// Add or update the given charging station.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="ChargingStation">A charging station to add or update.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -99,9 +99,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region UpdateChargingStation        (ChargingStation,  PropertyName, NewValue, OldValue = null, DataSource = null, ...)
 
         /// <summary>
-        /// Update the EVSE data of the given charging station.
+        /// Update the given charging station.
+        /// The charging station can be uploaded as a whole, or just a single property of the charging station.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="ChargingStation">A charging station to update.</param>
         /// <param name="PropertyName">The name of the charging station property to update.</param>
         /// <param name="NewValue">The new value of the charging station property to update.</param>
         /// <param name="OldValue">The optional old value of the charging station property to update.</param>
@@ -126,12 +127,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteChargingStation        (ChargingStation, ...)
+        #region DeleteChargingStation        (ChargingStation,  ...)
 
         /// <summary>
-        /// Delete the EVSE data of the given charging station from the static EVSE data.
+        /// Delete the given charging station.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="ChargingStation">A charging station to delete.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -152,9 +153,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddChargingStations          (ChargingStations, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given enumeration of charging stations to the static EVSE data.
+        /// Add the given enumeration of charging stations.
         /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="ChargingStations">An enumeration of charging stations to add.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -174,9 +175,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddChargingStationsIfNotExist(ChargingStations, ...)
 
         /// <summary>
-        /// Add the EVSE data of the given enumeration of charging stations to the static EVSE data.
+        /// Add the given enumeration of charging stations, if they do not already exist..
         /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="ChargingStations">An enumeration of charging stations to add, if they do not already exist..</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -196,9 +197,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddOrUpdateChargingStations  (ChargingStations, ...)
 
         /// <summary>
-        /// Set the EVSE data of the given enumeration of charging stations as new static EVSE data.
+        /// Add or update the given enumeration of charging stations.
         /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="ChargingStations">An enumeration of charging stations to add or update.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -218,9 +219,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region UpdateChargingStations       (ChargingStations, ...)
 
         /// <summary>
-        /// Update the EVSE data of the given enumeration of charging stations.
+        /// Update the given enumeration of charging stations.
         /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="ChargingStations">An enumeration of charging stations to update.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -240,9 +241,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region DeleteChargingStations       (ChargingStations, ...)
 
         /// <summary>
-        /// Delete the EVSE data of the given enumeration of charging stations from the static EVSE data.
+        /// Delete the given enumeration of charging stations.
         /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="ChargingStations">An enumeration of charging stations to delete.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
