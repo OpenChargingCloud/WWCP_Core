@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Constructor(s)
 
         public AddOrUpdateChargingStationOperatorResult(IChargingStationOperator  ChargingStationOperator,
-                                                        PushDataResultTypes       Result,
+                                                        CommandResult       Result,
                                                         EventTracking_Id?         EventTrackingId   = null,
                                                         IId?                      AuthId            = null,
                                                         Object?                   SendPOIData       = null,
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.WWCP
                       TimeSpan?                 Runtime           = null)
 
                 => new (ChargingStationOperator,
-                        PushDataResultTypes.AdminDown,
+                        CommandResult.AdminDown,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.WWCP
                         TimeSpan?                 Runtime           = null)
 
                 => new (ChargingStationOperator,
-                        PushDataResultTypes.NoOperation,
+                        CommandResult.NoOperation,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.WWCP
                      TimeSpan?                 Runtime           = null)
 
                 => new (ChargingStationOperator,
-                        PushDataResultTypes.Enqueued,
+                        CommandResult.Enqueued,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.WWCP
                   TimeSpan?                 Runtime           = null)
 
                 => new (ChargingStationOperator,
-                        PushDataResultTypes.Success,
+                        CommandResult.Success,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.WWCP
                     TimeSpan?                 Runtime           = null)
 
                 => new (ChargingStationOperator,
-                        PushDataResultTypes.Success,
+                        CommandResult.Success,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TimeSpan?                 Runtime           = null)
 
                 => new (ChargingStationOperator,
-                        PushDataResultTypes.ArgumentError,
+                        CommandResult.ArgumentError,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -246,7 +246,7 @@ namespace cloud.charging.open.protocols.WWCP
                   TimeSpan?                 Runtime           = null)
 
                 => new (ChargingStationOperator,
-                        PushDataResultTypes.Error,
+                        CommandResult.Error,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.WWCP
                   TimeSpan?                 Runtime           = null)
 
                 => new (ChargingStationOperator,
-                        PushDataResultTypes.Error,
+                        CommandResult.Error,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.WWCP
                         TimeSpan?                 Runtime           = null)
 
                 => new(ChargingStationOperator,
-                        PushDataResultTypes.LockTimeout,
+                        CommandResult.LockTimeout,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,

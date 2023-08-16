@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        public AddOrUpdateEVSEsResult(PushDataResultTypes                  Result,
+        public AddOrUpdateEVSEsResult(CommandResult                  Result,
                                       IEnumerable<AddOrUpdateEVSEResult>?  SuccessfulEVSEs   = null,
                                       IEnumerable<AddOrUpdateEVSEResult>?  RejectedEVSEs     = null,
                                       IId?                                 AuthId            = null,
@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.AdminDown,
+            return new (CommandResult.AdminDown,
                         Array.Empty<AddOrUpdateEVSEResult>(),
                         RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.AdminDown(evse,
                                                                                      EventTrackingId,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.NoOperation,
+            return new (CommandResult.NoOperation,
                         Array.Empty<AddOrUpdateEVSEResult>(),
                         RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.NoOperation(evse,
                                                                                         EventTrackingId,
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Enqueued,
+            return new (CommandResult.Enqueued,
                         SuccessfulEVSEs.Select(evse => AddOrUpdateEVSEResult.Enqueued(evse,
                                                                                       EventTrackingId,
                                                                                       AuthId,
@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Success,
+            return new (CommandResult.Success,
                         SuccessfulEVSEs.Select(evse => AddOrUpdateEVSEResult.Added(evse,
                                                                                    EventTrackingId,
                                                                                    AuthId,
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Success,
+            return new (CommandResult.Success,
                         SuccessfulEVSEs.Select(evse => AddOrUpdateEVSEResult.Updated(evse,
                                                                                      EventTrackingId,
                                                                                      AuthId,
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.ArgumentError,
+            return new (CommandResult.ArgumentError,
                         Array.Empty<AddOrUpdateEVSEResult>(),
                         RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.ArgumentError(evse,
                                                                                          Description,
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Error,
+            return new (CommandResult.Error,
                         Array.Empty<AddOrUpdateEVSEResult>(),
                         RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.Error(evse,
                                                                                  Description,
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Error,
+            return new (CommandResult.Error,
                         Array.Empty<AddOrUpdateEVSEResult>(),
                         RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.Error(evse,
                                                                                  Exception,
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.LockTimeout,
+            return new (CommandResult.LockTimeout,
                         Array.Empty<AddOrUpdateEVSEResult>(),
                         RejectedEVSEs.Select(evse => AddOrUpdateEVSEResult.LockTimeout(evse,
                                                                                        Timeout,

@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Constructor(s)
 
         public UpdateEVSEResult(IEVSE                  EVSE,
-                                PushDataResultTypes    Result,
+                                CommandResult    Result,
                                 EventTracking_Id?      EventTrackingId   = null,
                                 IId?                   AuthId            = null,
                                 Object?                SendPOIData       = null,
@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         public UpdateEVSEResult(EVSE_Id                EVSEId,
-                                PushDataResultTypes    Result,
+                                CommandResult    Result,
                                 EventTracking_Id?      EventTrackingId   = null,
                                 IId?                   AuthId            = null,
                                 Object?                SendPOIData       = null,
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.WWCP
                       TimeSpan?              Runtime           = null)
 
                 => new (EVSE,
-                        PushDataResultTypes.AdminDown,
+                        CommandResult.AdminDown,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.WWCP
                         TimeSpan?              Runtime           = null)
 
                 => new (EVSE,
-                        PushDataResultTypes.NoOperation,
+                        CommandResult.NoOperation,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.WWCP
                      TimeSpan?              Runtime           = null)
 
                 => new (EVSE,
-                        PushDataResultTypes.Enqueued,
+                        CommandResult.Enqueued,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.WWCP
                     TimeSpan?              Runtime           = null)
 
                 => new (EVSE,
-                        PushDataResultTypes.Success,
+                        CommandResult.Success,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TimeSpan?              Runtime           = null)
 
                 => new (EVSE,
-                        PushDataResultTypes.ArgumentError,
+                        CommandResult.ArgumentError,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TimeSpan?              Runtime           = null)
 
                 => new (EVSEId,
-                        PushDataResultTypes.ArgumentError,
+                        CommandResult.ArgumentError,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.WWCP
                   TimeSpan?              Runtime           = null)
 
                 => new (EVSE,
-                        PushDataResultTypes.Error,
+                        CommandResult.Error,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -287,7 +287,7 @@ namespace cloud.charging.open.protocols.WWCP
                   TimeSpan?              Runtime           = null)
 
                 => new (EVSE,
-                        PushDataResultTypes.Error,
+                        CommandResult.Error,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.WWCP
                         TimeSpan?              Runtime           = null)
 
                 => new (EVSE,
-                        PushDataResultTypes.LockTimeout,
+                        CommandResult.LockTimeout,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,

@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        public AddOrUpdateRoamingNetworksResult(PushDataResultTypes                            Result,
+        public AddOrUpdateRoamingNetworksResult(CommandResult                            Result,
                                                 IEnumerable<AddOrUpdateRoamingNetworkResult>?  SuccessfulRoamingNetworks   = null,
                                                 IEnumerable<AddOrUpdateRoamingNetworkResult>?  RejectedRoamingNetworks     = null,
                                                 IId?                                           AuthId                      = null,
@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.AdminDown,
+            return new (CommandResult.AdminDown,
                         Array.Empty<AddOrUpdateRoamingNetworkResult>(),
                         RejectedRoamingNetworks.Select(roamingNetwork => AddOrUpdateRoamingNetworkResult.AdminDown(roamingNetwork,
                                                                                                                    EventTrackingId,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.NoOperation,
+            return new (CommandResult.NoOperation,
                         Array.Empty<AddOrUpdateRoamingNetworkResult>(),
                         RejectedRoamingNetworks.Select(roamingNetwork => AddOrUpdateRoamingNetworkResult.NoOperation(roamingNetwork,
                                                                                                                      EventTrackingId,
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Enqueued,
+            return new (CommandResult.Enqueued,
                         SuccessfulChargingPools.Select(roamingNetwork => AddOrUpdateRoamingNetworkResult.Enqueued(roamingNetwork,
                                                                                                                   EventTrackingId,
                                                                                                                   AuthId,
@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Success,
+            return new (CommandResult.Success,
                         SuccessfulChargingPools.Select(roamingNetwork => AddOrUpdateRoamingNetworkResult.Added(roamingNetwork,
                                                                                                                EventTrackingId,
                                                                                                                AuthId,
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Success,
+            return new (CommandResult.Success,
                         SuccessfulChargingPools.Select(roamingNetwork => AddOrUpdateRoamingNetworkResult.Updated(roamingNetwork,
                                                                                                                  EventTrackingId,
                                                                                                                  AuthId,
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.ArgumentError,
+            return new (CommandResult.ArgumentError,
                         Array.Empty<AddOrUpdateRoamingNetworkResult>(),
                         RejectedRoamingNetworks.Select(roamingNetwork => AddOrUpdateRoamingNetworkResult.ArgumentError(roamingNetwork,
                                                                                                                                           Description,
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Error,
+            return new (CommandResult.Error,
                         Array.Empty<AddOrUpdateRoamingNetworkResult>(),
                         RejectedRoamingNetworks.Select(roamingNetwork => AddOrUpdateRoamingNetworkResult.Error(roamingNetwork,
                                                                                                                Description,
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Error,
+            return new (CommandResult.Error,
                         Array.Empty<AddOrUpdateRoamingNetworkResult>(),
                         RejectedRoamingNetworks.Select(roamingNetwork => AddOrUpdateRoamingNetworkResult.Error(roamingNetwork,
                                                                                                                Exception,
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.LockTimeout,
+            return new (CommandResult.LockTimeout,
                         Array.Empty<AddOrUpdateRoamingNetworkResult>(),
                         RejectedRoamingNetworks.Select(roamingNetwork => AddOrUpdateRoamingNetworkResult.LockTimeout(roamingNetwork,
                                                                                                                      Timeout,

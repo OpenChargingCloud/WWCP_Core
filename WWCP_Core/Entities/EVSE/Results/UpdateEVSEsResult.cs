@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        public UpdateEVSEsResult(PushDataResultTypes             Result,
+        public UpdateEVSEsResult(CommandResult             Result,
                                  IEnumerable<UpdateEVSEResult>?  SuccessfulEVSEs   = null,
                                  IEnumerable<UpdateEVSEResult>?  RejectedEVSEs     = null,
                                  IId?                            AuthId            = null,
@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.AdminDown,
+            return new (CommandResult.AdminDown,
                         Array.Empty<UpdateEVSEResult>(),
                         RejectedEVSEs.Select(evse => UpdateEVSEResult.AdminDown(evse,
                                                                                 EventTrackingId,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.NoOperation,
+            return new (CommandResult.NoOperation,
                         Array.Empty<UpdateEVSEResult>(),
                         RejectedEVSEs.Select(evse => UpdateEVSEResult.NoOperation(evse,
                                                                                     EventTrackingId,
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Enqueued,
+            return new (CommandResult.Enqueued,
                         SuccessfulEVSEs.Select(evse => UpdateEVSEResult.Enqueued(evse,
                                                                                  EventTrackingId,
                                                                                  AuthId,
@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Success,
+            return new (CommandResult.Success,
                         SuccessfulEVSEs.Select(evse => UpdateEVSEResult.Success(evse,
                                                                                 EventTrackingId,
                                                                                 AuthId,
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Error,
+            return new (CommandResult.Error,
                         Array.Empty<UpdateEVSEResult>(),
                         RejectedEVSEs.Select(evse => UpdateEVSEResult.ArgumentError(evse,
                                                                                     Description,
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Error,
+            return new (CommandResult.Error,
                         Array.Empty<UpdateEVSEResult>(),
                         RejectedEVSEs.Select(evse => UpdateEVSEResult.Error(evse,
                                                                             Description,
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Error,
+            return new (CommandResult.Error,
                         Array.Empty<UpdateEVSEResult>(),
                         RejectedEVSEs.Select(evse => UpdateEVSEResult.Error(evse,
                                                                             Exception,
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.LockTimeout,
+            return new (CommandResult.LockTimeout,
                         Array.Empty<UpdateEVSEResult>(),
                         RejectedEVSEs.Select(evse => UpdateEVSEResult.LockTimeout(evse,
                                                                                   Timeout,

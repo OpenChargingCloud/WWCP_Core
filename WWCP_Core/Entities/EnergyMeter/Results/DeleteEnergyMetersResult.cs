@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        public DeleteEnergyMetersResult(PushDataResultTypes                    Result,
+        public DeleteEnergyMetersResult(CommandResult                    Result,
                                         IEnumerable<DeleteEnergyMeterResult>?  SuccessfulEnergyMeters   = null,
                                         IEnumerable<DeleteEnergyMeterResult>?  RejectedEnergyMeters     = null,
                                         IId?                                   AuthId                   = null,
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.AdminDown,
+            return new (CommandResult.AdminDown,
                         Array.Empty<DeleteEnergyMeterResult>(),
                         RejectedEnergyMeters.Select(energyMeter => DeleteEnergyMeterResult.AdminDown(energyMeter,
                                                                                                      EventTrackingId,
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.NoOperation,
+            return new (CommandResult.NoOperation,
                         Array.Empty<DeleteEnergyMeterResult>(),
                         RejectedEnergyMeters.Select(energyMeter => DeleteEnergyMeterResult.NoOperation(energyMeter,
                                                                                                        EventTrackingId,
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Enqueued,
+            return new (CommandResult.Enqueued,
                         SuccessfulChargingPools.Select(energyMeter => DeleteEnergyMeterResult.Enqueued(energyMeter,
                                                                                                        EventTrackingId,
                                                                                                        AuthId,
@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Success,
+            return new (CommandResult.Success,
                         SuccessfulChargingPools.Select(energyMeter => DeleteEnergyMeterResult.Success(energyMeter,
                                                                                                       EventTrackingId,
                                                                                                       AuthId,
@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.ArgumentError,
+            return new (CommandResult.ArgumentError,
                         Array.Empty<DeleteEnergyMeterResult>(),
                         RejectedEnergyMeters.Select(energyMeter => DeleteEnergyMeterResult.ArgumentError(energyMeter,
                                                                                                          Description,
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Error,
+            return new (CommandResult.Error,
                         Array.Empty<DeleteEnergyMeterResult>(),
                         RejectedEnergyMeters.Select(energyMeter => DeleteEnergyMeterResult.Error(energyMeter,
                                                                                                  Description,
@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Error,
+            return new (CommandResult.Error,
                         Array.Empty<DeleteEnergyMeterResult>(),
                         RejectedEnergyMeters.Select(energyMeter => DeleteEnergyMeterResult.Error(energyMeter,
                                                                                                  Exception,
@@ -313,7 +313,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.LockTimeout,
+            return new (CommandResult.LockTimeout,
                         Array.Empty<DeleteEnergyMeterResult>(),
                         RejectedEnergyMeters.Select(energyMeter => DeleteEnergyMeterResult.LockTimeout(energyMeter,
                                                                                                        Timeout,

@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Constructor(s)
 
         public UpdateRoamingNetworkResult(IRoamingNetwork        RoamingNetwork,
-                                          PushDataResultTypes    Result,
+                                          CommandResult    Result,
                                           EventTracking_Id?      EventTrackingId   = null,
                                           IId?                   AuthId            = null,
                                           Object?                SendPOIData       = null,
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.WWCP
                       TimeSpan?              Runtime           = null)
 
                 => new (RoamingNetwork,
-                        PushDataResultTypes.AdminDown,
+                        CommandResult.AdminDown,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.WWCP
                         TimeSpan?              Runtime           = null)
 
                 => new (RoamingNetwork,
-                        PushDataResultTypes.NoOperation,
+                        CommandResult.NoOperation,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.WWCP
                      TimeSpan?              Runtime           = null)
 
                 => new (RoamingNetwork,
-                        PushDataResultTypes.Enqueued,
+                        CommandResult.Enqueued,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.WWCP
                     TimeSpan?              Runtime           = null)
 
                 => new (RoamingNetwork,
-                        PushDataResultTypes.Success,
+                        CommandResult.Success,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.WWCP
                    TimeSpan?              Runtime           = null)
 
                 => new (RoamingNetwork,
-                        PushDataResultTypes.Exists,
+                        CommandResult.Exists,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TimeSpan?              Runtime           = null)
 
                 => new (RoamingNetwork,
-                        PushDataResultTypes.ArgumentError,
+                        CommandResult.ArgumentError,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.WWCP
                   TimeSpan?              Runtime           = null)
 
                 => new (RoamingNetwork,
-                        PushDataResultTypes.Error,
+                        CommandResult.Error,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.WWCP
                   TimeSpan?              Runtime           = null)
 
                 => new (RoamingNetwork,
-                        PushDataResultTypes.Error,
+                        CommandResult.Error,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.WWCP
                         TimeSpan?              Runtime           = null)
 
                 => new (RoamingNetwork,
-                        PushDataResultTypes.LockTimeout,
+                        CommandResult.LockTimeout,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,

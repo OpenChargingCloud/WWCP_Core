@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Constructor(s)
 
         public DeleteChargingPoolResult(IChargingPool              ChargingPool,
-                                        PushDataResultTypes        Result,
+                                        CommandResult        Result,
                                         EventTracking_Id?          EventTrackingId           = null,
                                         IId?                       AuthId                    = null,
                                         Object?                    SendPOIData               = null,
@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         public DeleteChargingPoolResult(ChargingPool_Id            Id,
-                                        PushDataResultTypes        Result,
+                                        CommandResult        Result,
                                         EventTracking_Id?          EventTrackingId           = null,
                                         IId?                       AuthId                    = null,
                                         Object?                    SendPOIData               = null,
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.WWCP
                       TimeSpan?                  Runtime                   = null)
 
                 => new (ChargingPool,
-                        PushDataResultTypes.AdminDown,
+                        CommandResult.AdminDown,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.WWCP
                         TimeSpan?                  Runtime                   = null)
 
                 => new (ChargingPool,
-                        PushDataResultTypes.NoOperation,
+                        CommandResult.NoOperation,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.WWCP
                      TimeSpan?                  Runtime                   = null)
 
                 => new (ChargingPool,
-                        PushDataResultTypes.Enqueued,
+                        CommandResult.Enqueued,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.WWCP
                     TimeSpan?                  Runtime                   = null)
 
                 => new (ChargingPool,
-                        PushDataResultTypes.Success,
+                        CommandResult.Success,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.WWCP
                             TimeSpan?                  Runtime                   = null)
 
                 => new (ChargingPool,
-                        PushDataResultTypes.CanNotBeRemoved,
+                        CommandResult.CanNotBeRemoved,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TimeSpan?                  Runtime                   = null)
 
                 => new (ChargingPool,
-                        PushDataResultTypes.ArgumentError,
+                        CommandResult.ArgumentError,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TimeSpan?                  Runtime                   = null)
 
                 => new (ChargingPoolId,
-                        PushDataResultTypes.ArgumentError,
+                        CommandResult.ArgumentError,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.WWCP
                   TimeSpan?                  Runtime                   = null)
 
                 => new (ChargingPool,
-                        PushDataResultTypes.Error,
+                        CommandResult.Error,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -313,7 +313,7 @@ namespace cloud.charging.open.protocols.WWCP
                   TimeSpan?                  Runtime                   = null)
 
                 => new (ChargingPool,
-                        PushDataResultTypes.Error,
+                        CommandResult.Error,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,
@@ -338,7 +338,7 @@ namespace cloud.charging.open.protocols.WWCP
                         TimeSpan?                  Runtime                   = null)
 
                 => new (ChargingPool,
-                        PushDataResultTypes.LockTimeout,
+                        CommandResult.LockTimeout,
                         EventTrackingId,
                         AuthId,
                         SendPOIData,

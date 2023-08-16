@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        public AddOrUpdateChargingStationOperatorsResult(PushDataResultTypes                                     Result,
+        public AddOrUpdateChargingStationOperatorsResult(CommandResult                                     Result,
                                                          IEnumerable<AddOrUpdateChargingStationOperatorResult>?  SuccessfulChargingStationOperators   = null,
                                                          IEnumerable<AddOrUpdateChargingStationOperatorResult>?  RejectedChargingStationOperators     = null,
                                                          IId?                                                    AuthId                               = null,
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.AdminDown,
+            return new (CommandResult.AdminDown,
                         Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
                         RejectedChargingStationOperators.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.AdminDown(chargingStationOperator,
                                                                                                                                               EventTrackingId,
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.NoOperation,
+            return new (CommandResult.NoOperation,
                         Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
                         RejectedChargingStationOperators.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.NoOperation(chargingStationOperator,
                                                                                                                                                 EventTrackingId,
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Enqueued,
+            return new (CommandResult.Enqueued,
                         SuccessfulChargingPools.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.Enqueued(chargingStationOperator,
                                                                                                                                     EventTrackingId,
                                                                                                                                     AuthId,
@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Success,
+            return new (CommandResult.Success,
                         SuccessfulChargingPools.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.Added(chargingStationOperator,
                                                                                                                                  EventTrackingId,
                                                                                                                                  AuthId,
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Success,
+            return new (CommandResult.Success,
                         SuccessfulChargingPools.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.Updated(chargingStationOperator,
                                                                                                                                    EventTrackingId,
                                                                                                                                    AuthId,
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.ArgumentError,
+            return new (CommandResult.ArgumentError,
                         Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
                         RejectedChargingStationOperators.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.ArgumentError(chargingStationOperator,
                                                                                                                                                   Description,
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Error,
+            return new (CommandResult.Error,
                         Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
                         RejectedChargingStationOperators.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.Error(chargingStationOperator,
                                                                                                                                           Description,
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Error,
+            return new (CommandResult.Error,
                         Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
                         RejectedChargingStationOperators.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.Error(chargingStationOperator,
                                                                                                                                           Exception,
@@ -346,7 +346,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.LockTimeout,
+            return new (CommandResult.LockTimeout,
                         Array.Empty<AddOrUpdateChargingStationOperatorResult>(),
                         RejectedChargingStationOperators.Select(chargingStationOperator => AddOrUpdateChargingStationOperatorResult.LockTimeout(chargingStationOperator,
                                                                                                                                                 Timeout,

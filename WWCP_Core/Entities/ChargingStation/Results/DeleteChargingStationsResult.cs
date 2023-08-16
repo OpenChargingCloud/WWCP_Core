@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        public DeleteChargingStationsResult(PushDataResultTypes                        Result,
+        public DeleteChargingStationsResult(CommandResult                        Result,
                                             IEnumerable<DeleteChargingStationResult>?  SuccessfulChargingStations   = null,
                                             IEnumerable<DeleteChargingStationResult>?  RejectedChargingStations     = null,
                                             IId?                                       AuthId                       = null,
@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.AdminDown,
+            return new (CommandResult.AdminDown,
                         Array.Empty<DeleteChargingStationResult>(),
                         RejectedChargingStations.Select(evse => DeleteChargingStationResult.AdminDown(evse,
                                                                                                       EventTrackingId,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.NoOperation,
+            return new (CommandResult.NoOperation,
                         Array.Empty<DeleteChargingStationResult>(),
                         RejectedChargingStations.Select(chargingStation => DeleteChargingStationResult.NoOperation(chargingStation,
                                                                                                                     EventTrackingId,
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Enqueued,
+            return new (CommandResult.Enqueued,
                         SuccessfulChargingStations.Select(chargingStation => DeleteChargingStationResult.Enqueued(chargingStation,
                                                                                                                   EventTrackingId,
                                                                                                                   AuthId,
@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Success,
+            return new (CommandResult.Success,
                         SuccessfulChargingStations.Select(chargingStation => DeleteChargingStationResult.Success(chargingStation,
                                                                                                                  EventTrackingId,
                                                                                                                  AuthId,
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.ArgumentError,
+            return new (CommandResult.ArgumentError,
                         Array.Empty<DeleteChargingStationResult>(),
                         RejectedChargingStations.Select(chargingStation => DeleteChargingStationResult.ArgumentError(chargingStation,
                                                                                                                      Description,
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Error,
+            return new (CommandResult.Error,
                         Array.Empty<DeleteChargingStationResult>(),
                         RejectedChargingStations.Select(chargingStation => DeleteChargingStationResult.Error(chargingStation,
                                                                                                              Description,
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.Error,
+            return new (CommandResult.Error,
                         Array.Empty<DeleteChargingStationResult>(),
                         RejectedChargingStations.Select(chargingStation => DeleteChargingStationResult.Error(chargingStation,
                                                                                                              Exception,
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             EventTrackingId ??= EventTracking_Id.New;
 
-            return new (PushDataResultTypes.LockTimeout,
+            return new (CommandResult.LockTimeout,
                         Array.Empty<DeleteChargingStationResult>(),
                         RejectedChargingStations.Select(chargingStation => DeleteChargingStationResult.LockTimeout(chargingStation,
                                                                                                                    Timeout,
