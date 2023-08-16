@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The roaming provider of this charging station operator.
         /// </summary>
         [InternalUseOnly]
-        public ICSORoamingProvider?             EMPRoamingProvider               { get; }
+        public IEMPRoamingProvider?             EMPRoamingProvider               { get; }
 
 
         #region Logo

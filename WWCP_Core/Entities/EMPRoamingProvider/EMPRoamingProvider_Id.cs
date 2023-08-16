@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Text.RegularExpressions;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -27,19 +24,47 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+
     /// <summary>
-    /// The unique identification of a charging station roaming provider.
+    /// A delegate for filtering EMP roaming provider identifications.
     /// </summary>
-    public struct EMPRoamingProvider_Id : IId,
-                                          IEquatable <EMPRoamingProvider_Id>,
-                                          IComparable<EMPRoamingProvider_Id>,
-                                          IComparable
+    /// <param name="EMPRoamingProviderId">An EMP roaming provider identification to include.</param>
+    public delegate Boolean IncludeEMPRoamingProviderIdDelegate(EMPRoamingProvider_Id EMPRoamingProviderId);
+
+
+    /// <summary>
+    /// Extension methods for EMP roaming provider identifications.
+    /// </summary>
+    public static class EMPRoamingProviderIdExtensions
+    {
+
+        /// <summary>
+        /// Indicates whether this EMP roaming provider identification is null or empty.
+        /// </summary>
+        /// <param name="EMPRoamingProviderId">An EMP roaming provider identification.</param>
+        public static Boolean IsNullOrEmpty(this EMPRoamingProvider_Id? EMPRoamingProviderId)
+            => !EMPRoamingProviderId.HasValue || EMPRoamingProviderId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this EMP roaming provider identification is NOT null or empty.
+        /// </summary>
+        /// <param name="EMPRoamingProviderId">An EMP roaming provider identification.</param>
+        public static Boolean IsNotNullOrEmpty(this EMPRoamingProvider_Id? EMPRoamingProviderId)
+            => EMPRoamingProviderId.HasValue && EMPRoamingProviderId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
+    /// The unique identification of an EMP roaming provider.
+    /// </summary>
+    public readonly struct EMPRoamingProvider_Id : IId,
+                                                   IEquatable <EMPRoamingProvider_Id>,
+                                                   IComparable<EMPRoamingProvider_Id>
 
     {
 
         #region Data
-
-        private readonly static Random _Random = new Random(Guid.NewGuid().GetHashCode());
 
         /// <summary>
         /// The internal identification.
@@ -51,13 +76,19 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
-        /// Indicates whether this identification is null or empty.
+        /// Indicates whether this EMP roaming provider identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// The length of the charging station operator roaming provider identificator.
+        /// Indicates whether this EMP roaming provider identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
+
+        /// <summary>
+        /// The length of the EMP roaming provider identification.
         /// </summary>
         public UInt64 Length
             => (UInt64) (InternalId?.Length ?? 0);
@@ -67,10 +98,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charging station operator roaming provider identification.
-        /// based on the given string.
+        /// Create a new EMP roaming provider identification based on the given string.
         /// </summary>
-        /// <param name="Text">The text representation of a charging station operator roaming provider identification.</param>
+        /// <param name="Text">A text representation of an EMP roaming provider identification.</param>
         private EMPRoamingProvider_Id(String Text)
         {
             InternalId = Text;
@@ -79,37 +109,20 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Zero
-
-        public static EMPRoamingProvider_Id Zero
-            => new EMPRoamingProvider_Id("0");
-
-        #endregion
-
-
         #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as a charging station operator roaming provider identification.
+        /// Parse the given string as an EMP roaming provider identification.
         /// </summary>
-        /// <param name="Text">A text representation of a charging station operator roaming provider identification.</param>
+        /// <param name="Text">A text representation of an EMP roaming provider identification.</param>
         public static EMPRoamingProvider_Id Parse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out var empRoamingProviderId))
+                return empRoamingProviderId;
 
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a charging station operator roaming provider identification must not be null or empty!");
-
-            #endregion
-
-            if (TryParse(Text, out EMPRoamingProvider_Id CSORoamingProviderId))
-                return CSORoamingProviderId;
-
-            throw new ArgumentNullException(nameof(Text), "The given text representation of a charging station operator roaming provider identification is invalid!");
+            throw new ArgumentException($"Invalid text representation of an EMP roaming provider identification: '{Text}'!",
+                                        nameof(Text));
 
         }
 
@@ -118,53 +131,40 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as a charging station operator roaming provider identification.
+        /// Try to parse the given string as an EMP roaming provider identification.
         /// </summary>
-        /// <param name="Text">A text representation of a charging station operator roaming provider identification.</param>
+        /// <param name="Text">A text representation of an EMP roaming provider identification.</param>
         public static EMPRoamingProvider_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out EMPRoamingProvider_Id CSORoamingProviderId))
-                return CSORoamingProviderId;
+            if (TryParse(Text, out var empRoamingProviderId))
+                return empRoamingProviderId;
 
-            return new EMPRoamingProvider_Id?();
+            return null;
 
         }
 
         #endregion
 
-        #region TryParse(Text, out CSORoamingProviderId)
+        #region (static) TryParse(Text, out EMPRoamingProviderId)
 
         /// <summary>
-        /// Try to parse the given string as a charging station operator roaming provider identification.
+        /// Parse the given text as an EMP roaming provider identification.
         /// </summary>
-        /// <param name="Text">A text representation of a charging station operator roaming provider identification.</param>
-        /// <param name="CSORoamingProviderId">The parsed charging station operator roaming provider identification.</param>
-        public static Boolean TryParse(String Text, out EMPRoamingProvider_Id CSORoamingProviderId)
+        /// <param name="Text">A text representation of an EMP roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId">The parsed EMP roaming provider identification.</param>
+        public static Boolean TryParse(String Text, out EMPRoamingProvider_Id EMPRoamingProviderId)
         {
 
-            #region Initial checks
+            Text = Text.Trim();
 
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
+            if (Text.IsNotNullOrEmpty())
             {
-                CSORoamingProviderId = default;
-                return false;
-            }
-
-            #endregion
-
-            try
-            {
-                CSORoamingProviderId = new EMPRoamingProvider_Id(Text);
+                EMPRoamingProviderId = new EMPRoamingProvider_Id(Text);
                 return true;
             }
-            catch
-            { }
 
-            CSORoamingProviderId = default;
+            EMPRoamingProviderId = default;
             return false;
 
         }
@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Clone
 
         /// <summary>
-        /// Clone this charging station operator roaming provider identification.
+        /// Clone this EMP roaming provider identification.
         /// </summary>
         public EMPRoamingProvider_Id Clone
 
@@ -187,196 +187,157 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Operator overloading
 
-        #region Operator == (CSORoamingProviderId1, CSORoamingProviderId2)
+        #region Operator == (EMPRoamingProviderId1, EMPRoamingProviderId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">A charging station operator roaming provider identification.</param>
-        /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId1">An EMP roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId2">Another EMP roaming provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (EMPRoamingProvider_Id CSORoamingProviderId1, EMPRoamingProvider_Id CSORoamingProviderId2)
-        {
+        public static Boolean operator == (EMPRoamingProvider_Id EMPRoamingProviderId1,
+                                           EMPRoamingProvider_Id EMPRoamingProviderId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(CSORoamingProviderId1, CSORoamingProviderId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) CSORoamingProviderId1 == null) || ((Object) CSORoamingProviderId2 == null))
-                return false;
-
-            return CSORoamingProviderId1.Equals(CSORoamingProviderId2);
-
-        }
+            => EMPRoamingProviderId1.Equals(EMPRoamingProviderId2);
 
         #endregion
 
-        #region Operator != (CSORoamingProviderId1, CSORoamingProviderId2)
+        #region Operator != (EMPRoamingProviderId1, EMPRoamingProviderId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">A charging station operator roaming provider identification.</param>
-        /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId1">An EMP roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId2">Another EMP roaming provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (EMPRoamingProvider_Id CSORoamingProviderId1, EMPRoamingProvider_Id CSORoamingProviderId2)
-            => !(CSORoamingProviderId1 == CSORoamingProviderId2);
+        public static Boolean operator != (EMPRoamingProvider_Id EMPRoamingProviderId1,
+                                           EMPRoamingProvider_Id EMPRoamingProviderId2)
+
+            => !EMPRoamingProviderId1.Equals(EMPRoamingProviderId2);
 
         #endregion
 
-        #region Operator <  (CSORoamingProviderId1, CSORoamingProviderId2)
+        #region Operator <  (EMPRoamingProviderId1, EMPRoamingProviderId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">A charging station operator roaming provider identification.</param>
-        /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId1">An EMP roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId2">Another EMP roaming provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (EMPRoamingProvider_Id CSORoamingProviderId1, EMPRoamingProvider_Id CSORoamingProviderId2)
-        {
+        public static Boolean operator < (EMPRoamingProvider_Id EMPRoamingProviderId1,
+                                          EMPRoamingProvider_Id EMPRoamingProviderId2)
 
-            if ((Object) CSORoamingProviderId1 == null)
-                throw new ArgumentNullException(nameof(CSORoamingProviderId1), "The given CSORoamingProviderId1 must not be null!");
-
-            return CSORoamingProviderId1.CompareTo(CSORoamingProviderId2) < 0;
-
-        }
+            => EMPRoamingProviderId1.CompareTo(EMPRoamingProviderId2) < 0;
 
         #endregion
 
-        #region Operator <= (CSORoamingProviderId1, CSORoamingProviderId2)
+        #region Operator <= (EMPRoamingProviderId1, EMPRoamingProviderId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">A charging station operator roaming provider identification.</param>
-        /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId1">An EMP roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId2">Another EMP roaming provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (EMPRoamingProvider_Id CSORoamingProviderId1, EMPRoamingProvider_Id CSORoamingProviderId2)
-            => !(CSORoamingProviderId1 > CSORoamingProviderId2);
+        public static Boolean operator <= (EMPRoamingProvider_Id EMPRoamingProviderId1,
+                                           EMPRoamingProvider_Id EMPRoamingProviderId2)
+
+            => EMPRoamingProviderId1.CompareTo(EMPRoamingProviderId2) <= 0;
 
         #endregion
 
-        #region Operator >  (CSORoamingProviderId1, CSORoamingProviderId2)
+        #region Operator >  (EMPRoamingProviderId1, EMPRoamingProviderId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">A charging station operator roaming provider identification.</param>
-        /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId1">An EMP roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId2">Another EMP roaming provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (EMPRoamingProvider_Id CSORoamingProviderId1, EMPRoamingProvider_Id CSORoamingProviderId2)
-        {
+        public static Boolean operator > (EMPRoamingProvider_Id EMPRoamingProviderId1,
+                                          EMPRoamingProvider_Id EMPRoamingProviderId2)
 
-            if ((Object) CSORoamingProviderId1 == null)
-                throw new ArgumentNullException(nameof(CSORoamingProviderId1), "The given CSORoamingProviderId1 must not be null!");
-
-            return CSORoamingProviderId1.CompareTo(CSORoamingProviderId2) > 0;
-
-        }
+            => EMPRoamingProviderId1.CompareTo(EMPRoamingProviderId2) > 0;
 
         #endregion
 
-        #region Operator >= (CSORoamingProviderId1, CSORoamingProviderId2)
+        #region Operator >= (EMPRoamingProviderId1, EMPRoamingProviderId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">A charging station operator roaming provider identification.</param>
-        /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId1">An EMP roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId2">Another EMP roaming provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (EMPRoamingProvider_Id CSORoamingProviderId1, EMPRoamingProvider_Id CSORoamingProviderId2)
-            => !(CSORoamingProviderId1 < CSORoamingProviderId2);
+        public static Boolean operator >= (EMPRoamingProvider_Id EMPRoamingProviderId1,
+                                           EMPRoamingProvider_Id EMPRoamingProviderId2)
+
+            => EMPRoamingProviderId1.CompareTo(EMPRoamingProviderId2) >= 0;
 
         #endregion
 
         #endregion
 
-        #region IComparable<CSORoamingProviderId> Members
+        #region IComparable<EMPRoamingProvider_Id> Members
 
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EMP roaming provider identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">An EMP roaming provider identification to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is EMPRoamingProvider_Id CSORoamingProviderId))
-                throw new ArgumentException("The given object is not a charging station operator roaming provider identification!",
-                                            nameof(Object));
-
-            return CompareTo(CSORoamingProviderId);
-
-        }
+            => Object is EMPRoamingProvider_Id empRoamingProviderId
+                   ? CompareTo(empRoamingProviderId)
+                   : throw new ArgumentException("The given object is not an EMP roaming provider identification!",
+                                                 nameof(Object));
 
         #endregion
 
-        #region CompareTo(CSORoamingProviderId)
+        #region CompareTo(EMPRoamingProviderId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EMP roaming provider identifications.
         /// </summary>
-        /// <param name="CSORoamingProviderId">An object to compare with.</param>
-        public Int32 CompareTo(EMPRoamingProvider_Id CSORoamingProviderId)
-        {
+        /// <param name="EMPRoamingProviderId">An EMP roaming provider identification to compare with.</param>
+        public Int32 CompareTo(EMPRoamingProvider_Id EMPRoamingProviderId)
 
-            if ((Object) CSORoamingProviderId == null)
-                throw new ArgumentNullException(nameof(CSORoamingProviderId),  "The given charging station operator roaming provider identification must not be null!");
-
-            return String.Compare(InternalId, CSORoamingProviderId.InternalId, StringComparison.OrdinalIgnoreCase);
-
-        }
+            => String.Compare(InternalId,
+                              EMPRoamingProviderId.InternalId,
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
         #endregion
 
-        #region IEquatable<CSORoamingProviderId> Members
+        #region IEquatable<EMPRoamingProvider_Id> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EMP roaming provider identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">An EMP roaming provider identification to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is EMPRoamingProvider_Id CSORoamingProviderId))
-                return false;
-
-            return Equals(CSORoamingProviderId);
-
-        }
+            => Object is EMPRoamingProvider_Id empRoamingProviderId &&
+                   Equals(empRoamingProviderId);
 
         #endregion
 
-        #region Equals(CSORoamingProviderId)
+        #region Equals(EMPRoamingProviderId)
 
         /// <summary>
-        /// Compares two CSORoamingProviderIds for equality.
+        /// Compares two EMP roaming provider identifications for equality.
         /// </summary>
-        /// <param name="CSORoamingProviderId">A charging station operator roaming provider identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EMPRoamingProvider_Id CSORoamingProviderId)
-        {
+        /// <param name="EMPRoamingProviderId">An EMP roaming provider identification to compare with.</param>
+        public Boolean Equals(EMPRoamingProvider_Id EMPRoamingProviderId)
 
-            if ((Object) CSORoamingProviderId == null)
-                return false;
-
-            return InternalId.ToLower().Equals(CSORoamingProviderId.InternalId.ToLower());
-
-        }
+            => String.Equals(InternalId,
+                             EMPRoamingProviderId.InternalId,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -385,11 +346,12 @@ namespace cloud.charging.open.protocols.WWCP
         #region GetHashCode()
 
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-            => InternalId.GetHashCode();
+
+            => InternalId?.GetHashCode() ?? 0;
 
         #endregion
 
@@ -399,7 +361,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => InternalId;
+
+            => InternalId ?? "";
 
         #endregion
 

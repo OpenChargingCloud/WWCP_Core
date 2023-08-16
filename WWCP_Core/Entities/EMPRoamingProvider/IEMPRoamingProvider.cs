@@ -25,21 +25,14 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The interface of all e-mobility provider roaming providers.
+    /// The Roaming Provider provided eMobility services interface.
     /// </summary>
-    public interface IEMPRoamingProvider : ISendRoamingNetworkData,
-                                           ISendChargingStationOperatorData,
-                                           ISendChargingPoolData,
-                                           ISendChargingStationData,
-                                           ISendEVSEData,
-
-                                           ISendAdminStatus,
-                                           ISendStatus,
-                                           ISendEnergyStatus,
-
-                                           ISendAuthorizeStartStop,
-                                           ISendChargeDetailRecords
-
+    public interface IEMPRoamingProvider : IPullEVSEData,
+                                           IPullEVSEStatus,
+                                           IRemoteStartStop,
+                                           IChargingReservations,
+                                           IChargingSessions,
+                                           IChargeDetailRecords
     {
 
         #region Properties
@@ -47,22 +40,109 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the roaming provider.
         /// </summary>
-        EMPRoamingProvider_Id  Id               { get; }
+        EMPRoamingProvider_Id  Id                { get; }
 
         /// <summary>
         /// The offical (multi-language) name of the roaming provider.
         /// </summary>
-        I18NString             Name             { get; }
+        I18NString             Name              { get; }
 
         /// <summary>
-        /// The offical (multi-language) description of the roaming provider.
+        /// The attached roaming network.
         /// </summary>
-        I18NString             Description      { get; }
+        IRoamingNetwork?       RoamingNetwork    { get; }
+
+        #endregion
+
+        #region Events
+
+        // Client methods (logging)
+
+        #region OnGetChargeDetailRecordsRequest/-Response
 
         /// <summary>
-        /// The hosting WWCP roaming network.
+        /// An event sent whenever a 'get charge detail records' request will be send.
         /// </summary>
-        IRoamingNetwork        RoamingNetwork   { get; }
+        event OnGetCDRsRequestDelegate    OnGetChargeDetailRecordsRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a 'get charge detail records' request was received.
+        /// </summary>
+        event OnGetCDRsResponseDelegate   OnGetChargeDetailRecordsResponse;
+
+        #endregion
+
+
+        // Server methods
+
+        #region OnAuthorizeStartRequest/-Response
+
+        /// <summary>
+        /// An event sent whenever an 'authorize EVSE start' request was received.
+        /// </summary>
+        event OnAuthorizeStartRequestDelegate   OnAuthorizeStartRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an 'authorize EVSE start' request was sent.
+        /// </summary>
+        event OnAuthorizeStartResponseDelegate  OnAuthorizeStartResponse;
+
+        #endregion
+
+        #region OnAuthorizeStopRequest/-Response
+
+        /// <summary>
+        /// An event sent whenever an 'authorize EVSE stop' request was received.
+        /// </summary>
+        event OnAuthorizeStopRequestDelegate   OnAuthorizeStopRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an 'authorize EVSE stop' request was sent.
+        /// </summary>
+        event OnAuthorizeStopResponseDelegate  OnAuthorizeStopResponse;
+
+        #endregion
+
+        #region OnChargeDetailRecordRequest/-Response
+
+        /// <summary>
+        /// An event sent whenever a 'charge detail record' was received.
+        /// </summary>
+        event OnSendCDRsRequestDelegate   OnChargeDetailRecordRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a 'charge detail record' was sent.
+        /// </summary>
+        event OnSendCDRsResponseDelegate  OnChargeDetailRecordResponse;
+
+        #endregion
+
+        #endregion
+
+
+        #region GetChargeDetailRecords(From, To = null, ProviderId = null, ...)
+
+        /// <summary>
+        /// Download all charge detail records from the OICP server.
+        /// </summary>
+        /// <param name="From">The starting time.</param>
+        /// <param name="To">An optional end time. [default: current time].</param>
+        /// <param name="ProviderId">An optional unique identification of e-mobility service provider.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<IEnumerable<ChargeDetailRecord>>
+
+            GetChargeDetailRecords(DateTime               From,
+                                   DateTime?              To                  = null,
+                                   EMobilityProvider_Id?  ProviderId          = null,
+
+                                   DateTime?              Timestamp           = null,
+                                   EventTracking_Id?      EventTrackingId     = null,
+                                   TimeSpan?              RequestTimeout      = null,
+                                   CancellationToken      CancellationToken   = default);
 
         #endregion
 

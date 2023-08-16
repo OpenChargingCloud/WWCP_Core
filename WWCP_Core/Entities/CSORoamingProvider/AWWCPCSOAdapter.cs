@@ -31,9 +31,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The common abstract CSO adapter.
     /// </summary>
-    public abstract class AWWCPCSOAdapter<TChargeDetailRecords> : ACryptoEMobilityEntity<EMPRoamingProvider_Id,
-                                                                                         EMPRoamingProviderAdminStatusTypes,
-                                                                                         EMPRoamingProviderStatusTypes>,
+    public abstract class AWWCPCSOAdapter<TChargeDetailRecords> : ACryptoEMobilityEntity<CSORoamingProvider_Id,
+                                                                                         CSORoamingProviderAdminStatusTypes,
+                                                                                         CSORoamingProviderStatusTypes>,
 
                                                                   ISendRoamingNetworkData,
                                                                   ISendChargingStationOperatorData,
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DisablePushStatus">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisableAuthentication">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisableSendChargeDetailRecords">This service can be disabled, e.g. for debugging reasons.</param>
-        protected AWWCPCSOAdapter(EMPRoamingProvider_Id                      Id,
+        protected AWWCPCSOAdapter(CSORoamingProvider_Id                      Id,
                                   IRoamingNetwork                            RoamingNetwork,
 
                                   I18NString?                                Name                                = null,

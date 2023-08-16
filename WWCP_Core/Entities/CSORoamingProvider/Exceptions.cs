@@ -26,19 +26,19 @@ using System.Collections.Concurrent;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    #region EMPRoamingProviderAlreadyExists
+    #region CSORoamingProviderAlreadyExists
 
     /// <summary>
-    /// An exception thrown whenever an e-mobility roaming provider already exists within the given roaming network.
+    /// An exception thrown whenever a charging station roaming provider already exists within the given roaming network.
     /// </summary>
-    public class EMPRoamingProviderAlreadyExists : RoamingNetworkException
+    public class CSORoamingProviderAlreadyExists : RoamingNetworkException
     {
 
-        public EMPRoamingProviderAlreadyExists(RoamingNetwork         RoamingNetwork,
-                                               CSORoamingProvider_Id  RoamingProviderId)
+        public CSORoamingProviderAlreadyExists(RoamingNetwork         RoamingNetwork,
+                                               EMPRoamingProvider_Id  RoamingProviderId)
 
             : base(RoamingNetwork,
-                   "The given e-mobility roaming provider identification '" + RoamingProviderId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
+                   "The given charging station roaming provider identification '" + RoamingProviderId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
 
         { }
 

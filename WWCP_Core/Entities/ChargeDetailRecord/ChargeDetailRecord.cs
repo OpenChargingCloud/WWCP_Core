@@ -257,12 +257,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional EV roaming provider, e.g. when you want to force the transmission of a CDR via a given roaming network.
         /// </summary>
-        public IEMPRoamingProvider?             EMPRoamingProvider      { get; internal set; }
+        public ICSORoamingProvider?             EMPRoamingProvider      { get; internal set; }
 
         /// <summary>
         /// An optional EV roaming provider identification, e.g. when you want to force the transmission of a CDR via a given roaming network.
         /// </summary>
-        public EMPRoamingProvider_Id?           EMPRoamingProviderId    { get; internal set; }
+        public CSORoamingProvider_Id?           EMPRoamingProviderId    { get; internal set; }
 
         #endregion
 
@@ -433,8 +433,8 @@ namespace cloud.charging.open.protocols.WWCP
                                   EMobilityProvider_Id?              ProviderIdStart             = null,
                                   EMobilityProvider_Id?              ProviderIdStop              = null,
 
-                                  IEMPRoamingProvider?               EMPRoamingProvider          = null,
-                                  EMPRoamingProvider_Id?             EMPRoamingProviderId        = null,
+                                  ICSORoamingProvider?               EMPRoamingProvider          = null,
+                                  CSORoamingProvider_Id?             EMPRoamingProviderId        = null,
 
                                   ChargingReservation?               Reservation                 = null,
                                   ChargingReservation_Id?            ReservationId               = null,

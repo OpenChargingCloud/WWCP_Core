@@ -28,9 +28,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public abstract class AWWCPEMPAdapter : ACryptoEMobilityEntity<CSORoamingProvider_Id,
-                                                                   CSORoamingProviderAdminStatusTypes,
-                                                                   CSORoamingProviderStatusTypes>,
+    public abstract class AWWCPEMPAdapter : ACryptoEMobilityEntity<EMPRoamingProvider_Id,
+                                                                   EMPRoamingProviderAdminStatusTypes,
+                                                                   EMPRoamingProviderStatusTypes>,
 
                                             IReceiveRoamingNetworkData,
                                             IReceiveChargingStationOperatorData,
@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        protected AWWCPEMPAdapter(CSORoamingProvider_Id                             Id,
+        protected AWWCPEMPAdapter(EMPRoamingProvider_Id                             Id,
                                   IRoamingNetwork                                   RoamingNetwork,
 
                                   I18NString?                                       Name                         = null,
@@ -55,8 +55,8 @@ namespace cloud.charging.open.protocols.WWCP
                                   ECPrivateKeyParameters?                           PrivateKey                   = null,
                                   PublicKeyCertificates?                            PublicKeyCertificates        = null,
 
-                                  Timestamped<CSORoamingProviderAdminStatusTypes>?  InitialAdminStatus           = null,
-                                  Timestamped<CSORoamingProviderStatusTypes>?       InitialStatus                = null,
+                                  Timestamped<EMPRoamingProviderAdminStatusTypes>?  InitialAdminStatus           = null,
+                                  Timestamped<EMPRoamingProviderStatusTypes>?       InitialStatus                = null,
                                   UInt16                                            MaxAdminStatusScheduleSize   = DefaultMaxAdminStatusScheduleSize,
                                   UInt16                                            MaxStatusScheduleSize        = DefaultMaxStatusScheduleSize,
 

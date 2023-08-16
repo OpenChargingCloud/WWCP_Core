@@ -650,7 +650,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The roaming provider of this charging station operator.
         /// </summary>
         [InternalUseOnly]
-        ICSORoamingProvider?             EMPRoamingProvider               { get; }
+        IEMPRoamingProvider?             EMPRoamingProvider               { get; }
 
 
         /// <summary>

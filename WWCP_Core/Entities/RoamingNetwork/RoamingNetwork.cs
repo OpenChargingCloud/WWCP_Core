@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.WWCP
         private readonly           PriorityList<ISendAuthorizeStartStop>              allSend2RemoteAuthorizeStartStop       = new ();
         private readonly           PriorityList<ISendChargeDetailRecords>             allRemoteSendChargeDetailRecord        = new ();
 
-        private readonly           ConcurrentDictionary<UInt32, IEMPRoamingProvider>  eMobilityRoamingServices;
+        private readonly           ConcurrentDictionary<UInt32, ICSORoamingProvider>  eMobilityRoamingServices;
 
         #endregion
 
@@ -338,11 +338,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.dataLicenses                                = new ReactiveSet<OpenDataLicense>();
 
-            this.empRoamingProviders                         = new ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider>();
-            this.eMobilityRoamingServices                    = new ConcurrentDictionary<UInt32,                IEMPRoamingProvider>();
+            this.empRoamingProviders                         = new ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>();
+            this.eMobilityRoamingServices                    = new ConcurrentDictionary<UInt32,                ICSORoamingProvider>();
             this.eMobilityProviders                          = new EntityHashSet       <IRoamingNetwork,       EMobilityProvider_Id,       IEMobilityProvider>      (this);
 
-            this.csoRoamingProviders                         = new ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>();
+            this.csoRoamingProviders                         = new ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider>();
             this.chargingStationOperators                    = new EntityHashSet       <IRoamingNetwork,       ChargingStationOperator_Id, IChargingStationOperator>(this);
 
             this.parkingOperators                            = new EntityHashSet       <RoamingNetwork,        ParkingOperator_Id,         ParkingOperator>         (this);
@@ -401,11 +401,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             // RoamingNetwork events
 
-            this.CPORoamingProviderAddition  = new VotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean>(() => new VetoVote(), true);
-            this.CPORoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.CPORoamingProviderAddition  = new VotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.CPORoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
 
-            this.EMPRoamingProviderAddition  = new VotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
-            this.EMPRoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.EMPRoamingProviderAddition  = new VotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.EMPRoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean>(() => new VetoVote(), true);
 
             // cso events
             this.ChargingPoolAddition        = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, Boolean>(() => new VetoVote(), true);
@@ -492,12 +492,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EMPRoamingProviders
 
-        private readonly ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider> empRoamingProviders;
+        private readonly ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider> empRoamingProviders;
 
         /// <summary>
         /// Return all e-mobility provider roaming providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<IEMPRoamingProvider> EMPRoamingProviders
+        public IEnumerable<ICSORoamingProvider> EMPRoamingProviders
             => empRoamingProviders.Values;
 
         #endregion
@@ -505,24 +505,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EMPRoamingProviderAddition
 
-        private readonly IVotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean> EMPRoamingProviderAddition;
+        private readonly IVotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean> EMPRoamingProviderAddition;
 
         /// <summary>
         /// Called whenever an e-mobility provider roaming provider will be or was added.
         /// </summary>
-        public IVotingSender<RoamingNetwork, IEMPRoamingProvider, Boolean> OnEMPRoamingProviderAddition
+        public IVotingSender<RoamingNetwork, ICSORoamingProvider, Boolean> OnEMPRoamingProviderAddition
             => EMPRoamingProviderAddition;
 
         #endregion
 
         #region EMPRoamingProviderRemoval
 
-        private readonly IVotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean> EMPRoamingProviderRemoval;
+        private readonly IVotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean> EMPRoamingProviderRemoval;
 
         /// <summary>
         /// Called whenever an e-mobility provider roaming provider will be or was removed.
         /// </summary>
-        public IVotingSender<RoamingNetwork, IEMPRoamingProvider, Boolean> OnEMPRoamingProviderRemoval
+        public IVotingSender<RoamingNetwork, ICSORoamingProvider, Boolean> OnEMPRoamingProviderRemoval
             => EMPRoamingProviderRemoval;
 
         #endregion
@@ -536,8 +536,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMPRoamingProvider">An e-mobility provider roaming provider.</param>
         /// <param name="Configurator">An optional delegate to configure the new e-mobility provider roaming provider after its creation.</param>
-        public IEMPRoamingProvider CreateEMPRoamingProvider(IEMPRoamingProvider           EMPRoamingProvider,
-                                                            Action<IEMPRoamingProvider>?  Configurator = null)
+        public ICSORoamingProvider CreateEMPRoamingProvider(ICSORoamingProvider           EMPRoamingProvider,
+                                                            Action<ICSORoamingProvider>?  Configurator = null)
         {
 
             #region Initial checks
@@ -598,7 +598,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityRoamingService">The e-mobility roaming service.</param>
         /// <param name="Priority">The priority of the service.</param>
-        public Boolean SetRoamingProviderPriority(IEMPRoamingProvider  eMobilityRoamingService,
+        public Boolean SetRoamingProviderPriority(ICSORoamingProvider  eMobilityRoamingService,
                                                   UInt32               Priority)
 
             => eMobilityRoamingServices.TryAdd(Priority, eMobilityRoamingService);
@@ -641,7 +641,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given charging station operator roaming provider is already present within the roaming network.
         /// </summary>
         /// <param name="EMPRoamingProvider">A charging station operator roaming provider.</param>
-        public Boolean ContainsEMPRoamingProvider(IEMPRoamingProvider EMPRoamingProvider)
+        public Boolean ContainsEMPRoamingProvider(ICSORoamingProvider EMPRoamingProvider)
 
             => empRoamingProviders.ContainsKey(EMPRoamingProvider.Id);
 
@@ -653,7 +653,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given charging station operator roaming provider identification is already present within the roaming network.
         /// </summary>
         /// <param name="EMPRoamingProviderId">The unique identification of the charging station operator roaming provider.</param>
-        public Boolean ContainsEMPRoamingProvider(EMPRoamingProvider_Id EMPRoamingProviderId)
+        public Boolean ContainsEMPRoamingProvider(CSORoamingProvider_Id EMPRoamingProviderId)
 
             => empRoamingProviders.ContainsKey(EMPRoamingProviderId);
 
@@ -661,7 +661,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetEMPRoamingProviderById   (EMPRoamingProviderId)
 
-        public IEMPRoamingProvider? GetEMPRoamingProviderById(EMPRoamingProvider_Id EMPRoamingProviderId)
+        public ICSORoamingProvider? GetEMPRoamingProviderById(CSORoamingProvider_Id EMPRoamingProviderId)
         {
 
             if (empRoamingProviders.TryGetValue(EMPRoamingProviderId, out var empRoamingProvider))
@@ -671,7 +671,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public IEMPRoamingProvider? GetEMPRoamingProviderById(EMPRoamingProvider_Id? EMPRoamingProviderId)
+        public ICSORoamingProvider? GetEMPRoamingProviderById(CSORoamingProvider_Id? EMPRoamingProviderId)
         {
 
             if (EMPRoamingProviderId.HasValue &&
@@ -688,11 +688,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetEMPRoamingProviderById(EMPRoamingProviderId, out ChargingStationOperator)
 
-        public Boolean TryGetEMPRoamingProviderById(EMPRoamingProvider_Id EMPRoamingProviderId, out IEMPRoamingProvider? EMPRoamingProvider)
+        public Boolean TryGetEMPRoamingProviderById(CSORoamingProvider_Id EMPRoamingProviderId, out ICSORoamingProvider? EMPRoamingProvider)
 
             => empRoamingProviders.TryGetValue(EMPRoamingProviderId, out EMPRoamingProvider);
 
-        public Boolean TryGetEMPRoamingProviderById(EMPRoamingProvider_Id? EMPRoamingProviderId, out IEMPRoamingProvider? EMPRoamingProvider)
+        public Boolean TryGetEMPRoamingProviderById(CSORoamingProvider_Id? EMPRoamingProviderId, out ICSORoamingProvider? EMPRoamingProvider)
         {
 
             if (!EMPRoamingProviderId.HasValue)
@@ -709,7 +709,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoveEMPRoamingProvider    (EMPRoamingProviderId)
 
-        public IEMPRoamingProvider? RemoveEMPRoamingProvider(EMPRoamingProvider_Id EMPRoamingProviderId)
+        public ICSORoamingProvider? RemoveEMPRoamingProvider(CSORoamingProvider_Id EMPRoamingProviderId)
         {
 
             if (empRoamingProviders.TryRemove(EMPRoamingProviderId, out var empRoamingProvider))
@@ -719,7 +719,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public IEMPRoamingProvider? RemoveEMPRoamingProvider(EMPRoamingProvider_Id? EMPRoamingProviderId)
+        public ICSORoamingProvider? RemoveEMPRoamingProvider(CSORoamingProvider_Id? EMPRoamingProviderId)
         {
 
             if (EMPRoamingProviderId.HasValue &&
@@ -736,11 +736,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemoveEMPRoamingProvider (EMPRoamingProviderId, out EMPRoamingProvider)
 
-        public Boolean TryRemoveEMPRoamingProvider(EMPRoamingProvider_Id EMPRoamingProviderId, out IEMPRoamingProvider? EMPRoamingProvider)
+        public Boolean TryRemoveEMPRoamingProvider(CSORoamingProvider_Id EMPRoamingProviderId, out ICSORoamingProvider? EMPRoamingProvider)
 
             => empRoamingProviders.TryRemove(EMPRoamingProviderId, out EMPRoamingProvider);
 
-        public Boolean TryRemoveEMPRoamingProvider(EMPRoamingProvider_Id? EMPRoamingProviderId, out IEMPRoamingProvider? EMPRoamingProvider)
+        public Boolean TryRemoveEMPRoamingProvider(CSORoamingProvider_Id? EMPRoamingProviderId, out ICSORoamingProvider? EMPRoamingProvider)
         {
 
             if (!EMPRoamingProviderId.HasValue)
@@ -1341,12 +1341,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region CSORoamingProviders
 
-        private readonly ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>  csoRoamingProviders;
+        private readonly ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider>  csoRoamingProviders;
 
         /// <summary>
         /// Return all charging station operator roaming providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<ICSORoamingProvider> CSORoamingProviders
+        public IEnumerable<IEMPRoamingProvider> CSORoamingProviders
             => csoRoamingProviders.Values;
 
         #endregion
@@ -1354,24 +1354,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region CPORoamingProviderAddition
 
-        private readonly IVotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean> CPORoamingProviderAddition;
+        private readonly IVotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean> CPORoamingProviderAddition;
 
         /// <summary>
         /// Called whenever a charging station operator roaming provider will be or was added.
         /// </summary>
-        public IVotingSender<RoamingNetwork, ICSORoamingProvider, Boolean> OnCPORoamingProviderAddition
+        public IVotingSender<RoamingNetwork, IEMPRoamingProvider, Boolean> OnCPORoamingProviderAddition
             => CPORoamingProviderAddition;
 
         #endregion
 
         #region CPORoamingProviderRemoval
 
-        private readonly IVotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean> CPORoamingProviderRemoval;
+        private readonly IVotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean> CPORoamingProviderRemoval;
 
         /// <summary>
         /// Called whenever a charging station operator roaming provider will be or was removed.
         /// </summary>
-        public IVotingSender<RoamingNetwork, ICSORoamingProvider, Boolean> OnCPORoamingProviderRemoval
+        public IVotingSender<RoamingNetwork, IEMPRoamingProvider, Boolean> OnCPORoamingProviderRemoval
             => CPORoamingProviderRemoval;
 
         #endregion
@@ -1384,8 +1384,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique electric vehicle roaming provider identification.
         /// </summary>
         /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
-        public ICSORoamingProvider CreateCSORoamingProvider(ICSORoamingProvider           CSORoamingProvider,
-                                                            Action<ICSORoamingProvider>?  Configurator   = null)
+        public IEMPRoamingProvider CreateCSORoamingProvider(IEMPRoamingProvider           CSORoamingProvider,
+                                                            Action<IEMPRoamingProvider>?  Configurator   = null)
         {
 
             #region Initial checks
@@ -1466,7 +1466,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given charging station operator roaming provider is already present within the roaming network.
         /// </summary>
         /// <param name="CSORoamingProvider">A charging station operator roaming provider.</param>
-        public Boolean ContainsCSORoamingProvider(ICSORoamingProvider CSORoamingProvider)
+        public Boolean ContainsCSORoamingProvider(IEMPRoamingProvider CSORoamingProvider)
 
             => csoRoamingProviders.ContainsKey(CSORoamingProvider.Id);
 
@@ -1478,7 +1478,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given charging station operator roaming provider identification is already present within the roaming network.
         /// </summary>
         /// <param name="CSORoamingProviderId">The unique identification of the charging station operator roaming provider.</param>
-        public Boolean ContainsCSORoamingProvider(CSORoamingProvider_Id CSORoamingProviderId)
+        public Boolean ContainsCSORoamingProvider(EMPRoamingProvider_Id CSORoamingProviderId)
 
             => csoRoamingProviders.ContainsKey(CSORoamingProviderId);
 
@@ -1486,7 +1486,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetCSORoamingProviderById   (CSORoamingProviderId)
 
-        public ICSORoamingProvider? GetCSORoamingProviderById(CSORoamingProvider_Id CSORoamingProviderId)
+        public IEMPRoamingProvider? GetCSORoamingProviderById(EMPRoamingProvider_Id CSORoamingProviderId)
         {
 
             if (csoRoamingProviders.TryGetValue(CSORoamingProviderId, out var csoRoamingProvider))
@@ -1496,7 +1496,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public ICSORoamingProvider? GetCSORoamingProviderById(CSORoamingProvider_Id? CSORoamingProviderId)
+        public IEMPRoamingProvider? GetCSORoamingProviderById(EMPRoamingProvider_Id? CSORoamingProviderId)
         {
 
             if (CSORoamingProviderId.HasValue &&
@@ -1513,11 +1513,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetCSORoamingProviderById(CSORoamingProviderId, out ChargingStationOperator)
 
-        public Boolean TryGetCSORoamingProviderById(CSORoamingProvider_Id CSORoamingProviderId, out ICSORoamingProvider? CSORoamingProvider)
+        public Boolean TryGetCSORoamingProviderById(EMPRoamingProvider_Id CSORoamingProviderId, out IEMPRoamingProvider? CSORoamingProvider)
 
             => csoRoamingProviders.TryGetValue(CSORoamingProviderId, out CSORoamingProvider);
 
-        public Boolean TryGetCSORoamingProviderById(CSORoamingProvider_Id? CSORoamingProviderId, out ICSORoamingProvider? CSORoamingProvider)
+        public Boolean TryGetCSORoamingProviderById(EMPRoamingProvider_Id? CSORoamingProviderId, out IEMPRoamingProvider? CSORoamingProvider)
         {
 
             if (!CSORoamingProviderId.HasValue)
@@ -1534,7 +1534,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoveCSORoamingProvider    (CSORoamingProviderId)
 
-        public ICSORoamingProvider? RemoveCSORoamingProvider(CSORoamingProvider_Id CSORoamingProviderId)
+        public IEMPRoamingProvider? RemoveCSORoamingProvider(EMPRoamingProvider_Id CSORoamingProviderId)
         {
 
             if (csoRoamingProviders.TryRemove(CSORoamingProviderId, out var csoRoamingProvider))
@@ -1544,7 +1544,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public ICSORoamingProvider? RemoveCSORoamingProvider(CSORoamingProvider_Id? CSORoamingProviderId)
+        public IEMPRoamingProvider? RemoveCSORoamingProvider(EMPRoamingProvider_Id? CSORoamingProviderId)
         {
 
             if (CSORoamingProviderId.HasValue &&
@@ -1561,11 +1561,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemoveCSORoamingProvider (CSORoamingProviderId, out CSORoamingProvider)
 
-        public Boolean TryRemoveCSORoamingProvider(CSORoamingProvider_Id CSORoamingProviderId, out ICSORoamingProvider? CSORoamingProvider)
+        public Boolean TryRemoveCSORoamingProvider(EMPRoamingProvider_Id CSORoamingProviderId, out IEMPRoamingProvider? CSORoamingProvider)
 
             => csoRoamingProviders.TryRemove(CSORoamingProviderId, out CSORoamingProvider);
 
-        public Boolean TryRemoveCSORoamingProvider(CSORoamingProvider_Id? CSORoamingProviderId, out ICSORoamingProvider? CSORoamingProvider)
+        public Boolean TryRemoveCSORoamingProvider(EMPRoamingProvider_Id? CSORoamingProviderId, out IEMPRoamingProvider? CSORoamingProvider)
         {
 
             if (!CSORoamingProviderId.HasValue)
@@ -6644,7 +6644,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                         if (Reservation.CSORoamingProviderId.HasValue &&
-                            TryGetCSORoamingProviderById(Reservation.CSORoamingProviderId.Value, out ICSORoamingProvider _ICSORoamingProvider))
+                            TryGetCSORoamingProviderById(Reservation.CSORoamingProviderId.Value, out IEMPRoamingProvider _ICSORoamingProvider))
                         {
 
                             result = await _ICSORoamingProvider.
@@ -7402,7 +7402,7 @@ namespace cloud.charging.open.protocols.WWCP
                     {
 
                         var empRoamingProviderId      = cdr.EMPRoamingProviderId.ToString();
-                        var empRoamingProviderForCDR  = allRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == empRoamingProviderId) as IEMPRoamingProvider;
+                        var empRoamingProviderForCDR  = allRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == empRoamingProviderId) as ICSORoamingProvider;
 
                         if (empRoamingProviderForCDR is not null)
                         {
@@ -7440,10 +7440,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                         if (chargingSession.EMPRoamingProviderStart   is null &&
                             chargingSession.EMPRoamingProviderIdStart is not null)
-                            chargingSession.EMPRoamingProviderStart = allRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == chargingSession.EMPRoamingProviderIdStart.ToString()) as IEMPRoamingProvider;
+                            chargingSession.EMPRoamingProviderStart = allRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == chargingSession.EMPRoamingProviderIdStart.ToString()) as ICSORoamingProvider;
 
                         if (chargingSession.EMPRoamingProviderStart is not null &&
-                            chargingSession.EMPRoamingProviderStart is IEMPRoamingProvider empRoamingProviderForCDR)
+                            chargingSession.EMPRoamingProviderStart is ICSORoamingProvider empRoamingProviderForCDR)
                         {
 
                             cdrTargets[empRoamingProviderForCDR].Add(cdr);
@@ -8295,7 +8295,7 @@ namespace cloud.charging.open.protocols.WWCP
                 var newChargingSession  = new ChargingSession(result.SessionId.Value,
                                                               EventTrackingId) {
                                               RoamingNetworkId           = Id,
-                                              EMPRoamingProviderStart    = result.ISendAuthorizeStartStop as IEMPRoamingProvider,
+                                              EMPRoamingProviderStart    = result.ISendAuthorizeStartStop as ICSORoamingProvider,
                                               ProviderIdStart            = result.ProviderId,
                                               ChargingStationOperatorId  = OperatorId,
                                               EVSEId                     = ChargingLocation?.EVSEId,
@@ -8571,7 +8571,7 @@ namespace cloud.charging.open.protocols.WWCP
                                     SessionsStore.AuthStop(SessionId,
                                                            LocalAuthentication,
                                                            result.ProviderId.Value,
-                                                           result.ISendAuthorizeStartStop as IEMPRoamingProvider);
+                                                           result.ISendAuthorizeStartStop as ICSORoamingProvider);
 
                             }
 
@@ -8755,7 +8755,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<RemoteStartResult>
 
-            RemoteStart(IEMPRoamingProvider      EMPRoamingProvider,
+            RemoteStart(ICSORoamingProvider      EMPRoamingProvider,
                         ChargingLocation         ChargingLocation,
                         ChargingProduct?         ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
@@ -9021,7 +9021,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<RemoteStopResult>
 
-            RemoteStop(IEMPRoamingProvider    EMPRoamingProvider,
+            RemoteStop(ICSORoamingProvider    EMPRoamingProvider,
                        ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling    = null,
                        EMobilityProvider_Id?  ProviderId             = null,
