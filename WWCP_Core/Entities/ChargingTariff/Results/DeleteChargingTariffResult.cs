@@ -26,9 +26,9 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The result of an update charging tariff request.
+    /// The result of a delete charging tariff request.
     /// </summary>
-    public class UpdateChargingTariffResult : AEnitityResult<IChargingTariff, ChargingTariff_Id>
+    public class DeleteChargingTariffResult : AEnitityResult<IChargingTariff, ChargingTariff_Id>
     {
 
         #region Properties
@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        public UpdateChargingTariffResult(IChargingTariff            ChargingTariff,
+        public DeleteChargingTariffResult(IChargingTariff            ChargingTariff,
                                           CommandResult              Result,
                                           EventTracking_Id?          EventTrackingId           = null,
                                           IId?                       SenderId                  = null,
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
 
-        public UpdateChargingTariffResult(ChargingTariff_Id          ChargingTariffId,
+        public DeleteChargingTariffResult(ChargingTariff_Id          ChargingTariffId,
                                           CommandResult              Result,
                                           EventTracking_Id?          EventTrackingId           = null,
                                           IId?                       SenderId                  = null,
@@ -96,9 +96,9 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) AdminDown    (ChargingTariff,   ...)
+        #region (static) AdminDown      (ChargingTariff,   ...)
 
-        public static UpdateChargingTariffResult
+        public static DeleteChargingTariffResult
 
             AdminDown(IChargingTariff            ChargingTariff,
                       EventTracking_Id?          EventTrackingId           = null,
@@ -121,9 +121,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) NoOperation  (ChargingTariff,   ...)
+        #region (static) NoOperation    (ChargingTariff,   ...)
 
-        public static UpdateChargingTariffResult
+        public static DeleteChargingTariffResult
 
             NoOperation(IChargingTariff            ChargingTariff,
                         EventTracking_Id?          EventTrackingId           = null,
@@ -147,9 +147,9 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Enqueued     (ChargingTariff,   ...)
+        #region (static) Enqueued       (ChargingTariff,   ...)
 
-        public static UpdateChargingTariffResult
+        public static DeleteChargingTariffResult
 
             Enqueued(IChargingTariff            ChargingTariff,
                      EventTracking_Id?          EventTrackingId           = null,
@@ -172,9 +172,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Success      (ChargingTariff,   ...)
+        #region (static) Success        (ChargingTariff,   ...)
 
-        public static UpdateChargingTariffResult
+        public static DeleteChargingTariffResult
 
             Success(IChargingTariff            ChargingTariff,
                     EventTracking_Id?          EventTrackingId           = null,
@@ -198,9 +198,35 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) ArgumentError(ChargingTariff,   Description, ...)
+        #region (static) CanNotBeRemoved(ChargingStation, ...)
 
-        public static UpdateChargingTariffResult
+        public static DeleteChargingTariffResult
+
+            CanNotBeRemoved(IChargingTariff            ChargingTariff,
+                            EventTracking_Id?          EventTrackingId           = null,
+                            IId?                       SenderId                  = null,
+                            Object?                    Sender                    = null,
+                            IChargingStationOperator?  ChargingStationOperator   = null,
+                            I18NString?                Description               = null,
+                            IEnumerable<Warning>?      Warnings                  = null,
+                            TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.CanNotBeRemoved,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) ArgumentError  (ChargingTariff,   Description, ...)
+
+        public static DeleteChargingTariffResult
 
             ArgumentError(IChargingTariff            ChargingTariff,
                           I18NString                 Description,
@@ -223,9 +249,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) ArgumentError(ChargingTariffId, Description, ...)
+        #region (static) ArgumentError  (ChargingTariffId, Description, ...)
 
-        public static UpdateChargingTariffResult
+        public static DeleteChargingTariffResult
 
             ArgumentError(ChargingTariff_Id          ChargingTariffId,
                           I18NString                 Description,
@@ -248,9 +274,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Error        (ChargingTariff,   Description, ...)
+        #region (static) Error          (ChargingTariff,   Description, ...)
 
-        public static UpdateChargingTariffResult
+        public static DeleteChargingTariffResult
 
             Error(IChargingTariff            ChargingTariff,
                   I18NString                 Description,
@@ -273,9 +299,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Error        (ChargingTariff,   Exception,   ...)
+        #region (static) Error          (ChargingTariff,   Exception,   ...)
 
-        public static UpdateChargingTariffResult
+        public static DeleteChargingTariffResult
 
             Error(IChargingTariff            ChargingTariff,
                   Exception                  Exception,
@@ -298,9 +324,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Timeout      (ChargingTariff,   Timeout,     ...)
+        #region (static) Timeout        (ChargingTariff,   Timeout,     ...)
 
-        public static UpdateChargingTariffResult
+        public static DeleteChargingTariffResult
 
             Timeout(IChargingTariff            ChargingTariff,
                     TimeSpan                   Timeout,
@@ -323,9 +349,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) LockTimeout  (ChargingTariff,   Timeout,     ...)
+        #region (static) LockTimeout    (ChargingTariff,   Timeout,     ...)
 
-        public static UpdateChargingTariffResult
+        public static DeleteChargingTariffResult
 
             LockTimeout(IChargingTariff            ChargingTariff,
                         TimeSpan                   Timeout,

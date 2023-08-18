@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return authStartResult;
             }
 
-            return AuthStartResult.NotAuthorized(AuthorizatorId:            SenderId,
+            return AuthStartResult.NotAuthorized(AuthorizatorId:            AuthId,
                                                  ISendAuthorizeStartStop:   null,
                                                  SessionId:                 null,
 
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            return AuthStopResult.NotAuthorized(AuthorizatorId:            SenderId,
+            return AuthStopResult.NotAuthorized(AuthorizatorId:            AuthId,
                                                 ISendAuthorizeStartStop:   null,
                                                 SessionId:                 null,
 
@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             return SendCDRsResult.Success(
                        org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                       SenderId,
+                       AuthId,
                        this,
                        ChargeDetailRecords,
                        I18NString.Create(Languages.en, "All fine. Thank you!"),

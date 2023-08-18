@@ -29,17 +29,17 @@ namespace cloud.charging.open.protocols.WWCP
     /// The result of an add or update energy meters request.
     /// </summary>
     public class AddOrUpdateEnergyMetersResult : AEnititiesResult<AddOrUpdateEnergyMeterResult,
-                                                                              IEnergyMeter,
-                                                                              EnergyMeter_Id>
+                                                                  IEnergyMeter,
+                                                                  EnergyMeter_Id>
     {
 
         #region Constructor(s)
 
-        public AddOrUpdateEnergyMetersResult(CommandResult                         Result,
+        public AddOrUpdateEnergyMetersResult(CommandResult                               Result,
                                              IEnumerable<AddOrUpdateEnergyMeterResult>?  SuccessfulEnergyMeters   = null,
                                              IEnumerable<AddOrUpdateEnergyMeterResult>?  RejectedEnergyMeters     = null,
-                                             IId?                                        AuthId                   = null,
-                                             Object?                                     Sender              = null,
+                                             IId?                                        SenderId                 = null,
+                                             Object?                                     Sender                   = null,
                                              EventTracking_Id?                           EventTrackingId          = null,
                                              I18NString?                                 Description              = null,
                                              IEnumerable<Warning>?                       Warnings                 = null,

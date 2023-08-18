@@ -33,11 +33,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        public AddOrUpdateRoamingNetworksResult(CommandResult                            Result,
+        public AddOrUpdateRoamingNetworksResult(CommandResult                                  Result,
                                                 IEnumerable<AddOrUpdateRoamingNetworkResult>?  SuccessfulRoamingNetworks   = null,
                                                 IEnumerable<AddOrUpdateRoamingNetworkResult>?  RejectedRoamingNetworks     = null,
-                                                IId?                                           AuthId                      = null,
-                                                Object?                                        Sender                 = null,
+                                                IId?                                           SenderId                    = null,
+                                                Object?                                        Sender                      = null,
                                                 EventTracking_Id?                              EventTrackingId             = null,
                                                 I18NString?                                    Description                 = null,
                                                 IEnumerable<Warning>?                          Warnings                    = null,

@@ -841,7 +841,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (eMobilityStations.TryAdd(eMobilityStation,
                                          EventTracking_Id.New,
-                                         null).IsSuccess)
+                                         null).Result == CommandResult.Success)
             {
 
                 eMobilityStation.OnDataChanged        += UpdateeMobilityStationData;
@@ -1237,7 +1237,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (eVehicles.TryAdd(eVehicle,
                                  EventTracking_Id.New,
-                                 null).IsSuccess)
+                                 null).Result == CommandResult.Success)
             {
 
                 eVehicle.OnDataChanged         += UpdateEVehicleData;

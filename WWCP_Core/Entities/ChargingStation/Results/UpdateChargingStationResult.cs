@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) AdminDown    (ChargingStation, ...)
+        #region (static) AdminDown    (ChargingStation,   ...)
 
         public static UpdateChargingStationResult
 
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) NoOperation  (ChargingStation, ...)
+        #region (static) NoOperation  (ChargingStation,   ...)
 
         public static UpdateChargingStationResult
 
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Enqueued     (ChargingStation, ...)
+        #region (static) Enqueued     (ChargingStation,   ...)
 
         public static UpdateChargingStationResult
 
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Success      (ChargingStation, ...)
+        #region (static) Success      (ChargingStation,   ...)
 
         public static UpdateChargingStationResult
 

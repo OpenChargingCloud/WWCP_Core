@@ -31,6 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 
 using social.OpenData.UsersAPI;
+using Org.BouncyCastle.Tls.Crypto;
 
 #endregion
 
@@ -957,7 +958,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (chargingPools.TryAdd(ChargingPool,
                                      Connect,
                                      EventTrackingId,
-                                     CurrentUserId).IsSuccess)
+                                     CurrentUserId).Result == CommandResult.Success)
             {
 
                 //ToDo: Persistency
@@ -1036,7 +1037,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (chargingPools.TryAdd(ChargingPool,
                                      Connect,
                                      EventTrackingId,
-                                     CurrentUserId).IsSuccess)
+                                     CurrentUserId).Result == CommandResult.Success)
             {
 
                 //ToDo: Persistency
@@ -1171,7 +1172,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (chargingPools.TryAdd(ChargingPool,
                                          Connect,
                                          EventTrackingId,
-                                         CurrentUserId).IsSuccess)
+                                         CurrentUserId).Result == CommandResult.Success)
                 {
 
                     //ToDo: Persistency
@@ -2406,7 +2407,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (chargingStationGroups.TryAdd(chargingStationGroup,
                                                  EventTracking_Id.New,
-                                                 null).IsSuccess)
+                                                 null).Result == CommandResult.Success)
                 {
 
                     chargingStationGroup.OnEVSEDataChanged                             += UpdateEVSEData;
@@ -3654,7 +3655,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (evseGroups.TryAdd(evseGroup,
                                       EventTracking_Id.New,
-                                      null).IsSuccess)
+                                      null).Result == CommandResult.Success)
                 {
 
                     evseGroup.OnEVSEDataChanged                  += UpdateEVSEData;
@@ -4129,9 +4130,16 @@ namespace cloud.charging.open.protocols.WWCP
             if (chargingTariffs.TryGet(Id, out var chargingTariff) &&
                 chargingTariff is not null)
             {
-                return Task.FromResult(AddChargingTariffResult.Success(chargingTariff,
-                                                                       EventTracking_Id.New,
-                                                                       this));
+
+                return Task.FromResult(
+                           AddChargingTariffResult.Success(
+                               chargingTariff,
+                               EventTracking_Id.New,
+                               Id,
+                               this,
+                               this
+                           )
+                       );
             }
 
             return this.CreateChargingTariff(Id,
@@ -4265,17 +4273,20 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingTariffId) => false);
 
             if (ChargingTariff.Id.OperatorId != this.Id && !AllowInconsistentOperatorIds(this.Id, ChargingTariff.Id))
-                return AddChargingTariffResult.Failed(ChargingTariff,
-                                                      EventTrackingId,
-                                                      $"The operator identification of the given charging tariff '{ChargingTariff.Id.OperatorId}' is invalid!",
-                                                      this);
+                return AddChargingTariffResult.Error(
+                           ChargingTariff,
+                           $"The operator identification of the given charging tariff '{ChargingTariff.Id.OperatorId}' is invalid!".ToI18NString(),
+                           EventTrackingId,
+                           this.Id,
+                           this
+                       );
 
             #endregion
 
 
             if (chargingTariffs.TryAdd(ChargingTariff,
                                        EventTrackingId,
-                                       CurrentUserId).IsSuccess)
+                                       CurrentUserId).Result == CommandResult.Success)
             {
 
                 //ToDo: Persistency
@@ -4284,9 +4295,13 @@ namespace cloud.charging.open.protocols.WWCP
                 OnSuccess?.Invoke(ChargingTariff,
                                   EventTrackingId);
 
-                return AddChargingTariffResult.Success(ChargingTariff,
-                                                       EventTrackingId,
-                                                       this);
+                return AddChargingTariffResult.Success(
+                           ChargingTariff,
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             }
 
@@ -4294,10 +4309,14 @@ namespace cloud.charging.open.protocols.WWCP
                             ChargingTariff,
                             EventTrackingId);
 
-            return AddChargingTariffResult.Failed(ChargingTariff,
-                                                  EventTrackingId,
-                                                  "Could not add the given charging tariff!",
-                                                  this);
+            return AddChargingTariffResult.Error(
+                       ChargingTariff,
+                       "Could not add the given charging tariff!".ToI18NString(),
+                       EventTrackingId,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 
@@ -4332,16 +4351,19 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingTariffId) => false);
 
             if (ChargingTariff.Id.OperatorId != Id && !AllowInconsistentOperatorIds(Id, ChargingTariff.Id))
-                return AddChargingTariffResult.Failed(ChargingTariff,
-                                                    EventTrackingId,
-                                                    $"The operator identification of the given charging tariff '{ChargingTariff.Id.OperatorId}' is invalid!",
-                                                    this);
+                return AddChargingTariffResult.ArgumentError(
+                           ChargingTariff,
+                           $"The operator identification of the given charging tariff '{ChargingTariff.Id.OperatorId}' is invalid!".ToI18NString(),
+                           EventTrackingId,
+                           Id,
+                           this
+                       );
 
             #endregion
 
             if (chargingTariffs.TryAdd(ChargingTariff,
                                        EventTrackingId,
-                                       CurrentUserId).IsSuccess)
+                                       CurrentUserId).Result == CommandResult.Success)
             {
 
                 //ToDo: Persistency
@@ -4350,15 +4372,23 @@ namespace cloud.charging.open.protocols.WWCP
                 OnSuccess?.Invoke(ChargingTariff,
                                   EventTrackingId);
 
-                return AddChargingTariffResult.Success(ChargingTariff,
-                                                       EventTrackingId,
-                                                       this);
+                return AddChargingTariffResult.Success(
+                           ChargingTariff,
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             }
 
-            return AddChargingTariffResult.NoOperation(ChargingTariff,
-                                                       EventTrackingId,
-                                                       ChargingStationOperator: this);
+            return AddChargingTariffResult.NoOperation(
+                       ChargingTariff,
+                       EventTrackingId,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 
@@ -4397,10 +4427,14 @@ namespace cloud.charging.open.protocols.WWCP
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingTariffId) => false);
 
             if (ChargingTariff.Id.OperatorId != this.Id && !AllowInconsistentOperatorIds(this.Id, ChargingTariff.Id))
-                return AddOrUpdateChargingTariffResult.Failed(null,
-                                                              EventTrackingId,
-                                                              $"The operator identification of the given charging tariff '{ChargingTariff.Id.OperatorId}' is invalid!",
-                                                              this);
+                return AddOrUpdateChargingTariffResult.ArgumentError(
+                           ChargingTariff,
+                           $"The operator identification of the given charging tariff '{ChargingTariff.Id.OperatorId}' is invalid!".ToI18NString(),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             #endregion
 
@@ -4427,9 +4461,13 @@ namespace cloud.charging.open.protocols.WWCP
                                             existingChargingTariff,
                                             EventTrackingId);
 
-                    return AddOrUpdateChargingTariffResult.Success(ChargingTariff,
-                                                                   AddedOrUpdated.Update,
-                                                                   EventTrackingId);
+                    return AddOrUpdateChargingTariffResult.Updated(
+                               ChargingTariff,
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
                 else
@@ -4439,10 +4477,14 @@ namespace cloud.charging.open.protocols.WWCP
                                     ChargingTariff,
                                     EventTrackingId);
 
-                    return AddOrUpdateChargingTariffResult.Failed(ChargingTariff,
-                                                                  EventTrackingId,
-                                                                  "Error!",
-                                                                  this);
+                    return AddOrUpdateChargingTariffResult.Error(
+                               ChargingTariff,
+                               "Error!".ToI18NString(),
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
 
@@ -4453,7 +4495,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (chargingTariffs.TryAdd(ChargingTariff,
                                            EventTrackingId,
-                                           CurrentUserId).IsSuccess)
+                                           CurrentUserId).Result == CommandResult.Success)
                 {
 
                     //ToDo: Persistency
@@ -4462,9 +4504,13 @@ namespace cloud.charging.open.protocols.WWCP
                     OnAdditionSuccess?.Invoke(ChargingTariff,
                                               EventTrackingId);
 
-                    return AddOrUpdateChargingTariffResult.Success(ChargingTariff,
-                                                                   AddedOrUpdated.Add,
-                                                                   EventTrackingId);
+                    return AddOrUpdateChargingTariffResult.Added(
+                               ChargingTariff,
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
                 else
@@ -4474,10 +4520,14 @@ namespace cloud.charging.open.protocols.WWCP
                                     ChargingTariff,
                                     EventTrackingId);
 
-                    return AddOrUpdateChargingTariffResult.Failed(ChargingTariff,
-                                                                  EventTrackingId,
-                                                                  "Error!",
-                                                                  this);
+                    return AddOrUpdateChargingTariffResult.Error(
+                               ChargingTariff,
+                               "Error!".ToI18NString(),
+                               EventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
 
@@ -4515,10 +4565,14 @@ namespace cloud.charging.open.protocols.WWCP
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
             if (!TryGetChargingTariffById(ChargingTariff.Id, out var OldChargingTariff))
-                return UpdateChargingTariffResult.ArgumentError(ChargingTariff,
-                                                                eventTrackingId,
-                                                                nameof(ChargingTariff),
-                                                                "The given charging tariff '" + ChargingTariff.Id + "' does not exists in this API!");
+                return UpdateChargingTariffResult.ArgumentError(
+                           ChargingTariff,
+                           $"The given charging tariff '{ChargingTariff.Id}' does not exists in this API!".ToI18NString(),
+                           eventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             //if (ChargingTariff.API is not null && ChargingTariff.API != this)
             //    return UpdateChargingTariffResult.ArgumentError(ChargingTariff,
@@ -4563,8 +4617,13 @@ namespace cloud.charging.open.protocols.WWCP
             //                            eventTrackingId,
             //                            CurrentChargingTariffId);
 
-            return UpdateChargingTariffResult.Success(ChargingTariff,
-                                                      eventTrackingId);
+            return UpdateChargingTariffResult.Success(
+                       ChargingTariff,
+                       eventTrackingId,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 
@@ -4606,10 +4665,14 @@ namespace cloud.charging.open.protocols.WWCP
                 oldChargingTariff is null)
             {
 
-                return UpdateChargingTariffResult.ArgumentError(oldChargingTariff,
-                                                                EventTrackingId,
-                                                                nameof(ChargingTariff),
-                                                                $"The given charging tariff '{ChargingTariffId}' does not exists!");
+                return UpdateChargingTariffResult.ArgumentError(
+                           oldChargingTariff,
+                           $"The given charging tariff '{ChargingTariffId}' does not exists!".ToI18NString(),
+                           EventTrackingId,
+                           Id,
+                           this,
+                           this
+                       );
 
             }
 
@@ -4654,8 +4717,13 @@ namespace cloud.charging.open.protocols.WWCP
             //                            eventTrackingId,
             //                            CurrentChargingTariffId);
 
-            return UpdateChargingTariffResult.Success(newChargingTariff,
-                                                      EventTrackingId);
+            return UpdateChargingTariffResult.Success(
+                       newChargingTariff,
+                       EventTrackingId,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 
@@ -4674,14 +4742,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SkipRemovedNotifications">Whether to skip sending the 'OnRemoved' event.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public async Task<RemoveChargingTariffResult> RemoveChargingTariff(ChargingTariff_Id                                    Id,
+        public async Task<DeleteChargingTariffResult>
 
-                                                                           Action<IChargingTariff,          EventTracking_Id>?  OnSuccess                  = null,
-                                                                           Action<IChargingStationOperator, EventTracking_Id>?  OnError                    = null,
+            RemoveChargingTariff(ChargingTariff_Id                                    Id,
 
-                                                                           Boolean                                              SkipRemovedNotifications   = false,
-                                                                           EventTracking_Id?                                    EventTrackingId            = null,
-                                                                           User_Id?                                             CurrentUserId              = null)
+                                 Action<IChargingTariff,          EventTracking_Id>?  OnSuccess                  = null,
+                                 Action<IChargingStationOperator, EventTracking_Id>?  OnError                    = null,
+
+                                 Boolean                                              SkipRemovedNotifications   = false,
+                                 EventTracking_Id?                                    EventTrackingId            = null,
+                                 User_Id?                                             CurrentUserId              = null)
+
         {
 
             EventTrackingId ??= EventTracking_Id.New;
@@ -4693,17 +4764,22 @@ namespace cloud.charging.open.protocols.WWCP
                 chargingTariff is not null)
             {
 
-                return RemoveChargingTariffResult.Success(
+                return DeleteChargingTariffResult.Success(
                            chargingTariff,
                            EventTrackingId,
+                           this.Id,
                            this
                        );
 
             }
 
-            return RemoveChargingTariffResult.Failed(Id,
-                                                     EventTrackingId,
-                                                     "");
+            return DeleteChargingTariffResult.ArgumentError(
+                       Id,
+                       "error".ToI18NString(),
+                       EventTrackingId,
+                       this.Id,
+                       this
+                   );
 
         }
 
@@ -4875,7 +4951,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (chargingTariffGroups.TryAdd(chargingTariffGroup,
                                                 EventTracking_Id.New,
-                                                null).IsSuccess)
+                                                null).Result == CommandResult.Success)
                 {
 
                     //_ChargingTariffGroup.OnEVSEDataChanged                             += UpdateEVSEData;

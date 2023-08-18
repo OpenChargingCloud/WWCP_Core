@@ -25,30 +25,44 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of an add or update charging tariff request.
+    /// </summary>
     public class AddOrUpdateChargingTariffResult : AEnitityResult<IChargingTariff, ChargingTariff_Id>
     {
 
-        public IChargingTariff? ChargingTariff
+        #region Properties
+
+        public IChargingTariff?           ChargingTariff
             => Object;
 
-        public ChargingStationOperator?  ChargingStationOperator    { get; internal set; }
+        public IChargingStationOperator?  ChargingStationOperator    { get; internal set; }
 
-        public AddedOrUpdated?           AddedOrUpdated             { get; internal set; }
+        public AddedOrUpdated?            AddedOrUpdated             { get; internal set; }
 
+        #endregion
 
-        public AddOrUpdateChargingTariffResult(IChargingTariff           ChargingTariff,
-                                               EventTracking_Id          EventTrackingId,
-                                               Boolean                   IsSuccess,
-                                               String?                   Argument                  = null,
-                                               I18NString?               ErrorDescription          = null,
-                                               ChargingStationOperator?  ChargingStationOperator   = null,
-                                               AddedOrUpdated?           AddedOrUpdated            = null)
+        #region Constructor(s)
+
+        public AddOrUpdateChargingTariffResult(IChargingTariff            ChargingTariff,
+                                               CommandResult              Result,
+                                               EventTracking_Id?          EventTrackingId           = null,
+                                               IId?                       SenderId                  = null,
+                                               Object?                    Sender                    = null,
+                                               IChargingStationOperator?  ChargingStationOperator   = null,
+                                               AddedOrUpdated?            AddedOrUpdated            = null,
+                                               I18NString?                Description               = null,
+                                               IEnumerable<Warning>?      Warnings                  = null,
+                                               TimeSpan?                  Runtime                   = null)
 
             : base(ChargingTariff,
+                   Result,
                    EventTrackingId,
-                   IsSuccess,
-                   Argument,
-                   ErrorDescription)
+                   SenderId,
+                   Sender,
+                   Description,
+                   Warnings,
+                   Runtime)
 
         {
 
@@ -57,124 +71,271 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public AddOrUpdateChargingTariffResult(ChargingTariff_Id         Id,
-                                               EventTracking_Id          EventTrackingId,
-                                               Boolean                   IsSuccess,
-                                               String?                   Argument                  = null,
-                                               I18NString?               ErrorDescription          = null,
-                                               ChargingStationOperator?  ChargingStationOperator   = null,
-                                               AddedOrUpdated?           AddedOrUpdated            = null)
-
-            : base(Id,
-                   EventTrackingId,
-                   IsSuccess,
-                   Argument,
-                   ErrorDescription)
-
-        {
-
-            this.ChargingStationOperator  = ChargingStationOperator;
-            this.AddedOrUpdated           = AddedOrUpdated;
-
-        }
+        #endregion
 
 
-        public static AddOrUpdateChargingTariffResult Success(IChargingTariff           ChargingTariff,
-                                                              AddedOrUpdated            AddedOrUpdated,
-                                                              EventTracking_Id          EventTrackingId,
-                                                              ChargingStationOperator?  ChargingStationOperator   = null)
+        #region (static) AdminDown    (ChargingTariff, ...)
 
-            => new (ChargingTariff,
-                    EventTrackingId,
-                    true,
-                    null,
-                    null,
-                    ChargingStationOperator,
-                    AddedOrUpdated);
+        public static AddOrUpdateChargingTariffResult
+
+            AdminDown(IChargingTariff            ChargingTariff,
+                      EventTracking_Id?          EventTrackingId           = null,
+                      IId?                       SenderId                  = null,
+                      Object?                    Sender                    = null,
+                      IChargingStationOperator?  ChargingStationOperator   = null,
+                      I18NString?                Description               = null,
+                      IEnumerable<Warning>?      Warnings                  = null,
+                      TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.AdminDown,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.NoOperation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) NoOperation  (ChargingTariff, ...)
+
+        public static AddOrUpdateChargingTariffResult
+
+            NoOperation(IChargingTariff            ChargingTariff,
+                        EventTracking_Id?          EventTrackingId           = null,
+                        IId?                       SenderId                  = null,
+                        Object?                    Sender                    = null,
+                        IChargingStationOperator?  ChargingStationOperator   = null,
+                        I18NString?                Description               = null,
+                        IEnumerable<Warning>?      Warnings                  = null,
+                        TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.NoOperation,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.NoOperation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
 
 
-        public static AddOrUpdateChargingTariffResult ArgumentError(IChargingTariff   ChargingTariff,
-                                                                    EventTracking_Id  EventTrackingId,
-                                                                    String            Argument,
-                                                                    String            Description)
+        #region (static) Enqueued     (ChargingTariff, ...)
 
-            => new (ChargingTariff,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ));
+        public static AddOrUpdateChargingTariffResult
 
-        public static AddOrUpdateChargingTariffResult ArgumentError(IChargingTariff   ChargingTariff,
-                                                                    EventTracking_Id  EventTrackingId,
-                                                                    String            Argument,
-                                                                    I18NString        Description)
+            Enqueued(IChargingTariff            ChargingTariff,
+                     EventTracking_Id?          EventTrackingId           = null,
+                     IId?                       SenderId                  = null,
+                     Object?                    Sender                    = null,
+                     IChargingStationOperator?  ChargingStationOperator   = null,
+                     I18NString?                Description               = null,
+                     IEnumerable<Warning>?      Warnings                  = null,
+                     TimeSpan?                  Runtime                   = null)
 
-            => new (ChargingTariff,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    Description);
+                => new (ChargingTariff,
+                        CommandResult.Enqueued,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Enqueued,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Added        (ChargingTariff, ...)
+
+        public static AddOrUpdateChargingTariffResult
+
+            Added(IChargingTariff            ChargingTariff,
+                  EventTracking_Id?          EventTrackingId           = null,
+                  IId?                       SenderId                  = null,
+                  Object?                    Sender                    = null,
+                  IChargingStationOperator?  ChargingStationOperator   = null,
+                  I18NString?                Description               = null,
+                  IEnumerable<Warning>?      Warnings                  = null,
+                  TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.Success,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Add,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Updated      (ChargingTariff, ...)
+
+        public static AddOrUpdateChargingTariffResult
+
+            Updated(IChargingTariff            ChargingTariff,
+                    EventTracking_Id?          EventTrackingId           = null,
+                    IId?                       SenderId                  = null,
+                    Object?                    Sender                    = null,
+                    IChargingStationOperator?  ChargingStationOperator   = null,
+                    I18NString?                Description               = null,
+                    IEnumerable<Warning>?      Warnings                  = null,
+                    TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.Success,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Update,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
 
 
-        public static AddOrUpdateChargingTariffResult Failed(ChargingTariff_Id         Id,
-                                                             EventTracking_Id          EventTrackingId,
-                                                             String                    Description,
-                                                             ChargingStationOperator?  ChargingStationOperator   = null)
+        #region (static) ArgumentError(ChargingTariff, Description, ...)
 
-            => new (Id,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ),
-                    ChargingStationOperator);
+        public static AddOrUpdateChargingTariffResult
 
-        public static AddOrUpdateChargingTariffResult Failed(IChargingTariff           ChargingTariff,
-                                                             EventTracking_Id          EventTrackingId,
-                                                             String                    Description,
-                                                             ChargingStationOperator?  ChargingStationOperator   = null)
+            ArgumentError(IChargingTariff            ChargingTariff,
+                          I18NString                 Description,
+                          EventTracking_Id?          EventTrackingId           = null,
+                          IId?                       SenderId                  = null,
+                          Object?                    Sender                    = null,
+                          IChargingStationOperator?  ChargingStationOperator   = null,
+                          IEnumerable<Warning>?      Warnings                  = null,
+                          TimeSpan?                  Runtime                   = null)
 
-            => new (ChargingTariff,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ),
-                    ChargingStationOperator);
+                => new (ChargingTariff,
+                        CommandResult.ArgumentError,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-        public static AddOrUpdateChargingTariffResult Failed(IChargingTariff           ChargingTariff,
-                                                             EventTracking_Id          EventTrackingId,
-                                                             I18NString                Description,
-                                                             ChargingStationOperator?  ChargingStationOperator   = null)
+        #endregion
 
-            => new (ChargingTariff,
-                    EventTrackingId,
-                    false,
-                    null,
-                    Description,
-                    ChargingStationOperator);
+        #region (static) Error        (ChargingTariff, Description, ...)
 
-        public static AddOrUpdateChargingTariffResult Failed(IChargingTariff           ChargingTariff,
-                                                             EventTracking_Id          EventTrackingId,
-                                                             Exception                 Exception,
-                                                             ChargingStationOperator?  ChargingStationOperator   = null)
+        public static AddOrUpdateChargingTariffResult
 
-            => new (ChargingTariff,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Exception.Message
-                    ),
-                    ChargingStationOperator);
+            Error(IChargingTariff            ChargingTariff,
+                  I18NString                 Description,
+                  EventTracking_Id?          EventTrackingId           = null,
+                  IId?                       SenderId                  = null,
+                  Object?                    Sender                    = null,
+                  IChargingStationOperator?  ChargingStationOperator   = null,
+                  IEnumerable<Warning>?      Warnings                  = null,
+                  TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.Error,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargingTariff, Exception,   ...)
+
+        public static AddOrUpdateChargingTariffResult
+
+            Error(IChargingTariff            ChargingTariff,
+                  Exception                  Exception,
+                  EventTracking_Id?          EventTrackingId           = null,
+                  IId?                       SenderId                  = null,
+                  Object?                    Sender                    = null,
+                  IChargingStationOperator?  ChargingStationOperator   = null,
+                  IEnumerable<Warning>?      Warnings                  = null,
+                  TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.Error,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        Exception.Message.ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Timeout      (ChargingTariff, Timeout,     ...)
+
+        public static AddOrUpdateChargingTariffResult
+
+            Timeout(IChargingTariff            ChargingTariff,
+                    TimeSpan                   Timeout,
+                    EventTracking_Id?          EventTrackingId           = null,
+                    IId?                       SenderId                  = null,
+                    Object?                    Sender                    = null,
+                    IChargingStationOperator?  ChargingStationOperator   = null,
+                    IEnumerable<Warning>?      Warnings                  = null,
+                    TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.Timeout,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        $"Timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout  (ChargingTariff, Timeout,     ...)
+
+        public static AddOrUpdateChargingTariffResult
+
+            LockTimeout(IChargingTariff            ChargingTariff,
+                        TimeSpan                   Timeout,
+                        EventTracking_Id?          EventTrackingId           = null,
+                        IId?                       SenderId                  = null,
+                        Object?                    Sender                    = null,
+                        IChargingStationOperator?  ChargingStationOperator   = null,
+                        IEnumerable<Warning>?      Warnings                  = null,
+                        TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.LockTimeout,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
 
     }
 

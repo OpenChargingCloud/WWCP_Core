@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unqiue identification of the authenticator.
         /// </summary>
-        public IId                                               AuthId                                           { get; }
+        public IId                                               SenderId                                           { get; }
 
         /// <summary>
         /// An object implementing ISendStatus.
@@ -82,34 +82,34 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushEnergyMeterStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="RejectedEnergyMeterStatusUpdates">An enumeration of rejected charging station operator status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushEnergyMeterStatusResult(IId                                                SenderId,
-                                                        PushEnergyMeterStatusResultTypes       Result,
-                                                        String?                                            Description                                    = null,
-                                                        IEnumerable<EnergyMeterStatusUpdate>?  RejectedEnergyMeterStatusUpdates   = null,
-                                                        IEnumerable<Warning>?                              Warnings                                       = null,
-                                                        TimeSpan?                                          Runtime                                        = null)
+        private PushEnergyMeterStatusResult(IId                                    SenderId,
+                                            PushEnergyMeterStatusResultTypes       Result,
+                                            String?                                Description                        = null,
+                                            IEnumerable<EnergyMeterStatusUpdate>?  RejectedEnergyMeterStatusUpdates   = null,
+                                            IEnumerable<Warning>?                  Warnings                           = null,
+                                            TimeSpan?                              Runtime                            = null)
         {
 
-            this.AuthId                                        = AuthId;
-            this.Result                                        = Result;
+            this.SenderId                          = SenderId;
+            this.Result                            = Result;
 
-            this.Description                                   = Description is not null && Description.IsNotNullOrEmpty()
-                                                                     ? Description.Trim()
-                                                                     : String.Empty;
+            this.Description                       = Description is not null && Description.IsNotNullOrEmpty()
+                                                         ? Description.Trim()
+                                                         : String.Empty;
 
             this.RejectedEnergyMeterStatusUpdates  = RejectedEnergyMeterStatusUpdates ?? Array.Empty<EnergyMeterStatusUpdate>();
 
-            this.Warnings                                      = Warnings is not null
-                                                                     ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
-                                                                     : Array.Empty<Warning>();
+            this.Warnings                          = Warnings is not null
+                                                         ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
+                                                         : Array.Empty<Warning>();
 
-            this.Runtime                                       = Runtime;
+            this.Runtime                           = Runtime;
 
         }
 
@@ -120,20 +120,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushEnergyMeterStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="ISendStatus">An object implementing ISendStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="RejectedEnergyMeterStatusUpdates">An enumeration of rejected charging station operator status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEnergyMeterStatusResult(IId                                                SenderId,
-                                                         ISendStatus                                        ISendStatus,
-                                                         PushEnergyMeterStatusResultTypes       Result,
-                                                         String?                                            Description                                    = null,
-                                                         IEnumerable<EnergyMeterStatusUpdate>?  RejectedEnergyMeterStatusUpdates   = null,
-                                                         IEnumerable<Warning>?                              Warnings                                       = null,
-                                                         TimeSpan?                                          Runtime                                        = null)
+        internal PushEnergyMeterStatusResult(IId                                    SenderId,
+                                             ISendStatus                            ISendStatus,
+                                             PushEnergyMeterStatusResultTypes       Result,
+                                             String?                                Description                        = null,
+                                             IEnumerable<EnergyMeterStatusUpdate>?  RejectedEnergyMeterStatusUpdates   = null,
+                                             IEnumerable<Warning>?                  Warnings                           = null,
+                                             TimeSpan?                              Runtime                            = null)
 
             : this(SenderId,
                    Result,
@@ -155,20 +155,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushEnergyMeterStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="IReceiveStatus">An object implementing IReceiveStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="RejectedEnergyMeterStatusUpdates">An enumeration of rejected charging station operator status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEnergyMeterStatusResult(IId                                                SenderId,
-                                                         IReceiveStatus                                     IReceiveStatus,
-                                                         PushEnergyMeterStatusResultTypes       Result,
-                                                         String?                                            Description                                    = null,
-                                                         IEnumerable<EnergyMeterStatusUpdate>?  RejectedEnergyMeterStatusUpdates   = null,
-                                                         IEnumerable<Warning>?                              Warnings                                       = null,
-                                                         TimeSpan?                                          Runtime                                        = null)
+        internal PushEnergyMeterStatusResult(IId                                    SenderId,
+                                             IReceiveStatus                         IReceiveStatus,
+                                             PushEnergyMeterStatusResultTypes       Result,
+                                             String?                                Description                        = null,
+                                             IEnumerable<EnergyMeterStatusUpdate>?  RejectedEnergyMeterStatusUpdates   = null,
+                                             IEnumerable<Warning>?                  Warnings                           = null,
+                                             TimeSpan?                              Runtime                            = null)
 
             : this(SenderId,
                    Result,
@@ -430,10 +430,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Flatten(SenderId, ISendStatus, PushEnergyMeterStatusResults, Runtime)
 
-        public static PushEnergyMeterStatusResult Flatten(IId                                                   SenderId,
-                                                                      ISendStatus                                           ISendStatus,
-                                                                      IEnumerable<PushEnergyMeterStatusResult>  PushEnergyMeterStatusResults,
-                                                                      TimeSpan                                              Runtime)
+        public static PushEnergyMeterStatusResult Flatten(IId                                       SenderId,
+                                                          ISendStatus                               ISendStatus,
+                                                          IEnumerable<PushEnergyMeterStatusResult>  PushEnergyMeterStatusResults,
+                                                          TimeSpan                                  Runtime)
         {
 
             #region Initial checks

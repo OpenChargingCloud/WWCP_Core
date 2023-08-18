@@ -35,11 +35,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        public UpdateChargingStationOperatorsResult(CommandResult                                Result,
+        public UpdateChargingStationOperatorsResult(CommandResult                                      Result,
                                                     IEnumerable<UpdateChargingStationOperatorResult>?  SuccessfulChargingStationOperators   = null,
                                                     IEnumerable<UpdateChargingStationOperatorResult>?  RejectedChargingStationOperators     = null,
-                                                    IId?                                               AuthId                               = null,
-                                                    Object?                                            Sender                          = null,
+                                                    IId?                                               SenderId                             = null,
+                                                    Object?                                            Sender                               = null,
                                                     EventTracking_Id?                                  EventTrackingId                      = null,
                                                     I18NString?                                        Description                          = null,
                                                     IEnumerable<Warning>?                              Warnings                             = null,

@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unqiue identification of the authenticator.
         /// </summary>
-        public IId                                      AuthId                                  { get; }
+        public IId                                      SenderId                                  { get; }
 
         /// <summary>
         /// An object implementing ISendStatus.
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushRoamingNetworkStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="RejectedRoamingNetworkStatusUpdates">An enumeration of rejected roaming network admin status updates.</param>
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                TimeSpan?                                 Runtime                               = null)
         {
 
-            this.AuthId                               = AuthId;
+            this.SenderId                             = SenderId;
             this.Result                               = Result;
 
             this.Description                          = Description is not null && Description.IsNotNullOrEmpty()
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushRoamingNetworkStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="ISendStatus">An object implementing ISendStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushRoamingNetworkStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="IReceiveStatus">An object implementing IReceiveStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>

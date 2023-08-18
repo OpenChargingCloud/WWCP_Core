@@ -25,27 +25,41 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of an add charging tariff request.
+    /// </summary>
     public class AddChargingTariffResult : AEnitityResult<IChargingTariff, ChargingTariff_Id>
     {
 
-        public IChargingTariff? ChargingTariff
+        #region Properties
+
+        public IChargingTariff?           ChargingTariff
             => Object;
 
-        public ChargingStationOperator?  ChargingStationOperator    { get; internal set; }
+        public IChargingStationOperator?  ChargingStationOperator    { get; internal set; }
 
+        #endregion
 
-        public AddChargingTariffResult(IChargingTariff           ChargingTariff,
-                                       EventTracking_Id          EventTrackingId,
-                                       Boolean                   IsSuccess,
-                                       String?                   Argument                  = null,
-                                       I18NString?               ErrorDescription          = null,
-                                       ChargingStationOperator?  ChargingStationOperator   = null)
+        #region Constructor(s)
+
+        public AddChargingTariffResult(IChargingTariff            ChargingTariff,
+                                       CommandResult              Result,
+                                       EventTracking_Id?          EventTrackingId           = null,
+                                       IId?                       SenderId                  = null,
+                                       Object?                    Sender                    = null,
+                                       IChargingStationOperator?  ChargingStationOperator   = null,
+                                       I18NString?                Description               = null,
+                                       IEnumerable<Warning>?      Warnings                  = null,
+                                       TimeSpan?                  Runtime                   = null)
 
             : base(ChargingTariff,
+                   Result,
                    EventTrackingId,
-                   IsSuccess,
-                   Argument,
-                   ErrorDescription)
+                   SenderId,
+                   Sender,
+                   Description,
+                   Warnings,
+                   Runtime)
 
         {
 
@@ -53,104 +67,236 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-
-        public static AddChargingTariffResult Success(IChargingTariff           ChargingTariff,
-                                                      EventTracking_Id          EventTrackingId,
-                                                      ChargingStationOperator?  ChargingStationOperator   = null)
-
-            => new (ChargingTariff,
-                    EventTrackingId,
-                    true,
-                    null,
-                    null,
-                    ChargingStationOperator);
+        #endregion
 
 
-        public static AddChargingTariffResult ArgumentError(IChargingTariff   ChargingTariff,
-                                                            EventTracking_Id  EventTrackingId,
-                                                            String            Argument,
-                                                            String            Description)
+        #region (static) AdminDown    (ChargingTariff, ...)
 
-            => new (ChargingTariff,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ));
+        public static AddChargingTariffResult
 
-        public static AddChargingTariffResult ArgumentError(IChargingTariff   ChargingTariff,
-                                                            EventTracking_Id  EventTrackingId,
-                                                            String            Argument,
-                                                            I18NString        Description)
+            AdminDown(IChargingTariff            ChargingTariff,
+                      EventTracking_Id?          EventTrackingId           = null,
+                      IId?                       SenderId                  = null,
+                      Object?                    Sender                    = null,
+                      IChargingStationOperator?  ChargingStationOperator   = null,
+                      I18NString?                Description               = null,
+                      IEnumerable<Warning>?      Warnings                  = null,
+                      TimeSpan?                  Runtime                   = null)
 
-            => new (ChargingTariff,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    Description);
+                => new (ChargingTariff,
+                        CommandResult.AdminDown,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) NoOperation  (ChargingTariff, ...)
+
+        public static AddChargingTariffResult
+
+            NoOperation(IChargingTariff            ChargingTariff,
+                        EventTracking_Id?          EventTrackingId           = null,
+                        IId?                       SenderId                  = null,
+                        Object?                    Sender                    = null,
+                        IChargingStationOperator?  ChargingStationOperator   = null,
+                        I18NString?                Description               = null,
+                        IEnumerable<Warning>?      Warnings                  = null,
+                        TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.NoOperation,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
 
 
-        public static AddChargingTariffResult NoOperation(IChargingTariff           ChargingTariff,
-                                                          EventTracking_Id          EventTrackingId,
-                                                          String?                   Description               = null,
-                                                          ChargingStationOperator?  ChargingStationOperator   = null)
+        #region (static) Enqueued     (ChargingTariff, ...)
 
-            => new (ChargingTariff,
-                    EventTrackingId,
-                    true,
-                    null,
-                    Description is not null
-                        ? I18NString.Create(
-                              Languages.en,
-                              Description
-                          )
-                        : null,
-                    ChargingStationOperator);
+        public static AddChargingTariffResult
+
+            Enqueued(IChargingTariff            ChargingTariff,
+                     EventTracking_Id?          EventTrackingId           = null,
+                     IId?                       SenderId                  = null,
+                     Object?                    Sender                    = null,
+                     IChargingStationOperator?  ChargingStationOperator   = null,
+                     I18NString?                Description               = null,
+                     IEnumerable<Warning>?      Warnings                  = null,
+                     TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.Enqueued,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Success      (ChargingTariff, ...)
+
+        public static AddChargingTariffResult
+
+            Success(IChargingTariff            ChargingTariff,
+                    EventTracking_Id?          EventTrackingId           = null,
+                    IId?                       SenderId                  = null,
+                    Object?                    Sender                    = null,
+                    IChargingStationOperator?  ChargingStationOperator   = null,
+                    I18NString?                Description               = null,
+                    IEnumerable<Warning>?      Warnings                  = null,
+                    TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.Success,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
 
 
-        public static AddChargingTariffResult Failed(IChargingTariff           ChargingTariff,
-                                                     EventTracking_Id          EventTrackingId,
-                                                     String                    Description,
-                                                     ChargingStationOperator?  ChargingStationOperator   = null)
+        #region (static) ArgumentError(ChargingTariff, Description, ...)
 
-            => new (ChargingTariff,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ),
-                    ChargingStationOperator);
+        public static AddChargingTariffResult
 
-        public static AddChargingTariffResult Failed(IChargingTariff           ChargingTariff,
-                                                     EventTracking_Id          EventTrackingId,
-                                                     I18NString                Description,
-                                                     ChargingStationOperator?  ChargingStationOperator   = null)
+            ArgumentError(IChargingTariff            ChargingTariff,
+                          I18NString                 Description,
+                          EventTracking_Id?          EventTrackingId           = null,
+                          IId?                       SenderId                  = null,
+                          Object?                    Sender                    = null,
+                          IChargingStationOperator?  ChargingStationOperator   = null,
+                          IEnumerable<Warning>?      Warnings                  = null,
+                          TimeSpan?                  Runtime                   = null)
 
-            => new (ChargingTariff,
-                    EventTrackingId,
-                    false,
-                    null,
-                    Description,
-                    ChargingStationOperator);
+                => new (ChargingTariff,
+                        CommandResult.ArgumentError,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-        public static AddChargingTariffResult Failed(IChargingTariff           ChargingTariff,
-                                                     EventTracking_Id          EventTrackingId,
-                                                     Exception                 Exception,
-                                                     ChargingStationOperator?  ChargingStationOperator   = null)
+        #endregion
 
-            => new (ChargingTariff,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Exception.Message
-                    ),
-                    ChargingStationOperator);
+        #region (static) Error        (ChargingTariff, Description, ...)
+
+        public static AddChargingTariffResult
+
+            Error(IChargingTariff            ChargingTariff,
+                  I18NString                 Description,
+                  EventTracking_Id?          EventTrackingId           = null,
+                  IId?                       SenderId                  = null,
+                  Object?                    Sender                    = null,
+                  IChargingStationOperator?  ChargingStationOperator   = null,
+                  IEnumerable<Warning>?      Warnings                  = null,
+                  TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.Error,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargingTariff, Exception,   ...)
+
+        public static AddChargingTariffResult
+
+            Error(IChargingTariff            ChargingTariff,
+                  Exception                  Exception,
+                  EventTracking_Id?          EventTrackingId           = null,
+                  IId?                       SenderId                  = null,
+                  Object?                    Sender                    = null,
+                  IChargingStationOperator?  ChargingStationOperator   = null,
+                  IEnumerable<Warning>?      Warnings                  = null,
+                  TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.Error,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        Exception.Message.ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Timeout      (ChargingTariff, Timeout,     ...)
+
+        public static AddChargingTariffResult
+
+            Timeout(IChargingTariff            ChargingTariff,
+                    TimeSpan                   Timeout,
+                    EventTracking_Id?          EventTrackingId           = null,
+                    IId?                       SenderId                  = null,
+                    Object?                    Sender                    = null,
+                    IChargingStationOperator?  ChargingStationOperator   = null,
+                    IEnumerable<Warning>?      Warnings                  = null,
+                    TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.Timeout,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        $"Timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout  (ChargingTariff, Timeout,     ...)
+
+        public static AddChargingTariffResult
+
+            LockTimeout(IChargingTariff            ChargingTariff,
+                        TimeSpan                   Timeout,
+                        EventTracking_Id?          EventTrackingId           = null,
+                        IId?                       SenderId                  = null,
+                        Object?                    Sender                    = null,
+                        IChargingStationOperator?  ChargingStationOperator   = null,
+                        IEnumerable<Warning>?      Warnings                  = null,
+                        TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingTariff,
+                        CommandResult.LockTimeout,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
 
     }
 

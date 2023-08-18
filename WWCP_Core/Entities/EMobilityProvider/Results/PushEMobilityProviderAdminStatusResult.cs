@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unqiue identification of the authenticator.
         /// </summary>
-        public IId                                                    AuthId                                                { get; }
+        public IId                                                    SenderId                                                { get; }
 
         /// <summary>
         /// An object implementing ISendAdminStatus.
@@ -81,21 +81,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushEMobilityProviderAdminStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="RejectedEMobilityProviderAdminStatusUpdates">An enumeration of rejected charging station operator admin status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushEMobilityProviderAdminStatusResult(IId                                                     SenderId,
-                                                             PushEMobilityProviderAdminStatusResultTypes       Result,
-                                                             String?                                                 Description                                         = null,
-                                                             IEnumerable<EMobilityProviderAdminStatusUpdate>?  RejectedEMobilityProviderAdminStatusUpdates   = null,
-                                                             IEnumerable<Warning>?                                   Warnings                                            = null,
-                                                             TimeSpan?                                               Runtime                                             = null)
+        private PushEMobilityProviderAdminStatusResult(IId                                               SenderId,
+                                                       PushEMobilityProviderAdminStatusResultTypes       Result,
+                                                       String?                                           Description                                   = null,
+                                                       IEnumerable<EMobilityProviderAdminStatusUpdate>?  RejectedEMobilityProviderAdminStatusUpdates   = null,
+                                                       IEnumerable<Warning>?                             Warnings                                      = null,
+                                                       TimeSpan?                                         Runtime                                       = null)
         {
 
-            this.AuthId                                             = AuthId;
+            this.SenderId                                           = SenderId;
             this.Result                                             = Result;
 
             this.Description                                        = Description is not null && Description.IsNotNullOrEmpty()
@@ -119,20 +119,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushEMobilityProviderAdminStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="ISendAdminStatus">An object implementing ISendAdminStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="RejectedEMobilityProviderAdminStatusUpdates">An enumeration of rejected charging station operator admin status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEMobilityProviderAdminStatusResult(IId                                                     SenderId,
-                                                              ISendAdminStatus                                        ISendAdminStatus,
-                                                              PushEMobilityProviderAdminStatusResultTypes       Result,
-                                                              String?                                                 Description                                         = null,
-                                                              IEnumerable<EMobilityProviderAdminStatusUpdate>?  RejectedEMobilityProviderAdminStatusUpdates   = null,
-                                                              IEnumerable<Warning>?                                   Warnings                                            = null,
-                                                              TimeSpan?                                               Runtime                                             = null)
+        internal PushEMobilityProviderAdminStatusResult(IId                                               SenderId,
+                                                        ISendAdminStatus                                  ISendAdminStatus,
+                                                        PushEMobilityProviderAdminStatusResultTypes       Result,
+                                                        String?                                           Description                                   = null,
+                                                        IEnumerable<EMobilityProviderAdminStatusUpdate>?  RejectedEMobilityProviderAdminStatusUpdates   = null,
+                                                        IEnumerable<Warning>?                             Warnings                                      = null,
+                                                        TimeSpan?                                         Runtime                                       = null)
 
             : this(SenderId,
                    Result,
@@ -154,20 +154,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushEMobilityProviderAdminStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="IReceiveAdminStatus">An object implementing IReceiveAdminStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="RejectedEMobilityProviderAdminStatusUpdates">An enumeration of rejected charging station operator admin status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEMobilityProviderAdminStatusResult(IId                                                     SenderId,
-                                                              IReceiveAdminStatus                                     IReceiveAdminStatus,
-                                                              PushEMobilityProviderAdminStatusResultTypes       Result,
-                                                              String?                                                 Description                                         = null,
-                                                              IEnumerable<EMobilityProviderAdminStatusUpdate>?  RejectedEMobilityProviderAdminStatusUpdates   = null,
-                                                              IEnumerable<Warning>?                                   Warnings                                            = null,
-                                                              TimeSpan?                                               Runtime                                             = null)
+        internal PushEMobilityProviderAdminStatusResult(IId                                               SenderId,
+                                                        IReceiveAdminStatus                               IReceiveAdminStatus,
+                                                        PushEMobilityProviderAdminStatusResultTypes       Result,
+                                                        String?                                           Description                                   = null,
+                                                        IEnumerable<EMobilityProviderAdminStatusUpdate>?  RejectedEMobilityProviderAdminStatusUpdates   = null,
+                                                        IEnumerable<Warning>?                             Warnings                                      = null,
+                                                        TimeSpan?                                         Runtime                                       = null)
 
             : this(SenderId,
                    Result,

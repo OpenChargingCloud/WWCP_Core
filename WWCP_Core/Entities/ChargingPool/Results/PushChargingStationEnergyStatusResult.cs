@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unqiue identification of the authenticator.
         /// </summary>
-        public IId                                             AuthId                                        { get; }
+        public IId                                             SenderId                                        { get; }
 
         /// <summary>
         /// An object implementing ISendEnergyStatus.
@@ -82,26 +82,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushChargingPoolEnergyStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="RejectedChargingPoolEnergyStatusUpdates">An enumeration of rejected ChargingPool status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushChargingPoolEnergyStatusResult(IId                                              SenderId,
-                                                      PushChargingPoolEnergyStatusResultTypes       Result,
-                                                      String?                                          Description                                  = null,
-                                                      IEnumerable<ChargingPoolEnergyStatusUpdate>?  RejectedChargingPoolEnergyStatusUpdates   = null,
-                                                      IEnumerable<Warning>?                            Warnings                                     = null,
-                                                      TimeSpan?                                        Runtime                                      = null)
+        private PushChargingPoolEnergyStatusResult(IId                                           SenderId,
+                                                   PushChargingPoolEnergyStatusResultTypes       Result,
+                                                   String?                                       Description                               = null,
+                                                   IEnumerable<ChargingPoolEnergyStatusUpdate>?  RejectedChargingPoolEnergyStatusUpdates   = null,
+                                                   IEnumerable<Warning>?                         Warnings                                  = null,
+                                                   TimeSpan?                                     Runtime                                   = null)
         {
 
-            this.AuthId                                      = AuthId;
-            this.Result                                      = Result;
-            this.Description                                 = Description?.Trim();
+            this.SenderId                                 = SenderId;
+            this.Result                                   = Result;
+            this.Description                              = Description?.Trim();
             this.RejectedChargingPoolEnergyStatusUpdates  = RejectedChargingPoolEnergyStatusUpdates?.Distinct() ?? Array.Empty<ChargingPoolEnergyStatusUpdate>();
-            this.Warnings                                    = Warnings?.                                  Distinct() ?? Array.Empty<Warning>();
-            this.Runtime                                     = Runtime                                                ?? TimeSpan.Zero;
+            this.Warnings                                 = Warnings?.                               Distinct() ?? Array.Empty<Warning>();
+            this.Runtime                                  = Runtime                                             ?? TimeSpan.Zero;
 
         }
 
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushChargingPoolEnergyStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="ISendEnergyStatus">An object implementing ISendEnergyStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushChargingPoolEnergyStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="IReceiveEnergyStatus">An object implementing IReceiveEnergyStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>

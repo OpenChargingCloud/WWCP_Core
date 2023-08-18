@@ -1621,7 +1621,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (chargingStations.TryAdd(ChargingStation,
                                         Connect,
                                         EventTrackingId,
-                                        CurrentUserId).IsSuccess)
+                                        CurrentUserId).Result == CommandResult.Success)
             {
 
                 //ToDo: Persistency
@@ -1699,7 +1699,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (chargingStations.TryAdd(ChargingStation,
                                         EventTrackingId,
-                                        CurrentUserId).IsSuccess)
+                                        CurrentUserId).Result == CommandResult.Success)
             {
 
                 //ToDo: Persistency
@@ -1832,7 +1832,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (chargingStations.TryAdd(ChargingStation,
                                             EventTrackingId,
-                                            CurrentUserId).IsSuccess)
+                                            CurrentUserId).Result == CommandResult.Success)
                 {
 
                     //ToDo: Persistency

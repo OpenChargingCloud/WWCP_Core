@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unqiue identification of the authenticator.
         /// </summary>
-        public IId                                 AuthId                            { get; }
+        public IId                                 SenderId                            { get; }
 
         /// <summary>
         /// An object implementing ISendStatus.
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushEVSEAdminStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="RejectedEVSEAdminStatusUpdates">An enumeration of rejected EVSE status updates.</param>
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           TimeSpan?                            Runtime                          = null)
         {
 
-            this.AuthId                          = AuthId;
+            this.SenderId                        = SenderId;
             this.Result                          = Result;
 
             this.Description                     = Description.IsNotNullOrEmpty()
@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushEVSEAdminStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="ISendAdminStatus">An object implementing ISendAdminStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushEVSEAdminStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="IReceiveAdminStatus">An object implementing IReceiveAdminStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>

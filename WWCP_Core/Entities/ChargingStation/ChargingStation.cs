@@ -1886,7 +1886,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (evses.TryAdd(EVSE,
                              Connect,
                              EventTrackingId,
-                             CurrentUserId).IsSuccess)
+                             CurrentUserId).Result == CommandResult.Success)
             {
 
                 //ToDo: Persistency
@@ -1965,7 +1965,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (evses.TryAdd(EVSE,
                              Connect,
                              EventTrackingId,
-                             CurrentUserId).IsSuccess)
+                             CurrentUserId).Result == CommandResult.Success)
             {
 
                 //ToDo: Persistency
@@ -2095,7 +2095,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (evses.TryAdd(EVSE,
                                  EventTrackingId,
-                                 CurrentUserId).IsSuccess)
+                                 CurrentUserId).Result == CommandResult.Success)
                 {
 
                     //ToDo: Persistency

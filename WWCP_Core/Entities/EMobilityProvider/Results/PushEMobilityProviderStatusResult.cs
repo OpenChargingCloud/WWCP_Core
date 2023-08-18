@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unqiue identification of the authenticator.
         /// </summary>
-        public IId                                               AuthId                                           { get; }
+        public IId                                               SenderId                                           { get; }
 
         /// <summary>
         /// An object implementing ISendStatus.
@@ -81,21 +81,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushEMobilityProviderStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="RejectedEMobilityProviderStatusUpdates">An enumeration of rejected charging station operator status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushEMobilityProviderStatusResult(IId                                                SenderId,
-                                                        PushEMobilityProviderStatusResultTypes       Result,
-                                                        String?                                            Description                                    = null,
-                                                        IEnumerable<EMobilityProviderStatusUpdate>?  RejectedEMobilityProviderStatusUpdates   = null,
-                                                        IEnumerable<Warning>?                              Warnings                                       = null,
-                                                        TimeSpan?                                          Runtime                                        = null)
+        private PushEMobilityProviderStatusResult(IId                                          SenderId,
+                                                  PushEMobilityProviderStatusResultTypes       Result,
+                                                  String?                                      Description                              = null,
+                                                  IEnumerable<EMobilityProviderStatusUpdate>?  RejectedEMobilityProviderStatusUpdates   = null,
+                                                  IEnumerable<Warning>?                        Warnings                                 = null,
+                                                  TimeSpan?                                    Runtime                                  = null)
         {
 
-            this.AuthId                                        = AuthId;
+            this.SenderId                                      = SenderId;
             this.Result                                        = Result;
 
             this.Description                                   = Description is not null && Description.IsNotNullOrEmpty()
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushEMobilityProviderStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="ISendStatus">An object implementing ISendStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
@@ -127,12 +127,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         internal PushEMobilityProviderStatusResult(IId                                                SenderId,
-                                                         ISendStatus                                        ISendStatus,
-                                                         PushEMobilityProviderStatusResultTypes       Result,
-                                                         String?                                            Description                                    = null,
-                                                         IEnumerable<EMobilityProviderStatusUpdate>?  RejectedEMobilityProviderStatusUpdates   = null,
-                                                         IEnumerable<Warning>?                              Warnings                                       = null,
-                                                         TimeSpan?                                          Runtime                                        = null)
+                                                   ISendStatus                                        ISendStatus,
+                                                   PushEMobilityProviderStatusResultTypes       Result,
+                                                   String?                                            Description                                    = null,
+                                                   IEnumerable<EMobilityProviderStatusUpdate>?  RejectedEMobilityProviderStatusUpdates   = null,
+                                                   IEnumerable<Warning>?                              Warnings                                       = null,
+                                                   TimeSpan?                                          Runtime                                        = null)
 
             : this(SenderId,
                    Result,
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushEMobilityProviderStatus result.
         /// </summary>
-        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="SenderId">The unqiue identification of the sender.</param>
         /// <param name="IReceiveStatus">An object implementing IReceiveStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>

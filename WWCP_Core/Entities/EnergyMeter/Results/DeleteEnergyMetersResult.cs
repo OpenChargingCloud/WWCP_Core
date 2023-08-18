@@ -29,17 +29,17 @@ namespace cloud.charging.open.protocols.WWCP
     /// The result of a delete energy meters request.
     /// </summary>
     public class DeleteEnergyMetersResult : AEnititiesResult<DeleteEnergyMeterResult,
-                                                                         IEnergyMeter,
-                                                                         EnergyMeter_Id>
+                                                             IEnergyMeter,
+                                                             EnergyMeter_Id>
     {
 
         #region Constructor(s)
 
-        public DeleteEnergyMetersResult(CommandResult                    Result,
+        public DeleteEnergyMetersResult(CommandResult                          Result,
                                         IEnumerable<DeleteEnergyMeterResult>?  SuccessfulEnergyMeters   = null,
                                         IEnumerable<DeleteEnergyMeterResult>?  RejectedEnergyMeters     = null,
-                                        IId?                                   AuthId                   = null,
-                                        Object?                                Sender              = null,
+                                        IId?                                   SenderId                 = null,
+                                        Object?                                Sender                   = null,
                                         EventTracking_Id?                      EventTrackingId          = null,
                                         I18NString?                            Description              = null,
                                         IEnumerable<Warning>?                  Warnings                 = null,

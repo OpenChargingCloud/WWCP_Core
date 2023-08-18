@@ -159,7 +159,7 @@
 //        /// <summary>
 //        /// Create a new PushEVSEData result.
 //        /// </summary>
-//        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+//        /// <param name="SenderId">The unqiue identification of the sender.</param>
 //        /// <param name="Sender">An object implementing Sender.</param>
 //        /// <param name="ReceivePOIData">An object implementing ReceivePOIData.</param>
 //        /// <param name="Result">The result of the operation.</param>
@@ -209,7 +209,7 @@
 //        /// <summary>
 //        /// Create a new PushEVSEData result.
 //        /// </summary>
-//        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+//        /// <param name="SenderId">The unqiue identification of the sender.</param>
 //        /// <param name="Sender">An object implementing Sender.</param>
 //        /// <param name="ReceivePOIData">An object implementing ReceivePOIData.</param>
 //        /// <param name="Result">The result of the operation.</param>
