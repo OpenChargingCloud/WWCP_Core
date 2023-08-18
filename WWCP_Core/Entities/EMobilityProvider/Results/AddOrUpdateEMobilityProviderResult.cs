@@ -25,120 +25,317 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of an add or update e-mobility provider request.
+    /// </summary>
     public class AddOrUpdateEMobilityProviderResult : AEnitityResult<IEMobilityProvider, EMobilityProvider_Id>
     {
 
-        public IEMobilityProvider? EMobilityProvider
+        #region Properties
+
+        public IEMobilityProvider?  EMobilityProvider
             => Object;
 
-        public IRoamingNetwork?          RoamingNetwork    { get; internal set; }
+        public IRoamingNetwork?     RoamingNetwork    { get; internal set; }
 
-        public AddedOrUpdated?           AddedOrUpdated    { get; internal set; }
+        public AddedOrUpdated?      AddedOrUpdated    { get; internal set; }
 
+        #endregion
 
-        public AddOrUpdateEMobilityProviderResult(IEMobilityProvider  EMobilityProvider,
-                                                        EventTracking_Id          EventTrackingId,
-                                                        Boolean                   IsSuccess,
-                                                        String?                   Argument           = null,
-                                                        I18NString?               ErrorDescription   = null,
-                                                        IRoamingNetwork?          RoamingNetwork     = null,
-                                                        AddedOrUpdated?           AddedOrUpdated     = null)
+        #region Constructor(s)
+
+        public AddOrUpdateEMobilityProviderResult(IEMobilityProvider     EMobilityProvider,
+                                                  CommandResult          Result,
+                                                  EventTracking_Id?      EventTrackingId   = null,
+                                                  IId?                   SenderId          = null,
+                                                  Object?                Sender            = null,
+                                                  IRoamingNetwork?       RoamingNetwork    = null,
+                                                  AddedOrUpdated?        AddedOrUpdated    = null,
+                                                  I18NString?            Description       = null,
+                                                  IEnumerable<Warning>?  Warnings          = null,
+                                                  TimeSpan?              Runtime           = null)
 
             : base(EMobilityProvider,
+                   Result,
                    EventTrackingId,
-                   IsSuccess,
-                   Argument,
-                   ErrorDescription)
+                   SenderId,
+                   Sender,
+                   Description,
+                   Warnings,
+                   Runtime)
 
         {
 
-            this.RoamingNetwork    = RoamingNetwork;
+            this.RoamingNetwork  = RoamingNetwork;
             this.AddedOrUpdated  = AddedOrUpdated;
 
         }
 
-
-        public static AddOrUpdateEMobilityProviderResult Success(IEMobilityProvider  EMobilityProvider,
-                                                                       AddedOrUpdated            AddedOrUpdated,
-                                                                       EventTracking_Id          EventTrackingId,
-                                                                       IRoamingNetwork?          RoamingNetwork   = null)
-
-            => new (EMobilityProvider,
-                    EventTrackingId,
-                    true,
-                    null,
-                    null,
-                    RoamingNetwork,
-                    AddedOrUpdated);
+        #endregion
 
 
-        public static AddOrUpdateEMobilityProviderResult ArgumentError(IEMobilityProvider  EMobilityProvider,
-                                                                             EventTracking_Id          EventTrackingId,
-                                                                             String                    Argument,
-                                                                             String                    Description)
+        #region (static) AdminDown    (ChargingStation, ...)
 
-            => new (EMobilityProvider,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ));
+        public static AddOrUpdateEMobilityProviderResult
 
-        public static AddOrUpdateEMobilityProviderResult ArgumentError(IEMobilityProvider  EMobilityProvider,
-                                                                             EventTracking_Id          EventTrackingId,
-                                                                             String                    Argument,
-                                                                             I18NString                Description)
+            AdminDown(IEMobilityProvider     EMobilityProvider,
+                      EventTracking_Id?      EventTrackingId   = null,
+                      IId?                   SenderId          = null,
+                      Object?                Sender            = null,
+                      IRoamingNetwork?       RoamingNetwork    = null,
+                      I18NString?            Description       = null,
+                      IEnumerable<Warning>?  Warnings          = null,
+                      TimeSpan?              Runtime           = null)
 
-            => new (EMobilityProvider,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    Description);
+                => new (EMobilityProvider,
+                        CommandResult.AdminDown,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.NoOperation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) NoOperation  (ChargingStation, ...)
+
+        public static AddOrUpdateEMobilityProviderResult
+
+            NoOperation(IEMobilityProvider     EMobilityProvider,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   SenderId          = null,
+                        Object?                Sender            = null,
+                        IRoamingNetwork?       RoamingNetwork    = null,
+                        I18NString?            Description       = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.NoOperation,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.NoOperation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
 
 
-        public static AddOrUpdateEMobilityProviderResult Failed(IEMobilityProvider  EMobilityProvider,
-                                                                      EventTracking_Id          EventTrackingId,
-                                                                      String                    Description,
-                                                                      IRoamingNetwork?          RoamingNetwork   = null)
+        #region (static) Enqueued     (ChargingStation, ...)
 
-            => new (EMobilityProvider,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ),
-                    RoamingNetwork);
+        public static AddOrUpdateEMobilityProviderResult
 
-        public static AddOrUpdateEMobilityProviderResult Failed(IEMobilityProvider  EMobilityProvider,
-                                                                      EventTracking_Id          EventTrackingId,
-                                                                      I18NString                Description,
-                                                                      IRoamingNetwork?          RoamingNetwork   = null)
+            Enqueued(IEMobilityProvider     EMobilityProvider,
+                     EventTracking_Id?      EventTrackingId   = null,
+                     IId?                   SenderId          = null,
+                     Object?                Sender            = null,
+                     IRoamingNetwork?       RoamingNetwork    = null,
+                     I18NString?            Description       = null,
+                     IEnumerable<Warning>?  Warnings          = null,
+                     TimeSpan?              Runtime           = null)
 
-            => new (EMobilityProvider,
-                    EventTrackingId,
-                    false,
-                    null,
-                    Description,
-                    RoamingNetwork);
+                => new (EMobilityProvider,
+                        CommandResult.Enqueued,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Enqueued,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-        public static AddOrUpdateEMobilityProviderResult Failed(IEMobilityProvider  EMobilityProvider,
-                                                                      EventTracking_Id          EventTrackingId,
-                                                                      Exception                 Exception,
-                                                                      IRoamingNetwork?          RoamingNetwork   = null)
+        #endregion
 
-            => new (EMobilityProvider,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Exception.Message
-                    ),
-                    RoamingNetwork);
+        #region (static) Added        (ChargingStation, ...)
+
+        public static AddOrUpdateEMobilityProviderResult
+
+            Added(IEMobilityProvider     EMobilityProvider,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   SenderId          = null,
+                  Object?                Sender            = null,
+                  IRoamingNetwork?       RoamingNetwork    = null,
+                  I18NString?            Description       = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.Success,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Add,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Updated      (ChargingStation, ...)
+
+        public static AddOrUpdateEMobilityProviderResult
+
+            Updated(IEMobilityProvider     EMobilityProvider,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   SenderId          = null,
+                    Object?                Sender            = null,
+                    IRoamingNetwork?       RoamingNetwork    = null,
+                    I18NString?            Description       = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.Success,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Update,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) ArgumentError(ChargingStation, Description, ...)
+
+        public static AddOrUpdateEMobilityProviderResult
+
+            ArgumentError(IEMobilityProvider     EMobilityProvider,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   SenderId          = null,
+                          Object?                Sender            = null,
+                          IRoamingNetwork?       RoamingNetwork    = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.ArgumentError,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargingStation, Description, ...)
+
+        public static AddOrUpdateEMobilityProviderResult
+
+            Error(IEMobilityProvider     EMobilityProvider,
+                  I18NString             Description,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   SenderId          = null,
+                  Object?                Sender            = null,
+                  IRoamingNetwork?       RoamingNetwork    = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.Error,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargingStation, Exception,   ...)
+
+        public static AddOrUpdateEMobilityProviderResult
+
+            Error(IEMobilityProvider     EMobilityProvider,
+                  Exception              Exception,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   SenderId          = null,
+                  Object?                Sender            = null,
+                  IRoamingNetwork?       RoamingNetwork    = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.Error,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
+                        Exception.Message.ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Timeout      (ChargingStation, Timeout,     ...)
+
+        public static AddOrUpdateEMobilityProviderResult
+
+            Timeout(IEMobilityProvider     EMobilityProvider,
+                    TimeSpan               Timeout,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   SenderId          = null,
+                    Object?                Sender            = null,
+                    IRoamingNetwork?       RoamingNetwork    = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.Timeout,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
+                        $"Timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout  (ChargingStation, Timeout,     ...)
+
+        public static AddOrUpdateEMobilityProviderResult
+
+            LockTimeout(IEMobilityProvider     EMobilityProvider,
+                        TimeSpan               Timeout,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   SenderId          = null,
+                        Object?                Sender            = null,
+                        IRoamingNetwork?       RoamingNetwork    = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.LockTimeout,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
 
     }
 

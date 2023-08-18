@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.NoOperation,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.NoOperation,
                         Description,
                         Warnings,
                         Runtime);
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.WWCP
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.NoOperation,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.NoOperation,
                         Description,
                         Warnings,
                         Runtime);
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.WWCP
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Enqueued,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Enqueued,
                         Description,
                         Warnings,
                         Runtime);
@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.WWCP
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Add,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Add,
                         Description,
                         Warnings,
                         Runtime);
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.WWCP
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Update,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Update,
                         Description,
                         Warnings,
                         Runtime);
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.WWCP
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
                         Description,
                         Warnings,
                         Runtime);
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.WWCP
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
                         Description,
                         Warnings,
                         Runtime);
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.WWCP
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
                         Exception.Message.ToI18NString(),
                         Warnings,
                         Runtime);
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.WWCP
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
                         $"Timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,
                         Runtime);
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.WWCP
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Hermod.AddedOrUpdated.Failed,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
                         $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,
                         Runtime);

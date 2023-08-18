@@ -1004,33 +1004,41 @@ namespace cloud.charging.open.protocols.WWCP
             if (eMobilityProviders.ContainsId(EMobilityProvider.Id))
                 return AddEMobilityProviderResult.ArgumentError(
                            EMobilityProvider,
+                           $"The given charging station operator identification '{EMobilityProvider.Id}' already exists!".ToI18NString(),
                            eventTrackingId,
-                           nameof(EMobilityProvider),
-                           $"The given charging station operator identification '{EMobilityProvider.Id}' already exists!"
+                           Id,
+                           this,
+                           this
                        );
 
             if (EMobilityProvider.Id.Length < MinEMobilityProviderIdLength)
                 return AddEMobilityProviderResult.ArgumentError(
                            EMobilityProvider,
+                           $"The given charging station operator identification '{EMobilityProvider.Id}' is too short!".ToI18NString(),
                            eventTrackingId,
-                           nameof(EMobilityProvider),
-                           $"The given charging station operator identification '{EMobilityProvider.Id}' is too short!"
+                           Id,
+                           this,
+                           this
                        );
 
             if (EMobilityProvider.Name.IsNullOrEmpty())
                 return AddEMobilityProviderResult.ArgumentError(
                            EMobilityProvider,
+                           "The given charging station operator name must not be null!".ToI18NString(),
                            eventTrackingId,
-                           nameof(User),
-                           "The given charging station operator name must not be null!"
+                           Id,
+                           this,
+                           this
                        );
 
             if (EMobilityProvider.Name.FirstText().Length < MinEMobilityProviderNameLength)
                 return AddEMobilityProviderResult.ArgumentError(
                            EMobilityProvider,
+                           $"The given charging station operator name '{EMobilityProvider.Name}' is too short!".ToI18NString(),
                            eventTrackingId,
-                           nameof(EMobilityProvider),
-                           $"The given charging station operator name '{EMobilityProvider.Name}' is too short!"
+                           Id,
+                           this,
+                           this
                        );
 
             //User.API = this;
@@ -1109,8 +1117,13 @@ namespace cloud.charging.open.protocols.WWCP
             //                            CurrentUserId);
 
 
-            return AddEMobilityProviderResult.Success(EMobilityProvider,
-                                                            eventTrackingId);
+            return AddEMobilityProviderResult.Success(
+                       EMobilityProvider,
+                       eventTrackingId,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 
@@ -1156,11 +1169,14 @@ namespace cloud.charging.open.protocols.WWCP
                 catch (Exception e)
                 {
 
-                    DebugX.LogException(e, $"{nameof(RoamingNetwork)}.{nameof(AddEMobilityProvider)}({EMobilityProvider.Id}, ...)" );
-
-                    return AddEMobilityProviderResult.Failed(EMobilityProvider,
-                                                             eventTrackingId,
-                                                             e);
+                    return AddEMobilityProviderResult.Error(
+                               EMobilityProvider,
+                               e,
+                               eventTrackingId,
+                               Id,
+                               this,
+                               this
+                           );
 
                 }
                 finally
@@ -1174,9 +1190,14 @@ namespace cloud.charging.open.protocols.WWCP
                 }
             }
 
-            return AddEMobilityProviderResult.Failed(EMobilityProvider,
-                                                     eventTrackingId,
-                                                     "Internal locking failed!");
+            return AddEMobilityProviderResult.LockTimeout(
+                       EMobilityProvider,
+                       SemaphoreSlimTimeout,
+                       eventTrackingId,
+                       Id,
+                       this,
+                       this
+                   );
 
         }
 

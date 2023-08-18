@@ -25,27 +25,41 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// The result of an add e-mobility provider request.
+    /// </summary>
     public class AddEMobilityProviderResult : AEnitityResult<IEMobilityProvider, EMobilityProvider_Id>
     {
 
-        public IEMobilityProvider? EMobilityProvider
+        #region Properties
+
+        public IEMobilityProvider?  EMobilityProvider
             => Object;
 
-        public IRoamingNetwork?          RoamingNetwork    { get; internal set; }
+        public IRoamingNetwork?     RoamingNetwork    { get; internal set; }
 
+        #endregion
 
-        public AddEMobilityProviderResult(IEMobilityProvider  EMobilityProvider,
-                                                EventTracking_Id          EventTrackingId,
-                                                Boolean                   IsSuccess,
-                                                String?                   Argument           = null,
-                                                I18NString?               ErrorDescription   = null,
-                                                IRoamingNetwork?          RoamingNetwork     = null)
+        #region Constructor(s)
+
+        public AddEMobilityProviderResult(IEMobilityProvider     EMobilityProvider,
+                                          CommandResult          Result,
+                                          EventTracking_Id?      EventTrackingId   = null,
+                                          IId?                   SenderId          = null,
+                                          Object?                Sender            = null,
+                                          IRoamingNetwork?       RoamingNetwork    = null,
+                                          I18NString?            Description       = null,
+                                          IEnumerable<Warning>?  Warnings          = null,
+                                          TimeSpan?              Runtime           = null)
 
             : base(EMobilityProvider,
+                   Result,
                    EventTrackingId,
-                   IsSuccess,
-                   Argument,
-                   ErrorDescription)
+                   SenderId,
+                   Sender,
+                   Description,
+                   Warnings,
+                   Runtime)
 
         {
 
@@ -53,120 +67,236 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public AddEMobilityProviderResult(EMobilityProvider_Id  Id,
-                                                EventTracking_Id            EventTrackingId,
-                                                Boolean                     IsSuccess,
-                                                String?                     Argument           = null,
-                                                I18NString?                 ErrorDescription   = null,
-                                                IRoamingNetwork?            RoamingNetwork     = null)
-
-            : base(Id,
-                   EventTrackingId,
-                   IsSuccess,
-                   Argument,
-                   ErrorDescription)
-
-        {
-
-            this.RoamingNetwork = RoamingNetwork;
-
-        }
+        #endregion
 
 
-        public static AddEMobilityProviderResult Success(IEMobilityProvider  EMobilityProvider,
-                                                               EventTracking_Id          EventTrackingId,
-                                                               IRoamingNetwork?          RoamingNetwork   = null)
+        #region (static) AdminDown    (ChargingStation, ...)
 
-            => new (EMobilityProvider,
-                    EventTrackingId,
-                    true,
-                    null,
-                    null,
-                    RoamingNetwork);
+        public static AddEMobilityProviderResult
+
+            AdminDown(IEMobilityProvider     EMobilityProvider,
+                      EventTracking_Id?      EventTrackingId   = null,
+                      IId?                   SenderId          = null,
+                      Object?                Sender            = null,
+                      IRoamingNetwork?       RoamingNetwork    = null,
+                      I18NString?            Description       = null,
+                      IEnumerable<Warning>?  Warnings          = null,
+                      TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.AdminDown,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) NoOperation  (ChargingStation, ...)
+
+        public static AddEMobilityProviderResult
+
+            NoOperation(IEMobilityProvider     EMobilityProvider,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   SenderId          = null,
+                        Object?                Sender            = null,
+                        IRoamingNetwork?       RoamingNetwork    = null,
+                        I18NString?            Description       = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.NoOperation,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
 
 
-        public static AddEMobilityProviderResult ArgumentError(IEMobilityProvider  EMobilityProvider,
-                                                                     EventTracking_Id          EventTrackingId,
-                                                                     String                    Argument,
-                                                                     String                    Description)
+        #region (static) Enqueued     (ChargingStation, ...)
 
-            => new (EMobilityProvider,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ));
+        public static AddEMobilityProviderResult
 
-        public static AddEMobilityProviderResult ArgumentError(IEMobilityProvider  EMobilityProvider,
-                                                                     EventTracking_Id          EventTrackingId,
-                                                                     String                    Argument,
-                                                                     I18NString                Description)
+            Enqueued(IEMobilityProvider     EMobilityProvider,
+                     EventTracking_Id?      EventTrackingId   = null,
+                     IId?                   SenderId          = null,
+                     Object?                Sender            = null,
+                     IRoamingNetwork?       RoamingNetwork    = null,
+                     I18NString?            Description       = null,
+                     IEnumerable<Warning>?  Warnings          = null,
+                     TimeSpan?              Runtime           = null)
 
-            => new (EMobilityProvider,
-                    EventTrackingId,
-                    false,
-                    Argument,
-                    Description);
+                => new (EMobilityProvider,
+                        CommandResult.Enqueued,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Success      (ChargingStation, ...)
+
+        public static AddEMobilityProviderResult
+
+            Success(IEMobilityProvider     EMobilityProvider,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   SenderId          = null,
+                    Object?                Sender            = null,
+                    IRoamingNetwork?       RoamingNetwork    = null,
+                    I18NString?            Description       = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.Success,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
 
 
-        public static AddEMobilityProviderResult Failed(EMobilityProvider_Id  Id,
-                                                              EventTracking_Id            EventTrackingId,
-                                                              String                      Description,
-                                                              IRoamingNetwork?            RoamingNetwork   = null)
+        #region (static) ArgumentError(ChargingStation, Description, ...)
 
-            => new (Id,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ),
-                    RoamingNetwork);
+        public static AddEMobilityProviderResult
 
-        public static AddEMobilityProviderResult Failed(IEMobilityProvider  EMobilityProvider,
-                                                              EventTracking_Id          EventTrackingId,
-                                                              String                    Description,
-                                                              IRoamingNetwork?          RoamingNetwork   = null)
+            ArgumentError(IEMobilityProvider     EMobilityProvider,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   SenderId          = null,
+                          Object?                Sender            = null,
+                          IRoamingNetwork?       RoamingNetwork    = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
 
-            => new (EMobilityProvider,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ),
-                    RoamingNetwork);
+                => new (EMobilityProvider,
+                        CommandResult.ArgumentError,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-        public static AddEMobilityProviderResult Failed(IEMobilityProvider  EMobilityProvider,
-                                                              EventTracking_Id          EventTrackingId,
-                                                              I18NString                Description,
-                                                              IRoamingNetwork?          RoamingNetwork   = null)
+        #endregion
 
-            => new (EMobilityProvider,
-                    EventTrackingId,
-                    false,
-                    null,
-                    Description,
-                    RoamingNetwork);
+        #region (static) Error        (ChargingStation, Description, ...)
 
-        public static AddEMobilityProviderResult Failed(IEMobilityProvider  EMobilityProvider,
-                                                              EventTracking_Id          EventTrackingId,
-                                                              Exception                 Exception,
-                                                              IRoamingNetwork?          RoamingNetwork   = null)
+        public static AddEMobilityProviderResult
 
-            => new (EMobilityProvider,
-                    EventTrackingId,
-                    false,
-                    null,
-                    I18NString.Create(
-                        Languages.en,
-                        Exception.Message
-                    ),
-                    RoamingNetwork);
+            Error(IEMobilityProvider     EMobilityProvider,
+                  I18NString             Description,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   SenderId          = null,
+                  Object?                Sender            = null,
+                  IRoamingNetwork?       RoamingNetwork    = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.Error,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargingStation, Exception,   ...)
+
+        public static AddEMobilityProviderResult
+
+            Error(IEMobilityProvider     EMobilityProvider,
+                  Exception              Exception,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   SenderId          = null,
+                  Object?                Sender            = null,
+                  IRoamingNetwork?       RoamingNetwork    = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.Error,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        Exception.Message.ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Timeout      (ChargingStation, Timeout,     ...)
+
+        public static AddEMobilityProviderResult
+
+            Timeout(IEMobilityProvider     EMobilityProvider,
+                    TimeSpan               Timeout,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   SenderId          = null,
+                    Object?                Sender            = null,
+                    IRoamingNetwork?       RoamingNetwork    = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.Timeout,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        $"Timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout  (ChargingStation, Timeout,     ...)
+
+        public static AddEMobilityProviderResult
+
+            LockTimeout(IEMobilityProvider     EMobilityProvider,
+                        TimeSpan               Timeout,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   SenderId          = null,
+                        Object?                Sender            = null,
+                        IRoamingNetwork?       RoamingNetwork    = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (EMobilityProvider,
+                        CommandResult.LockTimeout,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        RoamingNetwork,
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
 
     }
 
