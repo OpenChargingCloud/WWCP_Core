@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.WWCP
                        ? new JProperty("authMethod",                    AuthMethod.                 Value.ToString())
                        : null,
 
-                   Description is not null && Description.IsNeitherNullNorEmpty()
+                   Description is not null && Description.IsNotNullOrEmpty()
                        ? new JProperty("description",                   Description.                      ToString())
                        : null
 

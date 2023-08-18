@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region (private)  PushRoamingNetworkAdminStatusResult(AuthId,                      Result, ...)
+        #region (private)  PushRoamingNetworkAdminStatusResult(SenderId,                      Result, ...)
 
         /// <summary>
         /// Create a new PushRoamingNetworkAdminStatus result.
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedRoamingNetworkAdminStatusUpdates">An enumeration of rejected roaming network status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushRoamingNetworkAdminStatusResult(IId                                            AuthId,
+        private PushRoamingNetworkAdminStatusResult(IId                                            SenderId,
                                                     PushRoamingNetworkAdminStatusResultTypes       Result,
                                                     String?                                        Description                                = null,
                                                     IEnumerable<RoamingNetworkAdminStatusUpdate>?  RejectedRoamingNetworkAdminStatusUpdates   = null,
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) PushRoamingNetworkAdminStatusResult(AuthId, ISendAdminStatus,    Result, ...)
+        #region (internal) PushRoamingNetworkAdminStatusResult(SenderId, ISendAdminStatus,    Result, ...)
 
         /// <summary>
         /// Create a new PushRoamingNetworkAdminStatus result.
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedRoamingNetworkAdminStatusUpdates">An enumeration of rejected roaming network status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushRoamingNetworkAdminStatusResult(IId                                            AuthId,
+        internal PushRoamingNetworkAdminStatusResult(IId                                            SenderId,
                                                      ISendAdminStatus                               ISendAdminStatus,
                                                      PushRoamingNetworkAdminStatusResultTypes       Result,
                                                      String?                                        Description                                = null,
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                      IEnumerable<Warning>?                          Warnings                                   = null,
                                                      TimeSpan?                                      Runtime                                    = null)
 
-            : this(AuthId,
+            : this(SenderId,
                    Result,
                    Description,
                    RejectedRoamingNetworkAdminStatusUpdates,
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) PushRoamingNetworkAdminStatusResult(AuthId, IReceiveAdminStatus, Result, ...)
+        #region (internal) PushRoamingNetworkAdminStatusResult(SenderId, IReceiveAdminStatus, Result, ...)
 
         /// <summary>
         /// Create a new PushRoamingNetworkAdminStatus result.
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedRoamingNetworkAdminStatusUpdates">An enumeration of rejected roaming network status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushRoamingNetworkAdminStatusResult(IId                                            AuthId,
+        internal PushRoamingNetworkAdminStatusResult(IId                                            SenderId,
                                                      IReceiveAdminStatus                            IReceiveAdminStatus,
                                                      PushRoamingNetworkAdminStatusResultTypes       Result,
                                                      String?                                        Description                                = null,
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                      IEnumerable<Warning>?                          Warnings                                   = null,
                                                      TimeSpan?                                      Runtime                                    = null)
 
-            : this(AuthId,
+            : this(SenderId,
                    Result,
                    Description,
                    RejectedRoamingNetworkAdminStatusUpdates,
@@ -192,13 +192,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkAdminStatusResult
 
-            Success(IId                    AuthId,
+            Success(IId                    SenderId,
                     ISendAdminStatus       ISendAdminStatus,
                     String?                Description   = null,
                     IEnumerable<Warning>?  Warnings      = null,
                     TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAdminStatus,
                     PushRoamingNetworkAdminStatusResultTypes.Success,
                     Description,
@@ -210,13 +210,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkAdminStatusResult
 
-            Success(IId                    AuthId,
+            Success(IId                    SenderId,
                     IReceiveAdminStatus    IReceiveAdminStatus,
                     String?                Description   = null,
                     IEnumerable<Warning>?  Warnings      = null,
                     TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveAdminStatus,
                     PushRoamingNetworkAdminStatusResultTypes.Success,
                     Description,
@@ -231,13 +231,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkAdminStatusResult
 
-            Enqueued(IId                    AuthId,
+            Enqueued(IId                    SenderId,
                      ISendAdminStatus       ISendAdminStatus,
                      String?                Description   = null,
                      IEnumerable<Warning>?  Warnings      = null,
                      TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAdminStatus,
                     PushRoamingNetworkAdminStatusResultTypes.Enqueued,
                     Description,
@@ -251,13 +251,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkAdminStatusResult
 
-            NoOperation(IId                    AuthId,
+            NoOperation(IId                    SenderId,
                         ISendAdminStatus       ISendAdminStatus,
                         String?                Description   = null,
                         IEnumerable<Warning>?  Warnings      = null,
                         TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAdminStatus,
                     PushRoamingNetworkAdminStatusResultTypes.NoOperation,
                     Description,
@@ -269,13 +269,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkAdminStatusResult
 
-            NoOperation(IId                    AuthId,
+            NoOperation(IId                    SenderId,
                         IReceiveAdminStatus    IReceiveAdminStatus,
                         String?                Description   = null,
                         IEnumerable<Warning>?  Warnings      = null,
                         TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveAdminStatus,
                     PushRoamingNetworkAdminStatusResultTypes.NoOperation,
                     Description,
@@ -289,14 +289,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkAdminStatusResult
 
-            OutOfService(IId                                           AuthId,
+            OutOfService(IId                                           SenderId,
                          ISendAdminStatus                              ISendAdminStatus,
                          IEnumerable<RoamingNetworkAdminStatusUpdate>  RejectedRoamingNetworkAdminStatusUpdates,
                          String?                                       Description   = null,
                          IEnumerable<Warning>?                         Warnings      = null,
                          TimeSpan?                                     Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAdminStatus,
                     PushRoamingNetworkAdminStatusResultTypes.OutOfService,
                     Description,
@@ -308,14 +308,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkAdminStatusResult
 
-            OutOfService(IId                                           AuthId,
+            OutOfService(IId                                           SenderId,
                          IReceiveAdminStatus                           IReceiveAdminStatus,
                          IEnumerable<RoamingNetworkAdminStatusUpdate>  RejectedRoamingNetworkAdminStatusUpdates,
                          String?                                       Description   = null,
                          IEnumerable<Warning>?                         Warnings      = null,
                          TimeSpan?                                     Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveAdminStatus,
                     PushRoamingNetworkAdminStatusResultTypes.OutOfService,
                     Description,
@@ -329,14 +329,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkAdminStatusResult
 
-            AdminDown(IId                                           AuthId,
+            AdminDown(IId                                           SenderId,
                       ISendAdminStatus                              ISendAdminStatus,
                       IEnumerable<RoamingNetworkAdminStatusUpdate>  RejectedRoamingNetworkAdminStatusUpdates,
                       String?                                       Description   = null,
                       IEnumerable<Warning>?                         Warnings      = null,
                       TimeSpan?                                     Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAdminStatus,
                     PushRoamingNetworkAdminStatusResultTypes.AdminDown,
                     Description,
@@ -348,14 +348,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkAdminStatusResult
 
-            AdminDown(IId                                           AuthId,
+            AdminDown(IId                                           SenderId,
                       IReceiveAdminStatus                           IReceiveAdminStatus,
                       IEnumerable<RoamingNetworkAdminStatusUpdate>  RejectedRoamingNetworkAdminStatusUpdates,
                       String?                                       Description   = null,
                       IEnumerable<Warning>?                         Warnings      = null,
                       TimeSpan?                                     Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveAdminStatus,
                     PushRoamingNetworkAdminStatusResultTypes.AdminDown,
                     Description,
@@ -370,14 +370,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkAdminStatusResult
 
-            Error(IId                                            AuthId,
+            Error(IId                                            SenderId,
                   ISendAdminStatus                               ISendAdminStatus,
                   IEnumerable<RoamingNetworkAdminStatusUpdate>?  RejectedRoamingNetworkAdminStatusUpdates   = null,
                   String?                                        Description                                = null,
                   IEnumerable<Warning>?                          Warnings                                   = null,
                   TimeSpan?                                      Runtime                                    = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAdminStatus,
                     PushRoamingNetworkAdminStatusResultTypes.Error,
                     Description,
@@ -388,14 +388,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkAdminStatusResult
 
-            Error(IId                                            AuthId,
+            Error(IId                                            SenderId,
                   IReceiveAdminStatus                            IReceiveAdminStatus,
                   IEnumerable<RoamingNetworkAdminStatusUpdate>?  RejectedRoamingNetworkAdminStatusUpdates   = null,
                   String?                                        Description                                = null,
                   IEnumerable<Warning>?                          Warnings                                   = null,
                   TimeSpan?                                      Runtime                                    = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveAdminStatus,
                     PushRoamingNetworkAdminStatusResultTypes.Error,
                     Description,
@@ -409,14 +409,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkAdminStatusResult
 
-            LockTimeout(IId                                           AuthId,
+            LockTimeout(IId                                           SenderId,
                         ISendAdminStatus                              ISendAdminStatus,
                         IEnumerable<RoamingNetworkAdminStatusUpdate>  RejectedRoamingNetworkAdminStatusUpdates,
                         String?                                       Description   = null,
                         IEnumerable<Warning>?                         Warnings      = null,
                         TimeSpan?                                     Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAdminStatus,
                     PushRoamingNetworkAdminStatusResultTypes.LockTimeout,
                     Description,
@@ -428,9 +428,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        #region Flatten(AuthId, ISendAdminStatus, PushRoamingNetworkAdminStatusResults, Runtime)
+        #region Flatten(SenderId, ISendAdminStatus, PushRoamingNetworkAdminStatusResults, Runtime)
 
-        public static PushRoamingNetworkAdminStatusResult Flatten(IId                                               AuthId,
+        public static PushRoamingNetworkAdminStatusResult Flatten(IId                                               SenderId,
                                                                   ISendAdminStatus                                  ISendAdminStatus,
                                                                   IEnumerable<PushRoamingNetworkAdminStatusResult>  PushRoamingNetworkAdminStatusResults,
                                                                   TimeSpan                                          Runtime)
@@ -439,7 +439,7 @@ namespace cloud.charging.open.protocols.WWCP
             #region Initial checks
 
             if (PushRoamingNetworkAdminStatusResults is null || !PushRoamingNetworkAdminStatusResults.Any())
-                return new PushRoamingNetworkAdminStatusResult(AuthId,
+                return new PushRoamingNetworkAdminStatusResult(SenderId,
                                                                ISendAdminStatus,
                                                                PushRoamingNetworkAdminStatusResultTypes.Error,
                                                                "!",
@@ -468,7 +468,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             foreach (var result in resultOverview)
                 if (resultOverview[result.Key].Count == all.Length)
-                    return new PushRoamingNetworkAdminStatusResult(all[0].AuthId,
+                    return new PushRoamingNetworkAdminStatusResult(all[0].SenderId,
                                                                    ISendAdminStatus,
                                                                    result.Key,
                                                                    descriptions,
@@ -476,7 +476,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                    warnings,
                                                                    Runtime);
 
-            return new PushRoamingNetworkAdminStatusResult(all[0].AuthId,
+            return new PushRoamingNetworkAdminStatusResult(all[0].SenderId,
                                                            ISendAdminStatus,
                                                            PushRoamingNetworkAdminStatusResultTypes.Partial,
                                                            descriptions,

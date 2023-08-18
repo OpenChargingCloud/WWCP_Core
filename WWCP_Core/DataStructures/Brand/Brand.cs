@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  new JProperty("id",             Id.         ToString()),
                                  new JProperty("name",           Name.       ToJSON()),
 
-                           Description.IsNeitherNullNorEmpty()
+                           Description.IsNotNullOrEmpty()
                                ? new JProperty("description",    Description.ToJSON())
                                : null,
 

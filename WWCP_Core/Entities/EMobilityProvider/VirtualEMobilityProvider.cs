@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return authStartResult;
             }
 
-            return AuthStartResult.NotAuthorized(AuthorizatorId:            AuthId,
+            return AuthStartResult.NotAuthorized(AuthorizatorId:            SenderId,
                                                  ISendAuthorizeStartStop:   null,
                                                  SessionId:                 null,
 
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            return AuthStopResult.NotAuthorized(AuthorizatorId:            AuthId,
+            return AuthStopResult.NotAuthorized(AuthorizatorId:            SenderId,
                                                 ISendAuthorizeStartStop:   null,
                                                 SessionId:                 null,
 
@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             return SendCDRsResult.Success(
                        org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                       AuthId,
+                       SenderId,
                        this,
                        ChargeDetailRecords,
                        I18NString.Create(Languages.en, "All fine. Thank you!"),
@@ -548,10 +548,10 @@ namespace cloud.charging.open.protocols.WWCP
             if (RoamingNetwork is not null)
             {
 
-                var chargingSessionId = SessionId ?? ChargingSession_Id.NewRandom;
+                var chargingSessionId = SessionId ?? ChargingSession_Id.NewRandom(Id);
 
                 while (ChargingSessions.ContainsKey(chargingSessionId))
-                    chargingSessionId = ChargingSession_Id.NewRandom;
+                    chargingSessionId = ChargingSession_Id.NewRandom(Id);
 
                 ChargingSessions.Add(chargingSessionId,
                                      new ChargingSession(

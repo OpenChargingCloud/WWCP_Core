@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region (private)  PushChargingStationAdminStatusResult(AuthId,                      Result, ...)
+        #region (private)  PushChargingStationAdminStatusResult(SenderId,                      Result, ...)
 
         /// <summary>
         /// Create a new PushChargingStationAdminStatus result.
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedChargingStationAdminStatusUpdates">An enumeration of rejected charging station admin status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushChargingStationAdminStatusResult(IId                                             AuthId,
+        private PushChargingStationAdminStatusResult(IId                                             SenderId,
                                                      PushChargingStationAdminStatusResultTypes       Result,
                                                      String?                                         Description                                 = null,
                                                      IEnumerable<ChargingStationAdminStatusUpdate>?  RejectedChargingStationAdminStatusUpdates   = null,
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) PushChargingStationAdminStatusResult(AuthId, ISendAdminStatus,    Result, ...)
+        #region (internal) PushChargingStationAdminStatusResult(SenderId, ISendAdminStatus,    Result, ...)
 
         /// <summary>
         /// Create a new PushChargingStationAdminStatus result.
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedChargingStationAdminStatusUpdates">An enumeration of rejected charging station admin status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushChargingStationAdminStatusResult(IId                                             AuthId,
+        internal PushChargingStationAdminStatusResult(IId                                             SenderId,
                                                       ISendAdminStatus                                ISendAdminStatus,
                                                       PushChargingStationAdminStatusResultTypes       Result,
                                                       String?                                         Description                                 = null,
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                       IEnumerable<Warning>?                           Warnings                                    = null,
                                                       TimeSpan?                                       Runtime                                     = null)
 
-            : this(AuthId,
+            : this(SenderId,
                    Result,
                    Description,
                    RejectedChargingStationAdminStatusUpdates,
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) PushChargingStationAdminStatusResult(AuthId, IReceiveAdminStatus, Result, ...)
+        #region (internal) PushChargingStationAdminStatusResult(SenderId, IReceiveAdminStatus, Result, ...)
 
         /// <summary>
         /// Create a new PushChargingStationAdminStatus result.
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedChargingStationAdminStatusUpdates">An enumeration of rejected charging station admin status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushChargingStationAdminStatusResult(IId                                             AuthId,
+        internal PushChargingStationAdminStatusResult(IId                                             SenderId,
                                                       IReceiveAdminStatus                             IReceiveAdminStatus,
                                                       PushChargingStationAdminStatusResultTypes       Result,
                                                       String?                                         Description                                 = null,
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                       IEnumerable<Warning>?                           Warnings                                    = null,
                                                       TimeSpan?                                       Runtime                                     = null)
 
-            : this(AuthId,
+            : this(SenderId,
                    Result,
                    Description,
                    RejectedChargingStationAdminStatusUpdates,
@@ -192,13 +192,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationAdminStatusResult
 
-            Success(IId                    AuthId,
+            Success(IId                    SenderId,
                     ISendAdminStatus       ISendAdminStatus,
                     String?                Description   = null,
                     IEnumerable<Warning>?  Warnings      = null,
                     TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAdminStatus,
                     PushChargingStationAdminStatusResultTypes.Success,
                     Description,
@@ -210,13 +210,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationAdminStatusResult
 
-            Success(IId                    AuthId,
+            Success(IId                    SenderId,
                     IReceiveAdminStatus    IReceiveAdminStatus,
                     String?                Description   = null,
                     IEnumerable<Warning>?  Warnings      = null,
                     TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveAdminStatus,
                     PushChargingStationAdminStatusResultTypes.Success,
                     Description,
@@ -231,13 +231,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationAdminStatusResult
 
-            Enqueued(IId                    AuthId,
+            Enqueued(IId                    SenderId,
                      ISendAdminStatus       ISendAdminStatus,
                      String?                Description   = null,
                      IEnumerable<Warning>?  Warnings      = null,
                      TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAdminStatus,
                     PushChargingStationAdminStatusResultTypes.Enqueued,
                     Description,
@@ -251,13 +251,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationAdminStatusResult
 
-            NoOperation(IId                    AuthId,
+            NoOperation(IId                    SenderId,
                         ISendAdminStatus       ISendAdminStatus,
                         String?                Description   = null,
                         IEnumerable<Warning>?  Warnings      = null,
                         TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAdminStatus,
                     PushChargingStationAdminStatusResultTypes.NoOperation,
                     Description,
@@ -269,13 +269,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationAdminStatusResult
 
-            NoOperation(IId                    AuthId,
+            NoOperation(IId                    SenderId,
                         IReceiveAdminStatus    IReceiveAdminStatus,
                         String?                Description   = null,
                         IEnumerable<Warning>?  Warnings      = null,
                         TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveAdminStatus,
                     PushChargingStationAdminStatusResultTypes.NoOperation,
                     Description,
@@ -289,14 +289,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationAdminStatusResult
 
-            OutOfService(IId                                                    AuthId,
+            OutOfService(IId                                                    SenderId,
                          ISendAdminStatus                                       ISendAdminStatus,
                          IEnumerable<ChargingStationAdminStatusUpdate>  RejectedChargingStationAdminStatusUpdates,
                          String?                                                Description   = null,
                          IEnumerable<Warning>?                                  Warnings      = null,
                          TimeSpan?                                              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAdminStatus,
                     PushChargingStationAdminStatusResultTypes.OutOfService,
                     Description,
@@ -308,14 +308,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationAdminStatusResult
 
-            OutOfService(IId                                                    AuthId,
+            OutOfService(IId                                                    SenderId,
                          IReceiveAdminStatus                                    IReceiveAdminStatus,
                          IEnumerable<ChargingStationAdminStatusUpdate>  RejectedChargingStationAdminStatusUpdates,
                          String?                                                Description   = null,
                          IEnumerable<Warning>?                                  Warnings      = null,
                          TimeSpan?                                              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveAdminStatus,
                     PushChargingStationAdminStatusResultTypes.OutOfService,
                     Description,
@@ -329,14 +329,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationAdminStatusResult
 
-            AdminDown(IId                                                    AuthId,
+            AdminDown(IId                                                    SenderId,
                       ISendAdminStatus                                       ISendAdminStatus,
                       IEnumerable<ChargingStationAdminStatusUpdate>  RejectedChargingStationAdminStatusUpdates,
                       String?                                                Description   = null,
                       IEnumerable<Warning>?                                  Warnings      = null,
                       TimeSpan?                                              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAdminStatus,
                     PushChargingStationAdminStatusResultTypes.AdminDown,
                     Description,
@@ -348,14 +348,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationAdminStatusResult
 
-            AdminDown(IId                                                    AuthId,
+            AdminDown(IId                                                    SenderId,
                       IReceiveAdminStatus                                    IReceiveAdminStatus,
                       IEnumerable<ChargingStationAdminStatusUpdate>  RejectedChargingStationAdminStatusUpdates,
                       String?                                                Description   = null,
                       IEnumerable<Warning>?                                  Warnings      = null,
                       TimeSpan?                                              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveAdminStatus,
                     PushChargingStationAdminStatusResultTypes.AdminDown,
                     Description,
@@ -370,14 +370,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationAdminStatusResult
 
-            Error(IId                                             AuthId,
+            Error(IId                                             SenderId,
                   ISendAdminStatus                                ISendAdminStatus,
                   IEnumerable<ChargingStationAdminStatusUpdate>?  RejectedChargingStationAdminStatusUpdates   = null,
                   String?                                         Description                                 = null,
                   IEnumerable<Warning>?                           Warnings                                    = null,
                   TimeSpan?                                       Runtime                                     = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAdminStatus,
                     PushChargingStationAdminStatusResultTypes.Error,
                     Description,
@@ -388,14 +388,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationAdminStatusResult
 
-            Error(IId                                             AuthId,
+            Error(IId                                             SenderId,
                   IReceiveAdminStatus                             IReceiveAdminStatus,
                   IEnumerable<ChargingStationAdminStatusUpdate>?  RejectedChargingStationAdminStatusUpdates   = null,
                   String?                                         Description                                 = null,
                   IEnumerable<Warning>?                           Warnings                                    = null,
                   TimeSpan?                                       Runtime                                     = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveAdminStatus,
                     PushChargingStationAdminStatusResultTypes.Error,
                     Description,
@@ -409,14 +409,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationAdminStatusResult
 
-            LockTimeout(IId                                            AuthId,
+            LockTimeout(IId                                            SenderId,
                         ISendAdminStatus                               ISendAdminStatus,
                         IEnumerable<ChargingStationAdminStatusUpdate>  RejectedChargingStationAdminStatusUpdates,
                         String?                                        Description   = null,
                         IEnumerable<Warning>?                          Warnings      = null,
                         TimeSpan?                                      Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAdminStatus,
                     PushChargingStationAdminStatusResultTypes.LockTimeout,
                     Description,
@@ -428,9 +428,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        #region Flatten(AuthId, ISendAdminStatus, PushChargingStationAdminStatusResults, Runtime)
+        #region Flatten(SenderId, ISendAdminStatus, PushChargingStationAdminStatusResults, Runtime)
 
-        public static PushChargingStationAdminStatusResult Flatten(IId                                                AuthId,
+        public static PushChargingStationAdminStatusResult Flatten(IId                                                SenderId,
                                                                    ISendAdminStatus                                   ISendAdminStatus,
                                                                    IEnumerable<PushChargingStationAdminStatusResult>  PushChargingStationAdminStatusResults,
                                                                    TimeSpan                                           Runtime)
@@ -439,7 +439,7 @@ namespace cloud.charging.open.protocols.WWCP
             #region Initial checks
 
             if (PushChargingStationAdminStatusResults is null || !PushChargingStationAdminStatusResults.Any())
-                return new PushChargingStationAdminStatusResult(AuthId,
+                return new PushChargingStationAdminStatusResult(SenderId,
                                                                 ISendAdminStatus,
                                                                 PushChargingStationAdminStatusResultTypes.Error,
                                                                 "!",
@@ -468,7 +468,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             foreach (var result in resultOverview)
                 if (resultOverview[result.Key].Count == all.Length)
-                    return new PushChargingStationAdminStatusResult(all[0].AuthId,
+                    return new PushChargingStationAdminStatusResult(all[0].SenderId,
                                                                     ISendAdminStatus,
                                                                     result.Key,
                                                                     descriptions,
@@ -476,7 +476,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                     warnings,
                                                                     Runtime);
 
-            return new PushChargingStationAdminStatusResult(all[0].AuthId,
+            return new PushChargingStationAdminStatusResult(all[0].SenderId,
                                                             ISendAdminStatus,
                                                             PushChargingStationAdminStatusResultTypes.Partial,
                                                             descriptions,

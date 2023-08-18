@@ -121,11 +121,11 @@ namespace cloud.charging.open.protocols.WWCP
                              ? null
                              : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/EVSEGroup"),
 
-                         EVSEGroup.Name.       IsNeitherNullNorEmpty()
+                         EVSEGroup.Name.       IsNotNullOrEmpty()
                              ? new JProperty("name",        EVSEGroup.Name.ToJSON())
                              : null,
 
-                         EVSEGroup.Description.IsNeitherNullNorEmpty()
+                         EVSEGroup.Description.IsNotNullOrEmpty()
                              ? new JProperty("description", EVSEGroup.Description.ToJSON())
                              : null,
 

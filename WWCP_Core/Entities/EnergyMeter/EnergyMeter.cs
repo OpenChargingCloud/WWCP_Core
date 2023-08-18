@@ -538,11 +538,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                                                                                       CustomTransparencySoftwareSerializer))))
                                : null,
 
-                           Description is not null && Description.IsNeitherNullNorEmpty()
+                           Description is not null && Description.IsNotNullOrEmpty()
                                ? new JProperty("description",                 Description.ToJSON())
                                : null,
 
-                                 new JProperty("lastChange",                  LastChange. ToIso8601())
+                                 new JProperty("lastChange",                  LastChangeDate. ToIso8601())
 
                        );
 
@@ -562,8 +562,8 @@ namespace cloud.charging.open.protocols.WWCP
         public EnergyMeter Clone()
 
             => new (Id.Clone,
-                    Name.       IsNeitherNullNorEmpty() ? Name.       Clone : I18NString.Empty,
-                    Description.IsNeitherNullNorEmpty() ? Description.Clone : I18NString.Empty,
+                    Name.       IsNotNullOrEmpty() ? Name.       Clone : I18NString.Empty,
+                    Description.IsNotNullOrEmpty() ? Description.Clone : I18NString.Empty,
                     Model           is not null ? new String(Model.ToCharArray()) : null,
                     ModelURL.HasValue           ? ModelURL.Value.Clone : null,
                     HardwareVersion is not null ? new String(HardwareVersion.ToCharArray()) : null,
@@ -582,7 +582,7 @@ namespace cloud.charging.open.protocols.WWCP
                     DataSource is not null
                         ? new String(DataSource.ToCharArray())
                         : null,
-                    LastChange,
+                    LastChangeDate,
 
                     JObject.Parse(CustomData.ToString()),
                     InternalData);
@@ -738,7 +738,7 @@ namespace cloud.charging.open.protocols.WWCP
             var c = Id.CompareTo(EnergyMeter.Id);
 
             if (c == 0)
-                c = LastChange.ToIso8601().CompareTo(EnergyMeter.LastChange.ToIso8601());
+                c = LastChangeDate.ToIso8601().CompareTo(EnergyMeter.LastChangeDate.ToIso8601());
 
             if (c == 0)
                 c = Model is not null && EnergyMeter.Model is not null
@@ -823,7 +823,7 @@ namespace cloud.charging.open.protocols.WWCP
             => EnergyMeter is not null &&
 
                Id.                    Equals(EnergyMeter.Id) &&
-               LastChange.ToIso8601().Equals(EnergyMeter.LastChange.ToIso8601()) &&
+               LastChangeDate.ToIso8601().Equals(EnergyMeter.LastChangeDate.ToIso8601()) &&
 
              ((Model is null && EnergyMeter.Model is null) ||
               (Model is not null && EnergyMeter.Model is not null && Model.Equals(EnergyMeter.Model))) &&
@@ -880,7 +880,7 @@ namespace cloud.charging.open.protocols.WWCP
                       (PublicKeyCertificateChain?.GetHashCode()  ?? 0) * 7 ^
                       (TransparencySoftwares?.    CalcHashCode() ?? 0) * 5 ^
                       (Description?.              GetHashCode()  ?? 0) * 3 ^
-                       LastChange.                GetHashCode();
+                       LastChangeDate.                GetHashCode();
 
             }
         }
@@ -934,11 +934,11 @@ namespace cloud.charging.open.protocols.WWCP
                        ? $"{TransparencySoftwares.Count()} transparency software(s)"
                        : String.Empty,
 
-                   Description is not null && Description.IsNeitherNullNorEmpty()
+                   Description is not null && Description.IsNotNullOrEmpty()
                        ? $"Description: {Description}"
                        : String.Empty,
 
-                   $"Last change: {LastChange.ToIso8601()}"
+                   $"Last change: {LastChangeDate.ToIso8601()}"
 
             }.Where(_ => _.IsNotNullOrEmpty()).
               AggregateWith(", ");

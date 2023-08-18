@@ -2072,7 +2072,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             {
 
                                  newReservation = new ChargingReservation(
-                                                      Id:                      ReservationId ?? ChargingReservation_Id.Random(OperatorId),
+                                                      Id:                      ReservationId ?? ChargingReservation_Id.NewRandom(OperatorId),
                                                       Timestamp:               Timestamp.Value,
                                                       StartTime:               ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                       Duration:                Duration  ?? MaxReservationDuration,
@@ -2733,7 +2733,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     {
 
                         chargingSession = new ChargingSession(
-                                              SessionId ?? ChargingSession_Id.NewRandom,
+                                              SessionId ?? ChargingSession_Id.NewRandom(OperatorId),
                                               EventTrackingId) {
                                               ReservationId        = ReservationId,
                                               Reservation          = chargingReservations.Values.FirstOrDefault(reservation => reservation.Id == ReservationId)?.LastOrDefault(),
@@ -2787,7 +2787,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                             // Will also set the status -> EVSEStatusType.Charging;
                             chargingSession = new ChargingSession(
-                                                  SessionId ?? ChargingSession_Id.NewRandom,
+                                                  SessionId ?? ChargingSession_Id.NewRandom(OperatorId),
                                                   EventTrackingId) {
                                 ReservationId        = ReservationId,
                                 Reservation          = firstReservation.LastOrDefault(),
@@ -3203,7 +3203,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                    ? new JProperty("@context", JSONLDContext)
                                    : null,
 
-                               Description.IsNeitherNullNorEmpty()
+                               Description.IsNotNullOrEmpty()
                                    ? new JProperty("description", Description.ToJSON())
                                    : null,
 

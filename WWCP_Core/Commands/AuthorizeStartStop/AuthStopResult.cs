@@ -1243,11 +1243,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                                  new JProperty("authorizatorId",              AuthorizatorId.ToString()),
 
-                           Description.IsNeitherNullNorEmpty()
+                           Description.IsNotNullOrEmpty()
                                ? new JProperty("description",                 Description.   ToJSON())
                                : null,
 
-                           AdditionalInfo is not null && AdditionalInfo.IsNeitherNullNorEmpty()
+                           AdditionalInfo is not null && AdditionalInfo.IsNotNullOrEmpty()
                                ? new JProperty("additionalInfo",              AdditionalInfo.ToJSON())
                                : null,
 

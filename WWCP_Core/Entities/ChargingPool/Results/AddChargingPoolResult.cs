@@ -43,10 +43,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region Constructor(s)
 
         public AddChargingPoolResult(IChargingPool              ChargingPool,
-                                     CommandResult        Result,
+                                     CommandResult              Result,
                                      EventTracking_Id?          EventTrackingId           = null,
-                                     IId?                       AuthId                    = null,
-                                     Object?                    SendPOIData               = null,
+                                     IId?                       SenderId                  = null,
+                                     Object?                    Sender                    = null,
                                      IChargingStationOperator?  ChargingStationOperator   = null,
                                      I18NString?                Description               = null,
                                      IEnumerable<Warning>?      Warnings                  = null,
@@ -55,8 +55,8 @@ namespace cloud.charging.open.protocols.WWCP
             : base(ChargingPool,
                    Result,
                    EventTrackingId,
-                   AuthId,
-                   SendPOIData,
+                   SenderId,
+                   Sender,
                    Description,
                    Warnings,
                    Runtime)
@@ -76,8 +76,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             AdminDown(IChargingPool              ChargingPool,
                       EventTracking_Id?          EventTrackingId           = null,
-                      IId?                       AuthId                    = null,
-                      Object?                    SendPOIData               = null,
+                      IId?                       SenderId                  = null,
+                      Object?                    Sender                    = null,
                       IChargingStationOperator?  ChargingStationOperator   = null,
                       I18NString?                Description               = null,
                       IEnumerable<Warning>?      Warnings                  = null,
@@ -86,8 +86,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (ChargingPool,
                         CommandResult.AdminDown,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         ChargingStationOperator,
                         Description,
                         Warnings,
@@ -101,8 +101,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             NoOperation(IChargingPool              ChargingPool,
                         EventTracking_Id?          EventTrackingId           = null,
-                        IId?                       AuthId                    = null,
-                        Object?                    SendPOIData               = null,
+                        IId?                       SenderId                  = null,
+                        Object?                    Sender                    = null,
                         IChargingStationOperator?  ChargingStationOperator   = null,
                         I18NString?                Description               = null,
                         IEnumerable<Warning>?      Warnings                  = null,
@@ -111,8 +111,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (ChargingPool,
                         CommandResult.NoOperation,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         ChargingStationOperator,
                         Description,
                         Warnings,
@@ -127,8 +127,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             Enqueued(IChargingPool              ChargingPool,
                      EventTracking_Id?          EventTrackingId           = null,
-                     IId?                       AuthId                    = null,
-                     Object?                    SendPOIData               = null,
+                     IId?                       SenderId                  = null,
+                     Object?                    Sender                    = null,
                      IChargingStationOperator?  ChargingStationOperator   = null,
                      I18NString?                Description               = null,
                      IEnumerable<Warning>?      Warnings                  = null,
@@ -137,8 +137,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (ChargingPool,
                         CommandResult.Enqueued,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         ChargingStationOperator,
                         Description,
                         Warnings,
@@ -152,8 +152,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             Success(IChargingPool              ChargingPool,
                     EventTracking_Id?          EventTrackingId           = null,
-                    IId?                       AuthId                    = null,
-                    Object?                    SendPOIData               = null,
+                    IId?                       SenderId                  = null,
+                    Object?                    Sender                    = null,
                     IChargingStationOperator?  ChargingStationOperator   = null,
                     I18NString?                Description               = null,
                     IEnumerable<Warning>?      Warnings                  = null,
@@ -162,8 +162,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (ChargingPool,
                         CommandResult.Success,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         ChargingStationOperator,
                         Description,
                         Warnings,
@@ -179,8 +179,8 @@ namespace cloud.charging.open.protocols.WWCP
             ArgumentError(IChargingPool              ChargingPool,
                           I18NString                 Description,
                           EventTracking_Id?          EventTrackingId           = null,
-                          IId?                       AuthId                    = null,
-                          Object?                    SendPOIData               = null,
+                          IId?                       SenderId                  = null,
+                          Object?                    Sender                    = null,
                           IChargingStationOperator?  ChargingStationOperator   = null,
                           IEnumerable<Warning>?      Warnings                  = null,
                           TimeSpan?                  Runtime                   = null)
@@ -188,8 +188,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (ChargingPool,
                         CommandResult.ArgumentError,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         ChargingStationOperator,
                         Description,
                         Warnings,
@@ -204,8 +204,8 @@ namespace cloud.charging.open.protocols.WWCP
             Error(IChargingPool              ChargingPool,
                   I18NString                 Description,
                   EventTracking_Id?          EventTrackingId           = null,
-                  IId?                       AuthId                    = null,
-                  Object?                    SendPOIData               = null,
+                  IId?                       SenderId                  = null,
+                  Object?                    Sender                    = null,
                   IChargingStationOperator?  ChargingStationOperator   = null,
                   IEnumerable<Warning>?      Warnings                  = null,
                   TimeSpan?                  Runtime                   = null)
@@ -213,8 +213,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (ChargingPool,
                         CommandResult.Error,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         ChargingStationOperator,
                         Description,
                         Warnings,
@@ -229,8 +229,8 @@ namespace cloud.charging.open.protocols.WWCP
             Error(IChargingPool              ChargingPool,
                   Exception                  Exception,
                   EventTracking_Id?          EventTrackingId   = null,
-                  IId?                       AuthId                    = null,
-                  Object?                    SendPOIData               = null,
+                  IId?                       SenderId                  = null,
+                  Object?                    Sender                    = null,
                   IChargingStationOperator?  ChargingStationOperator   = null,
                   IEnumerable<Warning>?      Warnings                  = null,
                   TimeSpan?                  Runtime                   = null)
@@ -238,8 +238,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (ChargingPool,
                         CommandResult.Error,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         ChargingStationOperator,
                         Exception.Message.ToI18NString(),
                         Warnings,
@@ -247,15 +247,40 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) LockTimeout  (Timeout, ...)
+        #region (static) Timeout      (ChargingPool, Timeout,     ...)
+
+        public static AddChargingPoolResult
+
+            Timeout(IChargingPool              ChargingPool,
+                    TimeSpan                   Timeout,
+                    EventTracking_Id?          EventTrackingId           = null,
+                    IId?                       SenderId                  = null,
+                    Object?                    Sender                    = null,
+                    IChargingStationOperator?  ChargingStationOperator   = null,
+                    IEnumerable<Warning>?      Warnings                  = null,
+                    TimeSpan?                  Runtime                   = null)
+
+                => new (ChargingPool,
+                        CommandResult.Timeout,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        ChargingStationOperator,
+                        $"Timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout  (ChargingPool, Timeout,     ...)
 
         public static AddChargingPoolResult
 
             LockTimeout(IChargingPool              ChargingPool,
                         TimeSpan                   Timeout,
                         EventTracking_Id?          EventTrackingId           = null,
-                        IId?                       AuthId                    = null,
-                        Object?                    SendPOIData               = null,
+                        IId?                       SenderId                  = null,
+                        Object?                    Sender                    = null,
                         IChargingStationOperator?  ChargingStationOperator   = null,
                         IEnumerable<Warning>?      Warnings                  = null,
                         TimeSpan?                  Runtime                   = null)
@@ -263,8 +288,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (ChargingPool,
                         CommandResult.LockTimeout,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         ChargingStationOperator,
                         $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,

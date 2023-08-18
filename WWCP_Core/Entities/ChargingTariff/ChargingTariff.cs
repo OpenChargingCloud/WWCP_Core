@@ -169,11 +169,11 @@ namespace cloud.charging.open.protocols.WWCP
                              ? null
                              : new JProperty("@context",        "https://open.charging.cloud/contexts/wwcp+json/ChargingTariff"),
 
-                         Name.IsNeitherNullNorEmpty()
+                         Name.IsNotNullOrEmpty()
                              ? new JProperty("name",            Name.ToJSON())
                              : null,
 
-                         Description.IsNeitherNullNorEmpty()
+                         Description.IsNotNullOrEmpty()
                              ? new JProperty("description",     Description.ToJSON())
                              : null,
 
@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   EnergyMix,
 
                                   DataSource,
-                                  LastChange,
+                                  LastChangeDate,
 
                                   CustomData,
                                   InternalData);

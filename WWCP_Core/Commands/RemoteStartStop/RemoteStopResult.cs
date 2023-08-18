@@ -446,7 +446,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                  new JProperty("result",               Result.             ToString()),
 
-                           Description.IsNeitherNullNorEmpty()
+                           Description.IsNotNullOrEmpty()
                                ? new JProperty("description",          Description.        ToJSON())
                                : null,
 
@@ -501,7 +501,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override String ToString()
 
             => Result.ToString() +
-               (Description.IsNeitherNullNorEmpty() ? ": " + Description.FirstText() : "");
+               (Description.IsNotNullOrEmpty() ? ": " + Description.FirstText() : "");
 
         #endregion
 

@@ -945,7 +945,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                  new JProperty("result",               Result.   ToString()),
 
-                           Description.IsNeitherNullNorEmpty()
+                           Description.IsNotNullOrEmpty()
                                ? new JProperty("description",          Description)
                                : null,
 

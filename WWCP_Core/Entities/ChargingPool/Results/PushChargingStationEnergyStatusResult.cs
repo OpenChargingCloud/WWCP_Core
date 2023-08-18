@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region (private)  PushChargingPoolEnergyStatusResult(AuthId,                       Result, ...)
+        #region (private)  PushChargingPoolEnergyStatusResult(SenderId,                       Result, ...)
 
         /// <summary>
         /// Create a new PushChargingPoolEnergyStatus result.
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedChargingPoolEnergyStatusUpdates">An enumeration of rejected ChargingPool status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushChargingPoolEnergyStatusResult(IId                                              AuthId,
+        private PushChargingPoolEnergyStatusResult(IId                                              SenderId,
                                                       PushChargingPoolEnergyStatusResultTypes       Result,
                                                       String?                                          Description                                  = null,
                                                       IEnumerable<ChargingPoolEnergyStatusUpdate>?  RejectedChargingPoolEnergyStatusUpdates   = null,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) PushChargingPoolEnergyStatusResult(AuthId, ISendEnergyStatus,    Result, ...)
+        #region (internal) PushChargingPoolEnergyStatusResult(SenderId, ISendEnergyStatus,    Result, ...)
 
         /// <summary>
         /// Create a new PushChargingPoolEnergyStatus result.
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedChargingPoolEnergyStatusUpdates">An enumeration of rejected ChargingPool status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushChargingPoolEnergyStatusResult(IId                                              AuthId,
+        internal PushChargingPoolEnergyStatusResult(IId                                              SenderId,
                                                        ISendEnergyStatus                                ISendEnergyStatus,
                                                        PushChargingPoolEnergyStatusResultTypes       Result,
                                                        String?                                          Description                                  = null,
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                        IEnumerable<Warning>?                            Warnings                                     = null,
                                                        TimeSpan?                                        Runtime                                      = null)
 
-            : this(AuthId,
+            : this(SenderId,
                    Result,
                    Description,
                    RejectedChargingPoolEnergyStatusUpdates,
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) PushChargingPoolEnergyStatusResult(AuthId, IReceiveEnergyStatus, Result, ...)
+        #region (internal) PushChargingPoolEnergyStatusResult(SenderId, IReceiveEnergyStatus, Result, ...)
 
         /// <summary>
         /// Create a new PushChargingPoolEnergyStatus result.
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedChargingPoolEnergyStatusUpdates">An enumeration of rejected ChargingPool status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushChargingPoolEnergyStatusResult(IId                                              AuthId,
+        internal PushChargingPoolEnergyStatusResult(IId                                              SenderId,
                                                        IReceiveEnergyStatus                             IReceiveEnergyStatus,
                                                        PushChargingPoolEnergyStatusResultTypes       Result,
                                                        String?                                          Description                                  = null,
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                        IEnumerable<Warning>?                            Warnings                                     = null,
                                                        TimeSpan?                                        Runtime                                      = null)
 
-            : this(AuthId,
+            : this(SenderId,
                    Result,
                    Description,
                    RejectedChargingPoolEnergyStatusUpdates,
@@ -184,13 +184,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingPoolEnergyStatusResult
 
-            Success(IId                    AuthId,
+            Success(IId                    SenderId,
                     ISendEnergyStatus      ISendEnergyStatus,
                     String?                Description    = null,
                     IEnumerable<Warning>?  Warnings       = null,
                     TimeSpan?              Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendEnergyStatus,
                     PushChargingPoolEnergyStatusResultTypes.Success,
                     Description,
@@ -201,13 +201,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingPoolEnergyStatusResult
 
-            Success(IId                    AuthId,
+            Success(IId                    SenderId,
                     IReceiveEnergyStatus   IReceiveEnergyStatus,
                     String?                Description    = null,
                     IEnumerable<Warning>?  Warnings       = null,
                     TimeSpan?              Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveEnergyStatus,
                     PushChargingPoolEnergyStatusResultTypes.Success,
                     Description,
@@ -222,13 +222,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingPoolEnergyStatusResult
 
-            Enqueued(IId                    AuthId,
+            Enqueued(IId                    SenderId,
                      ISendEnergyStatus            ISendEnergyStatus,
                      String?                Description    = null,
                      IEnumerable<Warning>?  Warnings       = null,
                      TimeSpan?              Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendEnergyStatus,
                     PushChargingPoolEnergyStatusResultTypes.Enqueued,
                     Description,
@@ -242,14 +242,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingPoolEnergyStatusResult
 
-            NoOperation(IId                             AuthId,
+            NoOperation(IId                             SenderId,
                         ISendEnergyStatus                     ISendEnergyStatus,
                         String?                         Description                 = null,
                         IEnumerable<ChargingPoolEnergyStatusUpdate>?  RejectedChargingPoolEnergyStatusUpdates   = null,
                         IEnumerable<Warning>?           Warnings                    = null,
                         TimeSpan?                       Runtime                     = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendEnergyStatus,
                     PushChargingPoolEnergyStatusResultTypes.NoOperation,
                     Description,
@@ -260,13 +260,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingPoolEnergyStatusResult
 
-            NoOperation(IId                    AuthId,
+            NoOperation(IId                    SenderId,
                         IReceiveEnergyStatus         IReceiveEnergyStatus,
                         String?                Description    = null,
                         IEnumerable<Warning>?  Warnings       = null,
                         TimeSpan?              Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveEnergyStatus,
                     PushChargingPoolEnergyStatusResultTypes.NoOperation,
                     Description,
@@ -280,14 +280,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingPoolEnergyStatusResult
 
-            OutOfService(IId                            AuthId,
+            OutOfService(IId                            SenderId,
                          ISendEnergyStatus                    ISendEnergyStatus,
                          IEnumerable<ChargingPoolEnergyStatusUpdate>  RejectedChargingPoolEnergyStatusUpdates,
                          String?                        Description    = null,
                          IEnumerable<Warning>?          Warnings       = null,
                          TimeSpan?                      Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendEnergyStatus,
                     PushChargingPoolEnergyStatusResultTypes.OutOfService,
                     Description,
@@ -298,14 +298,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingPoolEnergyStatusResult
 
-            OutOfService(IId                            AuthId,
+            OutOfService(IId                            SenderId,
                          IReceiveEnergyStatus                 IReceiveEnergyStatus,
                          IEnumerable<ChargingPoolEnergyStatusUpdate>  RejectedChargingPoolEnergyStatusUpdates,
                          String?                        Description    = null,
                          IEnumerable<Warning>?          Warnings       = null,
                          TimeSpan?                      Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveEnergyStatus,
                     PushChargingPoolEnergyStatusResultTypes.OutOfService,
                     Description,
@@ -319,14 +319,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingPoolEnergyStatusResult
 
-            AdminDown(IId                            AuthId,
+            AdminDown(IId                            SenderId,
                       ISendEnergyStatus                    ISendEnergyStatus,
                       IEnumerable<ChargingPoolEnergyStatusUpdate>  RejectedChargingPoolEnergyStatusUpdates,
                       String?                        Description   = null,
                       IEnumerable<Warning>?          Warnings      = null,
                       TimeSpan?                      Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendEnergyStatus,
                     PushChargingPoolEnergyStatusResultTypes.AdminDown,
                     Description,
@@ -337,14 +337,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingPoolEnergyStatusResult
 
-            AdminDown(IId                            AuthId,
+            AdminDown(IId                            SenderId,
                       IReceiveEnergyStatus                 IReceiveEnergyStatus,
                       IEnumerable<ChargingPoolEnergyStatusUpdate>  RejectedChargingPoolEnergyStatusUpdates,
                       String?                        Description   = null,
                       IEnumerable<Warning>?          Warnings      = null,
                       TimeSpan?                      Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveEnergyStatus,
                     PushChargingPoolEnergyStatusResultTypes.AdminDown,
                     Description,
@@ -358,14 +358,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingPoolEnergyStatusResult
 
-            Error(IId                             AuthId,
+            Error(IId                             SenderId,
                   ISendEnergyStatus                     ISendEnergyStatus,
                   IEnumerable<ChargingPoolEnergyStatusUpdate>?  RejectedChargingPools   = null,
                   String?                         Description     = null,
                   IEnumerable<Warning>?           Warnings        = null,
                   TimeSpan?                       Runtime         = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendEnergyStatus,
                     PushChargingPoolEnergyStatusResultTypes.Error,
                     Description,
@@ -376,14 +376,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingPoolEnergyStatusResult
 
-            Error(IId                             AuthId,
+            Error(IId                             SenderId,
                   IReceiveEnergyStatus                  IReceiveEnergyStatus,
                   IEnumerable<ChargingPoolEnergyStatusUpdate>?  RejectedChargingPools   = null,
                   String?                         Description     = null,
                   IEnumerable<Warning>?           Warnings        = null,
                   TimeSpan?                       Runtime         = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveEnergyStatus,
                     PushChargingPoolEnergyStatusResultTypes.Error,
                     Description,
@@ -397,14 +397,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingPoolEnergyStatusResult
 
-            Failed(IId                             AuthId,
+            Failed(IId                             SenderId,
                    ISendEnergyStatus                     ISendEnergyStatus,
                    IEnumerable<ChargingPoolEnergyStatusUpdate>?  RejectedChargingPools   = null,
                    String?                         Description     = null,
                    IEnumerable<Warning>?           Warnings        = null,
                    TimeSpan?                       Runtime         = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendEnergyStatus,
                     PushChargingPoolEnergyStatusResultTypes.Error,
                     Description,
@@ -415,14 +415,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingPoolEnergyStatusResult
 
-            Failed(IId                             AuthId,
+            Failed(IId                             SenderId,
                    IReceiveEnergyStatus                  IReceiveEnergyStatus,
                    IEnumerable<ChargingPoolEnergyStatusUpdate>?  RejectedChargingPools   = null,
                    String?                         Description     = null,
                    IEnumerable<Warning>?           Warnings        = null,
                    TimeSpan?                       Runtime         = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveEnergyStatus,
                     PushChargingPoolEnergyStatusResultTypes.Failed,
                     Description,
@@ -436,13 +436,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingPoolEnergyStatusResult
 
-            LockTimeout(IId                    AuthId,
+            LockTimeout(IId                    SenderId,
                         ISendEnergyStatus            ISendEnergyStatus,
                         String?                Description    = null,
                         IEnumerable<Warning>?  Warnings       = null,
                         TimeSpan?              Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendEnergyStatus,
                     PushChargingPoolEnergyStatusResultTypes.LockTimeout,
                     Description,
@@ -455,7 +455,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Flatten(...)
 
-        public static PushChargingPoolEnergyStatusResult Flatten(IId                                AuthId,
+        public static PushChargingPoolEnergyStatusResult Flatten(IId                                SenderId,
                                                    ISendEnergyStatus                        ISendEnergyStatus,
                                                    IEnumerable<PushChargingPoolEnergyStatusResult>  PushChargingPoolEnergyStatusResults,
                                                    TimeSpan                           Runtime)
@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.WWCP
             #region Initial checks
 
             if (PushChargingPoolEnergyStatusResults == null || !PushChargingPoolEnergyStatusResults.Any())
-                return new PushChargingPoolEnergyStatusResult(AuthId,
+                return new PushChargingPoolEnergyStatusResult(SenderId,
                                                 ISendEnergyStatus,
                                                 PushChargingPoolEnergyStatusResultTypes.Error,
                                                 "!",
@@ -493,7 +493,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             foreach (var result in ResultOverview)
                 if (ResultOverview[result.Key].Count == All.Length)
-                    return new PushChargingPoolEnergyStatusResult(All[0].AuthId,
+                    return new PushChargingPoolEnergyStatusResult(All[0].SenderId,
                                                     ISendEnergyStatus,
                                                     result.Key,
                                                     Descriptions,
@@ -501,7 +501,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                     Warnings,
                                                     Runtime);
 
-            return new PushChargingPoolEnergyStatusResult(All[0].AuthId,
+            return new PushChargingPoolEnergyStatusResult(All[0].SenderId,
                                             ISendEnergyStatus,
                                             PushChargingPoolEnergyStatusResultTypes.Partial,
                                             Descriptions,

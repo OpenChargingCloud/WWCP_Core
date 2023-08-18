@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                          new JProperty("name",  eMobilityProvider.Name.ToJSON()),
 
-                         eMobilityProvider.Description.IsNeitherNullNorEmpty()
+                         eMobilityProvider.Description.IsNotNullOrEmpty()
                              ? new JProperty("description", eMobilityProvider.Description.ToJSON())
                              : null,
 

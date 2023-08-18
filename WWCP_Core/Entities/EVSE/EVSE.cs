@@ -2529,7 +2529,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    ? new JProperty("@context",          JSONLDContext)
                                    : null,
 
-                               Description.IsNeitherNullNorEmpty()
+                               Description.IsNotNullOrEmpty()
                                    ? new JProperty("description",       Description.ToJSON())
                                    : null,
 

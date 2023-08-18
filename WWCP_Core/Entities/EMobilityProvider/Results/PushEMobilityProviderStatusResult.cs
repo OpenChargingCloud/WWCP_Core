@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region (private)  PushEMobilityProviderStatusResult(AuthId,                 Result, ...)
+        #region (private)  PushEMobilityProviderStatusResult(SenderId,                 Result, ...)
 
         /// <summary>
         /// Create a new PushEMobilityProviderStatus result.
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedEMobilityProviderStatusUpdates">An enumeration of rejected charging station operator status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushEMobilityProviderStatusResult(IId                                                AuthId,
+        private PushEMobilityProviderStatusResult(IId                                                SenderId,
                                                         PushEMobilityProviderStatusResultTypes       Result,
                                                         String?                                            Description                                    = null,
                                                         IEnumerable<EMobilityProviderStatusUpdate>?  RejectedEMobilityProviderStatusUpdates   = null,
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) PushEMobilityProviderStatusResult(AuthId, ISendStatus,    Result, ...)
+        #region (internal) PushEMobilityProviderStatusResult(SenderId, ISendStatus,    Result, ...)
 
         /// <summary>
         /// Create a new PushEMobilityProviderStatus result.
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedEMobilityProviderStatusUpdates">An enumeration of rejected charging station operator status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEMobilityProviderStatusResult(IId                                                AuthId,
+        internal PushEMobilityProviderStatusResult(IId                                                SenderId,
                                                          ISendStatus                                        ISendStatus,
                                                          PushEMobilityProviderStatusResultTypes       Result,
                                                          String?                                            Description                                    = null,
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                          IEnumerable<Warning>?                              Warnings                                       = null,
                                                          TimeSpan?                                          Runtime                                        = null)
 
-            : this(AuthId,
+            : this(SenderId,
                    Result,
                    Description,
                    RejectedEMobilityProviderStatusUpdates,
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) PushEMobilityProviderStatusResult(AuthId, IReceiveStatus, Result, ...)
+        #region (internal) PushEMobilityProviderStatusResult(SenderId, IReceiveStatus, Result, ...)
 
         /// <summary>
         /// Create a new PushEMobilityProviderStatus result.
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedEMobilityProviderStatusUpdates">An enumeration of rejected charging station operator status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEMobilityProviderStatusResult(IId                                                AuthId,
+        internal PushEMobilityProviderStatusResult(IId                                                SenderId,
                                                          IReceiveStatus                                     IReceiveStatus,
                                                          PushEMobilityProviderStatusResultTypes       Result,
                                                          String?                                            Description                                    = null,
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                          IEnumerable<Warning>?                              Warnings                                       = null,
                                                          TimeSpan?                                          Runtime                                        = null)
 
-            : this(AuthId,
+            : this(SenderId,
                    Result,
                    Description,
                    RejectedEMobilityProviderStatusUpdates,
@@ -191,13 +191,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEMobilityProviderStatusResult
 
-            Success(IId                    AuthId,
+            Success(IId                    SenderId,
                     ISendStatus            ISendStatus,
                     String?                Description   = null,
                     IEnumerable<Warning>?  Warnings      = null,
                     TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEMobilityProviderStatusResultTypes.Success,
                     Description,
@@ -209,13 +209,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEMobilityProviderStatusResult
 
-            Success(IId                    AuthId,
+            Success(IId                    SenderId,
                     IReceiveStatus         IReceiveStatus,
                     String?                Description   = null,
                     IEnumerable<Warning>?  Warnings      = null,
                     TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveStatus,
                     PushEMobilityProviderStatusResultTypes.Success,
                     Description,
@@ -230,13 +230,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEMobilityProviderStatusResult
 
-            Enqueued(IId                    AuthId,
+            Enqueued(IId                    SenderId,
                      ISendStatus            ISendStatus,
                      String?                Description   = null,
                      IEnumerable<Warning>?  Warnings      = null,
                      TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEMobilityProviderStatusResultTypes.Enqueued,
                     Description,
@@ -250,13 +250,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEMobilityProviderStatusResult
 
-            NoOperation(IId                    AuthId,
+            NoOperation(IId                    SenderId,
                         ISendStatus            ISendStatus,
                         String?                Description   = null,
                         IEnumerable<Warning>?  Warnings      = null,
                         TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEMobilityProviderStatusResultTypes.NoOperation,
                     Description,
@@ -268,13 +268,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEMobilityProviderStatusResult
 
-            NoOperation(IId                    AuthId,
+            NoOperation(IId                    SenderId,
                         IReceiveStatus         IReceiveStatus,
                         String?                Description   = null,
                         IEnumerable<Warning>?  Warnings      = null,
                         TimeSpan?              Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveStatus,
                     PushEMobilityProviderStatusResultTypes.NoOperation,
                     Description,
@@ -288,14 +288,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEMobilityProviderStatusResult
 
-            OutOfService(IId                                               AuthId,
+            OutOfService(IId                                               SenderId,
                          ISendStatus                                       ISendStatus,
                          IEnumerable<EMobilityProviderStatusUpdate>  RejectedEMobilityProviderStatusUpdates,
                          String?                                           Description   = null,
                          IEnumerable<Warning>?                             Warnings      = null,
                          TimeSpan?                                         Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEMobilityProviderStatusResultTypes.OutOfService,
                     Description,
@@ -307,14 +307,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEMobilityProviderStatusResult
 
-            OutOfService(IId                                               AuthId,
+            OutOfService(IId                                               SenderId,
                          IReceiveStatus                                    IReceiveStatus,
                          IEnumerable<EMobilityProviderStatusUpdate>  RejectedEMobilityProviderStatusUpdates,
                          String?                                           Description   = null,
                          IEnumerable<Warning>?                             Warnings      = null,
                          TimeSpan?                                         Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveStatus,
                     PushEMobilityProviderStatusResultTypes.OutOfService,
                     Description,
@@ -328,14 +328,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEMobilityProviderStatusResult
 
-            AdminDown(IId                                               AuthId,
+            AdminDown(IId                                               SenderId,
                       ISendStatus                                       ISendStatus,
                       IEnumerable<EMobilityProviderStatusUpdate>  RejectedEMobilityProviderStatusUpdates,
                       String?                                           Description   = null,
                       IEnumerable<Warning>?                             Warnings      = null,
                       TimeSpan?                                         Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEMobilityProviderStatusResultTypes.AdminDown,
                     Description,
@@ -347,14 +347,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEMobilityProviderStatusResult
 
-            AdminDown(IId                                               AuthId,
+            AdminDown(IId                                               SenderId,
                       IReceiveStatus                                    IReceiveStatus,
                       IEnumerable<EMobilityProviderStatusUpdate>  RejectedEMobilityProviderStatusUpdates,
                       String?                                           Description   = null,
                       IEnumerable<Warning>?                             Warnings      = null,
                       TimeSpan?                                         Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveStatus,
                     PushEMobilityProviderStatusResultTypes.AdminDown,
                     Description,
@@ -369,14 +369,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEMobilityProviderStatusResult
 
-            Error(IId                                                AuthId,
+            Error(IId                                                SenderId,
                   ISendStatus                                        ISendStatus,
                   IEnumerable<EMobilityProviderStatusUpdate>?  RejectedEMobilityProviderStatusUpdates   = null,
                   String?                                            Description                                    = null,
                   IEnumerable<Warning>?                              Warnings                                       = null,
                   TimeSpan?                                          Runtime                                        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEMobilityProviderStatusResultTypes.Error,
                     Description,
@@ -387,14 +387,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEMobilityProviderStatusResult
 
-            Error(IId                                                AuthId,
+            Error(IId                                                SenderId,
                   IReceiveStatus                                     IReceiveStatus,
                   IEnumerable<EMobilityProviderStatusUpdate>?  RejectedEMobilityProviderStatusUpdates   = null,
                   String?                                            Description                                    = null,
                   IEnumerable<Warning>?                              Warnings                                       = null,
                   TimeSpan?                                          Runtime                                        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveStatus,
                     PushEMobilityProviderStatusResultTypes.Error,
                     Description,
@@ -408,14 +408,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEMobilityProviderStatusResult
 
-            LockTimeout(IId                                               AuthId,
+            LockTimeout(IId                                               SenderId,
                         ISendStatus                                       ISendStatus,
                         IEnumerable<EMobilityProviderStatusUpdate>  RejectedEMobilityProviderStatusUpdates,
                         String?                                           Description   = null,
                         IEnumerable<Warning>?                             Warnings      = null,
                         TimeSpan?                                         Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEMobilityProviderStatusResultTypes.LockTimeout,
                     Description,
@@ -427,9 +427,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        #region Flatten(AuthId, ISendStatus, PushEMobilityProviderStatusResults, Runtime)
+        #region Flatten(SenderId, ISendStatus, PushEMobilityProviderStatusResults, Runtime)
 
-        public static PushEMobilityProviderStatusResult Flatten(IId                                                   AuthId,
+        public static PushEMobilityProviderStatusResult Flatten(IId                                                   SenderId,
                                                                       ISendStatus                                           ISendStatus,
                                                                       IEnumerable<PushEMobilityProviderStatusResult>  PushEMobilityProviderStatusResults,
                                                                       TimeSpan                                              Runtime)
@@ -438,7 +438,7 @@ namespace cloud.charging.open.protocols.WWCP
             #region Initial checks
 
             if (PushEMobilityProviderStatusResults is null || !PushEMobilityProviderStatusResults.Any())
-                return new PushEMobilityProviderStatusResult(AuthId,
+                return new PushEMobilityProviderStatusResult(SenderId,
                                                                    ISendStatus,
                                                                    PushEMobilityProviderStatusResultTypes.Error,
                                                                    "!",
@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             foreach (var result in resultOverview)
                 if (resultOverview[result.Key].Count == all.Length)
-                    return new PushEMobilityProviderStatusResult(all[0].AuthId,
+                    return new PushEMobilityProviderStatusResult(all[0].SenderId,
                                                                        ISendStatus,
                                                                        result.Key,
                                                                        descriptions,
@@ -475,7 +475,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                        warnings,
                                                                        Runtime);
 
-            return new PushEMobilityProviderStatusResult(all[0].AuthId,
+            return new PushEMobilityProviderStatusResult(all[0].SenderId,
                                                                ISendStatus,
                                                                PushEMobilityProviderStatusResultTypes.Partial,
                                                                descriptions,

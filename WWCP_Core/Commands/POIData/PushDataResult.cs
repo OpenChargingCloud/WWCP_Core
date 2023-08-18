@@ -111,9 +111,9 @@
 //        public IId                                    AuthId             { get; }
 
 //        /// <summary>
-//        /// The object implementing SendPOIData.
+//        /// The object implementing Sender.
 //        /// </summary>
-//        public ISendPOIData?                          SendPOIData        { get; }
+//        public ISender?                          Sender        { get; }
 
 //        /// <summary>
 //        /// The object implementing ReceivePOIData.
@@ -154,13 +154,13 @@
 
 //        #region Constructor(s)
 
-//        #region PushEVSEDataResult(AuthId, SendPOIData,    Result, ...)
+//        #region PushEVSEDataResult(SenderId, Sender,    Result, ...)
 
 //        /// <summary>
 //        /// Create a new PushEVSEData result.
 //        /// </summary>
 //        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
-//        /// <param name="SendPOIData">An object implementing SendPOIData.</param>
+//        /// <param name="Sender">An object implementing Sender.</param>
 //        /// <param name="ReceivePOIData">An object implementing ReceivePOIData.</param>
 //        /// <param name="Result">The result of the operation.</param>
 //        /// <param name="Description">An optional description of the result code.</param>
@@ -168,8 +168,8 @@
 //        /// <param name="RejectedEVSEs">An enumeration of rejected EVSEs.</param>
 //        /// <param name="Warnings">Warnings or additional information.</param>
 //        /// <param name="Runtime">The runtime of the request.</param>
-//        public PushEVSEDataResult(IId                                     AuthId,
-//                                  ISendPOIData                            SendPOIData,
+//        public PushEVSEDataResult(IId                                     SenderId,
+//                                  ISender                            Sender,
 //                                  PushDataResultTypes                     Result,
 //                                  IEnumerable<PushSingleEVSEDataResult>?  SuccessfulEVSEs   = null,
 //                                  IEnumerable<PushSingleEVSEDataResult>?  RejectedEVSEs     = null,
@@ -179,7 +179,7 @@
 //        {
 
 //            this.AuthId           = AuthId;
-//            this.SendPOIData      = SendPOIData;
+//            this.Sender      = Sender;
 //            this.Result           = Result;
 
 //            this.Description      = Description is not null && Description.IsNotNullOrEmpty()
@@ -204,13 +204,13 @@
 
 //        #endregion
 
-//        #region PushEVSEDataResult(AuthId, ReceivePOIData, Result, ...)
+//        #region PushEVSEDataResult(SenderId, ReceivePOIData, Result, ...)
 
 //        /// <summary>
 //        /// Create a new PushEVSEData result.
 //        /// </summary>
 //        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
-//        /// <param name="SendPOIData">An object implementing SendPOIData.</param>
+//        /// <param name="Sender">An object implementing Sender.</param>
 //        /// <param name="ReceivePOIData">An object implementing ReceivePOIData.</param>
 //        /// <param name="Result">The result of the operation.</param>
 //        /// <param name="Description">An optional description of the result code.</param>
@@ -218,7 +218,7 @@
 //        /// <param name="RejectedEVSEs">An enumeration of rejected EVSEs.</param>
 //        /// <param name="Warnings">Warnings or additional information.</param>
 //        /// <param name="Runtime">The runtime of the request.</param>
-//        public PushEVSEDataResult(IId                                     AuthId,
+//        public PushEVSEDataResult(IId                                     SenderId,
 //                                  IReceivePOIData                         ReceivePOIData,
 //                                  PushDataResultTypes                     Result,
 //                                  IEnumerable<PushSingleEVSEDataResult>?  SuccessfulEVSEs   = null,
@@ -261,15 +261,15 @@
 
 //        public static PushEVSEDataResult
 
-//            AdminDown(IId                    AuthId,
-//                      ISendPOIData           SendPOIData,
+//            AdminDown(IId                    SenderId,
+//                      ISender           Sender,
 //                      IEnumerable<IEVSE>     RejectedEVSEs,
 //                      String?                Description   = null,
 //                      IEnumerable<Warning>?  Warnings      = null,
 //                      TimeSpan?              Runtime       = null)
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.AdminDown,
 //                        Array.Empty<PushSingleEVSEDataResult>(),
 //                        RejectedEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.AdminDown, Warnings)),
@@ -280,14 +280,14 @@
 
 //        public static PushEVSEDataResult
 
-//            AdminDown(IId                    AuthId,
+//            AdminDown(IId                    SenderId,
 //                      IReceivePOIData        ReceivePOIData,
 //                      IEnumerable<IEVSE>     RejectedEVSEs,
 //                      String?                Description   = null,
 //                      IEnumerable<Warning>?  Warnings      = null,
 //                      TimeSpan?              Runtime       = null)
 
-//                => new (AuthId,
+//                => new (SenderId,
 //                        ReceivePOIData,
 //                        PushDataResultTypes.AdminDown,
 //                        Array.Empty<PushSingleEVSEDataResult>(),
@@ -302,15 +302,15 @@
 
 //        public static PushEVSEDataResult
 
-//            Success(IId                    AuthId,
-//                    ISendPOIData           SendPOIData,
+//            Success(IId                    SenderId,
+//                    ISender           Sender,
 //                    IEnumerable<IEVSE>     SuccessfulEVSEs,
 //                    String?                Description       = null,
 //                    IEnumerable<Warning>?  Warnings          = null,
 //                    TimeSpan?              Runtime           = null)
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.Success,
 //                        SuccessfulEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.Success, Warnings)),
 //                        Array.Empty<PushSingleEVSEDataResult>(),
@@ -321,14 +321,14 @@
 
 //        public static PushEVSEDataResult
 
-//            Success(IId                    AuthId,
+//            Success(IId                    SenderId,
 //                    IReceivePOIData        ReceivePOIData,
 //                    IEnumerable<IEVSE>     SuccessfulEVSEs,
 //                    String?                Description       = null,
 //                    IEnumerable<Warning>?  Warnings          = null,
 //                    TimeSpan?              Runtime           = null)
 
-//                => new (AuthId,
+//                => new (SenderId,
 //                        ReceivePOIData,
 //                        PushDataResultTypes.Success,
 //                        SuccessfulEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.Success, Warnings)),
@@ -343,15 +343,15 @@
 
 //        public static PushEVSEDataResult
 
-//            Enqueued(IId                    AuthId,
-//                     ISendPOIData           SendPOIData,
+//            Enqueued(IId                    SenderId,
+//                     ISender           Sender,
 //                     IEnumerable<IEVSE>     EnqueuedEVSEs,
 //                     String?                Description   = null,
 //                     IEnumerable<Warning>?  Warnings      = null,
 //                     TimeSpan?              Runtime       = null)
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.Enqueued,
 //                        EnqueuedEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.Enqueued, Warnings)),
 //                        Array.Empty<PushSingleEVSEDataResult>(),
@@ -361,14 +361,14 @@
 
 
 //        public static PushEVSEDataResult
-//            Enqueued(IId                    AuthId,
+//            Enqueued(IId                    SenderId,
 //                     IReceivePOIData        ReceivePOIData,
 //                     IEnumerable<IEVSE>     EnqueuedEVSEs,
 //                     String?                Description   = null,
 //                     IEnumerable<Warning>?  Warnings      = null,
 //                     TimeSpan?              Runtime       = null)
 
-//                => new (AuthId,
+//                => new (SenderId,
 //                        ReceivePOIData,
 //                        PushDataResultTypes.Enqueued,
 //                        EnqueuedEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.Enqueued, Warnings)),
@@ -383,15 +383,15 @@
 
 //        public static PushEVSEDataResult
 
-//            NoOperation(IId                    AuthId,
-//                        ISendPOIData           SendPOIData,
+//            NoOperation(IId                    SenderId,
+//                        ISender           Sender,
 //                        IEnumerable<IEVSE>     RejectedEVSEs,
 //                        String?                Description   = null,
 //                        IEnumerable<Warning>?  Warnings      = null,
 //                        TimeSpan?              Runtime       = null)
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.NoOperation,
 //                        Array.Empty<PushSingleEVSEDataResult>(),
 //                        RejectedEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.NoOperation, Warnings)),
@@ -402,14 +402,14 @@
 
 //         public static PushEVSEDataResult
 
-//            NoOperation(IId                    AuthId,
+//            NoOperation(IId                    SenderId,
 //                        IReceivePOIData        ReceivePOIData,
 //                        IEnumerable<IEVSE>     RejectedEVSEs,
 //                        String?                Description   = null,
 //                        IEnumerable<Warning>?  Warnings      = null,
 //                        TimeSpan?              Runtime       = null)
 
-//                => new (AuthId,
+//                => new (SenderId,
 //                        ReceivePOIData,
 //                        PushDataResultTypes.NoOperation,
 //                        Array.Empty<PushSingleEVSEDataResult>(),
@@ -424,16 +424,16 @@
 
 //        public static PushEVSEDataResult
 
-//            LockTimeout(IId                    AuthId,
-//                        ISendPOIData           SendPOIData,
+//            LockTimeout(IId                    SenderId,
+//                        ISender           Sender,
 //                        IEnumerable<IEVSE>     RejectedEVSEs,
 //                        String?                Description   = null,
 //                        IEnumerable<Warning>?  Warnings      = null,
 //                        TimeSpan?              Runtime       = null)
 
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.LockTimeout,
 //                        Array.Empty<PushSingleEVSEDataResult>(),
 //                        RejectedEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.Timeout, Warnings)),
@@ -447,16 +447,16 @@
 
 //        public static PushEVSEDataResult
 
-//            Timeout(IId                    AuthId,
-//                    ISendPOIData           SendPOIData,
+//            Timeout(IId                    SenderId,
+//                    ISender           Sender,
 //                    IEnumerable<IEVSE>     RejectedEVSEs,
 //                    String?                Description   = null,
 //                    IEnumerable<Warning>?  Warnings      = null,
 //                    TimeSpan?              Runtime       = null)
 
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.Timeout,
 //                        Array.Empty<PushSingleEVSEDataResult>(),
 //                        RejectedEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.Timeout, Warnings)),
@@ -470,15 +470,15 @@
 
 //        public static PushEVSEDataResult
 
-//            Error(IId                                     AuthId,
-//                  ISendPOIData                            SendPOIData,
+//            Error(IId                                     SenderId,
+//                  ISender                            Sender,
 //                  IEnumerable<PushSingleEVSEDataResult>?  RejectedEVSEs   = null,
 //                  String?                                 Description     = null,
 //                  IEnumerable<Warning>?                   Warnings        = null,
 //                  TimeSpan?                               Runtime         = null)
 
-//            => new (AuthId,
-//                    SendPOIData,
+//            => new (SenderId,
+//                    Sender,
 //                    PushDataResultTypes.Error,
 //                    Array.Empty<PushSingleEVSEDataResult>(),
 //                    RejectedEVSEs,
@@ -489,14 +489,14 @@
 
 //        public static PushEVSEDataResult
 
-//            Error(IId                                     AuthId,
+//            Error(IId                                     SenderId,
 //                  IReceivePOIData                         ReceivePOIData,
 //                  IEnumerable<PushSingleEVSEDataResult>?  RejectedEVSEs   = null,
 //                  String?                                 Description     = null,
 //                  IEnumerable<Warning>?                   Warnings        = null,
 //                  TimeSpan?                               Runtime         = null)
 
-//            => new (AuthId,
+//            => new (SenderId,
 //                    ReceivePOIData,
 //                    PushDataResultTypes.Error,
 //                    Array.Empty<PushSingleEVSEDataResult>(),
@@ -531,7 +531,7 @@
 //        #region Properties
 //        public IId                                               Id                            { get; }
 
-//        public ISendPOIData?                                     SendPOIData                   { get; }
+//        public ISender?                                     Sender                   { get; }
 
 //        public IReceivePOIData?                                  ReceivePOIData                { get; }
 
@@ -569,7 +569,7 @@
 
 //        #region Constructor(s)
 
-//        #region PushChargingStationDataResult(Id,     SendPOIData,    Result,...)
+//        #region PushChargingStationDataResult(Id,     Sender,    Result,...)
 
 //        /// <summary>
 //        /// Create a new acknowledgement.
@@ -579,7 +579,7 @@
 //        /// <param name="Warnings">Warnings or additional information.</param>
 //        /// <param name="Runtime">The runtime of the request.</param>
 //        public PushChargingStationDataResult(IId                                                Id,
-//                                             ISendPOIData                                       SendPOIData,
+//                                             ISender                                       Sender,
 //                                             PushDataResultTypes                                Result,
 //                                             IEnumerable<PushSingleChargingStationDataResult>?  SuccessfulChargingStations   = null,
 //                                             IEnumerable<PushSingleChargingStationDataResult>?  RejectedChargingStations     = null,
@@ -590,7 +590,7 @@
 
 //            this.Id                          = Id;
 
-//            this.SendPOIData                 = SendPOIData;
+//            this.Sender                 = Sender;
 
 //            this.Result                      = Result;
 
@@ -612,7 +612,7 @@
 
 //        #endregion
 
-//        #region PushChargingStationDataResult(AuthId, ReceivePOIData, Result,...)
+//        #region PushChargingStationDataResult(SenderId, ReceivePOIData, Result,...)
 
 //        /// <summary>
 //        /// Create a new acknowledgement.
@@ -662,15 +662,15 @@
 
 //        public static PushChargingStationDataResult
 
-//            AdminDown(IId                            AuthId,
-//                      ISendPOIData                   SendPOIData,
+//            AdminDown(IId                            SenderId,
+//                      ISender                   Sender,
 //                      IEnumerable<IChargingStation>  RejectedChargingStations,
 //                      String?                        Description   = null,
 //                      IEnumerable<Warning>?          Warnings      = null,
 //                      TimeSpan?                      Runtime       = null)
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.AdminDown,
 //                        Array.Empty<PushSingleChargingStationDataResult>(),
 //                        RejectedChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.AdminDown, Warnings)),
@@ -681,14 +681,14 @@
 
 //        public static PushChargingStationDataResult
 
-//            AdminDown(IId                            AuthId,
+//            AdminDown(IId                            SenderId,
 //                      IReceivePOIData                ReceivePOIData,
 //                      IEnumerable<IChargingStation>  RejectedChargingStations,
 //                      String?                        Description   = null,
 //                      IEnumerable<Warning>?          Warnings      = null,
 //                      TimeSpan?                      Runtime       = null)
 
-//                => new (AuthId,
+//                => new (SenderId,
 //                        ReceivePOIData,
 //                        PushDataResultTypes.AdminDown,
 //                        Array.Empty<PushSingleChargingStationDataResult>(),
@@ -703,15 +703,15 @@
 
 //        public static PushChargingStationDataResult
 
-//            Success(IId                            AuthId,
-//                    ISendPOIData                   SendPOIData,
+//            Success(IId                            SenderId,
+//                    ISender                   Sender,
 //                    IEnumerable<IChargingStation>  SuccessfulChargingStations,
 //                    String?                        Description   = null,
 //                    IEnumerable<Warning>?          Warnings      = null,
 //                    TimeSpan?                      Runtime       = null)
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.Success,
 //                        SuccessfulChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.Success, Warnings)),
 //                        Array.Empty<PushSingleChargingStationDataResult>(),
@@ -722,14 +722,14 @@
 
 //        public static PushChargingStationDataResult
 
-//            Success(IId                            AuthId,
+//            Success(IId                            SenderId,
 //                    IReceivePOIData                ReceivePOIData,
 //                    IEnumerable<IChargingStation>  SuccessfulChargingStations,
 //                    String?                        Description   = null,
 //                    IEnumerable<Warning>?          Warnings      = null,
 //                    TimeSpan?                      Runtime       = null)
 
-//                => new (AuthId,
+//                => new (SenderId,
 //                        ReceivePOIData,
 //                        PushDataResultTypes.Success,
 //                        SuccessfulChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.Success, Warnings)),
@@ -744,15 +744,15 @@
 
 //        public static PushChargingStationDataResult
 
-//            Enqueued(IId                            AuthId,
-//                     ISendPOIData                   SendPOIData,
+//            Enqueued(IId                            SenderId,
+//                     ISender                   Sender,
 //                     IEnumerable<IChargingStation>  SuccessfulChargingStations,
 //                     String?                        Description   = null,
 //                     IEnumerable<Warning>?          Warnings      = null,
 //                     TimeSpan?                      Runtime       = null)
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.Enqueued,
 //                        SuccessfulChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.Enqueued, Warnings)),
 //                        Array.Empty<PushSingleChargingStationDataResult>(),
@@ -766,15 +766,15 @@
 
 //        public static PushChargingStationDataResult
 
-//            NoOperation(IId                            AuthId,
-//                        ISendPOIData                   SendPOIData,
+//            NoOperation(IId                            SenderId,
+//                        ISender                   Sender,
 //                        IEnumerable<IChargingStation>  RejectedChargingStations,
 //                        String?                        Description   = null,
 //                        IEnumerable<Warning>?          Warnings      = null,
 //                        TimeSpan?                      Runtime       = null)
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.NoOperation,
 //                        Array.Empty<PushSingleChargingStationDataResult>(),
 //                        RejectedChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.NoOperation, Warnings)),
@@ -785,14 +785,14 @@
 
 //         public static PushChargingStationDataResult
 
-//            NoOperation(IId                            AuthId,
+//            NoOperation(IId                            SenderId,
 //                        IReceivePOIData                ReceivePOIData,
 //                        IEnumerable<IChargingStation>  RejectedChargingStations,
 //                        String?                        Description   = null,
 //                        IEnumerable<Warning>?          Warnings      = null,
 //                        TimeSpan?                      Runtime       = null)
 
-//                => new (AuthId,
+//                => new (SenderId,
 //                        ReceivePOIData,
 //                        PushDataResultTypes.NoOperation,
 //                        Array.Empty<PushSingleChargingStationDataResult>(),
@@ -807,16 +807,16 @@
 
 //        public static PushChargingStationDataResult
 
-//            LockTimeout(IId                            AuthId,
-//                        ISendPOIData                   SendPOIData,
+//            LockTimeout(IId                            SenderId,
+//                        ISender                   Sender,
 //                        IEnumerable<IChargingStation>  RejectedChargingStations,
 //                        String?                        Description   = null,
 //                        IEnumerable<Warning>?          Warnings      = null,
 //                        TimeSpan?                      Runtime       = null)
 
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.Timeout,
 //                        Array.Empty<PushSingleChargingStationDataResult>(),
 //                        RejectedChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.LockTimeout, Warnings)),
@@ -830,16 +830,16 @@
 
 //        public static PushChargingStationDataResult
 
-//            Timeout(IId                            AuthId,
-//                    ISendPOIData                   SendPOIData,
+//            Timeout(IId                            SenderId,
+//                    ISender                   Sender,
 //                    IEnumerable<IChargingStation>  RejectedChargingStations,
 //                    String?                        Description   = null,
 //                    IEnumerable<Warning>?          Warnings      = null,
 //                    TimeSpan?                      Runtime       = null)
 
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.Timeout,
 //                        Array.Empty<PushSingleChargingStationDataResult>(),
 //                        RejectedChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.Timeout, Warnings)),
@@ -853,15 +853,15 @@
 
 //        public static PushChargingStationDataResult
 
-//            Error(IId                                               AuthId,
-//                  ISendPOIData                                      SendPOIData,
+//            Error(IId                                               SenderId,
+//                  ISender                                      Sender,
 //                  IEnumerable<PushSingleChargingStationDataResult>  RejectedChargingStations,
 //                  String?                                           Description     = null,
 //                  IEnumerable<Warning>?                             Warnings        = null,
 //                  TimeSpan?                                         Runtime         = null)
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.Error,
 //                        Array.Empty<PushSingleChargingStationDataResult>(),
 //                        RejectedChargingStations,
@@ -872,14 +872,14 @@
 
 //        public static PushChargingStationDataResult
 
-//            Error(IId                                               AuthId,
+//            Error(IId                                               SenderId,
 //                  IReceivePOIData                                   ReceivePOIData,
 //                  IEnumerable<PushSingleChargingStationDataResult>  RejectedChargingStations,
 //                  String?                                           Description     = null,
 //                  IEnumerable<Warning>?                             Warnings        = null,
 //                  TimeSpan?                                         Runtime         = null)
 
-//                => new (AuthId,
+//                => new (SenderId,
 //                        ReceivePOIData,
 //                        PushDataResultTypes.Error,
 //                        Array.Empty<PushSingleChargingStationDataResult>(),
@@ -893,10 +893,10 @@
 
 //        public PushEVSEDataResult ToPushEVSEDataResult()
 
-//            => SendPOIData is not null
+//            => Sender is not null
 
 //                   ? new PushEVSEDataResult(Id,
-//                                            SendPOIData,
+//                                            Sender,
 //                                            Result,
 //                                            Array.Empty<PushSingleEVSEDataResult>(),
 //                                            Array.Empty<PushSingleEVSEDataResult>(),
@@ -938,7 +938,7 @@
 
 //        public IId                                               Id                         { get; }
 
-//        public ISendPOIData?                                     SendPOIData                { get; }
+//        public ISender?                                     Sender                { get; }
 
 //        public IReceivePOIData?                                  ReceivePOIData             { get; }
 
@@ -976,7 +976,7 @@
 
 //        #region Constructor(s)
 
-//        #region PushChargingPoolDataResult(Id,     SendPOIData,    Result,...)
+//        #region PushChargingPoolDataResult(Id,     Sender,    Result,...)
 
 //        /// <summary>
 //        /// Create a new acknowledgement.
@@ -986,7 +986,7 @@
 //        /// <param name="Warnings">Warnings or additional information.</param>
 //        /// <param name="Runtime">The runtime of the request.</param>
 //        public PushChargingPoolDataResult(IId                                             Id,
-//                                          ISendPOIData                                    SendPOIData,
+//                                          ISender                                    Sender,
 //                                          PushDataResultTypes                             Result,
 //                                          IEnumerable<PushSingleChargingPoolDataResult>?  SuccessfulChargingPools   = null,
 //                                          IEnumerable<PushSingleChargingPoolDataResult>?  RejectedChargingPools     = null,
@@ -997,7 +997,7 @@
 
 //            this.Id                       = Id;
 
-//            this.SendPOIData              = SendPOIData;
+//            this.Sender              = Sender;
 
 //            this.Result                   = Result;
 
@@ -1019,7 +1019,7 @@
 
 //        #endregion
 
-//        #region PushChargingPoolDataResult(AuthId, ReceivePOIData, Result,...)
+//        #region PushChargingPoolDataResult(SenderId, ReceivePOIData, Result,...)
 
 //        /// <summary>
 //        /// Create a new acknowledgement.
@@ -1069,15 +1069,15 @@
 
 //        public static PushChargingPoolDataResult
 
-//            AdminDown(IId                         AuthId,
-//                      ISendPOIData                SendPOIData,
+//            AdminDown(IId                         SenderId,
+//                      ISender                Sender,
 //                      IEnumerable<IChargingPool>  RejectedChargingPools,
 //                      String?                     Description   = null,
 //                      IEnumerable<Warning>?       Warnings      = null,
 //                      TimeSpan?                   Runtime       = null)
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.AdminDown,
 //                        Array.Empty<PushSingleChargingPoolDataResult>(),
 //                        RejectedChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.AdminDown, Warnings)),
@@ -1088,14 +1088,14 @@
 
 //        public static PushChargingPoolDataResult
 
-//            AdminDown(IId                         AuthId,
+//            AdminDown(IId                         SenderId,
 //                      IReceivePOIData             ReceivePOIData,
 //                      IEnumerable<IChargingPool>  RejectedChargingPools,
 //                      String?                     Description   = null,
 //                      IEnumerable<Warning>?       Warnings      = null,
 //                      TimeSpan?                   Runtime       = null)
 
-//                => new (AuthId,
+//                => new (SenderId,
 //                        ReceivePOIData,
 //                        PushDataResultTypes.AdminDown,
 //                        Array.Empty<PushSingleChargingPoolDataResult>(),
@@ -1110,15 +1110,15 @@
 
 //        public static PushChargingPoolDataResult
 
-//            Success(IId                         AuthId,
-//                    ISendPOIData                SendPOIData,
+//            Success(IId                         SenderId,
+//                    ISender                Sender,
 //                    IEnumerable<IChargingPool>  SuccessfulChargingPools,
 //                    String?                     Description   = null,
 //                    IEnumerable<Warning>?       Warnings      = null,
 //                    TimeSpan?                   Runtime       = null)
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.Success,
 //                        SuccessfulChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.Success, Warnings)),
 //                        Array.Empty<PushSingleChargingPoolDataResult>(),
@@ -1129,14 +1129,14 @@
 
 //        public static PushChargingPoolDataResult
 
-//            Success(IId                         AuthId,
+//            Success(IId                         SenderId,
 //                    IReceivePOIData             ReceivePOIData,
 //                    IEnumerable<IChargingPool>  SuccessfulChargingPools,
 //                    String?                     Description   = null,
 //                    IEnumerable<Warning>?       Warnings      = null,
 //                    TimeSpan?                   Runtime       = null)
 
-//                => new (AuthId,
+//                => new (SenderId,
 //                        ReceivePOIData,
 //                        PushDataResultTypes.Success,
 //                        SuccessfulChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.Success, Warnings)),
@@ -1151,15 +1151,15 @@
 
 //        public static PushChargingPoolDataResult
 
-//            Enqueued(IId                         AuthId,
-//                     ISendPOIData                SendPOIData,
+//            Enqueued(IId                         SenderId,
+//                     ISender                Sender,
 //                     IEnumerable<IChargingPool>  SuccessfulChargingPools,
 //                     String?                     Description   = null,
 //                     IEnumerable<Warning>?       Warnings      = null,
 //                     TimeSpan?                   Runtime       = null)
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.Enqueued,
 //                        SuccessfulChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.Enqueued, Warnings)),
 //                        Array.Empty<PushSingleChargingPoolDataResult>(),
@@ -1173,15 +1173,15 @@
 
 //        public static PushChargingPoolDataResult
 
-//            NoOperation(IId                         AuthId,
-//                        ISendPOIData                SendPOIData,
+//            NoOperation(IId                         SenderId,
+//                        ISender                Sender,
 //                        IEnumerable<IChargingPool>  RejectedChargingPools,
 //                        String?                     Description   = null,
 //                        IEnumerable<Warning>?       Warnings      = null,
 //                        TimeSpan?                   Runtime       = null)
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.NoOperation,
 //                        Array.Empty<PushSingleChargingPoolDataResult>(),
 //                        RejectedChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.NoOperation, Warnings)),
@@ -1192,14 +1192,14 @@
 
 //         public static PushChargingPoolDataResult
 
-//            NoOperation(IId                         AuthId,
+//            NoOperation(IId                         SenderId,
 //                        IReceivePOIData             ReceivePOIData,
 //                        IEnumerable<IChargingPool>  RejectedChargingPools,
 //                        String?                     Description   = null,
 //                        IEnumerable<Warning>?       Warnings      = null,
 //                        TimeSpan?                   Runtime       = null)
 
-//                => new (AuthId,
+//                => new (SenderId,
 //                        ReceivePOIData,
 //                        PushDataResultTypes.NoOperation,
 //                        Array.Empty<PushSingleChargingPoolDataResult>(),
@@ -1214,16 +1214,16 @@
 
 //        public static PushChargingPoolDataResult
 
-//            LockTimeout(IId                         AuthId,
-//                        ISendPOIData                SendPOIData,
+//            LockTimeout(IId                         SenderId,
+//                        ISender                Sender,
 //                        IEnumerable<IChargingPool>  RejectedChargingPools,
 //                        String?                     Description   = null,
 //                        IEnumerable<Warning>?       Warnings      = null,
 //                        TimeSpan?                   Runtime       = null)
 
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.Timeout,
 //                        Array.Empty<PushSingleChargingPoolDataResult>(),
 //                        RejectedChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.LockTimeout, Warnings)),
@@ -1237,16 +1237,16 @@
 
 //        public static PushChargingPoolDataResult
 
-//            Timeout(IId                         AuthId,
-//                    ISendPOIData                SendPOIData,
+//            Timeout(IId                         SenderId,
+//                    ISender                Sender,
 //                    IEnumerable<IChargingPool>  RejectedChargingPools,
 //                    String?                     Description   = null,
 //                    IEnumerable<Warning>?       Warnings      = null,
 //                    TimeSpan?                   Runtime       = null)
 
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.Timeout,
 //                        Array.Empty<PushSingleChargingPoolDataResult>(),
 //                        RejectedChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.Timeout, Warnings)),
@@ -1260,15 +1260,15 @@
 
 //        public static PushChargingPoolDataResult
 
-//            Error(IId                                             AuthId,
-//                  ISendPOIData                                    SendPOIData,
+//            Error(IId                                             SenderId,
+//                  ISender                                    Sender,
 //                  IEnumerable<PushSingleChargingPoolDataResult>?  RejectedChargingPools   = null,
 //                  String?                                         Description             = null,
 //                  IEnumerable<Warning>?                           Warnings                = null,
 //                  TimeSpan?                                       Runtime                 = null)
 
-//                => new (AuthId,
-//                        SendPOIData,
+//                => new (SenderId,
+//                        Sender,
 //                        PushDataResultTypes.Error,
 //                        Array.Empty<PushSingleChargingPoolDataResult>(),
 //                        RejectedChargingPools,
@@ -1279,14 +1279,14 @@
 
 //        public static PushChargingPoolDataResult
 
-//            Error(IId                                             AuthId,
+//            Error(IId                                             SenderId,
 //                  IReceivePOIData                                 ReceivePOIData,
 //                  IEnumerable<PushSingleChargingPoolDataResult>?  RejectedChargingPools   = null,
 //                  String?                                         Description             = null,
 //                  IEnumerable<Warning>?                           Warnings                = null,
 //                  TimeSpan?                                       Runtime                 = null)
 
-//                => new (AuthId,
+//                => new (SenderId,
 //                        ReceivePOIData,
 //                        PushDataResultTypes.Error,
 //                        Array.Empty<PushSingleChargingPoolDataResult>(),
@@ -1300,10 +1300,10 @@
 
 //        //public PushEVSEDataResult ToPushEVSEDataResult()
 
-//        //    => SendPOIData is not null
+//        //    => Sender is not null
 
 //        //           ? new PushEVSEDataResult(Id,
-//        //                                    SendPOIData,
+//        //                                    Sender,
 //        //                                    Result,
 //        //                                    Description,
 //        //                                    Array.Empty<EVSE>(),

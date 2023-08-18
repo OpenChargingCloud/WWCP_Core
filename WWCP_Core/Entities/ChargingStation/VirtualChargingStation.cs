@@ -1437,7 +1437,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                               ReservationLevel,
                                                               ReservationStartTime,
                                                               Duration,
-                                                              ChargingReservation_Id.Random(OperatorId),
+                                                              ChargingReservation_Id.NewRandom(OperatorId),
                                                               LinkedReservationId,
                                                               ProviderId,
                                                               RemoteAuthentication,
@@ -1460,7 +1460,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             if (newReservations.Length > 0)
                             {
 
-                                newReservation = new ChargingReservation(Id:                      ReservationId ?? ChargingReservation_Id.Random(OperatorId),
+                                newReservation = new ChargingReservation(Id:                      ReservationId ?? ChargingReservation_Id.NewRandom(OperatorId),
                                                                          Timestamp:               Timestamp.Value,
                                                                          StartTime:               ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                          Duration:                Duration  ?? MaxReservationDuration,
@@ -2058,7 +2058,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Initial checks
 
-            SessionId       ??= ChargingSession_Id.NewRandom;
+            SessionId       ??= ChargingSession_Id.NewRandom(OperatorId);
             Timestamp       ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             EventTrackingId ??= EventTracking_Id.New;
 

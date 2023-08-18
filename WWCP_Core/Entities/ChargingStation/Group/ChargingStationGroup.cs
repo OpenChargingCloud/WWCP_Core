@@ -120,11 +120,11 @@ namespace cloud.charging.open.protocols.WWCP
                              ? null
                              : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/ChargingStationGroup"),
 
-                         ChargingStationGroup.Name.       IsNeitherNullNorEmpty()
+                         ChargingStationGroup.Name.       IsNotNullOrEmpty()
                              ? new JProperty("name",        ChargingStationGroup.Name.ToJSON())
                              : null,
 
-                         ChargingStationGroup.Description.IsNeitherNullNorEmpty()
+                         ChargingStationGroup.Description.IsNotNullOrEmpty()
                              ? new JProperty("description", ChargingStationGroup.Description.ToJSON())
                              : null,
 

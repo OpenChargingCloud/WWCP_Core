@@ -43,8 +43,8 @@ namespace cloud.charging.open.protocols.WWCP
         public DeleteRoamingNetworkResult(IRoamingNetwork        RoamingNetwork,
                                           CommandResult    Result,
                                           EventTracking_Id?      EventTrackingId   = null,
-                                          IId?                   AuthId            = null,
-                                          Object?                SendPOIData       = null,
+                                          IId?                   SenderId          = null,
+                                          Object?                Sender            = null,
                                           I18NString?            Description       = null,
                                           IEnumerable<Warning>?  Warnings          = null,
                                           TimeSpan?              Runtime           = null)
@@ -52,8 +52,8 @@ namespace cloud.charging.open.protocols.WWCP
             : base(RoamingNetwork,
                    Result,
                    EventTrackingId,
-                   AuthId,
-                   SendPOIData,
+                   SenderId,
+                   Sender,
                    Description,
                    Warnings,
                    Runtime)
@@ -64,8 +64,8 @@ namespace cloud.charging.open.protocols.WWCP
         public DeleteRoamingNetworkResult(RoamingNetwork_Id      RoamingNetworkId,
                                           CommandResult    Result,
                                           EventTracking_Id?      EventTrackingId   = null,
-                                          IId?                   AuthId            = null,
-                                          Object?                SendPOIData       = null,
+                                          IId?                   SenderId          = null,
+                                          Object?                Sender            = null,
                                           I18NString?            Description       = null,
                                           IEnumerable<Warning>?  Warnings          = null,
                                           TimeSpan?              Runtime           = null)
@@ -73,8 +73,8 @@ namespace cloud.charging.open.protocols.WWCP
             : base(RoamingNetworkId,
                    Result,
                    EventTrackingId,
-                   AuthId,
-                   SendPOIData,
+                   SenderId,
+                   Sender,
                    Description,
                    Warnings,
                    Runtime)
@@ -90,8 +90,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             AdminDown(IRoamingNetwork        RoamingNetwork,
                       EventTracking_Id?      EventTrackingId   = null,
-                      IId?                   AuthId            = null,
-                      Object?                SendPOIData       = null,
+                      IId?                   SenderId          = null,
+                      Object?                Sender            = null,
                       I18NString?            Description       = null,
                       IEnumerable<Warning>?  Warnings          = null,
                       TimeSpan?              Runtime           = null)
@@ -99,8 +99,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (RoamingNetwork,
                         CommandResult.AdminDown,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         Description,
                         Warnings,
                         Runtime);
@@ -113,8 +113,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             NoOperation(IRoamingNetwork        RoamingNetwork,
                         EventTracking_Id?      EventTrackingId   = null,
-                        IId?                   AuthId            = null,
-                        Object?                SendPOIData       = null,
+                        IId?                   SenderId          = null,
+                        Object?                Sender            = null,
                         I18NString?            Description       = null,
                         IEnumerable<Warning>?  Warnings          = null,
                         TimeSpan?              Runtime           = null)
@@ -122,8 +122,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (RoamingNetwork,
                         CommandResult.NoOperation,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         Description,
                         Warnings,
                         Runtime);
@@ -137,8 +137,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             Enqueued(IRoamingNetwork        RoamingNetwork,
                      EventTracking_Id?      EventTrackingId   = null,
-                     IId?                   AuthId            = null,
-                     Object?                SendPOIData       = null,
+                     IId?                   SenderId          = null,
+                     Object?                Sender            = null,
                      I18NString?            Description       = null,
                      IEnumerable<Warning>?  Warnings          = null,
                      TimeSpan?              Runtime           = null)
@@ -146,8 +146,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (RoamingNetwork,
                         CommandResult.Enqueued,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         Description,
                         Warnings,
                         Runtime);
@@ -160,8 +160,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             Success(IRoamingNetwork        RoamingNetwork,
                     EventTracking_Id?      EventTrackingId   = null,
-                    IId?                   AuthId            = null,
-                    Object?                SendPOIData       = null,
+                    IId?                   SenderId          = null,
+                    Object?                Sender            = null,
                     I18NString?            Description       = null,
                     IEnumerable<Warning>?  Warnings          = null,
                     TimeSpan?              Runtime           = null)
@@ -169,8 +169,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (RoamingNetwork,
                         CommandResult.Success,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         Description,
                         Warnings,
                         Runtime);
@@ -184,8 +184,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             CanNotBeRemoved(IRoamingNetwork        RoamingNetwork,
                             EventTracking_Id?      EventTrackingId   = null,
-                            IId?                   AuthId            = null,
-                            Object?                SendPOIData       = null,
+                            IId?                   SenderId          = null,
+                            Object?                Sender            = null,
                             I18NString?            Description       = null,
                             IEnumerable<Warning>?  Warnings          = null,
                             TimeSpan?              Runtime           = null)
@@ -193,8 +193,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (RoamingNetwork,
                         CommandResult.CanNotBeRemoved,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         Description,
                         Warnings,
                         Runtime);
@@ -209,16 +209,16 @@ namespace cloud.charging.open.protocols.WWCP
             ArgumentError(IRoamingNetwork        RoamingNetwork,
                           I18NString             Description,
                           EventTracking_Id?      EventTrackingId   = null,
-                          IId?                   AuthId            = null,
-                          Object?                SendPOIData       = null,
+                          IId?                   SenderId          = null,
+                          Object?                Sender            = null,
                           IEnumerable<Warning>?  Warnings          = null,
                           TimeSpan?              Runtime           = null)
 
                 => new (RoamingNetwork,
                         CommandResult.ArgumentError,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         Description,
                         Warnings,
                         Runtime);
@@ -232,16 +232,16 @@ namespace cloud.charging.open.protocols.WWCP
             Error(IRoamingNetwork        RoamingNetwork,
                   I18NString             Description,
                   EventTracking_Id?      EventTrackingId   = null,
-                  IId?                   AuthId            = null,
-                  Object?                SendPOIData       = null,
+                  IId?                   SenderId          = null,
+                  Object?                Sender            = null,
                   IEnumerable<Warning>?  Warnings          = null,
                   TimeSpan?              Runtime           = null)
 
                 => new (RoamingNetwork,
                         CommandResult.Error,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         Description,
                         Warnings,
                         Runtime);
@@ -255,17 +255,40 @@ namespace cloud.charging.open.protocols.WWCP
             Error(IRoamingNetwork        RoamingNetwork,
                   Exception              Exception,
                   EventTracking_Id?      EventTrackingId   = null,
-                  IId?                   AuthId            = null,
-                  Object?                SendPOIData       = null,
+                  IId?                   SenderId          = null,
+                  Object?                Sender            = null,
                   IEnumerable<Warning>?  Warnings          = null,
                   TimeSpan?              Runtime           = null)
 
                 => new (RoamingNetwork,
                         CommandResult.Error,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         Exception.Message.ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Timeout        (RoamingNetwork, Timeout,     ...)
+
+        public static DeleteRoamingNetworkResult
+
+            Timeout(IRoamingNetwork        RoamingNetwork,
+                    TimeSpan               Timeout,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   SenderId          = null,
+                    Object?                Sender            = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (RoamingNetwork,
+                        CommandResult.Timeout,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        $"Timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,
                         Runtime);
 
@@ -278,16 +301,16 @@ namespace cloud.charging.open.protocols.WWCP
             LockTimeout(IRoamingNetwork        RoamingNetwork,
                         TimeSpan               Timeout,
                         EventTracking_Id?      EventTrackingId   = null,
-                        IId?                   AuthId            = null,
-                        Object?                SendPOIData       = null,
+                        IId?                   SenderId          = null,
+                        Object?                Sender            = null,
                         IEnumerable<Warning>?  Warnings          = null,
                         TimeSpan?              Runtime           = null)
 
                 => new (RoamingNetwork,
                         CommandResult.LockTimeout,
                         EventTrackingId,
-                        AuthId,
-                        SendPOIData,
+                        SenderId,
+                        Sender,
                         $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,
                         Runtime);

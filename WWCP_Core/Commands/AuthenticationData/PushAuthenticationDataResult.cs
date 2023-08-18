@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region (private) PushAuthenticationDataResult(AuthId, ISendAuthenticationData,    Result,...)
+        #region (private) PushAuthenticationDataResult(SenderId, ISendAuthenticationData,    Result,...)
 
         /// <summary>
         /// Create a new acknowledgement.
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushAuthenticationDataResult(IId                                AuthId,
+        private PushAuthenticationDataResult(IId                                SenderId,
                                              ISendAuthenticationData            ISendAuthenticationData,
                                              PushAuthenticationDataResultTypes  Result,
                                              IEnumerable<EVSE>?                 RejectedEVSEs  = null,
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (private) PushAuthenticationDataResult(AuthId, IReceiveAuthenticationData, Result,...)
+        #region (private) PushAuthenticationDataResult(SenderId, IReceiveAuthenticationData, Result,...)
 
         /// <summary>
         /// Create a new acknowledgement.
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushAuthenticationDataResult(IId                                AuthId,
+        private PushAuthenticationDataResult(IId                                SenderId,
                                              IReceiveAuthenticationData         IReceiveAuthenticationData,
                                              PushAuthenticationDataResultTypes  Result,
                                              IEnumerable<EVSE>?                 RejectedEVSEs  = null,
@@ -162,14 +162,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region AdminDown
 
-        public static PushAuthenticationDataResult AdminDown(IId                      AuthId,
+        public static PushAuthenticationDataResult AdminDown(IId                      SenderId,
                                                              ISendAuthenticationData  ISendAuthenticationData,
                                                              IEnumerable<EVSE>        RejectedEVSEs  = null,
                                                              String                   Description    = null,
                                                              IEnumerable<String>      Warnings       = null,
                                                              TimeSpan?                Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAuthenticationData,
                     PushAuthenticationDataResultTypes.AdminDown,
                     RejectedEVSEs,
@@ -178,14 +178,14 @@ namespace cloud.charging.open.protocols.WWCP
                     Runtime);
 
 
-        public static PushAuthenticationDataResult AdminDown(IId                         AuthId,
+        public static PushAuthenticationDataResult AdminDown(IId                         SenderId,
                                                              IReceiveAuthenticationData  IReceiveAuthenticationData,
                                                              IEnumerable<EVSE>           RejectedEVSEs  = null,
                                                              String                      Description    = null,
                                                              IEnumerable<String>         Warnings       = null,
                                                              TimeSpan?                   Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveAuthenticationData,
                     PushAuthenticationDataResultTypes.AdminDown,
                     RejectedEVSEs,
@@ -197,13 +197,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Success
 
-        public static PushAuthenticationDataResult Success(IId                      AuthId,
+        public static PushAuthenticationDataResult Success(IId                      SenderId,
                                                            ISendAuthenticationData  ISendAuthenticationData,
                                                            String                   Description   = null,
                                                            IEnumerable<String>      Warnings      = null,
                                                            TimeSpan?                Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAuthenticationData,
                     PushAuthenticationDataResultTypes.Success,
                     Array.Empty<EVSE>(),
@@ -212,13 +212,13 @@ namespace cloud.charging.open.protocols.WWCP
                     Runtime);
 
 
-        public static PushAuthenticationDataResult Success(IId                         AuthId,
+        public static PushAuthenticationDataResult Success(IId                         SenderId,
                                                            IReceiveAuthenticationData  IReceiveAuthenticationData,
                                                            String                      Description   = null,
                                                            IEnumerable<String>         Warnings      = null,
                                                            TimeSpan?                   Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveAuthenticationData,
                     PushAuthenticationDataResultTypes.Success,
                     Array.Empty<EVSE>(),
@@ -230,13 +230,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Enqueued
 
-        public static PushAuthenticationDataResult Enqueued(IId                      AuthId,
+        public static PushAuthenticationDataResult Enqueued(IId                      SenderId,
                                                             ISendAuthenticationData  ISendAuthenticationData,
                                                             String?                  Description   = null,
                                                             IEnumerable<String>?     Warnings      = null,
                                                             TimeSpan?                Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAuthenticationData,
                     PushAuthenticationDataResultTypes.Enqueued,
                     Array.Empty<EVSE>(),
@@ -248,13 +248,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region NoOperation
 
-        public static PushAuthenticationDataResult NoOperation(IId                      AuthId,
+        public static PushAuthenticationDataResult NoOperation(IId                      SenderId,
                                                                ISendAuthenticationData  ISendAuthenticationData,
                                                                String?                  Description    = null,
                                                                IEnumerable<String>?     Warnings       = null,
                                                                TimeSpan?                Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAuthenticationData,
                     PushAuthenticationDataResultTypes.NoOperation,
                     Array.Empty<EVSE>(),
@@ -263,13 +263,13 @@ namespace cloud.charging.open.protocols.WWCP
                     Runtime);
 
 
-         public static PushAuthenticationDataResult NoOperation(IId                         AuthId,
+         public static PushAuthenticationDataResult NoOperation(IId                         SenderId,
                                                                 IReceiveAuthenticationData  IReceiveAuthenticationData,
                                                                 String?                     Description    = null,
                                                                 IEnumerable<String>?        Warnings       = null,
                                                                 TimeSpan?                   Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveAuthenticationData,
                     PushAuthenticationDataResultTypes.NoOperation,
                     Array.Empty<EVSE>(),
@@ -282,14 +282,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Error
 
-        public static PushAuthenticationDataResult Error(IId                      AuthId,
+        public static PushAuthenticationDataResult Error(IId                      SenderId,
                                                          ISendAuthenticationData  ISendAuthenticationData,
                                                          IEnumerable<EVSE>        RejectedEVSEs  = null,
                                                          String                   Description    = null,
                                                          IEnumerable<String>      Warnings       = null,
                                                          TimeSpan?                Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendAuthenticationData,
                     PushAuthenticationDataResultTypes.Error,
                     RejectedEVSEs,
@@ -298,14 +298,14 @@ namespace cloud.charging.open.protocols.WWCP
                     Runtime);
 
 
-        public static PushAuthenticationDataResult Error(IId                         AuthId,
+        public static PushAuthenticationDataResult Error(IId                         SenderId,
                                                          IReceiveAuthenticationData  IReceiveAuthenticationData,
                                                          IEnumerable<EVSE>           RejectedEVSEs  = null,
                                                          String                      Description    = null,
                                                          IEnumerable<String>         Warnings       = null,
                                                          TimeSpan?                   Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveAuthenticationData,
                     PushAuthenticationDataResultTypes.Error,
                     RejectedEVSEs,

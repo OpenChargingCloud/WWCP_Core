@@ -3898,11 +3898,11 @@ namespace cloud.charging.open.protocols.WWCP
                                    ? new JProperty("@context",     JSONLDContext)
                                    : null,
 
-                               Name.       IsNeitherNullNorEmpty()
+                               Name.       IsNotNullOrEmpty()
                                    ? new JProperty("name",         Name.ToJSON())
                                    : null,
 
-                               Description.IsNeitherNullNorEmpty()
+                               Description.IsNotNullOrEmpty()
                                    ? new JProperty("description",  Description.ToJSON())
                                    : null,
 
@@ -4069,7 +4069,7 @@ namespace cloud.charging.open.protocols.WWCP
                     statusSchedule.     MaxStatusHistorySize,
 
                     DataSource,
-                    LastChange,
+                    LastChangeDate,
 
                     CustomData,
                     InternalData);

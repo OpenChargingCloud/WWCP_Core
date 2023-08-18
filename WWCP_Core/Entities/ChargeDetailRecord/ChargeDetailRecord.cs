@@ -612,7 +612,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  //new JProperty("signature",      Signature)
 
                                  new JProperty("created",                     Created.   ToIso8601()),
-                                 new JProperty("lastChange",                  LastChange.ToIso8601())
+                                 new JProperty("lastChange",                  LastChangeDate.ToIso8601())
 
                        );
 

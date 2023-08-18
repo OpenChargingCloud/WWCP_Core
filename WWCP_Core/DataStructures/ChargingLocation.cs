@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.EVSEId                     = EVSEId;
             this.ChargingStationId          = ChargingStationId;
             this.ChargingPoolId             = ChargingPoolId;
-            this.ChargingStationOperatorId  = ChargingStationOperatorId;
+            this.ChargingStationOperatorId  = ChargingStationOperatorId ?? ChargingPoolId?.OperatorId ?? ChargingStationId?.OperatorId ?? EVSEId?.OperatorId;
 
         }
 

@@ -482,8 +482,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddRoamingNetworkResult.NoOperation(
                            RoamingNetwork:   RoamingNetwork,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -516,8 +516,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddRoamingNetworkResult.NoOperation(
                            RoamingNetwork:   RoamingNetwork,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -550,8 +550,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddOrUpdateRoamingNetworkResult.NoOperation(
                            RoamingNetwork:   RoamingNetwork,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -592,8 +592,8 @@ namespace cloud.charging.open.protocols.WWCP
                        UpdateRoamingNetworkResult.NoOperation(
                            RoamingNetwork:   RoamingNetwork,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -626,8 +626,8 @@ namespace cloud.charging.open.protocols.WWCP
                        DeleteRoamingNetworkResult.NoOperation(
                            RoamingNetwork:   RoamingNetwork,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -660,8 +660,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddRoamingNetworksResult.NoOperation(
                            RejectedRoamingNetworks:  RoamingNetworks,
-                           AuthId:                   Id,
-                           SendPOIData:              this,
+                           SenderId:                 Id,
+                           Sender:                   this,
                            EventTrackingId:          EventTrackingId
                        )
                    );
@@ -694,8 +694,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddRoamingNetworksResult.NoOperation(
                            RejectedRoamingNetworks:  RoamingNetworks,
-                           AuthId:                   Id,
-                           SendPOIData:              this,
+                           SenderId:                 Id,
+                           Sender:                   this,
                            EventTrackingId:          EventTrackingId
                        )
                    );
@@ -728,8 +728,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddOrUpdateRoamingNetworksResult.NoOperation(
                            RejectedRoamingNetworks:  RoamingNetworks,
-                           AuthId:                   Id,
-                           SendPOIData:              this,
+                           SenderId:                 Id,
+                           Sender:                   this,
                            EventTrackingId:          EventTrackingId
                        )
                    );
@@ -762,8 +762,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        UpdateRoamingNetworksResult.NoOperation(
                            RejectedRoamingNetworks:  RoamingNetworks,
-                           AuthId:                   Id,
-                           SendPOIData:              this,
+                           SenderId:                 Id,
+                           Sender:                   this,
                            EventTrackingId:          EventTrackingId
                        )
                    );
@@ -796,8 +796,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        DeleteRoamingNetworksResult.NoOperation(
                            RejectedRoamingNetworks:  RoamingNetworks,
-                           AuthId:                   Id,
-                           SendPOIData:              this,
+                           SenderId:                 Id,
+                           Sender:                   this,
                            EventTrackingId:          EventTrackingId
                        )
                    );
@@ -916,8 +916,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddChargingStationOperatorResult.NoOperation(
                            ChargingStationOperator:  ChargingStationOperator,
                            EventTrackingId:          EventTrackingId,
-                           AuthId:                   Id,
-                           SendPOIData:              this
+                           SenderId:                 Id,
+                           Sender:              this
                        )
                    );
 
@@ -950,8 +950,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddChargingStationOperatorResult.NoOperation(
                            ChargingStationOperator:  ChargingStationOperator,
                            EventTrackingId:          EventTrackingId,
-                           AuthId:                   Id,
-                           SendPOIData:              this
+                           SenderId:                 Id,
+                           Sender:              this
                        )
                    );
 
@@ -984,8 +984,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddOrUpdateChargingStationOperatorResult.NoOperation(
                            ChargingStationOperator:  ChargingStationOperator,
                            EventTrackingId:          EventTrackingId,
-                           AuthId:                   Id,
-                           SendPOIData:              this
+                           SenderId:                 Id,
+                           Sender:              this
                        )
                    );
 
@@ -1026,8 +1026,8 @@ namespace cloud.charging.open.protocols.WWCP
                        UpdateChargingStationOperatorResult.NoOperation(
                            ChargingStationOperator:  ChargingStationOperator,
                            EventTrackingId:          EventTrackingId,
-                           AuthId:                   Id,
-                           SendPOIData:              this
+                           SenderId:                 Id,
+                           Sender:              this
                        )
                    );
 
@@ -1060,8 +1060,8 @@ namespace cloud.charging.open.protocols.WWCP
                        DeleteChargingStationOperatorResult.NoOperation(
                            ChargingStationOperator:  ChargingStationOperator,
                            EventTrackingId:          EventTrackingId,
-                           AuthId:                   Id,
-                           SendPOIData:              this
+                           SenderId:                 Id,
+                           Sender:              this
                        )
                    );
 
@@ -1094,8 +1094,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddChargingStationOperatorsResult.NoOperation(
                            RejectedChargingStationOperators:  ChargingStationOperators,
-                           AuthId:                            Id,
-                           SendPOIData:                       this,
+                           SenderId:                          Id,
+                           Sender:                       this,
                            EventTrackingId:                   EventTrackingId
                        )
                    );
@@ -1128,8 +1128,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddChargingStationOperatorsResult.NoOperation(
                            RejectedChargingStationOperators:  ChargingStationOperators,
-                           AuthId:                            Id,
-                           SendPOIData:                       this,
+                           SenderId:                          Id,
+                           Sender:                       this,
                            EventTrackingId:                   EventTrackingId
                        )
                    );
@@ -1162,8 +1162,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddOrUpdateChargingStationOperatorsResult.NoOperation(
                            RejectedChargingStationOperators:  ChargingStationOperators,
-                           AuthId:                            Id,
-                           SendPOIData:                       this,
+                           SenderId:                          Id,
+                           Sender:                       this,
                            EventTrackingId:                   EventTrackingId
                        )
                    );
@@ -1196,8 +1196,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        UpdateChargingStationOperatorsResult.NoOperation(
                            RejectedChargingStationOperators:  ChargingStationOperators,
-                           AuthId:                            Id,
-                           SendPOIData:                       this,
+                           SenderId:                          Id,
+                           Sender:                       this,
                            EventTrackingId:                   EventTrackingId
                        )
                    );
@@ -1230,8 +1230,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        DeleteChargingStationOperatorsResult.NoOperation(
                            RejectedChargingStationOperators:  ChargingStationOperators,
-                           AuthId:                            Id,
-                           SendPOIData:                       this,
+                           SenderId:                          Id,
+                           Sender:                       this,
                            EventTrackingId:                   EventTrackingId
                        )
                    );
@@ -1350,8 +1350,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddChargingPoolResult.NoOperation(
                            ChargingPool:     ChargingPool,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -1384,8 +1384,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddChargingPoolResult.NoOperation(
                            ChargingPool:     ChargingPool,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -1418,8 +1418,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddOrUpdateChargingPoolResult.NoOperation(
                            ChargingPool:     ChargingPool,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -1460,8 +1460,8 @@ namespace cloud.charging.open.protocols.WWCP
                        UpdateChargingPoolResult.NoOperation(
                            ChargingPool:     ChargingPool,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -1494,8 +1494,8 @@ namespace cloud.charging.open.protocols.WWCP
                        DeleteChargingPoolResult.NoOperation(
                            ChargingPool:     ChargingPool,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -1528,8 +1528,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddChargingPoolsResult.NoOperation(
                            RejectedChargingPools:  ChargingPools,
-                           AuthId:                 Id,
-                           SendPOIData:            this,
+                           SenderId:               Id,
+                           Sender:            this,
                            EventTrackingId:        EventTrackingId
                        )
                    );
@@ -1562,8 +1562,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddChargingPoolsResult.NoOperation(
                            RejectedChargingPools:  ChargingPools,
-                           AuthId:                 Id,
-                           SendPOIData:            this,
+                           SenderId:               Id,
+                           Sender:            this,
                            EventTrackingId:        EventTrackingId
                        )
                    );
@@ -1596,8 +1596,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddOrUpdateChargingPoolsResult.NoOperation(
                            RejectedChargingPools:  ChargingPools,
-                           AuthId:                 Id,
-                           SendPOIData:            this,
+                           SenderId:               Id,
+                           Sender:            this,
                            EventTrackingId:        EventTrackingId
                        )
                    );
@@ -1630,8 +1630,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        UpdateChargingPoolsResult.NoOperation(
                            RejectedChargingPools:  ChargingPools,
-                           AuthId:                 Id,
-                           SendPOIData:            this,
+                           SenderId:               Id,
+                           Sender:            this,
                            EventTrackingId:        EventTrackingId
                        )
                    );
@@ -1665,8 +1665,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        ReplaceChargingPoolsResult.NoOperation(
                            RejectedChargingPools:  ChargingPools,
-                           AuthId:                 Id,
-                           SendPOIData:            this,
+                           SenderId:               Id,
+                           Sender:            this,
                            EventTrackingId:        EventTrackingId
                        )
                    );
@@ -1699,8 +1699,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        DeleteChargingPoolsResult.NoOperation(
                            RejectedChargingPools:  ChargingPools,
-                           AuthId:                 Id,
-                           SendPOIData:            this,
+                           SenderId:               Id,
+                           Sender:            this,
                            EventTrackingId:        EventTrackingId
                        )
                    );
@@ -1851,8 +1851,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddChargingStationResult.NoOperation(
                            ChargingStation:  ChargingStation,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -1885,8 +1885,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddChargingStationResult.NoOperation(
                            ChargingStation:  ChargingStation,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -1919,8 +1919,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddOrUpdateChargingStationResult.NoOperation(
                            ChargingStation:  ChargingStation,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -1961,8 +1961,8 @@ namespace cloud.charging.open.protocols.WWCP
                        UpdateChargingStationResult.NoOperation(
                            ChargingStation:  ChargingStation,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -1995,8 +1995,8 @@ namespace cloud.charging.open.protocols.WWCP
                        DeleteChargingStationResult.NoOperation(
                            ChargingStation:  ChargingStation,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -2029,8 +2029,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddChargingStationsResult.NoOperation(
                            RejectedChargingStations:  ChargingStations,
-                           AuthId:                    Id,
-                           SendPOIData:               this,
+                           SenderId:                  Id,
+                           Sender:               this,
                            EventTrackingId:           EventTrackingId
                        )
                    );
@@ -2063,8 +2063,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddChargingStationsResult.NoOperation(
                            RejectedChargingStations:  ChargingStations,
-                           AuthId:                    Id,
-                           SendPOIData:               this,
+                           SenderId:                  Id,
+                           Sender:               this,
                            EventTrackingId:           EventTrackingId
                        )
                    );
@@ -2097,8 +2097,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddOrUpdateChargingStationsResult.NoOperation(
                            RejectedChargingStations:  ChargingStations,
-                           AuthId:                    Id,
-                           SendPOIData:               this,
+                           SenderId:                  Id,
+                           Sender:               this,
                            EventTrackingId:           EventTrackingId
                        )
                    );
@@ -2131,8 +2131,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        UpdateChargingStationsResult.NoOperation(
                            RejectedChargingStations:  ChargingStations,
-                           AuthId:                    Id,
-                           SendPOIData:               this,
+                           SenderId:                  Id,
+                           Sender:               this,
                            EventTrackingId:           EventTrackingId
                        )
                    );
@@ -2166,8 +2166,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        ReplaceChargingStationsResult.NoOperation(
                            RejectedChargingStations:  ChargingStations,
-                           AuthId:                    Id,
-                           SendPOIData:               this,
+                           SenderId:                  Id,
+                           Sender:               this,
                            EventTrackingId:           EventTrackingId
                        )
                    );
@@ -2200,8 +2200,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        DeleteChargingStationsResult.NoOperation(
                            RejectedChargingStations:  ChargingStations,
-                           AuthId:                    Id,
-                           SendPOIData:               this,
+                           SenderId:                  Id,
+                           Sender:               this,
                            EventTrackingId:           EventTrackingId
                        )
                    );
@@ -2352,8 +2352,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddEVSEResult.NoOperation(
                            EVSE:             EVSE,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -2386,8 +2386,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddEVSEResult.NoOperation(
                            EVSE:             EVSE,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -2420,8 +2420,8 @@ namespace cloud.charging.open.protocols.WWCP
                        AddOrUpdateEVSEResult.NoOperation(
                            EVSE:             EVSE,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -2462,8 +2462,8 @@ namespace cloud.charging.open.protocols.WWCP
                        UpdateEVSEResult.NoOperation(
                            EVSE:             EVSE,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -2496,8 +2496,8 @@ namespace cloud.charging.open.protocols.WWCP
                        DeleteEVSEResult.NoOperation(
                            EVSE:             EVSE,
                            EventTrackingId:  EventTrackingId,
-                           AuthId:           Id,
-                           SendPOIData:      this
+                           SenderId:         Id,
+                           Sender:           this
                        )
                    );
 
@@ -2530,8 +2530,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddEVSEsResult.NoOperation(
                            RejectedEVSEs:    EVSEs,
-                           AuthId:           Id,
-                           SendPOIData:      this,
+                           SenderId:         Id,
+                           Sender:           this,
                            EventTrackingId:  EventTrackingId
                        )
                    );
@@ -2564,8 +2564,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddEVSEsResult.NoOperation(
                            RejectedEVSEs:    EVSEs,
-                           AuthId:           Id,
-                           SendPOIData:      this,
+                           SenderId:         Id,
+                           Sender:           this,
                            EventTrackingId:  EventTrackingId
                        )
                    );
@@ -2598,8 +2598,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        AddOrUpdateEVSEsResult.NoOperation(
                            RejectedEVSEs:    EVSEs,
-                           AuthId:           Id,
-                           SendPOIData:      this,
+                           SenderId:         Id,
+                           Sender:           this,
                            EventTrackingId:  EventTrackingId
                        )
                    );
@@ -2632,8 +2632,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        UpdateEVSEsResult.NoOperation(
                            RejectedEVSEs:    EVSEs,
-                           AuthId:           Id,
-                           SendPOIData:      this,
+                           SenderId:         Id,
+                           Sender:           this,
                            EventTrackingId:  EventTrackingId
                        )
                    );
@@ -2667,8 +2667,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        ReplaceEVSEsResult.NoOperation(
                            RejectedEVSEs:    EVSEs,
-                           AuthId:           Id,
-                           SendPOIData:      this,
+                           SenderId:         Id,
+                           Sender:           this,
                            EventTrackingId:  EventTrackingId
                        )
                    );
@@ -2701,8 +2701,8 @@ namespace cloud.charging.open.protocols.WWCP
                 => Task.FromResult(
                        DeleteEVSEsResult.NoOperation(
                            RejectedEVSEs:    EVSEs,
-                           AuthId:           Id,
-                           SendPOIData:      this,
+                           SenderId:         Id,
+                           Sender:           this,
                            EventTrackingId:  EventTrackingId
                        )
                    );

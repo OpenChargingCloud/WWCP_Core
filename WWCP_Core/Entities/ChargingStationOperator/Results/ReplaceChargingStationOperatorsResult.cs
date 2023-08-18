@@ -26,24 +26,24 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The result of an add or update charging station operators request.
+    /// The result of a replace charging station operators request.
     /// </summary>
-    public class AddOrUpdateChargingStationOperatorsResult : AEnititiesResult<AddOrUpdateChargingStationOperatorResult,
-                                                                              IChargingStationOperator,
-                                                                              ChargingStationOperator_Id>
+    public class ReplaceChargingStationOperatorsResult : AEnititiesResult<AddOrUpdateChargingStationOperatorResult,
+                                                                          IChargingStationOperator,
+                                                                          ChargingStationOperator_Id>
     {
 
         #region Constructor(s)
 
-        public AddOrUpdateChargingStationOperatorsResult(CommandResult                                     Result,
-                                                         IEnumerable<AddOrUpdateChargingStationOperatorResult>?  SuccessfulChargingStationOperators   = null,
-                                                         IEnumerable<AddOrUpdateChargingStationOperatorResult>?  RejectedChargingStationOperators     = null,
-                                                         IId?                                                    AuthId                               = null,
-                                                         Object?                                                 Sender                          = null,
-                                                         EventTracking_Id?                                       EventTrackingId                      = null,
-                                                         I18NString?                                             Description                          = null,
-                                                         IEnumerable<Warning>?                                   Warnings                             = null,
-                                                         TimeSpan?                                               Runtime                              = null)
+        public ReplaceChargingStationOperatorsResult(CommandResult                                           Result,
+                                                     IEnumerable<AddOrUpdateChargingStationOperatorResult>?  SuccessfulChargingStationOperators   = null,
+                                                     IEnumerable<AddOrUpdateChargingStationOperatorResult>?  RejectedChargingStationOperators     = null,
+                                                     IId?                                                    AuthId                               = null,
+                                                     Object?                                                 Sender                          = null,
+                                                     EventTracking_Id?                                       EventTrackingId                      = null,
+                                                     I18NString?                                             Description                          = null,
+                                                     IEnumerable<Warning>?                                   Warnings                             = null,
+                                                     TimeSpan?                                               Runtime                              = null)
 
             : base(Result,
                    SuccessfulChargingStationOperators,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) AdminDown    (RejectedChargingStationOperators,   ...)
 
-        public static AddOrUpdateChargingStationOperatorsResult
+        public static ReplaceChargingStationOperatorsResult
 
             AdminDown(IEnumerable<IChargingStationOperator>  RejectedChargingStationOperators,
                       IId?                                   SenderId          = null,
@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) NoOperation  (RejectedChargingStationOperators,   ...)
 
-        public static AddOrUpdateChargingStationOperatorsResult
+        public static ReplaceChargingStationOperatorsResult
 
             NoOperation(IEnumerable<IChargingStationOperator>  RejectedChargingStationOperators,
                         IId?                                   SenderId          = null,
@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Enqueued     (SuccessfulChargingPools, ...)
 
-        public static AddOrUpdateChargingStationOperatorsResult
+        public static ReplaceChargingStationOperatorsResult
 
             Enqueued(IEnumerable<IChargingStationOperator>  SuccessfulChargingPools,
                      IId?                                   SenderId          = null,
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Added        (SuccessfulChargingPools, ...)
 
-        public static AddOrUpdateChargingStationOperatorsResult
+        public static ReplaceChargingStationOperatorsResult
 
             Added(IEnumerable<IChargingStationOperator>  SuccessfulChargingPools,
                   IId?                                   SenderId          = null,
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Updated      (SuccessfulChargingPools, ...)
 
-        public static AddOrUpdateChargingStationOperatorsResult
+        public static ReplaceChargingStationOperatorsResult
 
             Updated(IEnumerable<IChargingStationOperator>  SuccessfulChargingPools,
                     IId?                                   SenderId          = null,
@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) ArgumentError(RejectedChargingStationOperators, Description, ...)
 
-        public static AddOrUpdateChargingStationOperatorsResult
+        public static ReplaceChargingStationOperatorsResult
 
             ArgumentError(IEnumerable<IChargingStationOperator>  RejectedChargingStationOperators,
                           I18NString                             Description,
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Error        (RejectedChargingStationOperators, Description, ...)
 
-        public static AddOrUpdateChargingStationOperatorsResult
+        public static ReplaceChargingStationOperatorsResult
 
             Error(IEnumerable<IChargingStationOperator>  RejectedChargingStationOperators,
                   I18NString                             Description,
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Error        (RejectedChargingStationOperators, Exception,   ...)
 
-        public static AddOrUpdateChargingStationOperatorsResult
+        public static ReplaceChargingStationOperatorsResult
 
             Error(IEnumerable<IChargingStationOperator>  RejectedChargingStationOperators,
                   Exception                              Exception,
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Timeout      (RejectedChargingStationOperators, Timeout,     ...)
 
-        public static AddOrUpdateChargingStationOperatorsResult
+        public static ReplaceChargingStationOperatorsResult
 
             Timeout(IEnumerable<IChargingStationOperator>  RejectedChargingStationOperators,
                     TimeSpan                               Timeout,
@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) LockTimeout  (RejectedChargingStationOperators, Timeout,     ...)
 
-        public static AddOrUpdateChargingStationOperatorsResult
+        public static ReplaceChargingStationOperatorsResult
 
             LockTimeout(IEnumerable<IChargingStationOperator>  RejectedChargingStationOperators,
                         TimeSpan                    Timeout,

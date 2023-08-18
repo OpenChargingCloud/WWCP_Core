@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region (private)  PushEVSEStatusResult(AuthId,                 Result, ...)
+        #region (private)  PushEVSEStatusResult(SenderId,                 Result, ...)
 
         /// <summary>
         /// Create a new PushEVSEStatus result.
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedEVSEStatusUpdates">An enumeration of rejected EVSE status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushEVSEStatusResult(IId                             AuthId,
+        private PushEVSEStatusResult(IId                             SenderId,
                                      PushEVSEStatusResultTypes       Result,
                                      String?                         Description                 = null,
                                      IEnumerable<EVSEStatusUpdate>?  RejectedEVSEStatusUpdates   = null,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) PushEVSEStatusResult(AuthId, ISendStatus,    Result, ...)
+        #region (internal) PushEVSEStatusResult(SenderId, ISendStatus,    Result, ...)
 
         /// <summary>
         /// Create a new PushEVSEStatus result.
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedEVSEStatusUpdates">An enumeration of rejected EVSE status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEVSEStatusResult(IId                             AuthId,
+        internal PushEVSEStatusResult(IId                             SenderId,
                                       ISendStatus                     ISendStatus,
                                       PushEVSEStatusResultTypes       Result,
                                       String?                         Description                 = null,
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.WWCP
                                       IEnumerable<Warning>?           Warnings                    = null,
                                       TimeSpan?                       Runtime                     = null)
 
-            : this(AuthId,
+            : this(SenderId,
                    Result,
                    Description,
                    RejectedEVSEStatusUpdates,
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) PushEVSEStatusResult(AuthId, IReceiveStatus, Result, ...)
+        #region (internal) PushEVSEStatusResult(SenderId, IReceiveStatus, Result, ...)
 
         /// <summary>
         /// Create a new PushEVSEStatus result.
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedEVSEStatusUpdates">An enumeration of rejected EVSE status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEVSEStatusResult(IId                             AuthId,
+        internal PushEVSEStatusResult(IId                             SenderId,
                                       IReceiveStatus                  IReceiveStatus,
                                       PushEVSEStatusResultTypes       Result,
                                       String?                         Description                 = null,
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP
                                       IEnumerable<Warning>?           Warnings                    = null,
                                       TimeSpan?                       Runtime                     = null)
 
-            : this(AuthId,
+            : this(SenderId,
                    Result,
                    Description,
                    RejectedEVSEStatusUpdates,
@@ -184,13 +184,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEStatusResult
 
-            Success(IId                    AuthId,
+            Success(IId                    SenderId,
                     ISendStatus            ISendStatus,
                     String?                Description    = null,
                     IEnumerable<Warning>?  Warnings       = null,
                     TimeSpan?              Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEVSEStatusResultTypes.Success,
                     Description,
@@ -201,13 +201,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEStatusResult
 
-            Success(IId                    AuthId,
+            Success(IId                    SenderId,
                     IReceiveStatus         IReceiveStatus,
                     String?                Description    = null,
                     IEnumerable<Warning>?  Warnings       = null,
                     TimeSpan?              Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveStatus,
                     PushEVSEStatusResultTypes.Success,
                     Description,
@@ -222,13 +222,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEStatusResult
 
-            Enqueued(IId                    AuthId,
+            Enqueued(IId                    SenderId,
                      ISendStatus            ISendStatus,
                      String?                Description    = null,
                      IEnumerable<Warning>?  Warnings       = null,
                      TimeSpan?              Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEVSEStatusResultTypes.Enqueued,
                     Description,
@@ -242,14 +242,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEStatusResult
 
-            NoOperation(IId                             AuthId,
+            NoOperation(IId                             SenderId,
                         ISendStatus                     ISendStatus,
                         String?                         Description                 = null,
                         IEnumerable<EVSEStatusUpdate>?  RejectedEVSEStatusUpdates   = null,
                         IEnumerable<Warning>?           Warnings                    = null,
                         TimeSpan?                       Runtime                     = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEVSEStatusResultTypes.NoOperation,
                     Description,
@@ -260,13 +260,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEStatusResult
 
-            NoOperation(IId                    AuthId,
+            NoOperation(IId                    SenderId,
                         IReceiveStatus         IReceiveStatus,
                         String?                Description    = null,
                         IEnumerable<Warning>?  Warnings       = null,
                         TimeSpan?              Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveStatus,
                     PushEVSEStatusResultTypes.NoOperation,
                     Description,
@@ -280,14 +280,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEStatusResult
 
-            OutOfService(IId                            AuthId,
+            OutOfService(IId                            SenderId,
                          ISendStatus                    ISendStatus,
                          IEnumerable<EVSEStatusUpdate>  RejectedEVSEStatusUpdates,
                          String?                        Description    = null,
                          IEnumerable<Warning>?          Warnings       = null,
                          TimeSpan?                      Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEVSEStatusResultTypes.OutOfService,
                     Description,
@@ -298,14 +298,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEStatusResult
 
-            OutOfService(IId                            AuthId,
+            OutOfService(IId                            SenderId,
                          IReceiveStatus                 IReceiveStatus,
                          IEnumerable<EVSEStatusUpdate>  RejectedEVSEStatusUpdates,
                          String?                        Description    = null,
                          IEnumerable<Warning>?          Warnings       = null,
                          TimeSpan?                      Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveStatus,
                     PushEVSEStatusResultTypes.OutOfService,
                     Description,
@@ -319,14 +319,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEStatusResult
 
-            AdminDown(IId                            AuthId,
+            AdminDown(IId                            SenderId,
                       ISendStatus                    ISendStatus,
                       IEnumerable<EVSEStatusUpdate>  RejectedEVSEStatusUpdates,
                       String?                        Description   = null,
                       IEnumerable<Warning>?          Warnings      = null,
                       TimeSpan?                      Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEVSEStatusResultTypes.AdminDown,
                     Description,
@@ -337,14 +337,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEStatusResult
 
-            AdminDown(IId                            AuthId,
+            AdminDown(IId                            SenderId,
                       IReceiveStatus                 IReceiveStatus,
                       IEnumerable<EVSEStatusUpdate>  RejectedEVSEStatusUpdates,
                       String?                        Description   = null,
                       IEnumerable<Warning>?          Warnings      = null,
                       TimeSpan?                      Runtime       = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveStatus,
                     PushEVSEStatusResultTypes.AdminDown,
                     Description,
@@ -358,14 +358,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEStatusResult
 
-            Error(IId                             AuthId,
+            Error(IId                             SenderId,
                   ISendStatus                     ISendStatus,
                   IEnumerable<EVSEStatusUpdate>?  RejectedEVSEs   = null,
                   String?                         Description     = null,
                   IEnumerable<Warning>?           Warnings        = null,
                   TimeSpan?                       Runtime         = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEVSEStatusResultTypes.Error,
                     Description,
@@ -376,14 +376,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEStatusResult
 
-            Error(IId                             AuthId,
+            Error(IId                             SenderId,
                   IReceiveStatus                  IReceiveStatus,
                   IEnumerable<EVSEStatusUpdate>?  RejectedEVSEs   = null,
                   String?                         Description     = null,
                   IEnumerable<Warning>?           Warnings        = null,
                   TimeSpan?                       Runtime         = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveStatus,
                     PushEVSEStatusResultTypes.Error,
                     Description,
@@ -397,14 +397,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEStatusResult
 
-            Failed(IId                             AuthId,
+            Failed(IId                             SenderId,
                    ISendStatus                     ISendStatus,
                    IEnumerable<EVSEStatusUpdate>?  RejectedEVSEs   = null,
                    String?                         Description     = null,
                    IEnumerable<Warning>?           Warnings        = null,
                    TimeSpan?                       Runtime         = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEVSEStatusResultTypes.Error,
                     Description,
@@ -415,14 +415,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEStatusResult
 
-            Failed(IId                             AuthId,
+            Failed(IId                             SenderId,
                    IReceiveStatus                  IReceiveStatus,
                    IEnumerable<EVSEStatusUpdate>?  RejectedEVSEs   = null,
                    String?                         Description     = null,
                    IEnumerable<Warning>?           Warnings        = null,
                    TimeSpan?                       Runtime         = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     IReceiveStatus,
                     PushEVSEStatusResultTypes.Failed,
                     Description,
@@ -436,13 +436,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEStatusResult
 
-            LockTimeout(IId                    AuthId,
+            LockTimeout(IId                    SenderId,
                         ISendStatus            ISendStatus,
                         String?                Description    = null,
                         IEnumerable<Warning>?  Warnings       = null,
                         TimeSpan?              Runtime        = null)
 
-            => new (AuthId,
+            => new (SenderId,
                     ISendStatus,
                     PushEVSEStatusResultTypes.LockTimeout,
                     Description,
@@ -455,7 +455,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Flatten(...)
 
-        public static PushEVSEStatusResult Flatten(IId                                AuthId,
+        public static PushEVSEStatusResult Flatten(IId                                SenderId,
                                                    ISendStatus                        ISendStatus,
                                                    IEnumerable<PushEVSEStatusResult>  PushEVSEStatusResults,
                                                    TimeSpan                           Runtime)
@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.WWCP
             #region Initial checks
 
             if (PushEVSEStatusResults == null || !PushEVSEStatusResults.Any())
-                return new PushEVSEStatusResult(AuthId,
+                return new PushEVSEStatusResult(SenderId,
                                                 ISendStatus,
                                                 PushEVSEStatusResultTypes.Error,
                                                 "!",
@@ -493,7 +493,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             foreach (var result in ResultOverview)
                 if (ResultOverview[result.Key].Count == All.Length)
-                    return new PushEVSEStatusResult(All[0].AuthId,
+                    return new PushEVSEStatusResult(All[0].SenderId,
                                                     ISendStatus,
                                                     result.Key,
                                                     Descriptions,
@@ -501,7 +501,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                     Warnings,
                                                     Runtime);
 
-            return new PushEVSEStatusResult(All[0].AuthId,
+            return new PushEVSEStatusResult(All[0].SenderId,
                                             ISendStatus,
                                             PushEVSEStatusResultTypes.Partial,
                                             Descriptions,
