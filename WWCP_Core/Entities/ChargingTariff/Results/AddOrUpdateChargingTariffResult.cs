@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         public IChargingTariff?           ChargingTariff
-            => Object;
+            => Entity;
 
         public IChargingStationOperator?  ChargingStationOperator    { get; internal set; }
 

@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         public IEVSE?             EVSE
-            => Object;
+            => Entity;
 
         public IChargingStation?  ChargingStation    { get; internal set; }
 

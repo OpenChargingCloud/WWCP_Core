@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         public IRoamingNetwork? RoamingNetwork
-            => Object;
+            => Entity;
 
         #endregion
 

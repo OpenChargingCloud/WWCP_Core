@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         public IChargingStation?  ChargingStation
-            => Object;
+            => Entity;
 
         public IChargingPool?     ChargingPool      { get; internal set; }
 

@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         public IChargingStationOperator?  ChargingStationOperator
-            => Object;
+            => Entity;
 
         public IRoamingNetwork?           RoamingNetwork    { get; internal set; }
 
