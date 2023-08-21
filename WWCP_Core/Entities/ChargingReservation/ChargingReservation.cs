@@ -209,9 +209,9 @@ namespace cloud.charging.open.protocols.WWCP
         [Optional]
         public EMobilityProvider_Id?     ProviderId                 { get; }
 
-        public CSORoamingProvider_Id?    EMPRoamingProviderId       { get; internal set; }
+        public EMPRoamingProvider_Id?    EMPRoamingProviderId       { get; internal set; }
 
-        public EMPRoamingProvider_Id?    CSORoamingProviderId       { get; internal set; }
+        public CSORoamingProvider_Id?    CSORoamingProviderId       { get; internal set; }
 
         [Optional]
         public AAuthentication           StartAuthentication        { get; internal set; }

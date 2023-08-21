@@ -55,10 +55,10 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingStationOperator_Id?  ChargingStationOperatorId
             => chargingReservations.LastOrDefault()?.ChargingStationOperatorId;
 
-        public CSORoamingProvider_Id?       EMPRoamingProviderId
+        public EMPRoamingProvider_Id?       EMPRoamingProviderId
             => chargingReservations.LastOrDefault()?.EMPRoamingProviderId;
 
-        public EMPRoamingProvider_Id?       CSORoamingProviderId
+        public CSORoamingProvider_Id?       CSORoamingProviderId
             => chargingReservations.LastOrDefault()?.CSORoamingProviderId;
 
         public ulong Length

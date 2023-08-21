@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.WWCP
     {
 
         public EMPRoamingProviderAlreadyExists(RoamingNetwork         RoamingNetwork,
-                                               CSORoamingProvider_Id  RoamingProviderId)
+                                               EMPRoamingProvider_Id  RoamingProviderId)
 
             : base(RoamingNetwork,
                    "The given e-mobility roaming provider identification '" + RoamingProviderId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")

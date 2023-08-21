@@ -313,21 +313,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         // EMPRoamingProviders provide access to other e-mobility operators via a roaming network
 
-        IEnumerable<ICSORoamingProvider>                 EMPRoamingProviders { get; }
+        IEnumerable<IEMPRoamingProvider>                 EMPRoamingProviders { get; }
 
-        Boolean                                          ContainsEMPRoamingProvider  (ICSORoamingProvider     EMPRoamingProvider);
-        Boolean                                          ContainsEMPRoamingProvider  (CSORoamingProvider_Id   EMPRoamingProviderId);
-        ICSORoamingProvider?                             GetEMPRoamingProviderById   (CSORoamingProvider_Id   EMPRoamingProviderId);
-        ICSORoamingProvider?                             GetEMPRoamingProviderById   (CSORoamingProvider_Id?  EMPRoamingProviderId);
-        Boolean                                          TryGetEMPRoamingProviderById(CSORoamingProvider_Id   Id, out ICSORoamingProvider? EMPRoamingProvider);
-        Boolean                                          TryGetEMPRoamingProviderById(CSORoamingProvider_Id?  Id, out ICSORoamingProvider? EMPRoamingProvider);
-        ICSORoamingProvider?                             RemoveEMPRoamingProvider    (CSORoamingProvider_Id   EMPRoamingProviderId);
-        ICSORoamingProvider?                             RemoveEMPRoamingProvider    (CSORoamingProvider_Id?  EMPRoamingProviderId);
-        Boolean                                          TryRemoveEMPRoamingProvider (CSORoamingProvider_Id   EMPRoamingProviderId, out ICSORoamingProvider? EMPRoamingProvider);
-        Boolean                                          TryRemoveEMPRoamingProvider (CSORoamingProvider_Id?  EMPRoamingProviderId, out ICSORoamingProvider? EMPRoamingProvider);
+        Boolean                                          ContainsEMPRoamingProvider  (IEMPRoamingProvider     EMPRoamingProvider);
+        Boolean                                          ContainsEMPRoamingProvider  (EMPRoamingProvider_Id   EMPRoamingProviderId);
+        IEMPRoamingProvider?                             GetEMPRoamingProviderById   (EMPRoamingProvider_Id   EMPRoamingProviderId);
+        IEMPRoamingProvider?                             GetEMPRoamingProviderById   (EMPRoamingProvider_Id?  EMPRoamingProviderId);
+        Boolean                                          TryGetEMPRoamingProviderById(EMPRoamingProvider_Id   Id, out IEMPRoamingProvider? EMPRoamingProvider);
+        Boolean                                          TryGetEMPRoamingProviderById(EMPRoamingProvider_Id?  Id, out IEMPRoamingProvider? EMPRoamingProvider);
+        IEMPRoamingProvider?                             RemoveEMPRoamingProvider    (EMPRoamingProvider_Id   EMPRoamingProviderId);
+        IEMPRoamingProvider?                             RemoveEMPRoamingProvider    (EMPRoamingProvider_Id?  EMPRoamingProviderId);
+        Boolean                                          TryRemoveEMPRoamingProvider (EMPRoamingProvider_Id   EMPRoamingProviderId, out IEMPRoamingProvider? EMPRoamingProvider);
+        Boolean                                          TryRemoveEMPRoamingProvider (EMPRoamingProvider_Id?  EMPRoamingProviderId, out IEMPRoamingProvider? EMPRoamingProvider);
 
-        ICSORoamingProvider                              CreateEMPRoamingProvider    (ICSORoamingProvider           EMPRoamingProvider,
-                                                                                      Action<ICSORoamingProvider>?  Configurator = null);
+        IEMPRoamingProvider                              CreateEMPRoamingProvider    (IEMPRoamingProvider           EMPRoamingProvider,
+                                                                                      Action<IEMPRoamingProvider>?  Configurator = null);
 
         #endregion
 
@@ -374,21 +374,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         // CSORoamingProviders provide access to other charging station operators via a roaming network
 
-        IEnumerable<IEMPRoamingProvider>                 CSORoamingProviders { get; }
-        Boolean                                          ContainsCSORoamingProvider  (IEMPRoamingProvider     CSORoamingProvider);
-        Boolean                                          ContainsCSORoamingProvider  (EMPRoamingProvider_Id   CSORoamingProviderId);
-        IEMPRoamingProvider?                             GetCSORoamingProviderById   (EMPRoamingProvider_Id   CSORoamingProviderId);
-        IEMPRoamingProvider?                             GetCSORoamingProviderById   (EMPRoamingProvider_Id?  CSORoamingProviderId);
-        Boolean                                          TryGetCSORoamingProviderById(EMPRoamingProvider_Id   Id, out IEMPRoamingProvider? CSORoamingProvider);
-        Boolean                                          TryGetCSORoamingProviderById(EMPRoamingProvider_Id?  Id, out IEMPRoamingProvider? CSORoamingProvider);
-        IEMPRoamingProvider?                             RemoveCSORoamingProvider    (EMPRoamingProvider_Id   CSORoamingProviderId);
-        IEMPRoamingProvider?                             RemoveCSORoamingProvider    (EMPRoamingProvider_Id?  CSORoamingProviderId);
-        Boolean                                          TryRemoveCSORoamingProvider (EMPRoamingProvider_Id   CSORoamingProviderId, out IEMPRoamingProvider? CSORoamingProvider);
-        Boolean                                          TryRemoveCSORoamingProvider (EMPRoamingProvider_Id?  CSORoamingProviderId, out IEMPRoamingProvider? CSORoamingProvider);
+        IEnumerable<ICSORoamingProvider>                 CSORoamingProviders { get; }
+        Boolean                                          ContainsCSORoamingProvider  (ICSORoamingProvider     CSORoamingProvider);
+        Boolean                                          ContainsCSORoamingProvider  (CSORoamingProvider_Id   CSORoamingProviderId);
+        ICSORoamingProvider?                             GetCSORoamingProviderById   (CSORoamingProvider_Id   CSORoamingProviderId);
+        ICSORoamingProvider?                             GetCSORoamingProviderById   (CSORoamingProvider_Id?  CSORoamingProviderId);
+        Boolean                                          TryGetCSORoamingProviderById(CSORoamingProvider_Id   Id, out ICSORoamingProvider? CSORoamingProvider);
+        Boolean                                          TryGetCSORoamingProviderById(CSORoamingProvider_Id?  Id, out ICSORoamingProvider? CSORoamingProvider);
+        ICSORoamingProvider?                             RemoveCSORoamingProvider    (CSORoamingProvider_Id   CSORoamingProviderId);
+        ICSORoamingProvider?                             RemoveCSORoamingProvider    (CSORoamingProvider_Id?  CSORoamingProviderId);
+        Boolean                                          TryRemoveCSORoamingProvider (CSORoamingProvider_Id   CSORoamingProviderId, out ICSORoamingProvider? CSORoamingProvider);
+        Boolean                                          TryRemoveCSORoamingProvider (CSORoamingProvider_Id?  CSORoamingProviderId, out ICSORoamingProvider? CSORoamingProvider);
 
 
-        IEMPRoamingProvider                              CreateCSORoamingProvider    (IEMPRoamingProvider           CSORoamingProvider,
-                                                                                      Action<IEMPRoamingProvider>?  Configurator = null);
+        ICSORoamingProvider                              CreateCSORoamingProvider    (ICSORoamingProvider           CSORoamingProvider,
+                                                                                      Action<ICSORoamingProvider>?  Configurator = null);
 
         #endregion
 

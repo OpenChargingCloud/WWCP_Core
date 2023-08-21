@@ -6268,8 +6268,8 @@ namespace cloud.charging.open.protocols.WWCP
                                Logo.IsNotNullOrEmpty()
                                    ? new JProperty("logos",               JSONArray.Create(
                                                                               JSONObject.Create(
-                                                                                  new JProperty("uri",          Logo),
-                                                                                  new JProperty("description",  I18NString.Empty.ToJSON())
+                                                                                  new JProperty("uri",          Logo.            ToString())
+                                                                                  //new JProperty("description",  I18NString.Empty.ToJSON())
                                                                               )
                                                                           ))
                                    : null,

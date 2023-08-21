@@ -478,36 +478,28 @@ namespace cloud.charging.open.protocols.WWCP
                                    Action<ChargingSession>?  UpdateFunc = null)
         {
 
-            if (NewChargingSession == null)
-                return false;
-
-            lock (InternalData)
+            if (!InternalData.ContainsKey(NewChargingSession.Id))
             {
 
-                if (!InternalData.ContainsKey(NewChargingSession.Id))
-                {
+                NewChargingSession.SystemIdStart = System_Id.Parse(Environment.MachineName);
+                InternalData.TryAdd(NewChargingSession.Id, NewChargingSession);
+                UpdateFunc?.Invoke(NewChargingSession);
 
-                    NewChargingSession.SystemIdStart = System_Id.Parse(Environment.MachineName);
-                    InternalData.TryAdd(NewChargingSession.Id, NewChargingSession);
-                    UpdateFunc?.Invoke(NewChargingSession);
+                LogIt("remoteStart",
+                      NewChargingSession.Id,
+                      "chargingSession",
+                      NewChargingSession.ToJSON());
 
-                    LogIt("remoteStart",
-                          NewChargingSession.Id,
-                          "chargingSession",
-                          NewChargingSession.ToJSON());
+                OnNewChargingSession?.Invoke(Timestamp.Now,
+                                             RoamingNetworkId,
+                                             NewChargingSession);
 
-                    OnNewChargingSession?.Invoke(Timestamp.Now,
-                                                 RoamingNetworkId,
-                                                 NewChargingSession);
-
-                    return true;
-
-                }
-
-                else
-                    return false;
+                return true;
 
             }
+
+            else
+                return false;
 
         }
 
@@ -518,51 +510,47 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean RemoteStop(ChargingSession_Id     Id,
                                   AAuthentication        Authentication,
                                   EMobilityProvider_Id?  ProviderId,
-                                  ICSORoamingProvider    EMPRoamingProvider,
+                                  ICSORoamingProvider    CSORoamingProvider,
                                   RemoteStopResult       Result)
         {
 
-            lock (InternalData)
+            if (InternalData.TryGetValue(Id, out var chargingSession))
             {
 
-                if (InternalData.TryGetValue(Id, out ChargingSession session))
+                var now = Timestamp.Now;
+
+                if (Result.Result == RemoteStopResultTypes.Success)
                 {
-
-                    var now = Timestamp.Now;
-
-                    if (Result.Result == RemoteStopResultTypes.Success)
-                    {
-                        session.SessionTime.EndTime     = now;
-                        session.SystemIdStop            = System_Id.Parse(Environment.MachineName);
-                        session.EMPRoamingProviderStop  = EMPRoamingProvider;
-                        session.ProviderIdStop          = ProviderId;
-                        session.AuthenticationStop      = Authentication;
-                        session.CDR                     = Result.ChargeDetailRecord;
-                        session.RuntimeStop             = Result.Runtime;
-                    }
-
-                    session.AddStopRequest(new SessionStopRequest(
-                                               now,
-                                               System_Id.Parse(Environment.MachineName),
-                                               null,
-                                               EMPRoamingProvider?.Id,
-                                               ProviderId,
-                                               Authentication,
-                                               Result));
-
-                    LogIt("remoteStop",
-                          session.Id,
-                          "chargingSession",
-                          session.ToJSON());
-
-                    return true;
-
+                    chargingSession.SessionTime.EndTime     = now;
+                    chargingSession.SystemIdStop            = System_Id.Parse(Environment.MachineName);
+                    chargingSession.CSORoamingProviderStop  = CSORoamingProvider;
+                    chargingSession.ProviderIdStop          = ProviderId;
+                    chargingSession.AuthenticationStop      = Authentication;
+                    chargingSession.CDR                     = Result.ChargeDetailRecord;
+                    chargingSession.RuntimeStop             = Result.Runtime;
                 }
 
-                else
-                    return false;
+                chargingSession.AddStopRequest(new SessionStopRequest(
+                                                   now,
+                                                   System_Id.Parse(Environment.MachineName),
+                                                   null,
+                                                   CSORoamingProvider?.Id,
+                                                   ProviderId,
+                                                   Authentication,
+                                                   Result
+                                               ));
+
+                LogIt("remoteStop",
+                      chargingSession.Id,
+                      "chargingSession",
+                      chargingSession.ToJSON());
+
+                return true;
 
             }
+
+            else
+                return false;
 
         }
 
@@ -574,33 +562,28 @@ namespace cloud.charging.open.protocols.WWCP
                                  Action<ChargingSession>  UpdateFunc = null)
         {
 
-            lock (InternalData)
+            if (!InternalData.ContainsKey(NewChargingSession.Id))
             {
 
-                if (!InternalData.ContainsKey(NewChargingSession.Id))
-                {
+                NewChargingSession.SystemIdStart = System_Id.Parse(Environment.MachineName);
+                InternalData.TryAdd(NewChargingSession.Id, NewChargingSession);
+                UpdateFunc?.Invoke(NewChargingSession);
 
-                    NewChargingSession.SystemIdStart = System_Id.Parse(Environment.MachineName);
-                    InternalData.TryAdd(NewChargingSession.Id, NewChargingSession);
-                    UpdateFunc?.Invoke(NewChargingSession);
+                LogIt("authStart",
+                      NewChargingSession.Id,
+                      "chargingSession",
+                      NewChargingSession.ToJSON());
 
-                    LogIt("authStart",
-                          NewChargingSession.Id,
-                          "chargingSession",
-                          NewChargingSession.ToJSON());
+                OnNewChargingSession?.Invoke(Timestamp.Now,
+                                             RoamingNetworkId,
+                                             NewChargingSession);
 
-                    OnNewChargingSession?.Invoke(Timestamp.Now,
-                                                 RoamingNetworkId,
-                                                 NewChargingSession);
-
-                    return true;
-
-                }
-
-                else
-                    return false;
+                return true;
 
             }
+
+            else
+                return false;
 
         }
 
@@ -611,34 +594,29 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean AuthStop(ChargingSession_Id    Id,
                                 AAuthentication       Authentication,
                                 EMobilityProvider_Id  ProviderId,
-                                ICSORoamingProvider   CSORoamingProvider  = null)
+                                ICSORoamingProvider?  CSORoamingProvider  = null)
         {
 
-            lock (InternalData)
+            if (InternalData.TryGetValue(Id, out var chargingSession))
             {
 
-                if (InternalData.TryGetValue(Id, out ChargingSession session))
-                {
+                chargingSession.SessionTime.EndTime     = Timestamp.Now;
+                chargingSession.SystemIdStop            = System_Id.Parse(Environment.MachineName);
+                chargingSession.CSORoamingProviderStop  = CSORoamingProvider;
+                chargingSession.ProviderIdStop          = ProviderId;
+                chargingSession.AuthenticationStop      = Authentication;
 
-                    session.SessionTime.EndTime     = Timestamp.Now;
-                    session.SystemIdStop            = System_Id.Parse(Environment.MachineName);
-                    session.EMPRoamingProviderStop  = CSORoamingProvider;
-                    session.ProviderIdStop          = ProviderId;
-                    session.AuthenticationStop      = Authentication;
+                LogIt("authStop",
+                      chargingSession.Id,
+                      "chargingSession",
+                      chargingSession.ToJSON());
 
-                    LogIt("authStop",
-                          session.Id,
-                          "chargingSession",
-                          session.ToJSON());
-
-                    return true;
-
-                }
-
-                else
-                    return false;
+                return true;
 
             }
+
+            else
+                return false;
 
         }
 
@@ -650,40 +628,35 @@ namespace cloud.charging.open.protocols.WWCP
                                    ChargeDetailRecord  NewChargeDetailRecord)
         {
 
-            lock (InternalData)
+            if (InternalData.TryGetValue(Id, out var chargingSession))
             {
 
-                if (InternalData.TryGetValue(Id, out ChargingSession session))
+                // Most charging session will be stopped by just unplugging the socket!
+                if (!chargingSession.SessionTime.EndTime.HasValue)
                 {
-
-                    // Most charging session will be stopped by just unplugging the socket!
-                    if (!session.SessionTime.EndTime.HasValue)
-                    {
-                        session.SessionTime.EndTime  = Timestamp.Now;
-                        session.SystemIdStop         = System_Id.Parse(Environment.MachineName);
-                    }
-
-                    session.CDRReceived  = Timestamp.Now;
-                    session.SystemIdCDR  = System_Id.Parse(Environment.MachineName);
-                    session.CDR          = NewChargeDetailRecord;
-
-                    LogIt("CDRReceived",
-                          session.Id,
-                          "chargingSession",
-                          session.ToJSON());
-
-                    OnNewChargeDetailRecord?.Invoke(Timestamp.Now,
-                                                    RoamingNetworkId,
-                                                    NewChargeDetailRecord);
-
-                    return true;
-
+                    chargingSession.SessionTime.EndTime  = Timestamp.Now;
+                    chargingSession.SystemIdStop         = System_Id.Parse(Environment.MachineName);
                 }
 
-                else
-                    return false;
+                chargingSession.CDRReceived  = Timestamp.Now;
+                chargingSession.SystemIdCDR  = System_Id.Parse(Environment.MachineName);
+                chargingSession.CDR          = NewChargeDetailRecord;
+
+                LogIt("CDRReceived",
+                      chargingSession.Id,
+                      "chargingSession",
+                      chargingSession.ToJSON());
+
+                OnNewChargeDetailRecord?.Invoke(Timestamp.Now,
+                                                RoamingNetworkId,
+                                                NewChargeDetailRecord);
+
+                return true;
 
             }
+
+            else
+                return false;
 
         }
 
@@ -695,31 +668,26 @@ namespace cloud.charging.open.protocols.WWCP
                                     SendCDRResult       CDRResult)
         {
 
-            lock (InternalData)
+            if (InternalData.TryGetValue(Id, out var chargingSession))
             {
 
-                if (InternalData.TryGetValue(Id, out ChargingSession session))
-                {
+                chargingSession.CDRResult = CDRResult;
 
-                    session.CDRResult = CDRResult;
+                LogIt("CDRForwarded",
+                      chargingSession.Id,
+                      "chargingSession",
+                      chargingSession.ToJSON());
 
-                    LogIt("CDRForwarded",
-                          session.Id,
-                          "chargingSession",
-                          session.ToJSON());
+                OnNewChargeDetailRecordResult?.Invoke(Timestamp.Now,
+                                                      RoamingNetworkId,
+                                                      CDRResult);
 
-                    OnNewChargeDetailRecordResult?.Invoke(Timestamp.Now,
-                                                          RoamingNetworkId,
-                                                          CDRResult);
-
-                    return true;
-
-                }
-
-                else
-                    return false;
+                return true;
 
             }
+
+            else
+                return false;
 
         }
 

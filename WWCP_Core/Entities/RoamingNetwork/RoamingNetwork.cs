@@ -149,7 +149,8 @@ namespace cloud.charging.open.protocols.WWCP
         private readonly           PriorityList<ISendAuthorizeStartStop>              allSend2RemoteAuthorizeStartStop       = new ();
         private readonly           PriorityList<ISendChargeDetailRecords>             allRemoteSendChargeDetailRecord        = new ();
 
-        private readonly           ConcurrentDictionary<UInt32, ICSORoamingProvider>  eMobilityRoamingServices;
+        private readonly           ConcurrentDictionary<UInt32, IEMPRoamingProvider>  eMobilityRoamingServices               = new ();
+        private readonly           ConcurrentDictionary<UInt32, ICSORoamingProvider>  csoRoamingServices                     = new ();
 
         #endregion
 
@@ -338,11 +339,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.dataLicenses                                = new ReactiveSet<OpenDataLicense>();
 
-            this.empRoamingProviders                         = new ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>();
-            this.eMobilityRoamingServices                    = new ConcurrentDictionary<UInt32,                ICSORoamingProvider>();
             this.eMobilityProviders                          = new EntityHashSet       <IRoamingNetwork,       EMobilityProvider_Id,       IEMobilityProvider>      (this);
 
-            this.csoRoamingProviders                         = new ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider>();
             this.chargingStationOperators                    = new EntityHashSet       <IRoamingNetwork,       ChargingStationOperator_Id, IChargingStationOperator>(this);
 
             this.parkingOperators                            = new EntityHashSet       <RoamingNetwork,        ParkingOperator_Id,         ParkingOperator>         (this);
@@ -401,11 +399,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             // RoamingNetwork events
 
-            this.CPORoamingProviderAddition  = new VotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
-            this.CPORoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.EMPRoamingProviderAddition  = new VotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.EMPRoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
 
-            this.EMPRoamingProviderAddition  = new VotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean>(() => new VetoVote(), true);
-            this.EMPRoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.CSORoamingProviderAddition  = new VotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.CSORoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean>(() => new VetoVote(), true);
 
             // cso events
             this.ChargingPoolAddition        = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, Boolean>(() => new VetoVote(), true);
@@ -492,12 +490,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EMPRoamingProviders
 
-        private readonly ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider> empRoamingProviders;
+        private readonly ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider> empRoamingProviders = new ();
 
         /// <summary>
         /// Return all e-mobility provider roaming providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<ICSORoamingProvider> EMPRoamingProviders
+        public IEnumerable<IEMPRoamingProvider> EMPRoamingProviders
             => empRoamingProviders.Values;
 
         #endregion
@@ -505,24 +503,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EMPRoamingProviderAddition
 
-        private readonly IVotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean> EMPRoamingProviderAddition;
+        private readonly IVotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean> EMPRoamingProviderAddition;
 
         /// <summary>
         /// Called whenever an e-mobility provider roaming provider will be or was added.
         /// </summary>
-        public IVotingSender<RoamingNetwork, ICSORoamingProvider, Boolean> OnEMPRoamingProviderAddition
+        public IVotingSender<RoamingNetwork, IEMPRoamingProvider, Boolean> OnEMPRoamingProviderAddition
             => EMPRoamingProviderAddition;
 
         #endregion
 
         #region EMPRoamingProviderRemoval
 
-        private readonly IVotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean> EMPRoamingProviderRemoval;
+        private readonly IVotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean> EMPRoamingProviderRemoval;
 
         /// <summary>
         /// Called whenever an e-mobility provider roaming provider will be or was removed.
         /// </summary>
-        public IVotingSender<RoamingNetwork, ICSORoamingProvider, Boolean> OnEMPRoamingProviderRemoval
+        public IVotingSender<RoamingNetwork, IEMPRoamingProvider, Boolean> OnEMPRoamingProviderRemoval
             => EMPRoamingProviderRemoval;
 
         #endregion
@@ -536,8 +534,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMPRoamingProvider">An e-mobility provider roaming provider.</param>
         /// <param name="Configurator">An optional delegate to configure the new e-mobility provider roaming provider after its creation.</param>
-        public ICSORoamingProvider CreateEMPRoamingProvider(ICSORoamingProvider           EMPRoamingProvider,
-                                                            Action<ICSORoamingProvider>?  Configurator = null)
+        public IEMPRoamingProvider CreateEMPRoamingProvider(IEMPRoamingProvider           EMPRoamingProvider,
+                                                            Action<IEMPRoamingProvider>?  Configurator = null)
         {
 
             #region Initial checks
@@ -560,18 +558,18 @@ namespace cloud.charging.open.protocols.WWCP
                 if (empRoamingProviders.TryAdd(EMPRoamingProvider.Id, EMPRoamingProvider))
                 {
 
-                    allSendRoamingNetworkData.         Add(EMPRoamingProvider);
-                    allSendChargingStationOperatorData.Add(EMPRoamingProvider);
-                    allSendChargingPoolData.           Add(EMPRoamingProvider);
-                    allSendChargingStationData.        Add(EMPRoamingProvider);
-                    allSendEVSEData.                   Add(EMPRoamingProvider);
+                    //allSendRoamingNetworkData.         Add(EMPRoamingProvider);
+                    //allSendChargingStationOperatorData.Add(EMPRoamingProvider);
+                    //allSendChargingPoolData.           Add(EMPRoamingProvider);
+                    //allSendChargingStationData.        Add(EMPRoamingProvider);
+                    //allSendEVSEData.                   Add(EMPRoamingProvider);
 
-                    allSendAdminStatus.                Add(EMPRoamingProvider);
-                    allSendStatus.                     Add(EMPRoamingProvider);
-                    allSendEnergyStatus.               Add(EMPRoamingProvider);
+                    //allSendAdminStatus.                Add(EMPRoamingProvider);
+                    //allSendStatus.                     Add(EMPRoamingProvider);
+                    //allSendEnergyStatus.               Add(EMPRoamingProvider);
 
-                    allSend2RemoteAuthorizeStartStop.  Add(EMPRoamingProvider);
-                    allRemoteSendChargeDetailRecord.   Add(EMPRoamingProvider);
+                    //allSend2RemoteAuthorizeStartStop.  Add(EMPRoamingProvider);
+                    //allRemoteSendChargeDetailRecord.   Add(EMPRoamingProvider);
 
                     EMPRoamingProviderAddition.SendNotification(this, EMPRoamingProvider);
 
@@ -598,7 +596,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityRoamingService">The e-mobility roaming service.</param>
         /// <param name="Priority">The priority of the service.</param>
-        public Boolean SetRoamingProviderPriority(ICSORoamingProvider  eMobilityRoamingService,
+        public Boolean SetRoamingProviderPriority(IEMPRoamingProvider  eMobilityRoamingService,
                                                   UInt32               Priority)
 
             => eMobilityRoamingServices.TryAdd(Priority, eMobilityRoamingService);
@@ -641,7 +639,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given charging station operator roaming provider is already present within the roaming network.
         /// </summary>
         /// <param name="EMPRoamingProvider">A charging station operator roaming provider.</param>
-        public Boolean ContainsEMPRoamingProvider(ICSORoamingProvider EMPRoamingProvider)
+        public Boolean ContainsEMPRoamingProvider(IEMPRoamingProvider EMPRoamingProvider)
 
             => empRoamingProviders.ContainsKey(EMPRoamingProvider.Id);
 
@@ -653,7 +651,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given charging station operator roaming provider identification is already present within the roaming network.
         /// </summary>
         /// <param name="EMPRoamingProviderId">The unique identification of the charging station operator roaming provider.</param>
-        public Boolean ContainsEMPRoamingProvider(CSORoamingProvider_Id EMPRoamingProviderId)
+        public Boolean ContainsEMPRoamingProvider(EMPRoamingProvider_Id EMPRoamingProviderId)
 
             => empRoamingProviders.ContainsKey(EMPRoamingProviderId);
 
@@ -661,7 +659,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetEMPRoamingProviderById   (EMPRoamingProviderId)
 
-        public ICSORoamingProvider? GetEMPRoamingProviderById(CSORoamingProvider_Id EMPRoamingProviderId)
+        public IEMPRoamingProvider? GetEMPRoamingProviderById(EMPRoamingProvider_Id EMPRoamingProviderId)
         {
 
             if (empRoamingProviders.TryGetValue(EMPRoamingProviderId, out var empRoamingProvider))
@@ -671,7 +669,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public ICSORoamingProvider? GetEMPRoamingProviderById(CSORoamingProvider_Id? EMPRoamingProviderId)
+        public IEMPRoamingProvider? GetEMPRoamingProviderById(EMPRoamingProvider_Id? EMPRoamingProviderId)
         {
 
             if (EMPRoamingProviderId.HasValue &&
@@ -688,11 +686,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetEMPRoamingProviderById(EMPRoamingProviderId, out ChargingStationOperator)
 
-        public Boolean TryGetEMPRoamingProviderById(CSORoamingProvider_Id EMPRoamingProviderId, out ICSORoamingProvider? EMPRoamingProvider)
+        public Boolean TryGetEMPRoamingProviderById(EMPRoamingProvider_Id EMPRoamingProviderId, out IEMPRoamingProvider? EMPRoamingProvider)
 
             => empRoamingProviders.TryGetValue(EMPRoamingProviderId, out EMPRoamingProvider);
 
-        public Boolean TryGetEMPRoamingProviderById(CSORoamingProvider_Id? EMPRoamingProviderId, out ICSORoamingProvider? EMPRoamingProvider)
+        public Boolean TryGetEMPRoamingProviderById(EMPRoamingProvider_Id? EMPRoamingProviderId, out IEMPRoamingProvider? EMPRoamingProvider)
         {
 
             if (!EMPRoamingProviderId.HasValue)
@@ -709,7 +707,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoveEMPRoamingProvider    (EMPRoamingProviderId)
 
-        public ICSORoamingProvider? RemoveEMPRoamingProvider(CSORoamingProvider_Id EMPRoamingProviderId)
+        public IEMPRoamingProvider? RemoveEMPRoamingProvider(EMPRoamingProvider_Id EMPRoamingProviderId)
         {
 
             if (empRoamingProviders.TryRemove(EMPRoamingProviderId, out var empRoamingProvider))
@@ -719,7 +717,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public ICSORoamingProvider? RemoveEMPRoamingProvider(CSORoamingProvider_Id? EMPRoamingProviderId)
+        public IEMPRoamingProvider? RemoveEMPRoamingProvider(EMPRoamingProvider_Id? EMPRoamingProviderId)
         {
 
             if (EMPRoamingProviderId.HasValue &&
@@ -736,11 +734,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemoveEMPRoamingProvider (EMPRoamingProviderId, out EMPRoamingProvider)
 
-        public Boolean TryRemoveEMPRoamingProvider(CSORoamingProvider_Id EMPRoamingProviderId, out ICSORoamingProvider? EMPRoamingProvider)
+        public Boolean TryRemoveEMPRoamingProvider(EMPRoamingProvider_Id EMPRoamingProviderId, out IEMPRoamingProvider? EMPRoamingProvider)
 
             => empRoamingProviders.TryRemove(EMPRoamingProviderId, out EMPRoamingProvider);
 
-        public Boolean TryRemoveEMPRoamingProvider(CSORoamingProvider_Id? EMPRoamingProviderId, out ICSORoamingProvider? EMPRoamingProvider)
+        public Boolean TryRemoveEMPRoamingProvider(EMPRoamingProvider_Id? EMPRoamingProviderId, out IEMPRoamingProvider? EMPRoamingProvider)
         {
 
             if (!EMPRoamingProviderId.HasValue)
@@ -1362,38 +1360,38 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region CSORoamingProviders
 
-        private readonly ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider>  csoRoamingProviders;
+        private readonly ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>  csoRoamingProviders = new ();
 
         /// <summary>
         /// Return all charging station operator roaming providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<IEMPRoamingProvider> CSORoamingProviders
+        public IEnumerable<ICSORoamingProvider> CSORoamingProviders
             => csoRoamingProviders.Values;
 
         #endregion
 
 
-        #region CPORoamingProviderAddition
+        #region CSORoamingProviderAddition
 
-        private readonly IVotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean> CPORoamingProviderAddition;
+        private readonly IVotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean> CSORoamingProviderAddition;
 
         /// <summary>
         /// Called whenever a charging station operator roaming provider will be or was added.
         /// </summary>
-        public IVotingSender<RoamingNetwork, IEMPRoamingProvider, Boolean> OnCPORoamingProviderAddition
-            => CPORoamingProviderAddition;
+        public IVotingSender<RoamingNetwork, ICSORoamingProvider, Boolean> OnCSORoamingProviderAddition
+            => CSORoamingProviderAddition;
 
         #endregion
 
         #region CPORoamingProviderRemoval
 
-        private readonly IVotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean> CPORoamingProviderRemoval;
+        private readonly IVotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean> CSORoamingProviderRemoval;
 
         /// <summary>
         /// Called whenever a charging station operator roaming provider will be or was removed.
         /// </summary>
-        public IVotingSender<RoamingNetwork, IEMPRoamingProvider, Boolean> OnCPORoamingProviderRemoval
-            => CPORoamingProviderRemoval;
+        public IVotingSender<RoamingNetwork, ICSORoamingProvider, Boolean> OnCSORoamingProviderRemoval
+            => CSORoamingProviderRemoval;
 
         #endregion
 
@@ -1405,8 +1403,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique electric vehicle roaming provider identification.
         /// </summary>
         /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
-        public IEMPRoamingProvider CreateCSORoamingProvider(IEMPRoamingProvider           CSORoamingProvider,
-                                                            Action<IEMPRoamingProvider>?  Configurator   = null)
+        public ICSORoamingProvider CreateCSORoamingProvider(ICSORoamingProvider           CSORoamingProvider,
+                                                            Action<ICSORoamingProvider>?  Configurator   = null)
         {
 
             #region Initial checks
@@ -1424,25 +1422,35 @@ namespace cloud.charging.open.protocols.WWCP
 
             Configurator?.Invoke(CSORoamingProvider);
 
-            if (CPORoamingProviderAddition.SendVoting(this, CSORoamingProvider))
+            if (CSORoamingProviderAddition.SendVoting(this, CSORoamingProvider))
             {
                 if (csoRoamingProviders.TryAdd(CSORoamingProvider.Id, CSORoamingProvider))
                 {
 
-                    // this.OnChargingStationRemoval.OnNotification += _CPORoamingProvider.RemoveChargingStations;
+                    allSendRoamingNetworkData.         Add(CSORoamingProvider);
+                    allSendChargingStationOperatorData.Add(CSORoamingProvider);
+                    allSendChargingPoolData.           Add(CSORoamingProvider);
+                    allSendChargingStationData.        Add(CSORoamingProvider);
+                    allSendEVSEData.                   Add(CSORoamingProvider);
+
+                    allSendAdminStatus.                Add(CSORoamingProvider);
+                    allSendStatus.                     Add(CSORoamingProvider);
+                    allSendEnergyStatus.               Add(CSORoamingProvider);
+
+                    allSend2RemoteAuthorizeStartStop.  Add(CSORoamingProvider);
+                    allRemoteSendChargeDetailRecord.   Add(CSORoamingProvider);
 
                     //SetRoamingProviderPriority(_CPORoamingProvider,
                     //                           _ChargingStationOperatorRoamingProviderPriorities.Count > 0
                     //                               ? _ChargingStationOperatorRoamingProviderPriorities.Keys.Max() + 1
                     //                               : 10);
 
-                    //_ISendData.Add                     (chargingStationOperatorRoamingProvider);
-                    //_ISendAdminStatus.Add              (chargingStationOperatorRoamingProvider);
-                    //_ISendStatus.Add                   (chargingStationOperatorRoamingProvider);
-                    //_ISend2RemoteAuthorizeStartStop.Add(chargingStationOperatorRoamingProvider);
-                    //_IRemoteSendChargeDetailRecord.Add (chargingStationOperatorRoamingProvider);
+                    CSORoamingProviderAddition.SendNotification(this, CSORoamingProvider);
 
-                    CPORoamingProviderAddition.SendNotification(this, CSORoamingProvider);
+                    SetRoamingProviderPriority(CSORoamingProvider,
+                                               csoRoamingServices.Count > 0
+                                                   ? csoRoamingServices.Keys.Max() + 1
+                                                   : 10);
 
                     return CSORoamingProvider;
 
@@ -1455,28 +1463,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region SetRoamingProviderPriority(csoRoamingProvider, Priority)
+        #region SetRoamingProviderPriority(CSORoamingProvider, Priority)
 
-        ///// <summary>
-        ///// Change the given Charging Station Operator roaming service priority.
-        ///// </summary>
-        ///// <param name="csoRoamingProvider">The Charging Station Operator roaming provider.</param>
-        ///// <param name="Priority">The priority of the service.</param>
-        //public Boolean SetRoamingProviderPriority(IChargingStationOperatorRoamingProvider csoRoamingProvider,
-        //                                          UInt32                                  Priority)
-        //{
+        /// <summary>
+        /// Change the given Charging Station Operator roaming service priority.
+        /// </summary>
+        /// <param name="CSORoamingProvider">The Charging Station Operator roaming provider.</param>
+        /// <param name="Priority">The priority of the service.</param>
+        public Boolean SetRoamingProviderPriority(ICSORoamingProvider  CSORoamingProvider,
+                                                  UInt32               Priority)
 
-        //    var a = _ChargingStationOperatorRoamingProviderPriorities.FirstOrDefault(_ => _.Value == csoRoamingProvider);
-
-        //    if (a.Key > 0)
-        //    {
-        //        IChargingStationOperatorRoamingProvider b = null;
-        //        _ChargingStationOperatorRoamingProviderPriorities.TryRemove(a.Key, out b);
-        //    }
-
-        //    return _ChargingStationOperatorRoamingProviderPriorities.TryAdd(Priority, csoRoamingProvider);
-
-        //}
+            => csoRoamingServices.TryAdd(Priority, CSORoamingProvider);
 
         #endregion
 
@@ -1487,7 +1484,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given charging station operator roaming provider is already present within the roaming network.
         /// </summary>
         /// <param name="CSORoamingProvider">A charging station operator roaming provider.</param>
-        public Boolean ContainsCSORoamingProvider(IEMPRoamingProvider CSORoamingProvider)
+        public Boolean ContainsCSORoamingProvider(ICSORoamingProvider CSORoamingProvider)
 
             => csoRoamingProviders.ContainsKey(CSORoamingProvider.Id);
 
@@ -1499,7 +1496,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given charging station operator roaming provider identification is already present within the roaming network.
         /// </summary>
         /// <param name="CSORoamingProviderId">The unique identification of the charging station operator roaming provider.</param>
-        public Boolean ContainsCSORoamingProvider(EMPRoamingProvider_Id CSORoamingProviderId)
+        public Boolean ContainsCSORoamingProvider(CSORoamingProvider_Id CSORoamingProviderId)
 
             => csoRoamingProviders.ContainsKey(CSORoamingProviderId);
 
@@ -1507,7 +1504,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetCSORoamingProviderById   (CSORoamingProviderId)
 
-        public IEMPRoamingProvider? GetCSORoamingProviderById(EMPRoamingProvider_Id CSORoamingProviderId)
+        public ICSORoamingProvider? GetCSORoamingProviderById(CSORoamingProvider_Id CSORoamingProviderId)
         {
 
             if (csoRoamingProviders.TryGetValue(CSORoamingProviderId, out var csoRoamingProvider))
@@ -1517,7 +1514,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public IEMPRoamingProvider? GetCSORoamingProviderById(EMPRoamingProvider_Id? CSORoamingProviderId)
+        public ICSORoamingProvider? GetCSORoamingProviderById(CSORoamingProvider_Id? CSORoamingProviderId)
         {
 
             if (CSORoamingProviderId.HasValue &&
@@ -1534,11 +1531,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetCSORoamingProviderById(CSORoamingProviderId, out ChargingStationOperator)
 
-        public Boolean TryGetCSORoamingProviderById(EMPRoamingProvider_Id CSORoamingProviderId, out IEMPRoamingProvider? CSORoamingProvider)
+        public Boolean TryGetCSORoamingProviderById(CSORoamingProvider_Id CSORoamingProviderId, out ICSORoamingProvider? CSORoamingProvider)
 
             => csoRoamingProviders.TryGetValue(CSORoamingProviderId, out CSORoamingProvider);
 
-        public Boolean TryGetCSORoamingProviderById(EMPRoamingProvider_Id? CSORoamingProviderId, out IEMPRoamingProvider? CSORoamingProvider)
+        public Boolean TryGetCSORoamingProviderById(CSORoamingProvider_Id? CSORoamingProviderId, out ICSORoamingProvider? CSORoamingProvider)
         {
 
             if (!CSORoamingProviderId.HasValue)
@@ -1555,7 +1552,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoveCSORoamingProvider    (CSORoamingProviderId)
 
-        public IEMPRoamingProvider? RemoveCSORoamingProvider(EMPRoamingProvider_Id CSORoamingProviderId)
+        public ICSORoamingProvider? RemoveCSORoamingProvider(CSORoamingProvider_Id CSORoamingProviderId)
         {
 
             if (csoRoamingProviders.TryRemove(CSORoamingProviderId, out var csoRoamingProvider))
@@ -1565,7 +1562,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public IEMPRoamingProvider? RemoveCSORoamingProvider(EMPRoamingProvider_Id? CSORoamingProviderId)
+        public ICSORoamingProvider? RemoveCSORoamingProvider(CSORoamingProvider_Id? CSORoamingProviderId)
         {
 
             if (CSORoamingProviderId.HasValue &&
@@ -1582,11 +1579,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemoveCSORoamingProvider (CSORoamingProviderId, out CSORoamingProvider)
 
-        public Boolean TryRemoveCSORoamingProvider(EMPRoamingProvider_Id CSORoamingProviderId, out IEMPRoamingProvider? CSORoamingProvider)
+        public Boolean TryRemoveCSORoamingProvider(CSORoamingProvider_Id CSORoamingProviderId, out ICSORoamingProvider? CSORoamingProvider)
 
             => csoRoamingProviders.TryRemove(CSORoamingProviderId, out CSORoamingProvider);
 
-        public Boolean TryRemoveCSORoamingProvider(EMPRoamingProvider_Id? CSORoamingProviderId, out IEMPRoamingProvider? CSORoamingProvider)
+        public Boolean TryRemoveCSORoamingProvider(CSORoamingProvider_Id? CSORoamingProviderId, out ICSORoamingProvider? CSORoamingProvider)
         {
 
             if (!CSORoamingProviderId.HasValue)
@@ -6453,17 +6450,17 @@ namespace cloud.charging.open.protocols.WWCP
 
                 }
 
-                if (result        == null ||
-                   (result        != null &&
+                if (result        is     null ||
+                   (result        is not null &&
                    (result.Result == ReservationResultType.UnknownLocation)))
                 {
 
-                    foreach (var CSORoamingService in csoRoamingProviders.
-                                                          OrderBy(CSORoamingServiceWithPriority => CSORoamingServiceWithPriority.Key).
-                                                          Select (CSORoamingServiceWithPriority => CSORoamingServiceWithPriority.Value))
+                    foreach (var empRoamingService in empRoamingProviders.
+                                                          OrderBy(empRoamingServiceWithPriority => empRoamingServiceWithPriority.Key).
+                                                          Select (empRoamingServiceWithPriority => empRoamingServiceWithPriority.Value))
                     {
 
-                        result = await CSORoamingService.
+                        result = await empRoamingService.
                                            Reserve(ChargingLocation,
                                                    ReservationLevel,
                                                    ReservationStartTime,
@@ -6485,9 +6482,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                         if (result.Result == ReservationResultType.Success)
                         {
-                            if (result.Reservation != null)
+                            if (result.Reservation is not null)
                             {
-                                result.Reservation.CSORoamingProviderId = CSORoamingService.Id;
+                                result.Reservation.EMPRoamingProviderId = empRoamingService.Id;
                                 ReservationsStore.NewOrUpdate(result.Reservation);
                             }
                         }
@@ -6609,16 +6606,17 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                if (ReservationsStore.TryGetLatest(ReservationId, out ChargingReservation Reservation))
+                if (ReservationsStore.TryGetLatest(ReservationId, out var chargingReservation))
                 {
 
                     #region Check Charging Station Operator charging reservation lookup...
 
-                    if (Reservation.ChargingStationOperatorId.HasValue &&
-                        TryGetChargingStationOperatorById(Reservation.ChargingStationOperatorId.Value, out var _ChargingStationOperator))
+                    if (chargingReservation.ChargingStationOperatorId.HasValue &&
+                        TryGetChargingStationOperatorById(chargingReservation.ChargingStationOperatorId.Value, out var chargingStationOperator) &&
+                        chargingStationOperator is not null)
                     {
 
-                        result = await _ChargingStationOperator.
+                        result = await chargingStationOperator.
                                            CancelReservation(ReservationId,
                                                              Reason,
 
@@ -6633,18 +6631,19 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region ...or check CSO roaming provider charging reservation lookup...
 
-                    if (result == null ||
-                       (result != null &&
+                    if (result        is null ||
+                       (result        is not null &&
                        (result.Result == CancelReservationResultTypes.UnknownEVSE ||
                         result.Result == CancelReservationResultTypes.UnknownReservationId)))
                     {
 
 
-                        if (Reservation.CSORoamingProviderId.HasValue &&
-                            TryGetCSORoamingProviderById(Reservation.CSORoamingProviderId.Value, out IEMPRoamingProvider _ICSORoamingProvider))
+                        if (chargingReservation.EMPRoamingProviderId.HasValue &&
+                            TryGetEMPRoamingProviderById(chargingReservation.EMPRoamingProviderId.Value, out var empRoamingProvider) &&
+                            empRoamingProvider is not null)
                         {
 
-                            result = await _ICSORoamingProvider.
+                            result = await empRoamingProvider.
                                                CancelReservation(ReservationId,
                                                                  Reason,
 
@@ -6661,18 +6660,18 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region ...or try to check every CSO roaming provider...
 
-                    if (result == null ||
-                       (result != null &&
+                    if (result        is     null ||
+                       (result        is not null &&
                        (result.Result == CancelReservationResultTypes.UnknownEVSE ||
                         result.Result == CancelReservationResultTypes.UnknownReservationId)))
                     {
 
-                        foreach (var CSORoamingService in csoRoamingProviders.
-                                                              OrderBy(CSORoamingServiceWithPriority => CSORoamingServiceWithPriority.Key).
-                                                              Select (CSORoamingServiceWithPriority => CSORoamingServiceWithPriority.Value))
+                        foreach (var empRoamingService in empRoamingProviders.
+                                                              OrderBy(empRoamingServiceWithPriority => empRoamingServiceWithPriority.Key).
+                                                              Select (empRoamingServiceWithPriority => empRoamingServiceWithPriority.Value))
                         {
 
-                            result = await CSORoamingService.
+                            result = await empRoamingService.
                                                CancelReservation(ReservationId,
                                                                  Reason,
 
@@ -7344,7 +7343,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Try to find the target EMP or roaming network for each CDR...
+                #region Try to find the target CSO or roaming network for each CDR...
 
                 foreach (var cdr in chargeDetailRecordsToProcess.ToArray())
                 {
@@ -7387,18 +7386,18 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #endregion
 
-                    #region ...the CDR EMPRoamingProvider(Id) is known, or...
+                    #region ...the CDR CSORoamingProvider(Id) is known, or...
 
-                    else if (cdr.EMPRoamingProvider is not null &&
-                            !cdr.EMPRoamingProviderId.HasValue)
+                    else if (cdr.CSORoamingProvider is not null &&
+                            !cdr.CSORoamingProviderId.HasValue)
                     {
-                        cdr.EMPRoamingProviderId = cdr.EMPRoamingProvider.Id;
+                        cdr.CSORoamingProviderId = cdr.CSORoamingProvider.Id;
                     }
 
-                    if (cdr.EMPRoamingProviderId.HasValue)
+                    if (cdr.CSORoamingProviderId.HasValue)
                     {
 
-                        var empRoamingProviderId      = cdr.EMPRoamingProviderId.ToString();
+                        var empRoamingProviderId      = cdr.CSORoamingProviderId.ToString();
                         var empRoamingProviderForCDR  = allRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == empRoamingProviderId) as ICSORoamingProvider;
 
                         if (empRoamingProviderForCDR is not null)
@@ -7418,7 +7417,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #endregion
 
-                    #region ...we lookup the EMP roaming provider via the authorization within the charging sessions
+                    #region ...we lookup the CSO roaming provider via the authorization within the charging sessions
 
                     else if (SessionsStore.TryGet(cdr.SessionId, out var chargingSession) &&
                              chargingSession is not null)
@@ -7435,15 +7434,15 @@ namespace cloud.charging.open.protocols.WWCP
                         //    ChargeDetailRecordsToProcess.Remove(cdr);
                         //}
 
-                        if (chargingSession.EMPRoamingProviderStart   is null &&
-                            chargingSession.EMPRoamingProviderIdStart is not null)
-                            chargingSession.EMPRoamingProviderStart = allRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == chargingSession.EMPRoamingProviderIdStart.ToString()) as ICSORoamingProvider;
+                        if (chargingSession.CSORoamingProviderStart   is null &&
+                            chargingSession.CSORoamingProviderIdStart is not null)
+                            chargingSession.CSORoamingProviderStart = allRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == chargingSession.CSORoamingProviderIdStart.ToString()) as ICSORoamingProvider;
 
-                        if (chargingSession.EMPRoamingProviderStart is not null &&
-                            chargingSession.EMPRoamingProviderStart is ICSORoamingProvider empRoamingProviderForCDR)
+                        if (chargingSession.CSORoamingProviderStart is not null &&
+                            chargingSession.CSORoamingProviderStart is ICSORoamingProvider csoRoamingProviderForCDR)
                         {
 
-                            cdrTargets[empRoamingProviderForCDR].Add(cdr);
+                            cdrTargets[csoRoamingProviderForCDR].Add(cdr);
                             chargeDetailRecordsToProcess.Remove(cdr);
 
                             SessionsStore.CDRReceived(cdr.SessionId,
@@ -8296,7 +8295,7 @@ namespace cloud.charging.open.protocols.WWCP
                 var newChargingSession  = new ChargingSession(result.SessionId!.Value,
                                                               EventTrackingId) {
                                               RoamingNetworkId           = Id,
-                                              EMPRoamingProviderStart    = result.ISendAuthorizeStartStop as ICSORoamingProvider,
+                                              CSORoamingProviderStart    = result.ISendAuthorizeStartStop as ICSORoamingProvider,
                                               ProviderIdStart            = result.ProviderId,
                                               ChargingStationOperatorId  = OperatorId,
                                               EVSEId                     = ChargingLocation?.EVSEId,
@@ -8551,13 +8550,13 @@ namespace cloud.charging.open.protocols.WWCP
                         if (result is null)
                         {
 
-                            if (chargingSession.EMPRoamingProviderStart is null && chargingSession.EMPRoamingProviderIdStart.HasValue)
-                                chargingSession.EMPRoamingProviderStart = GetEMPRoamingProviderById(chargingSession.EMPRoamingProviderIdStart.Value);
+                            if (chargingSession.CSORoamingProviderStart is null && chargingSession.CSORoamingProviderIdStart.HasValue)
+                                chargingSession.CSORoamingProviderStart = GetCSORoamingProviderById(chargingSession.CSORoamingProviderIdStart.Value);
 
-                            if (chargingSession.EMPRoamingProviderStart is not null)
+                            if (chargingSession.CSORoamingProviderStart is not null)
                             {
 
-                                result = await chargingSession.EMPRoamingProviderStart.AuthorizeStop(SessionId,
+                                result = await chargingSession.CSORoamingProviderStart.AuthorizeStop(SessionId,
                                                                                                      LocalAuthentication,
                                                                                                      ChargingLocation,
                                                                                                      CPOPartnerSessionId,
@@ -8756,7 +8755,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<RemoteStartResult>
 
-            RemoteStart(ICSORoamingProvider      EMPRoamingProvider,
+            RemoteStart(ICSORoamingProvider      CSORoamingProvider,
                         ChargingLocation         ChargingLocation,
                         ChargingProduct?         ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
@@ -8797,7 +8796,7 @@ namespace cloud.charging.open.protocols.WWCP
                                              ReservationId,
                                              SessionId,
                                              null,
-                                             EMPRoamingProvider?.Id,
+                                             CSORoamingProvider?.Id,
                                              ProviderId,
                                              RemoteAuthentication,
                                              RequestTimeout);
@@ -8854,7 +8853,7 @@ namespace cloud.charging.open.protocols.WWCP
                             SessionsStore.RemoteStart(result.Session,
                                                       result,
                                                       session => {
-                                                          session.EMPRoamingProviderStart = EMPRoamingProvider;
+                                                          session.CSORoamingProviderStart = CSORoamingProvider;
                                                       });
 
                         }
@@ -8871,12 +8870,12 @@ namespace cloud.charging.open.protocols.WWCP
                        (result.Result == RemoteStartResultTypes.UnknownLocation)))
                     {
 
-                        foreach (var csoRoamingProvider in csoRoamingProviders.
-                                                                OrderBy(CSORoamingServiceWithPriority => CSORoamingServiceWithPriority.Key).
-                                                                Select (CSORoamingServiceWithPriority => CSORoamingServiceWithPriority.Value))
+                        foreach (var empRoamingProvider in empRoamingProviders.
+                                                                OrderBy(empRoamingServiceWithPriority => empRoamingServiceWithPriority.Key).
+                                                                Select (empRoamingServiceWithPriority => empRoamingServiceWithPriority.Value))
                         {
 
-                            result = await csoRoamingProvider.
+                            result = await empRoamingProvider.
                                                RemoteStart(ChargingLocation,
                                                            ChargingProduct,
                                                            ReservationId,
@@ -8897,8 +8896,8 @@ namespace cloud.charging.open.protocols.WWCP
                                 SessionsStore.RemoteStart(result.Session,
                                                           result,
                                                           session => {
-                                                              session.EMPRoamingProviderStart = EMPRoamingProvider;
-                                                              session.CSORoamingProviderStart = csoRoamingProvider;
+                                                              session.CSORoamingProviderStart = CSORoamingProvider;
+                                                              session.EMPRoamingProviderStart = empRoamingProvider;
                                                           });
 
                             }
@@ -8949,7 +8948,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               ReservationId,
                                               SessionId,
                                               null,
-                                              EMPRoamingProvider?.Id,
+                                              CSORoamingProvider?.Id,
                                               ProviderId,
                                               RemoteAuthentication,
                                               RequestTimeout,
@@ -9022,7 +9021,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<RemoteStopResult>
 
-            RemoteStop(ICSORoamingProvider    EMPRoamingProvider,
+            RemoteStop(ICSORoamingProvider    CSORoamingProvider,
                        ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling    = null,
                        EMobilityProvider_Id?  ProviderId             = null,
@@ -9046,12 +9045,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnRemoteStopRequest event
 
-            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnRemoteStopRequest?.Invoke(StartTime,
+                OnRemoteStopRequest?.Invoke(startTime,
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
@@ -9059,7 +9058,7 @@ namespace cloud.charging.open.protocols.WWCP
                                             SessionId,
                                             ReservationHandling,
                                             null,
-                                            EMPRoamingProvider?.Id,
+                                            CSORoamingProvider?.Id,
                                             ProviderId,
                                             RemoteAuthentication,
                                             RequestTimeout);
@@ -9077,23 +9076,23 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region A matching charging session was found...
 
-                if (SessionsStore.TryGet(SessionId, out var chargingSession))
+                if (SessionsStore.TryGet(SessionId, out var chargingSession) && chargingSession is not null)
                 {
 
                     //ToDo: Add a --useForce Option to overwrite!
                     if (chargingSession.SessionTime.EndTime.HasValue)
                         result = RemoteStopResult.AlreadyStopped(SessionId,
-                                                                 Runtime: org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - StartTime);
+                                                                 Runtime: org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime);
 
                     else
                     {
 
                         #region When a charging station operator was found...
 
-                        if (chargingSession.ChargingStationOperator == null & chargingSession.ChargingStationOperatorId.HasValue)
+                        if (chargingSession.ChargingStationOperator is null && chargingSession.ChargingStationOperatorId.HasValue)
                             chargingSession.ChargingStationOperator = GetChargingStationOperatorById(chargingSession.ChargingStationOperatorId.Value);
 
-                        if (chargingSession.ChargingStationOperator != null)
+                        if (chargingSession.ChargingStationOperator is not null)
                             result = await chargingSession.ChargingStationOperator.
                                                 RemoteStop(chargingSession.Id,
                                                            ReservationHandling,
@@ -9112,11 +9111,11 @@ namespace cloud.charging.open.protocols.WWCP
                         if (result is null)
                         {
 
-                            if (chargingSession.CSORoamingProviderStart == null & chargingSession.CSORoamingProviderIdStart.HasValue)
-                                chargingSession.CSORoamingProviderStart = GetCSORoamingProviderById(chargingSession.CSORoamingProviderIdStart.Value);
+                            if (chargingSession.EMPRoamingProviderStart is null && chargingSession.EMPRoamingProviderIdStart.HasValue)
+                                chargingSession.EMPRoamingProviderStart = GetEMPRoamingProviderById(chargingSession.EMPRoamingProviderIdStart.Value);
 
-                            if (chargingSession.CSORoamingProviderStart != null)
-                                result = await chargingSession.CSORoamingProviderStart.
+                            if (chargingSession.EMPRoamingProviderStart is not null)
+                                result = await chargingSession.EMPRoamingProviderStart.
                                                     RemoteStop(chargingSession.Id,
                                                                ReservationHandling,
                                                                ProviderId,
@@ -9179,9 +9178,9 @@ namespace cloud.charging.open.protocols.WWCP
                    (result.Result == RemoteStopResultTypes.InvalidSessionId)))
                 {
 
-                    foreach (var empRoamingProvider in csoRoamingProviders.
-                                                           OrderBy(CSORoamingServiceWithPriority => CSORoamingServiceWithPriority.Key).
-                                                           Select (CSORoamingServiceWithPriority => CSORoamingServiceWithPriority.Value))
+                    foreach (var empRoamingProvider in empRoamingProviders.
+                                                           OrderBy(empRoamingServiceWithPriority => empRoamingServiceWithPriority.Key).
+                                                           Select (empRoamingServiceWithPriority => empRoamingServiceWithPriority.Value))
                     {
 
                         result = await empRoamingProvider.
@@ -9215,26 +9214,25 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 result = RemoteStopResult.Error(SessionId,
                                                 e.Message,
-                                                Runtime: org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - StartTime);
+                                                Runtime: org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime);
             }
-
 
 
             SessionsStore.RemoteStop(SessionId,
                                      RemoteAuthentication,
                                      ProviderId,
-                                     EMPRoamingProvider,
+                                     CSORoamingProvider,
                                      result);
 
 
             #region Send OnRemoteStopResponse event
 
-            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnRemoteStopResponse?.Invoke(EndTime,
+                OnRemoteStopResponse?.Invoke(endTime,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -9242,12 +9240,12 @@ namespace cloud.charging.open.protocols.WWCP
                                              SessionId,
                                              ReservationHandling,
                                              null,
-                                             EMPRoamingProvider?.Id,
+                                             CSORoamingProvider?.Id,
                                              ProviderId,
                                              RemoteAuthentication,
                                              RequestTimeout,
                                              result,
-                                             EndTime - StartTime);
+                                             endTime - startTime);
 
             }
             catch (Exception e)
@@ -9259,7 +9257,8 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             if (result.ChargeDetailRecord is not null)
-                await SendChargeDetailRecord(result.ChargeDetailRecord);
+                await SendChargeDetailRecord(result.ChargeDetailRecord,
+                                             CancellationToken: CancellationToken);
 
 
             return result;
