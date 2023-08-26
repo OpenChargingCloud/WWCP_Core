@@ -46,32 +46,32 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of this energy mix prognosis.
         /// </summary>
-        public DateTime                                                      Timestamp               { get; }
+        public DateTime                                                        Timestamp               { get; }
 
         /// <summary>
         /// The timestamped energy sources.
         /// </summary>
-        public IEnumerable<Timestamped<Percentage<EnergySourceCategories>>>  EnergySources           { get; }
+        public IEnumerable<Timestamped<PercentageOf<EnergySourceCategories>>>  EnergySources           { get; }
 
         /// <summary>
         /// The timestamped environmental impacts.
         /// </summary>
-        public IEnumerable<Timestamped<Percentage<EnvironmentalImpacts>>>    EnvironmentalImpacts    { get; }
+        public IEnumerable<Timestamped<PercentageOf<EnvironmentalImpacts>>>    EnvironmentalImpacts    { get; }
 
         /// <summary>
         /// The name or brand of the energy supplier.
         /// </summary>
-        public I18NString                                                    SupplierName            { get; }
+        public I18NString                                                      SupplierName            { get; }
 
         /// <summary>
         /// The name or brand of the energy product.
         /// </summary>
-        public I18NString                                                    ProductName             { get; }
+        public I18NString                                                      ProductName             { get; }
 
         /// <summary>
         /// Optional additional remarks.
         /// </summary>
-        public I18NString?                                                   AdditionalRemarks       { get; }
+        public I18NString?                                                     AdditionalRemarks       { get; }
 
         #endregion
 
@@ -86,19 +86,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProductName">The name or brand of the energy product.</param>
         /// <param name="Timestamp">The timestamp of this energy mix prognosis.</param>
         /// <param name="AdditionalRemarks">Optional additional remarks.</param>
-        public EnergyMixPrognosis(IEnumerable<Timestamped<Percentage<EnergySourceCategories>>>  EnergySources,
-                                  IEnumerable<Timestamped<Percentage<EnvironmentalImpacts>>>    EnvironmentalImpacts,
-                                  I18NString                                                    SupplierName,
-                                  I18NString                                                    ProductName,
-                                  DateTime?                                                     Timestamp           = null,
-                                  I18NString?                                                   AdditionalRemarks   = null)
+        public EnergyMixPrognosis(IEnumerable<Timestamped<PercentageOf<EnergySourceCategories>>>  EnergySources,
+                                  IEnumerable<Timestamped<PercentageOf<EnvironmentalImpacts>>>    EnvironmentalImpacts,
+                                  I18NString                                                      SupplierName,
+                                  I18NString                                                      ProductName,
+                                  DateTime?                                                       Timestamp           = null,
+                                  I18NString?                                                     AdditionalRemarks   = null)
         {
 
             if (!EnergySources.Any())
-                throw new ArgumentNullException(nameof(EnergySources),  "The given energy sources must not be null or empty!");
+                throw new ArgumentException("The given energy sources must not be empty!",
+                                            nameof(EnergySources));
 
             if (!EnvironmentalImpacts.Any())
-                throw new ArgumentNullException(nameof(EnergySources),  "The given environmental impacts must not be null or empty!");
+                throw new ArgumentException("The given environmental impacts must not be empty!",
+                                            nameof(EnergySources));
 
             this.EnergySources         = EnergySources;
             this.EnvironmentalImpacts  = EnvironmentalImpacts;
@@ -204,7 +206,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Return the hash code of this object.

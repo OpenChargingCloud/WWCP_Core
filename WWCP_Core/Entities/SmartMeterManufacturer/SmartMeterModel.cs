@@ -304,7 +304,7 @@ namespace cloud.charging.open.protocols.WWCP.SMM
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         private readonly Int32 hashCode;
 

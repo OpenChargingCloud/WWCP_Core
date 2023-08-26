@@ -54,14 +54,14 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// The minimal charging power the electric vehicle accepts [kW].
+        /// The minimal charging power the electric vehicle accepts.
         /// </summary>
-        public kW?                 MinPower                { get; }
+        public Watt?               MinPower                { get; }
 
         /// <summary>
-        /// The maximum charging power the electric vehicle consumes [kW].
+        /// The maximum charging power the electric vehicle consumes.
         /// </summary>
-        public kW?                 MaxPower                { get; }
+        public Watt?               MaxPower                { get; }
 
         /// <summary>
         /// The electric vehicle wants to charge at least this amount of energy [kWh].
@@ -87,15 +87,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unqiue identification of this charging product.</param>
         /// <param name="MinDuration">The electric vehicle wants to charge at least for this amount of time.</param>
         /// <param name="StopChargingAfterTime">Stop charging after this amount of time.</param>
-        /// <param name="MinPower">The minimal charging power the electric vehicle accepts [kW].</param>
-        /// <param name="MaxPower">The maximum charging power the electric vehicle consumes [kW].</param>
+        /// <param name="MinPower">The minimal charging power the electric vehicle accepts.</param>
+        /// <param name="MaxPower">The maximum charging power the electric vehicle consumes.</param>
         /// <param name="MinEnergy">The electric vehicle wants to charge at least this amount of energy [kWh].</param>
         /// <param name="StopChargingAfterKWh">Stop charging after this amount of charged energy [kWh].</param>
         public ChargingProduct(ChargingProduct_Id  Id,
                                TimeSpan?           MinDuration             = null,
                                TimeSpan?           StopChargingAfterTime   = null,
-                               kW?                 MinPower                = null,
-                               kW?                 MaxPower                = null,
+                               Watt?               MinPower                = null,
+                               Watt?               MaxPower                = null,
                                kWh?                MinEnergy               = null,
                                kWh?                StopChargingAfterKWh    = null,
                                Decimal?            MaxB2BServiceCosts      = null,
@@ -174,11 +174,11 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
                            MinPower.HasValue
-                               ? new JProperty("minPower",                  MinPower.Value)
+                               ? new JProperty("minPower",                  MinPower.Value.Value)
                                : null,
 
                            MaxPower.HasValue
-                               ? new JProperty("maxPower",                  MaxPower.Value)
+                               ? new JProperty("maxPower",                  MaxPower.Value.Value)
                                : null,
 
                            MinEnergy.HasValue
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                        );
 
-            return CustomChargingProductSerializer != null
+            return CustomChargingProductSerializer is not null
                        ? CustomChargingProductSerializer(this, json)
                        : json;
 
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Return the HashCode of this object.

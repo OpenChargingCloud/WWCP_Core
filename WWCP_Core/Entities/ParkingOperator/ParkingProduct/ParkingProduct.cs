@@ -41,37 +41,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public ParkingProduct_Id  Id                      { get; }
 
-
         /// <summary>
         /// The electric vehicle wants to charge at least for this amount of time.
         /// </summary>
-        public TimeSpan?           MinDuration             { get; }
+        public TimeSpan?          MinDuration             { get; }
 
         /// <summary>
         /// Stop parking after this amount of time.
         /// </summary>
-        public TimeSpan?           StopChargingAfterTime   { get; }
-
-
-        /// <summary>
-        /// The minimal parking power the electric vehicle accepts [kW].
-        /// </summary>
-        public kW?                 MinPower                { get; }
-
-        /// <summary>
-        /// The maximum parking power the electric vehicle consumes [kW].
-        /// </summary>
-        public kW?                 MaxPower                { get; }
-
-        /// <summary>
-        /// The electric vehicle wants to charge at least this amount of energy [kWh].
-        /// </summary>
-        public kWh?                MinEnergy               { get; }
-
-        /// <summary>
-        /// Stop parking after this amount of charged energy [kWh].
-        /// </summary>
-        public kWh?                StopChargingAfterKWh    { get; }
+        public TimeSpan?          StopParkingAfterTime    { get; }
 
         #endregion
 
@@ -80,29 +58,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new parking product.
         /// </summary>
-        /// <param name="ParkingProductId"></param>
+        /// <param name="Id"></param>
         /// <param name="MinDuration">The electric vehicle wants to charge at least for this amount of time.</param>
-        /// <param name="StopChargingAfterTime">Stop parking after this amount of time.</param>
+        /// <param name="StopParkingAfterTime">Stop parking after this amount of time.</param>
         /// <param name="MinPower">The minimal parking power the electric vehicle accepts [kW].</param>
         /// <param name="MaxPower">The maximum parking power the electric vehicle consumes [kW].</param>
         /// <param name="MinEnergy">The electric vehicle wants to charge at least this amount of energy [kWh].</param>
         /// <param name="StopChargingAfterKWh">Stop parking after this amount of charged energy [kWh].</param>
-        public ParkingProduct(ParkingProduct_Id  ParkingProductId,
-                               TimeSpan?           MinDuration            = null,
-                               TimeSpan?           StopChargingAfterTime  = null,
-                               kW?                 MinPower               = null,
-                               kW?                 MaxPower               = null,
-                               kWh?                MinEnergy              = null,
-                               kWh?                StopChargingAfterKWh   = null)
+        public ParkingProduct(ParkingProduct_Id  Id,
+                              TimeSpan?          MinDuration            = null,
+                              TimeSpan?          StopParkingAfterTime   = null)
         {
 
-            this.Id      = ParkingProductId;
+            this.Id                     = Id;
             this.MinDuration            = MinDuration;
-            this.StopChargingAfterTime  = StopChargingAfterTime;
-            this.MinPower               = MinPower;
-            this.MaxPower               = MaxPower;
-            this.MinEnergy              = MinEnergy;
-            this.StopChargingAfterKWh   = StopChargingAfterKWh;
+            this.StopParkingAfterTime   = StopParkingAfterTime;
 
         }
 
@@ -311,7 +281,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Return the HashCode of this object.

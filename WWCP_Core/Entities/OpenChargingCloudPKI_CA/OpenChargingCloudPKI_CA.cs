@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.WWCP.PKI
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         private readonly Int32 hashCode;
 

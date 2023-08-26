@@ -2928,7 +2928,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Get the hashcode of this object.
