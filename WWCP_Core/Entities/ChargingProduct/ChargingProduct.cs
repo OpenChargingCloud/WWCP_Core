@@ -66,12 +66,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The electric vehicle wants to charge at least this amount of energy [kWh].
         /// </summary>
-        public kWh?                MinEnergy               { get; }
+        public WattHour?           MinEnergy               { get; }
 
         /// <summary>
         /// Stop charging after this amount of charged energy [kWh].
         /// </summary>
-        public kWh?                StopChargingAfterKWh    { get; }
+        public WattHour?           StopChargingAfterKWh    { get; }
 
         public Decimal?            MaxB2BServiceCosts      { get; }
 
@@ -89,15 +89,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="StopChargingAfterTime">Stop charging after this amount of time.</param>
         /// <param name="MinPower">The minimal charging power the electric vehicle accepts.</param>
         /// <param name="MaxPower">The maximum charging power the electric vehicle consumes.</param>
-        /// <param name="MinEnergy">The electric vehicle wants to charge at least this amount of energy [kWh].</param>
-        /// <param name="StopChargingAfterKWh">Stop charging after this amount of charged energy [kWh].</param>
+        /// <param name="MinEnergy">The electric vehicle wants to charge at least this amount of energy [Wh].</param>
+        /// <param name="StopChargingAfterKWh">Stop charging after this amount of charged energy [Wh].</param>
         public ChargingProduct(ChargingProduct_Id  Id,
                                TimeSpan?           MinDuration             = null,
                                TimeSpan?           StopChargingAfterTime   = null,
                                Watt?               MinPower                = null,
                                Watt?               MaxPower                = null,
-                               kWh?                MinEnergy               = null,
-                               kWh?                StopChargingAfterKWh    = null,
+                               WattHour?           MinEnergy               = null,
+                               WattHour?           StopChargingAfterKWh    = null,
                                Decimal?            MaxB2BServiceCosts      = null,
                                Boolean?            IntermediateCDRs        = null)
         {
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  new JProperty("@id",                       Id.ToString()),
 
                            MinDuration.HasValue
-                               ? new JProperty("minDuration",               MinDuration.Value.TotalSeconds)
+                               ? new JProperty("minDuration",               MinDuration.          Value.TotalSeconds)
                                : null,
 
                            StopChargingAfterTime.HasValue
@@ -174,27 +174,27 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
                            MinPower.HasValue
-                               ? new JProperty("minPower",                  MinPower.Value.Value)
+                               ? new JProperty("minPower",                  MinPower.             Value.Value)
                                : null,
 
                            MaxPower.HasValue
-                               ? new JProperty("maxPower",                  MaxPower.Value.Value)
+                               ? new JProperty("maxPower",                  MaxPower.             Value.Value)
                                : null,
 
                            MinEnergy.HasValue
-                               ? new JProperty("minEnergy",                 MinEnergy.Value)
+                               ? new JProperty("minEnergy",                 MinEnergy.            Value.Value)
                                : null,
 
                            StopChargingAfterKWh.HasValue
-                               ? new JProperty("stopChargingAfterKWh",      StopChargingAfterKWh.Value)
+                               ? new JProperty("stopChargingAfterKWh",      StopChargingAfterKWh. Value.Value)
                                : null,
 
                            MaxB2BServiceCosts.HasValue
-                               ? new JProperty("maxB2BServiceCosts",        MaxB2BServiceCosts.Value)
+                               ? new JProperty("maxB2BServiceCosts",        MaxB2BServiceCosts.   Value)
                                : null,
 
                            IntermediateCDRs.HasValue
-                               ? new JProperty("intermediateCDRs",          IntermediateCDRs.Value)
+                               ? new JProperty("intermediateCDRs",          IntermediateCDRs.     Value)
                                : null
 
                        );
