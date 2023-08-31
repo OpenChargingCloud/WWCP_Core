@@ -839,7 +839,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     IEnumerable<URL>?                   PhotoURLs                    = null,
                     IEnumerable<Brand>?                 Brands                       = null,
-                    ReactiveSet<RootCAInfo>?            MobilityRootCAs              = null,
+                    IEnumerable<RootCAInfo>?            MobilityRootCAs              = null,
                     IEnumerable<OpenDataLicense>?       OpenDataLicenses             = null,
                     IEnumerable<ChargingModes>?         ChargingModes                = null,
                     IEnumerable<ChargingTariff>?        ChargingTariffs              = null,

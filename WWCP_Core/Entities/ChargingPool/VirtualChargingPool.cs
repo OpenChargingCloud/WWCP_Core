@@ -68,6 +68,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          Languages?                                                          LocationLanguage                  = null,
                                                                          PhoneNumber?                                                        HotlinePhoneNumber                = null,
 
+                                                                         IEnumerable<Brand>?                                                 Brands                            = null,
+                                                                         IEnumerable<RootCAInfo>?                                            MobilityRootCAs                   = null,
+
                                                                          Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus                = null,
                                                                          Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                     = null,
                                                                          String                                                              EllipticCurve                     = "P-256",
@@ -108,6 +111,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    Accessibility,
                    LocationLanguage,
                    HotlinePhoneNumber,
+
+                   Brands,
+                   MobilityRootCAs,
 
                    InitialAdminStatus ?? ChargingPoolAdminStatusTypes.Operational,
                    InitialStatus      ?? ChargingPoolStatusTypes.Available,

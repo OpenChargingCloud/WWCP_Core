@@ -1283,7 +1283,7 @@ namespace cloud.charging.open.protocols.WWCP
                                String?                                        ModelCode                      = null,
 
                                IEnumerable<Brand>?                            Brands                         = null,
-                               ReactiveSet<RootCAInfo>?                       MobilityRootCAs                = null,
+                               IEnumerable<RootCAInfo>?                       MobilityRootCAs                = null,
 
                                Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
                                Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,

@@ -1044,7 +1044,7 @@ namespace cloud.charging.open.protocols.WWCP
                             PhoneNumber?                                HotlinePhoneNumber               = null,
 
                             IEnumerable<Brand>?                         Brands                           = null,
-                            ReactiveSet<RootCAInfo>?                    MobilityRootCAs                  = null,
+                            IEnumerable<RootCAInfo>?                    MobilityRootCAs                  = null,
 
                             Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus               = null,
                             Timestamped<ChargingPoolStatusTypes>?       InitialStatus                    = null,
@@ -4091,6 +4091,9 @@ namespace cloud.charging.open.protocols.WWCP
                     Accessibility,
                     LocationLanguage,
                     HotlinePhoneNumber,
+
+                    Brands,
+                    MobilityRootCAs,
 
                     AdminStatus,
                     Status,

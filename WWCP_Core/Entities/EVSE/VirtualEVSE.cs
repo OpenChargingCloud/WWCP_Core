@@ -65,6 +65,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                                          IEnumerable<URL>?                                    PhotoURLs                      = null,
                                                          IEnumerable<Brand>?                                  Brands                         = null,
+                                                         IEnumerable<RootCAInfo>?                             MobilityRootCAs                = null,
                                                          IEnumerable<OpenDataLicense>?                        OpenDataLicenses               = null,
                                                          IEnumerable<ChargingModes>?                          ChargingModes                  = null,
                                                          IEnumerable<ChargingTariff>?                         ChargingTariffs                = null,
@@ -121,6 +122,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                    PhotoURLs,
                    Brands,
+                   MobilityRootCAs,
                    OpenDataLicenses,
                    ChargingModes,
                    ChargingTariffs,
@@ -248,6 +250,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                                                     IEnumerable<URL>?                                    PhotoURLs                      = null,
                                                                     IEnumerable<Brand>?                                  Brands                         = null,
+                                                                    IEnumerable<RootCAInfo>?                             MobilityRootCAs                = null,
                                                                     IEnumerable<OpenDataLicense>?                        OpenDataLicenses               = null,
                                                                     IEnumerable<ChargingModes>?                          ChargingModes                  = null,
                                                                     IEnumerable<ChargingTariff>?                         ChargingTariffs                = null,
@@ -303,6 +306,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                    PhotoURLs,
                                    Brands,
+                                   MobilityRootCAs,
                                    OpenDataLicenses,
                                    ChargingModes,
                                    ChargingTariffs,
@@ -431,6 +435,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                                                          IEnumerable<URL>?                                    PhotoURLs                              = null,
                                                                          IEnumerable<Brand>?                                  Brands                                 = null,
+                                                                         IEnumerable<RootCAInfo>?                             MobilityRootCAs                        = null,
                                                                          IEnumerable<OpenDataLicense>?                        OpenDataLicenses                       = null,
                                                                          IEnumerable<ChargingModes>?                          ChargingModes                          = null,
                                                                          IEnumerable<ChargingTariff>?                         ChargingTariffs                        = null,
@@ -493,6 +498,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                    PhotoURLs,
                    Brands,
+                   MobilityRootCAs,
                    OpenDataLicenses,
                    ChargingModes,
                    ChargingTariffs,

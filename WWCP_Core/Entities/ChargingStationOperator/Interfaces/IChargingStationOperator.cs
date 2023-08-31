@@ -81,6 +81,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   Languages?                                                          LocationLanguage               = null,
                                                                   PhoneNumber?                                                        HotlinePhoneNumber             = null,
 
+                                                                  IEnumerable<Brand>?                                                 Brands                         = null,
+                                                                  IEnumerable<RootCAInfo>?                                            MobilityRootCAs                = null,
+
                                                                   Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus             = null,
                                                                   Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                  = null,
                                                                   UInt16?                                                             MaxAdminStatusScheduleSize     = null,
@@ -118,6 +121,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                            Accessibility,
                                                            LocationLanguage,
                                                            HotlinePhoneNumber,
+
+                                                           Brands,
+                                                           MobilityRootCAs,
 
                                                            InitialAdminStatus,
                                                            InitialStatus,
@@ -172,6 +178,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                              Languages?                                                   LocationLanguage               = null,
                                                                              PhoneNumber?                                                 HotlinePhoneNumber             = null,
 
+                                                                             IEnumerable<Brand>?                                          Brands                         = null,
+                                                                             IEnumerable<RootCAInfo>?                                     MobilityRootCAs                = null,
+
                                                                              Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                              Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
                                                                              UInt16?                                                      MaxAdminStatusScheduleSize     = null,
@@ -208,6 +217,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                       Accessibility,
                                                                       LocationLanguage,
                                                                       HotlinePhoneNumber,
+
+                                                                      Brands,
+                                                                      MobilityRootCAs,
 
                                                                       InitialAdminStatus,
                                                                       InitialStatus,
@@ -263,6 +275,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                   Languages?                                                          LocationLanguage                       = null,
                                                                                   PhoneNumber?                                                        HotlinePhoneNumber                     = null,
 
+                                                                                  IEnumerable<Brand>?                                                 Brands                                 = null,
+                                                                                  IEnumerable<RootCAInfo>?                                            MobilityRootCAs                        = null,
+
                                                                                   Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus                     = null,
                                                                                   Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                          = null,
                                                                                   UInt16?                                                             MaxAdminStatusScheduleSize             = null,
@@ -301,6 +316,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                    Accessibility,
                                                                    LocationLanguage,
                                                                    HotlinePhoneNumber,
+
+                                                                   Brands,
+                                                                   MobilityRootCAs,
 
                                                                    InitialAdminStatus,
                                                                    InitialStatus,
@@ -357,6 +375,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         Languages?                                                          LocationLanguage               = null,
                                                                         PhoneNumber?                                                        HotlinePhoneNumber             = null,
 
+                                                                        IEnumerable<Brand>?                                                 Brands                         = null,
+                                                                        IEnumerable<RootCAInfo>?                                            MobilityRootCAs                = null,
+
                                                                         Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus             = null,
                                                                         Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                  = null,
                                                                         UInt16?                                                             MaxAdminStatusScheduleSize     = null,
@@ -394,6 +415,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                               Accessibility,
                                                               LocationLanguage,
                                                               HotlinePhoneNumber,
+
+                                                              Brands,
+                                                              MobilityRootCAs,
 
                                                               InitialAdminStatus,
                                                               InitialStatus,

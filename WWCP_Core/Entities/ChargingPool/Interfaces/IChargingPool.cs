@@ -83,6 +83,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         String?                                                         ModelCode                      = null,
 
                                                                         IEnumerable<Brand>?                                             Brands                         = null,
+                                                                        IEnumerable<RootCAInfo>?                                        MobilityRootCAs                = null,
 
                                                                         Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                         Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
@@ -130,6 +131,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                    ModelCode,
 
                                                    Brands,
+                                                   MobilityRootCAs,
 
                                                    InitialAdminStatus,
                                                    InitialStatus,
@@ -192,7 +194,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                    String?                                                         ModelCode                      = null,
 
                                                                                    IEnumerable<Brand>?                                             Brands                         = null,
-
+                                                                                   IEnumerable<RootCAInfo>?                                        MobilityRootCAs                = null,
 
                                                                                    Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                                    Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
@@ -239,6 +241,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                               ModelCode,
 
                                                               Brands,
+                                                              MobilityRootCAs,
 
                                                               InitialAdminStatus,
                                                               InitialStatus,
@@ -302,6 +305,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                         String?                                                         ModelCode                              = null,
 
                                                                                         IEnumerable<Brand>?                                             Brands                                 = null,
+                                                                                        IEnumerable<RootCAInfo>?                                        MobilityRootCAs                        = null,
 
                                                                                         Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus                     = null,
                                                                                         Timestamped<ChargingStationStatusTypes>?                        InitialStatus                          = null,
@@ -349,6 +353,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                            ModelCode,
 
                                                            Brands,
+                                                           MobilityRootCAs,
 
                                                            InitialAdminStatus,
                                                            InitialStatus,
@@ -413,6 +418,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                               String?                                                         ModelCode                      = null,
 
                                                                               IEnumerable<Brand>?                                             Brands                         = null,
+                                                                              IEnumerable<RootCAInfo>?                                        MobilityRootCAs                = null,
 
                                                                               Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                               Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
@@ -459,6 +465,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                       ModelCode,
 
                                                       Brands,
+                                                      MobilityRootCAs,
 
                                                       InitialAdminStatus,
                                                       InitialStatus,
