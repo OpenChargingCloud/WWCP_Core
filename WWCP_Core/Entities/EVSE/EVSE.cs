@@ -120,6 +120,12 @@ namespace cloud.charging.open.protocols.WWCP
         public ReactiveSet<Brand>                       Brands                      { get; }
 
         /// <summary>
+        /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20, available at this EVSE.
+        /// </summary>
+        [Optional, SlowData]
+        public ReactiveSet<RootCAInfo>                  MobilityRootCAs             { get; }
+
+        /// <summary>
         /// An enumeration of all data license(s) of this EVSE.
         /// </summary>
         [Optional, SlowData]
@@ -833,6 +839,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     IEnumerable<URL>?                   PhotoURLs                    = null,
                     IEnumerable<Brand>?                 Brands                       = null,
+                    ReactiveSet<RootCAInfo>?            MobilityRootCAs              = null,
                     IEnumerable<OpenDataLicense>?       OpenDataLicenses             = null,
                     IEnumerable<ChargingModes>?         ChargingModes                = null,
                     IEnumerable<ChargingTariff>?        ChargingTariffs              = null,
@@ -907,6 +914,21 @@ namespace cloud.charging.open.protocols.WWCP
             this.Brands.OnSetChanged               += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("DataLicenses",
+                                oldItems,
+                                newItems);
+
+            };
+
+
+            this.MobilityRootCAs = new ReactiveSet<RootCAInfo>();
+
+            if (MobilityRootCAs is not null)
+                foreach (var mobilityRootCA in MobilityRootCAs)
+                    this.MobilityRootCAs.Add(mobilityRootCA);
+
+            this.MobilityRootCAs.OnSetChanged       += (timestamp, sender, newItems, oldItems) => {
+
+                PropertyChanged("MobilityRootCAs",
                                 oldItems,
                                 newItems);
 

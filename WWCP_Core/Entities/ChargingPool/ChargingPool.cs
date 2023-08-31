@@ -101,6 +101,11 @@ namespace cloud.charging.open.protocols.WWCP
         [Optional, SlowData]
         public ReactiveSet<Brand>            Brands                 { get; }
 
+        /// <summary>
+        /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20, available in this charging pool.
+        /// </summary>
+        [Optional, SlowData]
+        public ReactiveSet<RootCAInfo>       MobilityRootCAs        { get; }
 
 
         /// <summary>
@@ -1038,6 +1043,9 @@ namespace cloud.charging.open.protocols.WWCP
                             Languages?                                  LocationLanguage                 = null,
                             PhoneNumber?                                HotlinePhoneNumber               = null,
 
+                            IEnumerable<Brand>?                         Brands                           = null,
+                            ReactiveSet<RootCAInfo>?                    MobilityRootCAs                  = null,
+
                             Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus               = null,
                             Timestamped<ChargingPoolStatusTypes>?       InitialStatus                    = null,
                             UInt16?                                     MaxPoolAdminStatusScheduleSize   = null,
@@ -1080,6 +1088,11 @@ namespace cloud.charging.open.protocols.WWCP
             this.Operator                          = Operator;
 
             this.Brands                            = new ReactiveSet<Brand>();
+
+            if (Brands is not null)
+                foreach (var brand in Brands)
+                    this.Brands.Add(brand);
+
             this.Brands.OnSetChanged              += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("Brands",
@@ -1087,6 +1100,22 @@ namespace cloud.charging.open.protocols.WWCP
                                 newItems);
 
             };
+
+
+            this.MobilityRootCAs = new ReactiveSet<RootCAInfo>();
+
+            if (MobilityRootCAs is not null)
+                foreach (var mobilityRootCA in MobilityRootCAs)
+                    this.MobilityRootCAs.Add(mobilityRootCA);
+
+            this.MobilityRootCAs.OnSetChanged      += (timestamp, sender, newItems, oldItems) => {
+
+                PropertyChanged("MobilityRootCAs",
+                                oldItems,
+                                newItems);
+
+            };
+
 
             this.DataLicenses                       = new ReactiveSet<OpenDataLicense>();
             this.DataLicenses.OnSetChanged         += (timestamp, reactiveSet, newItems, oldItems) =>

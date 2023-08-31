@@ -111,6 +111,12 @@ namespace cloud.charging.open.protocols.WWCP
         public ReactiveSet<Brand>            Brands                      { get; }
 
         /// <summary>
+        /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20, available at this charging station.
+        /// </summary>
+        [Optional, SlowData]
+        public ReactiveSet<RootCAInfo>       MobilityRootCAs             { get; }
+
+        /// <summary>
         /// The license of the charging station data.
         /// </summary>
         [Mandatory, SlowData]
@@ -1277,6 +1283,7 @@ namespace cloud.charging.open.protocols.WWCP
                                String?                                        ModelCode                      = null,
 
                                IEnumerable<Brand>?                            Brands                         = null,
+                               ReactiveSet<RootCAInfo>?                       MobilityRootCAs                = null,
 
                                Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
                                Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
@@ -1334,6 +1341,22 @@ namespace cloud.charging.open.protocols.WWCP
                                 newItems);
 
             };
+
+
+            this.MobilityRootCAs = new ReactiveSet<RootCAInfo>();
+
+            if (MobilityRootCAs is not null)
+                foreach (var mobilityRootCA in MobilityRootCAs)
+                    this.MobilityRootCAs.Add(mobilityRootCA);
+
+            this.MobilityRootCAs.OnSetChanged       += (timestamp, sender, newItems, oldItems) => {
+
+                PropertyChanged("MobilityRootCAs",
+                                oldItems,
+                                newItems);
+
+            };
+
 
             this.DataLicenses                        = new ReactiveSet<OpenDataLicense>();
             this.DataLicenses.OnSetChanged          += (timestamp, reactiveSet, newItems, oldItems) =>
