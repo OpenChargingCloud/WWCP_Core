@@ -135,7 +135,7 @@
 //        public IPPort                               RemotePort                    { get; }
 
 //        /// <summary>
-//        /// The remote SSL/TLS certificate validator.
+//        /// The remote TLS certificate validator.
 //        /// </summary>
 //        public RemoteCertificateValidationCallback  RemoteCertificateValidator    { get; }
 

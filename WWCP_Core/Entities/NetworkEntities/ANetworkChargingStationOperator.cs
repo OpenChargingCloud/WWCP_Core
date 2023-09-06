@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
     //    public IPPort                               RemotePort                    { get; }
 
     //    /// <summary>
-    //    /// The remote SSL/TLS certificate validator.
+    //    /// The remote TLS certificate validator.
     //    /// </summary>
     //    public RemoteCertificateValidationCallback  RemoteCertificateValidator    { get; }
 
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
     //    /// <param name="Hostname">The remote hostname.</param>
     //    /// <param name="VirtualHostname">An optional remote virtual hostname.</param>
     //    /// <param name="RemotePort">An optional remote HTTPS port.</param>
-    //    /// <param name="RemoteCertificateValidator">An optional remote SSL/TLS certificate validator.</param>
+    //    /// <param name="RemoteCertificateValidator">An optional remote TLS certificate validator.</param>
     //    /// <param name="RoamingNetworkId">An optional roaming network identification.</param>
     //    /// <param name="RequestTimeout">An optional request timeout.</param>
     //    /// <param name="DNSClient">An optional DNS client to use.</param>
