@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP
             => Suffix.IsNullOrEmpty();
 
         /// <summary>
-        /// Indicates whether this identification is Not null or empty.
+        /// Indicates whether this identification is NOT null or empty.
         /// </summary>
         public Boolean IsNotNullOrEmpty
             => Suffix.IsNotNullOrEmpty();

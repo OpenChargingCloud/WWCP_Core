@@ -33,7 +33,6 @@ namespace cloud.charging.open.protocols.WWCP
     public readonly struct ChargingTariffGroup_Id : IId,
                                                     IEquatable<ChargingTariffGroup_Id>,
                                                     IComparable<ChargingTariffGroup_Id>
-
     {
 
         #region Data

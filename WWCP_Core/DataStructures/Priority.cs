@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -32,7 +30,6 @@ namespace cloud.charging.open.protocols.WWCP
     public readonly struct Priority : IId,
                                       IEquatable <Priority>,
                                       IComparable<Priority>
-
     {
 
         #region Data
@@ -62,7 +59,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The length of the tag identification.
         /// </summary>
         public UInt64 Length
-            => 0;
+            => 1;
 
         #endregion
 

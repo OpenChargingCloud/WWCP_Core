@@ -61,13 +61,13 @@ namespace cloud.charging.open.protocols.WWCP
         public CSORoamingProvider_Id?       CSORoamingProviderId
             => chargingReservations.LastOrDefault()?.CSORoamingProviderId;
 
-        public ulong Length
-            => throw new NotImplementedException();
-
         public bool IsNullOrEmpty
             => throw new NotImplementedException();
 
         public bool IsNotNullOrEmpty
+            => throw new NotImplementedException();
+
+        public ulong Length
             => throw new NotImplementedException();
 
         #endregion
