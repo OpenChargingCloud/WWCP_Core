@@ -29,9 +29,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The unique identification of of a group of electric vehicle charging pools.
     /// </summary>
-    public struct ChargingPoolGroup_Id : IId,
-                                         IEquatable<ChargingPoolGroup_Id>,
-                                         IComparable<ChargingPoolGroup_Id>
+    public readonly struct ChargingPoolGroup_Id : IId,
+                                                  IEquatable<ChargingPoolGroup_Id>,
+                                                  IComparable<ChargingPoolGroup_Id>
 
     {
 
@@ -62,6 +62,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Boolean IsNullOrEmpty
             => Suffix.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => Suffix.IsNotNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.

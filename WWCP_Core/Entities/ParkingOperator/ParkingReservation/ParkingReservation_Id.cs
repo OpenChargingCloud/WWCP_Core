@@ -30,9 +30,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The unique identification of a parking reservation.
     /// </summary>
-    public struct ParkingReservation_Id : IId,
-                                          IEquatable <ParkingReservation_Id>,
-                                          IComparable<ParkingReservation_Id>
+    public readonly struct ParkingReservation_Id : IId,
+                                                   IEquatable <ParkingReservation_Id>,
+                                                   IComparable<ParkingReservation_Id>
 
     {
 
@@ -63,6 +63,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Boolean IsNullOrEmpty
             => Suffix.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => Suffix.IsNotNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.

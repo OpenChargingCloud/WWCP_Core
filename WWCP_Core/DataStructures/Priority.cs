@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -29,10 +27,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The priority of something.
     /// </summary>
-    public struct Priority : IId,
-                             IEquatable <Priority>,
-                             IComparable<Priority>
-
+    public readonly struct Priority : IId,
+                                      IEquatable <Priority>,
+                                      IComparable<Priority>
     {
 
         #region Data
@@ -53,10 +50,16 @@ namespace cloud.charging.open.protocols.WWCP
             => false;
 
         /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => true;
+
+        /// <summary>
         /// The length of the tag identification.
         /// </summary>
         public UInt64 Length
-            => 0;
+            => 1;
 
         #endregion
 

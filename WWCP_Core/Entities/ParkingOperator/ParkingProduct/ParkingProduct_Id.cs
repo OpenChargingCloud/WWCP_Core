@@ -29,9 +29,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The unique identification of a parking product.
     /// </summary>
-    public struct ParkingProduct_Id : IId,
-                                      IEquatable <ParkingProduct_Id>,
-                                      IComparable<ParkingProduct_Id>
+    public readonly struct ParkingProduct_Id : IId,
+                                               IEquatable <ParkingProduct_Id>,
+                                               IComparable<ParkingProduct_Id>
 
     {
 
@@ -51,6 +51,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.

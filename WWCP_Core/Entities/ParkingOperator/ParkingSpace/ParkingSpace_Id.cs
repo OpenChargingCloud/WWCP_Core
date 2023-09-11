@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -29,9 +27,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The unique identification of a parking space.
     /// </summary>
-    public struct ParkingSpace_Id : IId,
-                                    IEquatable <ParkingSpace_Id>,
-                                    IComparable<ParkingSpace_Id>
+    public readonly struct ParkingSpace_Id : IId,
+                                             IEquatable <ParkingSpace_Id>,
+                                             IComparable<ParkingSpace_Id>
 
 {
 
@@ -51,6 +49,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.
