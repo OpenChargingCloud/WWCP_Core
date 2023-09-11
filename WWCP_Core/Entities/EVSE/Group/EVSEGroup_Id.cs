@@ -30,9 +30,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The unique identification of a group of Electric Vehicle Supply Equipments (EVSEs).
     /// </summary>
-    public struct EVSEGroup_Id : IId,
-                                 IEquatable<EVSEGroup_Id>,
-                                 IComparable<EVSEGroup_Id>
+    public readonly struct EVSEGroup_Id : IId,
+                                          IEquatable<EVSEGroup_Id>,
+                                          IComparable<EVSEGroup_Id>
 
     {
 
@@ -66,6 +66,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Boolean IsNullOrEmpty
             => Suffix.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => Suffix.IsNotNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.

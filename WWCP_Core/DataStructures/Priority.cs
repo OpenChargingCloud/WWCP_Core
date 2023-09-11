@@ -29,9 +29,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The priority of something.
     /// </summary>
-    public struct Priority : IId,
-                             IEquatable <Priority>,
-                             IComparable<Priority>
+    public readonly struct Priority : IId,
+                                      IEquatable <Priority>,
+                                      IComparable<Priority>
 
     {
 
@@ -51,6 +51,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Boolean IsNullOrEmpty
             => false;
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => true;
 
         /// <summary>
         /// The length of the tag identification.

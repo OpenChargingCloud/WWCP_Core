@@ -67,6 +67,9 @@ namespace cloud.charging.open.protocols.WWCP
         public bool IsNullOrEmpty
             => throw new NotImplementedException();
 
+        public bool IsNotNullOrEmpty
+            => throw new NotImplementedException();
+
         #endregion
 
         #region Constructor(s)

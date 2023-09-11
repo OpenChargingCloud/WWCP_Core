@@ -17,9 +17,7 @@
 
 #region Usings
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -40,6 +38,8 @@ namespace cloud.charging.open.protocols.WWCP
         public ulong Length => throw new NotImplementedException();
 
         public bool IsNullOrEmpty => throw new NotImplementedException();
+
+        public bool IsNotNullOrEmpty => throw new NotImplementedException();
 
         public ChargeDetailRecordCollection(ChargeDetailRecord ChargeDetailRecord)
             : this(ChargeDetailRecord.SessionId)
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        public int CompareTo(object obj)
+        public int CompareTo(Object? obj)
         {
             throw new NotImplementedException();
         }
@@ -107,6 +107,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean Equals(ChargingSession_Id other)
             => Id.Equals(other);
+
+        public override String ToString()
+            => "";
 
     }
 

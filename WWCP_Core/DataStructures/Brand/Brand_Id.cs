@@ -30,9 +30,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The unique identification of a brand.
     /// </summary>
-    public struct Brand_Id : IId,
-                             IEquatable <Brand_Id>,
-                             IComparable<Brand_Id>
+    public readonly struct Brand_Id : IId,
+                                      IEquatable <Brand_Id>,
+                                      IComparable<Brand_Id>
 
     {
 
@@ -52,6 +52,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.

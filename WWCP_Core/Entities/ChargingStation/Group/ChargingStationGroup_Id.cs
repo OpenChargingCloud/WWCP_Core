@@ -30,9 +30,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The unique identification of of a group of electric vehicle charging stations.
     /// </summary>
-    public struct ChargingStationGroup_Id : IId,
-                                            IEquatable<ChargingStationGroup_Id>,
-                                            IComparable<ChargingStationGroup_Id>
+    public readonly struct ChargingStationGroup_Id : IId,
+                                                     IEquatable<ChargingStationGroup_Id>,
+                                                     IComparable<ChargingStationGroup_Id>
 
     {
 
@@ -63,6 +63,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Boolean IsNullOrEmpty
             => Suffix.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this identification is Not null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => Suffix.IsNotNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.
