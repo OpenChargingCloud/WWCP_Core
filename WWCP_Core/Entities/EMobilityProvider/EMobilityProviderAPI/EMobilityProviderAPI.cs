@@ -573,6 +573,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                                                           remoteStartRequest.ChargingProduct,
                                                                                                           remoteStartRequest.ReservationId,
                                                                                                           remoteStartRequest.RemoteAuthentication,
+                                                                                                          remoteStartRequest.AuthenticationPath,
                                                                                                           remoteStartRequest.ChargingSessionId,
                                                                                                           remoteStartRequest.Timestamp,
                                                                                                           remoteStartRequest.EventTrackingId,

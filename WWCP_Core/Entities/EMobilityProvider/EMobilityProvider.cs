@@ -2752,6 +2752,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
         public Boolean DisableAuthentication { get; set; }
+        public TimeSpan MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public IEnumerable<ChargingReservation> ChargingReservations => throw new NotImplementedException();
 
         #endregion
 
@@ -3157,23 +3160,24 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         public async Task<ReservationResult>
 
-            Reserve(ChargingLocation                    ChargingLocation,
-                    ChargingReservationLevel            ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                           ReservationStartTime   = null,
-                    TimeSpan?                           Duration               = null,
-                    ChargingReservation_Id?             ReservationId          = null,
-                    ChargingReservation_Id?             LinkedReservationId    = null,
-                    EMobilityProvider_Id?               ProviderId             = null,
-                    RemoteAuthentication?               RemoteAuthentication   = null,
-                    ChargingProduct?                    ChargingProduct        = null,
-                    IEnumerable<AuthenticationToken>?   AuthTokens             = null,
-                    IEnumerable<EMobilityAccount_Id>?   eMAIds                 = null,
-                    IEnumerable<UInt32>?                PINs                   = null,
+            Reserve(ChargingLocation                   ChargingLocation,
+                    ChargingReservationLevel           ReservationLevel       = ChargingReservationLevel.EVSE,
+                    DateTime?                          ReservationStartTime   = null,
+                    TimeSpan?                          Duration               = null,
+                    ChargingReservation_Id?            ReservationId          = null,
+                    ChargingReservation_Id?            LinkedReservationId    = null,
+                    EMobilityProvider_Id?              ProviderId             = null,
+                    RemoteAuthentication?              RemoteAuthentication   = null,
+                    Auth_Path?                         AuthenticationPath     = null,
+                    ChargingProduct?                   ChargingProduct        = null,
+                    IEnumerable<AuthenticationToken>?  AuthTokens             = null,
+                    IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
+                    IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime?                           Timestamp              = null,
-                    EventTracking_Id?                   EventTrackingId        = null,
-                    TimeSpan?                           RequestTimeout         = null,
-                    CancellationToken                   CancellationToken      = default)
+                    DateTime?                          Timestamp              = null,
+                    EventTracking_Id?                  EventTrackingId        = null,
+                    TimeSpan?                          RequestTimeout         = null,
+                    CancellationToken                  CancellationToken      = default)
 
         {
 
@@ -3232,6 +3236,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                  LinkedReservationId,
                                                  Id,
                                                  RemoteAuthentication,
+                                                 AuthenticationPath,
                                                  ChargingProduct,
                                                  AuthTokens,
                                                  eMAIds,
@@ -3310,7 +3315,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              EMobilityProvider_Id?                  ProviderId          = null,
 
                               DateTime?                              Timestamp           = null,
                               EventTracking_Id?                      EventTrackingId     = null,
@@ -3423,6 +3427,27 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation? ChargingReservation)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean TryGetChargingReservationsById(ChargingReservation_Id ReservationId, out ChargingReservationCollection? ChargingReservations)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ChargingReservation? GetChargingReservationById(ChargingReservation_Id ReservationId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ChargingReservationCollection? GetChargingReservationsById(ChargingReservation_Id ReservationId)
+        {
+            throw new NotImplementedException();
+        }
+
+
         #region (internal) SendNewReservation     (Timestamp, Sender, Reservation)
 
         internal void SendNewReservation(DateTime Timestamp,
@@ -3531,7 +3556,9 @@ namespace cloud.charging.open.protocols.WWCP
                         ChargingProduct?         ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
                         ChargingSession_Id?      SessionId              = null,
+                        EMobilityProvider_Id?    ProviderId             = null, // Will be ignored!
                         RemoteAuthentication?    RemoteAuthentication   = null,
+                        Auth_Path?               AuthenticationPath     = null,
 
                         DateTime?                Timestamp              = null,
                         EventTracking_Id?        EventTrackingId        = null,
@@ -3590,7 +3617,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                SessionId,
                                                Id,
                                                RemoteAuthentication,
-                                               //this,
+                                               AuthenticationPath,
 
                                                Timestamp,
                                                EventTrackingId,
@@ -3659,7 +3686,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             RemoteStop(ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling    = null,
+                       EMobilityProvider_Id?  ProviderId             = null, // Will be ignored!
                        RemoteAuthentication?  RemoteAuthentication   = null,
+                       Auth_Path?             AuthenticationPath     = null,
 
                        DateTime?              Timestamp              = null,
                        EventTracking_Id?      EventTrackingId        = null,
@@ -3714,6 +3743,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               ReservationHandling,
                                               Id,
                                               RemoteAuthentication,
+                                              AuthenticationPath,
 
                                               Timestamp,
                                               EventTrackingId,

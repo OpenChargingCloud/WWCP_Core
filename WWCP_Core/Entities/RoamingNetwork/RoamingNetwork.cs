@@ -6356,6 +6356,7 @@ namespace cloud.charging.open.protocols.WWCP
                     ChargingReservation_Id?            LinkedReservationId    = null,
                     EMobilityProvider_Id?              ProviderId             = null,
                     RemoteAuthentication?              RemoteAuthentication   = null,
+                    Auth_Path?                         AuthenticationPath     = null,
                     ChargingProduct?                   ChargingProduct        = null,
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
@@ -6429,6 +6430,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                LinkedReservationId,
                                                ProviderId,
                                                RemoteAuthentication,
+                                               AuthenticationPath,
                                                ChargingProduct,
                                                AuthTokens,
                                                eMAIds,
@@ -6469,6 +6471,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                    LinkedReservationId,
                                                    ProviderId,
                                                    RemoteAuthentication,
+                                                   AuthenticationPath,
                                                    ChargingProduct,
                                                    AuthTokens,
                                                    eMAIds,
@@ -8719,6 +8722,7 @@ namespace cloud.charging.open.protocols.WWCP
                         ChargingSession_Id?       SessionId                  = null,
                         EMobilityProvider_Id?     ProviderId                 = null,
                         RemoteAuthentication?     RemoteAuthentication       = null,
+                        Auth_Path?                AuthenticationPath         = null,
 
                         DateTime?                 Timestamp                  = null,
                         EventTracking_Id?         EventTrackingId            = null,
@@ -8732,6 +8736,7 @@ namespace cloud.charging.open.protocols.WWCP
                                SessionId,
                                ProviderId,
                                RemoteAuthentication,
+                               AuthenticationPath,
 
                                Timestamp,
                                EventTrackingId,
@@ -8762,6 +8767,7 @@ namespace cloud.charging.open.protocols.WWCP
                         ChargingSession_Id?      SessionId              = null,
                         EMobilityProvider_Id?    ProviderId             = null,
                         RemoteAuthentication?    RemoteAuthentication   = null,
+                        Auth_Path?               AuthenticationPath     = null,
 
                         DateTime?                Timestamp              = null,
                         EventTracking_Id?        EventTrackingId        = null,
@@ -8839,6 +8845,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                        SessionId,
                                                        ProviderId,
                                                        RemoteAuthentication,
+                                                       AuthenticationPath,
 
                                                        Timestamp,
                                                        EventTrackingId,
@@ -8882,6 +8889,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                            SessionId,
                                                            ProviderId,
                                                            RemoteAuthentication,
+                                                           AuthenticationPath,
 
                                                            Timestamp,
                                                            EventTrackingId,
@@ -8989,6 +8997,7 @@ namespace cloud.charging.open.protocols.WWCP
                        ReservationHandling?   ReservationHandling    = null,
                        EMobilityProvider_Id?  ProviderId             = null,
                        RemoteAuthentication?  RemoteAuthentication   = null,
+                       Auth_Path?             AuthenticationPath     = null,
 
                        DateTime?              Timestamp              = null,
                        EventTracking_Id?      EventTrackingId        = null,
@@ -9000,6 +9009,7 @@ namespace cloud.charging.open.protocols.WWCP
                               ReservationHandling,
                               ProviderId,
                               RemoteAuthentication,
+                              AuthenticationPath,
 
                               Timestamp,
                               EventTrackingId,
@@ -9026,6 +9036,7 @@ namespace cloud.charging.open.protocols.WWCP
                        ReservationHandling?   ReservationHandling    = null,
                        EMobilityProvider_Id?  ProviderId             = null,
                        RemoteAuthentication?  RemoteAuthentication   = null,
+                       Auth_Path?             AuthenticationPath     = null,
 
                        DateTime?              Timestamp              = null,
                        EventTracking_Id?      EventTrackingId        = null,
@@ -9098,6 +9109,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                            ReservationHandling,
                                                            ProviderId,
                                                            RemoteAuthentication,
+                                                           AuthenticationPath,
 
                                                            Timestamp,
                                                            EventTrackingId,
@@ -9120,6 +9132,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                ReservationHandling,
                                                                ProviderId,
                                                                RemoteAuthentication,
+                                                               AuthenticationPath,
 
                                                                Timestamp,
                                                                EventTrackingId,
@@ -9156,6 +9169,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                       ReservationHandling,
                                                       ProviderId,
                                                       RemoteAuthentication,
+                                                      AuthenticationPath,
 
                                                       Timestamp,
                                                       EventTrackingId,
@@ -9188,6 +9202,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                       ReservationHandling,
                                                       ProviderId,
                                                       RemoteAuthentication,
+                                                      AuthenticationPath,
 
                                                       Timestamp,
                                                       EventTrackingId,

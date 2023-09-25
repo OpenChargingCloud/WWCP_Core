@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                      EMPRoamingProvider_Id?  EMPRoamingProviderId,
                                                      CSORoamingProvider_Id?  CSORoamingProviderId,
                                                      EMobilityProvider_Id?   ProviderId,
-                                                     RemoteAuthentication    RemoteAuthentication,
+                                                     RemoteAuthentication?   RemoteAuthentication,
                                                      TimeSpan?               RequestTimeout);
 
 
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                 EMPRoamingProvider_Id?  EMPRoamingProviderId,
                                                                 CSORoamingProvider_Id?  CSORoamingProviderId,
                                                                 EMobilityProvider_Id?   ProviderId,
-                                                                RemoteAuthentication    RemoteAuthentication,
+                                                                RemoteAuthentication?   RemoteAuthentication,
                                                                 TimeSpan?               RequestTimeout);
 
 
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                       EMPRoamingProvider_Id?  EMPRoamingProviderId,
                                                       CSORoamingProvider_Id?  CSORoamingProviderId,
                                                       EMobilityProvider_Id?   ProviderId,
-                                                      RemoteAuthentication    RemoteAuthentication,
+                                                      RemoteAuthentication?   RemoteAuthentication,
                                                       TimeSpan?               RequestTimeout,
                                                       RemoteStopResult        Result,
                                                       TimeSpan                Runtime);

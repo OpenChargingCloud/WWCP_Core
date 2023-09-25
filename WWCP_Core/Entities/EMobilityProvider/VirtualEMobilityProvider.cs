@@ -492,6 +492,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                          ChargingProduct?         ChargingProduct        = null,
                                                          ChargingReservation_Id?  ReservationId          = null,
                                                          RemoteAuthentication?    RemoteAuthentication   = null,
+                                                         Auth_Path?               AuthenticationPath     = null,
                                                          ChargingSession_Id?      SessionId              = null,
 
                                                          DateTime?                Timestamp              = null,
@@ -566,6 +567,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                           SessionId,
                                                           Id,
                                                           RemoteAuthentication,
+                                                          AuthenticationPath,
 
                                                           timestamp,
                                                           eventTrackingId,
@@ -649,6 +651,7 @@ namespace cloud.charging.open.protocols.WWCP
         public async Task<RemoteStopResult> RemoteStop(ChargingSession_Id     SessionId,
                                                        ReservationHandling?   ReservationHandling    = null,
                                                        RemoteAuthentication?  RemoteAuthentication   = null,
+                                                       Auth_Path?             AuthenticationPath     = null,
 
                                                        DateTime?              Timestamp              = null,
                                                        EventTracking_Id?      EventTrackingId        = null,
@@ -704,6 +707,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                          ReservationHandling,
                                                          Id,
                                                          RemoteAuthentication,
+                                                         AuthenticationPath,
 
                                                          Timestamp,
                                                          EventTrackingId,

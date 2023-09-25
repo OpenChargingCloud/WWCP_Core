@@ -44,6 +44,8 @@ namespace cloud.charging.open.protocols.WWCP
                                           IAdminStatus<EMobilityProviderAdminStatusTypes>,
                                           IStatus<EMobilityProviderStatusTypes>,
                                           ISendChargeDetailRecords,
+                                          IChargingReservations,
+                                          IRemoteStartStop,
                                           ISend2RemoteEMobilityProvider,
                                           IEquatable<IEMobilityProvider>,
                                           IComparable<IEMobilityProvider>,
@@ -57,12 +59,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         Address Address { get; set; }
-        ChargeDetailRecordFilterDelegate ChargeDetailRecordFilter { get; }
         ReactiveSet<OpenDataLicense> DataLicenses { get; set; }
-        Boolean DisableAuthentication { get; set; }
-        Boolean DisableSendAdminStatus { get; set; }
-        Boolean DisableSendStatus { get; set; }
-        Boolean DisableSendChargeDetailRecords { get; set; }
         SimpleEMailAddress? EMailAddress { get; set; }
         IEnumerable<KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusTypes>> EMobilityStationAdminStatus { get; }
         IEnumerable<eMobilityStation> EMobilityStations { get; }
@@ -85,20 +82,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Events
 
-        event OnReserveRequestDelegate?                       OnReserveRequest;
-        event OnNewReservationDelegate?                       OnNewReservation;
-        event OnReserveResponseDelegate?                      OnReserveResponse;
-
-        event OnCancelReservationRequestDelegate?             OnCancelReservationRequest;
-        event OnReservationCanceledDelegate?                  OnReservationCanceled;
-        event OnCancelReservationResponseDelegate?            OnCancelReservationResponse;
-
-        event OnRemoteStartRequestDelegate?                   OnRemoteStartRequest;
-        event OnRemoteStartResponseDelegate?                  OnRemoteStartResponse;
-
-        event OnRemoteStopRequestDelegate?                    OnRemoteStopRequest;
-        event OnRemoteStopResponseDelegate?                   OnRemoteStopResponse;
-
         event OnNewChargingSessionDelegate?                   OnNewChargingSession;
 
         event OnNewChargeDetailRecordDelegate?                OnNewChargeDetailRecord;
@@ -115,15 +98,6 @@ namespace cloud.charging.open.protocols.WWCP
         event OnEVehicleGeoLocationChangedDelegate?           OnEVehicleGeoLocationChanged;
 
         #endregion
-
-
-
-
-
-        Task<ReservationResult> Reserve(ChargingLocation ChargingLocation, ChargingReservationLevel ReservationLevel = ChargingReservationLevel.EVSE, DateTime? ReservationStartTime = null, TimeSpan? Duration = null, ChargingReservation_Id? ReservationId = null, ChargingReservation_Id? LinkedReservationId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, ChargingProduct? ChargingProduct = null, IEnumerable<AuthenticationToken>? AuthTokens = null, IEnumerable<EMobilityAccount_Id>? eMAIds = null, IEnumerable<UInt32>? PINs = null, DateTime? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default);
-        Task<CancelReservationResult> CancelReservation(ChargingReservation_Id ReservationId, ChargingReservationCancellationReason Reason, EMobilityProvider_Id? ProviderId = null, DateTime? Timestamp = null, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default);
-        Task<RemoteStartResult> RemoteStart(ChargingLocation ChargingLocation, ChargingProduct ChargingProduct = null, ChargingReservation_Id? ReservationId = null, ChargingSession_Id? SessionId = null, RemoteAuthentication RemoteAuthentication = null, DateTime? Timestamp = null, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default);
-        Task<RemoteStopResult> RemoteStop(ChargingSession_Id SessionId, ReservationHandling? ReservationHandling = null, RemoteAuthentication RemoteAuthentication = null, DateTime? Timestamp = null, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default);
 
 
         void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId, eMobilityStationAdminStatusTypes NewStatus, DateTime Timestamp);
