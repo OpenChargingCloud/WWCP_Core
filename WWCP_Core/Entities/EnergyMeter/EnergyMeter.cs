@@ -561,31 +561,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public EnergyMeter Clone()
 
-            => new (Id.Clone,
-                    Name.       IsNotNullOrEmpty() ? Name.       Clone : I18NString.Empty,
-                    Description.IsNotNullOrEmpty() ? Description.Clone : I18NString.Empty,
-                    Model           is not null ? new String(Model.ToCharArray()) : null,
-                    ModelURL.HasValue           ? ModelURL.Value.Clone : null,
-                    HardwareVersion is not null ? new String(HardwareVersion.ToCharArray()) : null,
-                    FirmwareVersion is not null ? new String(FirmwareVersion.ToCharArray()) : null,
-                    Manufacturer    is not null ? new String(Manufacturer.ToCharArray()) : null,
-                    ManufacturerURL.HasValue    ? ManufacturerURL.Value.Clone : null,
-                    PublicKeys.Select(publicKey => publicKey.Clone).ToArray(),
-                    PublicKeyCertificateChain.HasValue ? PublicKeyCertificateChain.Value.Clone : null,
-                    TransparencySoftwares.Select(transparencySoftwareStatus => transparencySoftwareStatus.Clone()).ToArray(),
+            => new (
+                   Id.Clone,
+                   Name.       IsNotNullOrEmpty() ? Name.       Clone() : I18NString.Empty,
+                   Description.IsNotNullOrEmpty() ? Description.Clone() : I18NString.Empty,
+                   Model           is not null ? new String(Model.ToCharArray()) : null,
+                   ModelURL.HasValue           ? ModelURL.Value.Clone : null,
+                   HardwareVersion is not null ? new String(HardwareVersion.ToCharArray()) : null,
+                   FirmwareVersion is not null ? new String(FirmwareVersion.ToCharArray()) : null,
+                   Manufacturer    is not null ? new String(Manufacturer.ToCharArray()) : null,
+                   ManufacturerURL.HasValue    ? ManufacturerURL.Value.Clone : null,
+                   PublicKeys.Select(publicKey => publicKey.Clone).ToArray(),
+                   PublicKeyCertificateChain.HasValue ? PublicKeyCertificateChain.Value.Clone : null,
+                   TransparencySoftwares.Select(transparencySoftwareStatus => transparencySoftwareStatus.Clone()).ToArray(),
 
-                    AdminStatus,
-                    Status,
-                    adminStatusSchedule.MaxStatusHistorySize,
-                    statusSchedule.     MaxStatusHistorySize,
+                   AdminStatus,
+                   Status,
+                   adminStatusSchedule.MaxStatusHistorySize,
+                   statusSchedule.     MaxStatusHistorySize,
 
-                    DataSource is not null
-                        ? new String(DataSource.ToCharArray())
-                        : null,
-                    LastChangeDate,
+                   DataSource is not null
+                       ? new String(DataSource.ToCharArray())
+                       : null,
+                   LastChangeDate,
 
-                    JObject.Parse(CustomData.ToString()),
-                    InternalData);
+                   JObject.Parse(CustomData.ToString()),
+                   InternalData
+               );
 
         #endregion
 
