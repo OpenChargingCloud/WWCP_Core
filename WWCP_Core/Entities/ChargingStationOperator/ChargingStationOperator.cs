@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// Charging station extentions.
+    /// Charging station extensions.
     /// </summary>
     public static partial class ChargingStationOperatorExtensions
     {

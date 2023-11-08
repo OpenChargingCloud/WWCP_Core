@@ -110,9 +110,11 @@ namespace cloud.charging.open.protocols.WWCP.PKI
         /// </summary>
         public OpenChargingCloudPKI_CA Clone
 
-            => new (Name.        Clone,
-                    Description. Clone,
-                    cryptoWallet.Clone());
+            => new (
+                   Name.        Clone(),
+                   Description. Clone(),
+                   cryptoWallet.Clone()
+               );
 
         #endregion
 
