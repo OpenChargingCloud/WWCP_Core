@@ -183,20 +183,20 @@ namespace cloud.charging.open.protocols.WWCP.Importer
                                       ChargingStationOperator?                                                          ForwardedToOperator       = null)
         {
 
-            this._OnForwardingChanged        = OnChangedCallback;
-            this.ChargingStationOperators    = ChargingStationOperators;
-            this._EVSEIds                    = EVSEIds               != null ? new HashSet<EVSE_Id>(EVSEIds) : new HashSet<EVSE_Id>();
-            this.StationId                   = StationId.HasValue            ? StationId.Value               : ChargingStation_Id.Create(EVSEIds).Value;
-            this.StationName                 = StationName;
-            this.StationServiceTag           = StationServiceTag;
-            this.StationAddress              = StationAddress;
-            this.StationGeoCoordinate        = StationGeoCoordinate;
-            this._AdminStatus                = AdminStatus           != null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
-            this.PhoneNumber                 = PhoneNumber;
-            this.Created                     = Created               != null ? Created.Value                 : Timestamp.Now;
-            this.OutOfService                = OutOfService;
-            this.LastTimeSeen                = this.Created;
-            this._ForwardedToChargingStationOperator    = ForwardedToOperator;
+            this._OnForwardingChanged                 = OnChangedCallback;
+            this.ChargingStationOperators             = ChargingStationOperators;
+            this._EVSEIds                             = EVSEIds               != null ? new HashSet<EVSE_Id>(EVSEIds) : new HashSet<EVSE_Id>();
+            this.StationId                            = StationId.HasValue            ? StationId.Value               : ChargingStation_Id.TryCreate(EVSEIds).Value;
+            this.StationName                          = StationName;
+            this.StationServiceTag                    = StationServiceTag;
+            this.StationAddress                       = StationAddress;
+            this.StationGeoCoordinate                 = StationGeoCoordinate;
+            this._AdminStatus                         = AdminStatus           != null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
+            this.PhoneNumber                          = PhoneNumber;
+            this.Created                              = Created               != null ? Created.Value                 : Timestamp.Now;
+            this.OutOfService                         = OutOfService;
+            this.LastTimeSeen                         = this.Created;
+            this._ForwardedToChargingStationOperator  = ForwardedToOperator;
 
         }
 

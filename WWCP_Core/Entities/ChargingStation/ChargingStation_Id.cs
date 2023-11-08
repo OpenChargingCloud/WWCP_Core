@@ -150,102 +150,92 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Create(EVSEId,  RemoveLastStar = true)
+        #region (static) NewRandom(OperatorId,     Length = 20, Mapper = null)
 
         /// <summary>
-        /// Create a ChargingStationId based on the given EVSE identification.
+        /// Generate a new unique identification of a charging station identification.
         /// </summary>
-        /// <param name="EVSEId">An EVSEId.</param>
-        /// <param name="RemoveLastStar">Generate a charging station identification by removing the last star part.</param>
-        public static ChargingStation_Id Create(EVSE_Id  EVSEId,
-                                                Boolean  RemoveLastStar = true)
+        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Length">The desired length of the identification suffix.</param>
+        /// <param name="Mapper">A delegate to modify the newly generated charging station identification.</param>
+        public static ChargingStation_Id NewRandom(ChargingStationOperator_Id  OperatorId,
+                                                   Byte                        Length   = 20,
+                                                   Func<String, String>?       Mapper   = null)
+
         {
 
-            var suffix = EVSEId.Suffix;
+            if (Length < 5 || Length > 50)
+                Length = 50;
 
-            if (RemoveLastStar)
-            {
+            return Parse(OperatorId,
+                          Mapper is not null
+                              ? Mapper(RandomExtensions.RandomString(Length))
+                              :        RandomExtensions.RandomString(Length));
 
-                var hasAStar = EVSEId.Suffix.LastIndexOf("*");
+        }
 
-                if (hasAStar > 0)
-                    suffix = suffix[..hasAStar];
+        #endregion
 
-            }
+        #region (static) NewRandom(ChargingPoolId, Length = 20, Mapper = null)
 
-            return Parse(EVSEId.OperatorId,
-                         suffix.ToUpper());
+        /// <summary>
+        /// Generate a new unique identification of a charging station identification.
+        /// </summary>
+        /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
+        /// <param name="Length">The desired length of the identification suffix.</param>
+        /// <param name="Mapper">A delegate to modify the newly generated charging station identification.</param>
+        public static ChargingStation_Id NewRandom(ChargingPool_Id        ChargingPoolId,
+                                                   Byte                   Length   = 20,
+                                                   Func<String, String>?  Mapper   = null)
 
-            //var _Array = new String[] {
-            //                 EVSEId.OperatorId.CountryCode.Alpha2Code,
-            //                 EVSEId.OperatorId.Suffix
-            //             }.Concat(EVSEId.ToString().Substring(2 + EVSEId.OperatorId.Suffix.Length).ToUpper().Split('*', '-')).ToArray();
+        {
 
-            //if (EVSEId.Format == OperatorIdFormats.ISO || EVSEId.Format == OperatorIdFormats.ISO_STAR)
-            //{
-            //    if (_Array[2].StartsWith("E", StringComparison.Ordinal))
-            //        _Array[2] = "S" + _Array[2].Substring(1);
-            //}
-            //else
-            //{
-            //    if (!_Array[2].StartsWith("S", StringComparison.Ordinal))
-            //         _Array[2] = "S" + _Array[2];
-            //}
+            if (Length < 5 || Length > 40)
+                Length = 40;
 
-
-            //// e.g. "DE*822*E123456"
-            //if (_Array.Length == 3)
-            //{
-
-            //    if (EVSEId.ToString().Contains('-'))
-            //        return Parse(_Array.AggregateWith("-"));
-
-            //    return Parse(_Array.AggregateWith("*"));
-
-            //}
-
-            //// e.g. "DE*822*E123456*1" => "DE*822*S123456"
-            //if (EVSEId.ToString().Contains('-'))
-            //    return Parse(_Array.Take(_Array.Length - 1).AggregateWith("-"));
-
-            //if (_Array[0].StartsWith("+"))
-            //    return Parse(_Array.Take(1).Select(item => Country.ParseTelefonCode(item.Substring(1)).Alpha2Code).Concat(_Array.Skip(1).Take(_Array.Length - 1)).AggregateWith("*"));
-
-            //else
-            //    return Parse(_Array.Take(_Array.Length - 1).AggregateWith("*"));
+            return Parse(ChargingPoolId,
+                          Mapper is not null
+                              ? Mapper(RandomExtensions.RandomString(Length))
+                              :        RandomExtensions.RandomString(Length));
 
         }
 
         #endregion
 
 
-        #region (static) Create(EVSEIds, out ChargingStationId, out ErrorResponse, HashHelper = "", Mapper = null)
+        #region (static) TryCreate            (EVSEIds,                                           Mapper = null, HashHelper = "")
 
         /// <summary>
         /// Create an unique charging station identification based on the given enumeration of EVSE identifications.
         /// </summary>
         /// <param name="EVSEIds">An enumeration of EVSE identifications.</param>
-        public static ChargingStation_Id? Create(IEnumerable<EVSE_Id>   EVSEIds,
-                                                 String?                HashHelper   = null,
-                                                 Func<String, String>?  Mapper       = null)
+        /// <param name="Mapper">An optional charging station identification suffix mapper.</param>
+        /// <param name="HashHelper">An optional hashing helper.</param>
+        public static ChargingStation_Id? TryCreate(IEnumerable<EVSE_Id>   EVSEIds,
+                                                    Func<String, String>?  Mapper       = null,
+                                                    String?                HashHelper   = null)
 
-            => Create(EVSEIds, out var chargingStationId, out var err, HashHelper, Mapper)
+            => TryCreate(EVSEIds, out var chargingStationId, out _, Mapper, HashHelper)
                    ? chargingStationId
                    : null;
 
         #endregion
 
-        #region (static) Create(EVSEIds, out ChargingStationId, out ErrorResponse, HashHelper = "", Mapper = null)
+        #region (static) TryCreate            (EVSEIds, out ChargingStationId, out ErrorResponse, Mapper = null, HashHelper = "")
 
         /// <summary>
         /// Create an unique charging station identification based on the given enumeration of EVSE identifications.
         /// </summary>
         /// <param name="EVSEIds">An enumeration of EVSE identifications.</param>
-        public static Boolean Create(IEnumerable<EVSE_Id>     EVSEIds,
-                                     out ChargingStation_Id?  ChargingStationId,
-                                     out String?              ErrorResponse,
-                                     String?                  HashHelper   = null,
-                                     Func<String, String>?    Mapper       = null)
+        /// <param name="ChargingStationId">The parsed charging station identification.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="Mapper">An optional charging station identification suffix mapper.</param>
+        /// <param name="HashHelper">An optional hashing helper.</param>
+        public static Boolean TryCreate(IEnumerable<EVSE_Id>     EVSEIds,
+                                        out ChargingStation_Id?  ChargingStationId,
+                                        out String?              ErrorResponse,
+                                        Func<String, String>?    Mapper       = null,
+                                        String?                  HashHelper   = null)
         {
 
             ChargingStationId  = null;
@@ -263,7 +253,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (evseIds.Length == 1)
             {
-                ChargingStationId = Create(evseIds[0]);
+                ChargingStationId = Parse(evseIds[0]);
                 return true;
             }
 
@@ -295,7 +285,8 @@ namespace cloud.charging.open.protocols.WWCP
                     return false;
                 }
 
-                ChargingStationId = Parse(evseIds[0].OperatorId, evseIdPrefixStrings[0]);
+                ChargingStationId = Parse(evseIds[0].OperatorId,
+                                           evseIdPrefixStrings[0]);
                 return true;
 
             }
@@ -345,11 +336,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region ...or generate a hash of the EVSE identifications!
 
-            return GenerateViaHashing(EVSEIds,
+            return TryGenerateViaHashing(EVSEIds,
                                       out ChargingStationId,
                                       out ErrorResponse,
-                                      HashHelper,
-                                      Mapper);
+                                      Mapper,
+                                      HashHelper);
 
             #endregion
 
@@ -357,36 +348,41 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region (static) GenerateViaHashing(EVSEIds, out ChargingStationId, out ErrorResponse, HashHelper = "", Mapper = null)
+        #region (static) TryGenerateViaHashing(EVSEIds,                                           Mapper = null, HashHelper = "")
 
         /// <summary>
         /// Generate an unique charging station identification based on a hash
         /// of the given enumeration of EVSE identifications.
         /// </summary>
         /// <param name="EVSEIds">An enumeration of EVSE identifications.</param>
-        public static ChargingStation_Id? GenerateViaHashing(IEnumerable<EVSE_Id>   EVSEIds,
-                                                             String?                HashHelper   = null,
-                                                             Func<String, String>?  Mapper       = null)
+        /// <param name="Mapper">An optional charging station identification suffix mapper.</param>
+        /// <param name="HashHelper">An optional hashing helper.</param>
+        public static ChargingStation_Id? TryGenerateViaHashing(IEnumerable<EVSE_Id>   EVSEIds,
+                                                                Func<String, String>?  Mapper       = null,
+                                                                String?                HashHelper   = null)
 
-            => GenerateViaHashing(EVSEIds, out var chargingStationId, out var err, HashHelper, Mapper)
+            => TryGenerateViaHashing(EVSEIds, out var chargingStationId, out _, Mapper, HashHelper)
                    ? chargingStationId
                    : null;
 
         #endregion
 
-        #region (static) GenerateViaHashing(EVSEIds, out ChargingStationId, out ErrorResponse, HashHelper = "", Mapper = null)
+        #region (static) TryGenerateViaHashing(EVSEIds, out ChargingStationId, out ErrorResponse, Mapper = null, HashHelper = "")
 
         /// <summary>
         /// Generate an unique charging station identification based on a hash
         /// of the given enumeration of EVSE identifications.
         /// </summary>
         /// <param name="EVSEIds">An enumeration of EVSE identifications.</param>
-        public static Boolean GenerateViaHashing(IEnumerable<EVSE_Id>     EVSEIds,
-                                                 out ChargingStation_Id?  ChargingStationId,
-                                                 out String?              ErrorResponse,
-                                                 String?                  HashHelper   = null,
-                                                 Func<String, String>?    Mapper       = null)
+        /// <param name="ChargingStationId">The parsed charging station identification.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="Mapper">An optional charging station identification suffix mapper.</param>
+        /// <param name="HashHelper">An optional hashing helper.</param>
+        public static Boolean TryGenerateViaHashing(IEnumerable<EVSE_Id>     EVSEIds,
+                                                    out ChargingStation_Id?  ChargingStationId,
+                                                    out String?              ErrorResponse,
+                                                    Func<String, String>?    Mapper       = null,
+                                                    String?                  HashHelper   = null)
         {
 
             ChargingStationId  = null;
@@ -404,7 +400,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (evseIds.Length == 1)
             {
-                ChargingStationId = Create(evseIds[0]);
+                ChargingStationId = Parse(evseIds[0]);
                 return true;
             }
 
@@ -415,9 +411,9 @@ namespace cloud.charging.open.protocols.WWCP
                               ToUpper();
 
             ChargingStationId = Parse(evseIds[0].OperatorId,
-                                      Mapper is not null
-                                         ? Mapper(suffix)
-                                         : suffix);
+                                       Mapper is not null
+                                          ? Mapper(suffix)
+                                          : suffix);
 
             return true;
 
@@ -426,60 +422,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NewRandom(OperatorId,     Length = 50, Mapper = null)
-
-        /// <summary>
-        /// Generate a new unique identification of a charging station identification.
-        /// </summary>
-        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
-        /// <param name="Length">The desired length of the identification suffix.</param>
-        /// <param name="Mapper">A delegate to modify the newly generated charging station identification.</param>
-        public static ChargingStation_Id NewRandom(ChargingStationOperator_Id  OperatorId,
-                                                   Byte                        Length   = 50,
-                                                   Func<String, String>?       Mapper   = null)
-
-        {
-
-            if (Length < 12 || Length > 50)
-                Length = 50;
-
-            return Parse(OperatorId,
-                         Mapper is not null
-                             ? Mapper(RandomExtensions.RandomString(Length))
-                             :        RandomExtensions.RandomString(Length));
-
-        }
-
-        #endregion
-
-        #region (static) NewRandom(ChargingPoolId, Length = 40, Mapper = null)
-
-        /// <summary>
-        /// Generate a new unique identification of a charging station identification.
-        /// </summary>
-        /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
-        /// <param name="Length">The desired length of the identification suffix.</param>
-        /// <param name="Mapper">A delegate to modify the newly generated charging station identification.</param>
-        public static ChargingStation_Id NewRandom(ChargingPool_Id        ChargingPoolId,
-                                                   Byte                   Length   = 40,
-                                                   Func<String, String>?  Mapper   = null)
-
-        {
-
-            if (Length < 12 || Length > 40)
-                Length = 40;
-
-            return Parse(ChargingPoolId,
-                         Mapper is not null
-                             ? Mapper(RandomExtensions.RandomString(Length))
-                             :        RandomExtensions.RandomString(Length));
-
-        }
-
-        #endregion
-
-
-        #region (static) Parse(Text)
+        #region (static) Parse   (Text)
 
         /// <summary>
         /// Parse the given string as a charging station identification.
@@ -498,10 +441,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Parse(ChargingStationOperatorId, Suffix)
+        #region (static) Parse   (ChargingStationOperatorId, Suffix)
 
         /// <summary>
-        /// Parse the given charging station operator identification and suffix as a charging station identification.
+        /// Create a charging station identification based on the given charging station operator identification and suffix.
         /// </summary>
         /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
         /// <param name="Suffix">The suffix of the charging station identification.</param>
@@ -516,10 +459,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Parse(ChargingPoolId,            Suffix)
+        #region (static) Parse   (ChargingPoolId,            Suffix)
 
         /// <summary>
-        /// Parse the given charging pool identification and suffix as a charging station identification.
+        /// Create a charging station identification based on the given charging pool identification and suffix.
         /// </summary>
         /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
         /// <param name="Suffix">The suffix of the charging station identification.</param>
@@ -531,6 +474,36 @@ namespace cloud.charging.open.protocols.WWCP
                    OperatorIdFormats.ISO       => Parse(String.Concat(ChargingPoolId.OperatorId.ToString(),                            "S", ChargingPoolId.Suffix, Suffix)),
                    _                           => Parse(String.Concat(ChargingPoolId.OperatorId.ToString(OperatorIdFormats.ISO_STAR), "*S", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""))
                };
+
+        #endregion
+
+        #region (static) Parse   (EVSEId,                                                   RemoveLastStar = true)
+
+        /// <summary>
+        /// Create a charging station identification based on the given EVSE identification.
+        /// </summary>
+        /// <param name="EVSEId">An EVSE identification.</param>
+        /// <param name="RemoveLastStar">Generate a charging station identification by removing the last star part.</param>
+        public static ChargingStation_Id Parse(EVSE_Id  EVSEId,
+                                               Boolean  RemoveLastStar = true)
+        {
+
+            var suffix = EVSEId.Suffix;
+
+            if (RemoveLastStar)
+            {
+
+                var starPosition = EVSEId.Suffix.LastIndexOf("*");
+
+                if (starPosition > 0)
+                    suffix = suffix[..starPosition];
+
+            }
+
+            return Parse(EVSEId.OperatorId,
+                          suffix.ToUpper());
+
+        }
 
         #endregion
 
@@ -585,6 +558,22 @@ namespace cloud.charging.open.protocols.WWCP
                    OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(),                            "S", ChargingPoolId.Suffix, Suffix)),
                    _                           => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(OperatorIdFormats.ISO_STAR), "*S", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""))
                };
+
+        #endregion
+
+        #region (static) Parse   (EVSEId,                                                   RemoveLastStar = true)
+
+        /// <summary>
+        /// Create a charging station identification based on the given EVSE identification.
+        /// </summary>
+        /// <param name="EVSEId">An EVSE identification.</param>
+        /// <param name="RemoveLastStar">Generate a charging station identification by removing the last star part.</param>
+        public static ChargingStation_Id? TryParse(EVSE_Id  EVSEId,
+                                                   Boolean  RemoveLastStar = true)
+
+            => TryParse(EVSEId, out var chargingStationId, RemoveLastStar)
+                   ? chargingStationId
+                   : null;
 
         #endregion
 
@@ -674,6 +663,38 @@ namespace cloud.charging.open.protocols.WWCP
                    OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(),                            "S", ChargingPoolId.Suffix, Suffix),                                             out ChargingStationId),
                    _                           => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(OperatorIdFormats.ISO_STAR), "*S", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""), out ChargingStationId)
                };
+
+        #endregion
+
+        #region (static) TryParse(EVSEId,                            out ChargingStationId, RemoveLastStar = true)
+
+        /// <summary>
+        /// Create a charging station identification based on the given EVSE identification.
+        /// </summary>
+        /// <param name="EVSEId">An EVSE identification.</param>
+        /// <param name="RemoveLastStar">Generate a charging station identification by removing the last star part.</param>
+        public static Boolean TryParse(EVSE_Id                 EVSEId,
+                                       out ChargingStation_Id  ChargingStationId,
+                                       Boolean                 RemoveLastStar = true)
+        {
+
+            var suffix = EVSEId.Suffix;
+
+            if (RemoveLastStar)
+            {
+
+                var starPosition = EVSEId.Suffix.LastIndexOf("*");
+
+                if (starPosition > 0)
+                    suffix = suffix[..starPosition];
+
+            }
+
+            return TryParse(EVSEId.OperatorId,
+                            suffix.ToUpper(),
+                            out ChargingStationId);
+
+        }
 
         #endregion
 

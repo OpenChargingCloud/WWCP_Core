@@ -43,9 +43,17 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         [Test]
         public void Parse_ChargingStationOperatorId_Test()
         {
-            var stationId = ChargingStation_Id.Parse(ChargingStationOperatorId, "1234");
-            Assert.AreEqual("DE*GEF*S1234", stationId.ToString());
-            Assert.AreEqual(12,             stationId.Length);
+
+            var stationId = ChargingStation_Id.TryParse(ChargingStationOperatorId, "1234");
+
+            Assert.IsNotNull(stationId);
+
+            if (stationId.HasValue)
+            {
+                Assert.AreEqual("DE*GEF*S1234", stationId.Value.ToString());
+                Assert.AreEqual(12,             stationId.Value.Length);
+            }
+
         }
 
         #endregion
