@@ -563,8 +563,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             => new (
                    Id.Clone,
-                   Name.       IsNotNullOrEmpty() ? Name.       Clone : I18NString.Empty,
-                   Description.IsNotNullOrEmpty() ? Description.Clone : I18NString.Empty,
+                   Name.       IsNotNullOrEmpty() ? Name.       Clone() : I18NString.Empty,
+                   Description.IsNotNullOrEmpty() ? Description.Clone() : I18NString.Empty,
                    Model           is not null ? new String(Model.ToCharArray()) : null,
                    ModelURL.HasValue           ? ModelURL.Value.Clone : null,
                    HardwareVersion is not null ? new String(HardwareVersion.ToCharArray()) : null,
