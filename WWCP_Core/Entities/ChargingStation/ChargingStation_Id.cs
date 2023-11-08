@@ -218,60 +218,85 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Create(EVSEIds, HelperId = "", Length = 15, Mapper = null)
+
+        #region (static) Create(EVSEIds, out ChargingStationId, out ErrorResponse, HashHelper = "", Mapper = null)
 
         /// <summary>
-        /// Create a ChargingStationId based on the given EVSEIds.
+        /// Create an unique charging station identification based on the given enumeration of EVSE identifications.
         /// </summary>
-        /// <param name="EVSEIds">An enumeration of EVSEIds.</param>
-        public static ChargingStation_Id? Create(IEnumerable<EVSE_Id>  EVSEIds,
-                                                 String                HelperId  = "",
-                                                 Byte                  Length    = 15,
-                                                 Func<String, String>  Mapper    = null)
+        /// <param name="EVSEIds">An enumeration of EVSE identifications.</param>
+        public static ChargingStation_Id? Create(IEnumerable<EVSE_Id>   EVSEIds,
+                                                 String?                HashHelper   = null,
+                                                 Func<String, String>?  Mapper       = null)
+
+            => Create(EVSEIds, out var chargingStationId, out var err, HashHelper, Mapper)
+                   ? chargingStationId
+                   : null;
+
+        #endregion
+
+        #region (static) Create(EVSEIds, out ChargingStationId, out ErrorResponse, HashHelper = "", Mapper = null)
+
+        /// <summary>
+        /// Create an unique charging station identification based on the given enumeration of EVSE identifications.
+        /// </summary>
+        /// <param name="EVSEIds">An enumeration of EVSE identifications.</param>
+        public static Boolean Create(IEnumerable<EVSE_Id>     EVSEIds,
+                                     out ChargingStation_Id?  ChargingStationId,
+                                     out String?              ErrorResponse,
+                                     String?                  HashHelper   = null,
+                                     Func<String, String>?    Mapper       = null)
         {
+
+            ChargingStationId  = null;
+            ErrorResponse      = null;
 
             #region Initial checks
 
-            if (EVSEIds == null)
-                return null;
+            var evseIds = EVSEIds.Distinct().ToArray();
 
-            var _EVSEIds = EVSEIds.ToArray();
+            if (evseIds.Length == 0)
+            {
+                ErrorResponse = "The given enumeration of EVSE identifications must not be empty!";
+                return false;
+            }
 
-            if (_EVSEIds.Length == 0)
-                return null;
+            if (evseIds.Length == 1)
+            {
+                ChargingStationId = Create(evseIds[0]);
+                return true;
+            }
+
+            if (evseIds.Select(evseId => evseId.OperatorId.ToString()).Distinct().Count() > 1)
+            {
+                ErrorResponse = "The given enumeration of EVSE identifications must be of the same operator!";
+                return false;
+            }
 
             #endregion
 
-            #region A single EVSE Id...
-
-            // It is just a single EVSE Id...
-            if (_EVSEIds.Length == 1)
-                return Create(_EVSEIds[0]);
-
-            #endregion
-
-
-            // Multiple OperatorIds which do not match!
-            if (_EVSEIds.Select(evse => evse.OperatorId.ToString()).Distinct().Count() > 1)
-                return null;
 
             #region EVSEIdSuffix contains '*'...
 
-            if (_EVSEIds.Any(EVSEId => EVSEId.Suffix.Contains('*') ||
-                                       EVSEId.Suffix.Contains('-')))
+            if (evseIds.Any(evseId => evseId.Suffix.Contains('*') ||
+                                      evseId.Suffix.Contains('-')))
             {
 
-                var EVSEIdPrefixStrings = _EVSEIds.
-                                              Select(EVSEId         => EVSEId.Suffix.Split(StarSplitter, StringSplitOptions.RemoveEmptyEntries)).
+                var evseIdPrefixStrings = evseIds.
+                                              Select(EVSEId => EVSEId.Suffix.Split(StarSplitter, StringSplitOptions.RemoveEmptyEntries)).
                                               Select(SuffixElements => SuffixElements.Take(SuffixElements.Length - 1).AggregateWith("*", "")).
-                                              Where (NewSuffix      => NewSuffix != "").
+                                              Where(NewSuffix => NewSuffix != "").
                                               Distinct().
                                               ToArray();
 
-                if (EVSEIdPrefixStrings.Length != 1)
-                    return null;
+                if (evseIdPrefixStrings.Length != 1)
+                {
+                    ErrorResponse = "The given enumeration of EVSE identifications must have the same prefix!";
+                    return false;
+                }
 
-                return Parse(_EVSEIds[0].OperatorId, EVSEIdPrefixStrings[0]);
+                ChargingStationId = Parse(evseIds[0].OperatorId, evseIdPrefixStrings[0]);
+                return true;
 
             }
 
@@ -282,31 +307,35 @@ namespace cloud.charging.open.protocols.WWCP
             else
             {
 
-                var _Array      = _EVSEIds.Select(evse => evse.ToString()).ToArray();
-                var _MinLength  = (Int32) _Array.Select(v => v.Length).Min();
+                var evseIdArray  = evseIds.Select(evseId => evseId.ToString()).ToArray();
+                var minLength    = (Int32) evseIdArray.Select(evseId => evseId.Length).Min();
 
-                var _Prefix     = "";
+                var prefix       = "";
 
-                for (var i = 0; i < _MinLength; i++)
+                for (var i = 0; i < minLength; i++)
                 {
-                    if (_Array.All(v => v[i] == _Array[0][i]))
-                        _Prefix += _Array[0][i];
+                    if (evseIdArray.All(v => v[i] == evseIdArray[0][i]))
+                        prefix += evseIdArray[0][i];
                 }
 
-                if (((UInt64) _Prefix.Length) > _EVSEIds[0].OperatorId.Length + 1)
+                if (((UInt64) prefix.Length) > evseIds[0].OperatorId.Length + 1)
                 {
 
-                    var TmpEVSEId = EVSE_Id.Parse(_Prefix);
+                    var tmpEVSEId = EVSE_Id.Parse(prefix);
 
-                    if (TmpEVSEId.OperatorId.Format == OperatorIdFormats.ISO)
+                    if (tmpEVSEId.OperatorId.Format == OperatorIdFormats.ISO)
                     {
-                        if (((UInt64) _Prefix.Length) > _EVSEIds[0].OperatorId.Length + 2)
-                            _Prefix = TmpEVSEId.Suffix; //TmpEVSEId.OperatorId + "*S" + TmpEVSEId.Suffix;
+                        if (((UInt64) prefix.Length) > evseIds[0].OperatorId.Length + 2)
+                            prefix = tmpEVSEId.Suffix; //TmpEVSEId.OperatorId + "*S" + TmpEVSEId.Suffix;
                         else
-                            return null;
+                        {
+                            ErrorResponse = "The given enumeration of EVSE identifications must have the same prefix!";
+                            return false;
+                        }
                     }
 
-                    return Parse(_EVSEIds[0].OperatorId, _Prefix);
+                    ChargingStationId = Parse(evseIds[0].OperatorId, prefix);
+                    return true;
 
                 }
 
@@ -314,27 +343,83 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            #region ...or generate a hash of the EVSEIds!
+            #region ...or generate a hash of the EVSE identifications!
 
-            if (Length < 12)
-                Length = 12;
-
-            if (Length > 50)
-                Length = 50;
-
-            var Suffíx = new SHA1CryptoServiceProvider().
-                             ComputeHash(Encoding.UTF8.GetBytes(EVSEIds.Select(evseid => evseid.ToString()).
-                                                                        AggregateWith(HelperId ?? ","))).
-                             ToHexString().
-                             SubstringMax(Length).
-                             ToUpper();
-
-            return Parse(_EVSEIds[0].OperatorId,
-                         Mapper != null
-                            ? Mapper(Suffíx)
-                            : Suffíx);
+            return GenerateViaHashing(EVSEIds,
+                                      out ChargingStationId,
+                                      out ErrorResponse,
+                                      HashHelper,
+                                      Mapper);
 
             #endregion
+
+        }
+
+        #endregion
+
+
+        #region (static) GenerateViaHashing(EVSEIds, out ChargingStationId, out ErrorResponse, HashHelper = "", Mapper = null)
+
+        /// <summary>
+        /// Generate an unique charging station identification based on a hash
+        /// of the given enumeration of EVSE identifications.
+        /// </summary>
+        /// <param name="EVSEIds">An enumeration of EVSE identifications.</param>
+        public static ChargingStation_Id? GenerateViaHashing(IEnumerable<EVSE_Id>   EVSEIds,
+                                                             String?                HashHelper   = null,
+                                                             Func<String, String>?  Mapper       = null)
+
+            => GenerateViaHashing(EVSEIds, out var chargingStationId, out var err, HashHelper, Mapper)
+                   ? chargingStationId
+                   : null;
+
+        #endregion
+
+        #region (static) GenerateViaHashing(EVSEIds, out ChargingStationId, out ErrorResponse, HashHelper = "", Mapper = null)
+
+        /// <summary>
+        /// Generate an unique charging station identification based on a hash
+        /// of the given enumeration of EVSE identifications.
+        /// </summary>
+        /// <param name="EVSEIds">An enumeration of EVSE identifications.</param>
+        public static Boolean GenerateViaHashing(IEnumerable<EVSE_Id>     EVSEIds,
+                                                 out ChargingStation_Id?  ChargingStationId,
+                                                 out String?              ErrorResponse,
+                                                 String?                  HashHelper   = null,
+                                                 Func<String, String>?    Mapper       = null)
+        {
+
+            ChargingStationId  = null;
+            ErrorResponse      = null;
+
+            #region Initial checks
+
+            var evseIds = EVSEIds.Distinct().ToArray();
+
+            if (evseIds.Length == 0)
+            {
+                ErrorResponse = "The given enumeration of EVSE identifications must not be empty!";
+                return false;
+            }
+
+            if (evseIds.Length == 1)
+            {
+                ChargingStationId = Create(evseIds[0]);
+                return true;
+            }
+
+            #endregion
+
+            var suffix = SHA1.HashData(Encoding.UTF8.GetBytes(EVSEIds.Select(evseid => evseid.ToString()).AggregateWith(HashHelper ?? "|"))).
+                              ToHexString().
+                              ToUpper();
+
+            ChargingStationId = Parse(evseIds[0].OperatorId,
+                                      Mapper is not null
+                                         ? Mapper(suffix)
+                                         : suffix);
+
+            return true;
 
         }
 
@@ -406,7 +491,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out var chargingStationId))
                 return chargingStationId;
 
-            throw new ArgumentException("Illegal charging station identification '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a charging station identification: '{Text}'!",
                                         nameof(Text));
 
         }

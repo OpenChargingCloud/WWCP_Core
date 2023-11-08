@@ -173,14 +173,14 @@ namespace cloud.charging.open.protocols.WWCP.Importer
                                       ChargingStation_Id?                                                               StationId                 = null,
                                       String                                                                            StationName               = "",
                                       String                                                                            StationServiceTag         = "",
-                                      Address                                                                           StationAddress            = null,
+                                      Address?                                                                          StationAddress            = null,
                                       GeoCoordinate?                                                                    StationGeoCoordinate      = null,
-                                      IEnumerable<EVSE_Id>                                                              EVSEIds                   = null,
-                                      String                                                                            PhoneNumber               = null,
+                                      IEnumerable<EVSE_Id>?                                                             EVSEIds                   = null,
+                                      String?                                                                           PhoneNumber               = null,
                                       Timestamped<ChargingStationAdminStatusTypes>?                                     AdminStatus               = null,
                                       DateTime?                                                                         Created                   = null,
                                       Boolean                                                                           OutOfService              = false,
-                                      ChargingStationOperator                                                           ForwardedToOperator   = null)
+                                      ChargingStationOperator?                                                          ForwardedToOperator       = null)
         {
 
             this._OnForwardingChanged        = OnChangedCallback;
