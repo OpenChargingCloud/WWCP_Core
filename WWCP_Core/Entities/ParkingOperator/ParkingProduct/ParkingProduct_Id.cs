@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => InternalId;
+            => InternalId ?? "";
 
         #endregion
 
