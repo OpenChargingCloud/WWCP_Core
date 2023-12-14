@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -59,7 +60,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                    InitialStatus:       ChargingPoolStatusTypes.Offline
                                ).Result.ChargingPool;
 
-                Assert.IsNotNull(DE_GEF_P0001);
+                ClassicAssert.IsNotNull(DE_GEF_P0001);
 
             }
 
