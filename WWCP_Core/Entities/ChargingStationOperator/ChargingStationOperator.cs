@@ -468,7 +468,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             : base(Id,
                    RoamingNetwork,
-                   Name ?? I18NString.Create(Languages.en, "Charging Station Operator " + Id.ToString()),
+                   Name ?? I18NString.Create("Charging Station Operator " + Id.ToString()),
                    Description,
                    null,
                    null,

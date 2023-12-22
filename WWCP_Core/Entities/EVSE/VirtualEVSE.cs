@@ -1533,7 +1533,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                            Comment:    I18NString.Empty
                                                                        )
                                                                    },
-                                                  Description:     I18NString.Create(Languages.en, "Auto-generated test keys for a virtual EVSE!"),
+                                                  Description:     I18NString.Create("Auto-generated test keys for a virtual EVSE!"),
                                                   Operations:      JSONObject.Create(
                                                                        new JProperty("signMeterValues",  true),
                                                                        new JProperty("signCertificates", false)
@@ -2776,10 +2776,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         #region Not matching reservation identifications...
 
                         if (firstReservation != null && !ReservationId.HasValue)
-                            result = RemoteStartResult.Reserved(I18NString.Create(Languages.en, "Missing reservation identification!"));
+                            result = RemoteStartResult.Reserved(I18NString.Create("Missing reservation identification!"));
 
                         else if (firstReservation != null && ReservationId.HasValue && firstReservation.Id != ReservationId.Value)
-                            result = RemoteStartResult.Reserved(I18NString.Create(Languages.en, "Invalid reservation identification!"));
+                            result = RemoteStartResult.Reserved(I18NString.Create("Invalid reservation identification!"));
 
                         #endregion
 

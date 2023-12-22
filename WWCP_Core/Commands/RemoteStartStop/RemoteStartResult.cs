@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStartResult UnknownOperator(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.UnknownOperator,
-                                     I18NString.Create(Languages.en, "The EVSE or charging station operator is unknown!"), 
+                                     I18NString.Create("The EVSE or charging station operator is unknown!"), 
                                      Runtime: Runtime);
 
         #endregion
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStartResult UnknownLocation(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.UnknownLocation,
-                                     I18NString.Create(Languages.en, "The charging location is unknown!"), 
+                                     I18NString.Create("The charging location is unknown!"), 
                                      Runtime: Runtime);
 
         #endregion
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStartResult InvalidSessionId(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.InvalidSessionId,
-                                     I18NString.Create(Languages.en, "The session identification is unknown or invalid!"), 
+                                     I18NString.Create("The session identification is unknown or invalid!"), 
                                      Runtime: Runtime);
 
         #endregion
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStartResult InvalidCredentials(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.InvalidCredentials,
-                                     I18NString.Create(Languages.en, "Unauthorized remote start or invalid credentials!"),
+                                     I18NString.Create("Unauthorized remote start or invalid credentials!"),
                                      Runtime: Runtime);
 
         #endregion
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStartResult NoEVConnectedToEVSE(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.NoEVConnectedToEVSE,
-                                     I18NString.Create(Languages.en, "No electric vehicle connected to EVSE!"),
+                                     I18NString.Create("No electric vehicle connected to EVSE!"),
                                      Runtime: Runtime);
 
         #endregion
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStartResult AlreadyInUse(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.AlreadyInUse,
-                                     I18NString.Create(Languages.en, "The EVSE is already in use!"),
+                                     I18NString.Create("The EVSE is already in use!"),
                                      Runtime: Runtime);
 
         #endregion
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStartResult InternalUse(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.InternalUse,
-                                     I18NString.Create(Languages.en, "Reserved for internal use!"), 
+                                     I18NString.Create("Reserved for internal use!"), 
                                      Runtime: Runtime);
 
         #endregion
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStartResult OutOfService(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.OutOfService,
-                                     I18NString.Create(Languages.en, "The EVSE or charging station is out of service!"),
+                                     I18NString.Create("The EVSE or charging station is out of service!"),
                                      Runtime: Runtime);
 
         #endregion
@@ -223,7 +223,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStartResult Offline(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.Offline,
-                                     I18NString.Create(Languages.en, "The EVSE or charging station is offline!"),
+                                     I18NString.Create("The EVSE or charging station is offline!"),
                                      Runtime: Runtime);
 
         #endregion
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                  TimeSpan?   Runtime          = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.Reserved,
-                                     Description ?? I18NString.Create(Languages.en, "The EVSE or charging station is reserved!"),
+                                     Description ?? I18NString.Create("The EVSE or charging station is reserved!"),
                                      AdditionalInfo,
                                      Runtime: Runtime);
 
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                        TimeSpan?        Runtime          = null)
 
             => new (RemoteStartResultTypes.AsyncOperation,
-                    Description ?? I18NString.Create(Languages.en, "An async remote start was sent successfully!"),
+                    Description ?? I18NString.Create("An async remote start was sent successfully!"),
                     AdditionalInfo,
                     Session,
                     Runtime: Runtime);
@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                           TimeSpan?        Runtime          = null)
 
             => new (RemoteStartResultTypes.SuccessPlugInCableToStartCharging,
-                    Description ?? I18NString.Create(Languages.en, "The remote start was successful. Please plug in the cable to start charging!"),
+                    Description ?? I18NString.Create("The remote start was successful. Please plug in the cable to start charging!"),
                     AdditionalInfo,
                     Session,
                     Runtime: Runtime);
@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                 TimeSpan?    Runtime       = null)
 
             => new (RemoteStartResultTypes.Timeout,
-                    Description ?? I18NString.Create(Languages.en, "A timeout occured!"),
+                    Description ?? I18NString.Create("A timeout occured!"),
                     Runtime: Runtime);
 
         #endregion
@@ -337,7 +337,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                            TimeSpan?    Runtime          = null)
 
             => new (RemoteStartResultTypes.CommunicationError,
-                    Description ?? I18NString.Create(Languages.en, "A communication error occured!"),
+                    Description ?? I18NString.Create("A communication error occured!"),
                     AdditionalInfo,
                     Runtime: Runtime);
 
@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               TimeSpan?    Runtime          = null)
 
             => new (RemoteStartResultTypes.Error,
-                    Description ?? I18NString.Create(Languages.en, "An error occured!"),
+                    Description ?? I18NString.Create("An error occured!"),
                     AdditionalInfo,
                     Runtime: Runtime);
 
@@ -373,8 +373,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             => new (RemoteStartResultTypes.Error,
                     Description?.Trim().IsNotNullOrEmpty() == false
-                        ? I18NString.Create(Languages.en, Description)
-                        : I18NString.Create(Languages.en, "An error occured!"),
+                        ? I18NString.Create(Description)
+                        : I18NString.Create("An error occured!"),
                     AdditionalInfo,
                     Runtime: Runtime);
 
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                     TimeSpan?    Runtime          = null)
 
             => new (RemoteStartResultTypes.Error,
-                    Description ?? I18NString.Create(Languages.en, "An error occured!"),
+                    Description ?? I18NString.Create("An error occured!"),
                     AdditionalInfo,
                     Runtime: Runtime);
 
@@ -410,8 +410,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             => new (RemoteStartResultTypes.Error,
                     Description?.Trim().IsNotNullOrEmpty() == false
-                        ? I18NString.Create(Languages.en, Description)
-                        : I18NString.Create(Languages.en, "An error occured!"),
+                        ? I18NString.Create(Description)
+                        : I18NString.Create("An error occured!"),
                     AdditionalInfo,
                     Runtime: Runtime);
 

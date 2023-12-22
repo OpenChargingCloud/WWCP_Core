@@ -7811,7 +7811,7 @@ namespace cloud.charging.open.protocols.WWCP
                         {
                             resultMap.Add(SendCDRResult.Error(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                               _cdr,
-                                                              Warning.Create(I18NString.Create(Languages.en, sendCDR.Key + " returned null!"))));
+                                                              Warning.Create(I18NString.Create(sendCDR.Key + " returned null!"))));
                         }
 
                     }
@@ -7838,7 +7838,7 @@ namespace cloud.charging.open.protocols.WWCP
                     {
                         resultMap.Add(SendCDRResult.Error(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                           _cdr,
-                                                          Warning.Create(I18NString.Create(Languages.en, "Did not receive an result for this charge detail record!"))));
+                                                          Warning.Create(I18NString.Create("Did not receive an result for this charge detail record!"))));
                     }
                 }
 
@@ -8073,7 +8073,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  this,
                                  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now + AuthenticationCacheTimeout,
                                  SessionId,
-                                 I18NString.Create(Languages.en, $"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
+                                 I18NString.Create($"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
                                  TimeSpan.Zero
                              );
 
@@ -8149,7 +8149,7 @@ namespace cloud.charging.open.protocols.WWCP
                                              Id,
                                              this,
                                              SessionId,
-                                             I18NString.Create(Languages.en, $"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
+                                             I18NString.Create($"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
                                              TimeSpan.Zero
                                          );
 
@@ -8196,7 +8196,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                       Id,
                                                                       this,
                                                                       SessionId:    SessionId,
-                                                                      Description:  I18NString.Create(Languages.en, "No authorization service returned a positiv result!"),
+                                                                      Description:  I18NString.Create("No authorization service returned a positiv result!"),
                                                                       Runtime:      runtime
                                                                   )
 
@@ -8250,7 +8250,7 @@ namespace cloud.charging.open.protocols.WWCP
                              Id,
                              this,
                              SessionId:    SessionId,
-                             Description:  I18NString.Create(Languages.en, e.Message),
+                             Description:  I18NString.Create(e.Message),
                              Runtime:      org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime
                          );
 
@@ -8445,7 +8445,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  Id,
                                  this,
                                  SessionId:    SessionId,
-                                 Description:  I18NString.Create(Languages.en, $"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
+                                 Description:  I18NString.Create($"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
                                  Runtime:      TimeSpan.Zero
                              );
 
@@ -8485,7 +8485,7 @@ namespace cloud.charging.open.protocols.WWCP
                                              Id,
                                              this,
                                              SessionId,
-                                             I18NString.Create(Languages.en, $"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
+                                             I18NString.Create($"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
                                              TimeSpan.Zero
                                          );
 
@@ -8615,7 +8615,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                     Id,
                                                                     this,
                                                                     SessionId:    SessionId,
-                                                                    Description:  I18NString.Create(Languages.en, "No authorization service returned a positiv result!"),
+                                                                    Description:  I18NString.Create("No authorization service returned a positiv result!"),
                                                                     Runtime:      runtime
                                                                 )
 
@@ -8632,7 +8632,7 @@ namespace cloud.charging.open.protocols.WWCP
                              SessionId,
                              this,
                              SessionId,
-                             I18NString.Create(Languages.en, e.Message),
+                             I18NString.Create(e.Message),
                              org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime
                          );
 
