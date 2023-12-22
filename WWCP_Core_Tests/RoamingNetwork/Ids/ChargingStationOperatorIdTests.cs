@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -42,8 +43,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         public void Parse_Test1()
         {
             var csoId = ChargingStationOperator_Id.Parse("DEGEF");
-            Assert.AreEqual("DEGEF", csoId.ToString());
-            Assert.AreEqual(5,       csoId.Length);
+            ClassicAssert.AreEqual("DEGEF", csoId.ToString());
+            ClassicAssert.AreEqual(5,       csoId.Length);
         }
 
         #endregion
@@ -57,8 +58,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         public void Parse_Test2()
         {
             var csoId = ChargingStationOperator_Id.Parse("DE*GEF");
-            Assert.AreEqual("DE*GEF", csoId.ToString());
-            Assert.AreEqual(6,        csoId.Length);
+            ClassicAssert.AreEqual("DE*GEF", csoId.ToString());
+            ClassicAssert.AreEqual(6,        csoId.Length);
         }
 
         #endregion
@@ -72,8 +73,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         public void Parse_Test3()
         {
             var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            Assert.AreEqual("DE*GEF", csoId.ToString());
-            Assert.AreEqual(6,        csoId.Length);
+            ClassicAssert.AreEqual("DE*GEF", csoId.ToString());
+            ClassicAssert.AreEqual(6,        csoId.Length);
         }
 
         #endregion
@@ -89,12 +90,12 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
 
             var csoId = ChargingStationOperator_Id.TryParse("DEGEF");
-            Assert.IsNotNull(csoId);
+            ClassicAssert.IsNotNull(csoId);
 
             if (csoId is not null)
             {
-                Assert.AreEqual("DEGEF", csoId.Value.ToString());
-                Assert.AreEqual(5,       csoId.Value.Length);
+                ClassicAssert.AreEqual("DEGEF", csoId.Value.ToString());
+                ClassicAssert.AreEqual(5,       csoId.Value.Length);
             }
 
         }
@@ -111,12 +112,12 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
 
             var csoId = ChargingStationOperator_Id.TryParse("DE*GEF");
-            Assert.IsNotNull(csoId);
+            ClassicAssert.IsNotNull(csoId);
 
             if (csoId is not null)
             {
-                Assert.AreEqual("DE*GEF", csoId.Value.ToString());
-                Assert.AreEqual(6,        csoId.Value.Length);
+                ClassicAssert.AreEqual("DE*GEF", csoId.Value.ToString());
+                ClassicAssert.AreEqual(6,        csoId.Value.Length);
             }
 
         }
@@ -133,12 +134,12 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
 
             var csoId = ChargingStationOperator_Id.TryParse(Country.Germany, "GEF");
-            Assert.IsNotNull(csoId);
+            ClassicAssert.IsNotNull(csoId);
 
             if (csoId is not null)
             {
-                Assert.AreEqual("DE*GEF", csoId.Value.ToString());
-                Assert.AreEqual(6,        csoId.Value.Length);
+                ClassicAssert.AreEqual("DE*GEF", csoId.Value.ToString());
+                ClassicAssert.AreEqual(6,        csoId.Value.Length);
             }
 
         }
@@ -154,9 +155,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         [Test]
         public void TryParseOut_Test1()
         {
-            Assert.IsTrue(ChargingStationOperator_Id.TryParse("DEGEF", out var csoId));
-            Assert.AreEqual("DEGEF", csoId.ToString());
-            Assert.AreEqual(5,       csoId.Length);
+            ClassicAssert.IsTrue(ChargingStationOperator_Id.TryParse("DEGEF", out var csoId));
+            ClassicAssert.AreEqual("DEGEF", csoId.ToString());
+            ClassicAssert.AreEqual(5,       csoId.Length);
         }
 
         #endregion
@@ -169,9 +170,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         [Test]
         public void TryParseOut_Test2()
         {
-            Assert.IsTrue(ChargingStationOperator_Id.TryParse("DE*GEF", out var csoId));
-            Assert.AreEqual("DE*GEF", csoId.ToString());
-            Assert.AreEqual(6,        csoId.Length);
+            ClassicAssert.IsTrue(ChargingStationOperator_Id.TryParse("DE*GEF", out var csoId));
+            ClassicAssert.AreEqual("DE*GEF", csoId.ToString());
+            ClassicAssert.AreEqual(6,        csoId.Length);
         }
 
         #endregion
@@ -184,9 +185,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         [Test]
         public void TryParseOut_Test3()
         {
-            Assert.IsTrue(ChargingStationOperator_Id.TryParse(Country.Germany, "GEF", out var csoId));
-            Assert.AreEqual("DE*GEF", csoId.ToString());
-            Assert.AreEqual(6,        csoId.Length);
+            ClassicAssert.IsTrue(ChargingStationOperator_Id.TryParse(Country.Germany, "GEF", out var csoId));
+            ClassicAssert.AreEqual("DE*GEF", csoId.ToString());
+            ClassicAssert.AreEqual(6,        csoId.Length);
         }
 
         #endregion
@@ -202,9 +203,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             var csoId2 = csoId1.Clone;
-            Assert.AreEqual(csoId1.ToString(), csoId2.ToString());
-            Assert.AreEqual(csoId1.Length,     csoId2.Length);
-            Assert.AreEqual(csoId1,            csoId2);
+            ClassicAssert.AreEqual(csoId1.ToString(), csoId2.ToString());
+            ClassicAssert.AreEqual(csoId1.Length,     csoId2.Length);
+            ClassicAssert.AreEqual(csoId1,            csoId2);
         }
 
         #endregion
@@ -221,7 +222,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsTrue(csoId == csoId);
+            ClassicAssert.IsTrue(csoId == csoId);
             #pragma warning restore
         }
 
@@ -237,7 +238,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            Assert.IsTrue(csoId1 == csoId2);
+            ClassicAssert.IsTrue(csoId1 == csoId2);
         }
 
         #endregion
@@ -252,7 +253,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "234");
-            Assert.IsFalse(csoId1 == csoId2);
+            ClassicAssert.IsFalse(csoId1 == csoId2);
         }
 
         #endregion
@@ -268,7 +269,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsFalse(csoId != csoId);
+            ClassicAssert.IsFalse(csoId != csoId);
             #pragma warning restore
         }
 
@@ -284,7 +285,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            Assert.IsFalse(csoId1 != csoId2);
+            ClassicAssert.IsFalse(csoId1 != csoId2);
         }
 
         #endregion
@@ -299,7 +300,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
-            Assert.IsTrue(csoId1 != csoId2);
+            ClassicAssert.IsTrue(csoId1 != csoId2);
         }
 
         #endregion
@@ -314,7 +315,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
-            Assert.IsTrue(csoId1 != csoId2);
+            ClassicAssert.IsTrue(csoId1 != csoId2);
         }
 
         #endregion
@@ -330,7 +331,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsFalse(csoId < csoId);
+            ClassicAssert.IsFalse(csoId < csoId);
             #pragma warning restore
         }
 
@@ -346,7 +347,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
-            Assert.IsFalse(csoId1 < csoId2);
+            ClassicAssert.IsFalse(csoId1 < csoId2);
         }
 
         #endregion
@@ -361,7 +362,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
-            Assert.IsTrue(csoId1 < csoId2);
+            ClassicAssert.IsTrue(csoId1 < csoId2);
         }
 
         #endregion
@@ -376,7 +377,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
-            Assert.IsTrue(csoId1 < csoId2);
+            ClassicAssert.IsTrue(csoId1 < csoId2);
         }
 
         #endregion
@@ -391,7 +392,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
-            Assert.IsFalse(csoId1 < csoId2);
+            ClassicAssert.IsFalse(csoId1 < csoId2);
         }
 
         #endregion
@@ -406,7 +407,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
-            Assert.IsFalse(csoId1 < csoId2);
+            ClassicAssert.IsFalse(csoId1 < csoId2);
         }
 
         #endregion
@@ -422,7 +423,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsTrue(csoId <= csoId);
+            ClassicAssert.IsTrue(csoId <= csoId);
             #pragma warning restore
         }
 
@@ -438,7 +439,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            Assert.IsTrue(csoId1 <= csoId2);
+            ClassicAssert.IsTrue(csoId1 <= csoId2);
         }
 
         #endregion
@@ -453,7 +454,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
-            Assert.IsTrue(csoId1 <= csoId2);
+            ClassicAssert.IsTrue(csoId1 <= csoId2);
         }
 
         #endregion
@@ -468,7 +469,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
-            Assert.IsTrue(csoId1 <= csoId2);
+            ClassicAssert.IsTrue(csoId1 <= csoId2);
         }
 
         #endregion
@@ -483,7 +484,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
-            Assert.IsFalse(csoId1 <= csoId2);
+            ClassicAssert.IsFalse(csoId1 <= csoId2);
         }
 
         #endregion
@@ -498,7 +499,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
-            Assert.IsFalse(csoId1 <= csoId2);
+            ClassicAssert.IsFalse(csoId1 <= csoId2);
         }
 
         #endregion
@@ -514,7 +515,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsFalse(csoId > csoId);
+            ClassicAssert.IsFalse(csoId > csoId);
             #pragma warning restore
         }
 
@@ -530,7 +531,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
-            Assert.IsFalse(csoId1 > csoId2);
+            ClassicAssert.IsFalse(csoId1 > csoId2);
         }
 
         #endregion
@@ -545,7 +546,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
-            Assert.IsFalse(csoId1 > csoId2);
+            ClassicAssert.IsFalse(csoId1 > csoId2);
         }
 
         #endregion
@@ -560,7 +561,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
-            Assert.IsFalse(csoId1 > csoId2);
+            ClassicAssert.IsFalse(csoId1 > csoId2);
         }
 
         #endregion
@@ -575,7 +576,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
-            Assert.IsTrue(csoId1 > csoId2);
+            ClassicAssert.IsTrue(csoId1 > csoId2);
         }
 
         #endregion
@@ -590,7 +591,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
-            Assert.IsTrue(csoId1 > csoId2);
+            ClassicAssert.IsTrue(csoId1 > csoId2);
         }
 
         #endregion
@@ -606,7 +607,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsTrue(csoId >= csoId);
+            ClassicAssert.IsTrue(csoId >= csoId);
             #pragma warning restore
         }
 
@@ -622,7 +623,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            Assert.IsTrue(csoId1 >= csoId2);
+            ClassicAssert.IsTrue(csoId1 >= csoId2);
         }
 
         #endregion
@@ -637,7 +638,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
-            Assert.IsFalse(csoId1 >= csoId2);
+            ClassicAssert.IsFalse(csoId1 >= csoId2);
         }
 
         #endregion
@@ -652,7 +653,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
-            Assert.IsFalse(csoId1 >= csoId2);
+            ClassicAssert.IsFalse(csoId1 >= csoId2);
         }
 
         #endregion
@@ -667,7 +668,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
-            Assert.IsTrue(csoId1 >= csoId2);
+            ClassicAssert.IsTrue(csoId1 >= csoId2);
         }
 
         #endregion
@@ -682,7 +683,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
-            Assert.IsTrue(csoId1 >= csoId2);
+            ClassicAssert.IsTrue(csoId1 >= csoId2);
         }
 
         #endregion
@@ -716,7 +717,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
-            Assert.IsTrue(csoId1.CompareTo(csoId2) < 0);
+            ClassicAssert.IsTrue(csoId1.CompareTo(csoId2) < 0);
         }
 
         #endregion
@@ -731,7 +732,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
-            Assert.IsTrue(csoId1.CompareTo(csoId2) < 0);
+            ClassicAssert.IsTrue(csoId1.CompareTo(csoId2) < 0);
         }
 
         #endregion
@@ -746,7 +747,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
-            Assert.IsTrue(csoId1.CompareTo(csoId2) == 0);
+            ClassicAssert.IsTrue(csoId1.CompareTo(csoId2) == 0);
         }
 
         #endregion
@@ -761,7 +762,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
-            Assert.IsTrue(csoId1.CompareTo(csoId2) > 0);
+            ClassicAssert.IsTrue(csoId1.CompareTo(csoId2) > 0);
         }
 
         #endregion
@@ -777,7 +778,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             var text  = "DE*GEF";
-            Assert.IsFalse(csoId.Equals(text));
+            ClassicAssert.IsFalse(csoId.Equals(text));
         }
 
         #endregion
@@ -792,7 +793,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
-            Assert.IsTrue(csoId1.Equals(csoId2));
+            ClassicAssert.IsTrue(csoId1.Equals(csoId2));
         }
 
         #endregion
@@ -807,7 +808,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
             var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
-            Assert.IsFalse(csoId1.Equals(csoId2));
+            ClassicAssert.IsFalse(csoId1.Equals(csoId2));
         }
 
         #endregion
@@ -823,7 +824,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var hashCode1 = ChargingStationOperator_Id.Parse(Country.Germany, "555").GetHashCode();
             var hashCode2 = ChargingStationOperator_Id.Parse(Country.Germany, "555").GetHashCode();
-            Assert.AreEqual(hashCode1, hashCode2);
+            ClassicAssert.AreEqual(hashCode1, hashCode2);
         }
 
         #endregion
@@ -838,7 +839,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var hashCode1 = ChargingStationOperator_Id.Parse(Country.Germany, "001").GetHashCode();
             var hashCode2 = ChargingStationOperator_Id.Parse(Country.Germany, "002").GetHashCode();
-            Assert.AreNotEqual(hashCode1, hashCode2);
+            ClassicAssert.AreNotEqual(hashCode1, hashCode2);
         }
 
         #endregion
@@ -857,13 +858,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
             var b = ChargingStationOperator_Id.Parse(Country.Germany, "222");
             var c = ChargingStationOperator_Id.Parse(Country.Germany, "111");
 
-            Assert.AreEqual(a, a);
-            Assert.AreEqual(b, b);
-            Assert.AreEqual(c, c);
+            ClassicAssert.AreEqual(a, a);
+            ClassicAssert.AreEqual(b, b);
+            ClassicAssert.AreEqual(c, c);
 
-            Assert.AreEqual(a, c);
-            Assert.AreNotEqual(a, b);
-            Assert.AreNotEqual(b, c);
+            ClassicAssert.AreEqual(a, c);
+            ClassicAssert.AreNotEqual(a, b);
+            ClassicAssert.AreNotEqual(b, c);
 
         }
 
@@ -883,16 +884,16 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
             var c = ChargingStationOperator_Id.Parse(Country.Germany, "111");
 
             var _HashSet = new HashSet<ChargingStationOperator_Id>();
-            Assert.AreEqual(0, _HashSet.Count);
+            ClassicAssert.AreEqual(0, _HashSet.Count);
 
             _HashSet.Add(a);
-            Assert.AreEqual(1, _HashSet.Count);
+            ClassicAssert.AreEqual(1, _HashSet.Count);
 
             _HashSet.Add(b);
-            Assert.AreEqual(2, _HashSet.Count);
+            ClassicAssert.AreEqual(2, _HashSet.Count);
 
             _HashSet.Add(c);
-            Assert.AreEqual(2, _HashSet.Count);
+            ClassicAssert.AreEqual(2, _HashSet.Count);
 
         }
 

@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -42,23 +43,23 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void RoamingNetwork_Init_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(roamingNetwork);
 
             if (roamingNetwork is not null)
             {
 
-                Assert.AreEqual ("PROD",                                       roamingNetwork.Id.         ToString());
-                Assert.AreEqual ("PRODUCTION",                                 roamingNetwork.Name.       FirstText());
-                Assert.AreEqual ("The main production roaming network",        roamingNetwork.Description.FirstText());
+                ClassicAssert.AreEqual ("PROD",                                       roamingNetwork.Id.         ToString());
+                ClassicAssert.AreEqual ("PRODUCTION",                                 roamingNetwork.Name.       FirstText());
+                ClassicAssert.AreEqual ("The main production roaming network",        roamingNetwork.Description.FirstText());
 
-                Assert.AreEqual (RoamingNetworkAdminStatusTypes.OutOfService,  roamingNetwork.AdminStatus);
-                Assert.AreEqual (1,                                            roamingNetwork.AdminStatusSchedule().Count());
+                ClassicAssert.AreEqual (RoamingNetworkAdminStatusTypes.OutOfService,  roamingNetwork.AdminStatus);
+                ClassicAssert.AreEqual (1,                                            roamingNetwork.AdminStatusSchedule().Count());
 
-                Assert.AreEqual (RoamingNetworkStatusTypes.Offline,            roamingNetwork.Status);
-                Assert.AreEqual (1,                                            roamingNetwork.StatusSchedule().     Count());
+                ClassicAssert.AreEqual (RoamingNetworkStatusTypes.Offline,            roamingNetwork.Status);
+                ClassicAssert.AreEqual (1,                                            roamingNetwork.StatusSchedule().     Count());
 
 
-                Assert.IsTrue   (roamingNetwork.DisableNetworkSync);
+                ClassicAssert.IsTrue   (roamingNetwork.DisableNetworkSync);
 
             }
 
@@ -75,7 +76,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void RoamingNetwork_Init_DefaultStatus_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(roamingNetwork);
 
             if (roamingNetwork is not null)
             {
@@ -87,17 +88,17 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                              DisableNetworkSync:  true
                                          );
 
-                Assert.IsNotNull(roamingNetwork);
+                ClassicAssert.IsNotNull(roamingNetwork);
 
                 if (roamingNetwork is not null)
                 {
 
-                    Assert.AreEqual ("TEST",                                      roamingNetwork.Id.         ToString());
-                    Assert.AreEqual ("TESTNET",                                   roamingNetwork.Name.       FirstText());
-                    Assert.AreEqual ("A roaming network for testing",             roamingNetwork.Description.FirstText());
+                    ClassicAssert.AreEqual ("TEST",                                      roamingNetwork.Id.         ToString());
+                    ClassicAssert.AreEqual ("TESTNET",                                   roamingNetwork.Name.       FirstText());
+                    ClassicAssert.AreEqual ("A roaming network for testing",             roamingNetwork.Description.FirstText());
 
-                    Assert.AreEqual (RoamingNetworkAdminStatusTypes.Operational,  roamingNetwork.AdminStatus);
-                    Assert.AreEqual (RoamingNetworkStatusTypes.Available,         roamingNetwork.Status);
+                    ClassicAssert.AreEqual (RoamingNetworkAdminStatusTypes.Operational,  roamingNetwork.AdminStatus);
+                    ClassicAssert.AreEqual (RoamingNetworkStatusTypes.Available,         roamingNetwork.Status);
 
                 }
 
@@ -116,7 +117,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void RoamingNetwork_AdminStatus_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(roamingNetwork);
 
             if (roamingNetwork is not null)
             {
@@ -125,25 +126,25 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Thread.Sleep(1000);
 
                 roamingNetwork.AdminStatus = RoamingNetworkAdminStatusTypes.InternalUse;
-                Assert.AreEqual(RoamingNetworkAdminStatusTypes.InternalUse,  roamingNetwork.AdminStatus);
-                Assert.AreEqual("internalUse, outOfService",                 roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(2,                                           roamingNetwork.AdminStatusSchedule().Count());
+                ClassicAssert.AreEqual(RoamingNetworkAdminStatusTypes.InternalUse,  roamingNetwork.AdminStatus);
+                ClassicAssert.AreEqual("internalUse, outOfService",                 roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(2,                                           roamingNetwork.AdminStatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
                 roamingNetwork.AdminStatus = RoamingNetworkAdminStatusTypes.Operational;
-                Assert.AreEqual(RoamingNetworkAdminStatusTypes.Operational,  roamingNetwork.AdminStatus);
-                Assert.AreEqual("operational, internalUse, outOfService",    roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(3,                                           roamingNetwork.AdminStatusSchedule().Count());
+                ClassicAssert.AreEqual(RoamingNetworkAdminStatusTypes.Operational,  roamingNetwork.AdminStatus);
+                ClassicAssert.AreEqual("operational, internalUse, outOfService",    roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(3,                                           roamingNetwork.AdminStatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.GenerateAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.GenerateAdminStatusReport().ToString());
 
 
                 var jsonStatusReport = roamingNetwork.GenerateAdminStatusReport().ToJSON();
                 jsonStatusReport.Remove("timestamp");
 
-                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/roamingNetworkAdminStatusReport\",\"count\":1,\"report\":{\"operational\":{\"count\":1,\"percentage\":100.0}}}",
+                ClassicAssert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/roamingNetworkAdminStatusReport\",\"count\":1,\"report\":{\"operational\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }
@@ -161,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void RoamingNetwork_Status_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(roamingNetwork);
 
             if (roamingNetwork is not null)
             {
@@ -170,25 +171,25 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Thread.Sleep(1000);
 
                 roamingNetwork.Status = RoamingNetworkStatusTypes.Error;
-                Assert.AreEqual(RoamingNetworkStatusTypes.Error,      roamingNetwork.Status);
-                Assert.AreEqual("error, offline",                     roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(2,                                    roamingNetwork.StatusSchedule().Count());
+                ClassicAssert.AreEqual(RoamingNetworkStatusTypes.Error,      roamingNetwork.Status);
+                ClassicAssert.AreEqual("error, offline",                     roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(2,                                    roamingNetwork.StatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
                 roamingNetwork.Status = RoamingNetworkStatusTypes.Available;
-                Assert.AreEqual(RoamingNetworkStatusTypes.Available,  roamingNetwork.Status);
-                Assert.AreEqual("available, error, offline",          roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(3,                                    roamingNetwork.StatusSchedule().Count());
+                ClassicAssert.AreEqual(RoamingNetworkStatusTypes.Available,  roamingNetwork.Status);
+                ClassicAssert.AreEqual("available, error, offline",          roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(3,                                    roamingNetwork.StatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; available: 1 (100,00)", roamingNetwork.GenerateStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; available: 1 (100,00)", roamingNetwork.GenerateStatusReport().ToString());
 
 
                 var jsonStatusReport = roamingNetwork.GenerateStatusReport().ToJSON();
                 jsonStatusReport.Remove("timestamp");
 
-                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/roamingNetworkStatusReport\",\"count\":1,\"report\":{\"available\":{\"count\":1,\"percentage\":100.0}}}",
+                ClassicAssert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/roamingNetworkStatusReport\",\"count\":1,\"report\":{\"available\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }

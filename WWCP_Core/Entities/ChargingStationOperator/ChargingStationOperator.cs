@@ -6378,7 +6378,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                );
 
-                return CustomChargingStationOperatorSerializer != null
+                return CustomChargingStationOperatorSerializer is not null
                            ? CustomChargingStationOperatorSerializer(this, json)
                            : json;
 

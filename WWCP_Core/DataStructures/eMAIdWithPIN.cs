@@ -17,9 +17,8 @@
 
 #region Usings
 
-using System;
 using Newtonsoft.Json.Linq;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -28,7 +27,8 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     public readonly struct eMAIdWithPIN2 : IEquatable<eMAIdWithPIN2>,
-                                           IComparable<eMAIdWithPIN2>
+                                           IComparable<eMAIdWithPIN2>,
+                                           IComparable
     {
 
         #region Properties
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP
         public eMAIdWithPIN2(EMobilityAccount_Id  eMAId,
                              String               PIN,
                              PINCrypto            Function,
-                             String               Salt = "")
+                             String               Salt   = "")
         {
 
             this.eMAId     = eMAId;
@@ -86,10 +86,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomEMAIdWithPIN2Serializer">A delegate to serialize custom eMAIdWithPIN JSON objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<eMAIdWithPIN2> CustomEMAIdWithPIN2Serializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<eMAIdWithPIN2>? CustomEMAIdWithPIN2Serializer = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("eMAId", eMAId.ToString()),
 
@@ -109,9 +109,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                        );
 
-            return CustomEMAIdWithPIN2Serializer != null
-                       ? CustomEMAIdWithPIN2Serializer(this, JSON)
-                       : JSON;
+            return CustomEMAIdWithPIN2Serializer is not null
+                       ? CustomEMAIdWithPIN2Serializer(this, json)
+                       : json;
 
         }
 
@@ -123,38 +123,30 @@ namespace cloud.charging.open.protocols.WWCP
         #region Operator == (eMAIdWithPIN21, eMAIdWithPIN22)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two eMAId with PINs for equality.
         /// </summary>
-        /// <param name="eMAIdWithPIN21">A eMAIdWithPIN2.</param>
-        /// <param name="eMAIdWithPIN22">Another eMAIdWithPIN2.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator == (eMAIdWithPIN2 eMAIdWithPIN21, eMAIdWithPIN2 eMAIdWithPIN22)
-        {
+        /// <param name="eMAIdWithPIN21">An eMAId with PIN.</param>
+        /// <param name="eMAIdWithPIN22">Another eMAId with PIN.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public static Boolean operator == (eMAIdWithPIN2 eMAIdWithPIN21,
+                                           eMAIdWithPIN2 eMAIdWithPIN22)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(eMAIdWithPIN21, eMAIdWithPIN22))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) eMAIdWithPIN21 == null) || ((Object) eMAIdWithPIN22 == null))
-                return false;
-
-            return eMAIdWithPIN21.Equals(eMAIdWithPIN22);
-
-        }
+            => eMAIdWithPIN21.Equals(eMAIdWithPIN22);
 
         #endregion
 
         #region Operator != (eMAIdWithPIN21, eMAIdWithPIN22)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two eMAId with PINs for inequality.
         /// </summary>
-        /// <param name="eMAIdWithPIN21">A eMAIdWithPIN2.</param>
-        /// <param name="eMAIdWithPIN22">Another eMAIdWithPIN2.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator != (eMAIdWithPIN2 eMAIdWithPIN21, eMAIdWithPIN2 eMAIdWithPIN22)
-            => !(eMAIdWithPIN21 == eMAIdWithPIN22);
+        /// <param name="eMAIdWithPIN21">An eMAId with PIN.</param>
+        /// <param name="eMAIdWithPIN22">Another eMAId with PIN.</param>
+            /// <returns>False if both match; True otherwise.</returns>
+        public static Boolean operator != (eMAIdWithPIN2 eMAIdWithPIN21,
+                                           eMAIdWithPIN2 eMAIdWithPIN22)
+
+            => !eMAIdWithPIN21.Equals(eMAIdWithPIN22);
 
         #endregion
 
@@ -163,18 +155,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMAIdWithPIN21">A eMAIdWithPIN2.</param>
-        /// <param name="eMAIdWithPIN22">Another eMAIdWithPIN2.</param>
+        /// <param name="eMAIdWithPIN21">An eMAId with PIN.</param>
+        /// <param name="eMAIdWithPIN22">Another eMAId with PIN.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (eMAIdWithPIN2 eMAIdWithPIN21, eMAIdWithPIN2 eMAIdWithPIN22)
-        {
+        public static Boolean operator < (eMAIdWithPIN2 eMAIdWithPIN21,
+                                          eMAIdWithPIN2 eMAIdWithPIN22)
 
-            if ((Object) eMAIdWithPIN21 == null)
-                throw new ArgumentNullException("The given eMAIdWithPIN21 must not be null!");
-
-            return eMAIdWithPIN21.CompareTo(eMAIdWithPIN22) < 0;
-
-        }
+            => eMAIdWithPIN21.CompareTo(eMAIdWithPIN22) < 0;
 
         #endregion
 
@@ -183,11 +170,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMAIdWithPIN21">A eMAIdWithPIN2.</param>
-        /// <param name="eMAIdWithPIN22">Another eMAIdWithPIN2.</param>
+        /// <param name="eMAIdWithPIN21">An eMAId with PIN.</param>
+        /// <param name="eMAIdWithPIN22">Another eMAId with PIN.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (eMAIdWithPIN2 eMAIdWithPIN21, eMAIdWithPIN2 eMAIdWithPIN22)
-            => !(eMAIdWithPIN21 > eMAIdWithPIN22);
+        public static Boolean operator <= (eMAIdWithPIN2 eMAIdWithPIN21,
+                                           eMAIdWithPIN2 eMAIdWithPIN22)
+
+            => eMAIdWithPIN21.CompareTo(eMAIdWithPIN22) <= 0;
 
         #endregion
 
@@ -196,18 +185,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMAIdWithPIN21">A eMAIdWithPIN2.</param>
-        /// <param name="eMAIdWithPIN22">Another eMAIdWithPIN2.</param>
+        /// <param name="eMAIdWithPIN21">An eMAId with PIN.</param>
+        /// <param name="eMAIdWithPIN22">Another eMAId with PIN.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (eMAIdWithPIN2 eMAIdWithPIN21, eMAIdWithPIN2 eMAIdWithPIN22)
-        {
+        public static Boolean operator > (eMAIdWithPIN2 eMAIdWithPIN21,
+                                          eMAIdWithPIN2 eMAIdWithPIN22)
 
-            if ((Object) eMAIdWithPIN21 == null)
-                throw new ArgumentNullException("The given eMAIdWithPIN21 must not be null!");
-
-            return eMAIdWithPIN21.CompareTo(eMAIdWithPIN22) > 0;
-
-        }
+            => eMAIdWithPIN21.CompareTo(eMAIdWithPIN22) > 0;
 
         #endregion
 
@@ -216,11 +200,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMAIdWithPIN21">A eMAIdWithPIN2.</param>
-        /// <param name="eMAIdWithPIN22">Another eMAIdWithPIN2.</param>
+        /// <param name="eMAIdWithPIN21">An eMAId with PIN.</param>
+        /// <param name="eMAIdWithPIN22">Another eMAId with PIN.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (eMAIdWithPIN2 eMAIdWithPIN21, eMAIdWithPIN2 eMAIdWithPIN22)
-            => !(eMAIdWithPIN21 < eMAIdWithPIN22);
+        public static Boolean operator >= (eMAIdWithPIN2 eMAIdWithPIN21,
+                                           eMAIdWithPIN2 eMAIdWithPIN22)
+
+            => eMAIdWithPIN21.CompareTo(eMAIdWithPIN22) >= 0;
 
         #endregion
 
@@ -231,35 +217,26 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two eMAIds with (hashed) pins.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">An eMAId with (hashed) pin to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
-
-            if (!(Object is eMAIdWithPIN2 eMAIdWithPIN2))
-                throw new ArgumentException("The given object is not a eMAIdWithPIN2!");
-
-            return CompareTo(eMAIdWithPIN2);
-
-        }
+            => Object is eMAIdWithPIN2 eMAIdWithPIN2
+                   ? CompareTo(eMAIdWithPIN2)
+                   : throw new ArgumentException("The given object is not an eMAId with PIN!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(eMAIdWithPIN2)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two eMAIds with (hashed) pins.
         /// </summary>
-        /// <param name="eMAIdWithPIN2">An object to compare with.</param>
+        /// <param name="eMAIdWithPIN2">An eMAId with (hashed) pin to compare with.</param>
         public Int32 CompareTo(eMAIdWithPIN2 eMAIdWithPIN2)
         {
-
-            if ((Object) eMAIdWithPIN2 == null)
-                throw new ArgumentNullException("The given eMAIdWithPIN2 must not be null!");
 
             var result = eMAId.   CompareTo(eMAIdWithPIN2.eMAId);
 
@@ -285,44 +262,28 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two eMAIds with (hashed) pins for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">An eMAId with (hashed) pin to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is eMAIdWithPIN2 eMAIdWithPIN2))
-                return false;
-
-            return Equals(eMAIdWithPIN2);
-
-        }
+            => Object is eMAIdWithPIN2 eMAIdWithPIN2 &&
+                   Equals(eMAIdWithPIN2);
 
         #endregion
 
         #region Equals(eMAIdWithPIN2)
 
         /// <summary>
-        /// Compares two EVSE identifications for equality.
+        /// Compares two eMAIds with (hashed) pins for equality.
         /// </summary>
-        /// <param name="eMAIdWithPIN2">An EVSE identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="eMAIdWithPIN2">An eMAId with (hashed) pin to compare with.</param>
         public Boolean Equals(eMAIdWithPIN2 eMAIdWithPIN2)
-        {
 
-            if ((Object) eMAIdWithPIN2 == null)
-                return false;
-
-            return eMAId.   Equals(eMAIdWithPIN2.eMAId)    &&
-                   PIN.     Equals(eMAIdWithPIN2.PIN)      &&
-                   Function.Equals(eMAIdWithPIN2.Function) &&
-                   Salt.    Equals(eMAIdWithPIN2.Salt);
-
-        }
+            => eMAId.   Equals(eMAIdWithPIN2.eMAId)    &&
+               PIN.     Equals(eMAIdWithPIN2.PIN)      &&
+               Function.Equals(eMAIdWithPIN2.Function) &&
+               Salt.    Equals(eMAIdWithPIN2.Salt);
 
         #endregion
 
@@ -354,12 +315,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(eMAId.ToString(),
-                             Function != PINCrypto.None
-                                 ? String.Concat(" -", Function.AsString(), "-> ",
-                                                 PIN,
-                                                 Salt.IsNotNullOrEmpty() ? " (" + Salt + ")" : "")
-                                 : PIN);
+            => String.Concat(
+
+                   eMAId.ToString(),
+
+                   Function is not PINCrypto.None
+
+                       ? String.Concat(
+
+                             $" -{Function.AsString()}-> {PIN}",
+
+                             Salt.IsNotNullOrEmpty()
+                                 ? " (" + Salt + ")"
+                                 : ""
+
+                         )
+
+                       : PIN
+
+               );
 
         #endregion
 
