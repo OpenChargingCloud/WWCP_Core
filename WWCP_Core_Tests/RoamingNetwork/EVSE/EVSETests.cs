@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -44,11 +45,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void EVSE_Init_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
-            Assert.IsNotNull(DE_GEF);
-            Assert.IsNotNull(DE_GEF_P0001);
-            Assert.IsNotNull(DE_GEF_S0001_AAAA);
-            Assert.IsNotNull(DE_GEF_E0001_AAAA_1);
+            ClassicAssert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(DE_GEF);
+            ClassicAssert.IsNotNull(DE_GEF_P0001);
+            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
+            ClassicAssert.IsNotNull(DE_GEF_E0001_AAAA_1);
 
             if (roamingNetwork      is not null &&
                 DE_GEF              is not null &&
@@ -57,41 +58,41 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 DE_GEF_E0001_AAAA_1 is not null)
             {
 
-                Assert.AreEqual ("DE*GEF*E0001*AAAA*1",                 DE_GEF_E0001_AAAA_1.Id.         ToString());
-                Assert.AreEqual ("GraphDefined EVSE #1",                DE_GEF_E0001_AAAA_1.Name.       FirstText());
-                Assert.AreEqual ("powered by GraphDefined EVSEs GmbH",  DE_GEF_E0001_AAAA_1.Description.FirstText());
+                ClassicAssert.AreEqual ("DE*GEF*E0001*AAAA*1",                 DE_GEF_E0001_AAAA_1.Id.         ToString());
+                ClassicAssert.AreEqual ("GraphDefined EVSE #1",                DE_GEF_E0001_AAAA_1.Name.       FirstText());
+                ClassicAssert.AreEqual ("powered by GraphDefined EVSEs GmbH",  DE_GEF_E0001_AAAA_1.Description.FirstText());
 
-                Assert.AreEqual (EVSEAdminStatusTypes.OutOfService,     DE_GEF_E0001_AAAA_1.AdminStatus);
-                Assert.AreEqual (1,                                     DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Count());
+                ClassicAssert.AreEqual (EVSEAdminStatusTypes.OutOfService,     DE_GEF_E0001_AAAA_1.AdminStatus);
+                ClassicAssert.AreEqual (1,                                     DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Count());
 
-                Assert.AreEqual (EVSEStatusTypes.Offline,               DE_GEF_E0001_AAAA_1.Status);
-                Assert.AreEqual (1,                                     DE_GEF_E0001_AAAA_1.StatusSchedule().     Count());
-
-
-                Assert.AreEqual (1,                                     roamingNetwork.   EVSEs.    Count());
-                Assert.AreEqual (1,                                     roamingNetwork.   EVSEIds().Count());
-
-                Assert.AreEqual (1,                                     DE_GEF.           EVSEs.    Count());
-                Assert.AreEqual (1,                                     DE_GEF.           EVSEIds().Count());
-
-                Assert.AreEqual (1,                                     DE_GEF_P0001.     EVSEs.    Count());
-                Assert.AreEqual (1,                                     DE_GEF_P0001.     EVSEIds().Count());
-
-                Assert.AreEqual (1,                                     DE_GEF_S0001_AAAA.EVSEs.    Count());
-                Assert.AreEqual (1,                                     DE_GEF_S0001_AAAA.EVSEIds().Count());
+                ClassicAssert.AreEqual (EVSEStatusTypes.Offline,               DE_GEF_E0001_AAAA_1.Status);
+                ClassicAssert.AreEqual (1,                                     DE_GEF_E0001_AAAA_1.StatusSchedule().     Count());
 
 
-                Assert.IsTrue   (roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
-                Assert.IsNotNull(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+                ClassicAssert.AreEqual (1,                                     roamingNetwork.   EVSEs.    Count());
+                ClassicAssert.AreEqual (1,                                     roamingNetwork.   EVSEIds().Count());
 
-                Assert.IsTrue   (DE_GEF.           ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
-                Assert.IsNotNull(DE_GEF.           GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+                ClassicAssert.AreEqual (1,                                     DE_GEF.           EVSEs.    Count());
+                ClassicAssert.AreEqual (1,                                     DE_GEF.           EVSEIds().Count());
 
-                Assert.IsTrue   (DE_GEF_P0001.     ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
-                Assert.IsNotNull(DE_GEF_P0001.     GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+                ClassicAssert.AreEqual (1,                                     DE_GEF_P0001.     EVSEs.    Count());
+                ClassicAssert.AreEqual (1,                                     DE_GEF_P0001.     EVSEIds().Count());
 
-                Assert.IsTrue   (DE_GEF_S0001_AAAA.ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
-                Assert.IsNotNull(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+                ClassicAssert.AreEqual (1,                                     DE_GEF_S0001_AAAA.EVSEs.    Count());
+                ClassicAssert.AreEqual (1,                                     DE_GEF_S0001_AAAA.EVSEIds().Count());
+
+
+                ClassicAssert.IsTrue   (roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+                ClassicAssert.IsNotNull(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+
+                ClassicAssert.IsTrue   (DE_GEF.           ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+                ClassicAssert.IsNotNull(DE_GEF.           GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+
+                ClassicAssert.IsTrue   (DE_GEF_P0001.     ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+                ClassicAssert.IsNotNull(DE_GEF_P0001.     GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+
+                ClassicAssert.IsTrue   (DE_GEF_S0001_AAAA.ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+                ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
 
             }
 
@@ -108,10 +109,10 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void EVSE_Init_DefaultStatus_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
-            Assert.IsNotNull(DE_GEF);
-            Assert.IsNotNull(DE_GEF_P0001);
-            Assert.IsNotNull(DE_GEF_S0001_AAAA);
+            ClassicAssert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(DE_GEF);
+            ClassicAssert.IsNotNull(DE_GEF_P0001);
+            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
 
             if (roamingNetwork    is not null &&
                 DE_GEF            is not null &&
@@ -125,29 +126,29 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                 Description:  I18NString.Create(Languages.de, "powered by GraphDefined EVSEs GmbH")
                                                             ).Result.EVSE;
 
-                Assert.IsNotNull(DE_GEF_E0001_AAAA_X);
+                ClassicAssert.IsNotNull(DE_GEF_E0001_AAAA_X);
 
                 if (DE_GEF_E0001_AAAA_X is not null)
                 {
 
-                    Assert.AreEqual ("DE*GEF*E1234",                        DE_GEF_E0001_AAAA_X.Id.         ToString());
-                    Assert.AreEqual ("DE*GEF EVSE 1234",                    DE_GEF_E0001_AAAA_X.Name.       FirstText());
-                    Assert.AreEqual ("powered by GraphDefined EVSEs GmbH",  DE_GEF_E0001_AAAA_X.Description.FirstText());
+                    ClassicAssert.AreEqual ("DE*GEF*E1234",                        DE_GEF_E0001_AAAA_X.Id.         ToString());
+                    ClassicAssert.AreEqual ("DE*GEF EVSE 1234",                    DE_GEF_E0001_AAAA_X.Name.       FirstText());
+                    ClassicAssert.AreEqual ("powered by GraphDefined EVSEs GmbH",  DE_GEF_E0001_AAAA_X.Description.FirstText());
 
-                    Assert.AreEqual (EVSEAdminStatusTypes.Operational,      DE_GEF_E0001_AAAA_X.AdminStatus);
-                    Assert.AreEqual (EVSEStatusTypes.Available,             DE_GEF_E0001_AAAA_X.Status);
+                    ClassicAssert.AreEqual (EVSEAdminStatusTypes.Operational,      DE_GEF_E0001_AAAA_X.AdminStatus);
+                    ClassicAssert.AreEqual (EVSEStatusTypes.Available,             DE_GEF_E0001_AAAA_X.Status);
 
-                    Assert.IsTrue   (roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")));
-                    Assert.IsNotNull(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")));
+                    ClassicAssert.IsTrue   (roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")));
+                    ClassicAssert.IsNotNull(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")));
 
-                    Assert.IsTrue   (DE_GEF.           ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")));
-                    Assert.IsNotNull(DE_GEF.           GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")));
+                    ClassicAssert.IsTrue   (DE_GEF.           ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")));
+                    ClassicAssert.IsNotNull(DE_GEF.           GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")));
 
-                    Assert.IsTrue   (DE_GEF_P0001.     ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")));
-                    Assert.IsNotNull(DE_GEF_P0001.     GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")));
+                    ClassicAssert.IsTrue   (DE_GEF_P0001.     ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")));
+                    ClassicAssert.IsNotNull(DE_GEF_P0001.     GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")));
 
-                    Assert.IsTrue   (DE_GEF_S0001_AAAA.ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")));
-                    Assert.IsNotNull(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")));
+                    ClassicAssert.IsTrue   (DE_GEF_S0001_AAAA.ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")));
+                    ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")));
 
                 }
 
@@ -166,10 +167,10 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void EVSE_Init_AllProperties_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
-            Assert.IsNotNull(DE_GEF);
-            Assert.IsNotNull(DE_GEF_P0001);
-            Assert.IsNotNull(DE_GEF_S0001_AAAA);
+            ClassicAssert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(DE_GEF);
+            ClassicAssert.IsNotNull(DE_GEF_P0001);
+            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
 
             if (roamingNetwork    is not null &&
                 DE_GEF            is not null &&
@@ -201,33 +202,33 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                                      }
                                                             ).Result.EVSE;
 
-                Assert.IsNotNull(DE_GEF_E1234_5678_1);
-                Assert.IsTrue   (success);
+                ClassicAssert.IsNotNull(DE_GEF_E1234_5678_1);
+                ClassicAssert.IsTrue   (success);
 
                 if (DE_GEF_E1234_5678_1 is not null)
                 {
 
-                    Assert.AreEqual ("DE*GEF*E1234*5678*1",                 DE_GEF_E1234_5678_1.Id.         ToString());
-                    Assert.AreEqual ("DE*GEF EVSE 1234*5678*1",             DE_GEF_E1234_5678_1.Name.       FirstText());
-                    Assert.AreEqual ("powered by GraphDefined EVSEs GmbH",  DE_GEF_E1234_5678_1.Description.FirstText());
+                    ClassicAssert.AreEqual ("DE*GEF*E1234*5678*1",                 DE_GEF_E1234_5678_1.Id.         ToString());
+                    ClassicAssert.AreEqual ("DE*GEF EVSE 1234*5678*1",             DE_GEF_E1234_5678_1.Name.       FirstText());
+                    ClassicAssert.AreEqual ("powered by GraphDefined EVSEs GmbH",  DE_GEF_E1234_5678_1.Description.FirstText());
 
-                    Assert.AreEqual (EVSEAdminStatusTypes.OutOfService,     DE_GEF_E1234_5678_1.AdminStatus);
-                    Assert.AreEqual (EVSEStatusTypes.Offline,               DE_GEF_E1234_5678_1.Status);
+                    ClassicAssert.AreEqual (EVSEAdminStatusTypes.OutOfService,     DE_GEF_E1234_5678_1.AdminStatus);
+                    ClassicAssert.AreEqual (EVSEStatusTypes.Offline,               DE_GEF_E1234_5678_1.Status);
 
-                    Assert.IsTrue   (roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
-                    Assert.IsNotNull(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    ClassicAssert.IsTrue   (roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    ClassicAssert.IsNotNull(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
 
-                    Assert.IsTrue   (DE_GEF.           ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
-                    Assert.IsNotNull(DE_GEF.           GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    ClassicAssert.IsTrue   (DE_GEF.           ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    ClassicAssert.IsNotNull(DE_GEF.           GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
 
-                    Assert.IsTrue   (DE_GEF_P0001.     ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
-                    Assert.IsNotNull(DE_GEF_P0001.     GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    ClassicAssert.IsTrue   (DE_GEF_P0001.     ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    ClassicAssert.IsNotNull(DE_GEF_P0001.     GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
 
-                    Assert.IsTrue   (DE_GEF_S0001_AAAA.ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
-                    Assert.IsNotNull(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    ClassicAssert.IsTrue   (DE_GEF_S0001_AAAA.ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
 
 
-                    Assert.AreEqual(1, DE_GEF_E1234_5678_1.Brands.Count);
+                    ClassicAssert.AreEqual(1, DE_GEF_E1234_5678_1.Brands.Count);
 
 
 
@@ -242,7 +243,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                    ));
 
 
-                    Assert.AreEqual(2, DE_GEF_E1234_5678_1.Brands.Count);
+                    ClassicAssert.AreEqual(2, DE_GEF_E1234_5678_1.Brands.Count);
 
 
                     #region Setup OnEVSEDataChange listeners
@@ -326,11 +327,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     DE_GEF_E1234_5678_1.Name.       Set(Languages.it, "namelalala");
                     DE_GEF_E1234_5678_1.Description.Set(Languages.it, "desclalala");
 
-                    Assert.AreEqual(2, evseDataChanges.                       Count);
-                    Assert.AreEqual(2, chargingStationEVSEDataChanges.        Count);
-                    Assert.AreEqual(2, chargingPoolEVSEDataChanges.           Count);
-                    Assert.AreEqual(2, chargingStationOperatorEVSEDataChanges.Count);
-                    Assert.AreEqual(2, roamingNetworkEVSEDataChanges.         Count);
+                    ClassicAssert.AreEqual(2, evseDataChanges.                       Count);
+                    ClassicAssert.AreEqual(2, chargingStationEVSEDataChanges.        Count);
+                    ClassicAssert.AreEqual(2, chargingPoolEVSEDataChanges.           Count);
+                    ClassicAssert.AreEqual(2, chargingStationOperatorEVSEDataChanges.Count);
+                    ClassicAssert.AreEqual(2, roamingNetworkEVSEDataChanges.         Count);
 
                     var now = Timestamp.Now;
 
@@ -346,11 +347,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                       new Timestamped<Decimal>(now + TimeSpan.FromMinutes(3), 789.12m)
                                                                   });
 
-                    Assert.AreEqual(7, evseDataChanges.                       Count);
-                    Assert.AreEqual(7, chargingStationEVSEDataChanges.        Count);
-                    Assert.AreEqual(7, chargingPoolEVSEDataChanges.           Count);
-                    Assert.AreEqual(7, chargingStationOperatorEVSEDataChanges.Count);
-                    Assert.AreEqual(7, roamingNetworkEVSEDataChanges.         Count);
+                    ClassicAssert.AreEqual(7, evseDataChanges.                       Count);
+                    ClassicAssert.AreEqual(7, chargingStationEVSEDataChanges.        Count);
+                    ClassicAssert.AreEqual(7, chargingPoolEVSEDataChanges.           Count);
+                    ClassicAssert.AreEqual(7, chargingStationOperatorEVSEDataChanges.Count);
+                    ClassicAssert.AreEqual(7, roamingNetworkEVSEDataChanges.         Count);
 
                     // The same again... must not call the data change listeners!
                     DE_GEF_E1234_5678_1.Name.       Set(Languages.it, "namelalala");
@@ -364,11 +365,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                       new Timestamped<Decimal>(now + TimeSpan.FromMinutes(3), 789.12m)
                                                                   });
 
-                    Assert.AreEqual(7, evseDataChanges.                       Count);
-                    Assert.AreEqual(7, chargingStationEVSEDataChanges.        Count);
-                    Assert.AreEqual(7, chargingPoolEVSEDataChanges.           Count);
-                    Assert.AreEqual(7, chargingStationOperatorEVSEDataChanges.Count);
-                    Assert.AreEqual(7, roamingNetworkEVSEDataChanges.         Count);
+                    ClassicAssert.AreEqual(7, evseDataChanges.                       Count);
+                    ClassicAssert.AreEqual(7, chargingStationEVSEDataChanges.        Count);
+                    ClassicAssert.AreEqual(7, chargingPoolEVSEDataChanges.           Count);
+                    ClassicAssert.AreEqual(7, chargingStationOperatorEVSEDataChanges.Count);
+                    ClassicAssert.AreEqual(7, roamingNetworkEVSEDataChanges.         Count);
 
                 }
 
@@ -389,11 +390,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void EVSE_AdminStatus_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
-            Assert.IsNotNull(DE_GEF);
-            Assert.IsNotNull(DE_GEF_P0001);
-            Assert.IsNotNull(DE_GEF_S0001_AAAA);
-            Assert.IsNotNull(DE_GEF_E0001_AAAA_1);
+            ClassicAssert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(DE_GEF);
+            ClassicAssert.IsNotNull(DE_GEF_P0001);
+            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
+            ClassicAssert.IsNotNull(DE_GEF_E0001_AAAA_1);
 
             if (roamingNetwork      is not null &&
                 DE_GEF              is not null &&
@@ -406,33 +407,33 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Thread.Sleep(1000);
 
                 DE_GEF_E0001_AAAA_1.AdminStatus = EVSEAdminStatusTypes.InternalUse;
-                Assert.AreEqual(EVSEAdminStatusTypes.InternalUse,          DE_GEF_E0001_AAAA_1.AdminStatus);
-                Assert.AreEqual("internalUse, outOfService",               DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(2,                                         DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Count());
+                ClassicAssert.AreEqual(EVSEAdminStatusTypes.InternalUse,          DE_GEF_E0001_AAAA_1.AdminStatus);
+                ClassicAssert.AreEqual("internalUse, outOfService",               DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(2,                                         DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
                 DE_GEF_E0001_AAAA_1.AdminStatus = EVSEAdminStatusTypes.Operational;
-                Assert.AreEqual(EVSEAdminStatusTypes.Operational,          DE_GEF_E0001_AAAA_1.AdminStatus);
-                Assert.AreEqual("operational, internalUse, outOfService",  DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(3,                                         DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Count());
+                ClassicAssert.AreEqual(EVSEAdminStatusTypes.Operational,          DE_GEF_E0001_AAAA_1.AdminStatus);
+                ClassicAssert.AreEqual("operational, internalUse, outOfService",  DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(3,                                         DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF_E0001_AAAA_1.                                   GenerateAdminStatusReport().    ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", new IEVSE[]                    { DE_GEF_E0001_AAAA_1 }.GenerateAdminStatusReport().    ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF_S0001_AAAA.                                     GenerateEVSEAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateEVSEAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF_P0001.                                          GenerateEVSEAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.       GenerateEVSEAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF.                                                GenerateEVSEAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.             GenerateEVSEAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.                                        GenerateEVSEAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF_E0001_AAAA_1.                                   GenerateAdminStatusReport().    ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", new IEVSE[]                    { DE_GEF_E0001_AAAA_1 }.GenerateAdminStatusReport().    ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF_S0001_AAAA.                                     GenerateEVSEAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateEVSEAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF_P0001.                                          GenerateEVSEAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.       GenerateEVSEAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF.                                                GenerateEVSEAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.             GenerateEVSEAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.                                        GenerateEVSEAdminStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF_E0001_AAAA_1.GenerateAdminStatusReport().ToJSON();
                 jsonStatusReport.Remove("timestamp");
 
-                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/evseAdminStatusReport\",\"count\":1,\"report\":{\"operational\":{\"count\":1,\"percentage\":100.0}}}",
+                ClassicAssert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/evseAdminStatusReport\",\"count\":1,\"report\":{\"operational\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }
@@ -450,11 +451,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void EVSE_Status_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
-            Assert.IsNotNull(DE_GEF);
-            Assert.IsNotNull(DE_GEF_P0001);
-            Assert.IsNotNull(DE_GEF_S0001_AAAA);
-            Assert.IsNotNull(DE_GEF_E0001_AAAA_1);
+            ClassicAssert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(DE_GEF);
+            ClassicAssert.IsNotNull(DE_GEF_P0001);
+            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
+            ClassicAssert.IsNotNull(DE_GEF_E0001_AAAA_1);
 
             if (roamingNetwork      is not null &&
                 DE_GEF              is not null &&
@@ -467,33 +468,33 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Thread.Sleep(1000);
 
                 DE_GEF_E0001_AAAA_1.Status = EVSEStatusTypes.Reserved;
-                Assert.AreEqual(EVSEStatusTypes.Reserved,    DE_GEF_E0001_AAAA_1.Status);
-                Assert.AreEqual("reserved, offline",         DE_GEF_E0001_AAAA_1.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(2,                           DE_GEF_E0001_AAAA_1.StatusSchedule().Count());
+                ClassicAssert.AreEqual(EVSEStatusTypes.Reserved,    DE_GEF_E0001_AAAA_1.Status);
+                ClassicAssert.AreEqual("reserved, offline",         DE_GEF_E0001_AAAA_1.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(2,                           DE_GEF_E0001_AAAA_1.StatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
                 DE_GEF_E0001_AAAA_1.Status = EVSEStatusTypes.Error;
-                Assert.AreEqual(EVSEStatusTypes.Error,       DE_GEF_E0001_AAAA_1.Status);
-                Assert.AreEqual("error, reserved, offline",  DE_GEF_E0001_AAAA_1.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(3,                           DE_GEF_E0001_AAAA_1.StatusSchedule().Count());
+                ClassicAssert.AreEqual(EVSEStatusTypes.Error,       DE_GEF_E0001_AAAA_1.Status);
+                ClassicAssert.AreEqual("error, reserved, offline",  DE_GEF_E0001_AAAA_1.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(3,                           DE_GEF_E0001_AAAA_1.StatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF_E0001_AAAA_1.                                   GenerateStatusReport().    ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", new IEVSE[]                    { DE_GEF_E0001_AAAA_1 }.GenerateStatusReport().    ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF_S0001_AAAA.                                     GenerateEVSEStatusReport().ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", new IChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateEVSEStatusReport().ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF_P0001.                                          GenerateEVSEStatusReport().ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.       GenerateEVSEStatusReport().ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF.                                                GenerateEVSEStatusReport().ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.             GenerateEVSEStatusReport().ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", roamingNetwork.                                        GenerateEVSEStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF_E0001_AAAA_1.                                   GenerateStatusReport().    ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", new IEVSE[]                    { DE_GEF_E0001_AAAA_1 }.GenerateStatusReport().    ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF_S0001_AAAA.                                     GenerateEVSEStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", new IChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateEVSEStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF_P0001.                                          GenerateEVSEStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.       GenerateEVSEStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF.                                                GenerateEVSEStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.             GenerateEVSEStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", roamingNetwork.                                        GenerateEVSEStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF_E0001_AAAA_1.GenerateStatusReport().ToJSON();
                 jsonStatusReport.Remove("timestamp");
 
-                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/evseStatusReport\",\"count\":1,\"report\":{\"error\":{\"count\":1,\"percentage\":100.0}}}",
+                ClassicAssert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/evseStatusReport\",\"count\":1,\"report\":{\"error\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }
@@ -512,11 +513,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void EVSE_Tariff_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
-            Assert.IsNotNull(DE_GEF);
-            Assert.IsNotNull(DE_GEF_P0001);
-            Assert.IsNotNull(DE_GEF_S0001_AAAA);
-            Assert.IsNotNull(DE_GEF_E0001_AAAA_1);
+            ClassicAssert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(DE_GEF);
+            ClassicAssert.IsNotNull(DE_GEF_P0001);
+            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
+            ClassicAssert.IsNotNull(DE_GEF_E0001_AAAA_1);
 
             if (roamingNetwork      is not null &&
                 DE_GEF              is not null &&
@@ -604,7 +605,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 #endregion
 
                 var tariffGroup_VW = DE_GEF.CreateChargingTariffGroup("_VW", I18NString.Create(Languages.de, "Volkswagen"));
-                Assert.IsNotNull(tariffGroup_VW);
+                ClassicAssert.IsNotNull(tariffGroup_VW);
 
                 if (tariffGroup_VW is not null)
                 {
@@ -629,7 +630,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                      )
                                                                  }
                                             );
-                    Assert.IsNotNull(tariff_3_98_60min);
+                    ClassicAssert.IsNotNull(tariff_3_98_60min);
 
 
                     var tariff_0_25_kWh   = tariffGroup_VW.CreateChargingTariff(
@@ -652,7 +653,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                      )
                                                                  }
                                             );
-                    Assert.IsNotNull(tariff_0_25_kWh);
+                    ClassicAssert.IsNotNull(tariff_0_25_kWh);
 
 
                     if (tariff_3_98_60min is not null &&
@@ -662,13 +663,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                         DE_GEF_E0001_AAAA_1.ChargingTariffs.Add(tariff_3_98_60min);
                         DE_GEF_E0001_AAAA_1.ChargingTariffs.Add(tariff_0_25_kWh);
 
-                        Assert.AreEqual(2, DE_GEF_E0001_AAAA_1.ChargingTariffs.   Count);
+                        ClassicAssert.AreEqual(2, DE_GEF_E0001_AAAA_1.ChargingTariffs.   Count);
 
-                        Assert.AreEqual(2, evseDataChanges.                       Count);
-                        Assert.AreEqual(2, chargingStationEVSEDataChanges.        Count);
-                        Assert.AreEqual(2, chargingPoolEVSEDataChanges.           Count);
-                        Assert.AreEqual(2, chargingStationOperatorEVSEDataChanges.Count);
-                        Assert.AreEqual(2, roamingNetworkEVSEDataChanges.         Count);
+                        ClassicAssert.AreEqual(2, evseDataChanges.                       Count);
+                        ClassicAssert.AreEqual(2, chargingStationEVSEDataChanges.        Count);
+                        ClassicAssert.AreEqual(2, chargingPoolEVSEDataChanges.           Count);
+                        ClassicAssert.AreEqual(2, chargingStationOperatorEVSEDataChanges.Count);
+                        ClassicAssert.AreEqual(2, roamingNetworkEVSEDataChanges.         Count);
 
 
                         var evseGroup_0_25_kWh  = DE_GEF.CreateEVSEGroup(
@@ -680,7 +681,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                   }
                                                   );
 
-                        Assert.IsNotNull(evseGroup_0_25_kWh);
+                        ClassicAssert.IsNotNull(evseGroup_0_25_kWh);
 
 
                     }

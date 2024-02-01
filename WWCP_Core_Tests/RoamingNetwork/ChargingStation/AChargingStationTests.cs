@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -53,7 +54,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 var chargingStationId = ChargingStation_Id.TryParse(DE_GEF_P0001.Id, "AAAA");
 
-                Assert.IsNotNull(chargingStationId);
+                ClassicAssert.IsNotNull(chargingStationId);
 
                 DE_GEF_S0001_AAAA = chargingStationId is not null
 
@@ -67,7 +68,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                                         : null;
 
-                Assert.IsNotNull(DE_GEF_S0001_AAAA);
+                ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
 
             }
 

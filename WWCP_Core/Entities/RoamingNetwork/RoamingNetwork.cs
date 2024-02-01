@@ -7463,25 +7463,25 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Any CDRs left? => Ask all e-mobility providers!
 
-                foreach (var _cdr in chargeDetailRecordsToProcess.ToList())
+                foreach (var chargeDetailRecord in chargeDetailRecordsToProcess.ToList())
                 {
 
                     #region We have a valid (start) provider identification
 
-                    if (_cdr.ProviderIdStart.HasValue && eMobilityProviders.TryGet(_cdr.ProviderIdStart.Value, out var eMobPro) && eMobPro is not null)
+                    if (chargeDetailRecord.ProviderIdStart.HasValue && eMobilityProviders.TryGet(chargeDetailRecord.ProviderIdStart.Value, out var eMobPro) && eMobPro is not null)
                     {
-                        cdrTargets[eMobPro].Add(_cdr);
-                        chargeDetailRecordsToProcess.Remove(_cdr);
+                        cdrTargets[eMobPro].Add(chargeDetailRecord);
+                        chargeDetailRecordsToProcess.Remove(chargeDetailRecord);
                     }
 
                     #endregion
 
                     #region We have a valid (stop)  provider identification
 
-                    else if (_cdr.ProviderIdStop.HasValue && eMobilityProviders.TryGet(_cdr.ProviderIdStop.Value, out eMobPro) && eMobPro is not null)
+                    else if (chargeDetailRecord.ProviderIdStop.HasValue && eMobilityProviders.TryGet(chargeDetailRecord.ProviderIdStop.Value, out eMobPro) && eMobPro is not null)
                     {
-                        cdrTargets[eMobPro].Add(_cdr);
-                        chargeDetailRecordsToProcess.Remove(_cdr);
+                        cdrTargets[eMobPro].Add(chargeDetailRecord);
+                        chargeDetailRecordsToProcess.Remove(chargeDetailRecord);
                     }
 
                     #endregion
@@ -7489,7 +7489,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (start) AuthToken/RFID identification
 
-                    else if (_cdr.AuthenticationStart?.AuthToken != null)
+                    else if (chargeDetailRecord.AuthenticationStart?.AuthToken.HasValue == true)
                     {
 
                         // Use a lookup...
@@ -7500,11 +7500,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                             LocalAuthentication LL = null;
 
-                            if (_cdr.AuthenticationStart is LocalAuthentication)
-                                LL = _cdr.AuthenticationStart as LocalAuthentication;
+                            if (chargeDetailRecord.AuthenticationStart is LocalAuthentication)
+                                LL = chargeDetailRecord.AuthenticationStart as LocalAuthentication;
 
-                            else if (_cdr.AuthenticationStart is RemoteAuthentication)
-                                LL = (_cdr.AuthenticationStart as RemoteAuthentication).ToLocal;
+                            else if (chargeDetailRecord.AuthenticationStart is RemoteAuthentication)
+                                LL = (chargeDetailRecord.AuthenticationStart as RemoteAuthentication).ToLocal;
 
                             if (LL != null)
                             {
@@ -7514,8 +7514,8 @@ namespace cloud.charging.open.protocols.WWCP
                                 if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                     authStartResult.Result == AuthStartResultTypes.Blocked)
                                 {
-                                    cdrTargets[eMob].Add(_cdr);
-                                    chargeDetailRecordsToProcess.Remove(_cdr);
+                                    cdrTargets[eMob].Add(chargeDetailRecord);
+                                    chargeDetailRecordsToProcess.Remove(chargeDetailRecord);
                                     break;
                                 }
 
@@ -7529,7 +7529,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (stop)  AuthToken/RFID identification
 
-                    else if (_cdr.AuthenticationStop?.AuthToken != null)
+                    else if (chargeDetailRecord.AuthenticationStop?.AuthToken.HasValue == true)
                     {
 
                         // Use a lookup...
@@ -7538,13 +7538,13 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                cdrTargets[eMob].Add(_cdr);
-                                chargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(chargeDetailRecord);
+                                chargeDetailRecordsToProcess.Remove(chargeDetailRecord);
                                 break;
                             }
 
@@ -7556,8 +7556,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (start) QR-Code identification
 
-                    else if (_cdr.AuthenticationStart?.QRCodeIdentification != null)
+                    else if (chargeDetailRecord.AuthenticationStart?.QRCodeIdentification.HasValue == true)
                     {
+
+                        var providerId = chargeDetailRecord.AuthenticationStart?.QRCodeIdentification?.eMAId.ProviderId;
 
                         // Use a lookup...
 
@@ -7565,13 +7567,13 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStart as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStart as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                cdrTargets[eMob].Add(_cdr);
-                                chargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(chargeDetailRecord);
+                                chargeDetailRecordsToProcess.Remove(chargeDetailRecord);
                                 break;
                             }
 
@@ -7583,8 +7585,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (stop)  QR-Code identification
 
-                    else if (_cdr.AuthenticationStop?.QRCodeIdentification != null)
+                    else if (chargeDetailRecord.AuthenticationStop?.QRCodeIdentification.HasValue == true)
                     {
+
+                        var providerId = chargeDetailRecord.AuthenticationStart?.QRCodeIdentification?.eMAId.ProviderId;
 
                         // Use a lookup...
 
@@ -7592,13 +7596,13 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                cdrTargets[eMob].Add(_cdr);
-                                chargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(chargeDetailRecord);
+                                chargeDetailRecordsToProcess.Remove(chargeDetailRecord);
                                 break;
                             }
 
@@ -7610,8 +7614,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (start) Plug'n'Charge identification
 
-                    else if (_cdr.AuthenticationStart?.PlugAndChargeIdentification != null)
+                    else if (chargeDetailRecord.AuthenticationStart?.PlugAndChargeIdentification.HasValue == true)
                     {
+
+                        var providerId = chargeDetailRecord.AuthenticationStart?.PlugAndChargeIdentification.Value.ProviderId;
 
                         // Use a lookup...
 
@@ -7619,13 +7625,13 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStart as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStart as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                cdrTargets[eMob].Add(_cdr);
-                                chargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(chargeDetailRecord);
+                                chargeDetailRecordsToProcess.Remove(chargeDetailRecord);
                                 break;
                             }
 
@@ -7637,8 +7643,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (stop)  Plug'n'Charge identification
 
-                    else if (_cdr.AuthenticationStop?.PlugAndChargeIdentification != null)
+                    else if (chargeDetailRecord.AuthenticationStop?.PlugAndChargeIdentification.HasValue == true)
                     {
+
+                        var providerId = chargeDetailRecord.AuthenticationStart?.PlugAndChargeIdentification.Value.ProviderId;
 
                         // Use a lookup...
 
@@ -7646,13 +7654,13 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                cdrTargets[eMob].Add(_cdr);
-                                chargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(chargeDetailRecord);
+                                chargeDetailRecordsToProcess.Remove(chargeDetailRecord);
                                 break;
                             }
 
@@ -7664,8 +7672,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (start) remote identification
 
-                    else if (_cdr.AuthenticationStart?.RemoteIdentification != null)
+                    else if (chargeDetailRecord.AuthenticationStart?.RemoteIdentification.HasValue == true)
                     {
+
+                        var providerId = chargeDetailRecord.AuthenticationStart?.RemoteIdentification.Value.ProviderId;
+
 
                         // Use a lookup...
 
@@ -7673,15 +7684,22 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStart as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStart as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                cdrTargets[eMob].Add(_cdr);
-                                chargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(chargeDetailRecord);
+                                chargeDetailRecordsToProcess.Remove(chargeDetailRecord);
                                 break;
                             }
+
+                        }
+
+                        foreach (var empRoamingProvider in empRoamingProviders.Values)
+                        {
+
+                            //empRoamingProvider
 
                         }
 
@@ -7691,8 +7709,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (stop)  remote identification
 
-                    else if (_cdr.AuthenticationStop?.RemoteIdentification != null)
+                    else if (chargeDetailRecord.AuthenticationStop?.RemoteIdentification.HasValue == true)
                     {
+
+                        var providerId = chargeDetailRecord.AuthenticationStart?.RemoteIdentification.Value.ProviderId;
 
                         // Use a lookup...
 
@@ -7700,13 +7720,13 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                cdrTargets[eMob].Add(_cdr);
-                                chargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(chargeDetailRecord);
+                                chargeDetailRecordsToProcess.Remove(chargeDetailRecord);
                                 break;
                             }
 
@@ -7718,7 +7738,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (start) public key
 
-                    else if (_cdr.AuthenticationStart?.PublicKey != null)
+                    else if (chargeDetailRecord.AuthenticationStart?.PublicKey != null)
                     {
 
                         // Use a lookup...
@@ -7727,13 +7747,13 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStart as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStart as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                cdrTargets[eMob].Add(_cdr);
-                                chargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(chargeDetailRecord);
+                                chargeDetailRecordsToProcess.Remove(chargeDetailRecord);
                                 break;
                             }
 
@@ -7745,7 +7765,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (stop)  public key
 
-                    else if (_cdr.AuthenticationStop?.PublicKey != null)
+                    else if (chargeDetailRecord.AuthenticationStop?.PublicKey != null)
                     {
 
                         // Use a lookup...
@@ -7754,13 +7774,13 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                cdrTargets[eMob].Add(_cdr);
-                                chargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(chargeDetailRecord);
+                                chargeDetailRecordsToProcess.Remove(chargeDetailRecord);
                                 break;
                             }
 
@@ -7779,8 +7799,12 @@ namespace cloud.charging.open.protocols.WWCP
                 foreach (var unknownCDR in chargeDetailRecordsToProcess.ToArray())
                 {
 
-                    resultMap.Add(SendCDRResult.UnknownSessionId(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                                 unknownCDR));
+                    resultMap.Add(
+                        SendCDRResult.UnknownSessionId(
+                            org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                            unknownCDR
+                        )
+                    );
 
                     chargeDetailRecordsToProcess.Remove(unknownCDR);
 
@@ -7811,7 +7835,7 @@ namespace cloud.charging.open.protocols.WWCP
                         {
                             resultMap.Add(SendCDRResult.Error(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                               _cdr,
-                                                              Warning.Create(I18NString.Create(Languages.en, sendCDR.Key + " returned null!"))));
+                                                              Warning.Create(I18NString.Create(sendCDR.Key + " returned null!"))));
                         }
 
                     }
@@ -7838,7 +7862,7 @@ namespace cloud.charging.open.protocols.WWCP
                     {
                         resultMap.Add(SendCDRResult.Error(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                           _cdr,
-                                                          Warning.Create(I18NString.Create(Languages.en, "Did not receive an result for this charge detail record!"))));
+                                                          Warning.Create(I18NString.Create("Did not receive an result for this charge detail record!"))));
                     }
                 }
 
@@ -8073,7 +8097,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  this,
                                  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now + AuthenticationCacheTimeout,
                                  SessionId,
-                                 I18NString.Create(Languages.en, $"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
+                                 I18NString.Create($"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
                                  TimeSpan.Zero
                              );
 
@@ -8149,7 +8173,7 @@ namespace cloud.charging.open.protocols.WWCP
                                              Id,
                                              this,
                                              SessionId,
-                                             I18NString.Create(Languages.en, $"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
+                                             I18NString.Create($"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
                                              TimeSpan.Zero
                                          );
 
@@ -8196,7 +8220,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                       Id,
                                                                       this,
                                                                       SessionId:    SessionId,
-                                                                      Description:  I18NString.Create(Languages.en, "No authorization service returned a positiv result!"),
+                                                                      Description:  I18NString.Create("No authorization service returned a positiv result!"),
                                                                       Runtime:      runtime
                                                                   )
 
@@ -8250,7 +8274,7 @@ namespace cloud.charging.open.protocols.WWCP
                              Id,
                              this,
                              SessionId:    SessionId,
-                             Description:  I18NString.Create(Languages.en, e.Message),
+                             Description:  I18NString.Create(e.Message),
                              Runtime:      org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime
                          );
 
@@ -8445,7 +8469,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  Id,
                                  this,
                                  SessionId:    SessionId,
-                                 Description:  I18NString.Create(Languages.en, $"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
+                                 Description:  I18NString.Create($"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
                                  Runtime:      TimeSpan.Zero
                              );
 
@@ -8485,7 +8509,7 @@ namespace cloud.charging.open.protocols.WWCP
                                              Id,
                                              this,
                                              SessionId,
-                                             I18NString.Create(Languages.en, $"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
+                                             I18NString.Create($"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
                                              TimeSpan.Zero
                                          );
 
@@ -8615,7 +8639,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                     Id,
                                                                     this,
                                                                     SessionId:    SessionId,
-                                                                    Description:  I18NString.Create(Languages.en, "No authorization service returned a positiv result!"),
+                                                                    Description:  I18NString.Create("No authorization service returned a positiv result!"),
                                                                     Runtime:      runtime
                                                                 )
 
@@ -8632,7 +8656,7 @@ namespace cloud.charging.open.protocols.WWCP
                              SessionId,
                              this,
                              SessionId,
-                             I18NString.Create(Languages.en, e.Message),
+                             I18NString.Create(e.Message),
                              org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime
                          );
 
@@ -8820,10 +8844,10 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (ChargingLocation.IsNull())
-                    result = RemoteStartResult.UnknownLocation();
+                    result = RemoteStartResult.UnknownLocation(System_Id.Local);
 
                 else if (SessionsStore.SessionExists(SessionId))
-                    result = RemoteStartResult.InvalidSessionId();
+                    result = RemoteStartResult.InvalidSessionId(System_Id.Local);
 
                 else if (AdminStatus.Value == RoamingNetworkAdminStatusTypes.Operational ||
                          AdminStatus.Value == RoamingNetworkAdminStatusTypes.InternalUse)
@@ -8918,7 +8942,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region ...or fail!
 
-                    result ??= RemoteStartResult.UnknownOperator();
+                    result ??= RemoteStartResult.UnknownOperator(System_Id.Local);
 
                     #endregion
 
@@ -8927,7 +8951,7 @@ namespace cloud.charging.open.protocols.WWCP
                 {
 
                     result = AdminStatus.Value switch {
-                        _ => RemoteStartResult.OutOfService(),
+                        _ => RemoteStartResult.OutOfService(System_Id.Local),
                     };
 
                 }
@@ -8935,7 +8959,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                result = RemoteStartResult.Error(e.Message);
+                result = RemoteStartResult.Error(e.Message, System_Id.Local);
             }
 
 
@@ -9092,8 +9116,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                     //ToDo: Add a --useForce Option to overwrite!
                     if (chargingSession.SessionTime.EndTime.HasValue)
-                        result = RemoteStopResult.AlreadyStopped(SessionId,
-                                                                 Runtime: org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime);
+                        result = RemoteStopResult.AlreadyStopped(
+                                     SessionId,
+                                     System_Id.Local,
+                                     Runtime: org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime
+                                 );
 
                     else
                     {
@@ -9220,16 +9247,19 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region ...or fail!
 
-                result ??= RemoteStopResult.InvalidSessionId(SessionId);
+                result ??= RemoteStopResult.InvalidSessionId(SessionId, System_Id.Local);
 
                 #endregion
 
             }
             catch (Exception e)
             {
-                result = RemoteStopResult.Error(SessionId,
-                                                e.Message,
-                                                Runtime: org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime);
+                result = RemoteStopResult.Error(
+                             SessionId,
+                             System_Id.Local,
+                             e.Message,
+                             Runtime: org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime
+                         );
             }
 
 

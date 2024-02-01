@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
             //                                 URLPathPrefix + "/cpo/index.html",
             //                                 URLPathPrefix + "/cpo/"
             //                             },
-            //                             HTTPContentType.HTML_UTF8,
+            //                             HTTPContentType.Text.HTML_UTF8,
             //                             HTTPRequest: async Request => {
 
             //                                 var _MemoryStream = new MemoryStream();
@@ -337,7 +337,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
             //                                     HTTPStatusCode  = HTTPStatusCode.OK,
             //                                     Server          = DefaultHTTPServerName,
             //                                     Date            = Timestamp.Now,
-            //                                     ContentType     = HTTPContentType.HTML_UTF8,
+            //                                     ContentType     = HTTPContentType.Text.HTML_UTF8,
             //                                     Content         = _MemoryStream.ToArray(),
             //                                     Connection      = "close"
             //                                 };
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
             AddMethodCallback(HTTPHostname.Any,
                               HTTPMethod.GET,
                               URLPathPrefix + "locations",
-                              HTTPContentType.JSON_UTF8,
+                              HTTPContentType.Application.JSON_UTF8,
                               HTTPRequestLogger:   GetLocationsRequest,
                               HTTPResponseLogger:  GetLocationsResponse,
                               HTTPDelegate:        Request => {
@@ -515,7 +515,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
             AddMethodCallback(HTTPHostname.Any,
                               HTTPMethod.POST,
                               URLPathPrefix + "remoteStart",
-                              HTTPContentType.JSON_UTF8,
+                              HTTPContentType.Application.JSON_UTF8,
                               //HTTPRequestLogger:   GetLocationsRequest,
                               //HTTPResponseLogger:  GetLocationsResponse,
                               HTTPDelegate:        async Request => {
@@ -663,7 +663,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                                     EventTracking_Id.New,
                                                                                     Timestamp.Now,
                                                                                     null,
-                                                                                    I18NString.Create(Languages.en, e.Message),
+                                                                                    I18NString.Create(e.Message),
                                                                                     e.StackTrace,
                                                                                     Array.Empty<Warning>(),
                                                                                     null,
@@ -694,7 +694,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                                   HTTPMethod.OPTIONS,
                                                                                   HTTPMethod.POST
                                                                               },
-                                                 ContentType                = HTTPContentType.JSON_UTF8,
+                                                 ContentType                = HTTPContentType.Application.JSON_UTF8,
                                                  Content                    = remoteStartResponse.ToJSON(CustomRemoteStartResponseSerializer,
                                                                                                          CustomChargeDetailRecordSerializer,
                                                                                                          CustomSendCDRResultSerializer,

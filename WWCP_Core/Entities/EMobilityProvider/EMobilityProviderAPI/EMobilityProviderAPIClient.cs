@@ -428,8 +428,8 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                                               Execute(client => client.POSTRequest(RemoteURL.Path + "remoteStart",
                                                                                    requestbuilder => {
-                                                                                       requestbuilder.Accept.Add(HTTPContentType.JSON_UTF8);
-                                                                                       requestbuilder.ContentType  = HTTPContentType.JSON_UTF8;
+                                                                                       requestbuilder.Accept.Add(HTTPContentType.Application.JSON_UTF8);
+                                                                                       requestbuilder.ContentType  = HTTPContentType.Application.JSON_UTF8;
                                                                                        requestbuilder.Content      = Request.ToJSON(CustomRemoteStartRequestSerializer).
                                                                                                                              ToString(JSONFormatting).
                                                                                                                              ToUTF8Bytes();
@@ -450,7 +450,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                     if (httpResponse.HTTPStatusCode == HTTPStatusCode.OK)
                     {
 
-                        if (httpResponse.ContentType == HTTPContentType.JSON_UTF8 &&
+                        if (httpResponse.ContentType == HTTPContentType.Application.JSON_UTF8 &&
                             httpResponse.HTTPBody is not null &&
                             httpResponse.HTTPBody.Length > 0)
                         {
@@ -483,7 +483,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                httpResponse.EventTrackingId,
                                                httpResponse.Timestamp,
                                                null,
-                                               I18NString.Create(Languages.en, e.Message),
+                                               I18NString.Create(e.Message),
                                                e.StackTrace,
                                                Array.Empty<Warning>(),
                                                null, // CustomData
@@ -503,7 +503,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                     if (httpResponse.HTTPStatusCode == HTTPStatusCode.BadRequest)
                     {
 
-                        if (httpResponse.ContentType == HTTPContentType.JSON_UTF8 &&
+                        if (httpResponse.ContentType == HTTPContentType.Application.JSON_UTF8 &&
                             httpResponse.HTTPBody.Length > 0)
                         {
 
@@ -588,7 +588,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                         // Operator/provider identification is not linked to the TLS client certificate!
 
-                        //if (HTTPResponse.ContentType == HTTPContentType.JSON_UTF8 &&
+                        //if (HTTPResponse.ContentType == HTTPContentType.Application.JSON_UTF8 &&
                         //    HTTPResponse.HTTPBody.Length > 0)
                         //{
 
@@ -681,7 +681,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                Request.EventTrackingId,
                                Timestamp.Now,
                                null, // ChargingSession
-                               I18NString.Create(Languages.en, e.Message),
+                               I18NString.Create(e.Message),
                                e.StackTrace,
                                Array.Empty<Warning>(),
                                null, // CustomData
@@ -697,7 +697,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                              Request.EventTrackingId,
                              Timestamp.Now,
                              null, // ChargingSession
-                             I18NString.Create(Languages.en, "HTTP request failed!"),
+                             I18NString.Create("HTTP request failed!"),
                              null, // AdditionalInfo
                              Array.Empty<Warning>(),
                              null, // CustomData
@@ -819,8 +819,8 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                                               Execute(client => client.POSTRequest(RemoteURL.Path + "remoteStop",
                                                                                    requestbuilder => {
-                                                                                       requestbuilder.Accept.Add(HTTPContentType.JSON_UTF8);
-                                                                                       requestbuilder.ContentType  = HTTPContentType.JSON_UTF8;
+                                                                                       requestbuilder.Accept.Add(HTTPContentType.Application.JSON_UTF8);
+                                                                                       requestbuilder.ContentType  = HTTPContentType.Application.JSON_UTF8;
                                                                                        requestbuilder.Content      = Request.ToJSON(CustomRemoteStopRequestSerializer).
                                                                                                                              ToString(JSONFormatting).
                                                                                                                              ToUTF8Bytes();
@@ -841,7 +841,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                     if (httpResponse.HTTPStatusCode == HTTPStatusCode.OK)
                     {
 
-                        if (httpResponse.ContentType == HTTPContentType.JSON_UTF8 &&
+                        if (httpResponse.ContentType == HTTPContentType.Application.JSON_UTF8 &&
                             httpResponse.HTTPBody.Length > 0)
                         {
 
@@ -877,7 +877,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                null,
                                                null,
                                                null,
-                                               I18NString.Create(Languages.en, e.Message),
+                                               I18NString.Create(e.Message),
                                                e.StackTrace,
                                                Array.Empty<Warning>(),
                                                null, // CustomData
@@ -897,7 +897,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                     if (httpResponse.HTTPStatusCode == HTTPStatusCode.BadRequest)
                     {
 
-                        if (httpResponse.ContentType == HTTPContentType.JSON_UTF8 &&
+                        if (httpResponse.ContentType == HTTPContentType.Application.JSON_UTF8 &&
                             httpResponse.HTTPBody.Length > 0)
                         {
 
@@ -983,7 +983,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                         // Operator/provider identification is not linked to the TLS client certificate!
 
-                        //if (HTTPResponse.ContentType == HTTPContentType.JSON_UTF8 &&
+                        //if (HTTPResponse.ContentType == HTTPContentType.Application.JSON_UTF8 &&
                         //    HTTPResponse.HTTPBody.Length > 0)
                         //{
 
@@ -1081,7 +1081,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                null,
                                null,
                                null,
-                               I18NString.Create(Languages.en, e.Message),
+                               I18NString.Create(e.Message),
                                e.StackTrace,
                                Array.Empty<Warning>(),
                                null, // CustomData
@@ -1101,7 +1101,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                              null,
                              null,
                              null,
-                             I18NString.Create(Languages.en, "HTTP request failed!"),
+                             I18NString.Create("HTTP request failed!"),
                              null, // AdditionalInfo
                              Array.Empty<Warning>(),
                              null, // CustomData

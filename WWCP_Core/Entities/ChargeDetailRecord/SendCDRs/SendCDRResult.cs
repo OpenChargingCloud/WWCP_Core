@@ -968,7 +968,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                        );
 
-            return CustomSendCDRResultSerializer != null
+            return CustomSendCDRResultSerializer is not null
                        ? CustomSendCDRResultSerializer(this, json)
                        : json;
 

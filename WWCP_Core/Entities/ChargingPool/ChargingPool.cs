@@ -3676,23 +3676,23 @@ namespace cloud.charging.open.protocols.WWCP
 
                     }
                     else
-                        result = RemoteStartResult.UnknownLocation();
+                        result = RemoteStartResult.UnknownLocation(System_Id.Local);
 
                 }
                 else
                 {
                     result = AdminStatus.Value switch {
-                        _ => RemoteStartResult.OutOfService(),
+                        _ => RemoteStartResult.OutOfService(System_Id.Local),
                     };
                 }
 
             }
             catch (Exception e)
             {
-                result = RemoteStartResult.Error(e.Message);
+                result = RemoteStartResult.Error(e.Message, System_Id.Local);
             }
 
-            result ??= RemoteStartResult.Error();
+            result ??= RemoteStartResult.Error(System_Id.Local);
 
 
             #region Send OnRemoteStartResponse event
@@ -3830,14 +3830,14 @@ namespace cloud.charging.open.protocols.WWCP
                     if (result == null)
                     {
                         DebugX.Log("Invalid charging session at charging pool '" + Id + "': " + SessionId);
-                        result = RemoteStopResult.InvalidSessionId(SessionId);
+                        result = RemoteStopResult.InvalidSessionId(SessionId, System_Id.Local);
                     }
 
                 }
                 else
                 {
                     result = AdminStatus.Value switch {
-                        _ => RemoteStopResult.OutOfService(SessionId),
+                        _ => RemoteStopResult.OutOfService(SessionId, System_Id.Local),
                     };
                 }
 
@@ -3846,6 +3846,7 @@ namespace cloud.charging.open.protocols.WWCP
             catch (Exception e)
             {
                 result = RemoteStopResult.Error(SessionId,
+                                                System_Id.Local,
                                                 e.Message);
             }
 

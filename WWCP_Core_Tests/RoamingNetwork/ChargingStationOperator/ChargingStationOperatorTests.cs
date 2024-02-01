@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -42,30 +43,30 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingStationOperator_Init_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
-            Assert.IsNotNull(DE_GEF);
+            ClassicAssert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(DE_GEF);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null)
             {
 
-                Assert.AreEqual ("DE*GEF",                                              DE_GEF.Id.         ToString());
-                Assert.AreEqual ("GraphDefined CSO",                                    DE_GEF.Name.       FirstText());
-                Assert.AreEqual ("powered by GraphDefined GmbH",                        DE_GEF.Description.FirstText());
+                ClassicAssert.AreEqual ("DE*GEF",                                              DE_GEF.Id.         ToString());
+                ClassicAssert.AreEqual ("GraphDefined CSO",                                    DE_GEF.Name.       FirstText());
+                ClassicAssert.AreEqual ("powered by GraphDefined GmbH",                        DE_GEF.Description.FirstText());
 
-                Assert.AreEqual (ChargingStationOperatorAdminStatusTypes.OutOfService,  DE_GEF.AdminStatus);
-                Assert.AreEqual (1,                                                     DE_GEF.AdminStatusSchedule().Count());
+                ClassicAssert.AreEqual (ChargingStationOperatorAdminStatusTypes.OutOfService,  DE_GEF.AdminStatus);
+                ClassicAssert.AreEqual (1,                                                     DE_GEF.AdminStatusSchedule().Count());
 
-                Assert.AreEqual (ChargingStationOperatorStatusTypes.Offline,            DE_GEF.Status);
-                Assert.AreEqual (1,                                                     DE_GEF.StatusSchedule().     Count());
-
-
-                Assert.AreEqual (1,                                                     roamingNetwork.ChargingStationOperators.    Count());
-                Assert.AreEqual (1,                                                     roamingNetwork.ChargingStationOperatorIds().Count());
+                ClassicAssert.AreEqual (ChargingStationOperatorStatusTypes.Offline,            DE_GEF.Status);
+                ClassicAssert.AreEqual (1,                                                     DE_GEF.StatusSchedule().     Count());
 
 
-                Assert.IsTrue   (roamingNetwork.ChargingStationOperatorExists (ChargingStationOperator_Id.Parse("DE*GEF")));
-                Assert.IsNotNull(roamingNetwork.GetChargingStationOperatorById(ChargingStationOperator_Id.Parse("DE*GEF")));
+                ClassicAssert.AreEqual (1,                                                     roamingNetwork.ChargingStationOperators.    Count());
+                ClassicAssert.AreEqual (1,                                                     roamingNetwork.ChargingStationOperatorIds().Count());
+
+
+                ClassicAssert.IsTrue   (roamingNetwork.ChargingStationOperatorExists (ChargingStationOperator_Id.Parse("DE*GEF")));
+                ClassicAssert.IsNotNull(roamingNetwork.GetChargingStationOperatorById(ChargingStationOperator_Id.Parse("DE*GEF")));
 
             }
 
@@ -82,7 +83,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingStationOperator_Init_DefaultStatus_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(roamingNetwork);
 
             if (roamingNetwork is not null)
             {
@@ -93,20 +94,20 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                 Description:  I18NString.Create(Languages.de, "powered by GraphDefined CSOs GmbH")
                                             ).Result.ChargingStationOperator;
 
-                Assert.IsNotNull(DE_XXX);
+                ClassicAssert.IsNotNull(DE_XXX);
 
                 if (DE_XXX is not null)
                 {
 
-                    Assert.AreEqual ("DE*XXX",                                             DE_XXX.Id.         ToString());
-                    Assert.AreEqual ("XXX CSO",                                            DE_XXX.Name.       FirstText());
-                    Assert.AreEqual ("powered by GraphDefined CSOs GmbH",                  DE_XXX.Description.FirstText());
+                    ClassicAssert.AreEqual ("DE*XXX",                                             DE_XXX.Id.         ToString());
+                    ClassicAssert.AreEqual ("XXX CSO",                                            DE_XXX.Name.       FirstText());
+                    ClassicAssert.AreEqual ("powered by GraphDefined CSOs GmbH",                  DE_XXX.Description.FirstText());
 
-                    Assert.AreEqual (ChargingStationOperatorAdminStatusTypes.Operational,  DE_XXX.AdminStatus);
-                    Assert.AreEqual (ChargingStationOperatorStatusTypes.Available,         DE_XXX.Status);
+                    ClassicAssert.AreEqual (ChargingStationOperatorAdminStatusTypes.Operational,  DE_XXX.AdminStatus);
+                    ClassicAssert.AreEqual (ChargingStationOperatorStatusTypes.Available,         DE_XXX.Status);
 
-                    Assert.IsTrue   (roamingNetwork.ChargingStationOperatorExists (ChargingStationOperator_Id.Parse("DE*XXX")));
-                    Assert.IsNotNull(roamingNetwork.GetChargingStationOperatorById(ChargingStationOperator_Id.Parse("DE*XXX")));
+                    ClassicAssert.IsTrue   (roamingNetwork.ChargingStationOperatorExists (ChargingStationOperator_Id.Parse("DE*XXX")));
+                    ClassicAssert.IsNotNull(roamingNetwork.GetChargingStationOperatorById(ChargingStationOperator_Id.Parse("DE*XXX")));
 
                 }
 
@@ -126,8 +127,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingStationOperator_AdminStatus_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
-            Assert.IsNotNull(DE_GEF);
+            ClassicAssert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(DE_GEF);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null)
@@ -137,27 +138,27 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Thread.Sleep(1000);
 
                 DE_GEF.AdminStatus = ChargingStationOperatorAdminStatusTypes.InternalUse;
-                Assert.AreEqual(ChargingStationOperatorAdminStatusTypes.InternalUse,  DE_GEF.AdminStatus);
-                Assert.AreEqual("internalUse, outOfService",                          DE_GEF.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(2,                                                    DE_GEF.AdminStatusSchedule().Count());
+                ClassicAssert.AreEqual(ChargingStationOperatorAdminStatusTypes.InternalUse,  DE_GEF.AdminStatus);
+                ClassicAssert.AreEqual("internalUse, outOfService",                          DE_GEF.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(2,                                                    DE_GEF.AdminStatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
                 DE_GEF.AdminStatus = ChargingStationOperatorAdminStatusTypes.Operational;
-                Assert.AreEqual(ChargingStationOperatorAdminStatusTypes.Operational,  DE_GEF.AdminStatus);
-                Assert.AreEqual("operational, internalUse, outOfService",             DE_GEF.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(3,                                                    DE_GEF.AdminStatusSchedule().Count());
+                ClassicAssert.AreEqual(ChargingStationOperatorAdminStatusTypes.Operational,  DE_GEF.AdminStatus);
+                ClassicAssert.AreEqual("operational, internalUse, outOfService",             DE_GEF.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(3,                                                    DE_GEF.AdminStatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF.                                   GenerateAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.GenerateAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.                           GenerateChargingStationOperatorAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF.                                   GenerateAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.GenerateAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.                           GenerateChargingStationOperatorAdminStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF.GenerateAdminStatusReport().ToJSON();
                 jsonStatusReport.Remove("timestamp");
 
-                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingStationOperatorAdminStatusReport\",\"count\":1,\"report\":{\"operational\":{\"count\":1,\"percentage\":100.0}}}",
+                ClassicAssert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingStationOperatorAdminStatusReport\",\"count\":1,\"report\":{\"operational\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }
@@ -175,8 +176,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingStationOperator_Status_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
-            Assert.IsNotNull(DE_GEF);
+            ClassicAssert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(DE_GEF);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null)
@@ -186,27 +187,27 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Thread.Sleep(1000);
 
                 DE_GEF.Status = ChargingStationOperatorStatusTypes.InDeployment;
-                Assert.AreEqual(ChargingStationOperatorStatusTypes.InDeployment, DE_GEF.Status);
-                Assert.AreEqual("inDeployment, offline",                         DE_GEF.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(2,                                               DE_GEF.StatusSchedule().Count());
+                ClassicAssert.AreEqual(ChargingStationOperatorStatusTypes.InDeployment, DE_GEF.Status);
+                ClassicAssert.AreEqual("inDeployment, offline",                         DE_GEF.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(2,                                               DE_GEF.StatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
                 DE_GEF.Status = ChargingStationOperatorStatusTypes.Error;
-                Assert.AreEqual(ChargingStationOperatorStatusTypes.Error,        DE_GEF.Status);
-                Assert.AreEqual("error, inDeployment, offline",                  DE_GEF.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(3,                                               DE_GEF.StatusSchedule().Count());
+                ClassicAssert.AreEqual(ChargingStationOperatorStatusTypes.Error,        DE_GEF.Status);
+                ClassicAssert.AreEqual("error, inDeployment, offline",                  DE_GEF.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(3,                                               DE_GEF.StatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF.                                   GenerateStatusReport().ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.GenerateStatusReport().ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", roamingNetwork.                           GenerateChargingStationOperatorStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF.                                   GenerateStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.GenerateStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", roamingNetwork.                           GenerateChargingStationOperatorStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF.GenerateStatusReport().ToJSON();
                 jsonStatusReport.Remove("timestamp");
 
-                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingStationOperatorStatusReport\",\"count\":1,\"report\":{\"error\":{\"count\":1,\"percentage\":100.0}}}",
+                ClassicAssert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingStationOperatorStatusReport\",\"count\":1,\"report\":{\"error\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }

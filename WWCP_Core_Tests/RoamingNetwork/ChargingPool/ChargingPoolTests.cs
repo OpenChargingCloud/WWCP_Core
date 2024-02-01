@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -44,38 +45,38 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingPool_Init_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
-            Assert.IsNotNull(DE_GEF);
-            Assert.IsNotNull(DE_GEF_P0001);
+            ClassicAssert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(DE_GEF);
+            ClassicAssert.IsNotNull(DE_GEF_P0001);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null &&
                 DE_GEF_P0001   is not null)
             {
 
-                Assert.AreEqual ("DE*GEF*P0001",                                 DE_GEF_P0001.Id.         ToString());
-                Assert.AreEqual ("GraphDefined Charging Pool #1",                DE_GEF_P0001.Name.       FirstText());
-                Assert.AreEqual ("powered by GraphDefined Charging Pools GmbH",  DE_GEF_P0001.Description.FirstText());
+                ClassicAssert.AreEqual ("DE*GEF*P0001",                                 DE_GEF_P0001.Id.         ToString());
+                ClassicAssert.AreEqual ("GraphDefined Charging Pool #1",                DE_GEF_P0001.Name.       FirstText());
+                ClassicAssert.AreEqual ("powered by GraphDefined Charging Pools GmbH",  DE_GEF_P0001.Description.FirstText());
 
-                Assert.AreEqual (ChargingPoolAdminStatusTypes.OutOfService,      DE_GEF_P0001.AdminStatus);
-                Assert.AreEqual (1,                                              DE_GEF_P0001.AdminStatusSchedule().Count());
+                ClassicAssert.AreEqual (ChargingPoolAdminStatusTypes.OutOfService,      DE_GEF_P0001.AdminStatus);
+                ClassicAssert.AreEqual (1,                                              DE_GEF_P0001.AdminStatusSchedule().Count());
 
-                Assert.AreEqual (ChargingPoolStatusTypes.Offline,                DE_GEF_P0001.Status);
-                Assert.AreEqual (1,                                              DE_GEF_P0001.StatusSchedule().     Count());
-
-
-                Assert.AreEqual (1,                                              roamingNetwork.ChargingPools.    Count());
-                Assert.AreEqual (1,                                              roamingNetwork.ChargingPoolIds().Count());
-
-                Assert.AreEqual (1,                                              DE_GEF.        ChargingPools.    Count());
-                Assert.AreEqual (1,                                              DE_GEF.        ChargingPoolIds().Count());
+                ClassicAssert.AreEqual (ChargingPoolStatusTypes.Offline,                DE_GEF_P0001.Status);
+                ClassicAssert.AreEqual (1,                                              DE_GEF_P0001.StatusSchedule().     Count());
 
 
-                Assert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P0001")));
-                Assert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P0001")));
+                ClassicAssert.AreEqual (1,                                              roamingNetwork.ChargingPools.    Count());
+                ClassicAssert.AreEqual (1,                                              roamingNetwork.ChargingPoolIds().Count());
 
-                Assert.IsTrue   (DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P0001")));
-                Assert.IsNotNull(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P0001")));
+                ClassicAssert.AreEqual (1,                                              DE_GEF.        ChargingPools.    Count());
+                ClassicAssert.AreEqual (1,                                              DE_GEF.        ChargingPoolIds().Count());
+
+
+                ClassicAssert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P0001")));
+                ClassicAssert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P0001")));
+
+                ClassicAssert.IsTrue   (DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P0001")));
+                ClassicAssert.IsNotNull(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P0001")));
 
             }
 
@@ -92,8 +93,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingPool_Init_DefaultStatus_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
-            Assert.IsNotNull(DE_GEF);
+            ClassicAssert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(DE_GEF);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null)
@@ -107,23 +108,23 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 var DE_GEF_P1234 = DE_GEF_P1234Result.ChargingPool;
 
-                Assert.IsNotNull(DE_GEF_P1234);
+                ClassicAssert.IsNotNull(DE_GEF_P1234);
 
                 if (DE_GEF_P1234 is not null)
                 {
 
-                    Assert.AreEqual ("DE*GEF*P1234",                                 DE_GEF_P1234.Id.         ToString());
-                    Assert.AreEqual ("DE*GEF Pool 1234",                             DE_GEF_P1234.Name.       FirstText());
-                    Assert.AreEqual ("powered by GraphDefined Charging Pools GmbH",  DE_GEF_P1234.Description.FirstText());
+                    ClassicAssert.AreEqual ("DE*GEF*P1234",                                 DE_GEF_P1234.Id.         ToString());
+                    ClassicAssert.AreEqual ("DE*GEF Pool 1234",                             DE_GEF_P1234.Name.       FirstText());
+                    ClassicAssert.AreEqual ("powered by GraphDefined Charging Pools GmbH",  DE_GEF_P1234.Description.FirstText());
 
-                    Assert.AreEqual (ChargingPoolAdminStatusTypes.Operational,       DE_GEF_P1234.AdminStatus);
-                    Assert.AreEqual (ChargingPoolStatusTypes.Available,              DE_GEF_P1234.Status);
+                    ClassicAssert.AreEqual (ChargingPoolAdminStatusTypes.Operational,       DE_GEF_P1234.AdminStatus);
+                    ClassicAssert.AreEqual (ChargingPoolStatusTypes.Available,              DE_GEF_P1234.Status);
 
-                    Assert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")));
-                    Assert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    ClassicAssert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    ClassicAssert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
 
-                    Assert.IsTrue   (DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P1234")));
-                    Assert.IsNotNull(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    ClassicAssert.IsTrue   (DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    ClassicAssert.IsNotNull(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
 
                 }
 
@@ -142,8 +143,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingPool_Init_AllProperties_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
-            Assert.IsNotNull(DE_GEF);
+            ClassicAssert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(DE_GEF);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null)
@@ -175,27 +176,27 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 var DE_GEF_P1234 = DE_GEF_P1234Result.ChargingPool;
 
-                Assert.IsNotNull(DE_GEF_P1234);
-                Assert.IsTrue   (success);
+                ClassicAssert.IsNotNull(DE_GEF_P1234);
+                ClassicAssert.IsTrue   (success);
 
                 if (DE_GEF_P1234 is not null)
                 {
 
-                    Assert.AreEqual ("DE*GEF*P1234",                                 DE_GEF_P1234.Id.         ToString());
-                    Assert.AreEqual ("DE*GEF Pool 1234",                             DE_GEF_P1234.Name.       FirstText());
-                    Assert.AreEqual ("powered by GraphDefined Charging Pools GmbH",  DE_GEF_P1234.Description.FirstText());
+                    ClassicAssert.AreEqual ("DE*GEF*P1234",                                 DE_GEF_P1234.Id.         ToString());
+                    ClassicAssert.AreEqual ("DE*GEF Pool 1234",                             DE_GEF_P1234.Name.       FirstText());
+                    ClassicAssert.AreEqual ("powered by GraphDefined Charging Pools GmbH",  DE_GEF_P1234.Description.FirstText());
 
-                    Assert.AreEqual (ChargingPoolAdminStatusTypes.OutOfService,      DE_GEF_P1234.AdminStatus);
-                    Assert.AreEqual (ChargingPoolStatusTypes.Offline,                DE_GEF_P1234.Status);
+                    ClassicAssert.AreEqual (ChargingPoolAdminStatusTypes.OutOfService,      DE_GEF_P1234.AdminStatus);
+                    ClassicAssert.AreEqual (ChargingPoolStatusTypes.Offline,                DE_GEF_P1234.Status);
 
-                    Assert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")));
-                    Assert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    ClassicAssert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    ClassicAssert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
 
-                    Assert.IsTrue   (DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P1234")));
-                    Assert.IsNotNull(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    ClassicAssert.IsTrue   (DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    ClassicAssert.IsNotNull(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
 
 
-                    Assert.AreEqual(1, DE_GEF_P1234.Brands.Count());
+                    ClassicAssert.AreEqual(1, DE_GEF_P1234.Brands.Count());
 
 
 
@@ -210,7 +211,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                             ));
 
 
-                    Assert.AreEqual(2, DE_GEF_P1234.Brands.Count());
+                    ClassicAssert.AreEqual(2, DE_GEF_P1234.Brands.Count());
 
 
                     #region Setup DataChange listeners
@@ -264,9 +265,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     DE_GEF_P1234.Name.       Set(Languages.it, "namelalala");
                     DE_GEF_P1234.Description.Set(Languages.it, "desclalala");
 
-                    Assert.AreEqual(2, chargingPoolDataChanges.                       Count);
-                    Assert.AreEqual(2, chargingStationOperatorChargingPoolDataChanges.Count);
-                    Assert.AreEqual(2, roamingNetworkChargingPoolDataChanges.         Count);
+                    ClassicAssert.AreEqual(2, chargingPoolDataChanges.                       Count);
+                    ClassicAssert.AreEqual(2, chargingStationOperatorChargingPoolDataChanges.Count);
+                    ClassicAssert.AreEqual(2, roamingNetworkChargingPoolDataChanges.         Count);
 
 
                     DE_GEF_P1234.MaxPower           = 123.45m;
@@ -281,9 +282,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(3), 789.12m)
                                                            });
 
-                    Assert.AreEqual(7, chargingPoolDataChanges.                       Count);
-                    Assert.AreEqual(7, chargingStationOperatorChargingPoolDataChanges.Count);
-                    Assert.AreEqual(7, roamingNetworkChargingPoolDataChanges.         Count);
+                    ClassicAssert.AreEqual(7, chargingPoolDataChanges.                       Count);
+                    ClassicAssert.AreEqual(7, chargingStationOperatorChargingPoolDataChanges.Count);
+                    ClassicAssert.AreEqual(7, roamingNetworkChargingPoolDataChanges.         Count);
 
                 }
 
@@ -303,9 +304,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingPool_AdminStatus_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
-            Assert.IsNotNull(DE_GEF);
-            Assert.IsNotNull(DE_GEF_P0001);
+            ClassicAssert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(DE_GEF);
+            ClassicAssert.IsNotNull(DE_GEF_P0001);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null &&
@@ -316,29 +317,29 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Thread.Sleep(1000);
 
                 DE_GEF_P0001.AdminStatus = ChargingPoolAdminStatusTypes.InternalUse;
-                Assert.AreEqual(ChargingPoolAdminStatusTypes.InternalUse,  DE_GEF_P0001.AdminStatus);
-                Assert.AreEqual("internalUse, outOfService",               DE_GEF_P0001.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(2,                                         DE_GEF_P0001.AdminStatusSchedule().Count());
+                ClassicAssert.AreEqual(ChargingPoolAdminStatusTypes.InternalUse,  DE_GEF_P0001.AdminStatus);
+                ClassicAssert.AreEqual("internalUse, outOfService",               DE_GEF_P0001.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(2,                                         DE_GEF_P0001.AdminStatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
                 DE_GEF_P0001.AdminStatus = ChargingPoolAdminStatusTypes.Operational;
-                Assert.AreEqual(ChargingPoolAdminStatusTypes.Operational,  DE_GEF_P0001.AdminStatus);
-                Assert.AreEqual("operational, internalUse, outOfService",  DE_GEF_P0001.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(3,                                         DE_GEF_P0001.AdminStatusSchedule().Count());
+                ClassicAssert.AreEqual(ChargingPoolAdminStatusTypes.Operational,  DE_GEF_P0001.AdminStatus);
+                ClassicAssert.AreEqual("operational, internalUse, outOfService",  DE_GEF_P0001.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(3,                                         DE_GEF_P0001.AdminStatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF_P0001.                                   GenerateAdminStatusReport().            ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.GenerateAdminStatusReport().            ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF.                                         GenerateChargingPoolAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.      GenerateChargingPoolAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.                                 GenerateChargingPoolAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF_P0001.                                   GenerateAdminStatusReport().            ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.GenerateAdminStatusReport().            ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF.                                         GenerateChargingPoolAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.      GenerateChargingPoolAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.                                 GenerateChargingPoolAdminStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF_P0001.GenerateAdminStatusReport().ToJSON();
                 jsonStatusReport.Remove("timestamp");
 
-                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingPoolAdminStatusReport\",\"count\":1,\"report\":{\"operational\":{\"count\":1,\"percentage\":100.0}}}",
+                ClassicAssert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingPoolAdminStatusReport\",\"count\":1,\"report\":{\"operational\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }
@@ -356,9 +357,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingPool_Status_Test()
         {
 
-            Assert.IsNotNull(roamingNetwork);
-            Assert.IsNotNull(DE_GEF);
-            Assert.IsNotNull(DE_GEF_P0001);
+            ClassicAssert.IsNotNull(roamingNetwork);
+            ClassicAssert.IsNotNull(DE_GEF);
+            ClassicAssert.IsNotNull(DE_GEF_P0001);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null &&
@@ -369,29 +370,29 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Thread.Sleep(1000);
 
                 DE_GEF_P0001.Status = ChargingPoolStatusTypes.InDeployment;
-                Assert.AreEqual(ChargingPoolStatusTypes.InDeployment,  DE_GEF_P0001.Status);
-                Assert.AreEqual("inDeployment, offline",               DE_GEF_P0001.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(2,                                     DE_GEF_P0001.StatusSchedule().Count());
+                ClassicAssert.AreEqual(ChargingPoolStatusTypes.InDeployment,  DE_GEF_P0001.Status);
+                ClassicAssert.AreEqual("inDeployment, offline",               DE_GEF_P0001.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(2,                                     DE_GEF_P0001.StatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
                 DE_GEF_P0001.Status = ChargingPoolStatusTypes.Error;
-                Assert.AreEqual(ChargingPoolStatusTypes.Error,         DE_GEF_P0001.Status);
-                Assert.AreEqual("error, inDeployment, offline",        DE_GEF_P0001.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(3,                                     DE_GEF_P0001.StatusSchedule().Count());
+                ClassicAssert.AreEqual(ChargingPoolStatusTypes.Error,         DE_GEF_P0001.Status);
+                ClassicAssert.AreEqual("error, inDeployment, offline",        DE_GEF_P0001.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                ClassicAssert.AreEqual(3,                                     DE_GEF_P0001.StatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF_P0001.                                   GenerateStatusReport().            ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.GenerateStatusReport().            ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF.                                         GenerateChargingPoolStatusReport().ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.      GenerateChargingPoolStatusReport().ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", roamingNetwork.                                 GenerateChargingPoolStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF_P0001.                                   GenerateStatusReport().            ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.GenerateStatusReport().            ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF.                                         GenerateChargingPoolStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.      GenerateChargingPoolStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", roamingNetwork.                                 GenerateChargingPoolStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF_P0001.GenerateStatusReport().ToJSON();
                 jsonStatusReport.Remove("timestamp");
 
-                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingPoolStatusReport\",\"count\":1,\"report\":{\"error\":{\"count\":1,\"percentage\":100.0}}}",
+                ClassicAssert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingPoolStatusReport\",\"count\":1,\"report\":{\"error\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }

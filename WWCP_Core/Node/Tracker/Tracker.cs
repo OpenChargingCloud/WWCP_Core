@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2024 GraphDefined GmbH
+ * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Tracker <https://github.com/OpenChargingCloud/WWCP_Tracker>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                          HTTPHostname.Any,
                                          HTTPMethod.GET,
                                          URLPrefix,
-                                         HTTPContentType.JSON_UTF8,
+                                         HTTPContentType.Application.JSON_UTF8,
                                          HTTPDelegate: Request => {
 
                                              var Now   = Timestamp.Now;
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                                      HTTPStatusCode  = HTTPStatusCode.OK,
                                                      Server          = HTTPServer.DefaultServerName,
                                                      Date            = DateTime.Now,
-                                                     ContentType     = HTTPContentType.JSON_UTF8,
+                                                     ContentType     = HTTPContentType.Application.JSON_UTF8,
                                                      Content         = JSONObject.Create(
                                                                            new JProperty("id",               Id.ToString()),
                                                                            new JProperty("description",      Description.ToJSON()),
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                          HTTPHostname.Any,
                                          HTTPMethod.ANNOUNCE,
                                          URLPrefix,
-                                         HTTPContentType.JSON_UTF8,
+                                         HTTPContentType.Application.JSON_UTF8,
                                          HTTPDelegate: Request => {
 
                                              //SendEVSEDoorNotClosedNotifyLog(Request);

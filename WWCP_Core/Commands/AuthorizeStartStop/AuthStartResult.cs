@@ -502,7 +502,7 @@ namespace cloud.charging.open.protocols.WWCP
                         CachedResultEndOfLifeTime,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "The authentication service was disabled by the administrator!"),
+                        Description:  Description ?? I18NString.Create("The authentication service was disabled by the administrator!"),
                         Runtime:      Runtime);
 
 
@@ -534,7 +534,7 @@ namespace cloud.charging.open.protocols.WWCP
                         CachedResultEndOfLifeTime,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "The authentication service was disabled by the administrator!"),
+                        Description:  Description ?? I18NString.Create("The authentication service was disabled by the administrator!"),
                         Runtime:      Runtime);
 
         #endregion
@@ -568,7 +568,7 @@ namespace cloud.charging.open.protocols.WWCP
                         CachedResultEndOfLifeTime,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Unknown location!"),
+                        Description:  Description ?? I18NString.Create("Unknown location!"),
                         Runtime:      Runtime);
 
 
@@ -600,7 +600,7 @@ namespace cloud.charging.open.protocols.WWCP
                         CachedResultEndOfLifeTime,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Unknown location!"),
+                        Description:  Description ?? I18NString.Create("Unknown location!"),
                         Runtime:      Runtime);
 
         #endregion
@@ -634,7 +634,7 @@ namespace cloud.charging.open.protocols.WWCP
                         CachedResultEndOfLifeTime,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Invalid token!"),
+                        Description:  Description ?? I18NString.Create("Invalid token!"),
                         Runtime:      Runtime);
 
 
@@ -666,7 +666,7 @@ namespace cloud.charging.open.protocols.WWCP
                         CachedResultEndOfLifeTime,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Invalid token!"),
+                        Description:  Description ?? I18NString.Create("Invalid token!"),
                         Runtime:      Runtime);
 
         #endregion
@@ -700,7 +700,7 @@ namespace cloud.charging.open.protocols.WWCP
                         CachedResultEndOfLifeTime,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Invalid session identification!"),
+                        Description:  Description ?? I18NString.Create("Invalid session identification!"),
                         Runtime:      Runtime);
 
 
@@ -732,7 +732,7 @@ namespace cloud.charging.open.protocols.WWCP
                         CachedResultEndOfLifeTime,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Invalid session identification!"),
+                        Description:  Description ?? I18NString.Create("Invalid session identification!"),
                         Runtime:      Runtime);
 
         #endregion
@@ -766,7 +766,7 @@ namespace cloud.charging.open.protocols.WWCP
                         CachedResultEndOfLifeTime,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Reserved!"),
+                        Description:  Description ?? I18NString.Create("Reserved!"),
                         Runtime:      Runtime);
 
 
@@ -798,7 +798,7 @@ namespace cloud.charging.open.protocols.WWCP
                         CachedResultEndOfLifeTime,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Reserved!"),
+                        Description:  Description ?? I18NString.Create("Reserved!"),
                         Runtime:      Runtime);
 
         #endregion
@@ -832,7 +832,7 @@ namespace cloud.charging.open.protocols.WWCP
                         CachedResultEndOfLifeTime,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Out of service!"),
+                        Description:  Description ?? I18NString.Create("Out of service!"),
                         Runtime:      Runtime);
 
 
@@ -864,7 +864,7 @@ namespace cloud.charging.open.protocols.WWCP
                         CachedResultEndOfLifeTime,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Out of service!"),
+                        Description:  Description ?? I18NString.Create("Out of service!"),
                         Runtime:      Runtime);
 
         #endregion
@@ -937,7 +937,7 @@ namespace cloud.charging.open.protocols.WWCP
                         ListOfAuthStopPINs,
 
                         ProviderId,
-                        Description ?? I18NString.Create(Languages.en, "Success!"),
+                        Description ?? I18NString.Create("Success!"),
                         AdditionalInfo,
                         NumberOfRetries,
                         Runtime);
@@ -1010,7 +1010,7 @@ namespace cloud.charging.open.protocols.WWCP
                         ListOfAuthStopPINs,
 
                         ProviderId,
-                        Description ?? I18NString.Create(Languages.en, "Success!"),
+                        Description ?? I18NString.Create("Success!"),
                         AdditionalInfo,
                         NumberOfRetries,
                         Runtime);
@@ -1053,7 +1053,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         SessionId,
                         ProviderId:       ProviderId,
-                        Description:      Description ?? I18NString.Create(Languages.en, "Not authorized!"),
+                        Description:      Description ?? I18NString.Create("Not authorized!"),
                         AdditionalInfo:   AdditionalInfo,
                         NumberOfRetries:  NumberOfRetries,
                         Runtime:          Runtime);
@@ -1094,7 +1094,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         SessionId,
                         ProviderId:       ProviderId,
-                        Description:      Description ?? I18NString.Create(Languages.en, "Not authorized!"),
+                        Description:      Description ?? I18NString.Create("Not authorized!"),
                         AdditionalInfo:   AdditionalInfo,
                         NumberOfRetries:  NumberOfRetries,
                         Runtime:          Runtime);
@@ -1137,7 +1137,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         SessionId,
                         ProviderId:       ProviderId,
-                        Description:      Description ?? I18NString.Create(Languages.en, "Blocked!"),
+                        Description:      Description ?? I18NString.Create("Blocked!"),
                         AdditionalInfo:   AdditionalInfo,
                         NumberOfRetries:  NumberOfRetries,
                         Runtime:          Runtime);
@@ -1178,7 +1178,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         SessionId,
                         ProviderId:       ProviderId,
-                        Description:      Description ?? I18NString.Create(Languages.en, "Blocked!"),
+                        Description:      Description ?? I18NString.Create("Blocked!"),
                         AdditionalInfo:   AdditionalInfo,
                         NumberOfRetries:  NumberOfRetries,
                         Runtime:          Runtime);
@@ -1221,7 +1221,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         SessionId,
                         ProviderId:       ProviderId,
-                        Description:      Description ?? I18NString.Create(Languages.en, "Expired!"),
+                        Description:      Description ?? I18NString.Create("Expired!"),
                         AdditionalInfo:   AdditionalInfo,
                         NumberOfRetries:  NumberOfRetries,
                         Runtime:          Runtime);
@@ -1262,7 +1262,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         SessionId,
                         ProviderId:       ProviderId,
-                        Description:      Description ?? I18NString.Create(Languages.en, "Expired!"),
+                        Description:      Description ?? I18NString.Create("Expired!"),
                         AdditionalInfo:   AdditionalInfo,
                         NumberOfRetries:  NumberOfRetries,
                         Runtime:          Runtime);
@@ -1305,7 +1305,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         SessionId,
                         ProviderId:       ProviderId,
-                        Description:      Description ?? I18NString.Create(Languages.en, "No credit!"),
+                        Description:      Description ?? I18NString.Create("No credit!"),
                         AdditionalInfo:   AdditionalInfo,
                         NumberOfRetries:  NumberOfRetries,
                         Runtime:          Runtime);
@@ -1346,7 +1346,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         SessionId,
                         ProviderId:       ProviderId,
-                        Description:      Description ?? I18NString.Create(Languages.en, "No credit!"),
+                        Description:      Description ?? I18NString.Create("No credit!"),
                         AdditionalInfo:   AdditionalInfo,
                         NumberOfRetries:  NumberOfRetries,
                         Runtime:          Runtime);
@@ -1380,7 +1380,7 @@ namespace cloud.charging.open.protocols.WWCP
                         null,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Communication timeout!"),
+                        Description:  Description ?? I18NString.Create("Communication timeout!"),
                         Runtime:      Runtime);
 
 
@@ -1410,7 +1410,7 @@ namespace cloud.charging.open.protocols.WWCP
                         null,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Communication timeout!"),
+                        Description:  Description ?? I18NString.Create("Communication timeout!"),
                         Runtime:      Runtime);
 
         #endregion
@@ -1442,7 +1442,7 @@ namespace cloud.charging.open.protocols.WWCP
                         null,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Start charging timeout!"),
+                        Description:  Description ?? I18NString.Create("Start charging timeout!"),
                         Runtime:      Runtime);
 
 
@@ -1472,7 +1472,7 @@ namespace cloud.charging.open.protocols.WWCP
                         null,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Start charging timeout!"),
+                        Description:  Description ?? I18NString.Create("Start charging timeout!"),
                         Runtime:      Runtime);
 
         #endregion
@@ -1504,7 +1504,7 @@ namespace cloud.charging.open.protocols.WWCP
                         null,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Rate limit reached!"),
+                        Description:  Description ?? I18NString.Create("Rate limit reached!"),
                         Runtime:      Runtime);
 
 
@@ -1534,7 +1534,7 @@ namespace cloud.charging.open.protocols.WWCP
                         null,
 
                         SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "RateLimitReached!"),
+                        Description:  Description ?? I18NString.Create("RateLimitReached!"),
                         Runtime:      Runtime);
 
         #endregion
@@ -1565,7 +1565,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthStartResultTypes.Error,
 
                         SessionId:    SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Error!"),
+                        Description:  Description ?? I18NString.Create("Error!"),
                         Runtime:      Runtime);
 
 
@@ -1594,7 +1594,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthStartResultTypes.Error,
 
                         SessionId:    SessionId,
-                        Description:  Description ?? I18NString.Create(Languages.en, "Error!"),
+                        Description:  Description ?? I18NString.Create("Error!"),
                         Runtime:      Runtime);
 
         #endregion

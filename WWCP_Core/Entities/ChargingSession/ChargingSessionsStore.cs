@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 );
 
-            return CustomSessionStopRequestSerializer != null
+            return CustomSessionStopRequestSerializer is not null
                        ? CustomSessionStopRequestSerializer(this, JSON)
                        : JSON;
 
