@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2023 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -41,6 +41,11 @@ namespace cloud.charging.open.protocols.WWCP
         public RemoteStartResultTypes  Result            { get; }
 
         /// <summary>
+        /// The sender of the result.
+        /// </summary>
+        public System_Id               Sender            { get; }
+
+        /// <summary>
         /// The charging session for the remote start operation.
         /// </summary>
         public ChargingSession?        Session           { get; }
@@ -69,11 +74,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new remote start result.
         /// </summary>
         /// <param name="Result">The result of the remote start operation.</param>
+        /// <param name="Sender">The sender of the result.</param>
         /// <param name="Description">A optional description of the remote start result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Session">The charging session.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         private RemoteStartResult(RemoteStartResultTypes  Result,
+                                  System_Id               Sender,
                                   I18NString?             Description      = null,
                                   String?                 AdditionalInfo   = null,
                                   ChargingSession?        Session          = null,
@@ -81,6 +88,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             this.Result          = Result;
+            this.Sender          = Sender;
             this.Session         = Session;
             this.Description     = Description ?? I18NString.Empty;
             this.AdditionalInfo  = AdditionalInfo;
@@ -91,144 +99,181 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Unspecified
+        #region (static) Unspecified        (Sender)
 
         /// <summary>
         /// The result is unknown and/or should be ignored.
         /// </summary>
-        public static RemoteStartResult Unspecified
+        public static RemoteStartResult Unspecified(System_Id Sender)
 
-            => new RemoteStartResult(RemoteStartResultTypes.Unspecified);
+            => new (
+                   RemoteStartResultTypes.Unspecified,
+                   Sender
+               );
 
         #endregion
 
-        #region (static) UnknownOperator    (Runtime = null)
+        #region (static) UnknownOperator    (Sender, Runtime = null)
 
         /// <summary>
         /// The charging station operator is unknown.
         /// </summary>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult UnknownOperator(TimeSpan? Runtime = null)
+        public static RemoteStartResult UnknownOperator(System_Id  Sender,
+                                                        TimeSpan?  Runtime   = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.UnknownOperator,
-                                     I18NString.Create(Languages.en, "The EVSE or charging station operator is unknown!"), 
-                                     Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.UnknownOperator,
+                   Sender,
+                   I18NString.Create("The EVSE or charging station operator is unknown!"), 
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) UnknownLocation    (Runtime = null)
+        #region (static) UnknownLocation    (Sender, Runtime = null)
 
         /// <summary>
         /// The charging location is unknown.
         /// </summary>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult UnknownLocation(TimeSpan? Runtime = null)
+        public static RemoteStartResult UnknownLocation(System_Id  Sender,
+                                                        TimeSpan?  Runtime   = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.UnknownLocation,
-                                     I18NString.Create(Languages.en, "The charging location is unknown!"), 
-                                     Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.UnknownLocation,
+                   Sender,
+                   I18NString.Create("The charging location is unknown!"), 
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) InvalidSessionId   (Runtime = null)
+        #region (static) InvalidSessionId   (Sender, Runtime = null)
 
         /// <summary>
         /// The given charging session identification is unknown or invalid.
         /// </summary>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult InvalidSessionId(TimeSpan? Runtime = null)
+        public static RemoteStartResult InvalidSessionId(System_Id  Sender,
+                                                         TimeSpan?  Runtime   = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.InvalidSessionId,
-                                     I18NString.Create(Languages.en, "The session identification is unknown or invalid!"), 
+                                     Sender,
+                                     I18NString.Create("The session identification is unknown or invalid!"), 
                                      Runtime: Runtime);
 
         #endregion
 
-        #region (static) InvalidCredentials (Runtime = null)
+        #region (static) InvalidCredentials (Sender, Runtime = null)
 
         /// <summary>
         /// Unauthorized remote start or invalid credentials.
         /// </summary>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult InvalidCredentials(TimeSpan? Runtime = null)
+        public static RemoteStartResult InvalidCredentials(System_Id  Sender,
+                                                           TimeSpan?  Runtime   = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.InvalidCredentials,
-                                     I18NString.Create(Languages.en, "Unauthorized remote start or invalid credentials!"),
-                                     Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.InvalidCredentials,
+                   Sender,
+                   I18NString.Create("Unauthorized remote start or invalid credentials!"),
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) NoEVConnectedToEVSE(Runtime = null)
+        #region (static) NoEVConnectedToEVSE(Sender, Runtime = null)
 
         /// <summary>
         /// No electric vehicle connected to EVSE.
         /// </summary>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult NoEVConnectedToEVSE(TimeSpan? Runtime = null)
+        public static RemoteStartResult NoEVConnectedToEVSE(System_Id  Sender,
+                                                            TimeSpan?  Runtime   = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.NoEVConnectedToEVSE,
-                                     I18NString.Create(Languages.en, "No electric vehicle connected to EVSE!"),
-                                     Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.NoEVConnectedToEVSE,
+                   Sender,
+                   I18NString.Create("No electric vehicle connected to EVSE!"),
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) AlreadyInUse       (Runtime = null)
+        #region (static) AlreadyInUse       (Sender, Runtime = null)
 
         /// <summary>
         /// The EVSE is already in use.
         /// </summary>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult AlreadyInUse(TimeSpan? Runtime = null)
+        public static RemoteStartResult AlreadyInUse(System_Id  Sender,
+                                                     TimeSpan?  Runtime   = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.AlreadyInUse,
-                                     I18NString.Create(Languages.en, "The EVSE is already in use!"),
-                                     Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.AlreadyInUse,
+                   Sender,
+                   I18NString.Create("The EVSE is already in use!"),
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) InternalUse        (Runtime = null)
+        #region (static) InternalUse        (Sender, Runtime = null)
 
         /// <summary>
         /// The EVSE is reserved for internal use.
         /// </summary>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult InternalUse(TimeSpan? Runtime = null)
+        public static RemoteStartResult InternalUse(System_Id  Sender,
+                                                    TimeSpan?  Runtime   = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.InternalUse,
-                                     I18NString.Create(Languages.en, "Reserved for internal use!"), 
-                                     Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.InternalUse,
+                   Sender,
+                   I18NString.Create("Reserved for internal use!"), 
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) OutOfService       (Runtime = null)
+        #region (static) OutOfService       (Sender, Runtime = null)
 
         /// <summary>
         /// The EVSE is out-of-service.
         /// </summary>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult OutOfService(TimeSpan? Runtime = null)
+        public static RemoteStartResult OutOfService(System_Id  Sender,
+                                                     TimeSpan?  Runtime   = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.OutOfService,
-                                     I18NString.Create(Languages.en, "The EVSE or charging station is out of service!"),
-                                     Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.OutOfService,
+                   Sender,
+                   I18NString.Create("The EVSE or charging station is out of service!"),
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) Offline            (Runtime = null)
+        #region (static) Offline            (Sender, Runtime = null)
 
         /// <summary>
         /// The EVSE is offline.
         /// </summary>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult Offline(TimeSpan? Runtime = null)
+        public static RemoteStartResult Offline(System_Id  Sender,
+                                                TimeSpan?  Runtime   = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.Offline,
-                                     I18NString.Create(Languages.en, "The EVSE or charging station is offline!"),
-                                     Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.Offline,
+                   Sender,
+                   I18NString.Create("The EVSE or charging station is offline!"),
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) Reserved                         (         Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) Reserved                         (Sender,          Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The EVSE or charging station is reserved.
@@ -236,18 +281,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">A optional description of the remote start result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult Reserved(I18NString  Description      = null,
-                                                 String      AdditionalInfo   = null,
-                                                 TimeSpan?   Runtime          = null)
+        public static RemoteStartResult Reserved(System_Id    Sender,
+                                                 I18NString?  Description      = null,
+                                                 String?      AdditionalInfo   = null,
+                                                 TimeSpan?    Runtime          = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.Reserved,
-                                     Description ?? I18NString.Create(Languages.en, "The EVSE or charging station is reserved!"),
-                                     AdditionalInfo,
-                                     Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.Reserved,
+                   Sender,
+                   Description ?? I18NString.Create("The EVSE or charging station is reserved!"),
+                   AdditionalInfo,
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) Success                          (Session,                                            Runtime = null)
+        #region (static) Success                          (Session, Sender,                                            Runtime = null)
 
         /// <summary>
         /// The remote start was successful and a charging session
@@ -256,15 +305,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Session">The charging session.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult Success(ChargingSession  Session,
+                                                System_Id        Sender,
                                                 TimeSpan?        Runtime  = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.Success,
-                                     Session: Session,
-                                     Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.Success,
+                   Sender,
+                   Session: Session,
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) AsyncOperation                   (Session, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) AsyncOperation                   (Session, Sender, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote start was successful.
@@ -274,19 +327,23 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Session">The charging session.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult AsyncOperation(ChargingSession  Session,
+                                                       System_Id        Sender,
                                                        I18NString?      Description      = null,
                                                        String?          AdditionalInfo   = null,
                                                        TimeSpan?        Runtime          = null)
 
-            => new (RemoteStartResultTypes.AsyncOperation,
-                    Description ?? I18NString.Create(Languages.en, "An async remote start was sent successfully!"),
-                    AdditionalInfo,
-                    Session,
-                    Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.AsyncOperation,
+                   Sender,
+                   Description ?? I18NString.Create("An async remote start was sent successfully!"),
+                   AdditionalInfo,
+                   Session,
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) SuccessPlugInCableToStartCharging(Session, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) SuccessPlugInCableToStartCharging(Session, Sender, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote start was successful. Please plug in the cable to start charging!
@@ -296,35 +353,43 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Session">The charging session.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult SuccessPlugInCableToStartCharging(ChargingSession  Session,
+                                                                          System_Id        Sender,
                                                                           I18NString?      Description      = null,
                                                                           String?          AdditionalInfo   = null,
                                                                           TimeSpan?        Runtime          = null)
 
-            => new (RemoteStartResultTypes.SuccessPlugInCableToStartCharging,
-                    Description ?? I18NString.Create(Languages.en, "The remote start was successful. Please plug in the cable to start charging!"),
-                    AdditionalInfo,
-                    Session,
-                    Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.SuccessPlugInCableToStartCharging,
+                   Sender,
+                   Description ?? I18NString.Create("The remote start was successful. Please plug in the cable to start charging!"),
+                   AdditionalInfo,
+                   Session,
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) Timeout                          (         Description = null,                        Runtime = null)
+        #region (static) Timeout                          (Sender,         Description = null,                        Runtime = null)
 
         /// <summary>
         /// The remote start request ran into a timeout.
         /// </summary>
         /// <param name="Runtime">The runtime of the request.</param>
         /// <param name="Description">An optional error message.</param>
-        public static RemoteStartResult Timeout(I18NString?  Description   = null,
+        public static RemoteStartResult Timeout(System_Id    Sender,
+                                                I18NString?  Description   = null,
                                                 TimeSpan?    Runtime       = null)
 
-            => new (RemoteStartResultTypes.Timeout,
-                    Description ?? I18NString.Create(Languages.en, "A timeout occured!"),
-                    Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.Timeout,
+                   Sender,
+                   Description ?? I18NString.Create("A timeout occured!"),
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) CommunicationError               (         Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) CommunicationError               (Sender,         Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// A communication error occured.
@@ -332,18 +397,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">A optional description of the remote start result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult CommunicationError(I18NString?  Description      = null,
+        public static RemoteStartResult CommunicationError(System_Id    Sender,
+                                                           I18NString?  Description      = null,
                                                            String?      AdditionalInfo   = null,
                                                            TimeSpan?    Runtime          = null)
 
-            => new (RemoteStartResultTypes.CommunicationError,
-                    Description ?? I18NString.Create(Languages.en, "A communication error occured!"),
-                    AdditionalInfo,
-                    Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.CommunicationError,
+                   Sender,
+                   Description ?? I18NString.Create("A communication error occured!"),
+                   AdditionalInfo,
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) Error                            (         Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) Error                            (Sender,         Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote start request led to an error.
@@ -351,14 +420,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">A optional description of the remote start result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult Error(I18NString?  Description      = null,
+        public static RemoteStartResult Error(System_Id    Sender,
+                                              I18NString?  Description      = null,
                                               String?      AdditionalInfo   = null,
                                               TimeSpan?    Runtime          = null)
 
-            => new (RemoteStartResultTypes.Error,
-                    Description ?? I18NString.Create(Languages.en, "An error occured!"),
-                    AdditionalInfo,
-                    Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.Error,
+                   Sender,
+                   Description ?? I18NString.Create("An error occured!"),
+                   AdditionalInfo,
+                   Runtime: Runtime
+               );
 
 
         /// <summary>
@@ -368,19 +441,23 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult Error(String     Description,
+                                              System_Id  Sender,
                                               String?    AdditionalInfo   = null,
                                               TimeSpan?  Runtime          = null)
 
-            => new (RemoteStartResultTypes.Error,
-                    Description?.Trim().IsNotNullOrEmpty() == false
-                        ? I18NString.Create(Languages.en, Description)
-                        : I18NString.Create(Languages.en, "An error occured!"),
-                    AdditionalInfo,
-                    Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.Error,
+                   Sender,
+                   Description?.Trim().IsNotNullOrEmpty() == false
+                       ? I18NString.Create(Languages.en, Description)
+                       : I18NString.Create("An error occured!"),
+                   AdditionalInfo,
+                   Runtime: Runtime
+               );
 
         #endregion
 
-        #region (static) NoOperation                      (         Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) NoOperation                      (Sender,         Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote start request led to an error.
@@ -388,14 +465,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">A optional description of the remote start result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult NoOperation(I18NString?  Description      = null,
+        public static RemoteStartResult NoOperation(System_Id    Sender,
+                                                    I18NString?  Description      = null,
                                                     String?      AdditionalInfo   = null,
                                                     TimeSpan?    Runtime          = null)
 
-            => new (RemoteStartResultTypes.Error,
-                    Description ?? I18NString.Create(Languages.en, "An error occured!"),
-                    AdditionalInfo,
-                    Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.Error,
+                   Sender,
+                   Description ?? I18NString.Create("An error occured!"),
+                   AdditionalInfo,
+                   Runtime: Runtime
+               );
 
 
         /// <summary>
@@ -405,15 +486,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult NoOperation(String     Description,
+                                                    System_Id  Sender,
                                                     String?    AdditionalInfo   = null,
                                                     TimeSpan?  Runtime          = null)
 
-            => new (RemoteStartResultTypes.Error,
-                    Description?.Trim().IsNotNullOrEmpty() == false
-                        ? I18NString.Create(Languages.en, Description)
-                        : I18NString.Create(Languages.en, "An error occured!"),
-                    AdditionalInfo,
-                    Runtime: Runtime);
+            => new (
+                   RemoteStartResultTypes.Error,
+                   Sender,
+                   Description?.Trim().IsNotNullOrEmpty() == false
+                       ? I18NString.Create(Languages.en, Description)
+                       : I18NString.Create("An error occured!"),
+                   AdditionalInfo,
+                   Runtime: Runtime
+               );
 
         #endregion
 
