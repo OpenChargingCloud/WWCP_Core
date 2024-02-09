@@ -453,6 +453,28 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region (static) Exception         (SessionId, Sender, Exception,                                 Runtime = null)
+
+        /// <summary>
+        /// The remote stop request led to an exception.
+        /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
+        /// <param name="Exception">An exception.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStopResult Exception(ChargingSession_Id  SessionId,
+                                                 System_Id           Sender,
+                                                 Exception           Exception,
+                                                 TimeSpan?           Runtime   = null)
+
+            => new (SessionId,
+                    RemoteStopResultTypes.Error,
+                    Sender,
+                    I18NString.Create(Exception.Message),
+                    Exception.StackTrace,
+                    Runtime: Runtime);
+
+        #endregion
+
         #region (static) NoOperation       (SessionId, Sender, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
@@ -521,16 +543,18 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteStopResult Parse(JObject JSON)
         {
 
-            return new RemoteStopResult(ChargingSession_Id.Parse(JSON["sessionId"]?.Value<String>()),
-                                        (RemoteStopResultTypes) Enum.Parse(typeof(RemoteStopResultTypes), JSON["result"]?.Value<String>(), true),
-                                        System_Id.Parse(JSON["sender"]?.Value<String>() ?? "-"),
-                                        JSON["description"] is JObject descriptionJSON ? I18NString.Parse(descriptionJSON) : null,
-                                        JSON["additionalInfo"]?.Value<String>(),
-                                        null,
-                                        JSON["reservationId"] != null ? ChargingReservation_Id.Parse(JSON["reservationId"]?.Value<String>()) : new ChargingReservation_Id?(),
-                                        null,
-                                        null, //JSON["chargeDetailRecord"] != null ? ChargeDetailRecord.Parse(JSON["chargeDetailRecord"]) : null,
-                                        JSON["runtime"] != null ? TimeSpan.FromMilliseconds(JSON["runtime"].Value<Double>()) : new TimeSpan?());
+            return new RemoteStopResult(
+                       ChargingSession_Id.Parse(JSON["sessionId"]?.Value<String>()),
+                       (RemoteStopResultTypes) Enum.Parse(typeof(RemoteStopResultTypes), JSON["result"]?.Value<String>(), true),
+                       System_Id.Parse(JSON["sender"]?.Value<String>() ?? "-"),
+                       JSON["description"] is JObject descriptionJSON ? I18NString.Parse(descriptionJSON) : null,
+                       JSON["additionalInfo"]?.Value<String>(),
+                       null,
+                       JSON["reservationId"] != null ? ChargingReservation_Id.Parse(JSON["reservationId"]?.Value<String>()) : new ChargingReservation_Id?(),
+                       null,
+                       null, //JSON["chargeDetailRecord"] != null ? ChargeDetailRecord.Parse(JSON["chargeDetailRecord"]) : null,
+                       JSON["runtime"] != null ? TimeSpan.FromMilliseconds(JSON["runtime"].Value<Double>()) : new TimeSpan?()
+                   );
 
         }
 
