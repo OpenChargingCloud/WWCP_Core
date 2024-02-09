@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.WWCP
             => ChargingConnectors is not null && ChargingConnectors.Any()
                    ? new JArray(ChargingConnectors.SafeSelect(chargingConnector => chargingConnector.ToJSON(Embedded,
                                                                                                             CustomChargingConnectorSerializer)))
-                   : new JArray();
+                   : [];
 
         #endregion
 
@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The JSON-LD context of the object.
         /// </summary>
-        public const String  JSONLDContext  = "https://open.charging.cloud/contexts/wwcp+json/ChargingConnector";
+        public const String  JSONLDContext  = "https://open.charging.cloud/contexts/wwcp+json/chargingConnector";
 
         #endregion
 
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The parent EVSE of this charging connector.
         /// </summary>
         [InternalUseOnly]
-        public IEVSE?                EVSE       { get; set; }
+        public IEVSE?                EVSE             { get; set; }
 
         /// <summary>
         /// The optional charging connector identification.
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Whether the charging connector is DC or AC.
         /// </summary>
         [Mandatory]
-        public Boolean IsDC
+        public Boolean               IsDC
             => Plug.IsDC();
 
         #endregion
@@ -132,6 +132,18 @@ namespace cloud.charging.open.protocols.WWCP
             this.CableAttached  = CableAttached;
             this.CableLength    = CableLength;
 
+            unchecked
+            {
+
+                hashCode = this.Id.            GetHashCode()       * 11 ^
+                           this.Plug.          GetHashCode()       *  7 ^
+                          (this.Lockable?.     GetHashCode() ?? 0) *  5 ^
+                          (this.CableAttached?.GetHashCode() ?? 0) *  3 ^
+                          (this.CableLength?.  GetHashCode() ?? 0);
+                           base.               GetHashCode();
+
+            }
+
         }
 
         /// <summary>
@@ -150,12 +162,24 @@ namespace cloud.charging.open.protocols.WWCP
                                  Meter?                CableLength     = null)
         {
 
-            this.EVSE     = ParentEVSE;
+            this.EVSE           = ParentEVSE;
             this.Id             = Id;
             this.Plug           = Plug;
             this.Lockable       = Lockable;
             this.CableAttached  = CableAttached;
             this.CableLength    = CableLength;
+
+            unchecked
+            {
+
+                hashCode = this.Id.            GetHashCode()       * 11 ^
+                           this.Plug.          GetHashCode()       *  7 ^
+                          (this.Lockable?.     GetHashCode() ?? 0) *  5 ^
+                          (this.CableAttached?.GetHashCode() ?? 0) *  3 ^
+                          (this.CableLength?.  GetHashCode() ?? 0);
+                           base.               GetHashCode();
+
+            }
 
         }
 
@@ -178,6 +202,18 @@ namespace cloud.charging.open.protocols.WWCP
             this.CableAttached  = CableAttached;
             this.CableLength    = CableLength;
 
+            unchecked
+            {
+
+                hashCode = this.Id.            GetHashCode()       * 11 ^
+                           this.Plug.          GetHashCode()       *  7 ^
+                          (this.Lockable?.     GetHashCode() ?? 0) *  5 ^
+                          (this.CableAttached?.GetHashCode() ?? 0) *  3 ^
+                          (this.CableLength?.  GetHashCode() ?? 0);
+                           base.               GetHashCode();
+
+            }
+
         }
 
         /// <summary>
@@ -194,12 +230,24 @@ namespace cloud.charging.open.protocols.WWCP
                                  Meter?             CableLength     = null)
         {
 
-            this.EVSE     = ParentEVSE;
+            this.EVSE           = ParentEVSE;
             this.Id             = ChargingConnector_Id.Parse(1);
             this.Plug           = Plug;
             this.Lockable       = Lockable;
             this.CableAttached  = CableAttached;
             this.CableLength    = CableLength;
+
+            unchecked
+            {
+
+                hashCode = this.Id.            GetHashCode()       * 11 ^
+                           this.Plug.          GetHashCode()       *  7 ^
+                          (this.Lockable?.     GetHashCode() ?? 0) *  5 ^
+                          (this.CableAttached?.GetHashCode() ?? 0) *  3 ^
+                          (this.CableLength?.  GetHashCode() ?? 0);
+                           base.               GetHashCode();
+
+            }
 
         }
 
@@ -260,16 +308,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingConnector1">A charging connector.</param>
         /// <param name="ChargingConnector2">Another charging connector.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator ==(ChargingConnector ChargingConnector1,
-                                          ChargingConnector ChargingConnector2)
+        public static Boolean operator == (ChargingConnector ChargingConnector1,
+                                           ChargingConnector ChargingConnector2)
         {
 
-            // If both are null, or both are same instance, return true.
             if (ReferenceEquals(ChargingConnector1, ChargingConnector2))
                 return true;
 
-            // If one is null, but not both, return false.
-            if (((Object)ChargingConnector1 == null) || ((Object)ChargingConnector2 == null))
+            if (ChargingConnector1 is null || ChargingConnector2 is null)
                 return false;
 
             return ChargingConnector1.Equals(ChargingConnector2);
@@ -338,22 +384,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Id.            GetHashCode()       * 11 ^
-                       Plug.          GetHashCode()       *  7 ^
-                      (Lockable?.     GetHashCode() ?? 0) *  5 ^
-                      (CableAttached?.GetHashCode() ?? 0) *  3 ^
-                      (CableLength?.  GetHashCode() ?? 0);
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -365,11 +402,10 @@ namespace cloud.charging.open.protocols.WWCP
         public override String ToString()
 
             => String.Concat(
-                   Id, ": ",
-                   Plug,
-                   Lockable.     HasValue ? ", lockable " : "",
-                   CableAttached.HasValue ? ", with cable " : "",
-                   CableLength.  HasValue ? ", " + CableLength + "cm" : ""
+                   $"{Id}: {Plug}",
+                   Lockable.     HasValue ? ", lockable "         : "",
+                   CableAttached.HasValue ? ", with cable "       : "",
+                   CableLength.  HasValue ? $", {CableLength} cm" : ""
                );
 
         #endregion
