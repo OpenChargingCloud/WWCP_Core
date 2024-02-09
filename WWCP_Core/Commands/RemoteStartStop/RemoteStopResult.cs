@@ -40,6 +40,11 @@ namespace cloud.charging.open.protocols.WWCP
         public RemoteStopResultTypes    Result                   { get; }
 
         /// <summary>
+        /// The sender of the result.
+        /// </summary>
+        public System_Id                Sender                   { get; }
+
+        /// <summary>
         /// The charging session identification, e.g. in case of an unknown/invalid remote stop request.
         /// </summary>
         public ChargingSession_Id       SessionId                { get; }
@@ -47,7 +52,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The charging session identification for an invalid remote stop operation.
         /// </summary>
-        public ChargingSession?         ChargingSession        { get; }
+        public ChargingSession?         ChargingSession          { get; }
 
         /// <summary>
         /// A optional description of the authorize stop result.
@@ -88,6 +93,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="Result">The result of the remote stop request.</param>
+        /// <param name="Sender">The sender of the result.</param>
         /// <param name="ReservationId">The optional charging reservation identification of the charging session.</param>
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
         /// <param name="Description">A optional description of the remote stop result.</param>
@@ -96,6 +102,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         private RemoteStopResult(ChargingSession_Id       SessionId,
                                  RemoteStopResultTypes    Result,
+                                 System_Id                Sender,
                                  I18NString?              Description           = null,
                                  String?                  AdditionalInfo        = null,
                                  ChargingSession?         ChargingSession       = null,
@@ -107,6 +114,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.SessionId            = SessionId;
             this.Result               = Result;
+            this.Sender               = Sender;
             this.Description          = Description         ?? I18NString.Empty;
             this.AdditionalInfo       = AdditionalInfo;
 
@@ -121,20 +129,22 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Unspecified       (SessionId)
+        #region (static) Unspecified       (SessionId, Sender)
 
         /// <summary>
         /// The result is unknown and/or should be ignored.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStopResult Unspecified(ChargingSession_Id SessionId)
+        public static RemoteStopResult Unspecified(ChargingSession_Id  SessionId,
+                                                   System_Id           Sender)
 
             => new (SessionId,
-                    RemoteStopResultTypes.Unspecified);
+                    RemoteStopResultTypes.Unspecified,
+                    Sender);
 
         #endregion
 
-        #region (static) UnknownOperator   (SessionId, Runtime = null)
+        #region (static) UnknownOperator   (SessionId, Sender, Runtime = null)
 
         /// <summary>
         /// The charging station operator is unknown.
@@ -142,16 +152,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult UnknownOperator(ChargingSession_Id  SessionId,
-                                                       TimeSpan?           Runtime = null)
+                                                       System_Id           Sender,
+                                                       TimeSpan?           Runtime   = null)
 
             => new (SessionId,
                     RemoteStopResultTypes.UnknownOperator,
+                    Sender,
                     I18NString.Create("The EVSE or charging station operator is unknown!"),
                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) UnknownLocation   (SessionId, Runtime = null)
+        #region (static) UnknownLocation   (SessionId, Sender, Runtime = null)
 
         /// <summary>
         /// The charging location is unknown.
@@ -159,16 +171,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult UnknownLocation(ChargingSession_Id  SessionId,
-                                                        TimeSpan?          Runtime = null)
+                                                       System_Id           Sender,
+                                                       TimeSpan?           Runtime   = null)
 
             => new (SessionId,
                     RemoteStopResultTypes.UnknownLocation,
+                    Sender,
                     I18NString.Create("The charging location is unknown!"),
                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) InvalidSessionId  (SessionId, AdditionalInfo = null, Runtime = null)
+        #region (static) InvalidSessionId  (SessionId, Sender, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The charging session identification is unknown or invalid.
@@ -177,18 +191,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult InvalidSessionId(ChargingSession_Id  SessionId,
-                                                        String              AdditionalInfo   = null,
+                                                        System_Id           Sender,
+                                                        String?             AdditionalInfo   = null,
                                                         TimeSpan?           Runtime          = null)
 
             => new (SessionId:       SessionId,
                     Result:          RemoteStopResultTypes.InvalidSessionId,
                     Description:     I18NString.Create("The session identification is unknown or invalid!"),
+                    Sender:          Sender,
                     AdditionalInfo:  AdditionalInfo,
                     Runtime:         Runtime);
 
         #endregion
 
-        #region (static) InvalidCredentials(SessionId, Runtime = null)
+        #region (static) InvalidCredentials(SessionId, Sender, Runtime = null)
 
         /// <summary>
         /// Unauthorized remote stop or invalid credentials.
@@ -196,16 +212,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult InvalidCredentials(ChargingSession_Id  SessionId,
-                                                          TimeSpan?           Runtime  = null)
+                                                          System_Id           Sender,
+                                                          TimeSpan?           Runtime   = null)
 
             => new (SessionId,
                     RemoteStopResultTypes.InvalidCredentials,
+                    Sender,
                     I18NString.Create("Unauthorized remote stop or invalid credentials!"),
                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) InternalUse       (SessionId, Runtime = null)
+        #region (static) InternalUse       (SessionId, Sender, Runtime = null)
 
         /// <summary>
         /// Reserved for internal use!
@@ -213,16 +231,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult InternalUse(ChargingSession_Id  SessionId,
-                                                   TimeSpan?           Runtime  = null)
+                                                   System_Id           Sender,
+                                                   TimeSpan?           Runtime   = null)
 
             => new (SessionId,
                     RemoteStopResultTypes.InternalUse,
+                    Sender,
                     I18NString.Create("Reserved for internal use!"),
                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) OutOfService      (SessionId, Runtime = null)
+        #region (static) OutOfService      (SessionId, Sender, Runtime = null)
 
         /// <summary>
         /// The  is out of service.
@@ -230,16 +250,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult OutOfService(ChargingSession_Id  SessionId,
-                                                    TimeSpan?           Runtime  = null)
+                                                    System_Id           Sender,
+                                                    TimeSpan?           Runtime   = null)
 
             => new (SessionId,
                     RemoteStopResultTypes.OutOfService,
+                    Sender,
                     I18NString.Create("The EVSE or charging station is out of service!"),
                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) Offline           (SessionId, Runtime = null)
+        #region (static) Offline           (SessionId, Sender, Runtime = null)
 
         /// <summary>
         /// The  is offline.
@@ -247,16 +269,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult Offline(ChargingSession_Id  SessionId,
-                                               TimeSpan?           Runtime  = null)
+                                               System_Id           Sender,
+                                               TimeSpan?           Runtime   = null)
 
             => new (SessionId,
                     RemoteStopResultTypes.Offline,
+                    Sender,
                     I18NString.Create("The EVSE or charging station is offline!"),
                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) AlreadyStopped    (SessionId, ..., Runtime = null)
+        #region (static) AlreadyStopped    (SessionId, Sender, AdditionalInfo = null,   Runtime = null)
 
         /// <summary>
         /// A previous remote stop was alredy successful.
@@ -265,18 +289,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult AlreadyStopped(ChargingSession_Id  SessionId,
-                                                      String              AdditionalInfo   = null,
+                                                      System_Id           Sender,
+                                                      String?             AdditionalInfo   = null,
                                                       TimeSpan?           Runtime          = null)
 
             => new (SessionId,
                     RemoteStopResultTypes.AlreadyStopped,
+                    Sender,
                     I18NString.Create("The charging process was already stopped!"),
                     AdditionalInfo,
                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) Success           (SessionId, ..., ChargeDetailRecord, Runtime = null)
+        #region (static) Success           (SessionId, Sender, ..., ChargeDetailRecord = null, Runtime = null)
 
         /// <summary>
         /// The remote stop was successful.
@@ -289,6 +315,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult Success(ChargingSession_Id       SessionId,
+                                               System_Id                Sender,
                                                ChargingSession?         Session               = null,
                                                I18NString?              Description           = null,
                                                String?                  AdditionalInfo        = null,
@@ -299,6 +326,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => new (SessionId,
                     RemoteStopResultTypes.Success,
+                    Sender,
                     Description,
                     AdditionalInfo,
                     Session,
@@ -309,7 +337,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) AsyncOperation    (SessionId, Description = null, ..., Runtime = null)
+        #region (static) AsyncOperation    (SessionId, Sender, Description = null, ..., Runtime = null)
 
         /// <summary>
         /// An async remote stop was sent successfully.
@@ -319,19 +347,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult AsyncOperation(ChargingSession_Id  SessionId,
-                                                      I18NString          Description      = null,
-                                                      String              AdditionalInfo   = null,
+                                                      System_Id           Sender,
+                                                      I18NString?         Description      = null,
+                                                      String?             AdditionalInfo   = null,
                                                       TimeSpan?           Runtime          = null)
 
             => new (SessionId,
                     RemoteStopResultTypes.AsyncOperation,
+                    Sender,
                     Description ?? I18NString.Create("An async remote stop was sent successfully!"),
                     AdditionalInfo,
                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) Timeout           (SessionId, Description = null,                        Runtime = null)
+        #region (static) Timeout           (SessionId, Sender, Description = null,                        Runtime = null)
 
         /// <summary>
         /// The remote stop ran into a timeout.
@@ -340,17 +370,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional error message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult Timeout(ChargingSession_Id  SessionId,
-                                               I18NString          Description   = null,
+                                               System_Id           Sender,
+                                               I18NString?         Description   = null,
                                                TimeSpan?           Runtime       = null)
 
             => new (SessionId,
                     RemoteStopResultTypes.Timeout,
+                    Sender,
                     Description ?? I18NString.Create("A timeout occured!"),
                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) CommunicationError(SessionId, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) CommunicationError(SessionId, Sender, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote stop led to a communication error.
@@ -360,19 +392,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult CommunicationError(ChargingSession_Id  SessionId,
-                                                          I18NString          Description      = null,
-                                                          String              AdditionalInfo   = null,
+                                                          System_Id           Sender,
+                                                          I18NString?         Description      = null,
+                                                          String?             AdditionalInfo   = null,
                                                           TimeSpan?           Runtime          = null)
 
             => new (SessionId,
                     RemoteStopResultTypes.CommunicationError,
+                    Sender,
                     Description ?? I18NString.Create("A communication error occured!"),
                     AdditionalInfo,
                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) Error             (SessionId, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) Error             (SessionId, Sender, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote stop led to an error.
@@ -382,12 +416,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult Error(ChargingSession_Id  SessionId,
+                                             System_Id           Sender,
                                              I18NString?         Description      = null,
                                              String?             AdditionalInfo   = null,
                                              TimeSpan?           Runtime          = null)
 
             => new (SessionId,
                     RemoteStopResultTypes.Error,
+                    Sender,
                     Description ?? I18NString.Create("An error occured!"),
                     AdditionalInfo,
                     Runtime: Runtime);
@@ -401,12 +437,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult Error(ChargingSession_Id  SessionId,
+                                             System_Id           Sender,
                                              String?             Description,
                                              String?             AdditionalInfo   = null,
                                              TimeSpan?           Runtime          = null)
 
             => new (SessionId,
                     RemoteStopResultTypes.Error,
+                    Sender,
                     Description?.Trim().IsNotNullOrEmpty() == false
                          ? I18NString.Create(Description)
                          : I18NString.Create("An error occured!"),
@@ -415,16 +453,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) NoOperation             (SessionId, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) NoOperation       (SessionId, Sender, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote stop led to an error.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStopResult NoOperation(ChargingSession_Id  SessionId)
+        public static RemoteStopResult NoOperation(ChargingSession_Id  SessionId,
+                                                   System_Id           Sender)
 
             => new (SessionId,
-                    RemoteStopResultTypes.NoOperation);
+                    RemoteStopResultTypes.NoOperation,
+                    Sender);
 
         #endregion
 
@@ -442,30 +482,31 @@ namespace cloud.charging.open.protocols.WWCP
 
             var json = JSONObject.Create(
 
-                                 new JProperty("sessionId",            SessionId.          ToString()),
+                                 new JProperty("sessionId",             SessionId.          ToString()),
 
-                                 new JProperty("result",               Result.             ToString()),
+                                 new JProperty("result",                Result.             ToString()),
+                                 new JProperty("sender",                Sender.             ToString()),
 
                            Description.IsNotNullOrEmpty()
-                               ? new JProperty("description",          Description.        ToJSON())
+                               ? new JProperty("description",           Description.        ToJSON())
                                : null,
 
                            AdditionalInfo.IsNotNullOrEmpty()
-                               ? new JProperty("additionalInfo",       AdditionalInfo)
+                               ? new JProperty("additionalInfo",        AdditionalInfo)
                                : null,
 
                            ReservationId.HasValue
-                               ? new JProperty("reservationId",        ReservationId.      ToString())
+                               ? new JProperty("reservationId",         ReservationId.      ToString())
                                : null,
 
-                           new JProperty("reservationHandling",        ReservationHandling.ToString()),
+                                 new JProperty("reservationHandling",   ReservationHandling.ToString()),
 
                            ChargeDetailRecord is not null
-                               ? new JProperty("chargeDetailRecord",   ChargeDetailRecord.ToJSON(Embedded: false,
-                                                                                                 CustomChargeDetailRecordSerializer))
+                               ? new JProperty("chargeDetailRecord",    ChargeDetailRecord.ToJSON(Embedded: false,
+                                                                                                  CustomChargeDetailRecordSerializer))
                                : null,
 
-                                 new JProperty("runtime",              Math.Round(Runtime.TotalMilliseconds, 0))
+                                 new JProperty("runtime",               Math.Round(Runtime.TotalMilliseconds, 0))
 
                        );
 
@@ -482,8 +523,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             return new RemoteStopResult(ChargingSession_Id.Parse(JSON["sessionId"]?.Value<String>()),
                                         (RemoteStopResultTypes) Enum.Parse(typeof(RemoteStopResultTypes), JSON["result"]?.Value<String>(), true),
+                                        System_Id.Parse(JSON["sender"]?.Value<String>() ?? "-"),
                                         JSON["description"] is JObject descriptionJSON ? I18NString.Parse(descriptionJSON) : null,
-                                        JSON["additionalInfo"] != null ? JSON["additionalInfo"].Value<String>() : null,
+                                        JSON["additionalInfo"]?.Value<String>(),
                                         null,
                                         JSON["reservationId"] != null ? ChargingReservation_Id.Parse(JSON["reservationId"]?.Value<String>()) : new ChargingReservation_Id?(),
                                         null,

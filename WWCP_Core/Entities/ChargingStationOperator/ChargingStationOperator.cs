@@ -5956,19 +5956,19 @@ namespace cloud.charging.open.protocols.WWCP
 
                     }
                     else
-                        result = RemoteStartResult.UnknownLocation();
+                        result = RemoteStartResult.UnknownLocation(System_Id.Local);
 
                 }
                 else
-                    result = RemoteStartResult.OutOfService();
+                    result = RemoteStartResult.OutOfService(System_Id.Local);
 
             }
             catch (Exception e)
             {
-                result = RemoteStartResult.Error(e.Message);
+                result = RemoteStartResult.Error(e.Message, System_Id.Local);
             }
 
-            result ??= RemoteStartResult.Error();
+            result ??= RemoteStartResult.Error(System_Id.Local);
 
 
             #region Send OnRemoteStartResponse event
@@ -6107,7 +6107,7 @@ namespace cloud.charging.open.protocols.WWCP
                     if (result == null)
                     {
                         DebugX.Log("Invalid charging session at charging station operator '" + Id + "': " + SessionId);
-                        result = RemoteStopResult.InvalidSessionId(SessionId);
+                        result = RemoteStopResult.InvalidSessionId(SessionId, System_Id.Local);
                     }
 
                     if (result.Result == RemoteStopResultTypes.Success)
@@ -6131,7 +6131,7 @@ namespace cloud.charging.open.protocols.WWCP
                     {
 
                         default:
-                            result = RemoteStopResult.OutOfService(SessionId);
+                            result = RemoteStopResult.OutOfService(SessionId, System_Id.Local);
                             break;
 
                     }
@@ -6142,8 +6142,11 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                result = RemoteStopResult.Error(SessionId,
-                                                e.Message);
+                result = RemoteStopResult.Error(
+                             SessionId,
+                             System_Id.Local,
+                             e.Message
+                         );
             }
 
 
