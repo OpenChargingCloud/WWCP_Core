@@ -497,7 +497,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => String.Concat(RoamingNetworkId, " @ ", AnnouncedURI);
+
+            => $"{RoamingNetworkId} @ {AnnouncedURI}";
 
         #endregion
 

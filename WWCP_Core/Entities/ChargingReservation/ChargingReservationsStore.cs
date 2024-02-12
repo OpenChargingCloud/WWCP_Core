@@ -17,16 +17,11 @@
 
 #region Usings
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
-using cloud.charging.open.protocols.WWCP.Networking;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
+
+using cloud.charging.open.protocols.WWCP.Networking;
 
 #endregion
 
@@ -47,26 +42,22 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        public ChargingReservationsStore(RoamingNetwork_Id                RoamingNetworkId,
-                                         IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos   = null,
-                                         Boolean                          DisableLogfiles       = false,
-                                         Boolean                          ReloadDataOnStart     = true,
+        public ChargingReservationsStore(RoamingNetwork_Id                 RoamingNetworkId,
+                                         IEnumerable<RoamingNetworkInfo>?  RoamingNetworkInfos   = null,
+                                         Boolean                           DisableLogfiles       = false,
+                                         Boolean                           ReloadDataOnStart     = true,
 
-                                         Boolean                          DisableNetworkSync    = false,
-                                         String?                          LoggingPath           = null,
-                                         DNSClient                        DNSClient             = null)
+                                         Boolean                           DisableNetworkSync    = false,
+                                         String?                           LoggingPath           = null,
+                                         DNSClient?                        DNSClient             = null)
 
             : base(CommandProcessor:      (a, b, c, d, e) => false,
 
                    DisableLogfiles:       DisableLogfiles,
                    LogFilePathCreator:    roamingNetworkId => Path.Combine(LoggingPath ?? AppContext.BaseDirectory, "ChargingReservations"),
-                   LogFileNameCreator:    roamingNetworkId => String.Concat("ChargingReservations-",
-                                                                            roamingNetworkId, "-",
-                                                                            Environment.MachineName, "_",
-                                                                            org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.Year, "-", org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.Month.ToString("D2"),
-                                                                            ".log"),
+                   LogFileNameCreator:    roamingNetworkId => $"ChargingReservations-{roamingNetworkId}-{Environment.MachineName}_{org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.Year}-{org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.Month:D2}.log",
                    ReloadDataOnStart:     ReloadDataOnStart,
-                   LogfileSearchPattern:  roamingNetworkId => "ChargingReservations-" + roamingNetworkId + "-" + Environment.MachineName + "_",
+                   LogfileSearchPattern:  roamingNetworkId => $"ChargingReservations-{roamingNetworkId}-{Environment.MachineName}_",
 
                    RoamingNetworkId:      RoamingNetworkId,
                    RoamingNetworkInfos:   RoamingNetworkInfos,

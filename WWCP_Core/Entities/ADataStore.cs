@@ -19,6 +19,7 @@
 
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Threading.Channels;
 
 using Newtonsoft.Json.Linq;
 
@@ -34,6 +35,33 @@ using cloud.charging.open.protocols.WWCP.Networking;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    public class ReloadStatistics(String               FileNameSearchPattern,
+                                  IEnumerable<String>  FileNames,
+                                  UInt64               NumberOfCommands,
+                                  IEnumerable<String>  Errors,
+                                  TimeSpan             Runtime)
+    {
+
+        public String               FileNameSearchPattern    { get; } = FileNameSearchPattern;
+        public IEnumerable<String>  FileNames                { get; } = FileNames;
+        public UInt64               NumberOfCommands         { get; } = NumberOfCommands;
+        public IEnumerable<String>  Errors                   { get; } = Errors;
+        public TimeSpan             Runtime                  { get; } = Runtime;
+
+        public override String ToString()
+            => $"{FileNameSearchPattern}: {FileNames.Count()} files, {NumberOfCommands} commands, {Errors.Count()} errors, {Runtime.TotalSeconds} seconds runtime";
+
+    }
+
+    public class LogData(String  FileName,
+                         String  Data)
+    {
+        public String  FileName    { get; } = FileName;
+        public String  Data        { get; } = Data;
+
+    }
+
+
     /// <summary>
     /// An generic data store.
     /// </summary>
@@ -47,18 +75,22 @@ namespace cloud.charging.open.protocols.WWCP
         #region Data
 
         /// <summary>
-        /// The internal data store.
+        /// The maximum number of retries to write to a logfile.
         /// </summary>
-        protected      readonly  ConcurrentDictionary<TId, TData>                                                     InternalData = new ConcurrentDictionary<TId, TData>();
-
-        private        readonly  Func<String, IPSocket?, String, JObject, ConcurrentDictionary<TId, TData>, Boolean>  CommandProcessor;
-
-        private        readonly  Object                                                                               Lock  = new ();
-
-        private static readonly  Char                                                                                 RS    = (Char) 30;
+        public  static readonly Byte      MaxRetries          = 5;
 
 
-        private        readonly  TCPServer                                                                            Server;
+        protected readonly  ConcurrentDictionary<TId, TData>                                                     InternalData   = new();
+
+        private   readonly  Object                                                                               Lock           = new();
+
+        private   readonly  Func<String, IPSocket?, String, JObject, ConcurrentDictionary<TId, TData>, Boolean>  CommandProcessor;
+
+        private   readonly  Channel<LogData>                                                                     discChannel;
+        private   readonly  Channel<String>                                                                      networkChannel;
+        private   readonly  CancellationTokenSource                                                              cancellationTokenSource;
+
+        private   readonly  TCPServer?                                                                           Server;
 
         #endregion
 
@@ -130,57 +162,56 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a generic data store.
         /// </summary>
         /// <param name="DNSClient">The DNS client defines which DNS servers to use.</param>
-        public ADataStore(Func<String, IPSocket?, String, JObject, ConcurrentDictionary<TId, TData>, Boolean>?  CommandProcessor       = null,
+        public ADataStore(Func<String, IPSocket?, String, JObject, ConcurrentDictionary<TId, TData>, Boolean>  CommandProcessor,
 
-                          Boolean                                                                               DisableLogfiles        = false,
-                          Func<RoamingNetwork_Id?, String>?                                                     LogFilePathCreator     = null,
-                          Func<RoamingNetwork_Id?, String>?                                                     LogFileNameCreator     = null,
-                          Boolean                                                                               ReloadDataOnStart      = true,
-                          Func<RoamingNetwork_Id?, String>?                                                     LogfileSearchPattern   = null,
+                          Func<RoamingNetwork_Id?, String>                                                     LogFilePathCreator,
+                          Func<RoamingNetwork_Id?, String>                                                     LogFileNameCreator,
+                          Func<RoamingNetwork_Id?, String>                                                     LogfileSearchPattern,
 
-                          RoamingNetwork_Id?                                                                    RoamingNetworkId       = null,
-                          IEnumerable<RoamingNetworkInfo>?                                                      RoamingNetworkInfos    = null,
-                          Boolean                                                                               DisableNetworkSync     = false,
-                          DNSClient?                                                                            DNSClient              = null)
+                          Boolean                                                                              DisableLogfiles       = false,
+                          Boolean                                                                              ReloadDataOnStart     = true,
+
+                          RoamingNetwork_Id?                                                                   RoamingNetworkId      = null,
+                          IEnumerable<RoamingNetworkInfo>?                                                     RoamingNetworkInfos   = null,
+                          Boolean                                                                              DisableNetworkSync    = false,
+                          DNSClient?                                                                           DNSClient             = null)
 
         {
 
-            this.NodeId                        = NetworkServiceNode_Id.Parse(Environment.MachineName);
+            this.NodeId                = NetworkServiceNode_Id.Parse(Environment.MachineName);
 
-            this.RoamingNetworkId              = RoamingNetworkId;
-            this.roamingNetworkInfos           = RoamingNetworkInfos != null
-                                                     ? new List<RoamingNetworkInfo>(RoamingNetworkInfos)
-                                                     : new List<RoamingNetworkInfo>();
+            this.RoamingNetworkId      = RoamingNetworkId;
+            this.roamingNetworkInfos   = RoamingNetworkInfos is not null
+                                             ? new List<RoamingNetworkInfo>(RoamingNetworkInfos)
+                                             : [];
 
-            this.CommandProcessor              = CommandProcessor     ?? throw new ArgumentNullException(nameof(CommandProcessor),      "The given command processor must not be null or empty!");
+            this.CommandProcessor      = CommandProcessor;
 
-            this.DisableLogfiles               = DisableLogfiles;
-            this.ReloadDataOnStart             = ReloadDataOnStart;
+            this.LogFilePath           = LogFilePathCreator(this.RoamingNetworkId)?.Trim() ?? AppContext.BaseDirectory;
+            this.LogfileNameCreator    = LogFileNameCreator;
+            this.LogfileSearchPattern  = LogfileSearchPattern;
+
+            this.DisableLogfiles       = DisableLogfiles;
+            this.ReloadDataOnStart     = ReloadDataOnStart;
 
             if (!DisableLogfiles)
-            {
+                Directory.CreateDirectory(LogFilePath);
 
-                this.LogFilePath               = LogFilePathCreator(this.RoamingNetworkId)?.Trim() ?? AppContext.BaseDirectory;
-                Directory.CreateDirectory(this.LogFilePath);
 
-                this.LogfileNameCreator        = LogFileNameCreator   ?? throw new ArgumentNullException(nameof(LogFileNameCreator),    "The given log file name creator must not be null or empty!");
-                this.LogfileSearchPattern      = LogfileSearchPattern;
-
-                if (this.ReloadDataOnStart && this.LogfileSearchPattern == null)
-                    throw new ArgumentNullException(nameof(LogfileSearchPattern), "The given log file search pattern must not be null or empty!");
-
-            }
-
-            this.DisableNetworkSync            = DisableNetworkSync;
-            this.DNSClient                     = DNSClient ?? new DNSClient(SearchForIPv4DNSServers: true,
-                                                                            SearchForIPv6DNSServers: false);
+            this.DisableNetworkSync    = DisableNetworkSync;
+            this.DNSClient             = DNSClient ?? new DNSClient(
+                                                          SearchForIPv4DNSServers: true,
+                                                          SearchForIPv6DNSServers: false
+                                                      );
 
             if (RoamingNetworkInfo is not null)
             {
 
-                this.Server = new TCPServer(Port:               RoamingNetworkInfo.port,
-                                            ConnectionTimeout:  TimeSpan.FromSeconds(20),
-                                            AutoStart:          true);
+                this.Server = new TCPServer(
+                                  Port:               RoamingNetworkInfo.port,
+                                  ConnectionTimeout:  TimeSpan.FromSeconds(20),
+                                  AutoStart:          true
+                              );
 
                 this.Server.OnNotification += (connection) => {
 
@@ -225,7 +256,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                      JSON,
                                                                      InternalData))
                                                 {
-                                                    LogToDisc(data);
+                                                    LogToDisc(data).Wait();
                                                 }
 
                                                 connection.WriteLineToResponseStream("ack");
@@ -265,7 +296,193 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            if (this.ReloadDataOnStart)
+
+            this.cancellationTokenSource = new CancellationTokenSource();
+
+            #region WriteToDisc channel
+
+            this.discChannel = Channel.CreateUnbounded<LogData>();
+
+            _ = Task.Factory.StartNew(async () => {
+
+                do
+                {
+
+                    var logData  = await discChannel.Reader.ReadAsync(cancellationTokenSource.Token);
+                    var retry    = 0;
+
+                    do
+                    {
+
+                        try
+                        {
+
+                            File.AppendAllText(
+                                logData.FileName,
+                                logData.Data + Environment.NewLine,
+                                System.Text.Encoding.UTF8
+                            );
+
+                            break;
+
+                        }
+                        catch (IOException e)
+                        {
+
+                            if (e.HResult != -2147024864)
+                            {
+                                DebugX.LogT($"File access error while logging to '{logData.FileName}' (retry: {retry}): {e.Message}");
+                                Thread.Sleep(100);
+                            }
+
+                            else
+                            {
+                                DebugX.LogT($"Could not log to '{logData.FileName}': {e.Message}");
+                                break;
+                            }
+
+                        }
+                        catch (Exception e)
+                        {
+                            DebugX.LogT($"Could not log to '{logData.FileName}': {e.Message}");
+                            break;
+                        }
+
+                    }
+                    while (retry++ < MaxRetries);
+
+                    if (retry >= MaxRetries)
+                        DebugX.LogT($"Could not write to logfile '{logData.FileName}' for {retry} retries!");
+
+                    else if (retry > 0)
+                        DebugX.LogT($"Successfully written to logfile '{logData.FileName}' after {retry} retries!");
+
+                }
+                while (!cancellationTokenSource.IsCancellationRequested);
+
+            }, cancellationTokenSource.Token);
+
+            #endregion
+
+            #region WriteToNetwork channel
+
+            this.networkChannel = Channel.CreateUnbounded<String>();
+
+            _ = Task.Factory.StartNew(async () => {
+
+                do
+                {
+
+                    var logData  = await networkChannel.Reader.ReadAsync(cancellationTokenSource.Token);
+                    var retry    = 0;
+
+                    try
+                    {
+
+                        foreach (var networkInfo in this.RoamingNetworkInfos.Where(networkInfo => networkInfo.NodeId != NodeId))
+                        {
+
+                            do
+                            {
+
+                                //ToDo: Use persistent TCPClients!
+
+                                TCPClient? client = null;
+
+                                if (networkInfo.IPAddress is not null)
+                                    client = new TCPClient(
+                                                 IPAddress:          networkInfo.IPAddress,
+                                                 RemotePort:         networkInfo.port,
+                                                 UseTLS:             TLSUsage.NoTLS,
+                                                 ConnectionTimeout:  TimeSpan.FromSeconds(5)
+                                             );
+
+                                else if (networkInfo.hostname.IsNotNullOrEmpty())
+                                    client = new TCPClient(
+                                                 RemoteHost:         networkInfo.hostname,
+                                                 RemotePort:         networkInfo.port,
+                                                 UseTLS:             TLSUsage.NoTLS,
+                                                 ConnectionTimeout:  TimeSpan.FromSeconds(5),
+                                                 DNSClient:          DNSClient
+                                             );
+
+                                if (client is not null)
+                                {
+
+                                    client.Connect();
+
+                                    if (client.TCPStream is not null)
+                                    {
+
+                                        try
+                                        {
+
+                                            if (client.TCPStream.CanWrite)
+                                                client.TCPStream.Write((logData + Environment.NewLine).ToUTF8Bytes());
+
+                                            //if (client.TCPStream.CanRead)
+                                            //{
+
+                                            //    client.TCPStream.ReadTimeout = 5000; // msec
+
+                                            //    var message = new StringBuilder();
+                                            //    var buffer = new Byte[4096];
+                                            //    var numberOfBytesRead = 0;
+
+                                            //    do
+                                            //    {
+
+                                            //        numberOfBytesRead = client.TCPStream.Read(buffer, 0, buffer.Length);
+
+                                            //        message.Append(Encoding.UTF8.GetString(buffer, 0, numberOfBytesRead));
+
+                                            //        if (message.ToString() == "ack")
+                                            //            break;
+
+                                            //    } while (client.TCPStream.DataAvailable);
+
+                                            //}
+
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            DebugX.LogT($"Could not log to '{networkInfo}': {e.Message}");
+                                            break;
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+                            while (retry++ < MaxRetries);
+
+                            if (retry >= MaxRetries)
+                                DebugX.LogT($"Could not write to logfile '{networkInfo}' for {retry} retries!");
+
+                            else if (retry > 0)
+                                DebugX.LogT($"Successfully written to logfile '{networkInfo}' after {retry} retries!");
+
+                        }
+
+                        break;
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.LogT($"Could not log to network: {e.Message}");
+                        break;
+                    }
+
+                }
+                while (!cancellationTokenSource.IsCancellationRequested);
+
+            }, cancellationTokenSource.Token);
+
+            #endregion
+
+
+            if (!DisableLogfiles && this.ReloadDataOnStart)
                 LoadLogFiles(LogFilePath,
                              LogfileSearchPattern(this.RoamingNetworkId));
 
@@ -302,24 +519,23 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
 
-        #region (protected) LogIt(Command, Id)
-
-        protected void LogIt(String Command, IId Id)
-        {
-            LogIt(Command, Id);
-        }
-
-        #endregion
-
         #region (protected) LogIt(Command, Id, PropertyKey, JSONObject)
 
-        protected void LogIt(String Command, IId Id, String PropertyKey, JObject JSONObject)
+        protected async Task LogIt(String   Command,
+                                   IId      Id,
+                                   String   PropertyKey,
+                                   JObject  JSONObject)
         {
 
             if (PropertyKey.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
 
-            LogIt(Command, Id, PropertyKey, (object)JSONObject);
+            await LogItInternal(
+                      Command,
+                      Id,
+                      PropertyKey,
+                      JSONObject
+                  );
 
         }
 
@@ -327,146 +543,93 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (protected) LogIt(Command, Id, PropertyKey, JSONArray)
 
-        protected void LogIt(String Command, IId Id, String PropertyKey, JArray JSONArray)
+        protected async Task LogIt(String  Command,
+                                   IId     Id,
+                                   String  PropertyKey,
+                                   JArray  JSONArray)
         {
 
             if (PropertyKey.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
 
-            LogIt(Command, Id, PropertyKey, (object)JSONArray);
+            await LogItInternal(
+                      Command,
+                      Id,
+                      PropertyKey,
+                      JSONArray
+                  );
 
         }
 
         #endregion
 
-        #region (private)   LogIt(Command, Id, PropertyKey = null, JSON = null)
+        #region (private)   LogIt(Command, Id, PropertyKey = null, Data = null)
 
-        private void LogIt(String Command, IId Id, String PropertyKey = null, Object JSON = null)
+        private async Task LogItInternal(String   Command,
+                                         IId      Id,
+                                         String?  PropertyKey   = null,
+                                         JToken?  Data          = null)
         {
 
-            #region Prepare data
+            if (DisableLogfiles && DisableNetworkSync)
+                return;
 
-            Command      = Command?.    Trim();
+            #region Initial checks
+
+            if (Command.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Command), "The given command must not be null or empty!");
+
+            #endregion
+
+            Command      = Command.     Trim();
             PropertyKey  = PropertyKey?.Trim();
 
             if (Command.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Command), "The given command must not be null or empty!");
 
-            var data = JSONObject.Create(
+            var logData = JSONObject.Create(
 
-                           new JProperty("timestamp",  Timestamp.Now.ToIso8601()),
-                           new JProperty("id",         Id.ToString()),
-                           new JProperty("command",    Command),
+                              new JProperty("timestamp",  Timestamp.Now.ToIso8601()),
+                              new JProperty("id",         Id.ToString()),
+                              new JProperty("command",    Command),
 
-                           PropertyKey != null
-                               ? new JProperty(PropertyKey, JSON)
-                               : null
+                              PropertyKey is not null
+                                  ? new JProperty(PropertyKey, Data)
+                                  : null
 
-                       ).ToString(Newtonsoft.Json.Formatting.None);
+                          ).ToString(Newtonsoft.Json.Formatting.None);
 
-            #endregion
-
-            LogToDisc(data);
-            LogToNetwork(data);
+            await LogToDisc(logData);
+            await LogToNetwork(logData);
 
         }
 
         #endregion
 
 
-        #region (private)   LogToDisc(data)
+        #region (private) LogToDisc(Data)
 
-        private void LogToDisc(String data)
+        private async Task LogToDisc(String Data)
         {
-            if (!DisableLogfiles && data?.Trim().IsNotNullOrEmpty() == true)
-            {
-                lock (Lock)
-                {
-                    File.AppendAllText(LogFilePath + LogfileNameCreator(RoamingNetworkId), data.Trim() + Environment.NewLine);
-                }
-            }
+            if (!DisableLogfiles)
+                await discChannel.Writer.WriteAsync(
+                          new LogData(
+                              Path.Combine(LogFilePath, LogfileNameCreator(RoamingNetworkId)),
+                              Data
+                          )
+                      );
         }
 
         #endregion
 
-        #region LogToNetwork(data)
+        #region (private) LogToNetwork(Data)
 
-        private void LogToNetwork(String data)
+        private async Task LogToNetwork(String Data)
         {
-
-            if (!DisableNetworkSync && roamingNetworkInfos.SafeAny() && data?.Trim().IsNotNullOrEmpty() == true)
-            {
-                lock (Lock)
-                {
-                    foreach (var networkInfo in RoamingNetworkInfos.Where(networkInfo => networkInfo.NodeId != NodeId))
-                    {
-
-                        TCPClient client = null;
-
-                        if (networkInfo.IPAddress != null)
-                            client = new TCPClient(IPAddress:          networkInfo.IPAddress,
-                                                   RemotePort:         networkInfo.port,
-                                                   UseTLS:             TLSUsage.NoTLS,
-                                                   ConnectionTimeout:  TimeSpan.FromSeconds(5));
-
-                        else if (networkInfo.hostname.IsNotNullOrEmpty())
-                            client = new TCPClient(RemoteHost:         networkInfo.hostname,
-                                                   RemotePort:         networkInfo.port,
-                                                   UseTLS:             TLSUsage.NoTLS,
-                                                   ConnectionTimeout:  TimeSpan.FromSeconds(5),
-                                                   DNSClient:          DNSClient);
-
-                        if (client != null)
-                        {
-
-                            client.Connect();
-
-                            if (client.TCPStream != null) 
-                            {
-
-                                try
-                                {
-
-                                    if (client.TCPStream.CanWrite)
-                                        client.TCPStream.Write((data.Trim() + Environment.NewLine).ToUTF8Bytes());
-
-                                    //if (client.TCPStream.CanRead)
-                                    //{
-
-                                    //    client.TCPStream.ReadTimeout = 5000; // msec
-
-                                    //    var message = new StringBuilder();
-                                    //    var buffer = new Byte[4096];
-                                    //    var numberOfBytesRead = 0;
-
-                                    //    do
-                                    //    {
-
-                                    //        numberOfBytesRead = client.TCPStream.Read(buffer, 0, buffer.Length);
-
-                                    //        message.Append(Encoding.UTF8.GetString(buffer, 0, numberOfBytesRead));
-
-                                    //        if (message.ToString() == "ack")
-                                    //            break;
-
-                                    //    } while (client.TCPStream.DataAvailable);
-
-                                    //}
-
-                                }
-                                catch (Exception e)
-                                {
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-                }
-            }
-
+            if (!DisableNetworkSync && roamingNetworkInfos.Count > 0)
+                await networkChannel.Writer.WriteAsync(
+                          Data
+                      );
         }
 
         #endregion
@@ -475,18 +638,23 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region LoadLogFiles(Path, LogfileSearchPattern)
 
-        protected void LoadLogFiles(String  Path,
-                                    String  LogfileSearchPattern)
+        protected ReloadStatistics LoadLogFiles(String  Path,
+                                                String  LogfileSearchPattern)
         {
 
-            if (Path?.Trim().IsNullOrEmpty() == true)
+            var startTime         = Timestamp.Now;
+            var listOfFilenames   = new List<String>();
+            var numberOfCommands  = 0UL;
+            var listOfErrors      = new List<String>();
+
+            if (Path.Trim().IsNullOrEmpty() == true)
                 Path = Directory.GetCurrentDirectory();
 
             try
             {
 
-                JObject JSON     = null;
-                String  command  = null;
+                JObject? JSON      = null;
+                String?  command   = null;
 
                 foreach (var filename in Directory.EnumerateFiles(Path,
                                                                   LogfileSearchPattern,
@@ -494,40 +662,55 @@ namespace cloud.charging.open.protocols.WWCP
                                                    OrderBy       (filename => filename))
                 {
 
+                    listOfFilenames.Add(filename);
+
                     try
                     {
 
                         File.ReadLines(filename).
                             ForEachCounted((line, counter) => {
-                                if (line.IsNeitherNullNorEmpty() && !line.StartsWith("//") && !line.StartsWith("#"))
+                                if (line.IsNeitherNullNorEmpty() && !line.StartsWith("//") && !line.StartsWith('#'))
                                 {
                                     try
                                     {
 
                                         JSON     = JObject.Parse(line);
-                                        command  = JSON["command"]?.Value<String>();
+                                        command  = JSON["command"]?.Value<String>()?.Trim();
 
-                                        switch (command)
+                                        if (command is not null &&
+                                            command.IsNotNullOrEmpty())
                                         {
 
-                                            case "clear":
-                                                InternalData.Clear();
-                                                break;
+                                            numberOfCommands++;
 
-                                            default:
-                                                CommandProcessor(filename,
-                                                                 null,
-                                                                 command,
-                                                                 JSON,
-                                                                 InternalData);
-                                                break;
+                                            switch (command)
+                                            {
+
+                                                case "clear":
+                                                    InternalData.Clear();
+                                                    break;
+
+                                                default:
+                                                    CommandProcessor(filename,
+                                                                     null,
+                                                                     command,
+                                                                     JSON,
+                                                                     InternalData);
+                                                    break;
+
+                                            }
 
                                         }
 
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log("Could not parse data in '" + filename + "' line "+ counter + ": " + e.Message);
+
+                                        var errorMessage = $"Could not parse data in '{filename}' line {counter}: {e.Message}";
+
+                                        listOfErrors.Add(errorMessage);
+                                        DebugX.Log(errorMessage);
+
                                     }
                                 }
                             });
@@ -545,6 +728,20 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 DebugX.Log("Could not reload data: " + e.Message);
             }
+
+
+            var statistics = new ReloadStatistics(
+                                 LogfileSearchPattern,
+                                 listOfFilenames,
+                                 numberOfCommands,
+                                 listOfErrors,
+                                 Timestamp.Now - startTime
+                             );
+
+            if (listOfFilenames.Count > 0 && numberOfCommands > 0)
+                DebugX.Log(statistics.ToString());
+
+            return statistics;
 
         }
 

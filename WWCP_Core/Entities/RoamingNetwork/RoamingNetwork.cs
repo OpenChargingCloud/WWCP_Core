@@ -7361,8 +7361,10 @@ namespace cloud.charging.open.protocols.WWCP
                         cdrTargets[empForCDR].Add(cdr);
                         chargeDetailRecordsToProcess.Remove(cdr);
 
-                        SessionsStore.CDRReceived(cdr.SessionId,
-                                                  cdr);
+                        await SessionsStore.CDRReceived(
+                                  cdr.SessionId,
+                                  cdr
+                              );
 
                         continue;
 
@@ -7380,8 +7382,10 @@ namespace cloud.charging.open.protocols.WWCP
                         cdrTargets[empForCDR].Add(cdr);
                         chargeDetailRecordsToProcess.Remove(cdr);
 
-                        SessionsStore.CDRReceived(cdr.SessionId,
-                                                  cdr);
+                        await SessionsStore.CDRReceived(
+                                  cdr.SessionId,
+                                  cdr
+                              );
 
                         continue;
 
@@ -7409,8 +7413,10 @@ namespace cloud.charging.open.protocols.WWCP
                             cdrTargets[empRoamingProviderForCDR].Add(cdr);
                             chargeDetailRecordsToProcess.Remove(cdr);
 
-                            SessionsStore.CDRReceived(cdr.SessionId,
-                                                      cdr);
+                            await SessionsStore.CDRReceived(
+                                      cdr.SessionId,
+                                      cdr
+                                  );
 
                             continue;
 
@@ -7448,8 +7454,10 @@ namespace cloud.charging.open.protocols.WWCP
                             cdrTargets[csoRoamingProviderForCDR].Add(cdr);
                             chargeDetailRecordsToProcess.Remove(cdr);
 
-                            SessionsStore.CDRReceived(cdr.SessionId,
-                                                      cdr);
+                            await SessionsStore.CDRReceived(
+                                      cdr.SessionId,
+                                      cdr
+                                  );
 
                         }
 

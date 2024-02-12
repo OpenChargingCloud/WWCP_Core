@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The regular expression for parsing a charging session identification.
         /// </summary>
-        public static readonly Regex ChargingSessionId_RegEx = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?N([A-Za-z0-9][A-Za-z0-9\*\-]{0,250})|([A-Z]{2}\-?[A-Z0-9]{3})\-?N([A-Za-z0-9][A-Za-z0-9\*\-]{0,250})$",
+        public static readonly Regex ChargingSessionId_RegEx = new (@"^([A-Z]{2}[\*\-]?[A-Z0-9]{3})\*?N([A-Za-z0-9][A-Za-z0-9\*\-]{0,250})$",
                                                                     RegexOptions.IgnorePatternWhitespace);
 
         #endregion
@@ -329,13 +329,13 @@ namespace cloud.charging.open.protocols.WWCP
                         }
 
                         // ProviderId (with '-' as separator)
-                        if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[3].Value,
+                        if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[1].Value,
                                                           out var eMobilityProviderId))
                         {
 
                             ChargingSessionId = new ChargingSession_Id(
                                                     eMobilityProviderId,
-                                                    matchCollection[0].Groups[4].Value
+                                                    matchCollection[0].Groups[2].Value
                                                 );
 
                             return true;
@@ -633,7 +633,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return $"{OperatorId}*N{Suffix}";
 
             if (ProviderId.HasValue)
-                return $"{ProviderId}*N{Suffix}";
+                return $"{ProviderId}-N{Suffix}";
 
             return Suffix;
 

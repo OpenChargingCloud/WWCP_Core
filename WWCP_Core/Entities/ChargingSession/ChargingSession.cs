@@ -862,9 +862,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                           new JProperty("@id", Id.ToString()),
+                                 new JProperty("@id",                         Id.              ToString()),
+                                 new JProperty("eventTrackingId",             EventTrackingId. ToString()),
 
                            Embedded
                                ? null
@@ -889,26 +890,26 @@ namespace cloud.charging.open.protocols.WWCP
                            SessionTime is not null
                                ? new JProperty("start", JSONObject.Create(
 
-                                     new JProperty("timestamp",               SessionTime.StartTime.ToIso8601()),
+                                           new JProperty("timestamp",              SessionTime.StartTime.    ToIso8601()),
 
                                      SystemIdStart.HasValue
-                                         ? new JProperty("systemId",              SystemIdStart.            ToString())
+                                         ? new JProperty("systemId",               SystemIdStart.            ToString())
                                          : null,
 
                                      CSORoamingProviderIdStart.HasValue
-                                         ? new JProperty("CSORoamingProviderId",  CSORoamingProviderIdStart.ToString())
+                                         ? new JProperty("CSORoamingProviderId",   CSORoamingProviderIdStart.ToString())
                                          : null,
 
                                      EMPRoamingProviderIdStart.HasValue
-                                         ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStart.ToString())
+                                         ? new JProperty("EMPRoamingProviderId",   EMPRoamingProviderIdStart.ToString())
                                          : null,
 
                                      ProviderIdStart is not null
-                                         ? new JProperty("providerId",            ProviderIdStart.          ToString())
+                                         ? new JProperty("providerId",             ProviderIdStart.          ToString())
                                          : null,
 
                                      AuthenticationStart.IsDefined()
-                                         ? new JProperty("authentication",        AuthenticationStart.      ToJSON())
+                                         ? new JProperty("authentication",         AuthenticationStart.      ToJSON())
                                          : null
 
                                  ))
@@ -920,7 +921,7 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
 
-                           SessionTime.EndTime.HasValue
+                           SessionTime is not null && SessionTime.EndTime.HasValue
                                ? new JProperty("stop", JSONObject.Create(
 
                                      SessionTime.EndTime.HasValue
@@ -1028,8 +1029,8 @@ namespace cloud.charging.open.protocols.WWCP
                 );
 
             return CustomChargingSessionSerializer is not null
-                       ? CustomChargingSessionSerializer(this, JSON)
-                       : JSON;
+                       ? CustomChargingSessionSerializer(this, json)
+                       : json;
 
         }
 
@@ -1093,19 +1094,19 @@ namespace cloud.charging.open.protocols.WWCP
 
             var session = new ChargingSession(
                               ChargingSession_Id.Parse(JSON["@id"]?.            Value<String>()),
-                              EventTracking_Id.  Parse(JSON["eventTrackingId"]?.Value<String>())) {
+                              EventTracking_Id.  Parse(JSON["eventTrackingId"]?.Value<String>())
+                          ) {
 
                               RoamingNetwork             = RoamingNetwork,
-                              //RoamingNetworkId           = JSON["roamingNetworkId"]          != null ? RoamingNetwork_Id.         Parse(JSON["roamingNetworkId"]?.         Value<String>()) : new RoamingNetwork_Id?(),
-                              ChargingStationOperatorId  = JSON["chargingStationOperatorId"] != null ? ChargingStationOperator_Id.Parse(JSON["chargingStationOperatorId"]?.Value<String>()) : new ChargingStationOperator_Id?(),
-                              ChargingPoolId             = JSON["chargingPoolId"]            != null ? ChargingPool_Id.           Parse(JSON["chargingPoolId"]?.           Value<String>()) : new ChargingPool_Id?(),
-                              ChargingStationId          = JSON["chargingStationId"]         != null ? ChargingStation_Id.        Parse(JSON["chargingStationId"]?.        Value<String>()) : new ChargingStation_Id?(),
-                              EVSEId                     = JSON["EVSEId"]                    != null ? EVSE_Id.                   Parse(JSON["EVSEId"]?.                   Value<String>()) : new EVSE_Id?()
+                              ChargingStationOperatorId  = JSON["chargingStationOperatorId"] is not null ? ChargingStationOperator_Id.Parse(JSON["chargingStationOperatorId"]?.Value<String>()) : new ChargingStationOperator_Id?(),
+                              ChargingPoolId             = JSON["chargingPoolId"]            is not null ? ChargingPool_Id.           Parse(JSON["chargingPoolId"]?.           Value<String>()) : new ChargingPool_Id?(),
+                              ChargingStationId          = JSON["chargingStationId"]         is not null ? ChargingStation_Id.        Parse(JSON["chargingStationId"]?.        Value<String>()) : new ChargingStation_Id?(),
+                              EVSEId                     = JSON["EVSEId"]                    is not null ? EVSE_Id.                   Parse(JSON["EVSEId"]?.                   Value<String>()) : new EVSE_Id?()
                           
                           };
 
 
-            if (JSON["start"] is JObject sessionStartJSON)
+            if (JSON["start"]        is JObject sessionStartJSON)
             {
 
                 var startTime = sessionStartJSON["timestamp"]?.Value<DateTime>();
@@ -1115,10 +1116,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     session.SessionTime                = new StartEndDateTime(startTime.Value);
 
-                    session.SystemIdStart              = sessionStartJSON["systemId"]             != null                  ? System_Id.            Parse(sessionStartJSON["systemId"]?.            Value<String>()) : new System_Id?();
-                    session.EMPRoamingProviderIdStart  = sessionStartJSON["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(sessionStartJSON["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
-                    session.CSORoamingProviderIdStart  = sessionStartJSON["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(sessionStartJSON["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
-                    session.ProviderIdStart            = sessionStartJSON["providerId"]           != null                  ? EMobilityProvider_Id. Parse(sessionStartJSON["providerId"]?.Value<String>())           : new EMobilityProvider_Id?();
+                    session.SystemIdStart              = sessionStartJSON["systemId"]             is not null              ? System_Id.            Parse(sessionStartJSON["systemId"]?.            Value<String>()) : new System_Id?();
+                    session.EMPRoamingProviderIdStart  = sessionStartJSON["EMPRoamingProviderId"] is not null              ? EMPRoamingProvider_Id.Parse(sessionStartJSON["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                    session.CSORoamingProviderIdStart  = sessionStartJSON["CSORoamingProviderId"] is not null              ? CSORoamingProvider_Id.Parse(sessionStartJSON["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
+                    session.ProviderIdStart            = sessionStartJSON["providerId"]           is not null              ? EMobilityProvider_Id. Parse(sessionStartJSON["providerId"]?.Value<String>())           : new EMobilityProvider_Id?();
                     session.AuthenticationStart        = sessionStartJSON["authentication"] is JObject authenticationStart ? RemoteAuthentication. Parse(authenticationStart)                                       : null;
 
                 }
@@ -1164,7 +1165,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            if (JSON["stopRequests"] is JArray stopRequestsJSON)
+            if (JSON["stopRequests"] is JArray  stopRequestsJSON)
             {
 
                 foreach (var stopRequestJSON in stopRequestsJSON)
@@ -1176,6 +1177,7 @@ namespace cloud.charging.open.protocols.WWCP
                 }
 
             }
+
 
             return session;
 

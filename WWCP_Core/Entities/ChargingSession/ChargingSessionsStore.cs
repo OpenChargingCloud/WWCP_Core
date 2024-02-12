@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        if (!InternalData.ContainsKey(session.Id))
                                            InternalData.TryAdd(session.Id, session);
 
-                                       if (session.EVSEId.HasValue && session.EVSE == null)
+                                       if (session.EVSEId.HasValue && session.EVSE is null)
                                            session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
 
                                        if (session.EVSE is not null)
@@ -226,10 +226,10 @@ namespace cloud.charging.open.protocols.WWCP
                                        else
                                            InternalData[session.Id] = session;
 
-                                       if (session.EVSEId.HasValue && session.EVSE == null)
+                                       if (session.EVSEId.HasValue && session.EVSE is null)
                                            session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
 
-                                       if (session.EVSE != null)
+                                       if (session.EVSE is not null)
                                            session.EVSE.ChargingSession = null;
 
                                    }
@@ -245,10 +245,10 @@ namespace cloud.charging.open.protocols.WWCP
                                        if (!InternalData.ContainsKey(session.Id))
                                            InternalData.TryAdd(session.Id, session);
 
-                                       if (session.EVSEId.HasValue && session.EVSE == null)
+                                       if (session.EVSEId.HasValue && session.EVSE is null)
                                            session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
 
-                                       if (session.EVSE != null)
+                                       if (session.EVSE is not null)
                                            session.EVSE.ChargingSession = session;
 
                                    }
@@ -266,10 +266,10 @@ namespace cloud.charging.open.protocols.WWCP
                                        else
                                            InternalData[session.Id] = session;
 
-                                       if (session.EVSEId.HasValue && session.EVSE == null)
+                                       if (session.EVSEId.HasValue && session.EVSE is null)
                                            session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
 
-                                       if (session.EVSE != null)
+                                       if (session.EVSE is not null)
                                            session.EVSE.ChargingSession = null;
 
                                    }
@@ -287,10 +287,10 @@ namespace cloud.charging.open.protocols.WWCP
                                        else
                                            InternalData[session.Id] = session;
 
-                                       if (session.EVSEId.HasValue && session.EVSE == null)
+                                       if (session.EVSEId.HasValue && session.EVSE is null)
                                            session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
 
-                                       if (session.EVSE != null)
+                                       if (session.EVSE is not null)
                                            session.EVSE.ChargingSession = null;
 
                                    }
@@ -323,12 +323,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                    DisableLogfiles:        DisableLogfiles,
                    LogFilePathCreator:     roamingNetworkId => Path.Combine(LoggingPath ?? AppContext.BaseDirectory, "ChargingSessions"),
-                   LogFileNameCreator:     roamingNetworkId => String.Concat("ChargingSessions-",
-                                                                             roamingNetworkId, "_",
-                                                                             Timestamp.Now.Year, "-", Timestamp.Now.Month.ToString("D2"),
-                                                                             ".log"),
+                   LogFileNameCreator:     roamingNetworkId => $"ChargingSessions-{roamingNetworkId}_{Timestamp.Now.Year}-{Timestamp.Now.Month:D2}.log",
                    ReloadDataOnStart:      ReloadDataOnStart,
-                   LogfileSearchPattern:   roamingNetworkId => "ChargingSessions-" + roamingNetworkId + "_*.log",
+                   LogfileSearchPattern:   roamingNetworkId => $"ChargingSessions-{roamingNetworkId}_*.log",
 
                    RoamingNetworkInfos:    RoamingNetworkInfos,
                    DisableNetworkSync:     DisableNetworkSync,
@@ -473,9 +470,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoteStart(NewChargingSession, Result, UpdateFunc = null)
 
-        public Boolean RemoteStart(ChargingSession           NewChargingSession,
-                                   RemoteStartResult         Result,
-                                   Action<ChargingSession>?  UpdateFunc = null)
+        public async Task<Boolean> RemoteStart(ChargingSession           NewChargingSession,
+                                               RemoteStartResult         Result,
+                                               Action<ChargingSession>?  UpdateFunc = null)
         {
 
             if (!InternalData.ContainsKey(NewChargingSession.Id))
@@ -485,10 +482,10 @@ namespace cloud.charging.open.protocols.WWCP
                 InternalData.TryAdd(NewChargingSession.Id, NewChargingSession);
                 UpdateFunc?.Invoke(NewChargingSession);
 
-                LogIt("remoteStart",
-                      NewChargingSession.Id,
-                      "chargingSession",
-                      NewChargingSession.ToJSON());
+                await LogIt("remoteStart",
+                            NewChargingSession.Id,
+                            "chargingSession",
+                            NewChargingSession.ToJSON());
 
                 OnNewChargingSession?.Invoke(Timestamp.Now,
                                              RoamingNetworkId,
@@ -498,8 +495,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            else
-                return false;
+            return false;
 
         }
 
@@ -507,11 +503,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoteStop (Id, Authentication, ProviderId = null, CSORoamingProvider = null)
 
-        public Boolean RemoteStop(ChargingSession_Id     Id,
-                                  AAuthentication        Authentication,
-                                  EMobilityProvider_Id?  ProviderId,
-                                  ICSORoamingProvider    CSORoamingProvider,
-                                  RemoteStopResult       Result)
+        public async Task<Boolean> RemoteStop(ChargingSession_Id     Id,
+                                              AAuthentication        Authentication,
+                                              EMobilityProvider_Id?  ProviderId,
+                                              ICSORoamingProvider    CSORoamingProvider,
+                                              RemoteStopResult       Result)
         {
 
             if (InternalData.TryGetValue(Id, out var chargingSession))
@@ -540,17 +536,16 @@ namespace cloud.charging.open.protocols.WWCP
                                                    Result
                                                ));
 
-                LogIt("remoteStop",
-                      chargingSession.Id,
-                      "chargingSession",
-                      chargingSession.ToJSON());
+                await LogIt("remoteStop",
+                            chargingSession.Id,
+                            "chargingSession",
+                            chargingSession.ToJSON());
 
                 return true;
 
             }
 
-            else
-                return false;
+            return false;
 
         }
 
@@ -558,8 +553,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region AuthStart(NewChargingSession, UpdateFunc = null)
 
-        public Boolean AuthStart(ChargingSession          NewChargingSession,
-                                 Action<ChargingSession>  UpdateFunc = null)
+        public async Task<Boolean> AuthStart(ChargingSession           NewChargingSession,
+                                             Action<ChargingSession>?  UpdateFunc   = null)
         {
 
             if (!InternalData.ContainsKey(NewChargingSession.Id))
@@ -569,10 +564,10 @@ namespace cloud.charging.open.protocols.WWCP
                 InternalData.TryAdd(NewChargingSession.Id, NewChargingSession);
                 UpdateFunc?.Invoke(NewChargingSession);
 
-                LogIt("authStart",
-                      NewChargingSession.Id,
-                      "chargingSession",
-                      NewChargingSession.ToJSON());
+                await LogIt("authStart",
+                            NewChargingSession.Id,
+                            "chargingSession",
+                            NewChargingSession.ToJSON());
 
                 OnNewChargingSession?.Invoke(Timestamp.Now,
                                              RoamingNetworkId,
@@ -582,8 +577,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            else
-                return false;
+            return false;
 
         }
 
@@ -591,10 +585,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region AuthStop (Id, Authentication, ProviderId, CSORoamingProvider = null)
 
-        public Boolean AuthStop(ChargingSession_Id    Id,
-                                AAuthentication       Authentication,
-                                EMobilityProvider_Id  ProviderId,
-                                ICSORoamingProvider?  CSORoamingProvider  = null)
+        public async Task<Boolean> AuthStop(ChargingSession_Id    Id,
+                                            AAuthentication       Authentication,
+                                            EMobilityProvider_Id  ProviderId,
+                                            ICSORoamingProvider?  CSORoamingProvider   = null)
         {
 
             if (InternalData.TryGetValue(Id, out var chargingSession))
@@ -606,17 +600,16 @@ namespace cloud.charging.open.protocols.WWCP
                 chargingSession.ProviderIdStop          = ProviderId;
                 chargingSession.AuthenticationStop      = Authentication;
 
-                LogIt("authStop",
-                      chargingSession.Id,
-                      "chargingSession",
-                      chargingSession.ToJSON());
+                await LogIt("authStop",
+                            chargingSession.Id,
+                            "chargingSession",
+                            chargingSession.ToJSON());
 
                 return true;
 
             }
 
-            else
-                return false;
+            return false;
 
         }
 
@@ -624,8 +617,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region CDRReceived(Id, NewChargeDetailRecord)
 
-        public Boolean CDRReceived(ChargingSession_Id  Id,
-                                   ChargeDetailRecord  NewChargeDetailRecord)
+        public async Task<Boolean> CDRReceived(ChargingSession_Id  Id,
+                                               ChargeDetailRecord  NewChargeDetailRecord)
         {
 
             if (InternalData.TryGetValue(Id, out var chargingSession))
@@ -642,10 +635,10 @@ namespace cloud.charging.open.protocols.WWCP
                 chargingSession.SystemIdCDR  = System_Id.Parse(Environment.MachineName);
                 chargingSession.CDR          = NewChargeDetailRecord;
 
-                LogIt("CDRReceived",
-                      chargingSession.Id,
-                      "chargingSession",
-                      chargingSession.ToJSON());
+                await LogIt("CDRReceived",
+                            chargingSession.Id,
+                            "chargingSession",
+                            chargingSession.ToJSON());
 
                 OnNewChargeDetailRecord?.Invoke(Timestamp.Now,
                                                 RoamingNetworkId,
@@ -655,8 +648,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            else
-                return false;
+            return false;
 
         }
 
@@ -664,8 +656,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region CDRForwarded(Id, SendCDRResult)
 
-        public Boolean CDRForwarded(ChargingSession_Id  Id,
-                                    SendCDRResult       CDRResult)
+        public async Task<Boolean> CDRForwarded(ChargingSession_Id  Id,
+                                                SendCDRResult       CDRResult)
         {
 
             if (InternalData.TryGetValue(Id, out var chargingSession))
@@ -673,10 +665,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                 chargingSession.CDRResult = CDRResult;
 
-                LogIt("CDRForwarded",
-                      chargingSession.Id,
-                      "chargingSession",
-                      chargingSession.ToJSON());
+                await LogIt("CDRForwarded",
+                            chargingSession.Id,
+                            "chargingSession",
+                            chargingSession.ToJSON());
 
                 OnNewChargeDetailRecordResult?.Invoke(Timestamp.Now,
                                                       RoamingNetworkId,
@@ -686,8 +678,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            else
-                return false;
+            return false;
 
         }
 
