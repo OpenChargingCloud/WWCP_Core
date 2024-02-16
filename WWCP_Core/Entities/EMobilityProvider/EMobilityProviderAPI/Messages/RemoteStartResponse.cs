@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="ResponseTimestamp">The timestamp of the response creation.</param>
         /// <param name="Runtime">The runtime of the request/response.</param>
         /// <param name="HTTPResponse">The optional HTTP response.</param>
-        /// <param name="CustomRemoteStartResponseParser">A delegate to parse custom RemoteStart JSON objects.</param>
+        /// <param name="CustomRemoteStartResponseParser">An optional delegate to parse custom RemoteStart JSON objects.</param>
         public static RemoteStartResponse Parse(RemoteStartRequest                                 Request,
                                                 JObject                                            JSON,
                                                 DateTime                                           ResponseTimestamp,
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="RemoteStartResponse">The parsed RemoteStart response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="HTTPResponse">The optional HTTP response.</param>
-        /// <param name="CustomRemoteStartResponseParser">A delegate to parse custom RemoteStart response JSON objects.</param>
+        /// <param name="CustomRemoteStartResponseParser">An optional delegate to parse custom RemoteStart response JSON objects.</param>
         public static Boolean TryParse(RemoteStartRequest                                 Request,
                                        JObject                                            JSON,
                                        DateTime                                           ResponseTimestamp,

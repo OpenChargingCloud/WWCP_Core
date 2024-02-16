@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given JSON representation of an energy meter.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomEnergyMeterParser">A delegate to parse custom energy meter JSON objects.</param>
+        /// <param name="CustomEnergyMeterParser">An optional delegate to parse custom energy meter JSON objects.</param>
         public static EnergyMeter Parse(JObject                                    JSON,
                                         CustomJObjectParserDelegate<EnergyMeter>?  CustomEnergyMeterParser   = null)
         {
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="EnergyMeter">The parsed energy meter.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomEnergyMeterParser">A delegate to parse custom energy meter JSON objects.</param>
+        /// <param name="CustomEnergyMeterParser">An optional delegate to parse custom energy meter JSON objects.</param>
         public static Boolean TryParse(JObject                                    JSON,
                                        out EnergyMeter?                           EnergyMeter,
                                        out String?                                ErrorResponse,

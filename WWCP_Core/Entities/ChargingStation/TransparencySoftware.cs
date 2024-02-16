@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given JSON representation of a transparency software.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomTransparencySoftwareParser">A delegate to parse custom transparency software JSON objects.</param>
+        /// <param name="CustomTransparencySoftwareParser">An optional delegate to parse custom transparency software JSON objects.</param>
         public static TransparencySoftware Parse(JObject                                             JSON,
                                                  CustomJObjectParserDelegate<TransparencySoftware>?  CustomTransparencySoftwareParser   = null)
         {
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="TransparencySoftware">The parsed transparency software.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomTransparencySoftwareParser">A delegate to parse custom transparency software JSON objects.</param>
+        /// <param name="CustomTransparencySoftwareParser">An optional delegate to parse custom transparency software JSON objects.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        out TransparencySoftware?                           TransparencySoftware,
                                        out String?                                         ErrorResponse,

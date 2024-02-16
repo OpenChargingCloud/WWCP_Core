@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="RequestTimeout">The timeout for this request.</param>
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CustomRemoteStartRequestParser">A delegate to parse custom RemoteStart JSON objects.</param>
+        /// <param name="CustomRemoteStartRequestParser">An optional delegate to parse custom RemoteStart JSON objects.</param>
         public static RemoteStartRequest Parse(JObject                                           JSON,
 
                                                DateTime?                                         Timestamp                        = null,
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CustomRemoteStartRequestParser">A delegate to parse custom RemoteStart request JSON objects.</param>
+        /// <param name="CustomRemoteStartRequestParser">An optional delegate to parse custom RemoteStart request JSON objects.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        out RemoteStartRequest?                           RemoteStartRequest,
                                        out String?                                       ErrorResponse,

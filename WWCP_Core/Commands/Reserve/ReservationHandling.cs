@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given JSON representation of a reservation handling.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomReservationHandlingParser">A delegate to parse custom reservation handling JSON objects.</param>
+        /// <param name="CustomReservationHandlingParser">An optional delegate to parse custom reservation handling JSON objects.</param>
         public static ReservationHandling Parse(JObject                                            JSON,
                                                 CustomJObjectParserDelegate<ReservationHandling>?  CustomReservationHandlingParser   = null)
         {
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="ReservationHandling">The parsed RemoteStop response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomReservationHandlingParser">A delegate to parse custom RemoteStop response JSON objects.</param>
+        /// <param name="CustomReservationHandlingParser">An optional delegate to parse custom RemoteStop response JSON objects.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        out ReservationHandling?                           ReservationHandling,
                                        out String?                                        ErrorResponse,
