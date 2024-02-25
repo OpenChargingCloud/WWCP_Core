@@ -359,12 +359,12 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                   return Task.FromResult(
                                       new HTTPResponse.Builder(Request) {
                                              HTTPStatusCode             = HTTPStatusCode.OK,
-                                             AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
+                                             AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
                                              Allow                      = new[] {
                                                                               HTTPMethod.OPTIONS,
                                                                               HTTPMethod.GET
                                                                           },
-                                             AccessControlAllowHeaders  = new[] { "Authorization" }
+                                             AccessControlAllowHeaders  = [ "Authorization" ]
                                       }.AsImmutable);
 
                               });
@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                   //            HTTPResponseBuilder  = new HTTPResponse.Builder(Request.HTTPRequest) {
                                   //                HTTPStatusCode             = HTTPStatusCode.Forbidden,
                                   //                AccessControlAllowMethods  = new[] { "OPTIONS", "GET", "DELETE" },
-                                  //                AccessControlAllowHeaders  = new[] { "Authorization" }
+                                  //                AccessControlAllowHeaders  = [ "Authorization" ]
                                   //            }
                                   //        });
 
@@ -420,8 +420,8 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                   //                               HTTPStatusCode             = HTTPStatusCode.OK,
                                   //                               Server                     = DefaultHTTPServerName,
                                   //                               Date                       = Timestamp.Now,
-                                  //                               AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-                                  //                               AccessControlAllowHeaders  = new[] { "Authorization" }
+                                  //                               AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                                  //                               AccessControlAllowHeaders  = [ "Authorization" ]
                                   //                           }.
 
                                   //                           // The overall number of locations
@@ -494,12 +494,12 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                   return Task.FromResult(
                                       new HTTPResponse.Builder(Request) {
                                              HTTPStatusCode             = HTTPStatusCode.OK,
-                                             AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
+                                             AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
                                              Allow                      = new[] {
                                                                               HTTPMethod.OPTIONS,
                                                                               HTTPMethod.GET
                                                                           },
-                                             AccessControlAllowHeaders  = new[] { "Authorization" }
+                                             AccessControlAllowHeaders  = [ "Authorization" ]
                                       }.AsImmutable);
 
 
@@ -702,7 +702,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                                                          CustomWarningSerializer).
                                                                                                   ToString(JSONFormatting).
                                                                                                   ToUTF8Bytes(),
-                                                 AccessControlAllowHeaders  = new[] { "Authorization" }
+                                                 AccessControlAllowHeaders  = [ "Authorization" ]
                                           }.AsImmutable;
 
                                   }
@@ -717,7 +717,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                                   HTTPMethod.OPTIONS,
                                                                                   HTTPMethod.POST
                                                                               },
-                                                 AccessControlAllowHeaders  = new[] { "Authorization" }
+                                                 AccessControlAllowHeaders  = [ "Authorization" ]
                                           }.AsImmutable;
 
                                   }
