@@ -17,17 +17,12 @@
 
 #region Usings
 
-using System;
-using System.IO;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
-using cloud.charging.open.protocols.WWCP.Networking;
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
+
+using cloud.charging.open.protocols.WWCP.Networking;
 
 #endregion
 
@@ -336,40 +331,56 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region NewOrUpdate(NewChargingSession, UpdateFunc = null)
+        #region Add(NewChargingSession)
 
-        public void NewOrUpdate(ChargingSession          NewChargingSession,
-                                Action<ChargingSession>  UpdateFunc = null)
+        public async Task Add(ChargingSession NewChargingSession)
         {
-
-            lock (InternalData)
+            if (InternalData.TryAdd(NewChargingSession.Id,
+                                    NewChargingSession))
             {
 
-                if (!InternalData.ContainsKey(NewChargingSession.Id))
-                {
-
-                    InternalData.TryAdd(NewChargingSession.Id, NewChargingSession);
-                    UpdateFunc?.Invoke(NewChargingSession);
-
-                    LogIt("new",
-                          NewChargingSession.Id,
-                          "chargingSession",
-                          NewChargingSession.ToJSON());
-
-                }
-                else
-                {
-
-                    UpdateFunc?.Invoke(NewChargingSession);
-
-                    LogIt("update",
-                          NewChargingSession.Id,
-                          "chargingSession",
-                          NewChargingSession.ToJSON());
-
-                }
+                await LogIt("new",
+                            NewChargingSession.Id,
+                            "chargingSession",
+                            NewChargingSession.ToJSON());
 
             }
+        }
+
+        #endregion
+
+        #region NewOrUpdate(NewChargingSession, UpdateFunc)
+
+        public async Task NewOrUpdate(ChargingSession                         NewChargingSession,
+                                      Func<ChargingSession, ChargingSession>  UpdateFunc)
+        {
+
+            var updated = false;
+
+            ChargingSession updateFunc(ChargingSession CS)
+            {
+                updated = true;
+                return UpdateFunc(CS);
+            }
+
+            var result  = InternalData.AddOrUpdate(
+                              NewChargingSession.Id,
+                              NewChargingSession,
+                              (sessionId, oldSession) => updateFunc(NewChargingSession)
+                          );
+
+
+            if (updated)
+                await LogIt("update",
+                            NewChargingSession.Id,
+                            "chargingSession",
+                            NewChargingSession.ToJSON());
+
+            else
+                await LogIt("new",
+                            NewChargingSession.Id,
+                            "chargingSession",
+                            NewChargingSession.ToJSON());
 
         }
 
@@ -389,24 +400,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Update(Id, UpdateFunc)
 
-        public ChargingSessionsStore Update(ChargingSession_Id       Id,
-                                            Action<ChargingSession>  UpdateFunc)
+        public async Task UpdateSessionDetails(ChargingSession_Id       Id,
+                                               Action<ChargingSession>  UpdateFunc)
         {
 
-            lock (InternalData)
+            if (InternalData.TryGetValue(Id, out var chargingSession))
             {
 
-                if (InternalData.TryGetValue(Id, out ChargingSession chargingSession))
-                    UpdateFunc(chargingSession);
+                UpdateFunc(chargingSession);
 
-                LogIt("update",
-                      Id,
-                      "chargingSession",
-                      chargingSession.ToJSON());
+                await LogIt("update",
+                            Id,
+                            "chargingSession",
+                            chargingSession.ToJSON());
 
             }
-
-            return this;
 
         }
 

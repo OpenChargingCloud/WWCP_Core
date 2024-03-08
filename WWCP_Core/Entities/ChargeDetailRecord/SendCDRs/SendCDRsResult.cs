@@ -18,7 +18,7 @@
 #region Usings
 
 using System.Collections;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -44,6 +44,7 @@ namespace cloud.charging.open.protocols.WWCP
                    SendCDRResultTypes.Filtered                  => SendCDRsResultTypes.Filtered,
                    SendCDRResultTypes.InvalidSessionId          => SendCDRsResultTypes.InvalidSessionId,
                    SendCDRResultTypes.UnknownSessionId          => SendCDRsResultTypes.UnknownSessionId,
+                   SendCDRResultTypes.UnknownProviderIdStart    => SendCDRsResultTypes.UnknownProviderIdStart,
                    SendCDRResultTypes.UnknownLocation           => SendCDRsResultTypes.UnknownLocation,
                    SendCDRResultTypes.InvalidToken              => SendCDRsResultTypes.InvalidToken,
                    SendCDRResultTypes.CouldNotConvertCDRFormat  => SendCDRsResultTypes.CouldNotConvertCDRFormat,
@@ -235,12 +236,12 @@ namespace cloud.charging.open.protocols.WWCP
             this.AuthorizatorId            = AuthorizatorId;
             this.ISendChargeDetailRecords  = ISendChargeDetailRecords;
             this.Result                    = Result;
-            this.ResultMap                 = ResultMap   ?? Array.Empty<SendCDRResult>();
+            this.ResultMap                 = ResultMap   ?? [];
             this.Description               = Description ?? I18NString.Empty;
 
             this.Warnings                  = Warnings is not null
                                                  ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
-                                                 : Array.Empty<Warning>();
+                                                 : [];
 
             this.Runtime                   = Runtime;
 
@@ -275,12 +276,12 @@ namespace cloud.charging.open.protocols.WWCP
             this.AuthorizatorId               = AuthorizatorId;
             this.IReceiveChargeDetailRecords  = IReceiveChargeDetailRecords;
             this.Result                       = Result;
-            this.ResultMap                    = ResultMap   ?? Array.Empty<SendCDRResult>();
+            this.ResultMap                    = ResultMap   ?? [];
             this.Description                  = Description ?? I18NString.Empty;
 
             this.Warnings                     = Warnings is not null
                                                     ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
-                                                    : Array.Empty<Warning>();
+                                                    : [];
 
             this.Runtime                      = Runtime;
 
@@ -291,24 +292,24 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NoOperation (Timestamp, AuthorizatorId, ...)
+        #region (static) Unspecified              (Timestamp, AuthorizatorId, ...)
 
         /// <summary>
-        /// No operation e.g. because no charge detail record passed the charge detail records filter.
+        /// An unspecified error occured.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
-        /// <param name="ResultMap">An enumeration of charge detail records.</param>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            NoOperation(DateTime                         Timestamp,
+            Unspecified(DateTime                         Timestamp,
                         IId                              AuthorizatorId,
                         ISendChargeDetailRecords         ISendChargeDetailRecords,
-                        IEnumerable<ChargeDetailRecord>  ResultMap,
+                        IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                         I18NString?                      Description   = null,
                         IEnumerable<Warning>?            Warnings      = null,
                         TimeSpan?                        Runtime       = null)
@@ -318,7 +319,73 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.NoOperation,
-                        ResultMap.SafeSelect(cdr => SendCDRResult.NoOperation(Timestamp, cdr)),
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Unspecified(Timestamp, AuthorizatorId, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
+
+
+
+        /// <summary>
+        /// An unspecified error occured.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
+        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="Description">An optional description of the send charge detail records result.</param>
+        /// <param name="Warnings">Optional warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRsResult
+
+            Unspecified(DateTime                         Timestamp,
+                        IId                              AuthorizatorId,
+                        IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
+                        IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                        I18NString?                      Description   = null,
+                        IEnumerable<Warning>?            Warnings      = null,
+                        TimeSpan?                        Runtime       = null)
+
+
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.NoOperation,
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Unspecified(Timestamp, AuthorizatorId, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) NoOperation              (Timestamp, AuthorizatorId, ...)
+
+        /// <summary>
+        /// No operation e.g. because no charge detail record passed the charge detail records filter.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
+        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="Description">An optional description of the send charge detail records result.</param>
+        /// <param name="Warnings">Optional warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRsResult
+
+            NoOperation(DateTime                         Timestamp,
+                        IId                              AuthorizatorId,
+                        ISendChargeDetailRecords         ISendChargeDetailRecords,
+                        IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                        I18NString?                      Description   = null,
+                        IEnumerable<Warning>?            Warnings      = null,
+                        TimeSpan?                        Runtime       = null)
+
+
+                => new (Timestamp,
+                        AuthorizatorId,
+                        ISendChargeDetailRecords,
+                        SendCDRsResultTypes.NoOperation,
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.NoOperation(Timestamp, AuthorizatorId, cdr)),
                         Description,
                         Warnings,
                         Runtime);
@@ -340,7 +407,7 @@ namespace cloud.charging.open.protocols.WWCP
             NoOperation(DateTime                         Timestamp,
                         IId                              AuthorizatorId,
                         IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
-                        IEnumerable<ChargeDetailRecord>  ResultMap,
+                        IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                         I18NString?                      Description   = null,
                         IEnumerable<Warning>?            Warnings      = null,
                         TimeSpan?                        Runtime       = null)
@@ -350,14 +417,14 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.NoOperation,
-                        ResultMap.SafeSelect(cdr => SendCDRResult.NoOperation(Timestamp, cdr)),
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.NoOperation(Timestamp, AuthorizatorId, cdr)),
                         Description,
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) AdminDown   (Timestamp, AuthorizatorId, ...)
+        #region (static) AdminDown                (Timestamp, AuthorizatorId, ...)
 
         /// <summary>
         /// The service is administratively down.
@@ -384,7 +451,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.AdminDown,
-                        ResultMap.SafeSelect(cdr => SendCDRResult.AdminDown(Timestamp, cdr)),
+                        ResultMap.SafeSelect(cdr => SendCDRResult.AdminDown(Timestamp, AuthorizatorId, cdr)),
                         Description,
                         Warnings,
                         Runtime);
@@ -414,14 +481,14 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.AdminDown,
-                        ResultMap.Select(cdr => SendCDRResult.AdminDown(Timestamp, cdr)),
+                        ResultMap.Select(cdr => SendCDRResult.AdminDown(Timestamp, AuthorizatorId, cdr)),
                         Description,
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) OutOfService(Timestamp, AuthorizatorId, ...)
+        #region (static) OutOfService             (Timestamp, AuthorizatorId, ...)
 
         /// <summary>
         /// The service is out of service.
@@ -448,7 +515,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.OutOfService,
-                        ResultMap.Select(cdr => SendCDRResult.OutOfService(Timestamp, cdr)),
+                        ResultMap.Select(cdr => SendCDRResult.OutOfService(Timestamp, AuthorizatorId, cdr)),
                         Description,
                         Warnings,
                         Runtime);
@@ -479,14 +546,14 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.OutOfService,
-                        RejectedChargeDetailRecords.Select(cdr => SendCDRResult.OutOfService(Timestamp, cdr)),
+                        RejectedChargeDetailRecords.Select(cdr => SendCDRResult.OutOfService(Timestamp, AuthorizatorId, cdr)),
                         Description,
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) Enqueued    (Timestamp, AuthorizatorId, ...)
+        #region (static) Enqueued                 (Timestamp, AuthorizatorId, ...)
 
         /// <summary>
         /// The charge detail records had been enqueued for later transmission.
@@ -513,7 +580,7 @@ namespace cloud.charging.open.protocols.WWCP
                                       AuthorizatorId,
                                       ISendChargeDetailRecords,
                                       SendCDRsResultTypes.Enqueued,
-                                      new SendCDRResult[] { SendCDRResult.Enqueued(Timestamp, ChargeDetailRecord) },
+                                      [ SendCDRResult.Enqueued(Timestamp, AuthorizatorId, ChargeDetailRecord) ],
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -544,7 +611,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.Enqueued,
-                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Enqueued(Timestamp, cdr)),
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Enqueued(Timestamp, AuthorizatorId, cdr)),
                         Description,
                         Warnings,
                         Runtime);
@@ -576,7 +643,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.Enqueued,
-                        new SendCDRResult[] { SendCDRResult.Enqueued(Timestamp, ChargeDetailRecord) },
+                        [ SendCDRResult.Enqueued(Timestamp, AuthorizatorId, ChargeDetailRecord) ],
                         Description,
                         Warnings,
                         Runtime);
@@ -607,14 +674,14 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.Enqueued,
-                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Enqueued(Timestamp, cdr)),
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Enqueued(Timestamp, AuthorizatorId, cdr)),
                         Description,
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) Timeout     (Timestamp, AuthorizatorId, ...)
+        #region (static) Timeout                  (Timestamp, AuthorizatorId, ...)
 
         /// <summary>
         /// A timeout occured.
@@ -641,14 +708,14 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.Timeout,
-                        ResultMap.SafeSelect(cdr => SendCDRResult.Timeout(Timestamp, cdr)),
+                        ResultMap.SafeSelect(cdr => SendCDRResult.Timeout(Timestamp, AuthorizatorId, cdr)),
                         Description,
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) Success     (Timestamp, AuthorizatorId, ...)
+        #region (static) Success                  (Timestamp, AuthorizatorId, ...)
 
         /// <summary>
         /// The request completed successfully.
@@ -675,7 +742,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.Success,
-                        new SendCDRResult[] { SendCDRResult.Success(Timestamp, ChargeDetailRecord) },
+                        [ SendCDRResult.Success(Timestamp, AuthorizatorId, ChargeDetailRecord) ],
                         Description,
                         Warnings,
                         Runtime);
@@ -706,7 +773,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.Success,
-                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Success(Timestamp, cdr)),
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Success(Timestamp, AuthorizatorId, cdr)),
                         Description,
                         Warnings,
                         Runtime);
@@ -737,7 +804,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.Success,
-                        new SendCDRResult[] { SendCDRResult.Success(Timestamp, ChargeDetailRecord) },
+                        [ SendCDRResult.Success(Timestamp, AuthorizatorId, ChargeDetailRecord) ],
                         Description,
                         Warnings,
                         Runtime);
@@ -768,14 +835,14 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.Success,
-                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Success(Timestamp, cdr)),
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Success(Timestamp, AuthorizatorId, cdr)),
                         Description,
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) Error       (Timestamp, AuthorizatorId, ...)
+        #region (static) Error                    (Timestamp, AuthorizatorId, ...)
 
         /// <summary>
         /// The request completed unsuccessfully.
@@ -803,10 +870,8 @@ namespace cloud.charging.open.protocols.WWCP
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.Success,
                         ChargeDetailRecord is not null
-                            ? new SendCDRResult[] {
-                                  SendCDRResult.Error(Timestamp, ChargeDetailRecord)
-                              }
-                            : Array.Empty<SendCDRResult>(),
+                            ? [ SendCDRResult.Error(Timestamp, AuthorizatorId, ChargeDetailRecord) ]
+                            : [],
                         Description,
                         Warnings,
                         Runtime);
@@ -837,7 +902,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.Success,
-                        ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
+                        ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, AuthorizatorId, cdr)),
                         Description,
                         Warnings,
                         Runtime);
@@ -859,16 +924,16 @@ namespace cloud.charging.open.protocols.WWCP
                   ISendChargeDetailRecords         ISendChargeDetailRecords,
                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                   Warning                          Warning,
-                  TimeSpan?                        Runtime       = null)
+                  TimeSpan?                        Runtime   = null)
 
 
                 => new (Timestamp,
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.Success,
-                        ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
+                        ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, AuthorizatorId, cdr)),
                         I18NString.Empty,
-                        new Warning[] { Warning },
+                        [ Warning ],
                         Runtime);
 
 
@@ -899,10 +964,8 @@ namespace cloud.charging.open.protocols.WWCP
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.Success,
                         ChargeDetailRecord is not null
-                            ? new SendCDRResult[] {
-                                  SendCDRResult.Error(Timestamp, ChargeDetailRecord)
-                              }
-                            : Array.Empty<SendCDRResult>(),
+                            ? [ SendCDRResult.Error(Timestamp, AuthorizatorId, ChargeDetailRecord) ]
+                            : [],
                         Description,
                         Warnings,
                         Runtime);
@@ -933,14 +996,116 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.Success,
-                        ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
+                        ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, AuthorizatorId, cdr)),
                         Description,
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region InvalidToken
+        #region (static) InvalidSessionId         (Timestamp, AuthorizatorId, ...)
+
+        /// <summary>
+        /// The given charging session identification is invalid.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
+        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="Description">An optional description of the send charge detail records result.</param>
+        /// <param name="Warnings">Optional warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRsResult
+
+            InvalidSessionId(DateTime                         Timestamp,
+                             IId                              AuthorizatorId,
+                             IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
+                             IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                             I18NString?                      Description   = null,
+                             IEnumerable<Warning>?            Warnings      = null,
+                             TimeSpan?                        Runtime       = null)
+
+
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.InvalidSessionId,
+                        ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, AuthorizatorId, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) UnknownSessionId         (Timestamp, AuthorizatorId, ...)
+
+        /// <summary>
+        /// The given charging session identification is unknown.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
+        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="Description">An optional description of the send charge detail records result.</param>
+        /// <param name="Warnings">Optional warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRsResult
+
+            UnknownSessionId(DateTime                         Timestamp,
+                             IId                              AuthorizatorId,
+                             IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
+                             IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                             I18NString?                      Description   = null,
+                             IEnumerable<Warning>?            Warnings      = null,
+                             TimeSpan?                        Runtime       = null)
+
+
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.UnknownSessionId,
+                        ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, AuthorizatorId, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) UnknownProviderIdStart   (Timestamp, AuthorizatorId, ...)
+
+        /// <summary>
+        /// The given charging session identification is unknown.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
+        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="Description">An optional description of the send charge detail records result.</param>
+        /// <param name="Warnings">Optional warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRsResult
+
+            UnknownProviderIdStart(DateTime                         Timestamp,
+                                   IId                              AuthorizatorId,
+                                   IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
+                                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                                   I18NString?                      Description   = null,
+                                   IEnumerable<Warning>?            Warnings      = null,
+                                   TimeSpan?                        Runtime       = null)
+
+
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.UnknownSessionId,
+                        ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, AuthorizatorId, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) InvalidToken             (Timestamp, AuthorizatorId, ...)
 
         /// <summary>
         /// The given token is unknown or invalid.
@@ -967,14 +1132,48 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.InvalidToken,
-                        ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
+                        ChargeDetailRecords.Select(cdr => SendCDRResult.InvalidToken(Timestamp, AuthorizatorId, cdr)),
                         Description,
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) Mixed       (Timestamp, AuthorizatorId, ...)
+        #region (static) CouldNotConvertCDRFormat (Timestamp, AuthorizatorId, ...)
+
+        /// <summary>
+        /// The charge detail records could not be converted.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
+        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="Description">An optional description of the send charge detail records result.</param>
+        /// <param name="Warnings">Optional warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRsResult
+
+            CouldNotConvertCDRFormat(DateTime                         Timestamp,
+                                     IId                              AuthorizatorId,
+                                     IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
+                                     IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                                     I18NString?                      Description   = null,
+                                     IEnumerable<Warning>?            Warnings      = null,
+                                     TimeSpan?                        Runtime       = null)
+
+
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.CouldNotConvertCDRFormat,
+                        ChargeDetailRecords.Select(cdr => SendCDRResult.CouldNotConvertCDRFormat(Timestamp, AuthorizatorId, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Mixed                    (Timestamp, AuthorizatorId, ...)
 
         /// <summary>
         /// The request completed unsuccessfully.
@@ -1001,7 +1200,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.Mixed,
-                        new SendCDRResult[] { Result },
+                        [ Result ],
                         Description,
                         Warnings,
                         Runtime);
@@ -1064,7 +1263,7 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.Mixed,
-                        new SendCDRResult[] { Result },
+                        [ Result ],
                         Description,
                         Warnings,
                         Runtime);
@@ -1164,6 +1363,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// The charging session identification is unknown.
         /// </summary>
         UnknownSessionId,
+
+        /// <summary>
+        /// The ProviderIdStart of the charge detail record is unknown.
+        /// </summary>
+        UnknownProviderIdStart,
 
         /// <summary>
         /// The charging location is unknown.

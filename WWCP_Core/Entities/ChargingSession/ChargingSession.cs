@@ -814,9 +814,9 @@ namespace cloud.charging.open.protocols.WWCP
             this.Id                 = Id;
             this.EventTrackingId    = EventTrackingId;
             this.SessionTime        = new StartEndDateTime(Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now);
-            this.energyMeterValues  = new List<EnergyMeteringValue>();
-            this.stopRequests       = new List<SessionStopRequest>();
-            this.signatures         = new HashSet<String>();
+            this.energyMeterValues  = [];
+            this.stopRequests       = [];
+            this.signatures         = [];
 
         }
 
@@ -908,7 +908,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          ? new JProperty("providerId",             ProviderIdStart.          ToString())
                                          : null,
 
-                                     AuthenticationStart.IsDefined()
+                                     AuthenticationStart?.IsDefined() == true
                                          ? new JProperty("authentication",         AuthenticationStart.      ToJSON())
                                          : null
 
@@ -940,11 +940,11 @@ namespace cloud.charging.open.protocols.WWCP
                                          ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStop. ToString())
                                          : null,
 
-                                     ProviderIdStop != null
+                                     ProviderIdStop is not null
                                          ? new JProperty("providerId",            ProviderIdStop.           ToString())
                                          : null,
 
-                                     AuthenticationStop.IsDefined()
+                                     AuthenticationStop?.IsDefined() == true
                                          ? new JProperty("authentication",        AuthenticationStop.       ToJSON())
                                          : null
 
@@ -970,7 +970,6 @@ namespace cloud.charging.open.protocols.WWCP
 
                                      CDRResult is not null
                                          ? new JProperty("result",                CDRResult.         ToJSON(Embedded:                           true,
-                                                                                                            IncludeCDR:                         false,
                                                                                                             CustomChargeDetailRecordSerializer: CustomChargeDetailRecordSerializer,
                                                                                                             CustomSendCDRResultSerializer:      CustomSendCDRResultSerializer))
                                          : null

@@ -18,8 +18,9 @@
 #region Usings
 
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Threading.Channels;
+using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -496,7 +497,9 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean ContainsKey(TId Id)
             => InternalData.ContainsKey(Id);
 
-        public Boolean TryGet(TId Id, out TData? Data)
+        public Boolean TryGet(TId                             Id,
+                              [NotNullWhen(true)] out TData?  Data)
+
             => InternalData.TryGetValue(Id, out Data);
 
         public TData? Get(TId Id)

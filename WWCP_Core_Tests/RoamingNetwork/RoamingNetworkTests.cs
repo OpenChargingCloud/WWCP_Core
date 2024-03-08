@@ -83,8 +83,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 var roamingNetwork = new WWCP.RoamingNetwork(
                                              Id:                  RoamingNetwork_Id.Parse("TEST"),
-                                             Name:                I18NString.Create(Languages.en, "TESTNET"),
-                                             Description:         I18NString.Create(Languages.en, "A roaming network for testing"),
+                                             Name:                I18NString.Create("TESTNET"),
+                                             Description:         I18NString.Create("A roaming network for testing"),
                                              DisableNetworkSync:  true
                                          );
 

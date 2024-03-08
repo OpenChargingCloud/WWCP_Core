@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.WWCP
             #region Initial checks
 
             if (ChargeDetailRecords is null || !ChargeDetailRecords.Any())
-                return new JArray();
+                return [];
 
             #endregion
 
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Authentication
+        #region Authentication(Start/Stop)
 
         /// <summary>
         /// The authentication used for starting this charging process.
@@ -238,31 +238,78 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public AuthMethod?                      AuthMethodStop         { get; }
 
+        #endregion
+
+        #region Provider(Id)(Start/Stop)
+
+        /// <summary>
+        /// The e-mobility provider used for starting this charging process.
+        /// </summary>
+        [Optional]
+        public IEMobilityProvider?              ProviderStart          { get; internal set; }
+
         /// <summary>
         /// The identification of the e-mobility provider used for starting this charging process.
         /// </summary>
         [Optional]
-        public EMobilityProvider_Id?            ProviderIdStart        { get; }
+        public EMobilityProvider_Id?            ProviderIdStart        { get; internal set; }
 
         /// <summary>
         /// The identification of the e-mobility provider used for stopping this charging process.
         /// </summary>
         [Optional]
-        public EMobilityProvider_Id?            ProviderIdStop         { get; }
+        public IEMobilityProvider?              ProviderStop           { get; internal set; }
+
+        /// <summary>
+        /// The e-mobility provider used for stopping this charging process.
+        /// </summary>
+        [Optional]
+        public EMobilityProvider_Id?            ProviderIdStop         { get; internal set; }
 
         #endregion
 
-        #region Roaming
+        #region CSORoamingProvider(Id)(Start/Stop)
 
         /// <summary>
         /// An optional EV roaming provider, e.g. when you want to force the transmission of a CDR via a given roaming network.
         /// </summary>
-        public ICSORoamingProvider?             CSORoamingProvider      { get; internal set; }
+        public ICSORoamingProvider?             CSORoamingProviderStart      { get; internal set; }
 
         /// <summary>
         /// An optional EV roaming provider identification, e.g. when you want to force the transmission of a CDR via a given roaming network.
         /// </summary>
-        public CSORoamingProvider_Id?           CSORoamingProviderId    { get; internal set; }
+        public CSORoamingProvider_Id?           CSORoamingProviderIdStart    { get; internal set; }
+
+        /// <summary>
+        /// An optional EV roaming provider, e.g. when you want to force the transmission of a CDR via a given roaming network.
+        /// </summary>
+        public ICSORoamingProvider?             CSORoamingProviderStop       { get; internal set; }
+
+        /// <summary>
+        /// An optional EV roaming provider identification, e.g. when you want to force the transmission of a CDR via a given roaming network.
+        /// </summary>
+        public CSORoamingProvider_Id?           CSORoamingProviderIdStop     { get; internal set; }
+
+
+        ///// <summary>
+        ///// An optional EV roaming provider, e.g. when you want to force the transmission of a CDR via a given roaming network.
+        ///// </summary>
+        //public IEMPRoamingProvider?             EMPRoamingProviderStart      { get; internal set; }
+
+        ///// <summary>
+        ///// An optional EV roaming provider identification, e.g. when you want to force the transmission of a CDR via a given roaming network.
+        ///// </summary>
+        //public EMPRoamingProvider_Id?           EMPRoamingProviderIdStart    { get; internal set; }
+
+        ///// <summary>
+        ///// An optional EV roaming provider, e.g. when you want to force the transmission of a CDR via a given roaming network.
+        ///// </summary>
+        //public IEMPRoamingProvider?             EMPRoamingProviderStop       { get; internal set; }
+
+        ///// <summary>
+        ///// An optional EV roaming provider identification, e.g. when you want to force the transmission of a CDR via a given roaming network.
+        ///// </summary>
+        //public EMPRoamingProvider_Id?           EMPRoamingProviderIdStop     { get; internal set; }
 
         #endregion
 
@@ -392,7 +439,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderIdStart">The identification of the e-mobility provider used for starting this charging process.</param>
         /// <param name="ProviderIdStop">The identification of the e-mobility provider used for stopping this charging process.</param>
         /// 
-        /// <param name="EMPRoamingProvider">An optional EV roaming provider, e.g. when you want to force the transmission of a CDR via a given roaming network.</param>
+        /// <param name="CSORoamingProviderStart">An optional EV roaming provider, e.g. when you want to force the transmission of a CDR via a given roaming network.</param>
         /// 
         /// <param name="Reservation">The optional charging reservation used before charging.</param>
         /// <param name="ReservationId">The optional charging reservation identification used before charging.</param>
@@ -430,11 +477,16 @@ namespace cloud.charging.open.protocols.WWCP
                                   AAuthentication?                   AuthenticationStop          = null,
                                   AuthMethod?                        AuthMethodStart             = null,
                                   AuthMethod?                        AuthMethodStop              = null,
+
+                                  EMobilityProvider?                 ProviderStart               = null,
                                   EMobilityProvider_Id?              ProviderIdStart             = null,
+                                  EMobilityProvider?                 ProviderStop                = null,
                                   EMobilityProvider_Id?              ProviderIdStop              = null,
 
-                                  ICSORoamingProvider?               CSORoamingProvider          = null,
-                                  CSORoamingProvider_Id?             CSORoamingProviderId        = null,
+                                  ICSORoamingProvider?               CSORoamingProviderStart     = null,
+                                  CSORoamingProvider_Id?             CSORoamingProviderIdStart   = null,
+                                  ICSORoamingProvider?               CSORoamingProviderStop      = null,
+                                  CSORoamingProvider_Id?             CSORoamingProviderIdStop    = null,
 
                                   ChargingReservation?               Reservation                 = null,
                                   ChargingReservation_Id?            ReservationId               = null,
@@ -489,11 +541,16 @@ namespace cloud.charging.open.protocols.WWCP
             this.AuthenticationStop          = AuthenticationStop;
             this.AuthMethodStart             = AuthMethodStart;
             this.AuthMethodStop              = AuthMethodStop;
+
+            this.ProviderStart               = ProviderStart;
             this.ProviderIdStart             = ProviderIdStart;
+            this.ProviderStop                = ProviderStop;
             this.ProviderIdStop              = ProviderIdStop;
 
-            this.CSORoamingProvider          = CSORoamingProvider;
-            this.CSORoamingProviderId        = CSORoamingProviderId;
+            this.CSORoamingProviderStart     = CSORoamingProviderStart;
+            this.CSORoamingProviderIdStart   = CSORoamingProviderIdStart;
+            this.CSORoamingProviderStop      = CSORoamingProviderStop;
+            this.CSORoamingProviderIdStop    = CSORoamingProviderIdStop;
 
             this.Reservation                 = Reservation;
             this.ReservationId               = ReservationId             ?? Reservation?.Id;
@@ -508,7 +565,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.EnergyMeter                 = EnergyMeter;
             this.EnergyMeteringValues        = EnergyMeteringValues is not null
                                                    ? EnergyMeteringValues.OrderBy(energyMeteringValue => energyMeteringValue.Timestamp).ToArray()
-                                                   : Array.Empty<EnergyMeteringValue>();
+                                                   : [];
 
             this.ConsumedEnergy              = ConsumedEnergy;
             if (this.ConsumedEnergy is null && this.EnergyMeteringValues.Any())
@@ -518,7 +575,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.PublicKey                   = PublicKey;
             this.signatures                  = Signatures is not null && Signatures.Any()
                                                    ? new HashSet<String>(Signatures)
-                                                   : new HashSet<String>();
+                                                   : [];
 
             this.Created                     = Created                  ?? Timestamp.Now;
 
@@ -664,7 +721,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        public static Boolean TryParse(JObject JSON,
+        public static Boolean TryParse(JObject                  JSON,
                                        out ChargeDetailRecord?  ChargeDetailRecord,
                                        out String?              ErrorResponse)
         {
