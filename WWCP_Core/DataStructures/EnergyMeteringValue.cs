@@ -29,20 +29,23 @@ namespace cloud.charging.open.protocols.WWCP
     public class EnergyMeteringValue
     {
 
-        public DateTime  Timestamp     { get; }
-        public Decimal   Value         { get; }
-        public String?   SignedData    { get; }
-        public String?   Signature     { get; }
+        public DateTime                   Timestamp     { get; }
+        public Decimal                    Value         { get; }
+        public EnergyMeteringValueTypes?  Type          { get; }
+        public String?                    SignedData    { get; }
+        public String?                    Signature     { get; }
 
 
-        public EnergyMeteringValue(DateTime  Timestamp,
-                                   Decimal   Value,
-                                   String?   SignedData   = null,
-                                   String?   Signature    = null)
+        public EnergyMeteringValue(DateTime                   Timestamp,
+                                   Decimal                    Value,
+                                   EnergyMeteringValueTypes?  Type,
+                                   String?                    SignedData   = null,
+                                   String?                    Signature    = null)
         {
 
             this.Timestamp   = Timestamp;
             this.Value       = Value;
+            this.Type        = Type;
             this.SignedData  = SignedData;
             this.Signature   = Signature;
 
@@ -56,6 +59,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                                  new JProperty("timestamp",    Timestamp.ToIso8601()),
                                  new JProperty("value",        Value),
+
+                           Type.HasValue
+                               ? new JProperty("type",         Type.Value.AsText())
+                               : null,
 
                            SignedData is not null && SignedData.IsNotNullOrEmpty()
                                ? new JProperty("signedData",   SignedData)

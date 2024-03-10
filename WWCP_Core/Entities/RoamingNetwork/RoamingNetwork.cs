@@ -7138,7 +7138,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">A token to cancel this request.</param>
-        public Task<SendCDRsResult>
+        public async Task<SendCDRResult>
 
             SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
                                    TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
@@ -7149,13 +7149,13 @@ namespace cloud.charging.open.protocols.WWCP
                                    CancellationToken   CancellationToken   = default)
 
 
-                => SendChargeDetailRecords([ ChargeDetailRecord ],
-                                           TransmissionType,
+                => (await SendChargeDetailRecords([ ChargeDetailRecord ],
+                                                  TransmissionType,
 
-                                           Timestamp,
-                                           EventTrackingId,
-                                           RequestTimeout,
-                                           CancellationToken);
+                                                  Timestamp,
+                                                  EventTrackingId,
+                                                  RequestTimeout,
+                                                  CancellationToken)).First();
 
         #endregion
 
@@ -7165,7 +7165,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Send a charge detail record.
         /// </summary>
         /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
-        /// <param name="TransmissionType">Whether to send the charge detail record directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the charge detail records directly or enqueue them for a while.</param>
         /// 
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
@@ -7313,7 +7313,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                               Id,
                                               chargeDetailRecord,
-                                              filterResult.SafeSelect(filterResult => Warning.Create(filterResult))
+                                              Warnings: filterResult.SafeSelect(filterResult => Warning.Create(filterResult))
                                           ));
 
                             var onCDRWasFiltered = OnCDRWasFiltered;
@@ -7854,7 +7854,7 @@ namespace cloud.charging.open.protocols.WWCP
                                     org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                     Id,
                                     cdr,
-                                    Warning.Create(sendCDR.Key + " returned null!")
+                                    Warnings: Warnings.Create(sendCDR.Key + " returned null!")
                                 )
                             );
                         }
@@ -7886,7 +7886,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                 Id,
                                 cdr,
-                                Warning.Create("Did not receive an result for this charge detail record!")
+                                Warnings: Warnings.Create("Did not receive an result for this charge detail record!")
                             )
                         );
                     }
@@ -8346,8 +8346,8 @@ namespace cloud.charging.open.protocols.WWCP
                 var chargingPool        = ChargingLocation?.ChargingPoolId.   HasValue == true ? GetChargingPoolById   (ChargingLocation.ChargingPoolId.   Value) : chargingStation?.ChargingPool;
 
                 var newChargingSession  = new ChargingSession(result.SessionId!.Value,
+                                                              this,
                                                               EventTrackingId) {
-                                              RoamingNetworkId           = Id,
                                               CSORoamingProviderStart    = result.ISendAuthorizeStartStop as ICSORoamingProvider,
                                               ProviderIdStart            = result.ProviderId,
                                               ChargingStationOperatorId  = OperatorId,

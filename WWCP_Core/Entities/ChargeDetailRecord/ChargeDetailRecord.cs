@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using Org.BouncyCastle.Bcpg.OpenPgp;
@@ -721,9 +723,9 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        public static Boolean TryParse(JObject                  JSON,
-                                       out ChargeDetailRecord?  ChargeDetailRecord,
-                                       out String?              ErrorResponse)
+        public static Boolean TryParse(JObject                                       JSON,
+                                       [NotNullWhen(true)]  out ChargeDetailRecord?  ChargeDetailRecord,
+                                       [NotNullWhen(false)] out String?              ErrorResponse)
         {
 
             ErrorResponse       = null;

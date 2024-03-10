@@ -557,6 +557,7 @@ namespace cloud.charging.open.protocols.WWCP
                 ChargingSessions.Add(chargingSessionId,
                                      new ChargingSession(
                                          chargingSessionId,
+                                         RoamingNetwork,
                                          eventTrackingId
                                      ));
 

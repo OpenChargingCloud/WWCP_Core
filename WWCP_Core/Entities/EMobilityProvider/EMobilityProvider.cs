@@ -3029,7 +3029,51 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region SendChargeDetailRecord(ChargeDetailRecords, ...)
+
+        #region SendChargeDetailRecord (ChargeDetailRecord,  ...)
+
+        /// <summary>
+        /// Send a charge detail record.
+        /// </summary>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<SendCDRResult>
+
+            SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
+                                   TransmissionTypes   TransmissionType,
+
+                                   DateTime?           Timestamp           = null,
+                                   EventTracking_Id?   EventTrackingId     = null,
+                                   TimeSpan?           RequestTimeout      = null,
+                                   CancellationToken   CancellationToken   = default)
+        {
+
+            if (!DisableSendChargeDetailRecords && RemoteEMobilityProvider is not null)
+                return (await RemoteEMobilityProvider.ReceiveChargeDetailRecords(
+                                  [ ChargeDetailRecord ],
+
+                                  Timestamp,
+                                  EventTrackingId,
+                                  RequestTimeout,
+                                  CancellationToken
+                              )).First();
+
+            return SendCDRResult.OutOfService(
+                       org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                       Id,
+                       ChargeDetailRecord
+                   );
+
+        }
+
+        #endregion
+
+        #region SendChargeDetailRecords(ChargeDetailRecords, ...)
 
         /// <summary>
         /// Send a charge detail record.
@@ -3050,20 +3094,24 @@ namespace cloud.charging.open.protocols.WWCP
                                     EventTracking_Id?                EventTrackingId     = null,
                                     TimeSpan?                        RequestTimeout      = null,
                                     CancellationToken                CancellationToken   = default)
+
         {
 
             if (!DisableSendChargeDetailRecords && RemoteEMobilityProvider is not null)
-                return await RemoteEMobilityProvider.ReceiveChargeDetailRecords(ChargeDetailRecords,
+                return await RemoteEMobilityProvider.ReceiveChargeDetailRecords(
+                                 ChargeDetailRecords,
+                                 Timestamp,
+                                 EventTrackingId,
+                                 RequestTimeout,
+                                 CancellationToken
+                             );
 
-                                                                                Timestamp,
-                                                                                EventTrackingId,
-                                                                                RequestTimeout,
-                                                                                CancellationToken);
-
-            return SendCDRsResult.OutOfService(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                               Id,
-                                               this,
-                                               ChargeDetailRecords);
+            return SendCDRsResult.OutOfService(
+                       org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                       Id,
+                       this,
+                       ChargeDetailRecords
+                   );
 
         }
 

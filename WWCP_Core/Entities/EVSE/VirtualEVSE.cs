@@ -1619,7 +1619,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 try
                 {
 
-                    ChargingSession.AddEnergyMeterValue(new EnergyMeteringValue(Timestamp.Now, 1));
+                    ChargingSession.AddEnergyMeterValue(
+                        new EnergyMeteringValue(
+                            Timestamp.Now,
+                            1,
+                            EnergyMeteringValueTypes.Intermediate
+                        )
+                    );
 
                 }
                 catch (Exception e)
@@ -2746,6 +2752,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                         chargingSession = new ChargingSession(
                                               SessionId ?? ChargingSession_Id.NewRandom(OperatorId),
+                                              RoamingNetwork,
                                               EventTrackingId) {
                                               ReservationId        = ReservationId,
                                               Reservation          = chargingReservations.Values.FirstOrDefault(reservation => reservation.Id == ReservationId)?.LastOrDefault(),
@@ -2755,8 +2762,18 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                               AuthenticationStart  = RemoteAuthentication
                                           };
 
-                        chargingSession.AddEnergyMeterValue(new EnergyMeteringValue(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, 0));
-                        EnergyMeterTimer.Change(EnergyMeterInterval, EnergyMeterInterval);
+                        chargingSession.AddEnergyMeterValue(
+                            new EnergyMeteringValue(
+                                org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                                0,
+                                EnergyMeteringValueTypes.Start
+                            )
+                        );
+
+                        EnergyMeterTimer.Change(
+                            EnergyMeterInterval,
+                            EnergyMeterInterval
+                        );
 
                         Status = EVSEStatusTypes.Charging;
 
@@ -2803,6 +2820,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             // Will also set the status -> EVSEStatusType.Charging;
                             chargingSession = new ChargingSession(
                                                   SessionId ?? ChargingSession_Id.NewRandom(OperatorId),
+                                                  RoamingNetwork,
                                                   EventTrackingId) {
                                 ReservationId        = ReservationId,
                                 Reservation          = firstReservation.LastOrDefault(),
@@ -2814,8 +2832,18 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                             firstReservation.LastOrDefault().ChargingSession = ChargingSession;
 
-                            chargingSession.AddEnergyMeterValue(new EnergyMeteringValue(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, 0));
-                            EnergyMeterTimer.Change(EnergyMeterInterval, EnergyMeterInterval);
+                            chargingSession.AddEnergyMeterValue(
+                                new EnergyMeteringValue(
+                                    org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                                    0,
+                                    EnergyMeteringValueTypes.Start
+                                )
+                            );
+
+                            EnergyMeterTimer.Change(
+                                EnergyMeterInterval,
+                                EnergyMeterInterval
+                            );
 
                             Status = EVSEStatusTypes.Charging;
 
@@ -3018,7 +3046,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                            ? Math.Round(((Decimal) duration.TotalHours) * MaxPower.Value, 2)
                                                            : 0;
 
-                            __ChargingSession.AddEnergyMeterValue(new EnergyMeteringValue(now, consumption));
+                            __ChargingSession.AddEnergyMeterValue(
+                                new EnergyMeteringValue(
+                                    now,
+                                    consumption,
+                                    EnergyMeteringValueTypes.Stop
+                                )
+                            );
 
                             var chargeDetailRecord  = new ChargeDetailRecord(
                                                           Id:                        ChargeDetailRecord_Id.Parse(__ChargingSession.Id.ToString()),

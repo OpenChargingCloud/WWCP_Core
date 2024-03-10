@@ -60,8 +60,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Send a charge detail record.
         /// </summary>
-        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="ChargeDetailRecords">A charge detail record.</param>
         /// <param name="TransmissionType">Whether to send the CDR directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        Task<SendCDRResult>
+
+            SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecords,
+                                   TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+
+                                   DateTime?           Timestamp           = null,
+                                   EventTracking_Id?   EventTrackingId     = null,
+                                   TimeSpan?           RequestTimeout      = null,
+                                   CancellationToken   CancellationToken   = default);
+
+
+        /// <summary>
+        /// Send charge detail records.
+        /// </summary>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="TransmissionType">Whether to send the CDRs directly or enqueue them for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>

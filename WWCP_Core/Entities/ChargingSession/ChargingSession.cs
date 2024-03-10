@@ -799,6 +799,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the charing pool.</param>
         /// <param name="Timestamp">The timestamp of the session creation.</param>
         public ChargingSession(ChargingSession_Id      Id,
+                               IRoamingNetwork         RoamingNetwork,
                                EventTracking_Id        EventTrackingId,
 
                                DateTime?               Timestamp      = null,
@@ -812,6 +813,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             this.Id                 = Id;
+            this.RoamingNetwork     = RoamingNetwork;
             this.EventTrackingId    = EventTrackingId;
             this.SessionTime        = new StartEndDateTime(Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now);
             this.energyMeterValues  = [];
@@ -1093,6 +1095,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             var session = new ChargingSession(
                               ChargingSession_Id.Parse(JSON["@id"]?.            Value<String>()),
+                              RoamingNetwork,
                               EventTracking_Id.  Parse(JSON["eventTrackingId"]?.Value<String>())
                           ) {
 

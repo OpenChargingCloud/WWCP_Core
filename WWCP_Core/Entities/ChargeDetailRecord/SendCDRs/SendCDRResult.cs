@@ -55,14 +55,14 @@ namespace cloud.charging.open.protocols.WWCP
         public IId                   AuthorizatorId        { get; }
 
         /// <summary>
-        /// The charge detail record.
-        /// </summary>
-        public ChargeDetailRecord    ChargeDetailRecord    { get; }
-
-        /// <summary>
         /// The result of the SendCDR request.
         /// </summary>
         public SendCDRResultTypes    Result                { get; }
+
+        /// <summary>
+        /// The optional charge detail record.
+        /// </summary>
+        public ChargeDetailRecord?   ChargeDetailRecord    { get; }
 
         /// <summary>
         /// The optional multi-language description of the result.
@@ -93,26 +93,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
         /// <param name="Result">The result of the SendCDR request.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Location">An optional URL for locating the charge detail record as defined e.g. in OCPI.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         private SendCDRResult(DateTime               Timestamp,
                               IId                    AuthorizatorId,
-                              ChargeDetailRecord     ChargeDetailRecord,
                               SendCDRResultTypes     Result,
-                              I18NString?            Description   = null,
-                              IEnumerable<Warning>?  Warnings      = null,
-                              Location?              Location      = null,
-                              TimeSpan?              Runtime       = null)
+                              ChargeDetailRecord?    ChargeDetailRecord   = null,
+                              I18NString?            Description          = null,
+                              IEnumerable<Warning>?  Warnings             = null,
+                              Location?              Location             = null,
+                              TimeSpan?              Runtime              = null)
         {
 
             this.Timestamp           = Timestamp;
             this.AuthorizatorId      = AuthorizatorId;
-            this.ChargeDetailRecord  = ChargeDetailRecord;
             this.Result              = Result;
+            this.ChargeDetailRecord  = ChargeDetailRecord;
             this.Description         = Description ?? I18NString.Empty;
             this.Warnings            = Warnings is not null
                                            ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
@@ -125,709 +125,382 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Unspecified              (Timestamp, ChargeDetailRecord, ...)
+        #region (static) Unspecified              (Timestamp, AuthorizatorId, ChargeDetailRecord = null, ...)
 
         /// <summary>
-        /// An unspecified error occured.
+        /// The result is unknown and/or should be ignored.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
+        /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Unspecified(DateTime            Timestamp,
-                        IId                 AuthorizatorId,
-                        ChargeDetailRecord  ChargeDetailRecord,
-                        I18NString?         Description   = null,
-                        TimeSpan?           Runtime       = null)
+            Unspecified(DateTime               Timestamp,
+                        IId                    AuthorizatorId,
+                        ChargeDetailRecord?    ChargeDetailRecord   = null,
+                        I18NString?            Description          = null,
+                        IEnumerable<Warning>?  Warnings             = null,
+                        TimeSpan?              Runtime              = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
-                        ChargeDetailRecord,
                         SendCDRResultTypes.Unspecified,
-                        Description,
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// An unspecified error occured.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Unspecified(DateTime            Timestamp,
-                        IId                 AuthorizatorId,
-                        ChargeDetailRecord  ChargeDetailRecord,
-                        Warning             Warning,
-                        I18NString?         Description   = null,
-                        TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
                         ChargeDetailRecord,
-                        SendCDRResultTypes.Unspecified,
                         Description,
-                        [ Warning ],
-                        Runtime: Runtime);
+                        Warnings,
+                        null,
+                        Runtime);
 
+        #endregion
+
+        #region (static) NoOperation              (Timestamp, AuthorizatorId, ChargeDetailRecord = null, ...)
 
         /// <summary>
-        /// An unspecified error occured.
+        /// The request was not processed.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Unspecified(DateTime              Timestamp,
-                        IId                   AuthorizatorId,
-                        ChargeDetailRecord    ChargeDetailRecord,
-                        IEnumerable<Warning>  Warnings,
-                        I18NString?           Description   = null,
-                        TimeSpan?             Runtime       = null)
+            NoOperation(DateTime               Timestamp,
+                        IId                    AuthorizatorId,
+                        ChargeDetailRecord?    ChargeDetailRecord   = null,
+                        I18NString?            Description          = null,
+                        IEnumerable<Warning>?  Warnings             = null,
+                        TimeSpan?              Runtime              = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.Unspecified,
-                        Description,
-                        Warnings,
-                        Runtime: Runtime);
-
-        #endregion
-
-        #region (static) NoOperation              (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            NoOperation(DateTime            Timestamp,
-                        IId                 AuthorizatorId,
-                        ChargeDetailRecord  ChargeDetailRecord,
-                        I18NString?         Description   = null,
-                        TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
                         SendCDRResultTypes.NoOperation,
-                        Description,
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            NoOperation(DateTime            Timestamp,
-                        IId                 AuthorizatorId,
-                        ChargeDetailRecord  ChargeDetailRecord,
-                        Warning             Warning,
-                        I18NString?         Description   = null,
-                        TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
                         ChargeDetailRecord,
-                        SendCDRResultTypes.NoOperation,
                         Description,
-                        [ Warning ],
-                        Runtime: Runtime);
+                        Warnings,
+                        null,
+                        Runtime);
 
+        #endregion
+
+        #region (static) AdminDown                (Timestamp, AuthorizatorId, ChargeDetailRecord = null, ...)
 
         /// <summary>
-        /// The request failed.
+        /// The processing of charge detail records was disabled by an administrator.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            NoOperation(DateTime              Timestamp,
-                        IId                   AuthorizatorId,
-                        ChargeDetailRecord    ChargeDetailRecord,
-                        IEnumerable<Warning>  Warnings,
-                        I18NString?           Description   = null,
-                        TimeSpan?             Runtime       = null)
+            AdminDown(DateTime               Timestamp,
+                      IId                    AuthorizatorId,
+                      ChargeDetailRecord?    ChargeDetailRecord   = null,
+                      I18NString?            Description          = null,
+                      IEnumerable<Warning>?  Warnings             = null,
+                      TimeSpan?              Runtime              = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.NoOperation,
-                        Description,
-                        Warnings,
-                        Runtime: Runtime);
-
-        #endregion
-
-        #region (static) AdminDown                (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            AdminDown(DateTime            Timestamp,
-                      IId                 AuthorizatorId,
-                      ChargeDetailRecord  ChargeDetailRecord,
-                      I18NString?         Description   = null,
-                      TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
                         SendCDRResultTypes.AdminDown,
-                        Description,
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            AdminDown(DateTime            Timestamp,
-                      IId                 AuthorizatorId,
-                      ChargeDetailRecord  ChargeDetailRecord,
-                      Warning             Warning,
-                      I18NString?         Description   = null,
-                      TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
                         ChargeDetailRecord,
-                        SendCDRResultTypes.AdminDown,
                         Description,
-                        [ Warning ],
-                        Runtime: Runtime);
+                        Warnings,
+                        null,
+                        Runtime);
 
+        #endregion
+
+        #region (static) OutOfService             (Timestamp, AuthorizatorId, ChargeDetailRecord = null, ...)
 
         /// <summary>
-        /// The request failed.
+        /// The processing of charge detail records is out of service.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            AdminDown(DateTime              Timestamp,
-                      IId                   AuthorizatorId,
-                      ChargeDetailRecord    ChargeDetailRecord,
-                      IEnumerable<Warning>  Warnings,
-                      I18NString?           Description   = null,
-                      TimeSpan?             Runtime       = null)
+            OutOfService(DateTime               Timestamp,
+                         IId                    AuthorizatorId,
+                         ChargeDetailRecord?    ChargeDetailRecord   = null,
+                         I18NString?            Description          = null,
+                         IEnumerable<Warning>?  Warnings             = null,
+                         TimeSpan?              Runtime              = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.AdminDown,
-                        Description,
-                        Warnings,
-                        Runtime: Runtime);
-
-        #endregion
-
-        #region (static) OutOfService             (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            OutOfService(DateTime            Timestamp,
-                         IId                 AuthorizatorId,
-                         ChargeDetailRecord  ChargeDetailRecord,
-                         I18NString?         Description   = null,
-                         TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
                         SendCDRResultTypes.OutOfService,
-                        Description,
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            OutOfService(DateTime            Timestamp,
-                         IId                 AuthorizatorId,
-                         ChargeDetailRecord  ChargeDetailRecord,
-                         Warning             Warning,
-                         I18NString?         Description   = null,
-                         TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
                         ChargeDetailRecord,
-                        SendCDRResultTypes.OutOfService,
                         Description,
-                        [ Warning ],
-                        Runtime: Runtime);
+                        Warnings,
+                        null,
+                        Runtime);
 
+        #endregion
+
+        #region (static) Filtered                 (Timestamp, AuthorizatorId, ChargeDetailRecord = null, ...)
 
         /// <summary>
-        /// The request failed.
+        /// The charge detail record was filtered and will no longer be processed and/or forwarded.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            OutOfService(DateTime              Timestamp,
-                         IId                   AuthorizatorId,
-                         ChargeDetailRecord    ChargeDetailRecord,
-                         IEnumerable<Warning>  Warnings,
-                         I18NString?           Description   = null,
-                         TimeSpan?             Runtime       = null)
+            Filtered(DateTime               Timestamp,
+                     IId                    AuthorizatorId,
+                     ChargeDetailRecord?    ChargeDetailRecord   = null,
+                     I18NString?            Description          = null,
+                     IEnumerable<Warning>?  Warnings             = null,
+                     TimeSpan?              Runtime              = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.OutOfService,
-                        Description,
-                        Warnings,
-                        Runtime: Runtime);
-
-        #endregion
-
-        #region (static) Filtered                 (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Filtered(DateTime            Timestamp,
-                     IId                 AuthorizatorId,
-                     ChargeDetailRecord  ChargeDetailRecord,
-                     I18NString?         Description   = null,
-                     TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
                         SendCDRResultTypes.Filtered,
-                        Description,
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Filtered(DateTime            Timestamp,
-                     IId                 AuthorizatorId,
-                     ChargeDetailRecord  ChargeDetailRecord,
-                     Warning             Warning,
-                     I18NString?         Description   = null,
-                     TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
                         ChargeDetailRecord,
-                        SendCDRResultTypes.Filtered,
                         Description,
-                        [ Warning ],
-                        Runtime: Runtime);
+                        Warnings,
+                        null,
+                        Runtime);
 
+        #endregion
+
+        #region (static) InvalidSessionId         (Timestamp, AuthorizatorId, ChargeDetailRecord = null, ...)
 
         /// <summary>
-        /// The request failed.
+        /// The charging session identification of the charge detail record is invalid.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Filtered(DateTime              Timestamp,
-                     IId                   AuthorizatorId,
-                     ChargeDetailRecord    ChargeDetailRecord,
-                     IEnumerable<Warning>  Warnings,
-                     I18NString?           Description   = null,
-                     TimeSpan?             Runtime       = null)
+            InvalidSessionId(DateTime               Timestamp,
+                             IId                    AuthorizatorId,
+                             ChargeDetailRecord?    ChargeDetailRecord   = null,
+                             I18NString?            Description          = null,
+                             IEnumerable<Warning>?  Warnings             = null,
+                             TimeSpan?              Runtime              = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.Filtered,
-                        Description,
-                        Warnings,
-                        Runtime: Runtime);
-
-        #endregion
-
-        #region (static) InvalidSessionId         (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            InvalidSessionId(DateTime            Timestamp,
-                             IId                 AuthorizatorId,
-                             ChargeDetailRecord  ChargeDetailRecord,
-                             I18NString?         Description   = null,
-                             TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
                         SendCDRResultTypes.InvalidSessionId,
-                        Description,
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            InvalidSessionId(DateTime            Timestamp,
-                             IId                 AuthorizatorId,
-                             ChargeDetailRecord  ChargeDetailRecord,
-                             Warning             Warning,
-                             I18NString?         Description   = null,
-                             TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
                         ChargeDetailRecord,
-                        SendCDRResultTypes.InvalidSessionId,
                         Description,
-                        [ Warning ],
-                        Runtime: Runtime);
+                        Warnings,
+                        null,
+                        Runtime);
 
+        #endregion
+
+        #region (static) UnknownSessionId         (Timestamp, AuthorizatorId, ChargeDetailRecord = null, ...)
 
         /// <summary>
-        /// The request failed.
+        /// The charging session identification of the charge detail record is unknown.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            InvalidSessionId(DateTime              Timestamp,
-                             IId                   AuthorizatorId,
-                             ChargeDetailRecord    ChargeDetailRecord,
-                             IEnumerable<Warning>  Warnings,
-                             I18NString?           Description   = null,
-                             TimeSpan?             Runtime       = null)
+            UnknownSessionId(DateTime               Timestamp,
+                             IId                    AuthorizatorId,
+                             ChargeDetailRecord?    ChargeDetailRecord   = null,
+                             I18NString?            Description          = null,
+                             IEnumerable<Warning>?  Warnings             = null,
+                             TimeSpan?              Runtime              = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.InvalidSessionId,
-                        Description,
-                        Warnings,
-                        Runtime: Runtime);
-
-        #endregion
-
-        #region (static) UnknownSessionId         (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            UnknownSessionId(DateTime            Timestamp,
-                             IId                 AuthorizatorId,
-                             ChargeDetailRecord  ChargeDetailRecord,
-                             I18NString?         Description   = null,
-                             TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
                         SendCDRResultTypes.UnknownSessionId,
-                        Description,
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            UnknownSessionId(DateTime            Timestamp,
-                             IId                 AuthorizatorId,
-                             ChargeDetailRecord  ChargeDetailRecord,
-                             Warning             Warning,
-                             I18NString?         Description   = null,
-                             TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
                         ChargeDetailRecord,
-                        SendCDRResultTypes.UnknownSessionId,
                         Description,
-                        [ Warning ],
-                        Runtime: Runtime);
+                        Warnings,
+                        null,
+                        Runtime);
 
+        #endregion
+
+        #region (static) UnknownProviderIdStart   (Timestamp, AuthorizatorId, ChargeDetailRecord = null, ...)
 
         /// <summary>
-        /// The request failed.
+        /// The e-mobility provider (start) of the charge detail record is unknown.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            UnknownSessionId(DateTime              Timestamp,
-                             IId                   AuthorizatorId,
-                             ChargeDetailRecord    ChargeDetailRecord,
-                             IEnumerable<Warning>  Warnings,
-                             I18NString?           Description   = null,
-                             TimeSpan?             Runtime       = null)
+            UnknownProviderIdStart(DateTime               Timestamp,
+                                   IId                    AuthorizatorId,
+                                   ChargeDetailRecord?    ChargeDetailRecord   = null,
+                                   I18NString?            Description          = null,
+                                   IEnumerable<Warning>?  Warnings             = null,
+                                   TimeSpan?              Runtime              = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
+                        SendCDRResultTypes.UnknownProviderIdStart,
                         ChargeDetailRecord,
-                        SendCDRResultTypes.UnknownSessionId,
                         Description,
                         Warnings,
-                        Runtime: Runtime);
+                        null,
+                        Runtime);
 
         #endregion
 
-        #region (static) InvalidToken             (Timestamp, ChargeDetailRecord, ...)
+        #region (static) UnknownProviderIdStop    (Timestamp, AuthorizatorId, ChargeDetailRecord = null, ...)
 
         /// <summary>
-        /// The request failed.
+        /// The e-mobility provider (stop) of the charge detail record is unknown.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
+        /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            InvalidToken(DateTime            Timestamp,
-                         IId                 AuthorizatorId,
-                         ChargeDetailRecord  ChargeDetailRecord,
-                         I18NString?         Description   = null,
-                         TimeSpan?           Runtime       = null)
+            UnknownProviderIdStop(DateTime               Timestamp,
+                                  IId                    AuthorizatorId,
+                                  ChargeDetailRecord?    ChargeDetailRecord   = null,
+                                  I18NString?            Description          = null,
+                                  IEnumerable<Warning>?  Warnings             = null,
+                                  TimeSpan?              Runtime              = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
+                        SendCDRResultTypes.UnknownProviderIdStop,
                         ChargeDetailRecord,
+                        Description,
+                        Warnings,
+                        null,
+                        Runtime);
+
+        #endregion
+
+        #region (static) UnknownLocation          (Timestamp, AuthorizatorId, ChargeDetailRecord = null, ...)
+
+        /// <summary>
+        /// The charging location is unknown.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
+        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
+        /// <param name="Warnings">Optional warnings or additional information.</param>
+        /// <param name="Description">An optional multi-language description of the result.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRResult
+
+            UnknownLocation(DateTime               Timestamp,
+                            IId                    AuthorizatorId,
+                            ChargeDetailRecord?    ChargeDetailRecord   = null,
+                            I18NString?            Description          = null,
+                            IEnumerable<Warning>?  Warnings             = null,
+                            TimeSpan?              Runtime              = null)
+
+                => new (Timestamp,
+                        AuthorizatorId,
+                        SendCDRResultTypes.UnknownLocation,
+                        ChargeDetailRecord,
+                        Description,
+                        Warnings,
+                        null,
+                        Runtime);
+
+        #endregion
+
+        #region (static) InvalidToken             (Timestamp, AuthorizatorId, ChargeDetailRecord = null, ...)
+
+        /// <summary>
+        /// The authentication token of the charge detail record is invalid.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
+        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
+        /// <param name="Warnings">Optional warnings or additional information.</param>
+        /// <param name="Description">An optional multi-language description of the result.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRResult
+
+            InvalidToken(DateTime               Timestamp,
+                         IId                    AuthorizatorId,
+                         ChargeDetailRecord?    ChargeDetailRecord   = null,
+                         I18NString?            Description          = null,
+                         IEnumerable<Warning>?  Warnings             = null,
+                         TimeSpan?              Runtime              = null)
+
+                => new (Timestamp,
+                        AuthorizatorId,
                         SendCDRResultTypes.InvalidToken,
-                        Description,
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            InvalidToken(DateTime            Timestamp,
-                         IId                 AuthorizatorId,
-                         ChargeDetailRecord  ChargeDetailRecord,
-                         Warning             Warning,
-                         I18NString?         Description   = null,
-                         TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
                         ChargeDetailRecord,
-                        SendCDRResultTypes.InvalidToken,
                         Description,
-                        [ Warning ],
-                        Runtime: Runtime);
+                        Warnings,
+                        null,
+                        Runtime);
 
+        #endregion
+
+        #region (static) CouldNotConvertCDRFormat (Timestamp, AuthorizatorId, ChargeDetailRecord = null, ...)
 
         /// <summary>
-        /// The request failed.
+        /// The charge detail record format could not be converted.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            InvalidToken(DateTime              Timestamp,
-                         IId                   AuthorizatorId,
-                         ChargeDetailRecord    ChargeDetailRecord,
-                         IEnumerable<Warning>  Warnings,
-                         I18NString?           Description   = null,
-                         TimeSpan?             Runtime       = null)
+            CouldNotConvertCDRFormat(DateTime               Timestamp,
+                                     IId                    AuthorizatorId,
+                                     ChargeDetailRecord?    ChargeDetailRecord   = null,
+                                     I18NString?            Description          = null,
+                                     IEnumerable<Warning>?  Warnings             = null,
+                                     TimeSpan?              Runtime              = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.InvalidToken,
-                        Description,
-                        Warnings,
-                        Runtime: Runtime);
-
-        #endregion
-
-        #region (static) CouldNotConvertCDRFormat (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            CouldNotConvertCDRFormat(DateTime            Timestamp,
-                                     IId                 AuthorizatorId,
-                                     ChargeDetailRecord  ChargeDetailRecord,
-                                     I18NString?         Description   = null,
-                                     TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
                         SendCDRResultTypes.CouldNotConvertCDRFormat,
-                        Description,
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            CouldNotConvertCDRFormat(DateTime            Timestamp,
-                                     IId                 AuthorizatorId,
-                                     ChargeDetailRecord  ChargeDetailRecord,
-                                     Warning             Warning,
-                                     I18NString?         Description   = null,
-                                     TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
                         ChargeDetailRecord,
-                        SendCDRResultTypes.CouldNotConvertCDRFormat,
                         Description,
-                        [ Warning ],
-                        Runtime: Runtime);
+                        Warnings,
+                        null,
+                        Runtime);
 
+        #endregion
+
+        #region (static) Error                    (Timestamp, AuthorizatorId, ChargeDetailRecord = null, ...)
 
         /// <summary>
-        /// The request failed.
+        /// The request led to an error.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
@@ -837,244 +510,90 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            CouldNotConvertCDRFormat(DateTime              Timestamp,
-                                     IId                   AuthorizatorId,
-                                     ChargeDetailRecord    ChargeDetailRecord,
-                                     IEnumerable<Warning>  Warnings,
-                                     I18NString?           Description   = null,
-                                     TimeSpan?             Runtime       = null)
+            Error(DateTime               Timestamp,
+                  IId                    AuthorizatorId,
+                  ChargeDetailRecord     ChargeDetailRecord,
+                  I18NString?            Description   = null,
+                  IEnumerable<Warning>?  Warnings      = null,
+                  TimeSpan?              Runtime       = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
+                        SendCDRResultTypes.Error,
                         ChargeDetailRecord,
-                        SendCDRResultTypes.CouldNotConvertCDRFormat,
                         Description,
                         Warnings,
-                        Runtime: Runtime);
+                        null,
+                        Runtime);
 
         #endregion
 
-        #region (static) Enqueued                 (Timestamp, ChargeDetailRecord, ...)
+        #region (static) Timeout                  (Timestamp, AuthorizatorId, ChargeDetailRecord = null, ...)
 
         /// <summary>
-        /// The request completed successfully.
+        /// The request timed out.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Enqueued(DateTime            Timestamp,
-                     IId                 AuthorizatorId,
-                     ChargeDetailRecord  ChargeDetailRecord,
-                     I18NString?         Description   = null,
-                     TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.Enqueued,
-                        Description,
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Enqueued(DateTime            Timestamp,
-                     IId                 AuthorizatorId,
-                     ChargeDetailRecord  ChargeDetailRecord,
-                     Warning             Warning,
-                     I18NString?         Description   = null,
-                     TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.Enqueued,
-                        Description,
-                        [ Warning ],
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Enqueued(DateTime              Timestamp,
-                     IId                   AuthorizatorId,
-                     ChargeDetailRecord    ChargeDetailRecord,
-                     IEnumerable<Warning>  Warnings,
-                     I18NString?           Description   = null,
-                     TimeSpan?             Runtime       = null)
+            Timeout(DateTime               Timestamp,
+                    IId                    AuthorizatorId,
+                    ChargeDetailRecord?    ChargeDetailRecord   = null,
+                    I18NString?            Description          = null,
+                    IEnumerable<Warning>?  Warnings             = null,
+                    TimeSpan?              Runtime              = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
+                        SendCDRResultTypes.Timeout,
                         ChargeDetailRecord,
-                        SendCDRResultTypes.Enqueued,
                         Description,
                         Warnings,
-                        Runtime: Runtime);
+                        null,
+                        Runtime);
 
         #endregion
 
-        #region (static) Timeout                  (Timestamp, ChargeDetailRecord, ...)
+
+        #region (static) Enqueued                 (Timestamp, AuthorizatorId, ChargeDetailRecord, ...)
 
         /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Timeout(DateTime            Timestamp,
-                    IId                 AuthorizatorId,
-                    ChargeDetailRecord  ChargeDetailRecord,
-                    I18NString?         Description   = null,
-                    TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.Timeout,
-                        Description,
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Timeout(DateTime            Timestamp,
-                    IId                 AuthorizatorId,
-                    ChargeDetailRecord  ChargeDetailRecord,
-                    Warning             Warning,
-                    I18NString?         Description   = null,
-                    TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.Timeout,
-                        Description,
-                        [ Warning ],
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// The request completed successfully.
+        /// The charge detail record had been enqueued for later processing and/or transmission.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="ChargeDetailRecord">A charge detail record.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Timeout(DateTime              Timestamp,
-                    IId                   AuthorizatorId,
-                    ChargeDetailRecord    ChargeDetailRecord,
-                    IEnumerable<Warning>  Warnings,
-                    I18NString?           Description   = null,
-                    TimeSpan?             Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.Timeout,
-                        Description,
-                        Warnings,
-                        Runtime: Runtime);
-
-        #endregion
-
-        #region (static) Success                  (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Location">An optional URL for locating the charge detail record as defined e.g. in OCPI.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Success(DateTime            Timestamp,
-                    IId                 AuthorizatorId,
-                    ChargeDetailRecord  ChargeDetailRecord,
-                    I18NString?         Description   = null,
-                    Location?           Location      = null,
-                    TimeSpan?           Runtime       = null)
+            Enqueued(DateTime               Timestamp,
+                     IId                    AuthorizatorId,
+                     ChargeDetailRecord     ChargeDetailRecord,
+                     I18NString?            Description   = null,
+                     IEnumerable<Warning>?  Warnings      = null,
+                     Location?              Location      = null,
+                     TimeSpan?              Runtime       = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
+                        SendCDRResultTypes.Enqueued,
                         ChargeDetailRecord,
-                        SendCDRResultTypes.Success,
                         Description,
-                        [],
+                        Warnings,
                         Location,
                         Runtime);
 
+        #endregion
 
-        /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Location">An optional URL for locating the charge detail record as defined e.g. in OCPI.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Success(DateTime            Timestamp,
-                    IId                 AuthorizatorId,
-                    ChargeDetailRecord  ChargeDetailRecord,
-                    Warning             Warning,
-                    I18NString?         Description   = null,
-                    Location?           Location      = null,
-                    TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.Success,
-                        Description,
-                        [ Warning ],
-                        Location,
-                        Runtime);
-
+        #region (static) Success                  (Timestamp, AuthorizatorId, ChargeDetailRecord, ...)
 
         /// <summary>
         /// The request completed successfully.
@@ -1088,18 +607,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Success(DateTime              Timestamp,
-                    IId                   AuthorizatorId,
-                    ChargeDetailRecord    ChargeDetailRecord,
-                    IEnumerable<Warning>  Warnings,
-                    I18NString?           Description   = null,
-                    Location?             Location      = null,
-                    TimeSpan?             Runtime       = null)
+            Success(DateTime               Timestamp,
+                    IId                    AuthorizatorId,
+                    ChargeDetailRecord     ChargeDetailRecord,
+                    I18NString?            Description   = null,
+                    IEnumerable<Warning>?  Warnings      = null,
+                    Location?              Location      = null,
+                    TimeSpan?              Runtime       = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
+                        SendCDRResultTypes.Enqueued,
                         ChargeDetailRecord,
-                        SendCDRResultTypes.Success,
                         Description,
                         Warnings,
                         Location,
@@ -1107,86 +626,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Error                    (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Error(DateTime            Timestamp,
-                  IId                 AuthorizatorId,
-                  ChargeDetailRecord  ChargeDetailRecord,
-                  I18NString?         Description   = null,
-                  TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.Error,
-                        Description,
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Error(DateTime            Timestamp,
-                  IId                 AuthorizatorId,
-                  ChargeDetailRecord  ChargeDetailRecord,
-                  Warning             Warning,
-                  I18NString?         Description   = null,
-                  TimeSpan?           Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.Error,
-                        Description,
-                        [ Warning ],
-                        Runtime: Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warnings">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Error(DateTime              Timestamp,
-                  IId                   AuthorizatorId,
-                  ChargeDetailRecord    ChargeDetailRecord,
-                  IEnumerable<Warning>  Warnings,
-                  I18NString?           Description   = null,
-                  TimeSpan?             Runtime       = null)
-
-                => new (Timestamp,
-                        AuthorizatorId,
-                        ChargeDetailRecord,
-                        SendCDRResultTypes.Error,
-                        Description,
-                        Warnings,
-                        Runtime: Runtime);
-
-        #endregion
 
 
         #region ToJSON(Embedded = false, IncludeCDR = true, ...)
@@ -1200,13 +639,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CustomSendCDRResultSerializer">A custom send charge detail record result serializer.</param>
         /// <param name="CustomWarningSerializer">A delegate to serialize custom warning JSON objects.</param>
         public JObject ToJSON(Boolean                                               Embedded                             = false,
-                             // Boolean                                               IncludeCDR                           = true,
+                              Boolean                                               IncludeCDR                           = true,
                               CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   = null,
                               CustomJObjectSerializerDelegate<SendCDRResult>?       CustomSendCDRResultSerializer        = null,
                               CustomJObjectSerializerDelegate<Warning>?             CustomWarningSerializer              = null)
         {
-
-            var IncludeCDR = true;
 
             var json = JSONObject.Create(
 
@@ -1235,7 +672,7 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("runtime",              Runtime. Value.TotalMilliseconds)
                                : null,
 
-                           IncludeCDR
+                           ChargeDetailRecord is not null && IncludeCDR
                                ? new JProperty("chargeDetailRecord",   ChargeDetailRecord.ToJSON(Embedded:                            true,
                                                                                                  CustomChargeDetailRecordSerializer:  CustomChargeDetailRecordSerializer))
                                : null
@@ -1269,7 +706,7 @@ namespace cloud.charging.open.protocols.WWCP
                     return false;
                 }
 
-                #region Parse Context           [mandatory]
+                #region Parse Context               [mandatory]
 
                 if (VerifyContext)
                 {
@@ -1293,7 +730,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Parse Timestamp         [mandatory]
+                #region Parse Timestamp             [mandatory]
 
                 if (!JSONObject.ParseMandatory("timestamp",
                                                "timestamp",
@@ -1305,7 +742,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Parse AuthorizatorId    [mandatory]
+                #region Parse AuthorizatorId        [mandatory]
 
                 if (!JSONObject.ParseMandatory("authorizatorId",
                                                "authorizator ídentification",
@@ -1318,7 +755,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Parse Result            [mandatory]
+                #region Parse Result                [mandatory]
 
                 if (!JSONObject.ParseMandatoryEnum("result",
                                                    "result",
@@ -1330,7 +767,21 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Parse Description       [optional]
+                #region Parse ChargeDetailRecord    [optional]
+
+                if (JSONObject.ParseOptionalJSON("chargeDetailRecord",
+                                                 "charge detail record",
+                                                 WWCP.ChargeDetailRecord.TryParse,
+                                                 out ChargeDetailRecord? ChargeDetailRecord,
+                                                 out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse Description           [optional]
 
                 if (JSONObject.ParseOptional("description",
                                              "description",
@@ -1343,7 +794,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Parse Warnings          [optional]
+                #region Parse Warnings              [optional]
 
                 if (JSONObject.ParseOptionalJSON("warnings",
                                                  "description or warnings",
@@ -1357,7 +808,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Parse Location          [optional]
+                #region Parse Location              [optional]
 
                 if (JSONObject.ParseOptional("location",
                                              "location URL",
@@ -1371,7 +822,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Parse Runtime           [optional]
+                #region Parse Runtime               [optional]
 
                 if (JSONObject.ParseOptional("runtime",
                                              "runtime",
@@ -1388,8 +839,8 @@ namespace cloud.charging.open.protocols.WWCP
                 SendCDRResult = new SendCDRResult(
                                     Timestamp,
                                     AuthorizatorId,
-                                    null,
                                     Result,
+                                    ChargeDetailRecord,
                                     Description,
                                     Warnings,
                                     Location,
@@ -1436,39 +887,44 @@ namespace cloud.charging.open.protocols.WWCP
         Unspecified,
 
         /// <summary>
-        /// No operation e.g. because no charge detail record passed the charge detail records filter.
+        /// The request was not processed.
         /// </summary>
         NoOperation,
 
         /// <summary>
-        /// The service was disabled by an administrator.
+        /// The processing of charge detail records was disabled by an administrator.
         /// </summary>
         AdminDown,
 
         /// <summary>
-        /// The service is out of service.
+        /// The processing of charge detail records is out of service.
         /// </summary>
         OutOfService,
 
         /// <summary>
-        /// The charge detail record had been filtered.
+        /// The charge detail record was filtered and will no longer be processed and/or forwarded.
         /// </summary>
         Filtered,
 
         /// <summary>
-        /// The charging session identification is invalid.
+        /// The charging session identification of the charge detail record is invalid.
         /// </summary>
         InvalidSessionId,
 
         /// <summary>
-        /// The charging session identification is unknown.
+        /// The charging session identification of the charge detail record is unknown.
         /// </summary>
         UnknownSessionId,
 
         /// <summary>
-        /// The ProviderIdStart of the charge detail record is unknown.
+        /// The e-mobility provider (start) of the charge detail record is unknown.
         /// </summary>
         UnknownProviderIdStart,
+
+        /// <summary>
+        /// The e-mobility provider (stop) of the charge detail record is unknown.
+        /// </summary>
+        UnknownProviderIdStop,
 
         /// <summary>
         /// The charging location is unknown.
@@ -1476,37 +932,35 @@ namespace cloud.charging.open.protocols.WWCP
         UnknownLocation,
 
         /// <summary>
-        /// The given token is unknown or invalid.
+        /// The authentication token of the charge detail record is invalid.
         /// </summary>
         InvalidToken,
 
         /// <summary>
-        /// A data format error occured.
+        /// The charge detail record format could not be converted.
         /// </summary>
         CouldNotConvertCDRFormat,
 
-
         /// <summary>
-        /// The charge detail record had been enqueued for later transmission.
+        /// The request led to an error.
         /// </summary>
-        Enqueued,
+        Error,
 
         /// <summary>
-        /// Everything ok.
-        /// </summary>
-        Success,
-
-        /// <summary>
-        /// A timeout occured.
+        /// The request timed out.
         /// </summary>
         Timeout,
 
 
+        /// <summary>
+        /// The charge detail record had been enqueued for later processing and/or transmission.
+        /// </summary>
+        Enqueued,
 
         /// <summary>
-        /// The operation led to an error.
+        /// The request completed successfully.
         /// </summary>
-        Error
+        Success
 
     }
 
