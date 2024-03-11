@@ -480,9 +480,9 @@ namespace cloud.charging.open.protocols.WWCP
                                   AuthMethod?                        AuthMethodStart             = null,
                                   AuthMethod?                        AuthMethodStop              = null,
 
-                                  EMobilityProvider?                 ProviderStart               = null,
+                                  IEMobilityProvider?                ProviderStart               = null,
                                   EMobilityProvider_Id?              ProviderIdStart             = null,
-                                  EMobilityProvider?                 ProviderStop                = null,
+                                  IEMobilityProvider?                ProviderStop                = null,
                                   EMobilityProvider_Id?              ProviderIdStop              = null,
 
                                   ICSORoamingProvider?               CSORoamingProviderStart     = null,

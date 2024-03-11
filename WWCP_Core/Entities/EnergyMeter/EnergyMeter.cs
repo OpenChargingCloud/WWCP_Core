@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -139,8 +141,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create new energy meter.
         /// </summary>
         /// <param name="Id">The identification of the energy meter.</param>
-        /// 
-        /// <param name="Description">An multi-language description of the energy meter.</param>
+        /// <param name="Name">An optional name of the energy meter.</param>
+        /// <param name="Description">An optional multi-language description of the energy meter.</param>
         /// 
         /// <param name="Model">An optional model of the energy meter.</param>
         /// <param name="ModelURL">An optional URL to the model of the energy meter.</param>
@@ -201,9 +203,9 @@ namespace cloud.charging.open.protocols.WWCP
             this.FirmwareVersion            = FirmwareVersion;
             this.Manufacturer               = Manufacturer;
             this.ManufacturerURL            = ManufacturerURL;
-            this.PublicKeys                 = PublicKeys?.Distinct()            ?? Array.Empty<PublicKey>();
+            this.PublicKeys                 = PublicKeys?.Distinct()            ?? [];
             this.PublicKeyCertificateChain  = PublicKeyCertificateChain;
-            this.TransparencySoftwares      = TransparencySoftwares?.Distinct() ?? Array.Empty<TransparencySoftwareStatus>();
+            this.TransparencySoftwares      = TransparencySoftwares?.Distinct() ?? [];
 
             Configurator?.Invoke(this);
 
@@ -230,7 +232,7 @@ namespace cloud.charging.open.protocols.WWCP
                          out var errorResponse,
                          CustomEnergyMeterParser))
             {
-                return energyMeter!;
+                return energyMeter;
             }
 
             throw new ArgumentException("The given JSON representation of an energy meter is invalid: " + errorResponse,
@@ -250,9 +252,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="EnergyMeter">The parsed energy meter.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject           JSON,
-                                       out EnergyMeter?  EnergyMeter,
-                                       out String?       ErrorResponse)
+        public static Boolean TryParse(JObject                                JSON,
+                                       [NotNullWhen(true)]  out EnergyMeter?  EnergyMeter,
+                                       [NotNullWhen(false)] out String?       ErrorResponse)
 
             => TryParse(JSON,
                         out EnergyMeter,
@@ -268,8 +270,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomEnergyMeterParser">An optional delegate to parse custom energy meter JSON objects.</param>
         public static Boolean TryParse(JObject                                    JSON,
-                                       out EnergyMeter?                           EnergyMeter,
-                                       out String?                                ErrorResponse,
+                                       [NotNullWhen(true)]  out EnergyMeter?      EnergyMeter,
+                                       [NotNullWhen(false)] out String?           ErrorResponse,
                                        CustomJObjectParserDelegate<EnergyMeter>?  CustomEnergyMeterParser   = null)
         {
 
@@ -432,32 +434,36 @@ namespace cloud.charging.open.protocols.WWCP
                 #endregion
 
 
-                EnergyMeter = new EnergyMeter(Id,
+                EnergyMeter = new EnergyMeter(
 
-                                              Name,
-                                              Description,
+                                  Id,
 
-                                              Model,
-                                              ModelURL,
-                                              HardwareVersion,
-                                              FirmwareVersion,
-                                              Manufacturer,
-                                              ManufacturerURL,
-                                              PublicKeys,
-                                              PublicKeyCertificateChain,
-                                              TransparencySoftwares,
+                                  Name,
+                                  Description,
 
-                                              null, // InitialAdminStatus
-                                              null, // InitialStatus
+                                  Model,
+                                  ModelURL,
+                                  HardwareVersion,
+                                  FirmwareVersion,
+                                  Manufacturer,
+                                  ManufacturerURL,
+                                  PublicKeys,
+                                  PublicKeyCertificateChain,
+                                  TransparencySoftwares,
 
-                                              null, // MaxAdminStatusScheduleSize
-                                              null, // MaxStatusScheduleSize
+                                  null, // InitialAdminStatus
+                                  null, // InitialStatus
 
-                                              null, // DataSource
+                                  null, // MaxAdminStatusScheduleSize
+                                  null, // MaxStatusScheduleSize
 
-                                              LastChange,
-                                              null, // CustomData
-                                              null);// InternalData
+                                  null, // DataSource
+
+                                  LastChange,
+                                  null, // CustomData
+                                  null  // InternalData
+
+                              );
 
 
                 if (CustomEnergyMeterParser is not null)
@@ -882,7 +888,7 @@ namespace cloud.charging.open.protocols.WWCP
                       (PublicKeyCertificateChain?.GetHashCode()  ?? 0) * 7 ^
                       (TransparencySoftwares?.    CalcHashCode() ?? 0) * 5 ^
                       (Description?.              GetHashCode()  ?? 0) * 3 ^
-                       LastChangeDate.                GetHashCode();
+                       LastChangeDate.            GetHashCode();
 
             }
         }
