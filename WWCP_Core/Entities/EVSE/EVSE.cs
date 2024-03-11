@@ -1091,7 +1091,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession) => {
 
-                                                               RoamingNetwork?.SessionsStore.NewOrUpdate(
+                                                               RoamingNetwork?.SessionsStore.AddOrUpdateSession(
                                                                    ChargingSession,
                                                                    (session) => {
                                                                        session.EVSEId = Id;

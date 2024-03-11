@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.WWCP.Networking;
+using Org.BouncyCastle.Crypto.Engines;
 
 #endregion
 
@@ -63,9 +64,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        public JObject ToJSON(Boolean                                              Embedded                             = false,
-                              CustomJObjectSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null,
-                              CustomJObjectSerializerDelegate<SessionStopRequest>  CustomSessionStopRequestSerializer   = null)
+        public JObject ToJSON(Boolean                                               Embedded                             = false,
+                              CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   = null,
+                              CustomJObjectSerializerDelegate<SessionStopRequest>?  CustomSessionStopRequestSerializer   = null)
 
         {
 
@@ -126,18 +127,6 @@ namespace cloud.charging.open.protocols.WWCP
     public class ChargingSessionsStore : ADataStore<ChargingSession_Id, ChargingSession>
     {
 
-        #region Data
-
-        private readonly Action<ChargeDetailRecord>? AddChargeDetailRecordAction;
-
-        public ChargingSession_Id Id => throw new NotImplementedException();
-
-        public ulong Length => throw new NotImplementedException();
-
-        public bool IsNullOrEmpty => throw new NotImplementedException();
-
-        #endregion
-
         #region Events
 
         /// <summary>
@@ -154,6 +143,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// An event fired whenever a new charge detail record was sent.
         /// </summary>
         public event OnNewChargeDetailRecordResultDelegate?  OnNewChargeDetailRecordResult;
+
+        #endregion
+
+        #region CustomSerializers
+
+        public CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   { get; set; }
+        public CustomJObjectSerializerDelegate<SendCDRResult>?       CustomSendCDRResultSerializer        { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSession>?     CustomChargingSessionSerializer      { get; set; }
 
         #endregion
 
@@ -331,62 +328,94 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region Add(NewChargingSession)
+        #region AddSession         (ChargingSession)
 
-        public async Task Add(ChargingSession NewChargingSession)
+        public async Task AddSession(ChargingSession ChargingSession)
         {
-            if (InternalData.TryAdd(NewChargingSession.Id,
-                                    NewChargingSession))
+            if (InternalData.TryAdd(ChargingSession.Id, ChargingSession))
             {
 
                 await LogIt("new",
-                            NewChargingSession.Id,
+                            ChargingSession.Id,
                             "chargingSession",
-                            NewChargingSession.ToJSON());
+                            ChargingSession.ToJSON(Embedded: true,
+                                                   CustomChargeDetailRecordSerializer,
+                                                   CustomSendCDRResultSerializer,
+                                                   CustomChargingSessionSerializer));
 
             }
         }
 
         #endregion
 
-        #region NewOrUpdate(NewChargingSession, UpdateFunc)
+        #region AddOrUpdateSession (ChargingSession, UpdateFunc)
 
-        public async Task NewOrUpdate(ChargingSession                         NewChargingSession,
-                                      Func<ChargingSession, ChargingSession>  UpdateFunc)
+        public async Task AddOrUpdateSession(ChargingSession                         ChargingSession,
+                                             Func<ChargingSession, ChargingSession>  UpdateFunc)
         {
 
             var updated = false;
 
-            ChargingSession updateFunc(ChargingSession CS)
-            {
+            ChargingSession updateFunc(ChargingSession CS) {
                 updated = true;
                 return UpdateFunc(CS);
             }
 
             var result  = InternalData.AddOrUpdate(
-                              NewChargingSession.Id,
-                              NewChargingSession,
-                              (sessionId, oldSession) => updateFunc(NewChargingSession)
+                              ChargingSession.Id,
+                              ChargingSession,
+                              (sessionId, oldSession) => updateFunc(ChargingSession)
                           );
 
 
             if (updated)
                 await LogIt("update",
-                            NewChargingSession.Id,
+                            ChargingSession.Id,
                             "chargingSession",
-                            NewChargingSession.ToJSON());
+                            ChargingSession.ToJSON(Embedded: true,
+                                                   CustomChargeDetailRecordSerializer,
+                                                   CustomSendCDRResultSerializer,
+                                                   CustomChargingSessionSerializer));
 
             else
                 await LogIt("new",
-                            NewChargingSession.Id,
+                            ChargingSession.Id,
                             "chargingSession",
-                            NewChargingSession.ToJSON());
+                            ChargingSession.ToJSON(Embedded: true,
+                                                   CustomChargeDetailRecordSerializer,
+                                                   CustomSendCDRResultSerializer,
+                                                   CustomChargingSessionSerializer));
 
         }
 
         #endregion
 
-        #region SessionExists(Id)
+        #region UpdateSession      (Id, UpdateFunc)
+
+        public async Task UpdateSession(ChargingSession_Id       Id,
+                                        Action<ChargingSession>  UpdateFunc)
+        {
+
+            if (InternalData.TryGetValue(Id, out var chargingSession))
+            {
+
+                UpdateFunc(chargingSession);
+
+                await LogIt("update",
+                            Id,
+                            "chargingSession",
+                            chargingSession.ToJSON(Embedded: true,
+                                                   CustomChargeDetailRecordSerializer,
+                                                   CustomSendCDRResultSerializer,
+                                                   CustomChargingSessionSerializer));
+
+            }
+
+        }
+
+        #endregion
+
+        #region SessionExists      (Id)
 
         public Boolean SessionExists(ChargingSession_Id Id)
 
@@ -398,21 +427,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Update(Id, UpdateFunc)
+        #region RemoveSession      (Id, Authentication)
 
-        public async Task UpdateSessionDetails(ChargingSession_Id       Id,
-                                               Action<ChargingSession>  UpdateFunc)
+        public async Task RemoveSession(ChargingSession_Id  Id,
+                                        AAuthentication     Authentication)
         {
 
-            if (InternalData.TryGetValue(Id, out var chargingSession))
+            if (InternalData.TryRemove(Id, out var chargingSession))
             {
 
-                UpdateFunc(chargingSession);
+                chargingSession.AuthenticationStop = Authentication;
 
-                await LogIt("update",
-                            Id,
+                await LogIt("remove",
+                            chargingSession.Id,
                             "chargingSession",
-                            chargingSession.ToJSON());
+                            chargingSession.ToJSON(Embedded: true,
+                                                   CustomChargeDetailRecordSerializer,
+                                                   CustomSendCDRResultSerializer,
+                                                   CustomChargingSessionSerializer));
 
             }
 
@@ -420,54 +452,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Remove(Id, Authentication)
+        #region RemoveSession      (ChargingSession)
 
-        public void Remove(ChargingSession_Id  Id,
-                           AAuthentication     Authentication)
+        public async Task RemoveSession(ChargingSession ChargingSession)
         {
 
-            lock (InternalData)
+            if (InternalData.TryRemove(ChargingSession.Id, out var chargingSession))
             {
 
-                if (InternalData.TryGetValue(Id, out ChargingSession session))
-                {
-
-                    InternalData.Remove(session.Id, out _);
-                    session.AuthenticationStop = Authentication;
-
-                    LogIt("remove",
-                          session.Id,
-                          "chargingSession",
-                          session.ToJSON());
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-        #region Remove(ChargingSession)
-
-        public void Remove(ChargingSession ChargingSession)
-        {
-
-            lock (InternalData)
-            {
-
-                if (ChargingSession != null &&
-                    InternalData.ContainsKey(ChargingSession.Id))
-                {
-
-                    InternalData.Remove(ChargingSession.Id, out _);
-
-                    LogIt("remove",
-                          ChargingSession.Id,
-                          "chargingSession",
-                          ChargingSession.ToJSON());
-
-                }
+                await LogIt("remove",
+                            ChargingSession.Id,
+                            "chargingSession",
+                            ChargingSession.ToJSON(Embedded: true,
+                                                   CustomChargeDetailRecordSerializer,
+                                                   CustomSendCDRResultSerializer,
+                                                   CustomChargingSessionSerializer));
 
             }
 
@@ -476,7 +475,8 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region RemoteStart(NewChargingSession, Result, UpdateFunc = null)
+
+        #region RemoteStart  (NewChargingSession, Result, UpdateFunc = null)
 
         public async Task<Boolean> RemoteStart(ChargingSession           NewChargingSession,
                                                RemoteStartResult         Result,
@@ -509,7 +509,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region RemoteStop (Id, Authentication, ProviderId = null, CSORoamingProvider = null)
+        #region RemoteStop   (Id, Authentication, ProviderId = null, CSORoamingProvider = null)
 
         public async Task<Boolean> RemoteStop(ChargingSession_Id     Id,
                                               AAuthentication        Authentication,
@@ -559,7 +559,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AuthStart(NewChargingSession, UpdateFunc = null)
+
+        #region AuthStart    (NewChargingSession, UpdateFunc = null)
 
         public async Task<Boolean> AuthStart(ChargingSession           NewChargingSession,
                                              Action<ChargingSession>?  UpdateFunc   = null)
@@ -591,7 +592,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AuthStop (Id, Authentication, ProviderId, CSORoamingProvider = null)
+        #region AuthStop     (Id, Authentication, ProviderId, CSORoamingProvider = null)
 
         public async Task<Boolean> AuthStop(ChargingSession_Id    Id,
                                             AAuthentication       Authentication,
@@ -623,7 +624,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region CDRReceived(Id, NewChargeDetailRecord)
+
+        #region CDRReceived  (Id, NewChargeDetailRecord)
 
         public async Task<Boolean> CDRReceived(ChargingSession_Id  Id,
                                                ChargeDetailRecord  NewChargeDetailRecord)
@@ -662,7 +664,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region CDRForwarded(Id, SendCDRResult)
+        #region CDRForwarded (Id, SendCDRResult)
 
         public async Task<Boolean> CDRForwarded(ChargingSession_Id  Id,
                                                 SendCDRResult       CDRResult)
@@ -691,191 +693,6 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
-
-
-        public int CompareTo(object obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int CompareTo(ChargingSession_Id other)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        //#region SendCDR(SendCDRResult)
-
-        //public void SendCDR(SendCDRResult sendCDRResult)
-        //{
-
-        //    lock (_ChargingSessions)
-        //    {
-
-        //        AddChargeDetailRecordAction?.Invoke(sendCDRResult.ChargeDetailRecord);
-
-        //        _ChargingSessions.Remove(sendCDRResult.ChargeDetailRecord.SessionId);
-
-        //        var LogLine = String.Concat(Timestamp.Now.ToIso8601(), ",",
-        //                                    "SendCDR,",
-        //                                    sendCDRResult.ChargeDetailRecord.EVSE?.Id ?? sendCDRResult.ChargeDetailRecord.EVSEId, ",",
-        //                                    sendCDRResult.ChargeDetailRecord.SessionId, ",",
-        //                                    sendCDRResult.ChargeDetailRecord.IdentificationStart, ",",
-        //                                    sendCDRResult.ChargeDetailRecord.IdentificationStop, ",",
-        //                                    sendCDRResult.Result, ",",
-        //                                    sendCDRResult.Warnings.AggregateWith("/"));
-
-        //        File.AppendAllText(SessionLogFileName,
-        //                           LogLine + Environment.NewLine);
-
-        //    }
-
-        //}
-
-        //#endregion
-
-
-        //#region RegisterExternalChargingSession(Timestamp, Sender, ChargingSession)
-
-        ///// <summary>
-        ///// Register an external charging session which was not registered
-        ///// via the RemoteStart or AuthStart mechanisms.
-        ///// </summary>
-        ///// <param name="Timestamp">The timestamp of the request.</param>
-        ///// <param name="Sender">The sender of the charging session.</param>
-        ///// <param name="ChargingSession">The charging session.</param>
-        //public void RegisterExternalChargingSession(DateTime         Timestamp,
-        //                                            Object           Sender,
-        //                                            ChargingSession  ChargingSession)
-        //{
-
-        //    #region Initial checks
-
-        //    if (ChargingSession == null)
-        //        throw new ArgumentNullException(nameof(ChargingSession), "The given charging session must not be null!");
-
-        //    #endregion
-
-
-        //    //if (!_ChargingSessions_RFID.ContainsKey(ChargingSession.Id))
-        //    //{
-
-        //        DebugX.LogT("Registered external charging session '" + ChargingSession.Id + "'!");
-
-        //        //_ChargingSessions.TryAdd(ChargingSession.Id, ChargingSession);
-
-        //        if (ChargingSession.EVSEId.HasValue)
-        //        {
-
-        //            var _EVSE = RoamingNetwork.GetEVSEbyId(ChargingSession.EVSEId.Value);
-
-        //            if (_EVSE != null)
-        //            {
-
-        //                ChargingSession.EVSE = _EVSE;
-
-        //                // Will NOT set the EVSE status!
-        //                //_EVSE.ChargingSession = ChargingSession;
-
-        //            }
-
-        //        }
-
-        //        // else charging station
-
-        //        // else charging pool
-
-        //        //SendNewChargingSession(Timestamp, Sender, ChargingSession);
-
-        //    //}
-
-        //}
-
-        //#endregion
-
-        //#region RemoveExternalChargingSession(Timestamp, Sender, ChargingSession)
-
-        ///// <summary>
-        ///// Register an external charging session which was not registered
-        ///// via the RemoteStart or AuthStart mechanisms.
-        ///// </summary>
-        ///// <param name="Timestamp">The timestamp of the request.</param>
-        ///// <param name="Sender">The sender of the charging session.</param>
-        ///// <param name="ChargingSession">The charging session.</param>
-        //public void RemoveExternalChargingSession(DateTime         Timestamp,
-        //                                          Object           Sender,
-        //                                          ChargingSession  ChargingSession)
-        //{
-
-        //    #region Initial checks
-
-        //    if (ChargingSession == null)
-        //        throw new ArgumentNullException(nameof(ChargingSession), "The given charging session must not be null!");
-
-        //    #endregion
-
-        //    ChargingStationOperator _cso = null;
-
-        //    //if (_ChargingSessions_RFID.TryRemove(ChargingSession.Id, out _cso))
-        //    //{
-
-        //        DebugX.LogT("Removing external charging session '" + ChargingSession.Id + "'!");
-
-        //    //}
-
-        //    if (ChargingSession.EVSE != null)
-        //    {
-
-        //        if (ChargingSession.EVSE.ChargingSession != null &&
-        //            ChargingSession.EVSE.ChargingSession == ChargingSession)
-        //        {
-
-        //            //ChargingSession.EVSE.ChargingSession = null;
-
-        //        }
-
-        //    }
-
-        //    else if (ChargingSession.EVSEId.HasValue)
-        //    {
-
-        //        var _EVSE = RoamingNetwork.GetEVSEbyId(ChargingSession.EVSEId.Value);
-
-        //        if (_EVSE                 != null &&
-        //            _EVSE.ChargingSession != null &&
-        //            _EVSE.ChargingSession == ChargingSession)
-        //        {
-
-        //            //_EVSE.ChargingSession = null;
-
-        //        }
-
-        //    }
-
-        //}
-
-        //#endregion
-
-        //#region (internal) SendNewChargingSession(Timestamp, Sender, Session)
-
-        //internal void SendNewChargingSession(DateTime         Timestamp,
-        //                                     Object           Sender,
-        //                                     ChargingSession  Session)
-        //{
-
-        //    if (Session != null)
-        //    {
-
-        //        if (Session.RoamingNetwork == null)
-        //            Session.RoamingNetwork = RoamingNetwork;
-
-        //    }
-
-        //    OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
-
-        //}
-
-        //#endregion
 
 
     }

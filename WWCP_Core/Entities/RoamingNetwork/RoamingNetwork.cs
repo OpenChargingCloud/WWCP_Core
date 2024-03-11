@@ -7033,7 +7033,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                           Object           Sender,
                                                           ChargingSession  ChargingSession)
         {
-            await SessionsStore.Add(ChargingSession);
+            await SessionsStore.AddSession(ChargingSession);
         }
 
         #endregion

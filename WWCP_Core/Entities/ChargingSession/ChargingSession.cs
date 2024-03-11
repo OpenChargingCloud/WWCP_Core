@@ -1050,11 +1050,11 @@ namespace cloud.charging.open.protocols.WWCP
             //     "roamingNetworkId":              "Prod",
             //     "start": {
             //         "timestamp":                 "2020-03-24T07:44:39.476Z",
-            //         "systemId":                  "de-bd-gw-02",
+            //         "systemId":                  "occ3a",
             //         "CSORoamingProviderId":      "HubjectProd",
-            //         "providerId":                "DE-MEG",
+            //         "providerId":                "DE-GDF",
             //         "authentication": {
-            //           "remoteIdentification":    "DE-MEG-C00171852-1"
+            //           "remoteIdentification":    "DE-GDF-C00171852-1"
             //         }
             //     },
             //     "duration":                      13309.27226,
@@ -1081,31 +1081,36 @@ namespace cloud.charging.open.protocols.WWCP
             //                    "value":           33.1
             //                }
             //             ],
-            //             "evseId":                "DE*LVF*E970993236*1"
+            //             "evseId":                "DE*GEF*E970993236*1"
             //         }
             //     },
             //
             //     "stopRequests":                  [ ... ],
             //
-            //     "chargingStationOperatorId":     "DE*LVF",
-            //     "chargingPoolId":                "DE*LVF*P555F437E4ECB6F6",
-            //     "chargingStationId":             "DE*LVF*S970993236",
-            //     "EVSEId":                        "DE*LVF*E970993236*1"
+            //     "chargingStationOperatorId":     "DE*GEF",
+            //     "chargingPoolId":                "DE*GEF*P555F437E4ECB6F6",
+            //     "chargingStationId":             "DE*GEF*S970993236",
+            //     "EVSEId":                        "DE*GEF*E970993236*1"
             // }
 
-            var session = new ChargingSession(
-                              ChargingSession_Id.Parse(JSON["@id"]?.            Value<String>()),
-                              RoamingNetwork,
-                              EventTracking_Id.  Parse(JSON["eventTrackingId"]?.Value<String>())
-                          ) {
+            var sessionId  = (JSON["@id"]?.Value<String>())
+                                 ?? throw new Exception("The session identification must not be null!");
 
-                              RoamingNetwork             = RoamingNetwork,
-                              ChargingStationOperatorId  = JSON["chargingStationOperatorId"] is not null ? ChargingStationOperator_Id.Parse(JSON["chargingStationOperatorId"]?.Value<String>()) : new ChargingStationOperator_Id?(),
-                              ChargingPoolId             = JSON["chargingPoolId"]            is not null ? ChargingPool_Id.           Parse(JSON["chargingPoolId"]?.           Value<String>()) : new ChargingPool_Id?(),
-                              ChargingStationId          = JSON["chargingStationId"]         is not null ? ChargingStation_Id.        Parse(JSON["chargingStationId"]?.        Value<String>()) : new ChargingStation_Id?(),
-                              EVSEId                     = JSON["EVSEId"]                    is not null ? EVSE_Id.                   Parse(JSON["EVSEId"]?.                   Value<String>()) : new EVSE_Id?()
-                          
-                          };
+            var session    = new ChargingSession(
+                                 ChargingSession_Id.Parse(sessionId),
+                                 RoamingNetwork,
+                                 JSON["eventTrackingId"]?.Value<String>() is String eventTrackingId
+                                     ? EventTracking_Id.Parse(eventTrackingId)
+                                     : EventTracking_Id.New
+                             ) {
+
+                                 RoamingNetwork             = RoamingNetwork,
+                                 ChargingStationOperatorId  = JSON["chargingStationOperatorId"]?.Value<String>() is String chargingStationOperatorId ? ChargingStationOperator_Id.Parse(chargingStationOperatorId) : null,
+                                 ChargingPoolId             = JSON["chargingPoolId"]?.           Value<String>() is String chargingPoolId            ? ChargingPool_Id.           Parse(chargingPoolId)            : null,
+                                 ChargingStationId          = JSON["chargingStationId"]?.        Value<String>() is String chargingStationId         ? ChargingStation_Id.        Parse(chargingStationId)         : null,
+                                 EVSEId                     = JSON["EVSEId"]?.                   Value<String>() is String EVSEId                    ? EVSE_Id.                   Parse(EVSEId)                    : null,
+                             
+                             };
 
 
             if (JSON["start"]        is JObject sessionStartJSON)
@@ -1113,16 +1118,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                 var startTime = sessionStartJSON["timestamp"]?.Value<DateTime>();
 
-                if (startTime != null)
+                if (startTime is not null)
                 {
 
                     session.SessionTime                = new StartEndDateTime(startTime.Value);
 
-                    session.SystemIdStart              = sessionStartJSON["systemId"]             is not null              ? System_Id.            Parse(sessionStartJSON["systemId"]?.            Value<String>()) : new System_Id?();
-                    session.EMPRoamingProviderIdStart  = sessionStartJSON["EMPRoamingProviderId"] is not null              ? EMPRoamingProvider_Id.Parse(sessionStartJSON["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
-                    session.CSORoamingProviderIdStart  = sessionStartJSON["CSORoamingProviderId"] is not null              ? CSORoamingProvider_Id.Parse(sessionStartJSON["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
-                    session.ProviderIdStart            = sessionStartJSON["providerId"]           is not null              ? EMobilityProvider_Id. Parse(sessionStartJSON["providerId"]?.Value<String>())           : new EMobilityProvider_Id?();
-                    session.AuthenticationStart        = sessionStartJSON["authentication"] is JObject authenticationStart ? RemoteAuthentication. Parse(authenticationStart)                                       : null;
+                    session.SystemIdStart              = sessionStartJSON["systemId"]?.            Value<String>() is String  systemId             ? System_Id.            Parse(systemId)             : null;
+                    session.EMPRoamingProviderIdStart  = sessionStartJSON["EMPRoamingProviderId"]?.Value<String>() is String  empRoamingProviderId ? EMPRoamingProvider_Id.Parse(empRoamingProviderId) : null;
+                    session.CSORoamingProviderIdStart  = sessionStartJSON["CSORoamingProviderId"]?.Value<String>() is String  csoRoamingProviderId ? CSORoamingProvider_Id.Parse(csoRoamingProviderId) : null;
+                    session.ProviderIdStart            = sessionStartJSON["providerId"]?.          Value<String>() is String  providerId           ? EMobilityProvider_Id. Parse(providerId)           : null;
+                    session.AuthenticationStart        = sessionStartJSON["authentication"]                        is JObject authenticationStart  ? RemoteAuthentication. Parse(authenticationStart)  : null;
 
                 }
 
@@ -1131,16 +1136,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                     var stopTime = sessionStopJSON["timestamp"]?.Value<DateTime>();
 
-                    if (stopTime != null)
+                    if (startTime is not null && stopTime is not null)
                     {
 
                         session.SessionTime                = new StartEndDateTime(startTime.Value, stopTime);
 
-                        session.SystemIdStop               = sessionStopJSON["systemId"]             != null                  ? System_Id.            Parse(sessionStopJSON["systemId"]?.            Value<String>()) : new System_Id?();
-                        session.EMPRoamingProviderIdStop   = sessionStopJSON["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(sessionStopJSON["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
-                        session.CSORoamingProviderIdStop   = sessionStopJSON["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(sessionStopJSON["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
-                        session.ProviderIdStop             = sessionStopJSON["providerId"]           != null                  ? EMobilityProvider_Id. Parse(sessionStopJSON["providerId"]?.Value<String>())           : new EMobilityProvider_Id?();
-                        session.AuthenticationStop         = sessionStopJSON["authentication"] is JObject authenticationStop  ? LocalAuthentication.  Parse(authenticationStop)                                       : null;
+                        session.SystemIdStop               = sessionStopJSON["systemId"]?.            Value<String>() is String  systemId             ? System_Id.            Parse(systemId)             : null;
+                        session.EMPRoamingProviderIdStop   = sessionStopJSON["EMPRoamingProviderId"]?.Value<String>() is String  EMPRoamingProviderId ? EMPRoamingProvider_Id.Parse(EMPRoamingProviderId) : null;
+                        session.CSORoamingProviderIdStop   = sessionStopJSON["CSORoamingProviderId"]?.Value<String>() is String  CSORoamingProviderId ? CSORoamingProvider_Id.Parse(CSORoamingProviderId) : null;
+                        session.ProviderIdStop             = sessionStopJSON["providerId"]?.          Value<String>() is String  providerId           ? EMobilityProvider_Id. Parse(providerId)           : null;
+                        session.AuthenticationStop         = sessionStopJSON["authentication"]                        is JObject authenticationStop   ? LocalAuthentication.  Parse(authenticationStop)   : null;
 
                     }
 
@@ -1151,15 +1156,15 @@ namespace cloud.charging.open.protocols.WWCP
 
                     var cdrReceivedTime = sessionCDRReceivedJSON["timestamp"]?.Value<DateTime>();
 
-                    if (cdrReceivedTime != null)
+                    if (cdrReceivedTime is not null)
                     {
                         session.CDRReceived   = cdrReceivedTime;
-                        session.SystemIdCDR   = sessionCDRReceivedJSON["systemId"] != null ? System_Id.Parse(sessionCDRReceivedJSON["systemId"]?.Value<String>()) : new System_Id?();
+                        session.SystemIdCDR   = sessionCDRReceivedJSON["systemId"]?.Value<String>() is String systemId ? System_Id.Parse(systemId) : null;
                     }
 
                     if (sessionCDRReceivedJSON["CDRResult"] is JObject CDRResultJSON)
                     {
-                        if (SendCDRResult.TryParse(CDRResultJSON, out var sendCDRResult, out var ErrorResponse))
+                        if (SendCDRResult.TryParse(CDRResultJSON, out var sendCDRResult, out var errorResponse))
                             session.CDRResult     = sendCDRResult;
                     }
 

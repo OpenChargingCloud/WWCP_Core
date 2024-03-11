@@ -515,13 +515,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        public void LoadLogfiles()
-        {
-            LoadLogFiles(LogFilePath,
-                         LogfileSearchPattern(this.RoamingNetworkId));
-        }
-
-
         #region (protected) LogIt(Command, Id, PropertyKey, JSONObject)
 
         protected async Task LogIt(String   Command,
@@ -638,6 +631,16 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+
+
+        #region LoadLogFiles()
+
+        public ReloadStatistics LoadLogfiles()
+
+            => LoadLogFiles(LogFilePath,
+                            LogfileSearchPattern(RoamingNetworkId));
+
+        #endregion
 
         #region LoadLogFiles(Path, LogfileSearchPattern)
 
