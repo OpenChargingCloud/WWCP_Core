@@ -104,6 +104,12 @@ namespace cloud.charging.open.protocols.WWCP
         public IRemoteChargingStation?       RemoteChargingStation       { get; }
 
 
+
+        public Boolean                       Published                   { get; }
+
+        public Boolean                       Disabled                    { get; }
+
+
         /// <summary>
         /// All brands registered for this charging station.
         /// </summary>

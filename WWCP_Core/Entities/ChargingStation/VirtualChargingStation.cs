@@ -31,8 +31,6 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
-using social.OpenData.UsersAPI;
-
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP.Virtual
@@ -553,10 +551,16 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
+
+        public Boolean                       Published                   { get; }
+
+        public Boolean                       Disabled                    { get; }
+
+
         /// <summary>
         /// The authentication white lists.
         /// </summary>
-        public Boolean UseWhiteLists { get; set; }
+        public Boolean                       UseWhiteLists               { get; set; }
 
         /// <summary>
         /// The authentication white lists.
