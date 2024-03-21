@@ -77,6 +77,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                        String?                                                         ServiceIdentification                = null,
                                                                        String?                                                         ModelCode                            = null,
 
+                                                                       Boolean?                                                        Published                            = null,
+                                                                       Boolean?                                                        Disabled                             = null,
+
                                                                        IEnumerable<Brand>?                                             Brands                               = null,
                                                                        IEnumerable<RootCAInfo>?                                        MobilityRootCAs                      = null,
 
@@ -128,6 +131,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                    ServiceIdentification,
                    ModelCode,
+
+                   Published,
+                   Disabled,
 
                    Brands,
                    MobilityRootCAs,
@@ -213,6 +219,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                                   String?                                                         ServiceIdentification                = null,
                                                                                   String?                                                         ModelCode                            = null,
 
+                                                                                  Boolean?                                                        Published                            = null,
+                                                                                  Boolean?                                                        Disabled                             = null,
+
                                                                                   IEnumerable<Brand>?                                             Brands                               = null,
                                                                                   IEnumerable<RootCAInfo>?                                        MobilityRootCAs                      = null,
 
@@ -263,6 +272,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                    ServiceIdentification,
                    ModelCode,
+
+                   Published,
+                   Disabled,
 
                    Brands,
                    MobilityRootCAs,
@@ -349,6 +361,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                                        String?                                                         ServiceIdentification                  = null,
                                                                                        String?                                                         ModelCode                              = null,
 
+                                                                                       Boolean?                                                        Published                              = null,
+                                                                                       Boolean?                                                        Disabled                               = null,
+
                                                                                        IEnumerable<Brand>?                                             Brands                                 = null,
                                                                                        IEnumerable<RootCAInfo>?                                        MobilityRootCAs                        = null,
 
@@ -400,6 +415,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                    ServiceIdentification,
                    ModelCode,
+
+                   Published,
+                   Disabled,
 
                    Brands,
                    MobilityRootCAs,

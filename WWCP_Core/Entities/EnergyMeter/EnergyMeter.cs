@@ -598,6 +598,24 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region (static) FromMeterId(EnergyMeterId)
+
+        /// <summary>
+        /// Create a new energy meter having the given energy meter identification.
+        /// </summary>
+        public static EnergyMeter? FromMeterId(String EnergyMeterId)
+        {
+
+            if (EnergyMeter_Id.TryParse(EnergyMeterId, out var energyMeterId))
+                return new EnergyMeter(energyMeterId);
+
+            return null;
+
+        }
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (EnergyMeter1, EnergyMeter2)

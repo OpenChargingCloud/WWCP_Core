@@ -1288,6 +1288,9 @@ namespace cloud.charging.open.protocols.WWCP
                                String?                                        ServiceIdentification          = null,
                                String?                                        ModelCode                      = null,
 
+                               Boolean?                                       Published                      = null,
+                               Boolean?                                       Disabled                       = null,
+
                                IEnumerable<Brand>?                            Brands                         = null,
                                IEnumerable<RootCAInfo>?                       MobilityRootCAs                = null,
 
@@ -1334,7 +1337,10 @@ namespace cloud.charging.open.protocols.WWCP
             this.serviceIdentification               = ServiceIdentification;
             this.modelCode                           = ModelCode;
 
-            this.Brands                              = new ReactiveSet<Brand>();
+            this.Published                           = Published ?? true;
+            this.Disabled                            = Disabled  ?? false;
+
+            this.Brands                              = [];
 
             if (Brands is not null)
                 foreach (var brand in Brands)
@@ -1349,7 +1355,7 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
 
-            this.MobilityRootCAs = new ReactiveSet<RootCAInfo>();
+            this.MobilityRootCAs = [];
 
             if (MobilityRootCAs is not null)
                 foreach (var mobilityRootCA in MobilityRootCAs)
@@ -1364,7 +1370,7 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
 
-            this.DataLicenses                        = new ReactiveSet<OpenDataLicense>();
+            this.DataLicenses                        = [];
             this.DataLicenses.OnSetChanged          += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -1375,7 +1381,7 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
 
-            this.UIFeatures                          = new ReactiveSet<UIFeatures>();
+            this.UIFeatures                          = [];
             this.UIFeatures.OnSetChanged            += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("UIFeatures",
@@ -1384,7 +1390,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.AuthenticationModes                 = new ReactiveSet<AuthenticationModes>();
+            this.AuthenticationModes                 = [];
 
             if (AuthenticationModes is not null)
                 foreach (var authenticationMode in AuthenticationModes)
@@ -1398,7 +1404,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.PaymentOptions                      = new ReactiveSet<PaymentOptions>();
+            this.PaymentOptions                      = [];
 
             if (PaymentOptions is not null)
                 foreach (var paymentOption in PaymentOptions)
@@ -1412,7 +1418,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.Features                            = new ReactiveSet<ChargingStationFeature>();
+            this.Features                            = [];
 
             if (Features is not null)
                 foreach (var feature in Features)
@@ -1426,7 +1432,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.ParkingSpaces                       = new ReactiveSet<ParkingSpace>();
+            this.ParkingSpaces                       = [];
             this.ParkingSpaces.OnSetChanged         += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("ParkingSpaces",
@@ -1435,7 +1441,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.ParkingSpaces                       = new ReactiveSet<ParkingSpace>();
+            this.ParkingSpaces                       = [];
             this.ParkingSpaces.OnSetChanged         += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("ParkingSpaces",
@@ -1444,7 +1450,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.PhotoURLs                           = new ReactiveSet<URL>();
+            this.PhotoURLs                           = [];
             this.PhotoURLs.OnSetChanged             += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("PhotoURLs",
@@ -1475,7 +1481,7 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
 
-            this.MaxCurrentPrognoses                = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxCurrentPrognoses                = [];
             this.MaxCurrentPrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -1485,7 +1491,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.MaxPowerPrognoses                  = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxPowerPrognoses                  = [];
             this.MaxPowerPrognoses.OnSetChanged    += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -1495,7 +1501,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.MaxCapacityPrognoses               = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxCapacityPrognoses               = [];
             this.MaxCapacityPrognoses.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
