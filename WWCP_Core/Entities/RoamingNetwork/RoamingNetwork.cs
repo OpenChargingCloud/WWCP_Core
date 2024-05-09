@@ -6970,7 +6970,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Whether the given charging session identification is known within the roaming network.
         /// </summary>
         /// <param name="ChargingSessionId">The charging session identification.</param>
-        public Boolean Contains(ChargingSession_Id ChargingSessionId)
+        public Boolean ContainsChargingSessionId(ChargingSession_Id ChargingSessionId)
 
             => SessionsStore.ContainsKey(ChargingSessionId);
 
@@ -7002,10 +7002,10 @@ namespace cloud.charging.open.protocols.WWCP
                                              ChargingSession  Session)
         {
 
-            if (Session != null)
+            if (Session is not null)
             {
 
-                if (Session.RoamingNetwork == null)
+                if (Session.RoamingNetwork is null)
                 {
                     Session.RoamingNetwork    = this;
                     Session.RoamingNetworkId  = Id;
@@ -7986,6 +7986,33 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
+
+        public async Task ReceiveSendChargeDetailRecordResult(SendCDRResult SendCDRResult)
+        {
+
+            var sessionId = SendCDRResult.ChargeDetailRecord?.SessionId;
+
+            if (sessionId.HasValue)
+                await SessionsStore.CDRForwarded(sessionId.Value, SendCDRResult);
+
+        }
+
+        public async Task ReceiveSendChargeDetailRecordResults(IEnumerable<SendCDRResult> SendCDRResults)
+        {
+
+            foreach (var sendCDRResult in SendCDRResults)
+            {
+
+                var sessionId = sendCDRResult.ChargeDetailRecord?.SessionId;
+
+                if (sessionId.HasValue)
+                    await SessionsStore.CDRForwarded(sessionId.Value, sendCDRResult);
+
+            }
+
+        }
+
         #endregion
 
         #region AuthorizeStart/-Stop
@@ -8341,28 +8368,30 @@ namespace cloud.charging.open.protocols.WWCP
                 // Store the upstream session id in order to contact the right authenticator at later requests!
                 // Will be deleted when the charge detail record was sent!
 
-                var evse                = ChargingLocation?.EVSEId.           HasValue == true ? GetEVSEById           (ChargingLocation.EVSEId.           Value) : null;
-                var chargingStation     = ChargingLocation?.ChargingStationId.HasValue == true ? GetChargingStationById(ChargingLocation.ChargingStationId.Value) : evse?.           ChargingStation;
-                var chargingPool        = ChargingLocation?.ChargingPoolId.   HasValue == true ? GetChargingPoolById   (ChargingLocation.ChargingPoolId.   Value) : chargingStation?.ChargingPool;
+                var evse             = ChargingLocation?.EVSEId.           HasValue == true ? GetEVSEById           (ChargingLocation.EVSEId.           Value) : null;
+                var chargingStation  = ChargingLocation?.ChargingStationId.HasValue == true ? GetChargingStationById(ChargingLocation.ChargingStationId.Value) : evse?.           ChargingStation;
+                var chargingPool     = ChargingLocation?.ChargingPoolId.   HasValue == true ? GetChargingPoolById   (ChargingLocation.ChargingPoolId.   Value) : chargingStation?.ChargingPool;
 
-                var newChargingSession  = new ChargingSession(result.SessionId!.Value,
-                                                              this,
-                                                              EventTrackingId) {
-                                              CSORoamingProviderStart    = result.ISendAuthorizeStartStop as ICSORoamingProvider,
-                                              ProviderIdStart            = result.ProviderId,
-                                              ChargingStationOperatorId  = OperatorId,
-                                              EVSEId                     = ChargingLocation?.EVSEId,
-                                              ChargingStationId          = ChargingLocation?.ChargingStationId,
-                                              ChargingPoolId             = ChargingLocation?.ChargingPoolId,
-                                              EVSE                       = evse,
-                                              ChargingStation            = chargingStation,
-                                              ChargingPool               = chargingPool,
-                                              ChargingStationOperator    = OperatorId.HasValue ? GetChargingStationOperatorById(OperatorId.Value) : null,
-                                              AuthenticationStart        = LocalAuthentication,
-                                              ChargingProduct            = ChargingProduct
-                                          };
-
-                SessionsStore.AuthStart(newChargingSession);
+                await SessionsStore.AuthStart(
+                          new ChargingSession(
+                              result.SessionId!.Value,
+                              this,
+                              EventTrackingId
+                          ) {
+                              CSORoamingProviderStart    = result.ISendAuthorizeStartStop as ICSORoamingProvider,
+                              ProviderIdStart            = result.ProviderId,
+                              ChargingStationOperatorId  = OperatorId,
+                              EVSEId                     = ChargingLocation?.EVSEId,
+                              ChargingStationId          = ChargingLocation?.ChargingStationId,
+                              ChargingPoolId             = ChargingLocation?.ChargingPoolId,
+                              EVSE                       = evse,
+                              ChargingStation            = chargingStation,
+                              ChargingPool               = chargingPool,
+                              ChargingStationOperator    = OperatorId.HasValue ? GetChargingStationOperatorById(OperatorId.Value) : null,
+                              AuthenticationStart        = LocalAuthentication,
+                              ChargingProduct            = ChargingProduct
+                          }
+                      );
 
             }
 
@@ -8547,7 +8576,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     else
                         authenticationChargingLocationCounter.TryAdd(ChargingLocation,
-                                                                          new List<DateTime>() { org.GraphDefined.Vanaheimr.Illias.Timestamp.Now });
+                                                                     [ org.GraphDefined.Vanaheimr.Illias.Timestamp.Now ]);
 
                 }
 
@@ -8578,21 +8607,25 @@ namespace cloud.charging.open.protocols.WWCP
                         if (chargingSession.ProviderStart is not null)
                         {
 
-                            result = await chargingSession.ProviderStart.AuthorizeStop(SessionId,
-                                                                                       LocalAuthentication,
-                                                                                       ChargingLocation,
-                                                                                       CPOPartnerSessionId,
-                                                                                       OperatorId,
+                            result = await chargingSession.ProviderStart.AuthorizeStop(
+                                               SessionId,
+                                               LocalAuthentication,
+                                               ChargingLocation,
+                                               CPOPartnerSessionId,
+                                               OperatorId,
 
-                                                                                       Timestamp,
-                                                                                       EventTrackingId,
-                                                                                       RequestTimeout,
-                                                                                       CancellationToken);
+                                               Timestamp,
+                                               EventTrackingId,
+                                               RequestTimeout,
+                                               CancellationToken
+                                           );
 
-                            if (result?.Result == AuthStopResultTypes.Authorized)
-                                SessionsStore.AuthStop(SessionId,
-                                                       LocalAuthentication,
-                                                       result.ProviderId.Value);
+                            if (result?.Result == AuthStopResultTypes.Authorized && result.ProviderId.HasValue)
+                                await SessionsStore.AuthStop(
+                                          SessionId,
+                                          LocalAuthentication,
+                                          result.ProviderId.Value
+                                      );
 
                         }
 
@@ -8609,22 +8642,26 @@ namespace cloud.charging.open.protocols.WWCP
                             if (chargingSession.CSORoamingProviderStart is not null)
                             {
 
-                                result = await chargingSession.CSORoamingProviderStart.AuthorizeStop(SessionId,
-                                                                                                     LocalAuthentication,
-                                                                                                     ChargingLocation,
-                                                                                                     CPOPartnerSessionId,
-                                                                                                     OperatorId,
+                                result = await chargingSession.CSORoamingProviderStart.AuthorizeStop(
+                                                   SessionId,
+                                                   LocalAuthentication,
+                                                   ChargingLocation,
+                                                   CPOPartnerSessionId,
+                                                   OperatorId,
 
-                                                                                                     Timestamp,
-                                                                                                     EventTrackingId,
-                                                                                                     RequestTimeout,
-                                                                                                     CancellationToken);
+                                                   Timestamp,
+                                                   EventTrackingId,
+                                                   RequestTimeout,
+                                                   CancellationToken
+                                               );
 
-                                if (result?.Result == AuthStopResultTypes.Authorized)
-                                    SessionsStore.AuthStop(SessionId,
-                                                           LocalAuthentication,
-                                                           result.ProviderId.Value,
-                                                           result.ISendAuthorizeStartStop as ICSORoamingProvider);
+                                if (result?.Result == AuthStopResultTypes.Authorized && result.ProviderId.HasValue)
+                                    await SessionsStore.AuthStop(
+                                              SessionId,
+                                              LocalAuthentication,
+                                              result.ProviderId.Value,
+                                              result.ISendAuthorizeStartStop as ICSORoamingProvider
+                                          );
 
                             }
 

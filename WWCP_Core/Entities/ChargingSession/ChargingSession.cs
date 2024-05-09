@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.WWCP
             #region Initial checks
 
             if (ChargingSessions is null || !ChargingSessions.Any())
-                return new JArray();
+                return [];
 
             #endregion
 

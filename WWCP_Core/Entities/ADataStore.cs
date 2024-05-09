@@ -78,20 +78,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The maximum number of retries to write to a logfile.
         /// </summary>
-        public  static readonly Byte      MaxRetries          = 5;
+        public  static readonly  Byte                                                                                 MaxRetries     = 5;
 
 
-        protected readonly  ConcurrentDictionary<TId, TData>                                                     InternalData   = new();
+        protected      readonly  ConcurrentDictionary<TId, TData>                                                     InternalData   = new();
 
-        private   readonly  Object                                                                               Lock           = new();
+        private        readonly  Func<String, IPSocket?, String, JObject, ConcurrentDictionary<TId, TData>, Boolean>  CommandProcessor;
 
-        private   readonly  Func<String, IPSocket?, String, JObject, ConcurrentDictionary<TId, TData>, Boolean>  CommandProcessor;
+        private        readonly  Channel<LogData>                                                                     discChannel;
+        private        readonly  Channel<String>                                                                      networkChannel;
+        private        readonly  CancellationTokenSource                                                              cancellationTokenSource;
 
-        private   readonly  Channel<LogData>                                                                     discChannel;
-        private   readonly  Channel<String>                                                                      networkChannel;
-        private   readonly  CancellationTokenSource                                                              cancellationTokenSource;
-
-        private   readonly  TCPServer?                                                                           Server;
+        private        readonly  TCPServer?                                                                           Server;
 
         #endregion
 
@@ -100,7 +98,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The attached roaming network.
         /// </summary>
-        public RoamingNetwork_Id?                RoamingNetworkId        { get; }
+        public RoamingNetwork_Id                 RoamingNetworkId        { get; }
 
 
         /// <summary>
@@ -146,7 +144,7 @@ namespace cloud.charging.open.protocols.WWCP
             => roamingNetworkInfos;
 
 
-        public RoamingNetworkInfo RoamingNetworkInfo
+        public RoamingNetworkInfo? RoamingNetworkInfo
             => RoamingNetworkInfos.SafeWhere(roamingNetworkInfo => roamingNetworkInfo.NodeId == NodeId).FirstOrDefault();
 
 
@@ -163,7 +161,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a generic data store.
         /// </summary>
         /// <param name="DNSClient">The DNS client defines which DNS servers to use.</param>
-        public ADataStore(Func<String, IPSocket?, String, JObject, ConcurrentDictionary<TId, TData>, Boolean>  CommandProcessor,
+        public ADataStore(RoamingNetwork_Id                                                                    RoamingNetworkId,
+                          Func<String, IPSocket?, String, JObject, ConcurrentDictionary<TId, TData>, Boolean>  CommandProcessor,
 
                           Func<RoamingNetwork_Id?, String>                                                     LogFilePathCreator,
                           Func<RoamingNetwork_Id?, String>                                                     LogFileNameCreator,
@@ -172,7 +171,6 @@ namespace cloud.charging.open.protocols.WWCP
                           Boolean                                                                              DisableLogfiles       = false,
                           Boolean                                                                              ReloadDataOnStart     = true,
 
-                          RoamingNetwork_Id?                                                                   RoamingNetworkId      = null,
                           IEnumerable<RoamingNetworkInfo>?                                                     RoamingNetworkInfos   = null,
                           Boolean                                                                              DisableNetworkSync    = false,
                           DNSClient?                                                                           DNSClient             = null)
@@ -191,6 +189,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.LogFilePath           = LogFilePathCreator(this.RoamingNetworkId)?.Trim() ?? AppContext.BaseDirectory;
             this.LogfileNameCreator    = LogFileNameCreator;
             this.LogfileSearchPattern  = LogfileSearchPattern;
+
+            DebugX.Log($"Using logfile path: {LogFilePath} {LogfileSearchPattern(RoamingNetworkId)}");
 
             this.DisableLogfiles       = DisableLogfiles;
             this.ReloadDataOnStart     = ReloadDataOnStart;
@@ -515,7 +515,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (protected) LogIt(Command, Id, PropertyKey, JSONObject)
+        #region (protected) LogIt         (Command, Id, PropertyKey, JSONObject)
 
         protected async Task LogIt(String   Command,
                                    IId      Id,
@@ -537,7 +537,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (protected) LogIt(Command, Id, PropertyKey, JSONArray)
+        #region (protected) LogIt         (Command, Id, PropertyKey, JSONArray)
 
         protected async Task LogIt(String  Command,
                                    IId     Id,
@@ -559,7 +559,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (private)   LogIt(Command, Id, PropertyKey = null, Data = null)
+        #region (private)   LogItInternal (Command, Id, PropertyKey = null, Data = null)
 
         private async Task LogItInternal(String   Command,
                                          IId      Id,
@@ -629,8 +629,6 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
-
-
 
 
         #region LoadLogFiles()

@@ -2238,7 +2238,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// Whether the given charging session identification is known within the EVSE.
         /// </summary>
         /// <param name="ChargingSessionId">The charging session identification.</param>
-        public Boolean Contains(ChargingSession_Id ChargingSessionId)
+        public Boolean ContainsChargingSessionId(ChargingSession_Id ChargingSessionId)
 
             => chargingSessions.ContainsKey(ChargingSessionId);
 

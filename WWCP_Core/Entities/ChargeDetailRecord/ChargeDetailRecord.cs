@@ -563,7 +563,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.ParkingTime                 = ParkingTime;
             this.ParkingFee                  = ParkingFee;
 
-            this.EnergyMeterId               = EnergyMeterId            ?? EnergyMeter?.Id;
+            this.EnergyMeterId               = EnergyMeterId             ?? EnergyMeter?.Id;
             this.EnergyMeter                 = EnergyMeter;
             this.EnergyMeteringValues        = EnergyMeteringValues is not null
                                                    ? EnergyMeteringValues.OrderBy(energyMeteringValue => energyMeteringValue.Timestamp).ToArray()

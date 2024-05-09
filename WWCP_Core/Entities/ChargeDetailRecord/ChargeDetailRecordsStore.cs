@@ -45,16 +45,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        public ChargeDetailRecordsStore(RoamingNetwork_Id                RoamingNetworkId,
-                                        IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos   = null,
-                                        Boolean                          DisableLogfiles       = false,
-                                        Boolean                          ReloadDataOnStart     = true,
+        public ChargeDetailRecordsStore(RoamingNetwork_Id                 RoamingNetworkId,
+                                        IEnumerable<RoamingNetworkInfo>?  RoamingNetworkInfos   = null,
+                                        Boolean                           DisableLogfiles       = false,
+                                        Boolean                           ReloadDataOnStart     = true,
 
-                                        Boolean                          DisableNetworkSync    = false,
-                                        String?                          LoggingPath           = null,
-                                        DNSClient                        DNSClient             = null)
+                                        Boolean                           DisableNetworkSync    = false,
+                                        String?                           LoggingPath           = null,
+                                        DNSClient?                        DNSClient             = null)
 
-            : base(CommandProcessor:      (a, b, c, d, e) => false,
+            : base(RoamingNetworkId:      RoamingNetworkId,
+                   CommandProcessor:      (a, b, c, d, e) => false,
 
                    DisableLogfiles:       DisableLogfiles,
                    LogFilePathCreator:    roamingNetworkId => Path.Combine(LoggingPath ?? AppContext.BaseDirectory, "ChargeDetailRecords"),
@@ -66,7 +67,6 @@ namespace cloud.charging.open.protocols.WWCP
                    ReloadDataOnStart:     ReloadDataOnStart,
                    LogfileSearchPattern:  roamingNetworkId => "ChargeDetailRecords-" + roamingNetworkId + "-" + Environment.MachineName + "_",
 
-                   RoamingNetworkId:      RoamingNetworkId,
                    RoamingNetworkInfos:   RoamingNetworkInfos,
                    DisableNetworkSync:    DisableNetworkSync,
                    DNSClient:             DNSClient)
@@ -78,36 +78,30 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region New   (NewChargeDetailRecord)
 
-        public void New(ChargeDetailRecord NewChargeDetailRecord)
+        public async Task New(ChargeDetailRecord NewChargeDetailRecord)
         {
-            lock (InternalData)
-            {
 
-                if (!InternalData.ContainsKey(NewChargeDetailRecord.SessionId))
-                    InternalData.TryAdd(NewChargeDetailRecord.SessionId, new ChargeDetailRecordCollection(NewChargeDetailRecord));
+            if (!InternalData.ContainsKey(NewChargeDetailRecord.SessionId))
+                InternalData.TryAdd(NewChargeDetailRecord.SessionId, new ChargeDetailRecordCollection(NewChargeDetailRecord));
 
-                else
-                    InternalData[NewChargeDetailRecord.SessionId].Add(NewChargeDetailRecord);
+            else
+                InternalData[NewChargeDetailRecord.SessionId].Add(NewChargeDetailRecord);
 
-                LogIt("new",
-                      NewChargeDetailRecord.SessionId,
-                      "chargeDetailRecords",
-                      new JArray(NewChargeDetailRecord.ToJSON()));
+            await LogIt("new",
+                        NewChargeDetailRecord.SessionId,
+                        "chargeDetailRecords",
+                        new JArray(NewChargeDetailRecord.ToJSON()));
 
-            }
         }
 
         #endregion
 
         #region New   (NewChargeDetailRecords)
 
-        public void New(IEnumerable<ChargeDetailRecord> NewChargeDetailRecords)
+        public async Task New(IEnumerable<ChargeDetailRecord> NewChargeDetailRecords)
         {
-            lock (InternalData)
-            {
-                foreach (var chargeDetailRecord in NewChargeDetailRecords)
-                    New(chargeDetailRecord);
-            }
+            foreach (var chargeDetailRecord in NewChargeDetailRecords)
+                await New(chargeDetailRecord);
         }
 
         #endregion
@@ -115,32 +109,27 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Sent   (SendCDRResults)
 
-        public void Sent(IEnumerable<SendCDRResult> SendCDRResults)
+        public async Task Sent(IEnumerable<SendCDRResult> SendCDRResults)
         {
             foreach (var sendCDRResult in SendCDRResults)
-                Sent(sendCDRResult);
+                await Sent(sendCDRResult);
         }
 
         #endregion
 
         #region Sent   (SendCDRResults)
 
-        public void Sent(SendCDRResult SendCDRResult)
+        public async Task Sent(SendCDRResult SendCDRResult)
         {
 
-            lock (InternalData)
-            {
+            if (!InternalData.ContainsKey(SendCDRResult.ChargeDetailRecord.SessionId))
+                InternalData.TryAdd(SendCDRResult.ChargeDetailRecord.SessionId,
+                                    new ChargeDetailRecordCollection(SendCDRResult.ChargeDetailRecord));
 
-                if (!InternalData.ContainsKey(SendCDRResult.ChargeDetailRecord.SessionId))
-                    InternalData.TryAdd(SendCDRResult.ChargeDetailRecord.SessionId,
-                                        new ChargeDetailRecordCollection(SendCDRResult.ChargeDetailRecord));
-
-                LogIt("sent",
-                      SendCDRResult.ChargeDetailRecord.SessionId,
-                      "sendChargeDetailRecordResult",
-                      SendCDRResult.ToJSON(Embedded: true));
-
-            }
+            await LogIt("sent",
+                        SendCDRResult.ChargeDetailRecord.SessionId,
+                        "sendChargeDetailRecordResult",
+                        SendCDRResult.ToJSON(Embedded: true));
 
         }
 
@@ -151,22 +140,17 @@ namespace cloud.charging.open.protocols.WWCP
         public void Sent(SendCDRsResult SendCDRsResult)
         {
 
-            lock (InternalData)
+            foreach (var cdrr in SendCDRsResult.ResultMap)
             {
-
-                foreach (var cdrr in SendCDRsResult.ResultMap)
-                {
-                    if (!InternalData.ContainsKey(cdrr.ChargeDetailRecord.SessionId))
-                        InternalData.TryAdd(cdrr.ChargeDetailRecord.SessionId,
-                                            new ChargeDetailRecordCollection(cdrr.ChargeDetailRecord));
-                }
-
-                //LogIt("sent",
-                //      SendCDRResult.ChargeDetailRecord.SessionId,
-                //      "sendChargeDetailRecordResult",
-                //      SendCDRResult.ToJSON());
-
+                if (!InternalData.ContainsKey(cdrr.ChargeDetailRecord.SessionId))
+                    InternalData.TryAdd(cdrr.ChargeDetailRecord.SessionId,
+                                        new ChargeDetailRecordCollection(cdrr.ChargeDetailRecord));
             }
+
+            //LogIt("sent",
+            //      SendCDRResult.ChargeDetailRecord.SessionId,
+            //      "sendChargeDetailRecordResult",
+            //      SendCDRResult.ToJSON());
 
             //if (SendCDRsResult.ResultMap.Count == 1)
 
@@ -175,7 +159,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
  
-
         #region ReloadData()
 
         //public void ReloadData()

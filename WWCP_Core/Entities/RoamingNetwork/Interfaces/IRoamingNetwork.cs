@@ -24,6 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using social.OpenData.UsersAPI;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -333,11 +334,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EMobilityProviders
 
-        Task<AddEMobilityProviderResult>            AddEMobilityProvider           (IEMobilityProvider                   EMobilityProvider,
-                                                                                    Boolean                              SkipNewEMobilityProviderNotifications       = false,
-                                                                                    OnEMobilityProviderAddedDelegate?    OnAdded                                     = null,
-                                                                                    EventTracking_Id?                    EventTrackingId                             = null,
-                                                                                    User_Id?                             CurrentUserId                               = null);
+        Task<AddEMobilityProviderResult>           AddEMobilityProvider           (IEMobilityProvider                   EMobilityProvider,
+                                                                                   Boolean                              SkipNewEMobilityProviderNotifications       = false,
+                                                                                   OnEMobilityProviderAddedDelegate?    OnAdded                                     = null,
+                                                                                   EventTracking_Id?                    EventTrackingId                             = null,
+                                                                                   User_Id?                             CurrentUserId                               = null);
 
 
         IEnumerable<IEMobilityProvider>            EMobilityProviders          { get; }
@@ -456,8 +457,8 @@ namespace cloud.charging.open.protocols.WWCP
         Boolean                                  ContainsChargingPool             (ChargingPool_Id                               ChargingPoolId);
         IChargingPool?                           GetChargingPoolById              (ChargingPool_Id                               ChargingPoolId);
         IChargingPool?                           GetChargingPoolById              (ChargingPool_Id?                              ChargingPoolId);
-        Boolean                                  TryGetChargingPoolById           (ChargingPool_Id                               ChargingPoolId, out IChargingPool? ChargingPool);
-        Boolean                                  TryGetChargingPoolById           (ChargingPool_Id?                              ChargingPoolId, out IChargingPool? ChargingPool);
+        Boolean                                  TryGetChargingPoolById           (ChargingPool_Id                               ChargingPoolId, [NotNullWhen(true)] out IChargingPool? ChargingPool);
+        Boolean                                  TryGetChargingPoolById           (ChargingPool_Id?                              ChargingPoolId, [NotNullWhen(true)] out IChargingPool? ChargingPool);
 
         IEnumerable<ChargingPool_Id>             ChargingPoolIds                  (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null);
         IEnumerable<ChargingPoolAdminStatus>     ChargingPoolAdminStatus          (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null);
@@ -487,8 +488,8 @@ namespace cloud.charging.open.protocols.WWCP
         Boolean                                  ContainsChargingStation           (ChargingStation_Id                               ChargingStationId);
         IChargingStation?                        GetChargingStationById            (ChargingStation_Id                               ChargingStationId);
         IChargingStation?                        GetChargingStationById            (ChargingStation_Id?                              ChargingStationId);
-        Boolean                                  TryGetChargingStationById         (ChargingStation_Id                               ChargingStationId, out IChargingStation? ChargingStation);
-        Boolean                                  TryGetChargingStationById         (ChargingStation_Id?                              ChargingStationId, out IChargingStation? ChargingStation);
+        Boolean                                  TryGetChargingStationById         (ChargingStation_Id                               ChargingStationId, [NotNullWhen(true)] out IChargingStation? ChargingStation);
+        Boolean                                  TryGetChargingStationById         (ChargingStation_Id?                              ChargingStationId, [NotNullWhen(true)] out IChargingStation? ChargingStation);
 
         IEnumerable<ChargingStation_Id>          ChargingStationIds                (IncludeChargingStationDelegate?                  IncludeChargingStations   = null);
         IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus        (IncludeChargingStationDelegate?                  IncludeChargingStations   = null);
@@ -541,8 +542,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         IEVSE?                                   GetEVSEById            (EVSE_Id                               EVSEId);
         IEVSE?                                   GetEVSEById            (EVSE_Id?                              EVSEId);
-        Boolean                                  TryGetEVSEById         (EVSE_Id                               EVSEId, out IEVSE? EVSE);
-        Boolean                                  TryGetEVSEById         (EVSE_Id?                              EVSEId, out IEVSE? EVSE);
+        Boolean                                  TryGetEVSEById         (EVSE_Id                               EVSEId, [NotNullWhen(true)] out IEVSE? EVSE);
+        Boolean                                  TryGetEVSEById         (EVSE_Id?                              EVSEId, [NotNullWhen(true)] out IEVSE? EVSE);
 
         IEnumerable<EVSE_Id>                     EVSEIds                (IncludeEVSEDelegate?                  IncludeEVSEs        = null);
         IEnumerable<EVSEAdminStatus>             EVSEAdminStatus        (IncludeEVSEDelegate?                  IncludeEVSEs        = null);
@@ -597,6 +598,14 @@ namespace cloud.charging.open.protocols.WWCP
                            ChangeMethods                              ChangeMethod  = ChangeMethods.Replace);
 
         #endregion
+
+        #endregion
+
+        #region Charging Sessions
+
+        Task ReceiveSendChargeDetailRecordResult (SendCDRResult SendCDRResult);
+
+        Task ReceiveSendChargeDetailRecordResults(IEnumerable<SendCDRResult> SendCDRResults);
 
         #endregion
 

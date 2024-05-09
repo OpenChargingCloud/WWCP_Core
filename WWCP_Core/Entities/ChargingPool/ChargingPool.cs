@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Aegir;
@@ -2808,7 +2810,7 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<ChargingSession> ChargingSessions
 
             => RoamingNetwork?.SessionsStore.Where(session => session.ChargingPoolId == Id)
-                   ?? Array.Empty<ChargingSession>();
+                   ?? [];
 
 
         #region Contains(ChargingSessionId)
@@ -2817,12 +2819,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Whether the given charging session identification is known within the EVSE.
         /// </summary>
         /// <param name="ChargingSessionId">The charging session identification.</param>
-        public Boolean Contains(ChargingSession_Id ChargingSessionId)
+        public Boolean ContainsChargingSessionId(ChargingSession_Id ChargingSessionId)
         {
 
             if (RoamingNetwork is not null &&
-                RoamingNetwork.SessionsStore.TryGet(ChargingSessionId, out var chargingSession) &&
-                chargingSession is not null)
+                RoamingNetwork.TryGetChargingSessionById(ChargingSessionId, out var chargingSession))
             {
                 return chargingSession.ChargingPoolId == Id;
             }
@@ -2840,13 +2841,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingSessionId">The charging session identification.</param>
         /// <param name="ChargingSession">The charging session.</param>
-        public Boolean TryGetChargingSessionById(ChargingSession_Id    ChargingSessionId,
-                                                 out ChargingSession?  ChargingSession)
+        public Boolean TryGetChargingSessionById(ChargingSession_Id                        ChargingSessionId,
+                                                 [NotNullWhen(true)] out ChargingSession?  ChargingSession)
         {
 
             if (RoamingNetwork is not null &&
-                RoamingNetwork.SessionsStore.TryGet(ChargingSessionId, out var chargingSession) &&
-                chargingSession is not null &&
+                RoamingNetwork.TryGetChargingSessionById(ChargingSessionId, out var chargingSession) &&
                 chargingSession.ChargingPoolId == Id)
             {
                 ChargingSession = chargingSession;

@@ -23,7 +23,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.WWCP.Networking;
-using Org.BouncyCastle.Crypto.Engines;
 
 #endregion
 
@@ -146,11 +145,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region Properties
+
+        /// <summary>
+        /// The number of stored charging sessions.
+        /// </summary>
+        public UInt64 NumberOfStoredSessions
+            => (UInt64) InternalData.Count;
+
+        #endregion
+
         #region CustomSerializers
 
-        public CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   { get; set; }
-        public CustomJObjectSerializerDelegate<SendCDRResult>?       CustomSendCDRResultSerializer        { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSession>?     CustomChargingSessionSerializer      { get; set; }
+        public CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<SendCDRResult>?       CustomSendCDRResultSerializer         { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSession>?     CustomChargingSessionSerializer       { get; set; }
 
         #endregion
 
@@ -634,14 +643,16 @@ namespace cloud.charging.open.protocols.WWCP
             if (InternalData.TryGetValue(Id, out var chargingSession))
             {
 
+                var now = Timestamp.Now;
+
                 // Most charging session will be stopped by just unplugging the socket!
                 if (!chargingSession.SessionTime.EndTime.HasValue)
                 {
-                    chargingSession.SessionTime.EndTime  = Timestamp.Now;
+                    chargingSession.SessionTime.EndTime  = now;
                     chargingSession.SystemIdStop         = System_Id.Parse(Environment.MachineName);
                 }
 
-                chargingSession.CDRReceived  = Timestamp.Now;
+                chargingSession.CDRReceived  = now;
                 chargingSession.SystemIdCDR  = System_Id.Parse(Environment.MachineName);
                 chargingSession.CDR          = NewChargeDetailRecord;
 
@@ -650,7 +661,7 @@ namespace cloud.charging.open.protocols.WWCP
                             "chargingSession",
                             chargingSession.ToJSON());
 
-                OnNewChargeDetailRecord?.Invoke(Timestamp.Now,
+                OnNewChargeDetailRecord?.Invoke(now,
                                                 RoamingNetworkId,
                                                 NewChargeDetailRecord);
 

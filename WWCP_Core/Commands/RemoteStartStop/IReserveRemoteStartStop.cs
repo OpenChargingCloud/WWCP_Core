@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -256,14 +257,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// Whether the given charging session identification is known within the roaming network.
         /// </summary>
         /// <param name="ChargingSessionId">The charging session identification.</param>
-        Boolean Contains(ChargingSession_Id ChargingSessionId);
+        Boolean ContainsChargingSessionId(ChargingSession_Id ChargingSessionId);
 
         /// <summary>
         /// Return the charging session specified by the given charging session identification.
         /// </summary>
         /// <param name="ChargingSessionId">The charging session identification.</param>
         /// <param name="ChargingSession">The charging session.</param>
-        Boolean TryGetChargingSessionById(ChargingSession_Id ChargingSessionId, out ChargingSession? ChargingSession);
+        Boolean TryGetChargingSessionById(ChargingSession_Id ChargingSessionId, [NotNullWhen(true)] out ChargingSession? ChargingSession);
 
     }
 
