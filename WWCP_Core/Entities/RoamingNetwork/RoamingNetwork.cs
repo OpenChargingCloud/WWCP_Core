@@ -3259,7 +3259,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
         /// <param name="ChargingStationOperator">The charging station operator.</param>
-        protected internal Boolean _TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
+        protected internal Boolean _TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, [NotNullWhen(true)] out IChargingStationOperator? ChargingStationOperator)
         {
 
             if (!ChargingStationOperatorId.IsNullOrEmpty &&
@@ -3278,7 +3278,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
         /// <param name="ChargingStationOperator">The charging station operator.</param>
-        protected internal Boolean _TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
+        protected internal Boolean _TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, [NotNullWhen(true)] out IChargingStationOperator? ChargingStationOperator)
         {
 
             if (ChargingStationOperatorId.HasValue &&
@@ -3299,7 +3299,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
         /// <param name="ChargingStationOperator">The charging station operator.</param>
-        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
+        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, [NotNullWhen(true)] out IChargingStationOperator? ChargingStationOperator)
         {
 
             if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
@@ -3335,7 +3335,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
         /// <param name="ChargingStationOperator">The charging station operator.</param>
-        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
+        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, [NotNullWhen(true)] out IChargingStationOperator? ChargingStationOperator)
         {
 
             if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
@@ -4868,11 +4868,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetEVSEById(EVSEId, out EVSE)
 
-        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE? EVSE)
+        public Boolean TryGetEVSEById(EVSE_Id EVSEId, [NotNullWhen(true)] out IEVSE? EVSE)
         {
 
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator) &&
-                chargingStationOperator is not null)
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator))
             {
                 return chargingStationOperator.TryGetEVSEById(EVSEId, out EVSE);
             }
@@ -4882,12 +4881,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public Boolean TryGetEVSEById(EVSE_Id? EVSEId, out IEVSE? EVSE)
+        public Boolean TryGetEVSEById(EVSE_Id? EVSEId, [NotNullWhen(true)] out IEVSE? EVSE)
         {
 
-            if (EVSEId.HasValue                                                                             &&
-                TryGetChargingStationOperatorById(EVSEId.Value.OperatorId, out var chargingStationOperator) &&
-                chargingStationOperator is not null)
+            if (EVSEId.HasValue &&
+                TryGetChargingStationOperatorById(EVSEId.Value.OperatorId, out var chargingStationOperator))
             {
                 return chargingStationOperator.TryGetEVSEById(EVSEId.Value, out EVSE);
             }
@@ -5272,6 +5270,112 @@ namespace cloud.charging.open.protocols.WWCP
         internal void SendEVSEStatusDiff(EVSEStatusDiff StatusDiff)
         {
             OnEVSEStatusDiff?.Invoke(StatusDiff);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region EnergyMeters...
+
+        private readonly ConcurrentDictionary<EnergyMeter_Id, IEnergyMeter> energyMeters;
+
+        #region EnergyMeters
+
+        /// <summary>
+        /// Return all energy meters registered within this roaming network.
+        /// </summary>
+        public IEnumerable<IEnergyMeter> EnergyMeters
+
+            => energyMeters.Values;
+
+        #endregion
+
+        #region EnergyMeterIds(IncludeEnergyMeters = null)
+
+        /// <summary>
+        /// Return all EnergyMeter identifications registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeEnergyMeters">An optional delegate for filtering EnergyMeters.</param>
+        public IEnumerable<EnergyMeter_Id> EnergyMeterIds(IncludeEnergyMeterDelegate? IncludeEnergyMeters = null)
+
+            => IncludeEnergyMeters is null
+                   ? energyMeters.Keys
+                   : energyMeters.Where (energyMeterKVP => IncludeEnergyMeters(energyMeterKVP.Value)).
+                                  Select(energyMeterKVP => energyMeterKVP.Key);
+
+        #endregion
+
+
+        #region ContainsEnergyMeter (EnergyMeter)
+
+        /// <summary>
+        /// Check if the given EnergyMeter is already present within the roaming network.
+        /// </summary>
+        /// <param name="EnergyMeter">An EnergyMeter.</param>
+        public Boolean ContainsEnergyMeter(IEnergyMeter EnergyMeter)
+
+            => energyMeters.ContainsKey(EnergyMeter.Id);
+
+        #endregion
+
+        #region ContainsEnergyMeter (EnergyMeterId)
+
+        /// <summary>
+        /// Check if the given EnergyMeter identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="EnergyMeterId">An EnergyMeter identification.</param>
+        public Boolean ContainsEnergyMeter(EnergyMeter_Id EnergyMeterId)
+
+            => energyMeters.ContainsKey(EnergyMeterId);
+
+        #endregion
+
+        #region GetEnergyMeterById  (EnergyMeterId)
+
+        public IEnergyMeter? GetEnergyMeterById(EnergyMeter_Id EnergyMeterId)
+        {
+
+            if (energyMeters.TryGetValue(EnergyMeterId, out var energyMeter))
+                return energyMeter;
+
+            return null;
+
+        }
+
+        public IEnergyMeter? GetEnergyMeterById(EnergyMeter_Id? EnergyMeterId)
+        {
+
+            if (EnergyMeterId.HasValue &&
+                energyMeters.TryGetValue(EnergyMeterId.Value, out var energyMeter))
+            {
+                return energyMeter;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryGetEnergyMeterById (EnergyMeterId, out EnergyMeter)
+
+        public Boolean TryGetEnergyMeterById(EnergyMeter_Id EnergyMeterId, [NotNullWhen(true)] out IEnergyMeter? EnergyMeter)
+
+            => energyMeters.TryGetValue(EnergyMeterId, out EnergyMeter);
+
+        public Boolean TryGetEnergyMeterById(EnergyMeter_Id? EnergyMeterId, [NotNullWhen(true)] out IEnergyMeter? EnergyMeter)
+        {
+
+            if (EnergyMeterId.HasValue &&
+                energyMeters.TryGetValue(EnergyMeterId.Value, out EnergyMeter))
+            {
+                return true;
+            }
+
+            EnergyMeter = null;
+            return false;
+
         }
 
         #endregion

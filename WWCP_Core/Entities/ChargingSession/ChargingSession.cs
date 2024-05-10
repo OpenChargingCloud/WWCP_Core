@@ -99,17 +99,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public EventTracking_Id    EventTrackingId    { get; }
 
-        #region SystemId
+        #region SystemIds
 
         public System_Id?        SystemIdStart      { get; set; }
         public System_Id?        SystemIdStop       { get; set; }
-
         public System_Id?        SystemIdCDR        { get; set; }
 
         #endregion
 
 
-        #region RoamingNetwork
+        #region RoamingNetwork(Id)
 
         /// <summary>
         /// The unqiue identification of the roaming network serving this session.
@@ -140,7 +139,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ChargingStationOperator
+        #region ChargingStationOperator(Id)
 
         private ChargingStationOperator_Id? chargingStationOperatorId;
 
@@ -193,7 +192,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ChargingPool
+        #region ChargingPool(Id)
 
         private ChargingPool_Id? chargingPoolId;
 
@@ -242,7 +241,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ChargingStation
+        #region ChargingStation(Id)
 
         private ChargingStation_Id? chargingStationId;
 
@@ -291,7 +290,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region EVSE
+        #region EVSE(Id)
 
         private EVSE_Id? evseId;
 
@@ -341,17 +340,59 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ChargingProduct
+        #region EnergyMeter(Id)
+
+        private EnergyMeter_Id? energyMeterId;
 
         /// <summary>
-        /// The charging product selected for this charging session.
+        /// An optional unique identification of the energy meter.
         /// </summary>
         [Optional]
-        public ChargingProduct?  ChargingProduct   { get; set; }
+        /// <summary>
+        /// The unqiue identification of the EVSE serving this session.
+        /// </summary>
+        public EnergyMeter_Id? EnergyMeterId
+        {
+
+            get
+            {
+                return energyMeterId;
+            }
+
+            set
+            {
+                energyMeterId  = value;
+                energyMeter    = value.HasValue ? RoamingNetwork?.GetEnergyMeterById(value.Value) : null;
+            }
+
+        }
+
+
+        private IEnergyMeter? energyMeter;
+
+        /// <summary>
+        /// The EVSE serving this session.
+        /// </summary>
+        [Optional]
+        public IEnergyMeter? EnergyMeter
+        {
+
+            get
+            {
+                return energyMeter;
+            }
+
+            set
+            {
+                energyMeter    = value;
+                energyMeterId  = value?.Id;
+            }
+
+        }
 
         #endregion
 
-        #region Reservation
+        #region Reservation(Id)
 
         private ChargingReservation_Id? reservationId;
 
@@ -401,15 +442,16 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region EnergyMeterId
+        #region ChargingProduct
 
         /// <summary>
-        /// An optional unique identification of the energy meter.
+        /// The charging product selected for this charging session.
         /// </summary>
         [Optional]
-        public EnergyMeter_Id? EnergyMeterId { get; set; }
+        public ChargingProduct? ChargingProduct { get; set; }
 
         #endregion
+
 
         #region EnergyMeterValues
 
@@ -556,22 +598,6 @@ namespace cloud.charging.open.protocols.WWCP
             }
 
         }
-
-        #endregion
-
-        #region AuthenticationStart/-Stop
-
-        /// <summary>
-        /// The authentication used for starting this charging process.
-        /// </summary>
-        [Optional]
-        public AAuthentication?  AuthenticationStart    { get; set; }
-
-        /// <summary>
-        /// The authentication used for stopping this charging process.
-        /// </summary>
-        [Optional]
-        public AAuthentication?  AuthenticationStop     { get; set; }
 
         #endregion
 
@@ -739,10 +765,43 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
+        #region AuthenticationStart/-Stop (can be local or remote)
+
+        /// <summary>
+        /// The authentication used for starting this charging process.
+        /// </summary>
+        [Optional]
+        public AAuthentication?  AuthenticationStart    { get; set; }
+
+        // AuthenticationStartTimestamp
+
+        // AuthenticationStartResponseTimestamp
+        // AuthenticationStartResponse
+
+
+        /// <summary>
+        /// The authentication used for stopping this charging process.
+        /// </summary>
+        [Optional]
+        public AAuthentication?  AuthenticationStop     { get; set; }
+
+        // AuthenticationStopTimestamp
+
+        // AuthenticationStopResponseTimestamp
+        // AuthenticationStopResponse
+
+        #endregion
+
+
+
+        public DateTime?                     CDRReceivedTimestamp          { get; set; }
         public ChargeDetailRecord?           CDR                           { get; set; }
 
-        public DateTime?                     CDRReceived                   { get; set; }
 
+        public DateTime?                     CDRForwardedTimestamp         { get; set; }
+
+
+        public DateTime?                     CDRResultTimestamp            { get; set; }
         public SendCDRResult?                CDRResult                     { get; set; }
 
 
@@ -954,11 +1013,11 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
 
-                           CDRReceived.HasValue
+                           CDRReceivedTimestamp.HasValue
                                ? new JProperty("CDRReceived", JSONObject.Create(
 
-                                     CDRReceived.HasValue
-                                         ? new JProperty("timestamp",             CDRReceived.Value. ToIso8601())
+                                     CDRReceivedTimestamp.HasValue
+                                         ? new JProperty("timestamp",             CDRReceivedTimestamp.Value. ToIso8601())
                                          : null,
 
                                      SystemIdCDR.HasValue
@@ -1158,7 +1217,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     if (cdrReceivedTime is not null)
                     {
-                        session.CDRReceived   = cdrReceivedTime;
+                        session.CDRReceivedTimestamp   = cdrReceivedTime;
                         session.SystemIdCDR   = sessionCDRReceivedJSON["systemId"]?.Value<String>() is String systemId ? System_Id.Parse(systemId) : null;
                     }
 

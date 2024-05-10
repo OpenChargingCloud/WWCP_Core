@@ -51,7 +51,15 @@ namespace cloud.charging.open.protocols.WWCP
                                          String?                           LoggingPath           = null,
                                          DNSClient?                        DNSClient             = null)
 
-            : base(CommandProcessor:      (a, b, c, d, e) => false,
+            : base(StringIdParser:        ChargingReservation_Id.TryParse,
+
+                   CommandProcessor:      (logfilename,
+                                           remoteSocket,
+                                           timestamp,
+                                           id,
+                                           command,
+                                           json,
+                                           internalData) => false,
 
                    DisableLogfiles:       DisableLogfiles,
                    LogFilePathCreator:    roamingNetworkId => Path.Combine(LoggingPath ?? AppContext.BaseDirectory, "ChargingReservations"),

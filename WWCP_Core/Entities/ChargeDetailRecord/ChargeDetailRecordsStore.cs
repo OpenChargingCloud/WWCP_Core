@@ -55,7 +55,15 @@ namespace cloud.charging.open.protocols.WWCP
                                         DNSClient?                        DNSClient             = null)
 
             : base(RoamingNetworkId:      RoamingNetworkId,
-                   CommandProcessor:      (a, b, c, d, e) => false,
+                   StringIdParser:        ChargingSession_Id.TryParse,
+
+                   CommandProcessor:      (logfilename,
+                                           remoteSocket,
+                                           timestamp,
+                                           id,
+                                           command,
+                                           json,
+                                           internalData) => false,
 
                    DisableLogfiles:       DisableLogfiles,
                    LogFilePathCreator:    roamingNetworkId => Path.Combine(LoggingPath ?? AppContext.BaseDirectory, "ChargeDetailRecords"),

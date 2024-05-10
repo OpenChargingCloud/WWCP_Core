@@ -601,6 +601,23 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region EnergyMeters
+
+        IEnumerable<IEnergyMeter>                EnergyMeters          { get; }
+
+        Boolean                                  ContainsEnergyMeter   (IEnergyMeter                 EnergyMeter);
+
+        Boolean                                  ContainsEnergyMeter   (EnergyMeter_Id               EnergyMeterId);
+
+        IEnergyMeter?                            GetEnergyMeterById    (EnergyMeter_Id               EnergyMeterId);
+        IEnergyMeter?                            GetEnergyMeterById    (EnergyMeter_Id?              EnergyMeterId);
+        Boolean                                  TryGetEnergyMeterById (EnergyMeter_Id               EnergyMeterId, [NotNullWhen(true)] out IEnergyMeter? EnergyMeter);
+        Boolean                                  TryGetEnergyMeterById (EnergyMeter_Id?              EnergyMeterId, [NotNullWhen(true)] out IEnergyMeter? EnergyMeter);
+
+        IEnumerable<EnergyMeter_Id>              EnergyMeterIds        (IncludeEnergyMeterDelegate?  IncludeEnergyMeters        = null);
+
+        #endregion
+
         #region Charging Sessions
 
         Task ReceiveSendChargeDetailRecordResult (SendCDRResult SendCDRResult);

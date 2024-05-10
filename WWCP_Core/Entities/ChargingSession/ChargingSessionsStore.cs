@@ -71,8 +71,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("timestamp",                     Timestamp.ToIso8601()),
-                           new JProperty("systemId",                      SystemId. ToString()),
+                                 new JProperty("timestamp",               Timestamp.                 ToIso8601()),
+                                 new JProperty("systemId",                SystemId.                  ToString()),
 
                            CSORoamingProviderId.HasValue
                                ? new JProperty("CSORoamingProviderId",    CSORoamingProviderId.Value.ToString())
@@ -83,16 +83,16 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
                            ProviderId.HasValue
-                               ? new JProperty("providerId",              ProviderId.Value.ToString())
+                               ? new JProperty("providerId",              ProviderId.          Value.ToString())
                                : null,
 
                            Authentication.IsDefined()
-                               ? new JProperty("authentication",          Authentication.ToJSON())
+                               ? new JProperty("authentication",          Authentication.            ToJSON())
                                : null,
 
                            RemoteStopResult != null
-                               ? new JProperty("remoteStopResult",        RemoteStopResult.ToJSON(Embedded: true,
-                                                                                                  CustomChargeDetailRecordSerializer))
+                               ? new JProperty("remoteStopResult",        RemoteStopResult.          ToJSON(Embedded: true,
+                                                                                                            CustomChargeDetailRecordSerializer))
                                : null
 
                 );
@@ -148,6 +148,19 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
+        /// The time span after which a successfully completed charging session
+        /// will be removed from the store.
+        /// </summary>
+        public TimeSpan  SuccessfulSessionRemovalAfter      { get; set; } = TimeSpan.FromDays(7);
+
+        /// <summary>
+        /// The time span after which an unsuccessfully completed charging session
+        /// will be removed from the store.
+        /// </summary>
+        public TimeSpan  UnsuccessfulSessionRemovalAfter    { get; set; } = TimeSpan.FromDays(90);
+
+
+        /// <summary>
         /// The number of stored charging sessions.
         /// </summary>
         public UInt64 NumberOfStoredSessions
@@ -187,8 +200,15 @@ namespace cloud.charging.open.protocols.WWCP
                                      DNSClient?                        DNSClient             = null)
 
             : base(RoamingNetworkId:       RoamingNetwork.Id,
+                   StringIdParser:         ChargingSession_Id.TryParse,
 
-                   CommandProcessor:       (logfilename, remoteSocket, command, json, InternalData) => {
+                   CommandProcessor:       (logfilename,
+                                            remoteSocket,
+                                            timestamp,
+                                            sessionId,
+                                            command,
+                                            json,
+                                            internalData) => {
 
                        if (json["chargingSession"] is JObject chargingSession)
                        {
@@ -203,8 +223,8 @@ namespace cloud.charging.open.protocols.WWCP
                                case "remoteStart":
                                    {
 
-                                       if (!InternalData.ContainsKey(session.Id))
-                                           InternalData.TryAdd(session.Id, session);
+                                       if (!internalData.ContainsKey(session.Id))
+                                           internalData.TryAdd(session.Id, session);
 
                                        if (session.EVSEId.HasValue && session.EVSE is null)
                                            session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
@@ -222,10 +242,10 @@ namespace cloud.charging.open.protocols.WWCP
                                case "remoteStop":
                                    {
 
-                                       if (!InternalData.ContainsKey(session.Id))
-                                           InternalData.TryAdd(session.Id, session);
+                                       if (!internalData.ContainsKey(session.Id))
+                                           internalData.TryAdd(session.Id, session);
                                        else
-                                           InternalData[session.Id] = session;
+                                           internalData[session.Id] = session;
 
                                        if (session.EVSEId.HasValue && session.EVSE is null)
                                            session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
@@ -243,8 +263,8 @@ namespace cloud.charging.open.protocols.WWCP
                                case "authStart":
                                    {
 
-                                       if (!InternalData.ContainsKey(session.Id))
-                                           InternalData.TryAdd(session.Id, session);
+                                       if (!internalData.ContainsKey(session.Id))
+                                           internalData.TryAdd(session.Id, session);
 
                                        if (session.EVSEId.HasValue && session.EVSE is null)
                                            session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
@@ -262,10 +282,10 @@ namespace cloud.charging.open.protocols.WWCP
                                case "authStop":
                                    {
 
-                                       if (!InternalData.ContainsKey(session.Id))
-                                           InternalData.TryAdd(session.Id, session);
+                                       if (!internalData.ContainsKey(session.Id))
+                                           internalData.TryAdd(session.Id, session);
                                        else
-                                           InternalData[session.Id] = session;
+                                           internalData[session.Id] = session;
 
                                        if (session.EVSEId.HasValue && session.EVSE is null)
                                            session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
@@ -283,10 +303,10 @@ namespace cloud.charging.open.protocols.WWCP
                                case "CDRReceived":
                                    {
 
-                                       if (!InternalData.ContainsKey(session.Id))
-                                           InternalData.TryAdd(session.Id, session);
+                                       if (!internalData.ContainsKey(session.Id))
+                                           internalData.TryAdd(session.Id, session);
                                        else
-                                           InternalData[session.Id] = session;
+                                           internalData[session.Id] = session;
 
                                        if (session.EVSEId.HasValue && session.EVSE is null)
                                            session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
@@ -304,10 +324,10 @@ namespace cloud.charging.open.protocols.WWCP
                                case "CDRForwarded":
                                    {
 
-                                       if (!InternalData.ContainsKey(session.Id))
-                                           InternalData.TryAdd(session.Id, session);
+                                       if (!internalData.ContainsKey(session.Id))
+                                           internalData.TryAdd(session.Id, session);
                                        else
-                                           InternalData[session.Id] = session;
+                                           internalData[session.Id] = session;
 
                                    }
                                    return true;
@@ -316,6 +336,22 @@ namespace cloud.charging.open.protocols.WWCP
 
                            }
 
+                       }
+
+                       else
+                       {
+                           switch (command)
+                           {
+
+                               #region "remove"
+
+                               case "remove":
+                                   internalData.TryRemove(sessionId, out _);
+                                   return true;
+
+                               #endregion
+
+                           }
                        }
 
                        return false;
@@ -333,6 +369,52 @@ namespace cloud.charging.open.protocols.WWCP
                    DNSClient:              DNSClient)
 
         { }
+
+        #endregion
+
+
+        #region (override) DoMaintenance(State)
+
+        protected internal async override Task DoMaintenance(Object? State)
+        {
+
+            var now                    = Timestamp.Now;
+            var sessionIds             = InternalData.Keys.ToArray();
+            var sessionIdsToBeRemoved  = new List<ChargingSession_Id>();
+
+            foreach (var sessionId in sessionIds)
+            {
+                if (InternalData.TryGetValue(sessionId, out var chargingSession))
+                {
+
+                    if (chargingSession.CDRResult is not null &&
+                       (chargingSession.CDRResult.Result == SendCDRResultTypes.Success ||
+                        chargingSession.CDRResult.Result == SendCDRResultTypes.Enqueued) &&
+                       (now - chargingSession.CDRResult.Timestamp > SuccessfulSessionRemovalAfter))
+                    {
+                        sessionIdsToBeRemoved.Add(sessionId);
+                    }
+
+                    if (now - chargingSession.SessionTime.StartTime > UnsuccessfulSessionRemovalAfter)
+                    {
+                        sessionIdsToBeRemoved.Add(sessionId);
+                    }
+
+                }
+            }
+
+            foreach (var sessionId in sessionIdsToBeRemoved)
+            {
+                if (InternalData.TryRemove(sessionId, out var chargingSession))
+                {
+
+                    await LogIt("remove",
+                                chargingSession.Id);
+
+                }
+            }
+
+        }
 
         #endregion
 
@@ -652,7 +734,7 @@ namespace cloud.charging.open.protocols.WWCP
                     chargingSession.SystemIdStop         = System_Id.Parse(Environment.MachineName);
                 }
 
-                chargingSession.CDRReceived  = now;
+                chargingSession.CDRReceivedTimestamp  = now;
                 chargingSession.SystemIdCDR  = System_Id.Parse(Environment.MachineName);
                 chargingSession.CDR          = NewChargeDetailRecord;
 

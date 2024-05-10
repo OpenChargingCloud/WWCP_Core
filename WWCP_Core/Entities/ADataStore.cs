@@ -63,33 +63,57 @@ namespace cloud.charging.open.protocols.WWCP
     }
 
 
+    public delegate Boolean CommandDelegate<TId, TData>(String                            FileName,
+                                                        IPSocket?                         Socket,
+                                                        DateTime                          Timestamp,
+                                                        TId                               Id,
+                                                        String                            Command,
+                                                        JObject                           JSON,
+                                                        ConcurrentDictionary<TId, TData>  InternaleData)
+        where TId   : struct, IId
+        where TData : IHasId<TId>;
+
+
     /// <summary>
     /// An generic data store.
     /// </summary>
     /// <typeparam name="TId">The type of the identificators.</typeparam>
     /// <typeparam name="TData">The type of the stored data.</typeparam>
     public abstract class ADataStore<TId, TData> : IEnumerable<TData>
-        where TId:   IId
+        where TId:   struct, IId
         where TData: IHasId<TId>
     {
 
         #region Data
 
+        private          readonly  Func<String, TId?>                StringIdParser;
+
+            /// <summary>
+            /// The maximum number of retries to write to a logfile.
+            /// </summary>
+        public    static readonly  Byte                              MaxRetries                = 5;
+
+
+        protected        readonly  ConcurrentDictionary<TId, TData>  InternalData              = new();
+
+        private          readonly  CommandDelegate<TId, TData>       CommandProcessor;
+
+        private          readonly  Channel<LogData>                  discChannel;
+        private          readonly  Channel<String>                   networkChannel;
+        private          readonly  CancellationTokenSource           cancellationTokenSource;
+
+        private          readonly  TCPServer?                        Server;
+
         /// <summary>
-        /// The maximum number of retries to write to a logfile.
+        /// The default maintenance interval.
         /// </summary>
-        public  static readonly  Byte                                                                                 MaxRetries     = 5;
+        public           readonly  TimeSpan                          DefaultMaintenanceEvery   = TimeSpan.FromMinutes(1);
 
+        private          readonly  Timer                             MaintenanceTimer;
 
-        protected      readonly  ConcurrentDictionary<TId, TData>                                                     InternalData   = new();
+        protected static readonly  TimeSpan                          SemaphoreSlimTimeout      = TimeSpan.FromSeconds(5);
 
-        private        readonly  Func<String, IPSocket?, String, JObject, ConcurrentDictionary<TId, TData>, Boolean>  CommandProcessor;
-
-        private        readonly  Channel<LogData>                                                                     discChannel;
-        private        readonly  Channel<String>                                                                      networkChannel;
-        private        readonly  CancellationTokenSource                                                              cancellationTokenSource;
-
-        private        readonly  TCPServer?                                                                           Server;
+        protected static readonly  SemaphoreSlim                     MaintenanceSemaphore      = new (1, 1);
 
         #endregion
 
@@ -98,42 +122,66 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The attached roaming network.
         /// </summary>
-        public RoamingNetwork_Id                 RoamingNetworkId        { get; }
+        public RoamingNetwork_Id                 RoamingNetworkId            { get; }
 
+
+        #region Regular maintenance tasks
+
+        /// <summary>
+        /// Whether the reload of the data store is finished.
+        /// </summary>
+        public Boolean                           ReloadFinished              { get; protected set; }
+
+        /// <summary>
+        /// The maintenance interval.
+        /// </summary>
+        public TimeSpan                          MaintenanceEvery            { get; }
+
+        /// <summary>
+        /// Disable all maintenance tasks.
+        /// </summary>
+        public Boolean                           DisableMaintenanceTasks     { get; set; }
+
+        #endregion
+
+        #region Log files
 
         /// <summary>
         /// Whether to write data to the log file.
         /// </summary>
-        public Boolean                           DisableLogfiles         { get; }
+        public Boolean                           DisableLogfiles             { get; }
 
         /// <summary>
         /// The path to all log files.
         /// </summary>
-        public String                            LogFilePath             { get; }
+        public String                            LogFilePath                 { get; }
 
         /// <summary>
         /// A delegate for creating the log file.
         /// </summary>
-        public Func<RoamingNetwork_Id?, String>  LogfileNameCreator      { get; }
+        public Func<RoamingNetwork_Id?, String>  LogfileNameCreator          { get; }
 
         /// <summary>
         /// Whether to reload log file data to restart.
         /// </summary>
-        public Boolean                           ReloadDataOnStart       { get; }
+        public Boolean                           ReloadDataOnStart           { get; }
 
         /// <summary>
         /// The log file search pattern for reloading old log files.
         /// </summary>
-        public Func<RoamingNetwork_Id?, String>  LogfileSearchPattern    { get; }
+        public Func<RoamingNetwork_Id?, String>  LogfileSearchPattern        { get; }
 
+        #endregion
+
+        #region Networking
 
         /// <summary>
         /// Whether to disable network synchronization.
         /// </summary>
-        public Boolean                           DisableNetworkSync      { get; }
+        public Boolean                           DisableNetworkSync          { get; }
 
 
-        public NetworkServiceNode_Id             NodeId                  { get; }
+        public NetworkServiceNode_Id             NodeId                      { get; }
 
         private readonly List<RoamingNetworkInfo> roamingNetworkInfos;
 
@@ -151,7 +199,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The DNS client defines which DNS servers to use.
         /// </summary>
-        public DNSClient                        DNSClient               { get; }
+        public DNSClient                        DNSClient                    { get; }
+
+        #endregion
 
         #endregion
 
@@ -161,49 +211,59 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a generic data store.
         /// </summary>
         /// <param name="DNSClient">The DNS client defines which DNS servers to use.</param>
-        public ADataStore(RoamingNetwork_Id                                                                    RoamingNetworkId,
-                          Func<String, IPSocket?, String, JObject, ConcurrentDictionary<TId, TData>, Boolean>  CommandProcessor,
+        /// 
+        /// <param name="DisableMaintenanceTasks">Disable all maintenance tasks.</param>
+        /// <param name="MaintenanceInitialDelay">The initial delay of the maintenance tasks.</param>
+        /// <param name="MaintenanceEvery">The maintenance intervall.</param>
+        public ADataStore(RoamingNetwork_Id                 RoamingNetworkId,
+                          Func<String, TId?>                StringIdParser,
+                          CommandDelegate<TId, TData>       CommandProcessor,
 
-                          Func<RoamingNetwork_Id?, String>                                                     LogFilePathCreator,
-                          Func<RoamingNetwork_Id?, String>                                                     LogFileNameCreator,
-                          Func<RoamingNetwork_Id?, String>                                                     LogfileSearchPattern,
+                          Func<RoamingNetwork_Id?, String>  LogFilePathCreator,
+                          Func<RoamingNetwork_Id?, String>  LogFileNameCreator,
+                          Func<RoamingNetwork_Id?, String>  LogfileSearchPattern,
 
-                          Boolean                                                                              DisableLogfiles       = false,
-                          Boolean                                                                              ReloadDataOnStart     = true,
+                          Boolean                           DisableLogfiles           = false,
+                          Boolean                           ReloadDataOnStart         = true,
 
-                          IEnumerable<RoamingNetworkInfo>?                                                     RoamingNetworkInfos   = null,
-                          Boolean                                                                              DisableNetworkSync    = false,
-                          DNSClient?                                                                           DNSClient             = null)
+                          Boolean?                          DisableMaintenanceTasks   = false,
+                          TimeSpan?                         MaintenanceInitialDelay   = null,
+                          TimeSpan?                         MaintenanceEvery          = null,
+
+                          IEnumerable<RoamingNetworkInfo>?  RoamingNetworkInfos       = null,
+                          Boolean                           DisableNetworkSync        = false,
+                          DNSClient?                        DNSClient                 = null)
 
         {
 
-            this.NodeId                = NetworkServiceNode_Id.Parse(Environment.MachineName);
+            this.NodeId                   = NetworkServiceNode_Id.Parse(Environment.MachineName);
 
-            this.RoamingNetworkId      = RoamingNetworkId;
-            this.roamingNetworkInfos   = RoamingNetworkInfos is not null
-                                             ? new List<RoamingNetworkInfo>(RoamingNetworkInfos)
-                                             : [];
+            this.RoamingNetworkId         = RoamingNetworkId;
+            this.roamingNetworkInfos      = RoamingNetworkInfos is not null
+                                                ? new List<RoamingNetworkInfo>(RoamingNetworkInfos)
+                                                : [];
 
-            this.CommandProcessor      = CommandProcessor;
+            this.StringIdParser           = StringIdParser;
+            this.CommandProcessor         = CommandProcessor;
 
-            this.LogFilePath           = LogFilePathCreator(this.RoamingNetworkId)?.Trim() ?? AppContext.BaseDirectory;
-            this.LogfileNameCreator    = LogFileNameCreator;
-            this.LogfileSearchPattern  = LogfileSearchPattern;
+            this.LogFilePath              = LogFilePathCreator(this.RoamingNetworkId)?.Trim() ?? AppContext.BaseDirectory;
+            this.LogfileNameCreator       = LogFileNameCreator;
+            this.LogfileSearchPattern     = LogfileSearchPattern;
 
             DebugX.Log($"Using logfile path: {LogFilePath} {LogfileSearchPattern(RoamingNetworkId)}");
 
-            this.DisableLogfiles       = DisableLogfiles;
-            this.ReloadDataOnStart     = ReloadDataOnStart;
+            this.DisableLogfiles          = DisableLogfiles;
+            this.ReloadDataOnStart        = ReloadDataOnStart;
 
             if (!DisableLogfiles)
                 Directory.CreateDirectory(LogFilePath);
 
 
-            this.DisableNetworkSync    = DisableNetworkSync;
-            this.DNSClient             = DNSClient ?? new DNSClient(
-                                                          SearchForIPv4DNSServers: true,
-                                                          SearchForIPv6DNSServers: false
-                                                      );
+            this.DisableNetworkSync       = DisableNetworkSync;
+            this.DNSClient                = DNSClient ?? new DNSClient(
+                                                             SearchForIPv4DNSServers: true,
+                                                             SearchForIPv6DNSServers: false
+                                                         );
 
             if (RoamingNetworkInfo is not null)
             {
@@ -229,10 +289,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                                 var data = connection.ReadLine(MaxInitialWaitingTime:  TimeSpan.FromSeconds(5),
                                                                __ReadTimeout:          TimeSpan.FromSeconds(10));
+
                                 if (data.IsNotNullOrEmpty())
                                 {
 
-                                    Console.WriteLine("Received '" + data + "' from '" + connection.RemoteSocket.ToString() + "'!");
+                                    DebugX.Log($"Received '{data}' from '{connection.RemoteSocket}'!");
 
                                     LastDataReceivedAt = Timestamp.Now;
 
@@ -245,16 +306,23 @@ namespace cloud.charging.open.protocols.WWCP
                                         try
                                         {
 
-                                            var JSON     = JObject.Parse(data);
-                                            var command  = JSON["command"]?.Value<String>();
+                                            var json       = JObject.Parse(data);
 
-                                            if (command.IsNotNullOrEmpty())
+                                            var timestamp  =                     json["timestamp"]?.Value<DateTime>();
+                                            var id         = this.StringIdParser(json["id"]?.       Value<String>() ?? "");
+                                            var command    =                     json["command"]?.  Value<String>();
+
+                                            if (timestamp.HasValue    &&
+                                                id        is not null &&
+                                                command.  IsNotNullOrEmpty())
                                             {
 
                                                 if (CommandProcessor(null,
                                                                      connection.RemoteSocket,
+                                                                     timestamp.Value,
+                                                                     (TId) id,
                                                                      command,
-                                                                     JSON,
+                                                                     json,
                                                                      InternalData))
                                                 {
                                                     LogToDisc(data).Wait();
@@ -487,6 +555,17 @@ namespace cloud.charging.open.protocols.WWCP
                 LoadLogFiles(LogFilePath,
                              LogfileSearchPattern(this.RoamingNetworkId));
 
+
+            // Setup Maintenance Task
+            this.DisableMaintenanceTasks  = DisableMaintenanceTasks ?? false;
+            this.MaintenanceEvery         = MaintenanceEvery        ?? DefaultMaintenanceEvery;
+            this.MaintenanceTimer         = new Timer(
+                                                DoMaintenanceSync,
+                                                this,
+                                                MaintenanceInitialDelay ?? this.MaintenanceEvery,
+                                                this.MaintenanceEvery
+                                            );
+
         }
 
         #endregion
@@ -514,6 +593,66 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
+        #region (Timer) DoMaintenance(State)
+
+        private void DoMaintenanceSync(Object? State)
+        {
+            if (ReloadFinished && !DisableMaintenanceTasks)
+                DoMaintenanceAsync(State).ConfigureAwait(false);
+        }
+
+        protected internal virtual Task DoMaintenance(Object? State)
+            => Task.CompletedTask;
+
+        private async Task DoMaintenanceAsync(Object? State)
+        {
+
+            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
+                                           ConfigureAwait(false))
+            {
+                try
+                {
+
+                    await DoMaintenance(State);
+
+                }
+                catch (Exception e)
+                {
+
+                    while (e.InnerException is not null)
+                        e = e.InnerException;
+
+                    DebugX.LogException(e);
+
+                }
+                finally
+                {
+                    MaintenanceSemaphore.Release();
+                }
+            }
+            else
+                DebugX.LogT("Could not aquire the maintenance tasks lock!");
+
+        }
+
+        #endregion
+
+
+        #region (protected) LogIt         (Command, Id)
+
+        protected async Task LogIt(String  Command,
+                                   IId     Id)
+        {
+
+            await LogItInternal(
+                      Command,
+                      Id
+                  );
+
+        }
+
+        #endregion
 
         #region (protected) LogIt         (Command, Id, PropertyKey, JSONObject)
 
@@ -657,9 +796,6 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                JObject? JSON      = null;
-                String?  command   = null;
-
                 var filenames = Directory.EnumerateFiles(Path,
                                                          LogfileSearchPattern,
                                                          SearchOption.TopDirectoryOnly).
@@ -683,11 +819,15 @@ namespace cloud.charging.open.protocols.WWCP
                                     try
                                     {
 
-                                        JSON     = JObject.Parse(line);
-                                        command  = JSON["command"]?.Value<String>()?.Trim();
+                                        var json       = JObject.Parse(line);
 
-                                        if (command is not null &&
-                                            command.IsNotNullOrEmpty())
+                                        var timestamp  =                json["timestamp"]?.Value<DateTime>();
+                                        var id         = StringIdParser(json["id"]?.       Value<String>() ?? "");
+                                        var command    =                json["command"]?.  Value<String>();
+
+                                        if (timestamp.HasValue    &&
+                                            id        is not null &&
+                                            command.  IsNotNullOrEmpty())
                                         {
 
                                             numberOfCommands++;
@@ -702,8 +842,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                 default:
                                                     CommandProcessor(filename,
                                                                      null,
+                                                                     timestamp.Value,
+                                                                     (TId) id,
                                                                      command,
-                                                                     JSON,
+                                                                     json,
                                                                      InternalData);
                                                     break;
 
@@ -727,7 +869,7 @@ namespace cloud.charging.open.protocols.WWCP
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log("Could not parse logfile '" + filename + "': " + e.Message);
+                        DebugX.Log($"Could not parse logfile '{filename}': {e.Message}");
                     }
 
                 }
@@ -735,7 +877,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log("Could not reload data: " + e.Message);
+                DebugX.Log($"Could not reload data: {e.Message}");
             }
 
 
@@ -766,6 +908,7 @@ namespace cloud.charging.open.protocols.WWCP
             => InternalData.Values.GetEnumerator();
 
         #endregion
+
 
     }
 
