@@ -660,10 +660,15 @@ namespace cloud.charging.open.protocols.WWCP
                 JObject? JSON      = null;
                 String?  command   = null;
 
-                foreach (var filename in Directory.EnumerateFiles(Path,
-                                                                  LogfileSearchPattern,
-                                                                  SearchOption.TopDirectoryOnly).
-                                                   OrderBy       (filename => filename))
+                var filenames = Directory.EnumerateFiles(Path,
+                                                         LogfileSearchPattern,
+                                                         SearchOption.TopDirectoryOnly).
+                                          OrderBy(filename => filename).
+                                          ToArray();
+
+                DebugX.Log($"Found {filenames.Length} log files matching '{LogfileSearchPattern}' at: '{Path}'!");
+
+                foreach (var filename in filenames)
                 {
 
                     listOfFilenames.Add(filename);
