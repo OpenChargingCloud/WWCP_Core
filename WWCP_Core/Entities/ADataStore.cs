@@ -120,6 +120,11 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
+        /// The name of the data store.
+        /// </summary>
+        public String                            Name                        { get; }
+
+        /// <summary>
         /// The attached roaming network.
         /// </summary>
         public RoamingNetwork_Id                 RoamingNetworkId            { get; }
@@ -215,7 +220,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DisableMaintenanceTasks">Disable all maintenance tasks.</param>
         /// <param name="MaintenanceInitialDelay">The initial delay of the maintenance tasks.</param>
         /// <param name="MaintenanceEvery">The maintenance intervall.</param>
-        public ADataStore(RoamingNetwork_Id                 RoamingNetworkId,
+        public ADataStore(String                            Name,
+                          RoamingNetwork_Id                 RoamingNetworkId,
                           Func<String, TId?>                StringIdParser,
                           CommandDelegate<TId, TData>       CommandProcessor,
 
@@ -236,6 +242,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
+            this.Name                     = Name;
             this.NodeId                   = NetworkServiceNode_Id.Parse(Environment.MachineName);
 
             this.RoamingNetworkId         = RoamingNetworkId;
@@ -250,7 +257,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.LogfileNameCreator       = LogFileNameCreator;
             this.LogfileSearchPattern     = LogfileSearchPattern;
 
-            DebugX.Log($"Using logfile path: {LogFilePath} {LogfileSearchPattern(RoamingNetworkId)}");
+            DebugX.Log($"{Name}: Using logfile path: {LogFilePath} {LogfileSearchPattern(RoamingNetworkId)}");
 
             this.DisableLogfiles          = DisableLogfiles;
             this.ReloadDataOnStart        = ReloadDataOnStart;
@@ -293,7 +300,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 if (data.IsNotNullOrEmpty())
                                 {
 
-                                    DebugX.Log($"Received '{data}' from '{connection.RemoteSocket}'!");
+                                    DebugX.Log($"{Name}: Received '{data}' from '{connection.RemoteSocket}'!");
 
                                     LastDataReceivedAt = Timestamp.Now;
 
@@ -359,7 +366,7 @@ namespace cloud.charging.open.protocols.WWCP
                     } catch
                     { }
 
-                    Console.WriteLine("Connection '" + connection.RemoteSocket.ToString() + "' closed!");
+                    Console.WriteLine($"{Name}: Connection '{connection.RemoteSocket}' closed!");
 
                 };
 
@@ -632,7 +639,7 @@ namespace cloud.charging.open.protocols.WWCP
                 }
             }
             else
-                DebugX.LogT("Could not aquire the maintenance tasks lock!");
+                DebugX.LogT($"{Name}: Could not aquire the maintenance tasks lock!");
 
         }
 
@@ -663,7 +670,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             if (PropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
+                throw new ArgumentNullException(nameof(PropertyKey), $"{Name}: The given property key must not be null or empty!");
 
             await LogItInternal(
                       Command,
@@ -685,7 +692,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             if (PropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
+                throw new ArgumentNullException(nameof(PropertyKey), $"{Name}: The given property key must not be null or empty!");
 
             await LogItInternal(
                       Command,
@@ -712,7 +719,7 @@ namespace cloud.charging.open.protocols.WWCP
             #region Initial checks
 
             if (Command.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Command), "The given command must not be null or empty!");
+                throw new ArgumentNullException(nameof(Command), $"{Name}: The given command must not be null or empty!");
 
             #endregion
 
@@ -720,7 +727,7 @@ namespace cloud.charging.open.protocols.WWCP
             PropertyKey  = PropertyKey?.Trim();
 
             if (Command.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Command), "The given command must not be null or empty!");
+                throw new ArgumentNullException(nameof(Command), $"{Name}: The given command must not be null or empty!");
 
             var logData = JSONObject.Create(
 
@@ -802,7 +809,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           OrderBy(filename => filename).
                                           ToArray();
 
-                DebugX.Log($"Found {filenames.Length} log files matching '{LogfileSearchPattern}' at: '{Path}'!");
+                DebugX.Log($"{Name}: Found {filenames.Length} log files matching '{LogfileSearchPattern}' at: '{Path}'!");
 
                 foreach (var filename in filenames)
                 {
@@ -869,7 +876,7 @@ namespace cloud.charging.open.protocols.WWCP
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log($"Could not parse logfile '{filename}': {e.Message}");
+                        DebugX.Log($"{Name}: Could not parse logfile '{filename}': {e.Message}");
                     }
 
                 }
@@ -877,7 +884,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log($"Could not reload data: {e.Message}");
+                DebugX.Log($"{Name}: Could not reload data: {e.Message}");
             }
 
 
@@ -890,7 +897,9 @@ namespace cloud.charging.open.protocols.WWCP
                              );
 
             if (listOfFilenames.Count > 0 && numberOfCommands > 0)
-                DebugX.Log(statistics.ToString());
+                DebugX.Log($"{Name}: {statistics}");
+
+            ReloadFinished = true;
 
             return statistics;
 

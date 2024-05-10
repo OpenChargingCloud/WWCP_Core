@@ -199,7 +199,8 @@ namespace cloud.charging.open.protocols.WWCP
                                      String?                           LoggingPath           = null,
                                      DNSClient?                        DNSClient             = null)
 
-            : base(RoamingNetworkId:       RoamingNetwork.Id,
+            : base(Name:                   nameof(ChargingSessionsStore),
+                   RoamingNetworkId:       RoamingNetwork.Id,
                    StringIdParser:         ChargingSession_Id.TryParse,
 
                    CommandProcessor:       (logfilename,
@@ -343,8 +344,9 @@ namespace cloud.charging.open.protocols.WWCP
                            switch (command)
                            {
 
-                               #region "remove"
+                               #region "close" | "remove"
 
+                               case "close":
                                case "remove":
                                    internalData.TryRemove(sessionId, out _);
                                    return true;
@@ -380,38 +382,60 @@ namespace cloud.charging.open.protocols.WWCP
 
             var now                    = Timestamp.Now;
             var sessionIds             = InternalData.Keys.ToArray();
-            var sessionIdsToBeRemoved  = new List<ChargingSession_Id>();
+            var sessionIdsToBeRemoved  = new List<Tuple<ChargingSession_Id, String>>();
 
             foreach (var sessionId in sessionIds)
             {
                 if (InternalData.TryGetValue(sessionId, out var chargingSession))
                 {
 
+                    if (chargingSession.NoAutoDeletionBefore.HasValue &&
+                       (now < chargingSession.NoAutoDeletionBefore.Value))
+                    {
+                        continue;
+                    }
+
                     if (chargingSession.CDRResult is not null &&
                        (chargingSession.CDRResult.Result == SendCDRResultTypes.Success ||
                         chargingSession.CDRResult.Result == SendCDRResultTypes.Enqueued) &&
-                       (now - chargingSession.CDRResult.Timestamp > SuccessfulSessionRemovalAfter))
+                       (now - chargingSession.CDRResult.  Timestamp > SuccessfulSessionRemovalAfter))
                     {
-                        sessionIdsToBeRemoved.Add(sessionId);
+                        sessionIdsToBeRemoved.Add(new Tuple<ChargingSession_Id, String>(sessionId, "close"));
+                        continue;
                     }
 
                     if (now - chargingSession.SessionTime.StartTime > UnsuccessfulSessionRemovalAfter)
                     {
-                        sessionIdsToBeRemoved.Add(sessionId);
+                        sessionIdsToBeRemoved.Add(new Tuple<ChargingSession_Id, String>(sessionId, "remove"));
+                        continue;
                     }
 
                 }
             }
 
-            foreach (var sessionId in sessionIdsToBeRemoved)
+
+            if (sessionIdsToBeRemoved.Count > 0)
             {
-                if (InternalData.TryRemove(sessionId, out var chargingSession))
+
+                var deleted = 0UL;
+
+                foreach (var sessionTuple in sessionIdsToBeRemoved)
                 {
+                    if (InternalData.TryRemove(sessionTuple.Item1, out _))
+                    {
 
-                    await LogIt("remove",
-                                chargingSession.Id);
+                        await LogIt(
+                                  sessionTuple.Item2,  // "close" | "remove"
+                                  sessionTuple.Item1
+                              );
 
+                        deleted++;
+
+                    }
                 }
+
+                DebugX.Log($"{Name}: Deleted {deleted} charging sessions!");
+
             }
 
         }
@@ -419,10 +443,15 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region AddSession         (ChargingSession)
+        #region AddSession         (ChargingSession, NoAutoDeletionBefore = false)
 
-        public async Task AddSession(ChargingSession ChargingSession)
+        public async Task AddSession(ChargingSession  ChargingSession,
+                                     DateTime?        NoAutoDeletionBefore   = null)
         {
+
+            if (NoAutoDeletionBefore.HasValue)
+                ChargingSession.NoAutoDeletionBefore = NoAutoDeletionBefore;
+
             if (InternalData.TryAdd(ChargingSession.Id, ChargingSession))
             {
 
@@ -435,6 +464,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                    CustomChargingSessionSerializer));
 
             }
+
         }
 
         #endregion

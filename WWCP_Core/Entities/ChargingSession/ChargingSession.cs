@@ -804,6 +804,8 @@ namespace cloud.charging.open.protocols.WWCP
         public DateTime?                     CDRResultTimestamp            { get; set; }
         public SendCDRResult?                CDRResult                     { get; set; }
 
+        public DateTime?                     NoAutoDeletionBefore          { get; set; }
+
 
         #region Runtime
 
@@ -934,6 +936,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                            RoamingNetworkId.HasValue
                                ? new JProperty("roamingNetworkId",            RoamingNetworkId.ToString())
+                               : null,
+
+                           NoAutoDeletionBefore.HasValue
+                               ? new JProperty("noAutoDeletionBefore",        NoAutoDeletionBefore.Value.ToIso8601())
                                : null,
 
 
@@ -1107,6 +1113,8 @@ namespace cloud.charging.open.protocols.WWCP
             //     "@id":                           "7f0d7978-ab29-462c-908f-b31aa9c9326e",
             //     "@context":                      "https://open.charging.cloud/contexts/wwcp+json/chargingSession",
             //     "roamingNetworkId":              "Prod",
+            //     "noAutoDeletionBefore":          "2020-06-24T07:44:39.476Z",
+            //
             //     "start": {
             //         "timestamp":                 "2020-03-24T07:44:39.476Z",
             //         "systemId":                  "occ3a",
@@ -1170,6 +1178,11 @@ namespace cloud.charging.open.protocols.WWCP
                                  EVSEId                     = JSON["EVSEId"]?.                   Value<String>() is String EVSEId                    ? EVSE_Id.                   Parse(EVSEId)                    : null,
                              
                              };
+
+
+            var noAutoDeletionBefore = JSON["noAutoDeletionBefore"]?.Value<DateTime>();
+            if (noAutoDeletionBefore.HasValue)
+                session.NoAutoDeletionBefore = noAutoDeletionBefore.Value;
 
 
             if (JSON["start"]        is JObject sessionStartJSON)

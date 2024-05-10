@@ -54,7 +54,8 @@ namespace cloud.charging.open.protocols.WWCP
                                         String?                           LoggingPath           = null,
                                         DNSClient?                        DNSClient             = null)
 
-            : base(RoamingNetworkId:      RoamingNetworkId,
+            : base(Name:                  nameof(ChargeDetailRecordsStore),
+                   RoamingNetworkId:      RoamingNetworkId,
                    StringIdParser:        ChargingSession_Id.TryParse,
 
                    CommandProcessor:      (logfilename,

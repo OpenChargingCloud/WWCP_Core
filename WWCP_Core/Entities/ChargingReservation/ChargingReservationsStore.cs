@@ -51,7 +51,8 @@ namespace cloud.charging.open.protocols.WWCP
                                          String?                           LoggingPath           = null,
                                          DNSClient?                        DNSClient             = null)
 
-            : base(StringIdParser:        ChargingReservation_Id.TryParse,
+            : base(Name:                  nameof(ChargingReservationsStore),
+                   StringIdParser:        ChargingReservation_Id.TryParse,
 
                    CommandProcessor:      (logfilename,
                                            remoteSocket,
