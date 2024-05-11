@@ -7509,6 +7509,7 @@ namespace cloud.charging.open.protocols.WWCP
                             chargeDetailRecordsToProcess.Remove(cdr);
 
                             await SessionsStore.CDRReceived(
+                                      eventTrackingId,
                                       cdr.SessionId,
                                       cdr
                                   );
@@ -7550,6 +7551,7 @@ namespace cloud.charging.open.protocols.WWCP
                             chargeDetailRecordsToProcess.Remove(cdr);
 
                             await SessionsStore.CDRReceived(
+                                      eventTrackingId,
                                       cdr.SessionId,
                                       cdr
                                   );
@@ -7568,6 +7570,7 @@ namespace cloud.charging.open.protocols.WWCP
                         chargeDetailRecordsToProcess.Remove(cdr);
 
                         await SessionsStore.CDRReceived(
+                                  eventTrackingId,
                                   cdr.SessionId,
                                   cdr
                               );
@@ -9048,11 +9051,22 @@ namespace cloud.charging.open.protocols.WWCP
                             result.Result == RemoteStartResultTypes.AsyncOperation)
                         {
 
-                            SessionsStore.RemoteStart(result.Session,
-                                                      result,
-                                                      session => {
-                                                          session.CSORoamingProviderStart = CSORoamingProvider;
-                                                      });
+                            result.Session ??= new ChargingSession(
+                                                   SessionId ?? ChargingSession_Id.NewRandom(),
+                                                   this,
+                                                   EventTrackingId,
+                                                   CSORoamingProvider,
+                                                   Timestamp: Timestamp
+                                               );
+
+                            await SessionsStore.RemoteStart(
+                                      EventTrackingId,
+                                      result.Session,
+                                      result,
+                                      session => {
+                                          session.CSORoamingProviderStart = CSORoamingProvider;
+                                      }
+                                  );
 
                         }
 
@@ -9092,12 +9106,24 @@ namespace cloud.charging.open.protocols.WWCP
                                 result.Result == RemoteStartResultTypes.AsyncOperation)
                             {
 
-                                SessionsStore.RemoteStart(result.Session,
-                                                          result,
-                                                          session => {
-                                                              session.CSORoamingProviderStart = CSORoamingProvider;
-                                                              session.EMPRoamingProviderStart = empRoamingProvider;
-                                                          });
+                                result.Session ??= new ChargingSession(
+                                                       SessionId ?? ChargingSession_Id.NewRandom(),
+                                                       this,
+                                                       EventTrackingId,
+                                                       CSORoamingProvider,
+                                                       empRoamingProvider,
+                                                       Timestamp: Timestamp
+                                                   );
+
+                                await SessionsStore.RemoteStart(
+                                          EventTrackingId,
+                                          result.Session,
+                                          result,
+                                          session => {
+                                              session.CSORoamingProviderStart = CSORoamingProvider;
+                                              session.EMPRoamingProviderStart = empRoamingProvider;
+                                          }
+                                      );
 
                             }
 
@@ -9430,11 +9456,14 @@ namespace cloud.charging.open.protocols.WWCP
             }
 
 
-            SessionsStore.RemoteStop(SessionId,
-                                     RemoteAuthentication,
-                                     ProviderId,
-                                     CSORoamingProvider,
-                                     result);
+            await SessionsStore.RemoteStop(
+                      EventTrackingId,
+                      SessionId,
+                      RemoteAuthentication,
+                      ProviderId,
+                      CSORoamingProvider,
+                      result
+                  );
 
 
             #region Send OnRemoteStopResponse event

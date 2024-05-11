@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The charging session for the remote start operation.
         /// </summary>
-        public ChargingSession?        Session           { get; }
+        public ChargingSession?        Session           { get; internal set; }
 
         /// <summary>
         /// A optional description of the remote start result.
