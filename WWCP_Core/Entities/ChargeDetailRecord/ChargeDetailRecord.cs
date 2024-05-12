@@ -26,6 +26,7 @@ using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -593,8 +594,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
         /// <param name="CustomChargeDetailRecordSerializer">A custom charge detail record serializer.</param>
-        public JObject ToJSON(Boolean                                               Embedded                             = false,
-                              CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   = null)
+        public JObject ToJSON(Boolean                                                Embedded                              = false,
+                              CustomJObjectSerializerDelegate<ChargeDetailRecord>?   CustomChargeDetailRecordSerializer    = null,
+                              CustomJObjectSerializerDelegate<EnergyMeteringValue>?  CustomEnergyMeteringValueSerializer   = null)
         {
 
             var JSON = JSONObject.Create(
@@ -607,12 +609,7 @@ namespace cloud.charging.open.protocols.WWCP
                                : new JProperty("@context",                    JSONLDContext),
 
                            SessionTime is not null
-                               ? new JProperty("sessionTime",                 JSONObject.Create(
-                                     new JProperty("start",                   SessionTime.StartTime.    ToIso8601()),
-                                     SessionTime.EndTime.HasValue
-                                         ? new JProperty("end",               SessionTime.EndTime.Value.ToIso8601())
-                                         : null
-                                 ))
+                               ? new JProperty("sessionTime",                 SessionTime.ToJSON(Embedded: true))
                                : null,
 
                            Duration.HasValue
@@ -642,7 +639,8 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
                            EnergyMeteringValues is not null && EnergyMeteringValues.Any()
-                               ? new JProperty("energyMeteringValues",        new JArray(EnergyMeteringValues.Select(energyMeteringValue => energyMeteringValue.ToJSON())))
+                               ? new JProperty("energyMeteringValues",        new JArray(EnergyMeteringValues.Select(energyMeteringValue => energyMeteringValue.ToJSON(Embedded: true,
+                                                                                                                                                                       CustomEnergyMeteringValueSerializer))))
                                : null,
 
 
@@ -670,8 +668,8 @@ namespace cloud.charging.open.protocols.WWCP
                                  //new JProperty("lastSignature",  lastSignature),
                                  //new JProperty("signature",      Signature)
 
-                                 new JProperty("created",                     Created.   ToIso8601()),
-                                 new JProperty("lastChange",                  LastChangeDate.ToIso8601())
+                                 new JProperty("created",                     Created.                  ToIso8601()),
+                                 new JProperty("lastChange",                  LastChangeDate.           ToIso8601())
 
                        );
 
@@ -728,8 +726,276 @@ namespace cloud.charging.open.protocols.WWCP
                                        [NotNullWhen(false)] out String?              ErrorResponse)
         {
 
-            ErrorResponse       = null;
             ChargeDetailRecord  = null;
+
+            try
+            {
+
+                if (JSON?.HasValues != true)
+                {
+                    ErrorResponse = "The given JSON object must not be null or empty!";
+                    return false;
+                }
+
+                #region Parse Id                            [mandatory]
+
+                if (!JSON.ParseMandatory("@id",
+                                         "timestamp",
+                                         ChargeDetailRecord_Id.TryParse,
+                                         out ChargeDetailRecord_Id Id,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse Context                       [mandatory]
+
+                var context = JSON["@context"]?.Value<String>();
+
+                #endregion
+
+                #region Parse SessionId                     [mandatory]
+
+                if (!JSON.ParseMandatory("sessionId",
+                                         "session identification",
+                                         ChargingSession_Id.TryParse,
+                                         out ChargingSession_Id SessionId,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse SessionTime                   [mandatory]
+
+                if (!JSON.ParseMandatoryJSON("sessionTime",
+                                             "timestamp",
+                                             StartEndDateTime.TryParse,
+                                             out StartEndDateTime? SessionTime,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                #region Parse ChargingConnectorId           [optional]
+
+                if (!JSON.ParseOptional("chargingConnectorId",
+                                        "charging connector identification",
+                                        ChargingConnector_Id.TryParse,
+                                        out ChargingConnector_Id? ChargingConnectorId,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse EVSEId                        [optional]
+
+                if (!JSON.ParseOptional("evseId",
+                                        "EVSE identification",
+                                        EVSE_Id.TryParse,
+                                        out EVSE_Id? EVSEId,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse ChargingStationId             [optional]
+
+                if (!JSON.ParseOptional("chargingStationId",
+                                        "charging station identification",
+                                        ChargingStation_Id.TryParse,
+                                        out ChargingStation_Id? ChargingStationId,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse ChargingPoolId                [optional]
+
+                if (!JSON.ParseOptional("chargingPoolId",
+                                        "charging station identification",
+                                        ChargingPool_Id.TryParse,
+                                        out ChargingPool_Id? ChargingPoolId,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse ChargingStationOperatorId     [optional]
+
+                if (!JSON.ParseOptional("chargingStationOperatorId",
+                                        "charging station operator identification",
+                                        ChargingStationOperator_Id.TryParse,
+                                        out ChargingStationOperator_Id? ChargingStationOperatorId,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region Parse ProviderIdStart               [optional]
+
+                if (!JSON.ParseOptional("providerIdStart",
+                                        "provider identification start",
+                                        EMobilityProvider_Id.TryParse,
+                                        out EMobilityProvider_Id? ProviderIdStart,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse ProviderIdStop                [optional]
+
+                if (!JSON.ParseOptional("providerIdStop",
+                                        "provider identification stop",
+                                        EMobilityProvider_Id.TryParse,
+                                        out EMobilityProvider_Id? ProviderIdStop,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+
+                #region Parse EnergyMeteringValues          [optional]
+
+                if (!JSON.ParseMandatoryJSON("energyMeteringValues",
+                                             "energy metering values",
+                                             EnergyMeteringValue.TryParse,
+                                             out IEnumerable<EnergyMeteringValue>? EnergyMeteringValues,
+                                             out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+
+                #region Parse Created                       [optional]
+
+                if (!JSON.ParseOptional("created",
+                                        "created timestamp",
+                                        out DateTime? Created,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse LastChange                    [optional]
+
+                if (!JSON.ParseOptional("lastChange",
+                                        "last change timestamp",
+                                        out DateTime? LastChange,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                ChargeDetailRecord = new ChargeDetailRecord(
+                                         Id,
+                                         SessionId,
+                                         SessionTime,
+                                         null, //Duration,
+
+                                         null, //ChargingConnector,
+                                         ChargingConnectorId,
+                                         null, //EVSE,
+                                         EVSEId,
+                                         null, //ChargingStation,
+                                         ChargingStationId,
+                                         null, //ChargingPool,
+                                         ChargingPoolId,
+                                         null, //ChargingStationOperator,
+                                         ChargingStationOperatorId,
+
+                                         null, //ChargingProduct,
+                                         null, //ChargingPrice,
+
+                                         null, //AuthenticationStart,
+                                         null, //AuthenticationStop,
+                                         null, //AuthMethodStart,
+                                         null, //AuthMethodStop,
+
+                                         null, //ProviderStart,
+                                         ProviderIdStart,
+                                         null, //ProviderStop,
+                                         ProviderIdStop,
+
+                                         null, //CSORoamingProviderStart,
+                                         null, //CSORoamingProviderIdStart,
+                                         null, //CSORoamingProviderStop,
+                                         null, //CSORoamingProviderIdStop,
+
+                                         null, //Reservation,
+                                         null, //ReservationId,
+                                         null, //ReservationTime,
+                                         null, //ReservationFee,
+
+                                         null, //ParkingSpaceId,
+                                         null, //ParkingTime,
+                                         null, //ParkingFee,
+
+                                         null, //EnergyMeterId,
+                                         null, //EnergyMeter,
+                                         EnergyMeteringValues,
+                                         null, //ConsumedEnergy,
+                                         null, //ConsumedEnergyFee,
+
+                                         null, //CustomData,
+                                         null, //InternalData,
+
+                                         null, //PublicKey,
+                                         null, //Signatures,
+
+                                         Created,
+                                         LastChange
+
+                                     );
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ChargeDetailRecord  = null;
+                ErrorResponse       = "The given JSON representation of a charge detail record is invalid: " + e.Message;
+            }
 
             return false;
 

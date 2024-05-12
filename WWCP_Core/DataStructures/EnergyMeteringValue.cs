@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -26,36 +28,49 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class EnergyMeteringValue
+    public class EnergyMeteringValue(DateTime                   Timestamp,
+                                     Decimal                    Value,
+                                     EnergyMeteringValueTypes?  Type,
+                                     String?                    SignedData   = null,
+                                     String?                    Signature    = null)
     {
 
-        public DateTime                   Timestamp     { get; }
-        public Decimal                    Value         { get; }
-        public EnergyMeteringValueTypes?  Type          { get; }
-        public String?                    SignedData    { get; }
-        public String?                    Signature     { get; }
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of the object.
+        /// </summary>
+        public const String JSONLDContext  = "https://open.charging.cloud/contexts/wwcp+json/energyMeteringValue";
+
+        #endregion
+
+        #region Properties
+
+        public DateTime                   Timestamp     { get; } = Timestamp;
+        public Decimal                    Value         { get; } = Value;
+        public EnergyMeteringValueTypes?  Type          { get; } = Type;
+        public String?                    SignedData    { get; } = SignedData;
+        public String?                    Signature     { get; } = Signature;
+
+        #endregion
 
 
-        public EnergyMeteringValue(DateTime                   Timestamp,
-                                   Decimal                    Value,
-                                   EnergyMeteringValueTypes?  Type,
-                                   String?                    SignedData   = null,
-                                   String?                    Signature    = null)
-        {
+        #region ToJSON(Embedded = false, ...)
 
-            this.Timestamp   = Timestamp;
-            this.Value       = Value;
-            this.Type        = Type;
-            this.SignedData  = SignedData;
-            this.Signature   = Signature;
-
-        }
-
-
-        public JObject ToJSON()
+        /// <summary>
+        /// Return a JSON representation of the given energy metering value.
+        /// </summary>
+        /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
+        /// <param name="CustomEnergyMeteringValueSerializer">A custom energy metering value serializer.</param>
+        public JObject ToJSON(Boolean                                                Embedded                              = false,
+                              CustomJObjectSerializerDelegate<EnergyMeteringValue>?  CustomEnergyMeteringValueSerializer   = null)
         {
 
             var json = JSONObject.Create(
+
+                           Embedded
+                               ? null
+                               : new JProperty("@context",     JSONLDContext),
 
                                  new JProperty("timestamp",    Timestamp.ToIso8601()),
                                  new JProperty("value",        Value),
@@ -68,15 +83,118 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("signedData",   SignedData)
                                : null,
 
-                           Signature is not null && SignedData.IsNotNullOrEmpty()
+                           Signature  is not null && Signature. IsNotNullOrEmpty()
                                ? new JProperty("signature",    Signature)
                                : null
 
                        );
 
-            return json;
+            return CustomEnergyMeteringValueSerializer is not null
+                       ? CustomEnergyMeteringValueSerializer(this, json)
+                       : json;
 
         }
+
+        #endregion
+
+        #region TryParse(JSON, out EnergyMeteringValue, out ErrorResponse)
+
+        public static Boolean TryParse(JObject                                        JSON,
+                                       [NotNullWhen(true)]  out EnergyMeteringValue?  EnergyMeteringValue,
+                                       [NotNullWhen(false)] out String?               ErrorResponse)
+        {
+
+            EnergyMeteringValue = null;
+
+            try
+            {
+
+                if (JSON?.HasValues != true)
+                {
+                    ErrorResponse = "The given JSON object must not be null or empty!";
+                    return false;
+                }
+
+                #region Parse Context       [optional]
+
+                var context = JSON["@context"]?.Value<String>();
+
+                #endregion
+
+                #region Parse Timestamp     [mandatory]
+
+                if (!JSON.ParseMandatory("timestamp",
+                                         "timestamp",
+                                         out DateTime Timestamp,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse Value         [mandatory]
+
+                var valueString = JSON["value"]?.Value<String>() ?? "";
+
+                if (!Decimal.TryParse(valueString, out var Value))
+                {
+                    ErrorResponse = $"Invalid energy metering value '{valueString}'!";
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse Type          [optional]
+
+                if (!JSON.ParseOptional("type",
+                                        "type",
+                                        EnergyMeteringValueTypesExtensions.TryParse,
+                                        out EnergyMeteringValueTypes? Type,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse SignedData    [optional]
+
+                var SignedData = JSON["signedData"]?.Value<String>() ?? "";
+
+                #endregion
+
+                #region Parse Signature     [optional]
+
+                var Signature  = JSON["signature"]?.Value<String>() ?? "";
+
+                #endregion
+
+
+                EnergyMeteringValue = new EnergyMeteringValue(
+                                          Timestamp,
+                                          Value,
+                                          Type,
+                                          SignedData,
+                                          Signature
+                                      );
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                EnergyMeteringValue  = null;
+                ErrorResponse        = "The given JSON representation of an energy metering value is invalid: " + e.Message;
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
 
 
         //public SignedMeteringValue<T> Sign(PgpSecretKey  SecretKey,

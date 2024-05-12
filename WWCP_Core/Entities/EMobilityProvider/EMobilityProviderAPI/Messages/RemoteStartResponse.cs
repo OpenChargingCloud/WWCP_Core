@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -160,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                          HTTPResponse,
                          CustomRemoteStartResponseParser))
             {
-                return pullEVSEDataResponse!;
+                return pullEVSEDataResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a RemoteStart response is invalid: " + errorResponse,
@@ -187,8 +189,8 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                        JObject                                            JSON,
                                        DateTime                                           ResponseTimestamp,
                                        TimeSpan                                           Runtime,
-                                       out RemoteStartResponse?                           RemoteStartResponse,
-                                       out String?                                        ErrorResponse,
+                                       [NotNullWhen(true)]  out RemoteStartResponse?      RemoteStartResponse,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse,
                                        HTTPResponse?                                      HTTPResponse                      = null,
                                        CustomJObjectParserDelegate<RemoteStartResponse>?  CustomRemoteStartResponseParser   = null)
         {
@@ -288,19 +290,21 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                 #endregion
 
 
-                RemoteStartResponse = new RemoteStartResponse(Request,
-                                                              Result,
-                                                              EventTrackingId,
-                                                              ResponseTimestamp,
+                RemoteStartResponse = new RemoteStartResponse(
+                                          Request,
+                                          Result,
+                                          EventTrackingId,
+                                          ResponseTimestamp,
 
-                                                              ChargingSession,
-                                                              Description,
-                                                              AdditionalInfo,
+                                          ChargingSession,
+                                          Description,
+                                          AdditionalInfo,
 
-                                                              Warnings,
-                                                              customData,
-                                                              Runtime,
-                                                              HTTPResponse);
+                                          Warnings,
+                                          customData,
+                                          Runtime,
+                                          HTTPResponse
+                                      );
 
                 if (CustomRemoteStartResponseParser is not null)
                     RemoteStartResponse = CustomRemoteStartResponseParser(JSON,
@@ -330,6 +334,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                               CustomJObjectSerializerDelegate<ChargeDetailRecord>?   CustomChargeDetailRecordSerializer    = null,
                               CustomJObjectSerializerDelegate<SendCDRResult>?        CustomSendCDRResultSerializer         = null,
                               CustomJObjectSerializerDelegate<ChargingSession>?      CustomChargingSessionSerializer       = null,
+                              CustomJObjectSerializerDelegate<ReceivedCDRInfo>?      CustomCDRReceivedInfoSerializer       = null,
                               CustomJObjectSerializerDelegate<Warning>?              CustomWarningSerializer               = null)
         {
 
@@ -339,10 +344,13 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                    new JProperty("eventTrackingId",   EventTrackingId.ToString()),
 
                            ChargingSession is not null
-                               ? new JProperty("chargingSession",     ChargingSession.ToJSON(Embedded: true,
+                               ? new JProperty("chargingSession",     ChargingSession.ToJSON(Embedded:    true,
+                                                                                             OnlineInfos: false,
+                                                                                             CustomChargingSessionSerializer,
+                                                                                             CustomCDRReceivedInfoSerializer,
                                                                                              CustomChargeDetailRecordSerializer,
                                                                                              CustomSendCDRResultSerializer,
-                                                                                             CustomChargingSessionSerializer))
+                                                                                             CustomWarningSerializer))
                                : null,
 
                            Description is not null

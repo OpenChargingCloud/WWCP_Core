@@ -8482,9 +8482,9 @@ namespace cloud.charging.open.protocols.WWCP
                 await SessionsStore.AuthStart(
                           new ChargingSession(
                               result.SessionId!.Value,
-                              this,
                               EventTrackingId
                           ) {
+                              RoamingNetwork             = this,
                               CSORoamingProviderStart    = result.ISendAuthorizeStartStop as ICSORoamingProvider,
                               ProviderIdStart            = result.ProviderId,
                               ChargingStationOperatorId  = OperatorId,
@@ -9053,8 +9053,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                             result.Session ??= new ChargingSession(
                                                    SessionId ?? ChargingSession_Id.NewRandom(),
-                                                   this,
                                                    EventTrackingId,
+                                                   this,
                                                    CSORoamingProvider,
                                                    Timestamp: Timestamp
                                                );
@@ -9064,7 +9064,7 @@ namespace cloud.charging.open.protocols.WWCP
                                       result.Session,
                                       result,
                                       session => {
-                                          session.CSORoamingProviderStart = CSORoamingProvider;
+                                          session.CSORoamingProviderStart ??= CSORoamingProvider;
                                       }
                                   );
 
@@ -9108,8 +9108,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                 result.Session ??= new ChargingSession(
                                                        SessionId ?? ChargingSession_Id.NewRandom(),
-                                                       this,
                                                        EventTrackingId,
+                                                       this,
                                                        CSORoamingProvider,
                                                        empRoamingProvider,
                                                        Timestamp: Timestamp
@@ -9120,8 +9120,8 @@ namespace cloud.charging.open.protocols.WWCP
                                           result.Session,
                                           result,
                                           session => {
-                                              session.CSORoamingProviderStart = CSORoamingProvider;
-                                              session.EMPRoamingProviderStart = empRoamingProvider;
+                                              session.CSORoamingProviderStart ??= CSORoamingProvider;
+                                              session.EMPRoamingProviderStart ??= empRoamingProvider;
                                           }
                                       );
 

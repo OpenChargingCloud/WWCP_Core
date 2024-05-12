@@ -2752,8 +2752,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                         chargingSession = new ChargingSession(
                                               SessionId ?? ChargingSession_Id.NewRandom(OperatorId),
-                                              RoamingNetwork,
-                                              EventTrackingId) {
+                                              EventTrackingId,
+                                              RoamingNetwork) {
                                               ReservationId        = ReservationId,
                                               Reservation          = chargingReservations.Values.FirstOrDefault(reservation => reservation.Id == ReservationId)?.LastOrDefault(),
                                               EVSEId               = Id,
@@ -2820,8 +2820,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             // Will also set the status -> EVSEStatusType.Charging;
                             chargingSession = new ChargingSession(
                                                   SessionId ?? ChargingSession_Id.NewRandom(OperatorId),
-                                                  RoamingNetwork,
-                                                  EventTrackingId) {
+                                                  EventTrackingId,
+                                                  RoamingNetwork) {
                                 ReservationId        = ReservationId,
                                 Reservation          = firstReservation.LastOrDefault(),
                                 EVSEId               = Id,

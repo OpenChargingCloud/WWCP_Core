@@ -17,10 +17,11 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -33,14 +34,15 @@ namespace cloud.charging.open.protocols.WWCP
     public static class ChargingSessionExtensions
     {
 
-        #region ToJSON(this ChargeDetailRecords, Embedded = false, ...)
+        #region ToJSON(this ChargingSessions, Embedded = false, ...)
 
         public static JArray ToJSON(this IEnumerable<ChargingSession>                     ChargingSessions,
                                     Boolean                                               Embedded                             = false,
-                                    CustomJObjectSerializerDelegate<CDRReceivedInfo>?     CustomCDRReceivedInfoSerializer      = null,
+                                    Boolean                                               OnlineInfos                          = true,
+                                    CustomJObjectSerializerDelegate<ChargingSession>?     CustomChargingSessionSerializer      = null,
+                                    CustomJObjectSerializerDelegate<ReceivedCDRInfo>?     CustomCDRReceivedInfoSerializer      = null,
                                     CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   = null,
                                     CustomJObjectSerializerDelegate<SendCDRResult>?       CustomSendCDRResultSerializer        = null,
-                                    CustomJObjectSerializerDelegate<ChargingSession>?     CustomChargingSessionSerializer      = null,
                                     UInt64?                                               Skip                                 = null,
                                     UInt64?                                               Take                                 = null)
         {
@@ -55,6 +57,7 @@ namespace cloud.charging.open.protocols.WWCP
             return new JArray(ChargingSessions.
                                   SkipTakeFilter(Skip, Take).
                                   Select        (chargingSession => chargingSession.ToJSON(Embedded,
+                                                                                           OnlineInfos,
                                                                                            CustomChargingSessionSerializer,
                                                                                            CustomCDRReceivedInfoSerializer,
                                                                                            CustomChargeDetailRecordSerializer,
@@ -66,7 +69,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     }
 
-    public class CDRReceivedInfo(DateTime            Timestamp,
+    public class ReceivedCDRInfo(DateTime            Timestamp,
                                  System_Id           SystemId,
                                  EventTracking_Id    EventTrackingId,
                                  ChargeDetailRecord  CDR,
@@ -96,7 +99,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region ToJSON(...)
 
         public JObject ToJSON(Boolean                                               Embedded                             = true,
-                              CustomJObjectSerializerDelegate<CDRReceivedInfo>?     CustomCDRReceivedInfoSerializer      = null,
+                              CustomJObjectSerializerDelegate<ReceivedCDRInfo>?     CustomCDRReceivedInfoSerializer      = null,
                               CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   = null,
                               CustomJObjectSerializerDelegate<SendCDRResult>?       CustomSendCDRResultSerializer        = null,
                               CustomJObjectSerializerDelegate<Warning>?             CustomWarningSerializer              = null)
@@ -127,6 +130,119 @@ namespace cloud.charging.open.protocols.WWCP
             return CustomCDRReceivedInfoSerializer is not null
                         ? CustomCDRReceivedInfoSerializer(this, json)
                         : json;
+
+        }
+
+        #endregion
+
+        #region TryParse()
+
+        public static Boolean TryParse(JObject                                    JSON,
+                                       [NotNullWhen(true)]  out ReceivedCDRInfo?  ReceivedCDRInfo,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+        {
+
+            ReceivedCDRInfo = null;
+
+            try
+            {
+
+                if (JSON?.HasValues != true)
+                {
+                    ErrorResponse = "The given JSON object must not be null or empty!";
+                    return false;
+                }
+
+                #region Parse Timestamp             [mandatory]
+
+                if (!JSON.ParseMandatory("timestamp",
+                                         "timestamp",
+                                         out DateTime Timestamp,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse SystemId              [mandatory]
+
+                if (!JSON.ParseMandatory("systemId",
+                                         "system identification",
+                                         System_Id.TryParse,
+                                         out System_Id SystemId,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse EventTrackingId       [mandatory]
+
+                if (!JSON.ParseOptional("eventTrackingId",
+                                        "event tracking identification",
+                                        EventTracking_Id.TryParse,
+                                        out EventTracking_Id? EventTrackingId,
+                                        out ErrorResponse))
+                {
+                    
+                }
+
+                EventTrackingId ??= EventTracking_Id.New;
+
+                #endregion
+
+                #region Parse ChargeDetailRecord    [mandatory]
+
+                if (!JSON.ParseMandatoryJSON("cdr",
+                                             "charge detail record",
+                                             WWCP.ChargeDetailRecord.TryParse,
+                                             out ChargeDetailRecord? ChargeDetailRecord,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse SendCDRResult         [optional]
+
+                if (!JSON.ParseOptionalJSON("sendCDRResult",
+                                            "send charge detail record result",
+                                            WWCP.SendCDRResult.TryParse,
+                                            out SendCDRResult? SendCDRResult,
+                                            out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                ReceivedCDRInfo = new ReceivedCDRInfo(
+                                      Timestamp,
+                                      SystemId,
+                                      EventTrackingId,
+                                      ChargeDetailRecord,
+                                      SendCDRResult ?? SendCDRResult.Success(
+                                                           Timestamp,
+                                                           SystemId,
+                                                           ChargeDetailRecord
+                                                       )
+                                  );
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ReceivedCDRInfo  = null;
+                ErrorResponse    = "The given JSON representation of a ReceivedCDRInfo is invalid: " + e.Message;
+            }
+
+            return false;
 
         }
 
@@ -889,17 +1005,17 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        private readonly List<CDRReceivedInfo> cdrReceivedInfos = [];
+        private readonly List<ReceivedCDRInfo> receivedCDRInfos = [];
 
-        public IEnumerable<CDRReceivedInfo> CDRReceivedInfos
-            => cdrReceivedInfos;
-
-
+        public IEnumerable<ReceivedCDRInfo>   ReceivedCDRInfos
+            => receivedCDRInfos;
 
 
-        private readonly List<SendCDRResult>  sendCDRResults = [];
 
-        public IEnumerable<SendCDRResult>     CDRResults
+
+        private readonly List<SendCDRResult> sendCDRResults = [];
+
+        public IEnumerable<SendCDRResult>     SendCDRResults
             => sendCDRResults;
 
 
@@ -950,9 +1066,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the charing pool.</param>
         /// <param name="Timestamp">The timestamp of the session creation.</param>
         public ChargingSession(ChargingSession_Id      Id,
-                               IRoamingNetwork         RoamingNetwork,
                                EventTracking_Id        EventTrackingId,
 
+                               IRoamingNetwork?        RoamingNetwork            = null,
                                ICSORoamingProvider?    CSORoamingProviderStart   = null,
                                IEMPRoamingProvider?    EMPRoamingProviderStart   = null,
 
@@ -1003,8 +1119,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region ToJSON(Embedded, ...)
 
         public JObject ToJSON(Boolean                                               Embedded                             = false,
+                              Boolean                                               OnlineInfos                          = true,
                               CustomJObjectSerializerDelegate<ChargingSession>?     CustomChargingSessionSerializer      = null,
-                              CustomJObjectSerializerDelegate<CDRReceivedInfo>?     CustomCDRReceivedInfoSerializer      = null,
+                              CustomJObjectSerializerDelegate<ReceivedCDRInfo>?     CustomCDRReceivedInfoSerializer      = null,
                               CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   = null,
                               CustomJObjectSerializerDelegate<SendCDRResult>?       CustomSendCDRResultSerializer        = null,
                               CustomJObjectSerializerDelegate<Warning>?             CustomWarningSerializer              = null)
@@ -1069,7 +1186,7 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
 
-                           SessionTime is not null
+                           OnlineInfos && SessionTime is not null
                                ? new JProperty("duration",                    Duration.TotalSeconds)
                                : null,
 
@@ -1131,8 +1248,8 @@ namespace cloud.charging.open.protocols.WWCP
                            //    : null,
 
 
-                           cdrReceivedInfos.Count != 0
-                               ? new JProperty("cdrReceivedInfos",            new JArray(cdrReceivedInfos.Select(cdrReceivedInfo => cdrReceivedInfo.ToJSON(Embedded:                             true,
+                           receivedCDRInfos.Count != 0
+                               ? new JProperty("receivedCDRInfos",            new JArray(receivedCDRInfos.  Select(cdrReceivedInfo   => cdrReceivedInfo.ToJSON(Embedded:                             true,
                                                                                                                                                            CustomCDRReceivedInfoSerializer:      CustomCDRReceivedInfoSerializer,
                                                                                                                                                            CustomChargeDetailRecordSerializer:   CustomChargeDetailRecordSerializer,
                                                                                                                                                            CustomSendCDRResultSerializer:        CustomSendCDRResultSerializer,
@@ -1211,7 +1328,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             if (TryParse(JSON,
-                         RoamingNetwork,
+                         //RoamingNetwork,
                          out var chargingSession,
                          out var errorResponse))
             {
@@ -1225,7 +1342,6 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         public static Boolean TryParse(JObject                                    JSON,
-                                       IRoamingNetwork                            RoamingNetwork,
                                        [NotNullWhen(true)]  out ChargingSession?  ChargingSession,
                                        [NotNullWhen(false)] out String?           ErrorResponse)
         {
@@ -1286,6 +1402,70 @@ namespace cloud.charging.open.protocols.WWCP
             //     "EVSEId":                        "DE*GEF*E970993236*1"
             // }
 
+
+
+
+            // {
+            //   "@id":                     "b0a4af6a-3a11-4296-b1e4-7221fd318d36",
+            //   "@context":                "https://open.charging.cloud/contexts/wwcp+json/chargingSession",
+            //   "roamingNetworkId":        "Prod",
+            //   "start": {
+            //       "timestamp":                   "2023-12-31T18:45:43.636Z",
+            //       "systemId":                    "de-bd-gw-02",
+            //       "CSORoamingProviderId":        "HubjectProd",
+            //       "providerId":                  "DE*DCS",
+            //       "authentication": {
+            //           "authToken":                       "042C797A846B85"
+            //       }
+            //   },
+            //   "duration": 19119.0457514,
+            //   "stop": {
+            //       "timestamp":                   "2024-01-01T00:04:22.681Z",
+            //       "systemId":                    "de-bd-gw-02"
+            //   },
+            //   "CDRReceived": {
+            //       "timestamp":                   "2024-01-01T00:04:22.681Z",
+            //       "systemId":                    "de-bd-gw-02",
+            //       "cdr": {
+            //           "@id":                             "b0a4af6a-3a11-4296-b1e4-7221fd318d36",
+            //           "sessionId":                       "b0a4af6a-3a11-4296-b1e4-7221fd318d36",
+            //           "sessionTime": {
+            //               "start":                           "2023-12-31T18:45:42.799Z",
+            //               "end":                             "2024-01-01T00:04:21.285Z"
+            //           },
+            //           "duration":                        19118.486,
+            //           "providerIdStart":                 "DE*DCS",
+            //           "energyMeteringValues": [
+            //               {
+            //                   "timestamp":                       "2023-12-31T18:45:42.799Z",
+            //                   "value":                            14788.891
+            //               },
+            //               {
+            //                   "timestamp":                       "2024-01-01T00:04:21.285Z",
+            //                   "value":                            14820.773
+            //               }
+            //           ],
+            //           "chargingStationOperatorId":       "DE*SLB",
+            //           "chargingPoolId":                  "DE*SLB*P7787BF6CE4B4732",
+            //           "chargingStationId":               "DE*SLB*S611556753",
+            //           "evseId":                          "DE*SLB*E611556753*1",
+            //           "created":                         "2024-01-01T00:04:22.681Z",
+            //           "lastChange":                      "2024-01-01T00:04:22.681Z"
+            //       }
+            //   },
+            //   "chargingPoolId":          "DE*SLB*P7787BF6CE4B4732",
+            //   "chargingStationId":       "DE*SLB*S611556753",
+            //   "EVSEId":                  "DE*SLB*E611556753*1"
+            // }
+
+
+
+
+
+
+
+
+
             try
             {
 
@@ -1294,17 +1474,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                 ChargingSession  = new ChargingSession(
                                        ChargingSession_Id.Parse(sessionId),
-                                       RoamingNetwork,
-                                       JSON["eventTrackingId"]?.Value<String>() is String eventTrackingId
-                                           ? EventTracking_Id.Parse(eventTrackingId)
-                                           : EventTracking_Id.New
+                                       EventTrackingId:  JSON["eventTrackingId"]?.Value<String>() is String eventTrackingId
+                                                             ? EventTracking_Id.Parse(eventTrackingId)
+                                                             : EventTracking_Id.New
                                    ) {
 
-                                       RoamingNetwork             = RoamingNetwork,
-                                       ChargingStationOperatorId  = JSON["chargingStationOperatorId"]?.Value<String>() is String chargingStationOperatorId ? ChargingStationOperator_Id.Parse(chargingStationOperatorId) : null,
-                                       ChargingPoolId             = JSON["chargingPoolId"]?.           Value<String>() is String chargingPoolId            ? ChargingPool_Id.           Parse(chargingPoolId)            : null,
-                                       ChargingStationId          = JSON["chargingStationId"]?.        Value<String>() is String chargingStationId         ? ChargingStation_Id.        Parse(chargingStationId)         : null,
                                        EVSEId                     = JSON["EVSEId"]?.                   Value<String>() is String EVSEId                    ? EVSE_Id.                   Parse(EVSEId)                    : null,
+                                       ChargingStationId          = JSON["chargingStationId"]?.        Value<String>() is String chargingStationId         ? ChargingStation_Id.        Parse(chargingStationId)         : null,
+                                       ChargingPoolId             = JSON["chargingPoolId"]?.           Value<String>() is String chargingPoolId            ? ChargingPool_Id.           Parse(chargingPoolId)            : null,
+                                       ChargingStationOperatorId  = JSON["chargingStationOperatorId"]?.Value<String>() is String chargingStationOperatorId ? ChargingStationOperator_Id.Parse(chargingStationOperatorId) : null,
+                                       RoamingNetworkId           = JSON["roamingNetworkId"]?.         Value<String>() is String roamingNetworkId          ? RoamingNetwork_Id.         Parse(roamingNetworkId)          : null
 
                                    };
 
@@ -1354,22 +1533,32 @@ namespace cloud.charging.open.protocols.WWCP
 
                     if (JSON["CDRReceived"] is JObject sessionCDRReceivedJSON)
                     {
-
-                        var cdrReceivedTime = sessionCDRReceivedJSON["timestamp"]?.Value<DateTime>();
-
-                        if (cdrReceivedTime is not null)
+                        if (ReceivedCDRInfo.TryParse(sessionCDRReceivedJSON, out var cdrReceivedInfo, out _))
                         {
-                            ChargingSession.CDRReceivedTimestamp  = cdrReceivedTime;
-                            ChargingSession.SystemIdCDR           = sessionCDRReceivedJSON["systemId"]?.Value<String>() is String systemId ? System_Id.Parse(systemId) : null;
+                            ChargingSession.AddCDRReceivedInfo(cdrReceivedInfo);
                         }
-
-                        if (sessionCDRReceivedJSON["CDRResult"] is JObject CDRResultJSON)
-                        {
-                            if (SendCDRResult.TryParse(CDRResultJSON, out var sendCDRResult, out _))
-                                ChargingSession.sendCDRResults.Add(sendCDRResult);
-                        }
-
                     }
+
+                        //if (sessionCDRReceivedJSON["CDRResult"] is JObject CDRResultJSON)
+                        //{
+                        //    if (SendCDRResult.TryParse(CDRResultJSON, out var sendCDRResult, out _))
+                        //    {
+
+                        //        ChargingSession.sendCDRResults.Add(sendCDRResult);
+
+                        //        ChargingSession.AddCDRReceivedInfo(
+                        //            new CDRReceivedInfo(
+                        //               (sessionCDRReceivedJSON["timestamp"]?.      Value<DateTime>()).Value,
+                        //                sessionCDRReceivedJSON["systemId"]?.       Value<String>() is String systemId         ? System_Id.       Parse(systemId)         : System_Id.Parse(Environment.MachineName),
+                        //                sessionCDRReceivedJSON["eventTrackingId"]?.Value<String>() is String eventTrackingId2 ? EventTracking_Id.Parse(eventTrackingId2) : EventTracking_Id.New,
+                        //                sendCDRResult.ChargeDetailRecord,
+                        //                sendCDRResult
+                        //            )
+                        //        );
+
+                        //    }
+
+                        //}
 
                 }
 
@@ -1399,9 +1588,9 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
 
-        public void AddCDRReceivedInfo(CDRReceivedInfo CDRReceivedInfo)
+        public void AddCDRReceivedInfo(ReceivedCDRInfo CDRReceivedInfo)
         {
-            cdrReceivedInfos.Add(CDRReceivedInfo);
+            receivedCDRInfos.Add(CDRReceivedInfo);
         }
 
         public void AddCDRResult(SendCDRResult SendCDRResult)

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -153,13 +155,13 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
             if (TryParse(JSON,
                          out var remoteStartRequest,
                          out var errorResponse,
+                         CustomRemoteStartRequestParser,
                          Timestamp,
-                         CancellationToken,
                          EventTrackingId,
                          RequestTimeout,
-                         CustomRemoteStartRequestParser))
+                         CancellationToken))
             {
-                return remoteStartRequest!;
+                return remoteStartRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a RemoteStart request is invalid: " + errorResponse,
@@ -182,15 +184,14 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomRemoteStartRequestParser">An optional delegate to parse custom RemoteStart request JSON objects.</param>
         public static Boolean TryParse(JObject                                           JSON,
-                                       out RemoteStartRequest?                           RemoteStartRequest,
-                                       out String?                                       ErrorResponse,
+                                       [NotNullWhen(true)]  out RemoteStartRequest?      RemoteStartRequest,
+                                       [NotNullWhen(false)] out String?                  ErrorResponse,
+                                       CustomJObjectParserDelegate<RemoteStartRequest>?  CustomRemoteStartRequestParser   = null,
 
                                        DateTime?                                         Timestamp                        = null,
-                                       CancellationToken                                 CancellationToken                = default,
                                        EventTracking_Id?                                 EventTrackingId                  = null,
                                        TimeSpan?                                         RequestTimeout                   = null,
-
-                                       CustomJObjectParserDelegate<RemoteStartRequest>?  CustomRemoteStartRequestParser   = null)
+                                       CancellationToken                                 CancellationToken                = default)
         {
 
             try

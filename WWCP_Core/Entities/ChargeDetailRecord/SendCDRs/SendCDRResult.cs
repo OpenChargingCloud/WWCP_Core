@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -689,10 +690,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) TryParse(JSONObject, ..., out SendCDRResult, out ErrorResponse, VerifyContext = false)
 
-        public static Boolean TryParse(JObject             JSONObject,
-                                       out SendCDRResult?  SendCDRResult,
-                                       out String?         ErrorResponse,
-                                       Boolean             VerifyContext = false)
+        public static Boolean TryParse(JObject                                  JSONObject,
+                                       [NotNullWhen(true)]  out SendCDRResult?  SendCDRResult,
+                                       [NotNullWhen(false)] out String?         ErrorResponse)
+            => TryParse(JSONObject,
+                        out SendCDRResult,
+                        out ErrorResponse);
+
+        public static Boolean TryParse(JObject                                  JSONObject,
+                                       [NotNullWhen(true)]  out SendCDRResult?  SendCDRResult,
+                                       [NotNullWhen(false)] out String?         ErrorResponse,
+                                       Boolean                                  VerifyContext = false)
         {
 
             try

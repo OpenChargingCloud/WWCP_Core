@@ -126,11 +126,12 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
         #region Custom JSON serializers
 
-        public CustomJObjectSerializerDelegate<RemoteStartResponse>?  CustomRemoteStartResponseSerializer   { get; set; }
-        public CustomJObjectSerializerDelegate<ChargeDetailRecord>?   CustomChargeDetailRecordSerializer    { get; set; }
-        public CustomJObjectSerializerDelegate<SendCDRResult>?        CustomSendCDRResultSerializer         { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSession>?      CustomChargingSessionSerializer       { get; set; }
-        public CustomJObjectSerializerDelegate<Warning>?              CustomWarningSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<RemoteStartResponse>?  CustomRemoteStartResponseSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<ChargeDetailRecord>?   CustomChargeDetailRecordSerializer     { get; set; }
+        public CustomJObjectSerializerDelegate<SendCDRResult>?        CustomSendCDRResultSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<ReceivedCDRInfo>?      CustomCDRReceivedInfoSerializer        { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSession>?      CustomChargingSessionSerializer        { get; set; }
+        public CustomJObjectSerializerDelegate<Warning>?              CustomWarningSerializer                { get; set; }
 
         #endregion
 
@@ -533,12 +534,11 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                           RemoteStartRequest.TryParse(jsonBody,
                                                                       out var remoteStartRequest,
                                                                       out var errorResponse,
+                                                                      CustomRemoteStartRequestParser,
                                                                       Request.Timestamp,
-                                                                      Request.CancellationToken,
                                                                       Request.EventTrackingId,
                                                                       Request.Timeout ?? DefaultRequestTimeout,
-                                                                      CustomRemoteStartRequestParser) &&
-                                          remoteStartRequest is not null)
+                                                                      Request.CancellationToken))
                                       {
 
                                           Counters.RemoteStart.IncRequests_OK();
@@ -699,6 +699,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                                                          CustomChargeDetailRecordSerializer,
                                                                                                          CustomSendCDRResultSerializer,
                                                                                                          CustomChargingSessionSerializer,
+                                                                                                         CustomCDRReceivedInfoSerializer,
                                                                                                          CustomWarningSerializer).
                                                                                                   ToString(JSONFormatting).
                                                                                                   ToUTF8Bytes(),
