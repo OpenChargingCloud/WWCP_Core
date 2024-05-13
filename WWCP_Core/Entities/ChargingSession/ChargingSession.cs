@@ -180,11 +180,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse EventTrackingId       [mandatory]
 
-                if (!JSON.ParseOptional("eventTrackingId",
-                                        "event tracking identification",
-                                        EventTracking_Id.TryParse,
-                                        out EventTracking_Id? EventTrackingId,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("eventTrackingId",
+                                       "event tracking identification",
+                                       EventTracking_Id.TryParse,
+                                       out EventTracking_Id? EventTrackingId,
+                                       out ErrorResponse))
                 {
                     
                 }
@@ -208,11 +208,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse SendCDRResult         [optional]
 
-                if (!JSON.ParseOptionalJSON("sendCDRResult",
-                                            "send charge detail record result",
-                                            WWCP.SendCDRResult.TryParse,
-                                            out SendCDRResult? SendCDRResult,
-                                            out ErrorResponse))
+                if (JSON.ParseOptionalJSON("sendCDRResult",
+                                           "send charge detail record result",
+                                           WWCP.SendCDRResult.TryParse,
+                                           out SendCDRResult? SendCDRResult,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

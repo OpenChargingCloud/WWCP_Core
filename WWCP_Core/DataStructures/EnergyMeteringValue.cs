@@ -147,11 +147,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse Type          [optional]
 
-                if (!JSON.ParseOptional("type",
-                                        "type",
-                                        EnergyMeteringValueTypesExtensions.TryParse,
-                                        out EnergyMeteringValueTypes? Type,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("type",
+                                       "type",
+                                       EnergyMeteringValueTypesExtensions.TryParse,
+                                       out EnergyMeteringValueTypes? Type,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

@@ -327,12 +327,13 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
         #endregion
 
-        #region ToJSON(CustomRemoteStopRequestSerializer = null,...)
+        #region ToJSON(CustomRemoteStopRequestSerializer = null, CustomChargingProductSerializer = null)
 
         /// <summary>
         /// Return a JSON-representation of this object.
         /// </summary>
         /// <param name="CustomRemoteStopRequestSerializer">A delegate to customize the serialization of RemoteStopRequest responses.</param>
+        /// <param name="CustomChargingProductSerializer">A delegate to serialize custom ChargingProduct JSON objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStopRequest>?  CustomRemoteStopRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingProduct>?    CustomChargingProductSerializer     = null)
         {
@@ -354,7 +355,8 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                : null,
 
                            ChargingProduct is not null
-                               ? new JProperty("chargingProduct",         ChargingProduct.         ToJSON(CustomChargingProductSerializer))
+                               ? new JProperty("chargingProduct",         ChargingProduct.         ToJSON(Embedded: true,
+                                                                                                          CustomChargingProductSerializer))
                                : null,
 
                            ReservationId.HasValue

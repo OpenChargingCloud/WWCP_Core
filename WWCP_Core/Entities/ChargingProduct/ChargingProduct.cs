@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -33,6 +35,15 @@ namespace cloud.charging.open.protocols.WWCP
                                    IComparable<ChargingProduct>,
                                    IComparable
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of the object.
+        /// </summary>
+        public const String JSONLDContext  = "https://open.charging.cloud/contexts/wwcp+json/chargingProduct";
+
+        #endregion
 
         #region Properties
 
@@ -152,49 +163,54 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region ToJSON(CustomChargingProductSerializer = null)
+        #region ToJSON(Embedded, CustomChargingProductSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomChargingProductSerializer">A delegate to serialize custom ChargingProduct JSON objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingProduct>? CustomChargingProductSerializer = null)
+        public JObject ToJSON(Boolean                                            Embedded                          = false,
+                              CustomJObjectSerializerDelegate<ChargingProduct>?  CustomChargingProductSerializer   = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("@id",                       Id.ToString()),
+                                 new JProperty("@id",                     Id.ToString()),
+
+                           Embedded
+                               ? null
+                               : new JProperty("@context",                JSONLDContext),
 
                            MinDuration.HasValue
-                               ? new JProperty("minDuration",               MinDuration.          Value.TotalSeconds)
+                               ? new JProperty("minDuration",             MinDuration.          Value.TotalSeconds)
                                : null,
 
                            StopChargingAfterTime.HasValue
-                               ? new JProperty("stopChargingAfterTime",     StopChargingAfterTime.Value.TotalSeconds)
+                               ? new JProperty("stopChargingAfterTime",   StopChargingAfterTime.Value.TotalSeconds)
                                : null,
 
                            MinPower.HasValue
-                               ? new JProperty("minPower",                  MinPower.             Value.Value)
+                               ? new JProperty("minPower",                MinPower.             Value.Value)
                                : null,
 
                            MaxPower.HasValue
-                               ? new JProperty("maxPower",                  MaxPower.             Value.Value)
+                               ? new JProperty("maxPower",                MaxPower.             Value.Value)
                                : null,
 
                            MinEnergy.HasValue
-                               ? new JProperty("minEnergy",                 MinEnergy.            Value.Value)
+                               ? new JProperty("minEnergy",               MinEnergy.            Value.Value)
                                : null,
 
                            StopChargingAfterKWh.HasValue
-                               ? new JProperty("stopChargingAfterKWh",      StopChargingAfterKWh. Value.Value)
+                               ? new JProperty("stopChargingAfterKWh",    StopChargingAfterKWh. Value.Value)
                                : null,
 
                            MaxB2BServiceCosts.HasValue
-                               ? new JProperty("maxB2BServiceCosts",        MaxB2BServiceCosts.   Value)
+                               ? new JProperty("maxB2BServiceCosts",      MaxB2BServiceCosts.   Value)
                                : null,
 
                            IntermediateCDRs.HasValue
-                               ? new JProperty("intermediateCDRs",          IntermediateCDRs.     Value)
+                               ? new JProperty("intermediateCDRs",        IntermediateCDRs.     Value)
                                : null
 
                        );
@@ -207,13 +223,58 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        public static Boolean TryParse(JObject               JSON,
-                                       out ChargingProduct?  ChargingProduct,
-                                       out String?           ErrorResponse)
+        public static Boolean TryParse(JObject                                    JSON,
+                                       [NotNullWhen(true)]  out ChargingProduct?  ChargingProduct,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
         {
 
-            ErrorResponse    = "Not implemented!";
-            ChargingProduct  = null;
+            ChargingProduct = null;
+
+            try
+            {
+
+                if (JSON?.HasValues != true)
+                {
+                    ErrorResponse = "The given JSON object must not be null or empty!";
+                    return false;
+                }
+
+                #region Parse Id           [mandatory]
+
+                if (!JSON.ParseMandatory("@id",
+                                         "charging product identification",
+                                         ChargingProduct_Id.TryParse,
+                                         out ChargingProduct_Id Id,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                ChargingProduct = new ChargingProduct(
+
+                                      Id,
+                                      null, //MinDuration,
+                                      null, //StopChargingAfterTime,
+                                      null, //MinPower,
+                                      null, //MaxPower,
+                                      null, //MinEnergy,
+                                      null, //StopChargingAfterKWh,
+                                      null, //MaxB2BServiceCosts,
+                                      null  //IntermediateCDRs
+
+                                  );
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ChargingProduct  = null;
+                ErrorResponse    = "The given JSON representation of a charging product is invalid: " + e.Message;
+            }
 
             return false;
 
@@ -354,7 +415,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             if (ChargingProduct is null)
-                throw new ArgumentNullException(nameof(EVSE), "The given charging product must not be null!");
+                throw new ArgumentNullException(nameof(ChargingProduct), "The given charging product must not be null!");
 
             var c = Id.CompareTo(ChargingProduct.Id);
 

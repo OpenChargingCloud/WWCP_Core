@@ -199,6 +199,11 @@ namespace cloud.charging.open.protocols.WWCP
         #region Charging product/tariff/price
 
         /// <summary>
+        /// The unique identification of the consumed charging product.
+        /// </summary>
+        public ChargingProduct_Id?          ChargingProductId            { get; }
+
+        /// <summary>
         /// The consumed charging product.
         /// </summary>
         [Optional]
@@ -434,6 +439,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationOperator">The charging station operator used for charging.</param>
         /// <param name="ChargingStationOperatorId">The identification of the charging station operator used for charging.</param>
         /// 
+        /// <param name="ChargingProductId">The unique identification of the consumed charging product.</param>
         /// <param name="ChargingProduct">The consumed charging product.</param>
         /// <param name="ChargingPrice">The charging price.</param>
         /// 
@@ -473,6 +479,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   IChargingStationOperator?          ChargingStationOperator     = null,
                                   ChargingStationOperator_Id?        ChargingStationOperatorId   = null,
 
+                                  ChargingProduct_Id?                ChargingProductId           = null,
                                   ChargingProduct?                   ChargingProduct             = null,
                                   Price?                             ChargingPrice               = null,
 
@@ -537,6 +544,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.ChargingStationOperator     = ChargingStationOperator   ?? this.ChargingPool?.           Operator;
             this.ChargingStationOperatorId   = ChargingStationOperatorId ?? this.ChargingStationOperator?.Id;
 
+            this.ChargingProductId           = ChargingProductId;
             this.ChargingProduct             = ChargingProduct;
             this.ChargingPrice               = ChargingPrice;
 
@@ -594,12 +602,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
         /// <param name="CustomChargeDetailRecordSerializer">A custom charge detail record serializer.</param>
-        public JObject ToJSON(Boolean                                                Embedded                              = false,
-                              CustomJObjectSerializerDelegate<ChargeDetailRecord>?   CustomChargeDetailRecordSerializer    = null,
-                              CustomJObjectSerializerDelegate<EnergyMeteringValue>?  CustomEnergyMeteringValueSerializer   = null)
+        /// <param name="CustomChargingProductSerializer">A delegate to serialize custom ChargingProduct JSON objects.</param>
+        /// <param name="CustomEnergyMeterSerializer">A delegate to serialize custom energy meter JSON objects.</param>
+        /// <param name="CustomTransparencySoftwareStatusSerializer">A delegate to serialize custom transparency software status JSON objects.</param>
+        /// <param name="CustomTransparencySoftwareSerializer">A delegate to serialize custom transparency software JSON objects.</param>
+        /// <param name="CustomEnergyMeteringValueSerializer">A custom energy metering value serializer.</param>
+        public JObject ToJSON(Boolean                                                       Embedded                                     = false,
+                              CustomJObjectSerializerDelegate<ChargeDetailRecord>?          CustomChargeDetailRecordSerializer           = null,
+                              CustomJObjectSerializerDelegate<ChargingProduct>?             CustomChargingProductSerializer              = null,
+                              CustomJObjectSerializerDelegate<IEnergyMeter>?                CustomEnergyMeterSerializer                  = null,
+                              CustomJObjectSerializerDelegate<TransparencySoftwareStatus>?  CustomTransparencySoftwareStatusSerializer   = null,
+                              CustomJObjectSerializerDelegate<TransparencySoftware>?        CustomTransparencySoftwareSerializer         = null,
+                              CustomJObjectSerializerDelegate<EnergyMeteringValue>?         CustomEnergyMeteringValueSerializer          = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("@id",                         Id.       ToString()),
                                  new JProperty("sessionId",                   SessionId.ToString()),
@@ -616,6 +633,7 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("duration",                    Duration.Value.TotalSeconds)
                                : null,
 
+
                            Reservation is not null
                                ? new JProperty("reservation", JSONObject.Create(
                                                                   new JProperty("reservationId",  Reservation.Id.       ToString()),
@@ -626,6 +644,7 @@ namespace cloud.charging.open.protocols.WWCP
                                      ? new JProperty("reservationId",         ReservationId.  ToString())
                                      : null,
 
+
                            ProviderIdStart.HasValue
                                ? new JProperty("providerIdStart",             ProviderIdStart.ToString())
                                : null,
@@ -634,8 +653,47 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("providerIdStop",              ProviderIdStop. ToString())
                                : null,
 
-                           EnergyMeterId.HasValue
+
+                           ChargingStationOperatorId.HasValue
+                               ? new JProperty("chargingStationOperatorId",   ChargingStationOperatorId.ToString())
+                               : null,
+
+                           ChargingPoolId.HasValue
+                               ? new JProperty("chargingPoolId",              ChargingPoolId.           ToString())
+                               : null,
+
+                           ChargingStationId.HasValue
+                               ? new JProperty("chargingStationId",           ChargingStationId.        ToString())
+                               : null,
+
+                           EVSEId.HasValue
+                               ? new JProperty("evseId",                      EVSEId.                   ToString())
+                               : null,
+
+                           ChargingConnectorId.HasValue
+                               ? new JProperty("chargingConnectorId",         ChargingConnectorId.      ToString())
+                               : null,
+
+
+                           ChargingProductId.HasValue
+                               ? new JProperty("chargingProductId",           ChargingProductId.        ToString())
+                               : null,
+
+                           ChargingProduct is not null
+                               ? new JProperty("chargingProduct",             ChargingProduct.          ToJSON(Embedded: true,
+                                                                                                               CustomChargingProductSerializer))
+                               : null,
+
+
+                           EnergyMeterId.HasValue && EnergyMeter is null
                                ? new JProperty("energyMeterId",               EnergyMeterId.  ToString())
+                               : null,
+
+                           EnergyMeter is not null
+                               ? new JProperty("energyMeter",                 EnergyMeter.    ToJSON(Embedded: true,
+                                                                                                     CustomEnergyMeterSerializer,
+                                                                                                     CustomTransparencySoftwareStatusSerializer,
+                                                                                                     CustomTransparencySoftwareSerializer))
                                : null,
 
                            EnergyMeteringValues is not null && EnergyMeteringValues.Any()
@@ -643,24 +701,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                                                                        CustomEnergyMeteringValueSerializer))))
                                : null,
 
-
-                           ChargingStationOperatorId.HasValue
-                               ? new JProperty("chargingStationOperatorId",   ChargingStationOperatorId.ToString())
-                               : null,
-                           ChargingPoolId.HasValue
-                               ? new JProperty("chargingPoolId",              ChargingPoolId.           ToString())
-                               : null,
-                           ChargingStationId.HasValue
-                               ? new JProperty("chargingStationId",           ChargingStationId.        ToString())
-                               : null,
-                           EVSEId.HasValue
-                               ? new JProperty("evseId",                      EVSEId.                   ToString())
-                               : null,
-
-
-                           ChargingProduct is not null
-                               ? new JProperty("chargingProduct",             ChargingProduct.          ToJSON())
-                               : null,
 
 
                                  //new JProperty("userId",         UserId),
@@ -674,8 +714,8 @@ namespace cloud.charging.open.protocols.WWCP
                        );
 
             return CustomChargeDetailRecordSerializer is not null
-                       ? CustomChargeDetailRecordSerializer(this, JSON)
-                       : JSON;
+                       ? CustomChargeDetailRecordSerializer(this, json)
+                       : json;
 
         }
 
@@ -782,42 +822,30 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
+                #region Parse Duration                      [mandatory]
 
-                #region Parse ChargingConnectorId           [optional]
-
-                if (!JSON.ParseOptional("chargingConnectorId",
-                                        "charging connector identification",
-                                        ChargingConnector_Id.TryParse,
-                                        out ChargingConnector_Id? ChargingConnectorId,
-                                        out ErrorResponse))
+                if (!JSON.ParseMandatory("duration",
+                                         "session identification",
+                                         out TimeSpan Duration,
+                                         out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion
 
-                #region Parse EVSEId                        [optional]
 
-                if (!JSON.ParseOptional("evseId",
-                                        "EVSE identification",
-                                        EVSE_Id.TryParse,
-                                        out EVSE_Id? EVSEId,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                // reservation
+                // reservationId
 
-                #endregion
 
-                #region Parse ChargingStationId             [optional]
+                #region Parse ChargingStationOperatorId     [optional]
 
-                if (!JSON.ParseOptional("chargingStationId",
-                                        "charging station identification",
-                                        ChargingStation_Id.TryParse,
-                                        out ChargingStation_Id? ChargingStationId,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("chargingStationOperatorId",
+                                       "charging station operator identification",
+                                       ChargingStationOperator_Id.TryParse,
+                                       out ChargingStationOperator_Id? ChargingStationOperatorId,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -827,11 +855,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse ChargingPoolId                [optional]
 
-                if (!JSON.ParseOptional("chargingPoolId",
-                                        "charging station identification",
-                                        ChargingPool_Id.TryParse,
-                                        out ChargingPool_Id? ChargingPoolId,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("chargingPoolId",
+                                       "charging station identification",
+                                       ChargingPool_Id.TryParse,
+                                       out ChargingPool_Id? ChargingPoolId,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -839,28 +867,93 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Parse ChargingStationOperatorId     [optional]
+                #region Parse ChargingStationId             [optional]
 
-                if (!JSON.ParseOptional("chargingStationOperatorId",
-                                        "charging station operator identification",
-                                        ChargingStationOperator_Id.TryParse,
-                                        out ChargingStationOperator_Id? ChargingStationOperatorId,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? ChargingStationId,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
 
                 #endregion
+
+                #region Parse EVSEId                        [optional]
+
+                if (JSON.ParseOptional("evseId",
+                                       "EVSE identification",
+                                       EVSE_Id.TryParse,
+                                       out EVSE_Id? EVSEId,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse ChargingConnectorId           [optional]
+
+                if (JSON.ParseOptional("chargingConnectorId",
+                                       "charging connector identification",
+                                       ChargingConnector_Id.TryParse,
+                                       out ChargingConnector_Id? ChargingConnectorId,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region Parse ChargingProductId             [optional]
+
+                if (JSON.ParseOptional("chargingProductId",
+                                       "charging product identification",
+                                       ChargingProduct_Id.TryParse,
+                                       out ChargingProduct_Id? ChargingProductId,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse ChargingProduct               [optional]
+
+                if (JSON.ParseOptionalJSON("chargingProduct",
+                                           "charging product",
+                                           WWCP.ChargingProduct.TryParse,
+                                           out ChargingProduct? ChargingProduct,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                //ChargingPrice,
+
+
+                //AuthenticationStart,
+                //AuthenticationStop,
+                //AuthMethodStart,
+                //AuthMethodStop,
 
 
                 #region Parse ProviderIdStart               [optional]
 
-                if (!JSON.ParseOptional("providerIdStart",
-                                        "provider identification start",
-                                        EMobilityProvider_Id.TryParse,
-                                        out EMobilityProvider_Id? ProviderIdStart,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("providerIdStart",
+                                       "provider identification start",
+                                       EMobilityProvider_Id.TryParse,
+                                       out EMobilityProvider_Id? ProviderIdStart,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -870,11 +963,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse ProviderIdStop                [optional]
 
-                if (!JSON.ParseOptional("providerIdStop",
-                                        "provider identification stop",
-                                        EMobilityProvider_Id.TryParse,
-                                        out EMobilityProvider_Id? ProviderIdStop,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("providerIdStop",
+                                       "provider identification stop",
+                                       EMobilityProvider_Id.TryParse,
+                                       out EMobilityProvider_Id? ProviderIdStop,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -883,29 +976,55 @@ namespace cloud.charging.open.protocols.WWCP
                 #endregion
 
 
+                #region Parse EnergyMeterId                 [optional]
+
+                if (JSON.ParseOptional("energyMeterId",
+                                       "energy meter identification",
+                                       EnergyMeter_Id.TryParse,
+                                       out EnergyMeter_Id? EnergyMeterId,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse EnergyMeter                   [optional]
+
+                if (JSON.ParseOptionalJSON("energyMeter",
+                                           "energy meter",
+                                           WWCP.EnergyMeter.TryParse,
+                                           out EnergyMeter? EnergyMeter,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
 
                 #region Parse EnergyMeteringValues          [optional]
 
-                if (!JSON.ParseMandatoryJSON("energyMeteringValues",
-                                             "energy metering values",
-                                             EnergyMeteringValue.TryParse,
-                                             out IEnumerable<EnergyMeteringValue>? EnergyMeteringValues,
-                                             out ErrorResponse))
+                if (JSON.ParseMandatoryJSON("energyMeteringValues",
+                                            "energy metering values",
+                                            EnergyMeteringValue.TryParse,
+                                            out IEnumerable<EnergyMeteringValue>? EnergyMeteringValues,
+                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
 
                 #endregion
-
 
 
                 #region Parse Created                       [optional]
 
-                if (!JSON.ParseOptional("created",
-                                        "created timestamp",
-                                        out DateTime? Created,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("created",
+                                       "created timestamp",
+                                       out DateTime? Created,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -915,10 +1034,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse LastChange                    [optional]
 
-                if (!JSON.ParseOptional("lastChange",
-                                        "last change timestamp",
-                                        out DateTime? LastChange,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("lastChange",
+                                       "last change timestamp",
+                                       out DateTime? LastChange,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -928,10 +1047,11 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 ChargeDetailRecord = new ChargeDetailRecord(
+
                                          Id,
                                          SessionId,
                                          SessionTime,
-                                         null, //Duration,
+                                         Duration,
 
                                          null, //ChargingConnector,
                                          ChargingConnectorId,
@@ -944,7 +1064,8 @@ namespace cloud.charging.open.protocols.WWCP
                                          null, //ChargingStationOperator,
                                          ChargingStationOperatorId,
 
-                                         null, //ChargingProduct,
+                                         ChargingProductId,
+                                         ChargingProduct,
                                          null, //ChargingPrice,
 
                                          null, //AuthenticationStart,
@@ -971,8 +1092,8 @@ namespace cloud.charging.open.protocols.WWCP
                                          null, //ParkingTime,
                                          null, //ParkingFee,
 
-                                         null, //EnergyMeterId,
-                                         null, //EnergyMeter,
+                                         EnergyMeterId,
+                                         EnergyMeter,
                                          EnergyMeteringValues,
                                          null, //ConsumedEnergy,
                                          null, //ConsumedEnergyFee,
