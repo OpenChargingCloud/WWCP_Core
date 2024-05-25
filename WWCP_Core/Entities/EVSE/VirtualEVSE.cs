@@ -1622,7 +1622,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     ChargingSession.AddEnergyMeterValue(
                         new EnergyMeteringValue(
                             Timestamp.Now,
-                            1,
+                            WattHour.Parse(1),
                             EnergyMeteringValueTypes.Intermediate
                         )
                     );
@@ -2765,7 +2765,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         chargingSession.AddEnergyMeterValue(
                             new EnergyMeteringValue(
                                 org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                0,
+                                WattHour.Zero,
                                 EnergyMeteringValueTypes.Start
                             )
                         );
@@ -2835,7 +2835,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             chargingSession.AddEnergyMeterValue(
                                 new EnergyMeteringValue(
                                     org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                    0,
+                                    WattHour.Zero,
                                     EnergyMeteringValueTypes.Start
                                 )
                             );
@@ -3043,8 +3043,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             __ChargingSession.SessionTime.EndTime = now;
                             var duration             = now - __ChargingSession.SessionTime.StartTime;
                             var consumption          = MaxPower.HasValue
-                                                           ? Math.Round(((Decimal) duration.TotalHours) * MaxPower.Value, 2)
-                                                           : 0;
+                                                           ? WattHour.Parse(Math.Round(((Decimal) duration.TotalHours) * MaxPower.Value, 2))
+                                                           : WattHour.Zero;
 
                             __ChargingSession.AddEnergyMeterValue(
                                 new EnergyMeteringValue(

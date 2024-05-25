@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     public class EnergyMeteringValue(DateTime                   Timestamp,
-                                     Decimal                    Value,
+                                     WattHour                   WattHours,
                                      EnergyMeteringValueTypes?  Type,
                                      String?                    SignedData   = null,
                                      String?                    Signature    = null)
@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         public DateTime                   Timestamp     { get; } = Timestamp;
-        public Decimal                    Value         { get; } = Value;
+        public WattHour                   WattHours     { get; } = WattHours;
         public EnergyMeteringValueTypes?  Type          { get; } = Type;
         public String?                    SignedData    { get; } = SignedData;
         public String?                    Signature     { get; } = Signature;
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.WWCP
                                : new JProperty("@context",     JSONLDContext),
 
                                  new JProperty("timestamp",    Timestamp.ToIso8601()),
-                                 new JProperty("value",        Value),
+                                 new JProperty("value",        WattHours.kWh),
 
                            Type.HasValue
                                ? new JProperty("type",         Type.Value.AsText())
@@ -133,11 +133,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Parse Value         [mandatory]
+                #region Parse WattHours     [mandatory]
 
                 var valueString = JSON["value"]?.Value<String>() ?? "";
 
-                if (!Decimal.TryParse(valueString, out var Value))
+                if (!WattHour.TryParse(valueString, out var Value))
                 {
                     ErrorResponse = $"Invalid energy metering value '{valueString}'!";
                     return false;

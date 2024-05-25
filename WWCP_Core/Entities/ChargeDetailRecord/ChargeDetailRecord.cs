@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The consumed energy in kWh.
         /// </summary>
-        public Decimal?                                     ConsumedEnergy          { get; }
+        public WattHour?                                    ConsumedEnergy          { get; }
 
         /// <summary>
         /// The optional fee for the consumed energy.
@@ -510,7 +510,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   EnergyMeter_Id?                    EnergyMeterId               = null,
                                   EnergyMeter?                       EnergyMeter                 = null,
                                   IEnumerable<EnergyMeteringValue>?  EnergyMeteringValues        = null,
-                                  Decimal?                           ConsumedEnergy              = null,
+                                  WattHour?                          ConsumedEnergy              = null,
                                   Price?                             ConsumedEnergyFee           = null,
 
                                   JObject?                           CustomData                  = null,
@@ -580,7 +580,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.ConsumedEnergy              = ConsumedEnergy;
             if (this.ConsumedEnergy is null && this.EnergyMeteringValues.Any())
-                this.ConsumedEnergy          = this.EnergyMeteringValues.Last().Value - this.EnergyMeteringValues.First().Value; // kWh
+                this.ConsumedEnergy          = this.EnergyMeteringValues.Last().WattHours - this.EnergyMeteringValues.First().WattHours;
             this.ConsumedEnergyFee           = ConsumedEnergyFee;
 
             this.PublicKey                   = PublicKey;

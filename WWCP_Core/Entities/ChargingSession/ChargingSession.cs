@@ -673,11 +673,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// The current amount of energy consumed while charging in [kWh].
         /// </summary>
         [Mandatory]
-        public Decimal ConsumedEnergy
+        public WattHour ConsumedEnergy
 
             => EnergyMeteringValues.
-                   Select(metervalue => metervalue.Value).
-                   Sum() / 1000;
+                   Select(metervalue => metervalue.WattHours).
+                   Sum();
 
         #endregion
 
@@ -1302,7 +1302,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                   EnergyMeteringValues.
                                                                                   Select(meterValue => JSONObject.Create(
                                                                                                            new JProperty("timestamp", meterValue.Timestamp.ToIso8601()),
-                                                                                                           new JProperty("value",     meterValue.Value)
+                                                                                                           new JProperty("value",     meterValue.WattHours)
                                                                                                        ))
                                                                               ))
                                : null
