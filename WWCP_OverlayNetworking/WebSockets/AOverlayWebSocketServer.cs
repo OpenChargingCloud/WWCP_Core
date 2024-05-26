@@ -627,33 +627,33 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
         public AOverlayWebSocketServer(NetworkingNode_Id                                               NetworkingNodeId,
-                                    IEnumerable<String>                                             SupportedEEBusWebSocketSubprotocols,
-                                    String                                                          HTTPServiceName              = DefaultHTTPServiceName,
-                                    IIPAddress?                                                     IPAddress                    = null,
-                                    IPPort?                                                         TCPPort                      = null,
-                                    I18NString?                                                     Description                  = null,
+                                       IEnumerable<String>                                             SupportedEEBusWebSocketSubprotocols,
+                                       String                                                          HTTPServiceName              = DefaultHTTPServiceName,
+                                       IIPAddress?                                                     IPAddress                    = null,
+                                       IPPort?                                                         TCPPort                      = null,
+                                       I18NString?                                                     Description                  = null,
 
-                                    Boolean                                                         RequireAuthentication        = true,
-                                    Boolean                                                         DisableWebSocketPings        = false,
-                                    TimeSpan?                                                       WebSocketPingEvery           = null,
-                                    TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
+                                       Boolean                                                         RequireAuthentication        = true,
+                                       Boolean                                                         DisableWebSocketPings        = false,
+                                       TimeSpan?                                                       WebSocketPingEvery           = null,
+                                       TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
-                                    Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
-                                    RemoteTLSClientCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer>?  ClientCertificateValidator   = null,
-                                    LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
-                                    SslProtocols?                                                   AllowedTLSProtocols          = null,
-                                    Boolean?                                                        ClientCertificateRequired    = null,
-                                    Boolean?                                                        CheckCertificateRevocation   = null,
+                                       Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
+                                       RemoteTLSClientCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer>?  ClientCertificateValidator   = null,
+                                       LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
+                                       SslProtocols?                                                   AllowedTLSProtocols          = null,
+                                       Boolean?                                                        ClientCertificateRequired    = null,
+                                       Boolean?                                                        CheckCertificateRevocation   = null,
 
-                                    ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
-                                    ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
-                                    Boolean?                                                        ServerThreadIsBackground     = null,
-                                    ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
-                                    TimeSpan?                                                       ConnectionTimeout            = null,
-                                    UInt32?                                                         MaxClientConnections         = null,
+                                       ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
+                                       ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
+                                       Boolean?                                                        ServerThreadIsBackground     = null,
+                                       ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
+                                       TimeSpan?                                                       ConnectionTimeout            = null,
+                                       UInt32?                                                         MaxClientConnections         = null,
 
-                                    DNSClient?                                                      DNSClient                    = null,
-                                    Boolean                                                         AutoStart                    = false)
+                                       DNSClient?                                                      DNSClient                    = null,
+                                       Boolean                                                         AutoStart                    = false)
 
         {
 
@@ -1141,8 +1141,8 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                 if      (JSONRequestMessage.     TryParse(jsonArray, out var jsonRequestMessage,  out var requestParsingError,  RequestTimestamp, null, EventTrackingId, sourceNodeId, CancellationToken))
                 {
 
-                    JSONResponseMessage?      json__ResponseMessage       = null;
-                    JSONRequestErrorMessage?  json__RequestErrorMessage   = null;
+                    JSONResponseMessage?      jsonResponseMessage       = null;
+                    JSONRequestErrorMessage?  jsonRequestErrorMessage   = null;
 
                     #region OnJSONMessageRequestReceived
 
@@ -1194,15 +1194,15 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                          jsonRequestMessage.CancellationToken ]);
 
                         if (result is Task<Tuple<JSONResponseMessage?, JSONRequestErrorMessage?>> textProcessor) {
-                            (json__ResponseMessage, json__RequestErrorMessage) = await textProcessor;
+                            (jsonResponseMessage, jsonRequestErrorMessage) = await textProcessor;
                         }
 
                         else
                             DebugX.Log($"Received undefined '{jsonRequestMessage.Action}' JSON request message handler within {nameof(AOverlayWebSocketServer)}!");
 
-                        if (json__ResponseMessage is not null &&
-                            json__ResponseMessage.NetworkingMode == NetworkingMode.Unknown &&
-                           !connectedNetworkingNodes.ContainsKey(json__ResponseMessage.DestinationId))
+                        if (jsonResponseMessage is not null &&
+                            jsonResponseMessage.NetworkingMode == NetworkingMode.Unknown &&
+                           !connectedNetworkingNodes.ContainsKey(jsonResponseMessage.DestinationId))
                         {
                             //ToDo: Fix me!
                             //EEBusResponse.NetworkingMode = NetworkingMode.OverlayNetwork;
@@ -1219,7 +1219,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
                         DebugX.Log($"Received unknown '{jsonRequestMessage.Action}' JSON request message handler within {nameof(AOverlayWebSocketServer)}!");
 
-                        json__RequestErrorMessage = new JSONRequestErrorMessage(
+                        jsonRequestErrorMessage = new JSONRequestErrorMessage(
                                                 Timestamp.Now,
                                                 EventTracking_Id.New,
                                                 NetworkingMode.Unknown,
@@ -1240,7 +1240,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
                     #region OnJSONMessageResponseSent
 
-                    if (json__ResponseMessage is not null || json__RequestErrorMessage is not null)
+                    if (jsonResponseMessage is not null)
                     {
 
                         var now = Timestamp.Now;
@@ -1265,7 +1265,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                                                       [],
                                                                                       now,
                                                                                       //ToDo: For some use cases returning an error to a charging station might be useless!
-                                                                                      json__ResponseMessage?.ToJSON() ?? json__RequestErrorMessage?.ToJSON() ?? [],
+                                                                                      jsonResponseMessage.ToJSON(),
                                                                                       CancellationToken
                                                                                   )).
                                                        ToArray());
@@ -1283,7 +1283,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
                     #region OnJSONErrorResponseSent
 
-                    if (json__RequestErrorMessage is not null)
+                    if (jsonRequestErrorMessage is not null)
                     {
 
                         var now = Timestamp.Now;
@@ -1305,7 +1305,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                                                       TextMessage,
                                                                                       [],
                                                                                       now,
-                                                                                      (json__ResponseMessage?.ToJSON() ?? json__RequestErrorMessage?.ToJSON())?.ToString(JSONFormatting) ?? "",
+                                                                                      jsonRequestErrorMessage.ToJSON().ToString(JSONFormatting),
                                                                                       CancellationToken
                                                                                   )).
                                                        ToArray());
@@ -1322,12 +1322,12 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                     #endregion
 
 
-                    // The response to the charging station... might be empty!
+                    // The response... might be empty!
                     return new WebSocketTextMessageResponse(
                                RequestTimestamp,
                                TextMessage,
                                Timestamp.Now,
-                               (json__ResponseMessage?.ToJSON() ?? json__RequestErrorMessage?.ToJSON())?.ToString(JSONFormatting) ?? String.Empty,
+                               (jsonResponseMessage?.ToJSON() ?? jsonRequestErrorMessage?.ToJSON())?.ToString(JSONFormatting) ?? String.Empty,
                                EventTrackingId
                            );
 
@@ -1541,16 +1541,16 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                                                CancellationToken          CancellationToken)
         {
 
-            BinaryResponseMessage?  EEBusResponse        = null;
-            JSONRequestErrorMessage?       EEBusErrorResponse   = null;
-
             try
             {
 
                 var sourceNodeId = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey);
 
-                     if (BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequest,  out var requestParsingError,  RequestTimestamp, EventTrackingId, sourceNodeId, CancellationToken) && binaryRequest  is not null)
+                     if (BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequestMessage,  out var requestParsingError,  RequestTimestamp, EventTrackingId, sourceNodeId, CancellationToken) && binaryRequestMessage  is not null)
                 {
+
+                    BinaryResponseMessage?    binaryResponseMessage     = null;
+                    JSONRequestErrorMessage?  jsonRequestErrorMessage   = null;
 
                     #region OnBinaryMessageRequestReceived
 
@@ -1566,8 +1566,8 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                                                   Timestamp.Now,
                                                                                   this,
                                                                                   Connection,
-                                                                                  binaryRequest.DestinationId,
-                                                                                  binaryRequest.NetworkPath,
+                                                                                  binaryRequestMessage.DestinationId,
+                                                                                  binaryRequestMessage.NetworkPath,
                                                                                   EventTrackingId,
                                                                                   Timestamp.Now,
                                                                                   BinaryMessage,
@@ -1586,52 +1586,150 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
                     #region Try to call the matching 'incoming message processor'
 
-                    if (incomingMessageProcessorsLookup.TryGetValue(binaryRequest.Action, out var methodInfo) &&
+                    if (incomingMessageProcessorsLookup.TryGetValue(binaryRequestMessage.Action, out var methodInfo) &&
                         methodInfo is not null)
                     {
 
                         var result = methodInfo.Invoke(this,
-                                                       [ binaryRequest.RequestTimestamp,
+                                                       [ binaryRequestMessage.RequestTimestamp,
                                                          Connection,
-                                                         binaryRequest.DestinationId,
-                                                         binaryRequest.NetworkPath,
-                                                         binaryRequest.EventTrackingId,
-                                                         binaryRequest.RequestId,
-                                                         binaryRequest.Payload,
-                                                         binaryRequest.CancellationToken ]);
+                                                         binaryRequestMessage.DestinationId,
+                                                         binaryRequestMessage.NetworkPath,
+                                                         binaryRequestMessage.EventTrackingId,
+                                                         binaryRequestMessage.RequestId,
+                                                         binaryRequestMessage.Payload,
+                                                         binaryRequestMessage.CancellationToken ]);
 
                         if (result is Task<Tuple<BinaryResponseMessage?, JSONRequestErrorMessage?>> binaryProcessor)
                         {
-                            (EEBusResponse, EEBusErrorResponse) = await binaryProcessor;
+                            (binaryResponseMessage, jsonRequestErrorMessage) = await binaryProcessor;
                         }
 
                         else
-                            DebugX.Log($"Received undefined '{binaryRequest.Action}' binary request message handler within {nameof(AOverlayWebSocketServer)}!");
+                            DebugX.Log($"Received undefined '{binaryRequestMessage.Action}' binary request message handler within {nameof(AOverlayWebSocketServer)}!");
 
                     }
 
                     #endregion
 
+                    #region ...or error!
+
                     else
                     {
 
-                        DebugX.Log($"Received unknown '{binaryRequest.Action}' binary request message handler within {nameof(AOverlayWebSocketServer)}!");
+                        DebugX.Log($"Received unknown '{binaryRequestMessage.Action}' binary request message handler within {nameof(AOverlayWebSocketServer)}!");
 
-                        EEBusErrorResponse = new JSONRequestErrorMessage(
-                                                Timestamp.Now,
-                                                EventTracking_Id.New,
-                                                NetworkingMode.Unknown,
-                                                NetworkingNode_Id.Zero,
-                                                NetworkPath.Empty,
-                                                binaryRequest.RequestId,
-                                                ResultCode.ProtocolError,
-                                                $"The EEBus message '{binaryRequest.Action}' is unkown!",
-                                                new JObject(
-                                                    new JProperty("request", BinaryMessage.ToBase64())
-                                                )
-                                            );
+                        jsonRequestErrorMessage = new JSONRequestErrorMessage(
+                                                      Timestamp.Now,
+                                                      EventTracking_Id.New,
+                                                      NetworkingMode.Unknown,
+                                                      NetworkingNode_Id.Zero,
+                                                      NetworkPath.Empty,
+                                                      binaryRequestMessage.RequestId,
+                                                      ResultCode.ProtocolError,
+                                                      $"The EEBus message '{binaryRequestMessage.Action}' is unkown!",
+                                                      new JObject(
+                                                          new JProperty("request", BinaryMessage.ToBase64())
+                                                      )
+                                                  );
 
                     }
+
+                    #endregion
+
+
+                    #region OnBinaryMessageResponseSent
+
+                    if (binaryResponseMessage is not null)
+                    {
+
+                        var now = Timestamp.Now;
+
+                        var onBinaryMessageResponseSent = OnBinaryMessageResponseSent;
+                        if (onBinaryMessageResponseSent is not null)
+                        {
+                            try
+                            {
+
+                                await Task.WhenAll(onBinaryMessageResponseSent.GetInvocationList().
+                                                       OfType <OnWebSocketBinaryMessageResponseDelegate>().
+                                                       Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                      now,
+                                                                                      this,
+                                                                                      Connection,
+                                                                                      binaryRequestMessage.DestinationId,
+                                                                                      binaryRequestMessage.NetworkPath,
+                                                                                      EventTrackingId,
+                                                                                      RequestTimestamp,
+                                                                                      [],
+                                                                                      BinaryMessage,
+                                                                                      now,
+                                                                                      //ToDo: For some use cases returning an error to a charging station might be useless!
+                                                                                      binaryResponseMessage.ToByteArray(),
+                                                                                      CancellationToken
+                                                                                  )).
+                                                       ToArray());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnBinaryMessageResponseSent));
+                            }
+                        }
+
+                    }
+
+                    #endregion
+
+                    #region OnJSONErrorResponseSent
+
+                    if (jsonRequestErrorMessage is not null)
+                    {
+
+                        var now = Timestamp.Now;
+
+                        var onJSONErrorResponseSent = OnJSONErrorResponseSent;
+                        if (onJSONErrorResponseSent is not null)
+                        {
+                            try
+                            {
+
+                                await Task.WhenAll(onJSONErrorResponseSent.GetInvocationList().
+                                                       OfType <OnWebSocketTextErrorResponseDelegate>().
+                                                       Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                      now,
+                                                                                      this,
+                                                                                      Connection,
+                                                                                      EventTrackingId,
+                                                                                      RequestTimestamp,
+                                                                                      BinaryMessage.ToBase64(),
+                                                                                      [],
+                                                                                      now,
+                                                                                      jsonRequestErrorMessage.ToJSON().ToString(JSONFormatting),
+                                                                                      CancellationToken
+                                                                                  )).
+                                                       ToArray());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONErrorResponseSent));
+                            }
+                        }
+
+                    }
+
+                    #endregion
+
+
+                    // The response... might be empty!
+                    return new WebSocketBinaryMessageResponse(
+                               RequestTimestamp,
+                               BinaryMessage,
+                               Timestamp.Now,
+                               binaryResponseMessage?.ToByteArray() ?? [],
+                               EventTrackingId
+                           );
 
                 }
 
@@ -1724,23 +1822,67 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             catch (Exception e)
             {
 
-                EEBusErrorResponse = JSONRequestErrorMessage.InternalError(
-                                        nameof(AOverlayWebSocketServer),
-                                        EventTrackingId,
-                                        BinaryMessage,
-                                        e
-                                    );
+                var jsonRequestErrorMessage = JSONRequestErrorMessage.InternalError(
+                                                  nameof(AOverlayWebSocketServer),
+                                                  EventTrackingId,
+                                                  BinaryMessage,
+                                                  e
+                                              );
+
+                #region OnJSONErrorResponseSent
+
+                var now = Timestamp.Now;
+
+                var onJSONErrorResponseSent = OnJSONErrorResponseSent;
+                if (onJSONErrorResponseSent is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onJSONErrorResponseSent.GetInvocationList().
+                                               OfType <OnWebSocketTextErrorResponseDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              now,
+                                                                              this,
+                                                                              Connection,
+                                                                              EventTrackingId,
+                                                                              RequestTimestamp,
+                                                                              BinaryMessage.ToBase64(),
+                                                                              [],
+                                                                              now,
+                                                                              jsonRequestErrorMessage.ToJSON().ToString(JSONFormatting),
+                                                                              CancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e2)
+                    {
+                        DebugX.Log(e2, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONErrorResponseSent));
+                    }
+                }
+
+                #endregion
 
             }
 
 
+            // The response... is empty!
             return new WebSocketBinaryMessageResponse(
                        RequestTimestamp,
                        BinaryMessage,
                        Timestamp.Now,
-                       EEBusResponse?.ToByteArray() ?? [],
+                       [],
                        EventTrackingId
                    );
+
+            //return new WebSocketBinaryMessageResponse(
+            //           RequestTimestamp,
+            //           BinaryMessage,
+            //           Timestamp.Now,
+            //           EEBusResponse?.ToByteArray() ?? [],
+            //           EventTrackingId
+            //       );
 
         }
 

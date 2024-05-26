@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using NUnit.Framework.Legacy;
+using System.Diagnostics;
 
 #endregion
 
@@ -85,7 +86,8 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
 
             //};
 
-            var jsonMessages = new List<JArray>();
+            var jsonMessagesONN01    = new ConcurrentList<JArray>();
+            var binaryMessagesONN01  = new ConcurrentList<Byte[]>();
 
             onn01.WebSocketServers.First().OnJSONMessageRequestReceived += (timestamp,
                                                                             server,
@@ -97,7 +99,23 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
                                                                             jsonMessage,
                                                                             cancellationToken) => {
 
-                jsonMessages.Add(jsonMessage);
+                jsonMessagesONN01.TryAdd(jsonMessage);
+
+                return Task.CompletedTask;
+
+            };
+
+            onn01.WebSocketServers.First().OnBinaryMessageRequestReceived += (timestamp,
+                                                                              server,
+                                                                              connection,
+                                                                              destinationNodeId,
+                                                                              networkPath,
+                                                                              eventTrackingId,
+                                                                              requestTimestamp,
+                                                                              binaryMessage,
+                                                                              cancellationToken) => {
+
+                binaryMessagesONN01.TryAdd(binaryMessage);
 
                 return Task.CompletedTask;
 
@@ -145,11 +163,28 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
 
 
             //var r1 = await onn02.WebSocketClients.First().SendTextMessage("[\"Hello world!\"]", EventTracking_Id.New);
-            var r2 = await onn02.WebSocketClients.First().SendRequest(onn01.Id, "aaa", Request_Id.NewRandom(), new JObject(new JProperty("Hello", "world!")));
+            //var msg1 = await onn01.WebSocketServers.First().SendBinaryAndWait (onn01.Id, "aaa", Request_Id.NewRandom(), new JObject(new JProperty("Hello", "world!")));
+            //var msg2 = await onn01.WebSocketClients.First().SendRequest(onn01.Id, "bbb", Request_Id.NewRandom(), "Hello world!".ToUTF8Bytes());
 
-            await Task.Delay(500);
+            var msg3 = await onn02.WebSocketClients.First().SendRequest(onn01.Id, "aaa", Request_Id.NewRandom(), new JObject(new JProperty("Hello", "world!")));
+            var msg4 = await onn02.WebSocketClients.First().SendRequest(onn01.Id, "bbb", Request_Id.NewRandom(), "Hello world!".ToUTF8Bytes());
 
-            Assert.That(jsonMessages.Count, Is.EqualTo(1));
+
+            var sw = Stopwatch.StartNew();
+
+            while (jsonMessagesONN01.  Count == 0 ||
+                   binaryMessagesONN01.Count == 0)
+            {
+
+                await Task.Delay(10);
+
+                if (sw.Elapsed > TimeSpan.FromSeconds(1))
+                    break;
+
+            }
+
+            Assert.That(jsonMessagesONN01.  Count, Is.EqualTo(1), "JSON test message not received!");
+            Assert.That(binaryMessagesONN01.Count, Is.EqualTo(1), "Binary test message not received!");
 
         }
 
