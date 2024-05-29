@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (Length > 50)
                 Length = 50;
 
-            var Suffix = SHA256.HashData(Encoding.UTF8.GetBytes(
+            var suffix = SHA256.HashData(Encoding.UTF8.GetBytes(
                                              String.Concat(
                                                  ChargingStationOperatorId.ToString(),
                                                  Address.                  ToString(),
@@ -188,8 +188,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             return Parse(ChargingStationOperatorId,
                          Mapper is not null
-                            ? Mapper(Suffix)
-                            : Suffix);
+                            ? Mapper(suffix)
+                            : suffix);
 
         }
 
