@@ -525,7 +525,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
+
+                if (evse is null && evseId.HasValue)
+                    evse = RoamingNetwork?.GetEVSEById(evseId.Value);
+
                 return evse;
+
             }
 
             set
