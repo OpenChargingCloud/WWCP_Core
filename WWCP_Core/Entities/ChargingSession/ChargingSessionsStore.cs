@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("timestamp",               Timestamp.                 ToIso8601()),
                                  new JProperty("systemId",                SystemId.                  ToString()),
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("authentication",          Authentication.            ToJSON())
                                : null,
 
-                           RemoteStopResult != null
+                           RemoteStopResult is not null
                                ? new JProperty("remoteStopResult",        RemoteStopResult.          ToJSON(Embedded: true,
                                                                                                             CustomChargeDetailRecordSerializer))
                                : null
@@ -98,8 +98,8 @@ namespace cloud.charging.open.protocols.WWCP
                 );
 
             return CustomSessionStopRequestSerializer is not null
-                       ? CustomSessionStopRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomSessionStopRequestSerializer(this, json)
+                       : json;
 
         }
 
@@ -217,6 +217,7 @@ namespace cloud.charging.open.protocols.WWCP
                        {
 
                            var session = ChargingSession.Parse(chargingSession, RoamingNetwork);
+                           session.RoamingNetwork ??= RoamingNetwork;
 
                            switch (command)
                            {

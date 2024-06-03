@@ -350,7 +350,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
+
+                if (chargingStationOperator is null && chargingStationOperatorId.HasValue)
+                    chargingStationOperator = RoamingNetwork?.GetChargingStationOperatorById(chargingStationOperatorId.Value);
+
                 return chargingStationOperatorId;
+
             }
 
             set
@@ -403,7 +408,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
+
+                if (chargingPool is null && chargingPoolId.HasValue)
+                    chargingPool = RoamingNetwork?.GetChargingPoolById(chargingPoolId.Value);
+
                 return chargingPoolId;
+
             }
 
             set
@@ -475,7 +485,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
+
+                if (chargingStation is null && chargingStationId.HasValue)
+                    chargingStation = RoamingNetwork?.GetChargingStationById(chargingStationId.Value);
+
                 return chargingStation;
+
             }
 
             set
