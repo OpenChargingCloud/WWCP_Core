@@ -9710,7 +9710,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetwork1">A roaming network.</param>
         /// <param name="RoamingNetwork2">Another roaming network.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (RoamingNetwork? RoamingNetwork1,
                                           RoamingNetwork? RoamingNetwork2)
         {
@@ -9731,7 +9731,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetwork1">A roaming network.</param>
         /// <param name="RoamingNetwork2">Another roaming network.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (RoamingNetwork? RoamingNetwork1,
                                            RoamingNetwork? RoamingNetwork2)
 
@@ -9746,7 +9746,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetwork1">A roaming network.</param>
         /// <param name="RoamingNetwork2">Another roaming network.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (RoamingNetwork? RoamingNetwork1,
                                           RoamingNetwork? RoamingNetwork2)
         {
@@ -9767,7 +9767,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetwork1">A roaming network.</param>
         /// <param name="RoamingNetwork2">Another roaming network.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (RoamingNetwork? RoamingNetwork1,
                                            RoamingNetwork? RoamingNetwork2)
 

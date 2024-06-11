@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMAIdWithPIN21">An eMAId with PIN.</param>
         /// <param name="eMAIdWithPIN22">Another eMAId with PIN.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (eMAIdWithPIN2 eMAIdWithPIN21,
                                           eMAIdWithPIN2 eMAIdWithPIN22)
 
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMAIdWithPIN21">An eMAId with PIN.</param>
         /// <param name="eMAIdWithPIN22">Another eMAId with PIN.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (eMAIdWithPIN2 eMAIdWithPIN21,
                                            eMAIdWithPIN2 eMAIdWithPIN22)
 
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMAIdWithPIN21">An eMAId with PIN.</param>
         /// <param name="eMAIdWithPIN22">Another eMAId with PIN.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (eMAIdWithPIN2 eMAIdWithPIN21,
                                           eMAIdWithPIN2 eMAIdWithPIN22)
 
@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMAIdWithPIN21">An eMAId with PIN.</param>
         /// <param name="eMAIdWithPIN22">Another eMAId with PIN.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (eMAIdWithPIN2 eMAIdWithPIN21,
                                            eMAIdWithPIN2 eMAIdWithPIN22)
 

@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.WWCP.SMM
         /// </summary>
         /// <param name="SmartMeterManufacturer1">A smart meter manufacturer.</param>
         /// <param name="SmartMeterManufacturer2">Another smart meter manufacturer.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SmartMeterManufacturer SmartMeterManufacturer1,
                                            SmartMeterManufacturer SmartMeterManufacturer2)
         {
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.WWCP.SMM
         /// </summary>
         /// <param name="SmartMeterManufacturer1">A smart meter manufacturer.</param>
         /// <param name="SmartMeterManufacturer2">Another smart meter manufacturer.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SmartMeterManufacturer SmartMeterManufacturer1,
                                            SmartMeterManufacturer SmartMeterManufacturer2)
 
@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.WWCP.SMM
         /// </summary>
         /// <param name="SmartMeterManufacturer1">A smart meter manufacturer.</param>
         /// <param name="SmartMeterManufacturer2">Another smart meter manufacturer.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (SmartMeterManufacturer SmartMeterManufacturer1,
                                           SmartMeterManufacturer SmartMeterManufacturer2)
         {
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.WWCP.SMM
         /// </summary>
         /// <param name="SmartMeterManufacturer1">A smart meter manufacturer.</param>
         /// <param name="SmartMeterManufacturer2">Another smart meter manufacturer.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (SmartMeterManufacturer SmartMeterManufacturer1,
                                            SmartMeterManufacturer SmartMeterManufacturer2)
 
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.WWCP.SMM
         /// </summary>
         /// <param name="SmartMeterManufacturer1">A smart meter manufacturer.</param>
         /// <param name="SmartMeterManufacturer2">Another smart meter manufacturer.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (SmartMeterManufacturer SmartMeterManufacturer1,
                                           SmartMeterManufacturer SmartMeterManufacturer2)
         {
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.WWCP.SMM
         /// </summary>
         /// <param name="SmartMeterManufacturer1">A smart meter manufacturer.</param>
         /// <param name="SmartMeterManufacturer2">Another smart meter manufacturer.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (SmartMeterManufacturer SmartMeterManufacturer1,
                                            SmartMeterManufacturer SmartMeterManufacturer2)
 

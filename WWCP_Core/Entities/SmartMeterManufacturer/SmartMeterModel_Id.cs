@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.WWCP.SMM
         /// </summary>
         /// <param name="SmartMeterModelId1">A smart meter model identification.</param>
         /// <param name="SmartMeterModelId2">Another smart meter model identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SmartMeterModel_Id SmartMeterModelId1,
                                            SmartMeterModel_Id SmartMeterModelId2)
 
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.WWCP.SMM
         /// </summary>
         /// <param name="SmartMeterModelId1">A smart meter model identification.</param>
         /// <param name="SmartMeterModelId2">Another smart meter model identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SmartMeterModel_Id SmartMeterModelId1,
                                            SmartMeterModel_Id SmartMeterModelId2)
 
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.WWCP.SMM
         /// </summary>
         /// <param name="SmartMeterModelId1">A smart meter model identification.</param>
         /// <param name="SmartMeterModelId2">Another smart meter model identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (SmartMeterModel_Id SmartMeterModelId1,
                                           SmartMeterModel_Id SmartMeterModelId2)
 
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.WWCP.SMM
         /// </summary>
         /// <param name="SmartMeterModelId1">A smart meter model identification.</param>
         /// <param name="SmartMeterModelId2">Another smart meter model identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (SmartMeterModel_Id SmartMeterModelId1,
                                            SmartMeterModel_Id SmartMeterModelId2)
 
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.WWCP.SMM
         /// </summary>
         /// <param name="SmartMeterModelId1">A smart meter model identification.</param>
         /// <param name="SmartMeterModelId2">Another smart meter model identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (SmartMeterModel_Id SmartMeterModelId1,
                                           SmartMeterModel_Id SmartMeterModelId2)
 
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.WWCP.SMM
         /// </summary>
         /// <param name="SmartMeterModelId1">A smart meter model identification.</param>
         /// <param name="SmartMeterModelId2">Another smart meter model identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (SmartMeterModel_Id SmartMeterModelId1,
                                            SmartMeterModel_Id SmartMeterModelId2)
 

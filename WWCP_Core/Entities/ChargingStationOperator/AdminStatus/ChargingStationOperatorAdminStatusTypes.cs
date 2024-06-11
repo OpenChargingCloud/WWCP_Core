@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatusType1">A charging station operator admin status type.</param>
         /// <param name="ChargingStationOperatorAdminStatusType2">Another charging station operator admin status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingStationOperatorAdminStatusTypes ChargingStationOperatorAdminStatusType1,
                                            ChargingStationOperatorAdminStatusTypes ChargingStationOperatorAdminStatusType2)
 
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatusType1">A charging station operator admin status type.</param>
         /// <param name="ChargingStationOperatorAdminStatusType2">Another charging station operator admin status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingStationOperatorAdminStatusTypes ChargingStationOperatorAdminStatusType1,
                                            ChargingStationOperatorAdminStatusTypes ChargingStationOperatorAdminStatusType2)
 
@@ -249,7 +249,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatusType1">A charging station operator admin status type.</param>
         /// <param name="ChargingStationOperatorAdminStatusType2">Another charging station operator admin status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingStationOperatorAdminStatusTypes ChargingStationOperatorAdminStatusType1,
                                           ChargingStationOperatorAdminStatusTypes ChargingStationOperatorAdminStatusType2)
 
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatusType1">A charging station operator admin status type.</param>
         /// <param name="ChargingStationOperatorAdminStatusType2">Another charging station operator admin status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingStationOperatorAdminStatusTypes ChargingStationOperatorAdminStatusType1,
                                            ChargingStationOperatorAdminStatusTypes ChargingStationOperatorAdminStatusType2)
 
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatusType1">A charging station operator admin status type.</param>
         /// <param name="ChargingStationOperatorAdminStatusType2">Another charging station operator admin status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingStationOperatorAdminStatusTypes ChargingStationOperatorAdminStatusType1,
                                           ChargingStationOperatorAdminStatusTypes ChargingStationOperatorAdminStatusType2)
 
@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatusType1">A charging station operator admin status type.</param>
         /// <param name="ChargingStationOperatorAdminStatusType2">Another charging station operator admin status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingStationOperatorAdminStatusTypes ChargingStationOperatorAdminStatusType1,
                                            ChargingStationOperatorAdminStatusTypes ChargingStationOperatorAdminStatusType2)
 

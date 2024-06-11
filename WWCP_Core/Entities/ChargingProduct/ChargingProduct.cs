@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingProduct1">A charging product.</param>
         /// <param name="ChargingProduct2">Another charging product.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingProduct ChargingProduct1,
                                            ChargingProduct ChargingProduct2)
         {
@@ -314,7 +314,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingProduct1">A charging product.</param>
         /// <param name="ChargingProduct2">Another charging product.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingProduct ChargingProduct1,
                                            ChargingProduct ChargingProduct2)
 
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingProduct1">A charging product.</param>
         /// <param name="ChargingProduct2">Another charging product.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingProduct ChargingProduct1,
                                           ChargingProduct ChargingProduct2)
 
@@ -346,7 +346,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingProduct1">A charging product.</param>
         /// <param name="ChargingProduct2">Another charging product.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingProduct ChargingProduct1,
                                            ChargingProduct ChargingProduct2)
 
@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingProduct1">A charging product.</param>
         /// <param name="ChargingProduct2">Another charging product.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingProduct ChargingProduct1,
                                           ChargingProduct ChargingProduct2)
 
@@ -378,7 +378,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingProduct1">A charging product.</param>
         /// <param name="ChargingProduct2">Another charging product.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingProduct ChargingProduct1,
                                            ChargingProduct ChargingProduct2)
 

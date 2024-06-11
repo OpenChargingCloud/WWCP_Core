@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatus1">A charging station operator admin status.</param>
         /// <param name="ChargingStationOperatorAdminStatus2">Another charging station operator admin status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingStationOperatorAdminStatus ChargingStationOperatorAdminStatus1,
                                            ChargingStationOperatorAdminStatus ChargingStationOperatorAdminStatus2)
         {
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatus1">A charging station operator admin status.</param>
         /// <param name="ChargingStationOperatorAdminStatus2">Another charging station operator admin status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingStationOperatorAdminStatus ChargingStationOperatorAdminStatus1,
                                            ChargingStationOperatorAdminStatus ChargingStationOperatorAdminStatus2)
 
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatus1">A charging station operator admin status.</param>
         /// <param name="ChargingStationOperatorAdminStatus2">Another charging station operator admin status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingStationOperatorAdminStatus ChargingStationOperatorAdminStatus1,
                                           ChargingStationOperatorAdminStatus ChargingStationOperatorAdminStatus2)
         {
@@ -287,7 +287,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatus1">A charging station operator admin status.</param>
         /// <param name="ChargingStationOperatorAdminStatus2">Another charging station operator admin status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingStationOperatorAdminStatus ChargingStationOperatorAdminStatus1,
                                            ChargingStationOperatorAdminStatus ChargingStationOperatorAdminStatus2)
 
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatus1">A charging station operator admin status.</param>
         /// <param name="ChargingStationOperatorAdminStatus2">Another charging station operator admin status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingStationOperatorAdminStatus ChargingStationOperatorAdminStatus1,
                                           ChargingStationOperatorAdminStatus ChargingStationOperatorAdminStatus2)
         {
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatus1">A charging station operator admin status.</param>
         /// <param name="ChargingStationOperatorAdminStatus2">Another charging station operator admin status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingStationOperatorAdminStatus ChargingStationOperatorAdminStatus1,
                                            ChargingStationOperatorAdminStatus ChargingStationOperatorAdminStatus2)
 
@@ -386,7 +386,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingStationOperatorAdminStatus chargingStationOperatorAdminStatus &&

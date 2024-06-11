@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool admin status update.</param>
         /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1,
                                            ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
 
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool admin status update.</param>
         /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1,
                                            ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
 
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool admin status update.</param>
         /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1,
                                           ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
 
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool admin status update.</param>
         /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1,
                                            ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
 
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool admin status update.</param>
         /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1,
                                           ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
 
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool admin status update.</param>
         /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1,
                                            ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
 

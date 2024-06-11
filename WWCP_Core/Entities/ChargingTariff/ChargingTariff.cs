@@ -246,7 +246,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingTariff1">A charging tariff.</param>
         /// <param name="ChargingTariff2">Another charging tariff.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingTariff ChargingTariff1,
                                            ChargingTariff ChargingTariff2)
         {
@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingTariff1">A charging tariff.</param>
         /// <param name="ChargingTariff2">Another charging tariff.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingTariff ChargingTariff1,
                                            ChargingTariff ChargingTariff2)
 
@@ -287,7 +287,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingTariff1">A charging tariff.</param>
         /// <param name="ChargingTariff2">Another charging tariff.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingTariff ChargingTariff1,
                                           ChargingTariff ChargingTariff2)
         {
@@ -308,7 +308,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingTariff1">A charging tariff.</param>
         /// <param name="ChargingTariff2">Another charging tariff.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingTariff ChargingTariff1,
                                            ChargingTariff ChargingTariff2)
 
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingTariff1">A charging tariff.</param>
         /// <param name="ChargingTariff2">Another charging tariff.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingTariff ChargingTariff1,
                                           ChargingTariff ChargingTariff2)
         {
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingTariff1">A charging tariff.</param>
         /// <param name="ChargingTariff2">Another charging tariff.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingTariff ChargingTariff1,
                                            ChargingTariff ChargingTariff2)
 

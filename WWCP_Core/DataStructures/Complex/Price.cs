@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Price1">A price.</param>
         /// <param name="Price2">Another price.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (Price Price1,
                                            Price Price2)
 
@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Price1">A price.</param>
         /// <param name="Price2">Another price.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (Price Price1,
                                            Price Price2)
 
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Price1">A price.</param>
         /// <param name="Price2">Another price.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (Price Price1,
                                           Price Price2)
 
@@ -340,7 +340,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Price1">A price.</param>
         /// <param name="Price2">Another price.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (Price Price1,
                                            Price Price2)
 
@@ -355,7 +355,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Price1">A price.</param>
         /// <param name="Price2">Another price.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (Price Price1,
                                           Price Price2)
 
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Price1">A price.</param>
         /// <param name="Price2">Another price.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (Price Price1,
                                            Price Price2)
 

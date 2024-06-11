@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="CSORoamingProviderId1">A CSO roaming provider identification.</param>
         /// <param name="CSORoamingProviderId2">Another CSO roaming provider identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (CSORoamingProvider_Id CSORoamingProviderId1,
                                            CSORoamingProvider_Id CSORoamingProviderId2)
 
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="CSORoamingProviderId1">A CSO roaming provider identification.</param>
         /// <param name="CSORoamingProviderId2">Another CSO roaming provider identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (CSORoamingProvider_Id CSORoamingProviderId1,
                                            CSORoamingProvider_Id CSORoamingProviderId2)
 
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="CSORoamingProviderId1">A CSO roaming provider identification.</param>
         /// <param name="CSORoamingProviderId2">Another CSO roaming provider identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (CSORoamingProvider_Id CSORoamingProviderId1,
                                           CSORoamingProvider_Id CSORoamingProviderId2)
 
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="CSORoamingProviderId1">A CSO roaming provider identification.</param>
         /// <param name="CSORoamingProviderId2">Another CSO roaming provider identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (CSORoamingProvider_Id CSORoamingProviderId1,
                                            CSORoamingProvider_Id CSORoamingProviderId2)
 
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="CSORoamingProviderId1">A CSO roaming provider identification.</param>
         /// <param name="CSORoamingProviderId2">Another CSO roaming provider identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (CSORoamingProvider_Id CSORoamingProviderId1,
                                           CSORoamingProvider_Id CSORoamingProviderId2)
 
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="CSORoamingProviderId1">A CSO roaming provider identification.</param>
         /// <param name="CSORoamingProviderId2">Another CSO roaming provider identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (CSORoamingProvider_Id CSORoamingProviderId1,
                                            CSORoamingProvider_Id CSORoamingProviderId2)
 

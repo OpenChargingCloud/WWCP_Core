@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// </summary>
         /// <param name="NationalContactPointId1">A national contact point identification.</param>
         /// <param name="NationalContactPointId2">Another national contact point identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NationalContactPoint_Id NationalContactPointId1,
                                            NationalContactPoint_Id NationalContactPointId2)
 
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// </summary>
         /// <param name="NationalContactPointId1">A national contact point identification.</param>
         /// <param name="NationalContactPointId2">Another national contact point identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NationalContactPoint_Id NationalContactPointId1,
                                            NationalContactPoint_Id NationalContactPointId2)
 
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// </summary>
         /// <param name="NationalContactPointId1">A national contact point identification.</param>
         /// <param name="NationalContactPointId2">Another national contact point identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (NationalContactPoint_Id NationalContactPointId1,
                                           NationalContactPoint_Id NationalContactPointId2)
 
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// </summary>
         /// <param name="NationalContactPointId1">A national contact point identification.</param>
         /// <param name="NationalContactPointId2">Another national contact point identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (NationalContactPoint_Id NationalContactPointId1,
                                            NationalContactPoint_Id NationalContactPointId2)
 
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// </summary>
         /// <param name="NationalContactPointId1">A national contact point identification.</param>
         /// <param name="NationalContactPointId2">Another national contact point identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (NationalContactPoint_Id NationalContactPointId1,
                                           NationalContactPoint_Id NationalContactPointId2)
 
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// </summary>
         /// <param name="NationalContactPointId1">A national contact point identification.</param>
         /// <param name="NationalContactPointId2">Another national contact point identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (NationalContactPoint_Id NationalContactPointId1,
                                            NationalContactPoint_Id NationalContactPointId2)
 

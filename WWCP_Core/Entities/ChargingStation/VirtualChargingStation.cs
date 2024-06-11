@@ -2655,7 +2655,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualChargingStation1">A virtual charging station.</param>
         /// <param name="VirtualChargingStation2">Another virtual charging station.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (VirtualChargingStation VirtualChargingStation1, VirtualChargingStation VirtualChargingStation2)
         {
 
@@ -2680,7 +2680,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualChargingStation1">A virtual charging station.</param>
         /// <param name="VirtualChargingStation2">Another virtual charging station.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (VirtualChargingStation VirtualChargingStation1, VirtualChargingStation VirtualChargingStation2)
             => !(VirtualChargingStation1 == VirtualChargingStation2);
 
@@ -2693,7 +2693,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualChargingStation1">A virtual charging station.</param>
         /// <param name="VirtualChargingStation2">Another virtual charging station.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (VirtualChargingStation VirtualChargingStation1, VirtualChargingStation VirtualChargingStation2)
         {
 
@@ -2713,7 +2713,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualChargingStation1">A virtual charging station.</param>
         /// <param name="VirtualChargingStation2">Another virtual charging station.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (VirtualChargingStation VirtualChargingStation1, VirtualChargingStation VirtualChargingStation2)
             => !(VirtualChargingStation1 > VirtualChargingStation2);
 
@@ -2726,7 +2726,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualChargingStation1">A virtual charging station.</param>
         /// <param name="VirtualChargingStation2">Another virtual charging station.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (VirtualChargingStation VirtualChargingStation1, VirtualChargingStation VirtualChargingStation2)
         {
 
@@ -2746,7 +2746,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualChargingStation1">A virtual charging station.</param>
         /// <param name="VirtualChargingStation2">Another virtual charging station.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (VirtualChargingStation VirtualChargingStation1, VirtualChargingStation VirtualChargingStation2)
             => !(VirtualChargingStation1 < VirtualChargingStation2);
 
@@ -2805,7 +2805,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object Object)
         {
 

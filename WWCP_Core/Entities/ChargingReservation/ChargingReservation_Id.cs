@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingReservationId1">A charging reservation identification.</param>
         /// <param name="ChargingReservationId2">Another charging reservation identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingReservation_Id ChargingReservationId1,
                                            ChargingReservation_Id ChargingReservationId2)
 
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingReservationId1">A charging reservation identification.</param>
         /// <param name="ChargingReservationId2">Another charging reservation identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingReservation_Id ChargingReservationId1,
                                            ChargingReservation_Id ChargingReservationId2)
 
@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingReservationId1">A charging reservation identification.</param>
         /// <param name="ChargingReservationId2">Another charging reservation identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingReservation_Id ChargingReservationId1,
                                           ChargingReservation_Id ChargingReservationId2)
 
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingReservationId1">A charging reservation identification.</param>
         /// <param name="ChargingReservationId2">Another charging reservation identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingReservation_Id ChargingReservationId1,
                                            ChargingReservation_Id ChargingReservationId2)
 
@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingReservationId1">A charging reservation identification.</param>
         /// <param name="ChargingReservationId2">Another charging reservation identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingReservation_Id ChargingReservationId1,
                                           ChargingReservation_Id ChargingReservationId2)
 
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingReservationId1">A charging reservation identification.</param>
         /// <param name="ChargingReservationId2">Another charging reservation identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingReservation_Id ChargingReservationId1,
                                            ChargingReservation_Id ChargingReservationId2)
 

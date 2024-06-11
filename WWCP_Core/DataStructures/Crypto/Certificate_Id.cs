@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="CertificateIdId1">A certificate identification.</param>
         /// <param name="CertificateIdId2">Another certificate identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (Certificate_Id CertificateIdId1,
                                            Certificate_Id CertificateIdId2)
 
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="CertificateIdId1">A certificate identification.</param>
         /// <param name="CertificateIdId2">Another certificate identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (Certificate_Id CertificateIdId1,
                                            Certificate_Id CertificateIdId2)
 
@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="CertificateIdId1">A certificate identification.</param>
         /// <param name="CertificateIdId2">Another certificate identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (Certificate_Id CertificateIdId1,
                                           Certificate_Id CertificateIdId2)
 
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="CertificateIdId1">A certificate identification.</param>
         /// <param name="CertificateIdId2">Another certificate identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (Certificate_Id CertificateIdId1,
                                            Certificate_Id CertificateIdId2)
 
@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="CertificateIdId1">A certificate identification.</param>
         /// <param name="CertificateIdId2">Another certificate identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (Certificate_Id CertificateIdId1,
                                           Certificate_Id CertificateIdId2)
 
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="CertificateIdId1">A certificate identification.</param>
         /// <param name="CertificateIdId2">Another certificate identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (Certificate_Id CertificateIdId1,
                                            Certificate_Id CertificateIdId2)
 

@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="BrandId1">A brand identification.</param>
         /// <param name="BrandId2">Another brand identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (Brand_Id BrandId1, Brand_Id BrandId2)
         {
 
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="BrandId1">A brand identification.</param>
         /// <param name="BrandId2">Another brand identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (Brand_Id BrandId1, Brand_Id BrandId2)
             => !(BrandId1 == BrandId2);
 
@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="BrandId1">A brand identification.</param>
         /// <param name="BrandId2">Another brand identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (Brand_Id BrandId1, Brand_Id BrandId2)
         {
 
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="BrandId1">A brand identification.</param>
         /// <param name="BrandId2">Another brand identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (Brand_Id BrandId1, Brand_Id BrandId2)
             => !(BrandId1 > BrandId2);
 
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="BrandId1">A brand identification.</param>
         /// <param name="BrandId2">Another brand identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (Brand_Id BrandId1, Brand_Id BrandId2)
         {
 
@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="BrandId1">A brand identification.</param>
         /// <param name="BrandId2">Another brand identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (Brand_Id BrandId1, Brand_Id BrandId2)
             => !(BrandId1 < BrandId2);
 
@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object Object)
         {
 

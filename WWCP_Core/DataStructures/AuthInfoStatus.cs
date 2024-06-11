@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthInfoStatus1">A AuthInfoStatus.</param>
         /// <param name="AuthInfoStatus2">Another AuthInfoStatus.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator ==(AuthInfoStatus AuthInfoStatus1, AuthInfoStatus AuthInfoStatus2)
         {
 
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthInfoStatus1">A AuthInfoStatus.</param>
         /// <param name="AuthInfoStatus2">Another AuthInfoStatus.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator !=(AuthInfoStatus AuthInfoStatus1, AuthInfoStatus AuthInfoStatus2)
         {
             return !(AuthInfoStatus1 == AuthInfoStatus2);
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthInfoStatus1">A AuthInfoStatus.</param>
         /// <param name="AuthInfoStatus2">Another AuthInfoStatus.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <(AuthInfoStatus AuthInfoStatus1, AuthInfoStatus AuthInfoStatus2)
         {
 
@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthInfoStatus1">A AuthInfoStatus.</param>
         /// <param name="AuthInfoStatus2">Another AuthInfoStatus.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <=(AuthInfoStatus AuthInfoStatus1, AuthInfoStatus AuthInfoStatus2)
         {
             return !(AuthInfoStatus1 > AuthInfoStatus2);
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthInfoStatus1">A AuthInfoStatus.</param>
         /// <param name="AuthInfoStatus2">Another AuthInfoStatus.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >(AuthInfoStatus AuthInfoStatus1, AuthInfoStatus AuthInfoStatus2)
         {
 
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthInfoStatus1">A AuthInfoStatus.</param>
         /// <param name="AuthInfoStatus2">Another AuthInfoStatus.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >=(AuthInfoStatus AuthInfoStatus1, AuthInfoStatus AuthInfoStatus2)
         {
             return !(AuthInfoStatus1 < AuthInfoStatus2);
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object Object)
         {
 

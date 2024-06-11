@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolStatusType1">A charging pool status type.</param>
         /// <param name="ChargingPoolStatusType2">Another charging pool status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingPoolStatusTypes ChargingPoolStatusType1,
                                            ChargingPoolStatusTypes ChargingPoolStatusType2)
 
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolStatusType1">A charging pool status type.</param>
         /// <param name="ChargingPoolStatusType2">Another charging pool status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingPoolStatusTypes ChargingPoolStatusType1,
                                            ChargingPoolStatusTypes ChargingPoolStatusType2)
 
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolStatusType1">A charging pool status type.</param>
         /// <param name="ChargingPoolStatusType2">Another charging pool status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingPoolStatusTypes ChargingPoolStatusType1,
                                           ChargingPoolStatusTypes ChargingPoolStatusType2)
 
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolStatusType1">A charging pool status type.</param>
         /// <param name="ChargingPoolStatusType2">Another charging pool status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingPoolStatusTypes ChargingPoolStatusType1,
                                            ChargingPoolStatusTypes ChargingPoolStatusType2)
 
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolStatusType1">A charging pool status type.</param>
         /// <param name="ChargingPoolStatusType2">Another charging pool status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingPoolStatusTypes ChargingPoolStatusType1,
                                           ChargingPoolStatusTypes ChargingPoolStatusType2)
 
@@ -314,7 +314,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolStatusType1">A charging pool status type.</param>
         /// <param name="ChargingPoolStatusType2">Another charging pool status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingPoolStatusTypes ChargingPoolStatusType1,
                                            ChargingPoolStatusTypes ChargingPoolStatusType2)
 

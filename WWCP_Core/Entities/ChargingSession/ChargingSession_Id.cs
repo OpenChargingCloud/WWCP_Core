@@ -431,7 +431,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingSessionId1">A charging session identification.</param>
         /// <param name="ChargingSessionId2">Another charging session identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingSession_Id ChargingSessionId1,
                                            ChargingSession_Id ChargingSessionId2)
 
@@ -446,7 +446,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingSessionId1">A charging session identification.</param>
         /// <param name="ChargingSessionId2">Another charging session identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingSession_Id ChargingSessionId1,
                                            ChargingSession_Id ChargingSessionId2)
 
@@ -461,7 +461,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingSessionId1">A charging session identification.</param>
         /// <param name="ChargingSessionId2">Another charging session identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingSession_Id ChargingSessionId1,
                                           ChargingSession_Id ChargingSessionId2)
 
@@ -476,7 +476,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingSessionId1">A charging session identification.</param>
         /// <param name="ChargingSessionId2">Another charging session identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingSession_Id ChargingSessionId1,
                                            ChargingSession_Id ChargingSessionId2)
 
@@ -491,7 +491,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingSessionId1">A charging session identification.</param>
         /// <param name="ChargingSessionId2">Another charging session identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingSession_Id ChargingSessionId1,
                                           ChargingSession_Id ChargingSessionId2)
 
@@ -506,7 +506,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingSessionId1">A charging session identification.</param>
         /// <param name="ChargingSessionId2">Another charging session identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingSession_Id ChargingSessionId1,
                                            ChargingSession_Id ChargingSessionId2)
 

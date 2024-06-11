@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorStatusType1">A charging station operator status type.</param>
         /// <param name="ChargingStationOperatorStatusType2">Another charging station operator status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingStationOperatorStatusTypes ChargingStationOperatorStatusType1,
                                            ChargingStationOperatorStatusTypes ChargingStationOperatorStatusType2)
 
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorStatusType1">A charging station operator status type.</param>
         /// <param name="ChargingStationOperatorStatusType2">Another charging station operator status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingStationOperatorStatusTypes ChargingStationOperatorStatusType1,
                                            ChargingStationOperatorStatusTypes ChargingStationOperatorStatusType2)
 
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorStatusType1">A charging station operator status type.</param>
         /// <param name="ChargingStationOperatorStatusType2">Another charging station operator status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingStationOperatorStatusTypes ChargingStationOperatorStatusType1,
                                           ChargingStationOperatorStatusTypes ChargingStationOperatorStatusType2)
 
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorStatusType1">A charging station operator status type.</param>
         /// <param name="ChargingStationOperatorStatusType2">Another charging station operator status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingStationOperatorStatusTypes ChargingStationOperatorStatusType1,
                                            ChargingStationOperatorStatusTypes ChargingStationOperatorStatusType2)
 
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorStatusType1">A charging station operator status type.</param>
         /// <param name="ChargingStationOperatorStatusType2">Another charging station operator status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingStationOperatorStatusTypes ChargingStationOperatorStatusType1,
                                           ChargingStationOperatorStatusTypes ChargingStationOperatorStatusType2)
 
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorStatusType1">A charging station operator status type.</param>
         /// <param name="ChargingStationOperatorStatusType2">Another charging station operator status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingStationOperatorStatusTypes ChargingStationOperatorStatusType1,
                                            ChargingStationOperatorStatusTypes ChargingStationOperatorStatusType2)
 

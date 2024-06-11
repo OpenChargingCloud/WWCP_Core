@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergySourceCategory1">An energy source category.</param>
         /// <param name="EnergySourceCategory2">Another energy source category.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (EnergySourceCategories EnergySourceCategory1,
                                            EnergySourceCategories EnergySourceCategory2)
 
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergySourceCategory1">An energy source category.</param>
         /// <param name="EnergySourceCategory2">Another energy source category.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (EnergySourceCategories EnergySourceCategory1,
                                            EnergySourceCategories EnergySourceCategory2)
 
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergySourceCategory1">An energy source category.</param>
         /// <param name="EnergySourceCategory2">Another energy source category.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (EnergySourceCategories EnergySourceCategory1,
                                           EnergySourceCategories EnergySourceCategory2)
 
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergySourceCategory1">An energy source category.</param>
         /// <param name="EnergySourceCategory2">Another energy source category.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (EnergySourceCategories EnergySourceCategory1,
                                            EnergySourceCategories EnergySourceCategory2)
 
@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergySourceCategory1">An energy source category.</param>
         /// <param name="EnergySourceCategory2">Another energy source category.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (EnergySourceCategories EnergySourceCategory1,
                                           EnergySourceCategories EnergySourceCategory2)
 
@@ -342,7 +342,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergySourceCategory1">An energy source category.</param>
         /// <param name="EnergySourceCategory2">Another energy source category.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (EnergySourceCategories EnergySourceCategory1,
                                            EnergySourceCategories EnergySourceCategory2)
 

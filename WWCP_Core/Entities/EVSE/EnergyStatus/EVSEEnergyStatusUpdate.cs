@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEEnergyStatusUpdate1">An EVSE status update.</param>
         /// <param name="EVSEEnergyStatusUpdate2">Another EVSE status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate1,
                                            EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate2)
 
@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEEnergyStatusUpdate1">An EVSE status update.</param>
         /// <param name="EVSEEnergyStatusUpdate2">Another EVSE status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate1,
                                            EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate2)
 
@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEEnergyStatusUpdate1">An EVSE status update.</param>
         /// <param name="EVSEEnergyStatusUpdate2">Another EVSE status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate1,
                                           EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate2)
 
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEEnergyStatusUpdate1">An EVSE status update.</param>
         /// <param name="EVSEEnergyStatusUpdate2">Another EVSE status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate1,
                                            EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate2)
 
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEEnergyStatusUpdate1">An EVSE status update.</param>
         /// <param name="EVSEEnergyStatusUpdate2">Another EVSE status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate1,
                                           EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate2)
 
@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEEnergyStatusUpdate1">An EVSE status update.</param>
         /// <param name="EVSEEnergyStatusUpdate2">Another EVSE status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate1,
                                            EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate2)
 

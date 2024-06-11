@@ -320,7 +320,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Facilities1">A facility.</param>
         /// <param name="Facilities2">Another facility.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (Facilities Facilities1,
                                            Facilities Facilities2)
 
@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Facilities1">A facility.</param>
         /// <param name="Facilities2">Another facility.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (Facilities Facilities1,
                                            Facilities Facilities2)
 
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Facilities1">A facility.</param>
         /// <param name="Facilities2">Another facility.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (Facilities Facilities1,
                                           Facilities Facilities2)
 
@@ -365,7 +365,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Facilities1">A facility.</param>
         /// <param name="Facilities2">Another facility.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (Facilities Facilities1,
                                            Facilities Facilities2)
 
@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Facilities1">A facility.</param>
         /// <param name="Facilities2">Another facility.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (Facilities Facilities1,
                                           Facilities Facilities2)
 
@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Facilities1">A facility.</param>
         /// <param name="Facilities2">Another facility.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (Facilities Facilities1,
                                            Facilities Facilities2)
 

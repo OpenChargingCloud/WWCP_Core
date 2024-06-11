@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityAccountId1">A contract identification.</param>
         /// <param name="eMobilityAccountId2">Another contract identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (EMobilityAccount_Id eMobilityAccountId1,
                                            EMobilityAccount_Id eMobilityAccountId2)
 
@@ -351,7 +351,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityAccountId1">A contract identification.</param>
         /// <param name="eMobilityAccountId2">Another contract identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (EMobilityAccount_Id eMobilityAccountId1,
                                            EMobilityAccount_Id eMobilityAccountId2)
 
@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityAccountId1">A contract identification.</param>
         /// <param name="eMobilityAccountId2">Another contract identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (EMobilityAccount_Id eMobilityAccountId1,
                                           EMobilityAccount_Id eMobilityAccountId2)
 
@@ -381,7 +381,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityAccountId1">A contract identification.</param>
         /// <param name="eMobilityAccountId2">Another contract identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (EMobilityAccount_Id eMobilityAccountId1,
                                            EMobilityAccount_Id eMobilityAccountId2)
 
@@ -396,7 +396,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityAccountId1">A contract identification.</param>
         /// <param name="eMobilityAccountId2">Another contract identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (EMobilityAccount_Id eMobilityAccountId1,
                                           EMobilityAccount_Id eMobilityAccountId2)
 
@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityAccountId1">A contract identification.</param>
         /// <param name="eMobilityAccountId2">Another contract identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (EMobilityAccount_Id eMobilityAccountId1,
                                            EMobilityAccount_Id eMobilityAccountId2)
 

@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMobilityAccount1">An electric mobility account.</param>
         /// <param name="EMobilityAccount2">Another electric mobility account.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (EMobilityAccount EMobilityAccount1,
                                            EMobilityAccount EMobilityAccount2)
         {
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMobilityAccount1">An electric mobility account.</param>
         /// <param name="EMobilityAccount2">Another electric mobility account.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (EMobilityAccount EMobilityAccount1,
                                            EMobilityAccount EMobilityAccount2)
 
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMobilityAccount1">An electric mobility account.</param>
         /// <param name="EMobilityAccount2">Another electric mobility account.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (EMobilityAccount EMobilityAccount1,
                                           EMobilityAccount EMobilityAccount2)
 
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMobilityAccount1">An electric mobility account.</param>
         /// <param name="EMobilityAccount2">Another electric mobility account.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (EMobilityAccount EMobilityAccount1,
                                            EMobilityAccount EMobilityAccount2)
 
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMobilityAccount1">An electric mobility account.</param>
         /// <param name="EMobilityAccount2">Another electric mobility account.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (EMobilityAccount EMobilityAccount1,
                                           EMobilityAccount EMobilityAccount2)
 
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMobilityAccount1">An electric mobility account.</param>
         /// <param name="EMobilityAccount2">Another electric mobility account.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (EMobilityAccount EMobilityAccount1,
                                            EMobilityAccount EMobilityAccount2)
 

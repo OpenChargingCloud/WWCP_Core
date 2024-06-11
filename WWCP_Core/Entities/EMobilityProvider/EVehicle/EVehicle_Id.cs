@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eVehicleId1">A electric vehicle identification.</param>
         /// <param name="eVehicleId2">Another electric vehicle identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (EVehicle_Id  eVehicleId1,
                                            EVehicle_Id  eVehicleId2)
         {
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eVehicleId1">A electric vehicle identification.</param>
         /// <param name="eVehicleId2">Another electric vehicle identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (EVehicle_Id  eVehicleId1,
                                            EVehicle_Id  eVehicleId2)
 
@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eVehicleId1">A electric vehicle identification.</param>
         /// <param name="eVehicleId2">Another electric vehicle identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (EVehicle_Id  eVehicleId1,
                                           EVehicle_Id  eVehicleId2)
         {
@@ -412,7 +412,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eVehicleId1">A electric vehicle identification.</param>
         /// <param name="eVehicleId2">Another electric vehicle identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (EVehicle_Id  eVehicleId1,
                                            EVehicle_Id  eVehicleId2)
 
@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eVehicleId1">A electric vehicle identification.</param>
         /// <param name="eVehicleId2">Another electric vehicle identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (EVehicle_Id  eVehicleId1,
                                           EVehicle_Id  eVehicleId2)
         {
@@ -448,7 +448,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eVehicleId1">A electric vehicle identification.</param>
         /// <param name="eVehicleId2">Another electric vehicle identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (EVehicle_Id  eVehicleId1,
                                            EVehicle_Id  eVehicleId2)
 
@@ -522,7 +522,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object Object)
         {
 

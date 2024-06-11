@@ -2733,7 +2733,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator ==(EVSE EVSE1, EVSE EVSE2)
         {
 
@@ -2758,7 +2758,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator !=(EVSE EVSE1, EVSE EVSE2)
             => !(EVSE1 == EVSE2);
 
@@ -2771,7 +2771,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <(EVSE EVSE1, EVSE EVSE2)
         {
 
@@ -2791,7 +2791,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <=(EVSE EVSE1, EVSE EVSE2)
             => !(EVSE1 > EVSE2);
 
@@ -2804,7 +2804,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >(EVSE EVSE1, EVSE EVSE2)
         {
 
@@ -2824,7 +2824,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >=(EVSE EVSE1, EVSE EVSE2)
             => !(EVSE1 < EVSE2);
 

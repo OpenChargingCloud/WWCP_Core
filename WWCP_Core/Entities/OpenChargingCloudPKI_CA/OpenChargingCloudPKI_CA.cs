@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.WWCP.PKI
         /// </summary>
         /// <param name="OpenChargingCloudPKI_CA1">A public key infrastructure certification authority.</param>
         /// <param name="OpenChargingCloudPKI_CA2">Another public key infrastructure certification authority.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (OpenChargingCloudPKI_CA OpenChargingCloudPKI_CA1,
                                            OpenChargingCloudPKI_CA OpenChargingCloudPKI_CA2)
         {
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.WWCP.PKI
         /// </summary>
         /// <param name="OpenChargingCloudPKI_CA1">A public key infrastructure certification authority.</param>
         /// <param name="OpenChargingCloudPKI_CA2">Another public key infrastructure certification authority.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (OpenChargingCloudPKI_CA OpenChargingCloudPKI_CA1,
                                            OpenChargingCloudPKI_CA OpenChargingCloudPKI_CA2)
 
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.WWCP.PKI
         /// </summary>
         /// <param name="OpenChargingCloudPKI_CA1">A public key infrastructure certification authority.</param>
         /// <param name="OpenChargingCloudPKI_CA2">Another public key infrastructure certification authority.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (OpenChargingCloudPKI_CA OpenChargingCloudPKI_CA1,
                                           OpenChargingCloudPKI_CA OpenChargingCloudPKI_CA2)
         {
@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.WWCP.PKI
         /// </summary>
         /// <param name="OpenChargingCloudPKI_CA1">A public key infrastructure certification authority.</param>
         /// <param name="OpenChargingCloudPKI_CA2">Another public key infrastructure certification authority.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (OpenChargingCloudPKI_CA OpenChargingCloudPKI_CA1,
                                            OpenChargingCloudPKI_CA OpenChargingCloudPKI_CA2)
 
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.WWCP.PKI
         /// </summary>
         /// <param name="OpenChargingCloudPKI_CA1">A public key infrastructure certification authority.</param>
         /// <param name="OpenChargingCloudPKI_CA2">Another public key infrastructure certification authority.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (OpenChargingCloudPKI_CA OpenChargingCloudPKI_CA1,
                                           OpenChargingCloudPKI_CA OpenChargingCloudPKI_CA2)
         {
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.WWCP.PKI
         /// </summary>
         /// <param name="OpenChargingCloudPKI_CA1">A public key infrastructure certification authority.</param>
         /// <param name="OpenChargingCloudPKI_CA2">Another public key infrastructure certification authority.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (OpenChargingCloudPKI_CA OpenChargingCloudPKI_CA1,
                                            OpenChargingCloudPKI_CA OpenChargingCloudPKI_CA2)
 

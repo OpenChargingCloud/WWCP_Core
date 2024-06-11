@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ParkingSpaceId1">A parking space identification.</param>
         /// <param name="ParkingSpaceId2">Another parking space identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ParkingSpace_Id ParkingSpaceId1, ParkingSpace_Id ParkingSpaceId2)
         {
 
@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ParkingSpaceId1">A parking space identification.</param>
         /// <param name="ParkingSpaceId2">Another parking space identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ParkingSpace_Id ParkingSpaceId1, ParkingSpace_Id ParkingSpaceId2)
             => !(ParkingSpaceId1 == ParkingSpaceId2);
 
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ParkingSpaceId1">A parking space identification.</param>
         /// <param name="ParkingSpaceId2">Another parking space identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ParkingSpace_Id ParkingSpaceId1, ParkingSpace_Id ParkingSpaceId2)
         {
 
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ParkingSpaceId1">A parking space identification.</param>
         /// <param name="ParkingSpaceId2">Another parking space identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ParkingSpace_Id ParkingSpaceId1, ParkingSpace_Id ParkingSpaceId2)
             => !(ParkingSpaceId1 > ParkingSpaceId2);
 
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ParkingSpaceId1">A parking space identification.</param>
         /// <param name="ParkingSpaceId2">Another parking space identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ParkingSpace_Id ParkingSpaceId1, ParkingSpace_Id ParkingSpaceId2)
         {
 
@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ParkingSpaceId1">A parking space identification.</param>
         /// <param name="ParkingSpaceId2">Another parking space identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ParkingSpace_Id ParkingSpaceId1, ParkingSpace_Id ParkingSpaceId2)
             => !(ParkingSpaceId1 < ParkingSpaceId2);
 
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object Object)
         {
 

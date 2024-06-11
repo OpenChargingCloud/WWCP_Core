@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolFeatures1">A charging pool feature.</param>
         /// <param name="ChargingPoolFeatures2">Another charging pool feature.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingPoolFeature ChargingPoolFeatures1,
                                            ChargingPoolFeature ChargingPoolFeatures2)
 
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolFeatures1">A charging pool feature.</param>
         /// <param name="ChargingPoolFeatures2">Another charging pool feature.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingPoolFeature ChargingPoolFeatures1,
                                            ChargingPoolFeature ChargingPoolFeatures2)
 
@@ -296,7 +296,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolFeatures1">A charging pool feature.</param>
         /// <param name="ChargingPoolFeatures2">Another charging pool feature.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingPoolFeature ChargingPoolFeatures1,
                                           ChargingPoolFeature ChargingPoolFeatures2)
 
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolFeatures1">A charging pool feature.</param>
         /// <param name="ChargingPoolFeatures2">Another charging pool feature.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingPoolFeature ChargingPoolFeatures1,
                                            ChargingPoolFeature ChargingPoolFeatures2)
 
@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolFeatures1">A charging pool feature.</param>
         /// <param name="ChargingPoolFeatures2">Another charging pool feature.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingPoolFeature ChargingPoolFeatures1,
                                           ChargingPoolFeature ChargingPoolFeatures2)
 
@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolFeatures1">A charging pool feature.</param>
         /// <param name="ChargingPoolFeatures2">Another charging pool feature.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingPoolFeature ChargingPoolFeatures1,
                                            ChargingPoolFeature ChargingPoolFeatures2)
 

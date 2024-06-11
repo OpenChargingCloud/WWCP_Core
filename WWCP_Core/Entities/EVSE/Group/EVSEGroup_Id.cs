@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEGroupId1">An EVSE group identification.</param>
         /// <param name="EVSEGroupId2">Another EVSE group identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (EVSEGroup_Id EVSEGroupId1, EVSEGroup_Id EVSEGroupId2)
         {
 
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEGroupId1">An EVSE group identification.</param>
         /// <param name="EVSEGroupId2">Another EVSE group identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (EVSEGroup_Id EVSEGroupId1, EVSEGroup_Id EVSEGroupId2)
             => !(EVSEGroupId1 == EVSEGroupId2);
 
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEGroupId1">An EVSE group identification.</param>
         /// <param name="EVSEGroupId2">Another EVSE group identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (EVSEGroup_Id EVSEGroupId1, EVSEGroup_Id EVSEGroupId2)
         {
 
@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEGroupId1">An EVSE group identification.</param>
         /// <param name="EVSEGroupId2">Another EVSE group identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (EVSEGroup_Id EVSEGroupId1, EVSEGroup_Id EVSEGroupId2)
             => !(EVSEGroupId1 > EVSEGroupId2);
 
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEGroupId1">An EVSE group identification.</param>
         /// <param name="EVSEGroupId2">Another EVSE group identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (EVSEGroup_Id EVSEGroupId1, EVSEGroup_Id EVSEGroupId2)
         {
 
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEGroupId1">An EVSE group identification.</param>
         /// <param name="EVSEGroupId2">Another EVSE group identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (EVSEGroup_Id EVSEGroupId1, EVSEGroup_Id EVSEGroupId2)
             => !(EVSEGroupId1 < EVSEGroupId2);
 
@@ -420,7 +420,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object Object)
         {
 

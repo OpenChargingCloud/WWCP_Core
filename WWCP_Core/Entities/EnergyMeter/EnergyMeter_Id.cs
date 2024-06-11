@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (EnergyMeter_Id EnergyMeterId1,
                                            EnergyMeter_Id EnergyMeterId2)
 
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (EnergyMeter_Id EnergyMeterId1,
                                            EnergyMeter_Id EnergyMeterId2)
 
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (EnergyMeter_Id EnergyMeterId1,
                                           EnergyMeter_Id EnergyMeterId2)
 
@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (EnergyMeter_Id EnergyMeterId1,
                                            EnergyMeter_Id EnergyMeterId2)
 
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (EnergyMeter_Id EnergyMeterId1,
                                           EnergyMeter_Id EnergyMeterId2)
 
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (EnergyMeter_Id EnergyMeterId1,
                                            EnergyMeter_Id EnergyMeterId2)
 
@@ -328,7 +328,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object? Object)
 
             => Object is EnergyMeter_Id energyMeterId &&

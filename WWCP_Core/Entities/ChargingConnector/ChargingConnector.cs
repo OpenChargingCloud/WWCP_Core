@@ -307,7 +307,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingConnector1">A charging connector.</param>
         /// <param name="ChargingConnector2">Another charging connector.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingConnector ChargingConnector1,
                                            ChargingConnector ChargingConnector2)
         {
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingConnector1">A charging connector.</param>
         /// <param name="ChargingConnector2">Another charging connector.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingConnector ChargingConnector1,
                                            ChargingConnector ChargingConnector2)
 

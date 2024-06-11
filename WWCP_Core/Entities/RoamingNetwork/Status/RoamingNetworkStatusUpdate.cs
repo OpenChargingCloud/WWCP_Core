@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkStatusUpdate1">A roaming network status update.</param>
         /// <param name="RoamingNetworkStatusUpdate2">Another roaming network status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1,
                                            RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
 
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkStatusUpdate1">A roaming network status update.</param>
         /// <param name="RoamingNetworkStatusUpdate2">Another roaming network status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1,
                                            RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
 
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkStatusUpdate1">A roaming network status update.</param>
         /// <param name="RoamingNetworkStatusUpdate2">Another roaming network status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1,
                                           RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
 
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkStatusUpdate1">A roaming network status update.</param>
         /// <param name="RoamingNetworkStatusUpdate2">Another roaming network status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1,
                                            RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
 
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkStatusUpdate1">A roaming network status update.</param>
         /// <param name="RoamingNetworkStatusUpdate2">Another roaming network status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1,
                                           RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
 
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkStatusUpdate1">A roaming network status update.</param>
         /// <param name="RoamingNetworkStatusUpdate2">Another roaming network status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1,
                                            RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
 

@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingTariffGroup1">A charging station group.</param>
         /// <param name="ChargingTariffGroup2">Another charging station group.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingTariffGroup ChargingTariffGroup1, ChargingTariffGroup ChargingTariffGroup2)
         {
 
@@ -314,7 +314,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingTariffGroup1">A charging station group.</param>
         /// <param name="ChargingTariffGroup2">Another charging station group.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingTariffGroup ChargingTariffGroup1, ChargingTariffGroup ChargingTariffGroup2)
             => !(ChargingTariffGroup1 == ChargingTariffGroup2);
 
@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingTariffGroup1">A charging station group.</param>
         /// <param name="ChargingTariffGroup2">Another charging station group.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingTariffGroup ChargingTariffGroup1, ChargingTariffGroup ChargingTariffGroup2)
         {
 
@@ -347,7 +347,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingTariffGroup1">A charging station group.</param>
         /// <param name="ChargingTariffGroup2">Another charging station group.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingTariffGroup ChargingTariffGroup1, ChargingTariffGroup ChargingTariffGroup2)
             => !(ChargingTariffGroup1 > ChargingTariffGroup2);
 
@@ -360,7 +360,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingTariffGroup1">A charging station group.</param>
         /// <param name="ChargingTariffGroup2">Another charging station group.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingTariffGroup ChargingTariffGroup1, ChargingTariffGroup ChargingTariffGroup2)
         {
 
@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingTariffGroup1">A charging station group.</param>
         /// <param name="ChargingTariffGroup2">Another charging station group.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingTariffGroup ChargingTariffGroup1, ChargingTariffGroup ChargingTariffGroup2)
             => !(ChargingTariffGroup1 < ChargingTariffGroup2);
 
@@ -440,7 +440,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object Object)
         {
 

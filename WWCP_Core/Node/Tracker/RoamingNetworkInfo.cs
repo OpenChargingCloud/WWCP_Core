@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="RemoteRoamingNetworkInfo1">A RemoteRoamingNetworkInfo.</param>
         /// <param name="RemoteRoamingNetworkInfo2">Another RemoteRoamingNetworkInfo.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (RoamingNetworkInfo RemoteRoamingNetworkInfo1, RoamingNetworkInfo RemoteRoamingNetworkInfo2)
         {
 
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="RemoteRoamingNetworkInfo1">A RemoteRoamingNetworkInfo.</param>
         /// <param name="RemoteRoamingNetworkInfo2">Another RemoteRoamingNetworkInfo.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (RoamingNetworkInfo RemoteRoamingNetworkInfo1, RoamingNetworkInfo RemoteRoamingNetworkInfo2)
         {
             return !(RemoteRoamingNetworkInfo1 == RemoteRoamingNetworkInfo2);
@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="RemoteRoamingNetworkInfo1">A RemoteRoamingNetworkInfo.</param>
         /// <param name="RemoteRoamingNetworkInfo2">Another RemoteRoamingNetworkInfo.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (RoamingNetworkInfo RemoteRoamingNetworkInfo1, RoamingNetworkInfo RemoteRoamingNetworkInfo2)
         {
 
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="RemoteRoamingNetworkInfo1">A RemoteRoamingNetworkInfo.</param>
         /// <param name="RemoteRoamingNetworkInfo2">Another RemoteRoamingNetworkInfo.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (RoamingNetworkInfo RemoteRoamingNetworkInfo1, RoamingNetworkInfo RemoteRoamingNetworkInfo2)
         {
             return !(RemoteRoamingNetworkInfo1 > RemoteRoamingNetworkInfo2);
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="RemoteRoamingNetworkInfo1">A RemoteRoamingNetworkInfo.</param>
         /// <param name="RemoteRoamingNetworkInfo2">Another RemoteRoamingNetworkInfo.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (RoamingNetworkInfo RemoteRoamingNetworkInfo1, RoamingNetworkInfo RemoteRoamingNetworkInfo2)
         {
 
@@ -365,7 +365,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="RemoteRoamingNetworkInfo1">A RemoteRoamingNetworkInfo.</param>
         /// <param name="RemoteRoamingNetworkInfo2">Another RemoteRoamingNetworkInfo.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (RoamingNetworkInfo RemoteRoamingNetworkInfo1, RoamingNetworkInfo RemoteRoamingNetworkInfo2)
         {
             return !(RemoteRoamingNetworkInfo1 < RemoteRoamingNetworkInfo2);
@@ -433,7 +433,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object Object)
         {
 

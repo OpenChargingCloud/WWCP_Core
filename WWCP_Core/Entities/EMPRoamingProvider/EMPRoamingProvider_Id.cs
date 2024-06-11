@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMPRoamingProviderId1">An EMP roaming provider identification.</param>
         /// <param name="EMPRoamingProviderId2">Another EMP roaming provider identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (EMPRoamingProvider_Id EMPRoamingProviderId1,
                                            EMPRoamingProvider_Id EMPRoamingProviderId2)
 
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMPRoamingProviderId1">An EMP roaming provider identification.</param>
         /// <param name="EMPRoamingProviderId2">Another EMP roaming provider identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (EMPRoamingProvider_Id EMPRoamingProviderId1,
                                            EMPRoamingProvider_Id EMPRoamingProviderId2)
 
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMPRoamingProviderId1">An EMP roaming provider identification.</param>
         /// <param name="EMPRoamingProviderId2">Another EMP roaming provider identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (EMPRoamingProvider_Id EMPRoamingProviderId1,
                                           EMPRoamingProvider_Id EMPRoamingProviderId2)
 
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMPRoamingProviderId1">An EMP roaming provider identification.</param>
         /// <param name="EMPRoamingProviderId2">Another EMP roaming provider identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (EMPRoamingProvider_Id EMPRoamingProviderId1,
                                            EMPRoamingProvider_Id EMPRoamingProviderId2)
 
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMPRoamingProviderId1">An EMP roaming provider identification.</param>
         /// <param name="EMPRoamingProviderId2">Another EMP roaming provider identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (EMPRoamingProvider_Id EMPRoamingProviderId1,
                                           EMPRoamingProvider_Id EMPRoamingProviderId2)
 
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMPRoamingProviderId1">An EMP roaming provider identification.</param>
         /// <param name="EMPRoamingProviderId2">Another EMP roaming provider identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (EMPRoamingProvider_Id EMPRoamingProviderId1,
                                            EMPRoamingProvider_Id EMPRoamingProviderId2)
 

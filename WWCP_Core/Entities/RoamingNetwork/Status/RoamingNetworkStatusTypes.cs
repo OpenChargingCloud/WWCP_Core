@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
         /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
                                            RoamingNetworkStatusTypes RoamingNetworkStatusType2)
 
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
         /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
                                            RoamingNetworkStatusTypes RoamingNetworkStatusType2)
 
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
         /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
                                           RoamingNetworkStatusTypes RoamingNetworkStatusType2)
 
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
         /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
                                            RoamingNetworkStatusTypes RoamingNetworkStatusType2)
 
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
         /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
                                           RoamingNetworkStatusTypes RoamingNetworkStatusType2)
 
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
         /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
                                            RoamingNetworkStatusTypes RoamingNetworkStatusType2)
 

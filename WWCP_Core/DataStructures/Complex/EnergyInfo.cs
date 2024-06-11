@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyInfo1">An energy information.</param>
         /// <param name="EnergyInfo2">Another energy information.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (EnergyInfo EnergyInfo1,
                                            EnergyInfo EnergyInfo2)
 
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyInfo1">An energy information.</param>
         /// <param name="EnergyInfo2">Another energy information.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (EnergyInfo EnergyInfo1,
                                            EnergyInfo EnergyInfo2)
 
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyInfo1">An energy information.</param>
         /// <param name="EnergyInfo2">Another energy information.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (EnergyInfo EnergyInfo1,
                                           EnergyInfo EnergyInfo2)
 
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyInfo1">An energy information.</param>
         /// <param name="EnergyInfo2">Another energy information.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (EnergyInfo EnergyInfo1,
                                            EnergyInfo EnergyInfo2)
 
@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyInfo1">An energy information.</param>
         /// <param name="EnergyInfo2">Another energy information.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (EnergyInfo EnergyInfo1,
                                           EnergyInfo EnergyInfo2)
 
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyInfo1">An energy information.</param>
         /// <param name="EnergyInfo2">Another energy information.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (EnergyInfo EnergyInfo1,
                                            EnergyInfo EnergyInfo2)
 

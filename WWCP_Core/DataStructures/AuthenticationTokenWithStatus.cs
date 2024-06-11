@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthenticationTokenWithStatus1">An authentication token with status.</param>
         /// <param name="AuthenticationTokenWithStatus2">Another authentication token with status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AuthenticationTokenWithStatus AuthenticationTokenWithStatus1,
                                            AuthenticationTokenWithStatus AuthenticationTokenWithStatus2)
 
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthenticationTokenWithStatus1">An authentication token with status.</param>
         /// <param name="AuthenticationTokenWithStatus2">Another authentication token with status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AuthenticationTokenWithStatus AuthenticationTokenWithStatus1,
                                            AuthenticationTokenWithStatus AuthenticationTokenWithStatus2)
 
@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthenticationTokenWithStatus1">An authentication token with status.</param>
         /// <param name="AuthenticationTokenWithStatus2">Another authentication token with status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (AuthenticationTokenWithStatus AuthenticationTokenWithStatus1,
                                           AuthenticationTokenWithStatus AuthenticationTokenWithStatus2)
 
@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthenticationTokenWithStatus1">An authentication token with status.</param>
         /// <param name="AuthenticationTokenWithStatus2">Another authentication token with status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (AuthenticationTokenWithStatus AuthenticationTokenWithStatus1,
                                            AuthenticationTokenWithStatus AuthenticationTokenWithStatus2)
 
@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthenticationTokenWithStatus1">An authentication token with status.</param>
         /// <param name="AuthenticationTokenWithStatus2">Another authentication token with status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (AuthenticationTokenWithStatus AuthenticationTokenWithStatus1,
                                           AuthenticationTokenWithStatus AuthenticationTokenWithStatus2)
 
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthenticationTokenWithStatus1">An authentication token with status.</param>
         /// <param name="AuthenticationTokenWithStatus2">Another authentication token with status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (AuthenticationTokenWithStatus AuthenticationTokenWithStatus1,
                                            AuthenticationTokenWithStatus AuthenticationTokenWithStatus2)
 

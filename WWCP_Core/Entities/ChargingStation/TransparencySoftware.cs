@@ -403,7 +403,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="TransparencySoftware1">A transparency software.</param>
         /// <param name="TransparencySoftware2">Another transparency software.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (TransparencySoftware TransparencySoftware1,
                                            TransparencySoftware TransparencySoftware2)
         {
@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="TransparencySoftware1">A transparency software.</param>
         /// <param name="TransparencySoftware2">Another transparency software.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (TransparencySoftware TransparencySoftware1,
                                            TransparencySoftware TransparencySoftware2)
 
@@ -442,7 +442,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="TransparencySoftware1">A transparency software.</param>
         /// <param name="TransparencySoftware2">Another transparency software.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (TransparencySoftware TransparencySoftware1,
                                           TransparencySoftware TransparencySoftware2)
 
@@ -459,7 +459,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="TransparencySoftware1">A transparency software.</param>
         /// <param name="TransparencySoftware2">Another transparency software.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (TransparencySoftware TransparencySoftware1,
                                            TransparencySoftware TransparencySoftware2)
 
@@ -474,7 +474,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="TransparencySoftware1">A transparency software.</param>
         /// <param name="TransparencySoftware2">Another transparency software.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (TransparencySoftware TransparencySoftware1,
                                           TransparencySoftware TransparencySoftware2)
 
@@ -491,7 +491,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="TransparencySoftware1">A transparency software.</param>
         /// <param name="TransparencySoftware2">Another transparency software.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (TransparencySoftware TransparencySoftware1,
                                            TransparencySoftware TransparencySoftware2)
 

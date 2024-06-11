@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargeDetailRecordId1">A charge detail record identification.</param>
         /// <param name="ChargeDetailRecordId2">Another charge detail record identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargeDetailRecord_Id ChargeDetailRecordId1,
                                            ChargeDetailRecord_Id ChargeDetailRecordId2)
 
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargeDetailRecordId1">A charge detail record identification.</param>
         /// <param name="ChargeDetailRecordId2">Another charge detail record identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargeDetailRecord_Id ChargeDetailRecordId1,
                                            ChargeDetailRecord_Id ChargeDetailRecordId2)
 
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargeDetailRecordId1">A charge detail record identification.</param>
         /// <param name="ChargeDetailRecordId2">Another charge detail record identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargeDetailRecord_Id ChargeDetailRecordId1,
                                           ChargeDetailRecord_Id ChargeDetailRecordId2)
 
@@ -346,7 +346,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargeDetailRecordId1">A charge detail record identification.</param>
         /// <param name="ChargeDetailRecordId2">Another charge detail record identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargeDetailRecord_Id ChargeDetailRecordId1,
                                            ChargeDetailRecord_Id ChargeDetailRecordId2)
 
@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargeDetailRecordId1">A charge detail record identification.</param>
         /// <param name="ChargeDetailRecordId2">Another charge detail record identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargeDetailRecord_Id ChargeDetailRecordId1,
                                           ChargeDetailRecord_Id ChargeDetailRecordId2)
 
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargeDetailRecordId1">A charge detail record identification.</param>
         /// <param name="ChargeDetailRecordId2">Another charge detail record identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargeDetailRecord_Id ChargeDetailRecordId1,
                                            ChargeDetailRecord_Id ChargeDetailRecordId2)
 

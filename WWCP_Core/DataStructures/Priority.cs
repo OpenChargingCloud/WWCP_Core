@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Priority1">A brand identification.</param>
         /// <param name="Priority2">Another brand identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (Priority Priority1, Priority Priority2)
         {
 
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Priority1">A brand identification.</param>
         /// <param name="Priority2">Another brand identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (Priority Priority1, Priority Priority2)
             => !(Priority1 == Priority2);
 
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Priority1">A brand identification.</param>
         /// <param name="Priority2">Another brand identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (Priority Priority1, Priority Priority2)
         {
 
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Priority1">A brand identification.</param>
         /// <param name="Priority2">Another brand identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (Priority Priority1, Priority Priority2)
             => !(Priority1 > Priority2);
 
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Priority1">A brand identification.</param>
         /// <param name="Priority2">Another brand identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (Priority Priority1, Priority Priority2)
         {
 
@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Priority1">A brand identification.</param>
         /// <param name="Priority2">Another brand identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (Priority Priority1, Priority Priority2)
             => !(Priority1 < Priority2);
 
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object Object)
         {
 

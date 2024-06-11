@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// </summary>
         /// <param name="MeteringCalibrationLawAgencyId1">A metering calibration law agency identification.</param>
         /// <param name="MeteringCalibrationLawAgencyId2">Another metering calibration law agency identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (MeteringCalibrationLawAgency_Id MeteringCalibrationLawAgencyId1,
                                            MeteringCalibrationLawAgency_Id MeteringCalibrationLawAgencyId2)
 
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// </summary>
         /// <param name="MeteringCalibrationLawAgencyId1">A metering calibration law agency identification.</param>
         /// <param name="MeteringCalibrationLawAgencyId2">Another metering calibration law agency identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (MeteringCalibrationLawAgency_Id MeteringCalibrationLawAgencyId1,
                                            MeteringCalibrationLawAgency_Id MeteringCalibrationLawAgencyId2)
 
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// </summary>
         /// <param name="MeteringCalibrationLawAgencyId1">A metering calibration law agency identification.</param>
         /// <param name="MeteringCalibrationLawAgencyId2">Another metering calibration law agency identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (MeteringCalibrationLawAgency_Id MeteringCalibrationLawAgencyId1,
                                           MeteringCalibrationLawAgency_Id MeteringCalibrationLawAgencyId2)
 
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// </summary>
         /// <param name="MeteringCalibrationLawAgencyId1">A metering calibration law agency identification.</param>
         /// <param name="MeteringCalibrationLawAgencyId2">Another metering calibration law agency identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (MeteringCalibrationLawAgency_Id MeteringCalibrationLawAgencyId1,
                                            MeteringCalibrationLawAgency_Id MeteringCalibrationLawAgencyId2)
 
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// </summary>
         /// <param name="MeteringCalibrationLawAgencyId1">A metering calibration law agency identification.</param>
         /// <param name="MeteringCalibrationLawAgencyId2">Another metering calibration law agency identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (MeteringCalibrationLawAgency_Id MeteringCalibrationLawAgencyId1,
                                           MeteringCalibrationLawAgency_Id MeteringCalibrationLawAgencyId2)
 
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// </summary>
         /// <param name="MeteringCalibrationLawAgencyId1">A metering calibration law agency identification.</param>
         /// <param name="MeteringCalibrationLawAgencyId2">Another metering calibration law agency identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (MeteringCalibrationLawAgency_Id MeteringCalibrationLawAgencyId1,
                                            MeteringCalibrationLawAgency_Id MeteringCalibrationLawAgencyId2)
 

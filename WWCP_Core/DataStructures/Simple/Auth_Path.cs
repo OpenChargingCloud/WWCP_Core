@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthPath1">An authentication path.</param>
         /// <param name="AuthPath2">Another authentication path.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (Auth_Path AuthPath1,
                                            Auth_Path AuthPath2)
 
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthPath1">An authentication path.</param>
         /// <param name="AuthPath2">Another authentication path.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (Auth_Path AuthPath1,
                                            Auth_Path AuthPath2)
 
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthPath1">An authentication path.</param>
         /// <param name="AuthPath2">Another authentication path.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (Auth_Path AuthPath1,
                                           Auth_Path AuthPath2)
 
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthPath1">An authentication path.</param>
         /// <param name="AuthPath2">Another authentication path.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (Auth_Path AuthPath1,
                                            Auth_Path AuthPath2)
 
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthPath1">An authentication path.</param>
         /// <param name="AuthPath2">Another authentication path.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (Auth_Path AuthPath1,
                                           Auth_Path AuthPath2)
 
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthPath1">An authentication path.</param>
         /// <param name="AuthPath2">Another authentication path.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (Auth_Path AuthPath1,
                                            Auth_Path AuthPath2)
 

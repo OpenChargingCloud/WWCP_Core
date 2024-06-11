@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEStatus1">An EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (EVSEStatus EVSEStatus1,
                                            EVSEStatus EVSEStatus2)
 
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEStatus1">An EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (EVSEStatus EVSEStatus1,
                                            EVSEStatus EVSEStatus2)
 
@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEStatus1">An EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (EVSEStatus EVSEStatus1,
                                           EVSEStatus EVSEStatus2)
 
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEStatus1">An EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (EVSEStatus EVSEStatus1,
                                            EVSEStatus EVSEStatus2)
 
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEStatus1">An EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (EVSEStatus EVSEStatus1,
                                           EVSEStatus EVSEStatus2)
 
@@ -304,7 +304,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEStatus1">An EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (EVSEStatus EVSEStatus1,
                                            EVSEStatus EVSEStatus2)
 

@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkId1">A roaming network identification.</param>
         /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (RoamingNetwork_Id RoamingNetworkId1,
                                            RoamingNetwork_Id RoamingNetworkId2)
 
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkId1">A roaming network identification.</param>
         /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (RoamingNetwork_Id RoamingNetworkId1,
                                            RoamingNetwork_Id RoamingNetworkId2)
 
@@ -223,7 +223,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkId1">A roaming network identification.</param>
         /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (RoamingNetwork_Id RoamingNetworkId1,
                                           RoamingNetwork_Id RoamingNetworkId2)
 
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkId1">A roaming network identification.</param>
         /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (RoamingNetwork_Id RoamingNetworkId1,
                                            RoamingNetwork_Id RoamingNetworkId2)
 
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkId1">A roaming network identification.</param>
         /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (RoamingNetwork_Id RoamingNetworkId1,
                                           RoamingNetwork_Id RoamingNetworkId2)
 
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkId1">A roaming network identification.</param>
         /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (RoamingNetwork_Id RoamingNetworkId1,
                                            RoamingNetwork_Id RoamingNetworkId2)
 

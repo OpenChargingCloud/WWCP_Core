@@ -2763,7 +2763,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualChargingPool1">A virtual charging pool.</param>
         /// <param name="VirtualChargingPool2">Another virtual charging pool.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (VirtualChargingPool VirtualChargingPool1, VirtualChargingPool VirtualChargingPool2)
         {
 
@@ -2788,7 +2788,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualChargingPool1">A virtual charging pool.</param>
         /// <param name="VirtualChargingPool2">Another virtual charging pool.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (VirtualChargingPool VirtualChargingPool1, VirtualChargingPool VirtualChargingPool2)
             => !(VirtualChargingPool1 == VirtualChargingPool2);
 
@@ -2801,7 +2801,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualChargingPool1">A virtual charging pool.</param>
         /// <param name="VirtualChargingPool2">Another virtual charging pool.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (VirtualChargingPool VirtualChargingPool1, VirtualChargingPool VirtualChargingPool2)
         {
 
@@ -2821,7 +2821,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualChargingPool1">A virtual charging pool.</param>
         /// <param name="VirtualChargingPool2">Another virtual charging pool.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (VirtualChargingPool VirtualChargingPool1, VirtualChargingPool VirtualChargingPool2)
             => !(VirtualChargingPool1 > VirtualChargingPool2);
 
@@ -2834,7 +2834,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualChargingPool1">A virtual charging pool.</param>
         /// <param name="VirtualChargingPool2">Another virtual charging pool.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (VirtualChargingPool VirtualChargingPool1, VirtualChargingPool VirtualChargingPool2)
         {
 
@@ -2854,7 +2854,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualChargingPool1">A virtual charging pool.</param>
         /// <param name="VirtualChargingPool2">Another virtual charging pool.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (VirtualChargingPool VirtualChargingPool1, VirtualChargingPool VirtualChargingPool2)
             => !(VirtualChargingPool1 < VirtualChargingPool2);
 
@@ -2913,7 +2913,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object Object)
         {
 

@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="SessionId1">A charging service plan identification.</param>
         /// <param name="SessionId2">Another charging service plan identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingServicePlan_Id SessionId1,
                                            ChargingServicePlan_Id SessionId2)
 
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="SessionId1">A charging service plan identification.</param>
         /// <param name="SessionId2">Another charging service plan identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingServicePlan_Id SessionId1,
                                            ChargingServicePlan_Id SessionId2)
 
@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="SessionId1">A charging service plan identification.</param>
         /// <param name="SessionId2">Another charging service plan identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingServicePlan_Id SessionId1,
                                           ChargingServicePlan_Id SessionId2)
 
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="SessionId1">A charging service plan identification.</param>
         /// <param name="SessionId2">Another charging service plan identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingServicePlan_Id SessionId1,
                                            ChargingServicePlan_Id SessionId2)
 
@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="SessionId1">A charging service plan identification.</param>
         /// <param name="SessionId2">Another charging service plan identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingServicePlan_Id SessionId1,
                                           ChargingServicePlan_Id SessionId2)
 
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="SessionId1">A charging service plan identification.</param>
         /// <param name="SessionId2">Another charging service plan identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingServicePlan_Id SessionId1,
                                            ChargingServicePlan_Id SessionId2)
 
@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingServicePlan_Id sessionId

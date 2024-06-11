@@ -4177,7 +4177,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPool1">A charging pool.</param>
         /// <param name="ChargingPool2">Another charging pool.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingPool ChargingPool1,
                                            ChargingPool ChargingPool2)
         {
@@ -4203,7 +4203,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPool1">A charging pool.</param>
         /// <param name="ChargingPool2">Another charging pool.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingPool ChargingPool1,
                                            ChargingPool ChargingPool2)
 
@@ -4218,7 +4218,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPool1">A charging pool.</param>
         /// <param name="ChargingPool2">Another charging pool.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingPool ChargingPool1,
                                           ChargingPool ChargingPool2)
         {
@@ -4239,7 +4239,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPool1">A charging pool.</param>
         /// <param name="ChargingPool2">Another charging pool.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingPool ChargingPool1,
                                            ChargingPool ChargingPool2)
 
@@ -4254,7 +4254,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPool1">A charging pool.</param>
         /// <param name="ChargingPool2">Another charging pool.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingPool ChargingPool1,
                                           ChargingPool ChargingPool2)
         {
@@ -4275,7 +4275,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPool1">A charging pool.</param>
         /// <param name="ChargingPool2">Another charging pool.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingPool ChargingPool1,
                                            ChargingPool ChargingPool2)
 
@@ -4334,7 +4334,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingPool chargingPool &&

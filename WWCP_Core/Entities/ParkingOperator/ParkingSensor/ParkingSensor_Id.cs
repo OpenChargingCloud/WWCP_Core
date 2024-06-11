@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVPS_Id1">A EVPS_Id.</param>
         /// <param name="EVPS_Id2">Another EVPS_Id.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ParkingSensor_Id EVPS_Id1, ParkingSensor_Id EVPS_Id2)
         {
 
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVPS_Id1">A EVPS_Id.</param>
         /// <param name="EVPS_Id2">Another EVPS_Id.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ParkingSensor_Id EVPS_Id1, ParkingSensor_Id EVPS_Id2)
         {
             return !(EVPS_Id1 == EVPS_Id2);
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVPS_Id1">A EVPS_Id.</param>
         /// <param name="EVPS_Id2">Another EVPS_Id.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ParkingSensor_Id EVPS_Id1, ParkingSensor_Id EVPS_Id2)
         {
 
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVPS_Id1">A EVPS_Id.</param>
         /// <param name="EVPS_Id2">Another EVPS_Id.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ParkingSensor_Id EVPS_Id1, ParkingSensor_Id EVPS_Id2)
         {
             return !(EVPS_Id1 > EVPS_Id2);
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVPS_Id1">A EVPS_Id.</param>
         /// <param name="EVPS_Id2">Another EVPS_Id.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ParkingSensor_Id EVPS_Id1, ParkingSensor_Id EVPS_Id2)
         {
 
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVPS_Id1">A EVPS_Id.</param>
         /// <param name="EVPS_Id2">Another EVPS_Id.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ParkingSensor_Id EVPS_Id1, ParkingSensor_Id EVPS_Id2)
         {
             return !(EVPS_Id1 < EVPS_Id2);
@@ -318,7 +318,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object Object)
         {
 

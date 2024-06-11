@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="TrackerId1">A tracker identification.</param>
         /// <param name="TrackerId2">Another tracker identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (Tracker_Id TrackerId1,
                                            Tracker_Id TrackerId2)
 
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="TrackerId1">A tracker identification.</param>
         /// <param name="TrackerId2">Another tracker identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (Tracker_Id TrackerId1,
                                            Tracker_Id TrackerId2)
 
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="TrackerId1">A tracker identification.</param>
         /// <param name="TrackerId2">Another tracker identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (Tracker_Id TrackerId1,
                                           Tracker_Id TrackerId2)
 
@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="TrackerId1">A tracker identification.</param>
         /// <param name="TrackerId2">Another tracker identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (Tracker_Id TrackerId1,
                                            Tracker_Id TrackerId2)
 
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="TrackerId1">A tracker identification.</param>
         /// <param name="TrackerId2">Another tracker identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (Tracker_Id TrackerId1,
                                           Tracker_Id TrackerId2)
 
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="TrackerId1">A tracker identification.</param>
         /// <param name="TrackerId2">Another tracker identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (Tracker_Id TrackerId1,
                                            Tracker_Id TrackerId2)
 

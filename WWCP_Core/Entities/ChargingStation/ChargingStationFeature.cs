@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationFeatures1">A charging station feature.</param>
         /// <param name="ChargingStationFeatures2">Another charging station feature.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingStationFeature ChargingStationFeatures1,
                                            ChargingStationFeature ChargingStationFeatures2)
 
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationFeatures1">A charging station feature.</param>
         /// <param name="ChargingStationFeatures2">Another charging station feature.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingStationFeature ChargingStationFeatures1,
                                            ChargingStationFeature ChargingStationFeatures2)
 
@@ -296,7 +296,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationFeatures1">A charging station feature.</param>
         /// <param name="ChargingStationFeatures2">Another charging station feature.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingStationFeature ChargingStationFeatures1,
                                           ChargingStationFeature ChargingStationFeatures2)
 
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationFeatures1">A charging station feature.</param>
         /// <param name="ChargingStationFeatures2">Another charging station feature.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingStationFeature ChargingStationFeatures1,
                                            ChargingStationFeature ChargingStationFeatures2)
 
@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationFeatures1">A charging station feature.</param>
         /// <param name="ChargingStationFeatures2">Another charging station feature.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingStationFeature ChargingStationFeatures1,
                                           ChargingStationFeature ChargingStationFeatures2)
 
@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationFeatures1">A charging station feature.</param>
         /// <param name="ChargingStationFeatures2">Another charging station feature.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingStationFeature ChargingStationFeatures1,
                                            ChargingStationFeature ChargingStationFeatures2)
 

@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityStationAdminStatus1">A eMobilityStationAdminStatus.</param>
         /// <param name="eMobilityStationAdminStatus2">Another eMobilityStationAdminStatus.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (eMobilityStationAdminStatus eMobilityStationAdminStatus1, eMobilityStationAdminStatus eMobilityStationAdminStatus2)
         {
 
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityStationAdminStatus1">A eMobilityStationAdminStatus.</param>
         /// <param name="eMobilityStationAdminStatus2">Another eMobilityStationAdminStatus.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (eMobilityStationAdminStatus eMobilityStationAdminStatus1, eMobilityStationAdminStatus eMobilityStationAdminStatus2)
         {
             return !(eMobilityStationAdminStatus1 == eMobilityStationAdminStatus2);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityStationAdminStatus1">A eMobilityStationAdminStatus.</param>
         /// <param name="eMobilityStationAdminStatus2">Another eMobilityStationAdminStatus.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (eMobilityStationAdminStatus eMobilityStationAdminStatus1, eMobilityStationAdminStatus eMobilityStationAdminStatus2)
         {
 
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityStationAdminStatus1">A eMobilityStationAdminStatus.</param>
         /// <param name="eMobilityStationAdminStatus2">Another eMobilityStationAdminStatus.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (eMobilityStationAdminStatus eMobilityStationAdminStatus1, eMobilityStationAdminStatus eMobilityStationAdminStatus2)
         {
             return !(eMobilityStationAdminStatus1 > eMobilityStationAdminStatus2);
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityStationAdminStatus1">A eMobilityStationAdminStatus.</param>
         /// <param name="eMobilityStationAdminStatus2">Another eMobilityStationAdminStatus.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (eMobilityStationAdminStatus eMobilityStationAdminStatus1, eMobilityStationAdminStatus eMobilityStationAdminStatus2)
         {
 
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityStationAdminStatus1">A eMobilityStationAdminStatus.</param>
         /// <param name="eMobilityStationAdminStatus2">Another eMobilityStationAdminStatus.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (eMobilityStationAdminStatus eMobilityStationAdminStatus1, eMobilityStationAdminStatus eMobilityStationAdminStatus2)
         {
             return !(eMobilityStationAdminStatus1 < eMobilityStationAdminStatus2);
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object Object)
         {
 

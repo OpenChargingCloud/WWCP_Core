@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatusUpdate1">A charging station operator admin status update.</param>
         /// <param name="ChargingStationOperatorAdminStatusUpdate2">Another charging station operator admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingStationOperatorAdminStatusUpdate ChargingStationOperatorAdminStatusUpdate1,
                                            ChargingStationOperatorAdminStatusUpdate ChargingStationOperatorAdminStatusUpdate2)
 
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatusUpdate1">A charging station operator admin status update.</param>
         /// <param name="ChargingStationOperatorAdminStatusUpdate2">Another charging station operator admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingStationOperatorAdminStatusUpdate ChargingStationOperatorAdminStatusUpdate1,
                                            ChargingStationOperatorAdminStatusUpdate ChargingStationOperatorAdminStatusUpdate2)
 
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatusUpdate1">A charging station operator admin status update.</param>
         /// <param name="ChargingStationOperatorAdminStatusUpdate2">Another charging station operator admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingStationOperatorAdminStatusUpdate ChargingStationOperatorAdminStatusUpdate1,
                                           ChargingStationOperatorAdminStatusUpdate ChargingStationOperatorAdminStatusUpdate2)
 
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatusUpdate1">A charging station operator admin status update.</param>
         /// <param name="ChargingStationOperatorAdminStatusUpdate2">Another charging station operator admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingStationOperatorAdminStatusUpdate ChargingStationOperatorAdminStatusUpdate1,
                                            ChargingStationOperatorAdminStatusUpdate ChargingStationOperatorAdminStatusUpdate2)
 
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatusUpdate1">A charging station operator admin status update.</param>
         /// <param name="ChargingStationOperatorAdminStatusUpdate2">Another charging station operator admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingStationOperatorAdminStatusUpdate ChargingStationOperatorAdminStatusUpdate1,
                                           ChargingStationOperatorAdminStatusUpdate ChargingStationOperatorAdminStatusUpdate2)
 
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatusUpdate1">A charging station operator admin status update.</param>
         /// <param name="ChargingStationOperatorAdminStatusUpdate2">Another charging station operator admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingStationOperatorAdminStatusUpdate ChargingStationOperatorAdminStatusUpdate1,
                                            ChargingStationOperatorAdminStatusUpdate ChargingStationOperatorAdminStatusUpdate2)
 

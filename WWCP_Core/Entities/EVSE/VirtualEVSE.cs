@@ -3426,7 +3426,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualEVSE1">A virtual EVSE.</param>
         /// <param name="VirtualEVSE2">Another virtual EVSE.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (VirtualEVSE? VirtualEVSE1,
                                            VirtualEVSE? VirtualEVSE2)
         {
@@ -3452,7 +3452,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualEVSE1">A virtual EVSE.</param>
         /// <param name="VirtualEVSE2">Another virtual EVSE.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (VirtualEVSE? VirtualEVSE1,
                                            VirtualEVSE? VirtualEVSE2)
 
@@ -3467,7 +3467,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualEVSE1">A virtual EVSE.</param>
         /// <param name="VirtualEVSE2">Another virtual EVSE.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (VirtualEVSE? VirtualEVSE1,
                                           VirtualEVSE? VirtualEVSE2)
         {
@@ -3488,7 +3488,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualEVSE1">A virtual EVSE.</param>
         /// <param name="VirtualEVSE2">Another virtual EVSE.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (VirtualEVSE? VirtualEVSE1,
                                            VirtualEVSE? VirtualEVSE2)
 
@@ -3503,7 +3503,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualEVSE1">A virtual EVSE.</param>
         /// <param name="VirtualEVSE2">Another virtual EVSE.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (VirtualEVSE? VirtualEVSE1,
                                           VirtualEVSE? VirtualEVSE2)
         {
@@ -3524,7 +3524,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="VirtualEVSE1">A virtual EVSE.</param>
         /// <param name="VirtualEVSE2">Another virtual EVSE.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (VirtualEVSE? VirtualEVSE1,
                                            VirtualEVSE? VirtualEVSE2)
 

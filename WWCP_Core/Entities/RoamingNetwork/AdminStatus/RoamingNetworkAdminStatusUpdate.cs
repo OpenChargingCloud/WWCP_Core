@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkAdminStatusUpdate1">A roaming network admin status update.</param>
         /// <param name="RoamingNetworkAdminStatusUpdate2">Another roaming network admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (RoamingNetworkAdminStatusUpdate RoamingNetworkAdminStatusUpdate1,
                                            RoamingNetworkAdminStatusUpdate RoamingNetworkAdminStatusUpdate2)
 
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkAdminStatusUpdate1">A roaming network admin status update.</param>
         /// <param name="RoamingNetworkAdminStatusUpdate2">Another roaming network admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (RoamingNetworkAdminStatusUpdate RoamingNetworkAdminStatusUpdate1,
                                            RoamingNetworkAdminStatusUpdate RoamingNetworkAdminStatusUpdate2)
 
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkAdminStatusUpdate1">A roaming network admin status update.</param>
         /// <param name="RoamingNetworkAdminStatusUpdate2">Another roaming network admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (RoamingNetworkAdminStatusUpdate RoamingNetworkAdminStatusUpdate1,
                                           RoamingNetworkAdminStatusUpdate RoamingNetworkAdminStatusUpdate2)
 
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkAdminStatusUpdate1">A roaming network admin status update.</param>
         /// <param name="RoamingNetworkAdminStatusUpdate2">Another roaming network admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (RoamingNetworkAdminStatusUpdate RoamingNetworkAdminStatusUpdate1,
                                            RoamingNetworkAdminStatusUpdate RoamingNetworkAdminStatusUpdate2)
 
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkAdminStatusUpdate1">A roaming network admin status update.</param>
         /// <param name="RoamingNetworkAdminStatusUpdate2">Another roaming network admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (RoamingNetworkAdminStatusUpdate RoamingNetworkAdminStatusUpdate1,
                                           RoamingNetworkAdminStatusUpdate RoamingNetworkAdminStatusUpdate2)
 
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkAdminStatusUpdate1">A roaming network admin status update.</param>
         /// <param name="RoamingNetworkAdminStatusUpdate2">Another roaming network admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (RoamingNetworkAdminStatusUpdate RoamingNetworkAdminStatusUpdate1,
                                            RoamingNetworkAdminStatusUpdate RoamingNetworkAdminStatusUpdate2)
 

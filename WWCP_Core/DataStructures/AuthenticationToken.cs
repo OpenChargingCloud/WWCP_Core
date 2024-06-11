@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthenticationToken1">An authentication token.</param>
         /// <param name="AuthenticationToken2">Another authentication token.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AuthenticationToken AuthenticationToken1,
                                            AuthenticationToken AuthenticationToken2)
 
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthenticationToken1">An authentication token.</param>
         /// <param name="AuthenticationToken2">Another authentication token.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AuthenticationToken AuthenticationToken1,
                                            AuthenticationToken AuthenticationToken2)
 
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthenticationToken1">An authentication token.</param>
         /// <param name="AuthenticationToken2">Another authentication token.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (AuthenticationToken AuthenticationToken1,
                                           AuthenticationToken AuthenticationToken2)
 
@@ -346,7 +346,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthenticationToken1">An authentication token.</param>
         /// <param name="AuthenticationToken2">Another authentication token.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (AuthenticationToken AuthenticationToken1,
                                            AuthenticationToken AuthenticationToken2)
 
@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthenticationToken1">An authentication token.</param>
         /// <param name="AuthenticationToken2">Another authentication token.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (AuthenticationToken AuthenticationToken1,
                                           AuthenticationToken AuthenticationToken2)
 
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthenticationToken1">An authentication token.</param>
         /// <param name="AuthenticationToken2">Another authentication token.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (AuthenticationToken AuthenticationToken1,
                                            AuthenticationToken AuthenticationToken2)
 

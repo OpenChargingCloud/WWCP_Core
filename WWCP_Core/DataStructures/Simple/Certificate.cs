@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Certificate1">A certificate.</param>
         /// <param name="Certificate2">Another certificate.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (Certificate Certificate1,
                                            Certificate Certificate2)
 
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Certificate1">A certificate.</param>
         /// <param name="Certificate2">Another certificate.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (Certificate Certificate1,
                                            Certificate Certificate2)
 
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Certificate1">A certificate.</param>
         /// <param name="Certificate2">Another certificate.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (Certificate Certificate1,
                                           Certificate Certificate2)
 
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Certificate1">A certificate.</param>
         /// <param name="Certificate2">Another certificate.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (Certificate Certificate1,
                                            Certificate Certificate2)
 
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Certificate1">A certificate.</param>
         /// <param name="Certificate2">Another certificate.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (Certificate Certificate1,
                                           Certificate Certificate2)
 
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Certificate1">A certificate.</param>
         /// <param name="Certificate2">Another certificate.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (Certificate Certificate1,
                                            Certificate Certificate2)
 

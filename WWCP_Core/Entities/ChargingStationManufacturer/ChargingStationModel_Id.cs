@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.WWCP.CSM
         /// </summary>
         /// <param name="ChargingStationModelId1">A charging station model identification.</param>
         /// <param name="ChargingStationModelId2">Another charging station model identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingStationModel_Id ChargingStationModelId1,
                                            ChargingStationModel_Id ChargingStationModelId2)
 
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.WWCP.CSM
         /// </summary>
         /// <param name="ChargingStationModelId1">A charging station model identification.</param>
         /// <param name="ChargingStationModelId2">Another charging station model identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingStationModel_Id ChargingStationModelId1,
                                            ChargingStationModel_Id ChargingStationModelId2)
 
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.WWCP.CSM
         /// </summary>
         /// <param name="ChargingStationModelId1">A charging station model identification.</param>
         /// <param name="ChargingStationModelId2">Another charging station model identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingStationModel_Id ChargingStationModelId1,
                                           ChargingStationModel_Id ChargingStationModelId2)
 
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.WWCP.CSM
         /// </summary>
         /// <param name="ChargingStationModelId1">A charging station model identification.</param>
         /// <param name="ChargingStationModelId2">Another charging station model identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingStationModel_Id ChargingStationModelId1,
                                            ChargingStationModel_Id ChargingStationModelId2)
 
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.WWCP.CSM
         /// </summary>
         /// <param name="ChargingStationModelId1">A charging station model identification.</param>
         /// <param name="ChargingStationModelId2">Another charging station model identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingStationModel_Id ChargingStationModelId1,
                                           ChargingStationModel_Id ChargingStationModelId2)
 
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.WWCP.CSM
         /// </summary>
         /// <param name="ChargingStationModelId1">A charging station model identification.</param>
         /// <param name="ChargingStationModelId2">Another charging station model identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingStationModel_Id ChargingStationModelId1,
                                            ChargingStationModel_Id ChargingStationModelId2)
 

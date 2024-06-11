@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId1">An authorizator identification.</param>
         /// <param name="AuthorizatorId2">Another authorizator identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (Authorizator_Id AuthorizatorId1,
                                            Authorizator_Id AuthorizatorId2)
 
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId1">An authorizator identification.</param>
         /// <param name="AuthorizatorId2">Another authorizator identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (Authorizator_Id AuthorizatorId1,
                                            Authorizator_Id AuthorizatorId2)
 
@@ -223,7 +223,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId1">An authorizator identification.</param>
         /// <param name="AuthorizatorId2">Another authorizator identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (Authorizator_Id AuthorizatorId1,
                                           Authorizator_Id AuthorizatorId2)
 
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId1">An authorizator identification.</param>
         /// <param name="AuthorizatorId2">Another authorizator identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (Authorizator_Id AuthorizatorId1,
                                            Authorizator_Id AuthorizatorId2)
 
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId1">An authorizator identification.</param>
         /// <param name="AuthorizatorId2">Another authorizator identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (Authorizator_Id AuthorizatorId1,
                                           Authorizator_Id AuthorizatorId2)
 
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId1">An authorizator identification.</param>
         /// <param name="AuthorizatorId2">Another authorizator identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (Authorizator_Id AuthorizatorId1,
                                            Authorizator_Id AuthorizatorId2)
 

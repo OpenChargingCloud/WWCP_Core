@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AAuthentication1">A AAuthentication.</param>
         /// <param name="AAuthentication2">Another AAuthentication.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AAuthentication AAuthentication1, AAuthentication AAuthentication2)
         {
 
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AAuthentication1">A AAuthentication.</param>
         /// <param name="AAuthentication2">Another AAuthentication.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AAuthentication AAuthentication1, AAuthentication AAuthentication2)
             => !(AAuthentication1 == AAuthentication2);
 
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AAuthentication1">A AAuthentication.</param>
         /// <param name="AAuthentication2">Another AAuthentication.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (AAuthentication AAuthentication1, AAuthentication AAuthentication2)
         {
 
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AAuthentication1">A AAuthentication.</param>
         /// <param name="AAuthentication2">Another AAuthentication.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (AAuthentication AAuthentication1, AAuthentication AAuthentication2)
             => !(AAuthentication1 > AAuthentication2);
 
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AAuthentication1">A AAuthentication.</param>
         /// <param name="AAuthentication2">Another AAuthentication.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (AAuthentication AAuthentication1, AAuthentication AAuthentication2)
         {
 
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AAuthentication1">A AAuthentication.</param>
         /// <param name="AAuthentication2">Another AAuthentication.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (AAuthentication AAuthentication1, AAuthentication AAuthentication2)
             => !(AAuthentication1 < AAuthentication2);
 

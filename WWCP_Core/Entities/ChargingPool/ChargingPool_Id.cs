@@ -381,7 +381,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolId1">A charging pool identification.</param>
         /// <param name="ChargingPoolId2">Another charging pool identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingPool_Id ChargingPoolId1,
                                            ChargingPool_Id ChargingPoolId2)
 
@@ -396,7 +396,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolId1">A charging pool identification.</param>
         /// <param name="ChargingPoolId2">Another charging pool identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChargingPool_Id ChargingPoolId1,
                                            ChargingPool_Id ChargingPoolId2)
 
@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolId1">A charging pool identification.</param>
         /// <param name="ChargingPoolId2">Another charging pool identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingPool_Id ChargingPoolId1,
                                           ChargingPool_Id ChargingPoolId2)
 
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolId1">A charging pool identification.</param>
         /// <param name="ChargingPoolId2">Another charging pool identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ChargingPool_Id ChargingPoolId1,
                                            ChargingPool_Id ChargingPoolId2)
 
@@ -441,7 +441,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolId1">A charging pool identification.</param>
         /// <param name="ChargingPoolId2">Another charging pool identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingPool_Id ChargingPoolId1,
                                           ChargingPool_Id ChargingPoolId2)
 
@@ -456,7 +456,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolId1">A charging pool identification.</param>
         /// <param name="ChargingPoolId2">Another charging pool identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ChargingPool_Id ChargingPoolId1,
                                            ChargingPool_Id ChargingPoolId2)
 

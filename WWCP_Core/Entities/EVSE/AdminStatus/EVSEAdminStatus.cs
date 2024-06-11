@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (EVSEAdminStatus EVSEAdminStatus1,
                                            EVSEAdminStatus EVSEAdminStatus2)
 
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (EVSEAdminStatus EVSEAdminStatus1,
                                            EVSEAdminStatus EVSEAdminStatus2)
 
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (EVSEAdminStatus EVSEAdminStatus1,
                                           EVSEAdminStatus EVSEAdminStatus2)
 
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (EVSEAdminStatus EVSEAdminStatus1,
                                            EVSEAdminStatus EVSEAdminStatus2)
 
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (EVSEAdminStatus EVSEAdminStatus1,
                                           EVSEAdminStatus EVSEAdminStatus2)
 
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (EVSEAdminStatus EVSEAdminStatus1,
                                            EVSEAdminStatus EVSEAdminStatus2)
 

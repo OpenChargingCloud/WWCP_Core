@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ParkingProduct1">A parking product.</param>
         /// <param name="ParkingProduct2">Another parking product.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ParkingProduct ParkingProduct1, ParkingProduct ParkingProduct2)
         {
 
@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ParkingProduct1">A parking product.</param>
         /// <param name="ParkingProduct2">Another parking product.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ParkingProduct ParkingProduct1, ParkingProduct ParkingProduct2)
             => !(ParkingProduct1 == ParkingProduct2);
 
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ParkingProduct1">A parking product.</param>
         /// <param name="ParkingProduct2">Another parking product.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ParkingProduct ParkingProduct1, ParkingProduct ParkingProduct2)
         {
 
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ParkingProduct1">A parking product.</param>
         /// <param name="ParkingProduct2">Another parking product.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (ParkingProduct ParkingProduct1, ParkingProduct ParkingProduct2)
             => !(ParkingProduct1 > ParkingProduct2);
 
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ParkingProduct1">A parking product.</param>
         /// <param name="ParkingProduct2">Another parking product.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ParkingProduct ParkingProduct1, ParkingProduct ParkingProduct2)
         {
 
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ParkingProduct1">A parking product.</param>
         /// <param name="ParkingProduct2">Another parking product.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (ParkingProduct ParkingProduct1, ParkingProduct ParkingProduct2)
             => !(ParkingProduct1 < ParkingProduct2);
 
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object Object)
         {
 

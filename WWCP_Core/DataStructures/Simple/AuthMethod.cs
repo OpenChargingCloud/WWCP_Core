@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthMethod1">An authentication method.</param>
         /// <param name="AuthMethod2">Another authentication method.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AuthMethod AuthMethod1,
                                            AuthMethod AuthMethod2)
 
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthMethod1">An authentication method.</param>
         /// <param name="AuthMethod2">Another authentication method.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AuthMethod AuthMethod1,
                                            AuthMethod AuthMethod2)
 
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthMethod1">An authentication method.</param>
         /// <param name="AuthMethod2">Another authentication method.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (AuthMethod AuthMethod1,
                                           AuthMethod AuthMethod2)
 
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthMethod1">An authentication method.</param>
         /// <param name="AuthMethod2">Another authentication method.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (AuthMethod AuthMethod1,
                                            AuthMethod AuthMethod2)
 
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthMethod1">An authentication method.</param>
         /// <param name="AuthMethod2">Another authentication method.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (AuthMethod AuthMethod1,
                                           AuthMethod AuthMethod2)
 
@@ -296,7 +296,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthMethod1">An authentication method.</param>
         /// <param name="AuthMethod2">Another authentication method.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (AuthMethod AuthMethod1,
                                            AuthMethod AuthMethod2)
 

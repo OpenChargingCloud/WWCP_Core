@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeterAdminStatusUpdate1">A energy meter admin status update.</param>
         /// <param name="EnergyMeterAdminStatusUpdate2">Another energy meter admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (EnergyMeterAdminStatusUpdate EnergyMeterAdminStatusUpdate1,
                                            EnergyMeterAdminStatusUpdate EnergyMeterAdminStatusUpdate2)
 
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeterAdminStatusUpdate1">A energy meter admin status update.</param>
         /// <param name="EnergyMeterAdminStatusUpdate2">Another energy meter admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (EnergyMeterAdminStatusUpdate EnergyMeterAdminStatusUpdate1,
                                            EnergyMeterAdminStatusUpdate EnergyMeterAdminStatusUpdate2)
 
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeterAdminStatusUpdate1">A energy meter admin status update.</param>
         /// <param name="EnergyMeterAdminStatusUpdate2">Another energy meter admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (EnergyMeterAdminStatusUpdate EnergyMeterAdminStatusUpdate1,
                                           EnergyMeterAdminStatusUpdate EnergyMeterAdminStatusUpdate2)
 
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeterAdminStatusUpdate1">A energy meter admin status update.</param>
         /// <param name="EnergyMeterAdminStatusUpdate2">Another energy meter admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (EnergyMeterAdminStatusUpdate EnergyMeterAdminStatusUpdate1,
                                            EnergyMeterAdminStatusUpdate EnergyMeterAdminStatusUpdate2)
 
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeterAdminStatusUpdate1">A energy meter admin status update.</param>
         /// <param name="EnergyMeterAdminStatusUpdate2">Another energy meter admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (EnergyMeterAdminStatusUpdate EnergyMeterAdminStatusUpdate1,
                                           EnergyMeterAdminStatusUpdate EnergyMeterAdminStatusUpdate2)
 
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeterAdminStatusUpdate1">A energy meter admin status update.</param>
         /// <param name="EnergyMeterAdminStatusUpdate2">Another energy meter admin status update.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (EnergyMeterAdminStatusUpdate EnergyMeterAdminStatusUpdate1,
                                            EnergyMeterAdminStatusUpdate EnergyMeterAdminStatusUpdate2)
 
