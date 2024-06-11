@@ -36,21 +36,21 @@ using cloud.charging.open.protocols.WWCP.Networking;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class ReloadStatistics(String               FileNameSearchPattern,
-                                  IEnumerable<String>  FileNames,
-                                  UInt64               NumberOfCommands,
-                                  IEnumerable<String>  Errors,
-                                  TimeSpan             Runtime)
+    public class ReloadStatistics(String                              FileNameSearchPattern,
+                                  IEnumerable<Tuple<String, UInt64>>  FileStatistics,
+                                  UInt64                              NumberOfCommands,
+                                  IEnumerable<String>                 Errors,
+                                  TimeSpan                            Runtime)
     {
 
-        public String               FileNameSearchPattern    { get; } = FileNameSearchPattern;
-        public IEnumerable<String>  FileNames                { get; } = FileNames;
-        public UInt64               NumberOfCommands         { get; } = NumberOfCommands;
-        public IEnumerable<String>  Errors                   { get; } = Errors;
-        public TimeSpan             Runtime                  { get; } = Runtime;
+        public String                              FileNameSearchPattern    { get; } = FileNameSearchPattern;
+        public IEnumerable<Tuple<String, UInt64>>  FileStatistics           { get; } = FileStatistics;
+        public UInt64                              NumberOfCommands         { get; } = NumberOfCommands;
+        public IEnumerable<String>                 Errors                   { get; } = Errors;
+        public TimeSpan                            Runtime                  { get; } = Runtime;
 
         public override String ToString()
-            => $"{FileNameSearchPattern}: {FileNames.Count()} files, {NumberOfCommands} commands, {Errors.Count()} errors, {Runtime.TotalSeconds} seconds runtime";
+            => $"{FileNameSearchPattern}: {FileStatistics.Count()} files, {NumberOfCommands} commands, {Errors.Count()} errors, {Runtime.TotalSeconds} seconds runtime";
 
     }
 
@@ -64,6 +64,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     public delegate Boolean CommandDelegate<TId, TData>(String                            FileName,
+                                                        UInt64                            lineCounter,
                                                         IPSocket?                         Socket,
                                                         DateTime                          Timestamp,
                                                         TId                               Id,
@@ -325,6 +326,7 @@ namespace cloud.charging.open.protocols.WWCP
                                             {
 
                                                 if (CommandProcessor(null,
+                                                                     0,
                                                                      connection.RemoteSocket,
                                                                      timestamp.Value,
                                                                      (TId) id,
@@ -793,7 +795,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var startTime         = Timestamp.Now;
-            var listOfFilenames   = new List<String>();
+            var listOfFilenames   = new List<Tuple<String, UInt64>>();
             var numberOfCommands  = 0UL;
             var listOfErrors      = new List<String>();
 
@@ -814,64 +816,72 @@ namespace cloud.charging.open.protocols.WWCP
                 foreach (var filename in filenames)
                 {
 
-                    listOfFilenames.Add(filename);
-
                     try
                     {
 
-                        File.ReadLines(filename).
-                            ForEachCounted((line, counter) => {
-                                if (line.IsNeitherNullNorEmpty() && !line.StartsWith("//") && !line.StartsWith('#'))
+                        var lineNumber = 0UL;
+
+                        foreach (var line in File.ReadLines(filename))
+                        {
+
+                            lineNumber++;
+
+                            if (line.IsNeitherNullNorEmpty() && !line.StartsWith("//") && !line.StartsWith('#'))
+                            {
+                                try
                                 {
-                                    try
+
+                                    var json       = JObject.Parse(line);
+
+                                    var timestamp  =                json["timestamp"]?.Value<DateTime>();
+                                    var id         = StringIdParser(json["id"]?.       Value<String>() ?? "");
+                                    var command    =                json["command"]?.  Value<String>();
+
+                                    if (timestamp.HasValue    &&
+                                        id        is not null &&
+                                        command.  IsNotNullOrEmpty())
                                     {
 
-                                        var json       = JObject.Parse(line);
+                                        numberOfCommands++;
 
-                                        var timestamp  =                json["timestamp"]?.Value<DateTime>();
-                                        var id         = StringIdParser(json["id"]?.       Value<String>() ?? "");
-                                        var command    =                json["command"]?.  Value<String>();
-
-                                        if (timestamp.HasValue    &&
-                                            id        is not null &&
-                                            command.  IsNotNullOrEmpty())
+                                        switch (command)
                                         {
 
-                                            numberOfCommands++;
+                                            case "clear":
+                                                InternalData.Clear();
+                                                break;
 
-                                            switch (command)
-                                            {
-
-                                                case "clear":
-                                                    InternalData.Clear();
-                                                    break;
-
-                                                default:
-                                                    CommandProcessor(filename,
-                                                                     null,
-                                                                     timestamp.Value,
-                                                                     (TId) id,
-                                                                     command,
-                                                                     json,
-                                                                     InternalData);
-                                                    break;
-
-                                            }
+                                            default:
+                                                CommandProcessor(filename,
+                                                                 lineNumber,
+                                                                 null,
+                                                                 timestamp.Value,
+                                                                 (TId) id,
+                                                                 command,
+                                                                 json,
+                                                                 InternalData);
+                                                break;
 
                                         }
 
                                     }
-                                    catch (Exception e)
-                                    {
 
-                                        var errorMessage = $"Could not parse data in '{filename}' line {counter}: {e.Message}";
-
-                                        listOfErrors.Add(errorMessage);
-                                        DebugX.Log(errorMessage);
-
-                                    }
                                 }
-                            });
+                                catch (Exception e)
+                                {
+
+                                    var errorMessage = $"Could not parse data in '{filename}' line {lineNumber}: {e.Message}";
+
+                                    listOfErrors.Add(errorMessage);
+                                    DebugX.Log(errorMessage);
+
+                                }
+                            }
+
+                        }
+
+                        listOfFilenames.Add(new Tuple<String, UInt64>(filename, lineNumber));
+                        DebugX.Log($"{Name}: Processed logfile '{filename}' with {lineNumber} lines!");
 
                     }
                     catch (Exception e)

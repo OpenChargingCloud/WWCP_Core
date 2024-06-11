@@ -1622,7 +1622,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     ChargingSession.AddEnergyMeterValue(
                         new EnergyMeteringValue(
                             Timestamp.Now,
-                            WattHour.Parse(1),
+                            WattHour.ParseWh(1),
                             EnergyMeteringValueTypes.Intermediate
                         )
                     );
@@ -3043,7 +3043,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             __ChargingSession.SessionTime.EndTime = now;
                             var duration             = now - __ChargingSession.SessionTime.StartTime;
                             var consumption          = MaxPower.HasValue
-                                                           ? WattHour.Parse(Math.Round(((Decimal) duration.TotalHours) * MaxPower.Value, 2))
+                                                           ? WattHour.ParseWh(Math.Round(((Decimal) duration.TotalHours) * MaxPower.Value, 2))
                                                            : WattHour.Zero;
 
                             __ChargingSession.AddEnergyMeterValue(

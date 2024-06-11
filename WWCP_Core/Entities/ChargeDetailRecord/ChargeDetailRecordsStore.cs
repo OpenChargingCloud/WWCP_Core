@@ -59,6 +59,7 @@ namespace cloud.charging.open.protocols.WWCP
                    StringIdParser:        ChargingSession_Id.TryParse,
 
                    CommandProcessor:      (logfilename,
+                                           lineNumber,
                                            remoteSocket,
                                            timestamp,
                                            id,

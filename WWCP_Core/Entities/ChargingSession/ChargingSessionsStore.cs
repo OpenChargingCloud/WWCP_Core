@@ -206,6 +206,7 @@ namespace cloud.charging.open.protocols.WWCP
                    StringIdParser:         ChargingSession_Id.TryParse,
 
                    CommandProcessor:       (logfilename,
+                                            lineNumber,
                                             remoteSocket,
                                             timestamp,
                                             sessionId,
@@ -213,131 +214,141 @@ namespace cloud.charging.open.protocols.WWCP
                                             json,
                                             internalData) => {
 
-                       if (json["chargingSession"] is JObject chargingSession)
+                       if (json["chargingSession"] is JObject chargingSessionJSON)
                        {
 
-                           var session = ChargingSession.Parse(chargingSession, RoamingNetwork);
-                           session.RoamingNetwork ??= RoamingNetwork;
-
-                           switch (command)
+                           if (ChargingSession.TryParse(chargingSessionJSON,
+                                                        out var chargingSession,
+                                                        out var errorResponse))
                            {
 
-                               #region "remoteStart"
+                               chargingSession.RoamingNetwork ??= RoamingNetwork;
 
-                               case "remoteStart":
-                                   {
+                               switch (command)
+                               {
 
-                                       if (!internalData.ContainsKey(session.Id))
-                                           internalData.TryAdd(session.Id, session);
+                                   #region "remoteStart"
 
-                                       if (session.EVSEId.HasValue && session.EVSE is null)
-                                           session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
+                                   case "remoteStart":
+                                       {
 
-                                       if (session.EVSE is not null)
-                                           session.EVSE.ChargingSession = session;
+                                           if (!internalData.ContainsKey(chargingSession.Id))
+                                               internalData.TryAdd(chargingSession.Id, chargingSession);
 
-                                   }
-                                   return true;
+                                           if (chargingSession.EVSEId.HasValue && chargingSession.EVSE is null)
+                                               chargingSession.EVSE = RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
 
-                               #endregion
+                                           if (chargingSession.EVSE is not null)
+                                               chargingSession.EVSE.ChargingSession = chargingSession;
 
-                               #region "remoteStop"
+                                       }
+                                       return true;
 
-                               case "remoteStop":
-                                   {
+                                   #endregion
 
-                                       if (!internalData.ContainsKey(session.Id))
-                                           internalData.TryAdd(session.Id, session);
-                                       else
-                                           internalData[session.Id] = session;
+                                   #region "remoteStop"
 
-                                       if (session.EVSEId.HasValue && session.EVSE is null)
-                                           session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
+                                   case "remoteStop":
+                                       {
 
-                                       if (session.EVSE is not null)
-                                           session.EVSE.ChargingSession = null;
+                                           if (!internalData.ContainsKey(chargingSession.Id))
+                                               internalData.TryAdd(chargingSession.Id, chargingSession);
+                                           else
+                                               internalData[chargingSession.Id] = chargingSession;
 
-                                   }
-                                   return true;
+                                           if (chargingSession.EVSEId.HasValue && chargingSession.EVSE is null)
+                                               chargingSession.EVSE = RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
 
-                               #endregion
+                                           if (chargingSession.EVSE is not null)
+                                               chargingSession.EVSE.ChargingSession = null;
 
-                               #region "authStart"
+                                       }
+                                       return true;
 
-                               case "authStart":
-                                   {
+                                   #endregion
 
-                                       if (!internalData.ContainsKey(session.Id))
-                                           internalData.TryAdd(session.Id, session);
+                                   #region "authStart"
 
-                                       if (session.EVSEId.HasValue && session.EVSE is null)
-                                           session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
+                                   case "authStart":
+                                       {
 
-                                       if (session.EVSE is not null)
-                                           session.EVSE.ChargingSession = session;
+                                           if (!internalData.ContainsKey(chargingSession.Id))
+                                               internalData.TryAdd(chargingSession.Id, chargingSession);
 
-                                   }
-                                   return true;
+                                           if (chargingSession.EVSEId.HasValue && chargingSession.EVSE is null)
+                                               chargingSession.EVSE = RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
 
-                               #endregion
+                                           if (chargingSession.EVSE is not null)
+                                               chargingSession.EVSE.ChargingSession = chargingSession;
 
-                               #region "authStop"
+                                       }
+                                       return true;
 
-                               case "authStop":
-                                   {
+                                   #endregion
 
-                                       if (!internalData.ContainsKey(session.Id))
-                                           internalData.TryAdd(session.Id, session);
-                                       else
-                                           internalData[session.Id] = session;
+                                   #region "authStop"
 
-                                       if (session.EVSEId.HasValue && session.EVSE is null)
-                                           session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
+                                   case "authStop":
+                                       {
 
-                                       if (session.EVSE is not null)
-                                           session.EVSE.ChargingSession = null;
+                                           if (!internalData.ContainsKey(chargingSession.Id))
+                                               internalData.TryAdd(chargingSession.Id, chargingSession);
+                                           else
+                                               internalData[chargingSession.Id] = chargingSession;
 
-                                   }
-                                   return true;
+                                           if (chargingSession.EVSEId.HasValue && chargingSession.EVSE is null)
+                                               chargingSession.EVSE = RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
 
-                               #endregion
+                                           if (chargingSession.EVSE is not null)
+                                               chargingSession.EVSE.ChargingSession = null;
 
-                               #region "CDRReceived"
+                                       }
+                                       return true;
 
-                               case "CDRReceived":
-                                   {
+                                   #endregion
 
-                                       if (!internalData.ContainsKey(session.Id))
-                                           internalData.TryAdd(session.Id, session);
-                                       else
-                                           internalData[session.Id] = session;
+                                   #region "CDRReceived"
 
-                                       if (session.EVSEId.HasValue && session.EVSE is null)
-                                           session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
+                                   case "CDRReceived":
+                                       {
 
-                                       if (session.EVSE is not null)
-                                           session.EVSE.ChargingSession = null;
+                                           if (!internalData.ContainsKey(chargingSession.Id))
+                                               internalData.TryAdd(chargingSession.Id, chargingSession);
+                                           else
+                                               internalData[chargingSession.Id] = chargingSession;
 
-                                   }
-                                   return true;
+                                           if (chargingSession.EVSEId.HasValue && chargingSession.EVSE is null)
+                                               chargingSession.EVSE = RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
 
-                               #endregion
+                                           if (chargingSession.EVSE is not null)
+                                               chargingSession.EVSE.ChargingSession = null;
 
-                               #region "CDRForwarded"
+                                       }
+                                       return true;
 
-                               case "CDRForwarded":
-                                   {
+                                   #endregion
 
-                                       if (!internalData.ContainsKey(session.Id))
-                                           internalData.TryAdd(session.Id, session);
-                                       else
-                                           internalData[session.Id] = session;
+                                   #region "CDRForwarded"
 
-                                   }
-                                   return true;
+                                   case "CDRForwarded":
+                                       {
 
-                               #endregion
+                                           if (!internalData.ContainsKey(chargingSession.Id))
+                                               internalData.TryAdd(chargingSession.Id, chargingSession);
+                                           else
+                                               internalData[chargingSession.Id] = chargingSession;
 
+                                       }
+                                       return true;
+
+                                   #endregion
+
+                               }
+
+                           }
+                           else
+                           {
+                               DebugX.Log($"Could not parse charging session in {logfilename} line {lineNumber}:" + errorResponse);
                            }
 
                        }

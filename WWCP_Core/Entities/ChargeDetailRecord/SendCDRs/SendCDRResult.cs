@@ -618,7 +618,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 => new (Timestamp,
                         AuthorizatorId,
-                        SendCDRResultTypes.Enqueued,
+                        SendCDRResultTypes.Success,
                         ChargeDetailRecord,
                         Description,
                         Warnings,

@@ -55,6 +55,7 @@ namespace cloud.charging.open.protocols.WWCP
                    StringIdParser:        ChargingReservation_Id.TryParse,
 
                    CommandProcessor:      (logfilename,
+                                           lineNumber,
                                            remoteSocket,
                                            timestamp,
                                            id,
