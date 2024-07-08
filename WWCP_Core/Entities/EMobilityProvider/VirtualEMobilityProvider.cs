@@ -19,12 +19,14 @@
 
 using System.Collections.Concurrent;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.WWCP.Networking;
 using cloud.charging.open.protocols.WWCP.MobilityProvider;
-using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -489,16 +491,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional cancellation token to cancel this request.</param>
         public async Task<RemoteStartResult> RemoteStart(ChargingLocation         ChargingLocation,
-                                                         ChargingProduct?         ChargingProduct        = null,
-                                                         ChargingReservation_Id?  ReservationId          = null,
-                                                         RemoteAuthentication?    RemoteAuthentication   = null,
-                                                         Auth_Path?               AuthenticationPath     = null,
-                                                         ChargingSession_Id?      SessionId              = null,
+                                                         ChargingProduct?         ChargingProduct          = null,
+                                                         ChargingReservation_Id?  ReservationId            = null,
+                                                         RemoteAuthentication?    RemoteAuthentication     = null,
+                                                         Auth_Path?               AuthenticationPath       = null,
+                                                         JObject?                 AdditionalSessionInfos   = null,
+                                                         ChargingSession_Id?      SessionId                = null,
 
-                                                         DateTime?                Timestamp              = null,
-                                                         EventTracking_Id?        EventTrackingId        = null,
-                                                         TimeSpan?                RequestTimeout         = null,
-                                                         CancellationToken        CancellationToken      = default)
+                                                         DateTime?                Timestamp                = null,
+                                                         EventTracking_Id?        EventTrackingId          = null,
+                                                         TimeSpan?                RequestTimeout           = null,
+                                                         CancellationToken        CancellationToken        = default)
         {
 
             #region Init
@@ -562,18 +565,21 @@ namespace cloud.charging.open.protocols.WWCP
                                      ));
 
 
-                result = await RoamingNetwork.RemoteStart(ChargingLocation,
-                                                          ChargingProduct,
-                                                          ReservationId,
-                                                          SessionId,
-                                                          Id,
-                                                          RemoteAuthentication,
-                                                          AuthenticationPath,
+                result = await RoamingNetwork.RemoteStart(
+                                   ChargingLocation,
+                                   ChargingProduct,
+                                   ReservationId,
+                                   SessionId,
+                                   Id,
+                                   RemoteAuthentication,
+                                   AdditionalSessionInfos,
+                                   AuthenticationPath,
 
-                                                          timestamp,
-                                                          eventTrackingId,
-                                                          requestTimeout,
-                                                          CancellationToken);
+                                   timestamp,
+                                   eventTrackingId,
+                                   requestTimeout,
+                                   CancellationToken
+                               );
 
 
                 switch (result.Result)

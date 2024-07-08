@@ -17,14 +17,9 @@
 
 #region Usings
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Linq;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -100,16 +95,17 @@ namespace cloud.charging.open.protocols.WWCP
         Task<RemoteStartResult>
 
             RemoteStart(ChargingLocation         ChargingLocation,
-                        ChargingProduct?         ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        RemoteAuthentication?    RemoteAuthentication   = null,
-                        Auth_Path?               AuthenticationPath     = null,
-                        ChargingSession_Id?      SessionId              = null,
+                        ChargingProduct?         ChargingProduct          = null,
+                        ChargingReservation_Id?  ReservationId            = null,
+                        RemoteAuthentication?    RemoteAuthentication     = null,
+                        Auth_Path?               AuthenticationPath       = null,
+                        JObject?                 AdditionalSessionInfos   = null,
+                        ChargingSession_Id?      SessionId                = null,
 
-                        DateTime?                Timestamp              = null,
-                        EventTracking_Id?        EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null,
-                        CancellationToken        CancellationToken      = default);
+                        DateTime?                Timestamp                = null,
+                        EventTracking_Id?        EventTrackingId          = null,
+                        TimeSpan?                RequestTimeout           = null,
+                        CancellationToken        CancellationToken        = default);
 
         #endregion
 

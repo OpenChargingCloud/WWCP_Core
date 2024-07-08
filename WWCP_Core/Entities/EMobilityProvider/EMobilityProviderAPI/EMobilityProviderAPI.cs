@@ -569,27 +569,32 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                           try
                                           {
 
-                                              var remoteStartResult = await eMobilityProvider.RemoteStart(remoteStartRequest.ChargingLocation,
-                                                                                                          remoteStartRequest.ChargingProduct,
-                                                                                                          remoteStartRequest.ReservationId,
-                                                                                                          remoteStartRequest.RemoteAuthentication,
-                                                                                                          remoteStartRequest.AuthenticationPath,
-                                                                                                          remoteStartRequest.ChargingSessionId,
-                                                                                                          remoteStartRequest.Timestamp,
-                                                                                                          remoteStartRequest.EventTrackingId,
-                                                                                                          remoteStartRequest.RequestTimeout,
-                                                                                                          remoteStartRequest.CancellationToken);
+                                              var remoteStartResult = await eMobilityProvider.RemoteStart(
+                                                                                remoteStartRequest.ChargingLocation,
+                                                                                remoteStartRequest.ChargingProduct,
+                                                                                remoteStartRequest.ReservationId,
+                                                                                remoteStartRequest.RemoteAuthentication,
+                                                                                remoteStartRequest.AuthenticationPath,
+                                                                                remoteStartRequest.AdditionalSessionInfos,
+                                                                                remoteStartRequest.ChargingSessionId,
+                                                                                remoteStartRequest.Timestamp,
+                                                                                remoteStartRequest.EventTrackingId,
+                                                                                remoteStartRequest.RequestTimeout,
+                                                                                remoteStartRequest.CancellationToken
+                                                                            );
 
-                                              remoteStartResponse = new RemoteStartResponse(remoteStartRequest,
-                                                                                            remoteStartResult.Result,
-                                                                                            remoteStartRequest.EventTrackingId,
-                                                                                            Timestamp.Now,
-                                                                                            remoteStartResult.Session,
-                                                                                            remoteStartResult.Description,
-                                                                                            remoteStartResult.AdditionalInfo,
-                                                                                            Array.Empty<Warning>(),
-                                                                                            null,
-                                                                                            remoteStartResult.Runtime);
+                                              remoteStartResponse = new RemoteStartResponse(
+                                                                        remoteStartRequest,
+                                                                        remoteStartResult.Result,
+                                                                        remoteStartRequest.EventTrackingId,
+                                                                        Timestamp.Now,
+                                                                        remoteStartResult.Session,
+                                                                        remoteStartResult.Description,
+                                                                        remoteStartResult.AdditionalInfo,
+                                                                        [],
+                                                                        null,
+                                                                        remoteStartResult.Runtime
+                                                                    );
 
                                               //authorizeRemoteStartResponse = (await Task.WhenAll(OnRemoteStartLocal.GetInvocationList().
                                               //                                                                  Cast<OnRemoteStartDelegate>().

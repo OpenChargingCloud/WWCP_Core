@@ -1953,7 +1953,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public IEnumerable<ChargingSession> ChargingSessions
             => chargingSessions.Select(_ => _.Value);
 
-        #region Contains(ChargingSessionId)
+        #region ContainsChargingSessionId (ChargingSessionId)
 
         /// <summary>
         /// Whether the given charging session identification is known within the charging station.
@@ -1965,15 +1965,34 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
-        #region TryGetChargingSessionById(SessionId, out ChargingSession)
+        #region GetChargingSessionById    (ChargingSessionId)
 
         /// <summary>
         /// Return the charging session specified by the given identification.
         /// </summary>
-        /// <param name="SessionId">The charging session identification.</param>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
+        public ChargingSession? GetChargingSessionById(ChargingSession_Id ChargingSessionId)
+        {
+
+            if (chargingSessions.TryGetValue(ChargingSessionId, out var chargingSession))
+                return chargingSession;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryGetChargingSessionById (ChargingSessionId, out ChargingSession)
+
+        /// <summary>
+        /// Return the charging session specified by the given identification.
+        /// </summary>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
         /// <param name="ChargingSession">The charging session.</param>
-        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession? ChargingSession)
-            => chargingSessions.TryGetValue(SessionId, out ChargingSession);
+        public Boolean TryGetChargingSessionById(ChargingSession_Id ChargingSessionId, out ChargingSession? ChargingSession)
+
+            => chargingSessions.TryGetValue(ChargingSessionId, out ChargingSession);
 
         #endregion
 
@@ -2031,31 +2050,35 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public Task<RemoteStartResult>
 
-            RemoteStart(ChargingProduct?         ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        ChargingSession_Id?      SessionId              = null,
-                        EMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication?    RemoteAuthentication   = null,
-                        Auth_Path?               AuthenticationPath     = null,
+            RemoteStart(ChargingProduct?         ChargingProduct          = null,
+                        ChargingReservation_Id?  ReservationId            = null,
+                        ChargingSession_Id?      SessionId                = null,
+                        EMobilityProvider_Id?    ProviderId               = null,
+                        RemoteAuthentication?    RemoteAuthentication     = null,
+                        JObject?                 AdditionalSessionInfos   = null,
+                        Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                Timestamp              = null,
-                        EventTracking_Id?        EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null,
-                        CancellationToken        CancellationToken      = default)
+                        DateTime?                Timestamp                = null,
+                        EventTracking_Id?        EventTrackingId          = null,
+                        TimeSpan?                RequestTimeout           = null,
+                        CancellationToken        CancellationToken        = default)
 
 
-                => RemoteStart(ChargingLocation.FromChargingStationId(Id),
-                               ChargingProduct,
-                               ReservationId,
-                               SessionId,
-                               ProviderId,
-                               RemoteAuthentication,
-                               AuthenticationPath,
+                => RemoteStart(
+                       ChargingLocation.FromChargingStationId(Id),
+                       ChargingProduct,
+                       ReservationId,
+                       SessionId,
+                       ProviderId,
+                       RemoteAuthentication,
+                       AdditionalSessionInfos,
+                       AuthenticationPath,
 
-                               Timestamp,
-                               EventTrackingId,
-                               RequestTimeout,
-                               CancellationToken);
+                       Timestamp,
+                       EventTrackingId,
+                       RequestTimeout,
+                       CancellationToken
+                   );
 
         #endregion
 
@@ -2078,17 +2101,18 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public async Task<RemoteStartResult>
 
             RemoteStart(ChargingLocation         ChargingLocation,
-                        ChargingProduct?         ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        ChargingSession_Id?      SessionId              = null,
-                        EMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication?    RemoteAuthentication   = null,
-                        Auth_Path?               AuthenticationPath     = null,
+                        ChargingProduct?         ChargingProduct          = null,
+                        ChargingReservation_Id?  ReservationId            = null,
+                        ChargingSession_Id?      SessionId                = null,
+                        EMobilityProvider_Id?    ProviderId               = null,
+                        RemoteAuthentication?    RemoteAuthentication     = null,
+                        JObject?                 AdditionalSessionInfos   = null,
+                        Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                Timestamp              = null,
-                        EventTracking_Id?        EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null,
-                        CancellationToken        CancellationToken      = default)
+                        DateTime?                Timestamp                = null,
+                        EventTracking_Id?        EventTrackingId          = null,
+                        TimeSpan?                RequestTimeout           = null,
+                        CancellationToken        CancellationToken        = default)
 
         {
 
@@ -2163,18 +2187,20 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         result = RemoteStartResult.UnknownLocation(System_Id.Local);
 
                     else
-                        result = await remoteEVSE.
-                                           RemoteStart(ChargingProduct,
-                                                       ReservationId,
-                                                       SessionId,
-                                                       ProviderId,
-                                                       RemoteAuthentication,
-                                                       AuthenticationPath,
+                        result = await remoteEVSE.RemoteStart(
+                                           ChargingProduct,
+                                           ReservationId,
+                                           SessionId,
+                                           ProviderId,
+                                           RemoteAuthentication,
+                                           AdditionalSessionInfos,
+                                           AuthenticationPath,
 
-                                                       Timestamp,
-                                                       EventTrackingId,
-                                                       RequestTimeout,
-                                                       CancellationToken);
+                                           Timestamp,
+                                           EventTrackingId,
+                                           RequestTimeout,
+                                           CancellationToken
+                                       );
 
                 }
                 else

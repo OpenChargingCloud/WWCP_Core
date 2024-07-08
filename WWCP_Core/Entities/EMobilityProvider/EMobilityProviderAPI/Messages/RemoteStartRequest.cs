@@ -41,34 +41,39 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// The charging location.
         /// </summary>
         [Mandatory]
-        public ChargingLocation         ChargingLocation        { get; }
+        public ChargingLocation         ChargingLocation          { get; }
 
         /// <summary>
         /// The unique identification of the e-mobility account.
         /// </summary>
         [Mandatory]
-        public RemoteAuthentication     RemoteAuthentication    { get; }
+        public RemoteAuthentication     RemoteAuthentication      { get; }
+
 
         [Optional]
-        public Auth_Path?               AuthenticationPath      { get; }
+        public JObject?                 AdditionalSessionInfos    { get; }
+
+
+        [Optional]
+        public Auth_Path?               AuthenticationPath        { get; }
 
         /// <summary>
         /// The optional unique identification of a charging reservation.
         /// </summary>
         [Optional]
-        public ChargingReservation_Id?  ReservationId           { get; }
+        public ChargingReservation_Id?  ReservationId             { get; }
 
         /// <summary>
         /// The optional charging product.
         /// </summary>
         [Optional]
-        public ChargingProduct?         ChargingProduct         { get; }
+        public ChargingProduct?         ChargingProduct           { get; }
 
         /// <summary>
         /// The optional unique identification for this charging session.
         /// </summary>
         [Optional]
-        public ChargingSession_Id?      ChargingSessionId       { get; }
+        public ChargingSession_Id?      ChargingSessionId         { get; }
 
         #endregion
 
@@ -89,16 +94,17 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="RequestTimeout">The timeout for this request.</param>
         public RemoteStartRequest(ChargingLocation         ChargingLocation,
                                   RemoteAuthentication     RemoteAuthentication,
-                                  Auth_Path?               AuthenticationPath  = null,
-                                  ChargingReservation_Id?  ReservationId       = null,
-                                  ChargingProduct?         ChargingProduct     = null,
-                                  ChargingSession_Id?      ChargingSessionId   = null,
-                                  JObject?                 CustomData          = null,
+                                  JObject?                 AdditionalSessionInfos   = null,
+                                  Auth_Path?               AuthenticationPath       = null,
+                                  ChargingReservation_Id?  ReservationId            = null,
+                                  ChargingProduct?         ChargingProduct          = null,
+                                  ChargingSession_Id?      ChargingSessionId        = null,
+                                  JObject?                 CustomData               = null,
 
-                                  DateTime?                Timestamp           = null,
-                                  EventTracking_Id?        EventTrackingId     = null,
-                                  TimeSpan?                RequestTimeout      = null,
-                                  CancellationToken        CancellationToken   = default)
+                                  DateTime?                Timestamp                = null,
+                                  EventTracking_Id?        EventTrackingId          = null,
+                                  TimeSpan?                RequestTimeout           = null,
+                                  CancellationToken        CancellationToken        = default)
 
             : base(CustomData,
                    Timestamp,
@@ -108,22 +114,24 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
         {
 
-            this.ChargingLocation      = ChargingLocation;
-            this.RemoteAuthentication  = RemoteAuthentication;
-            this.AuthenticationPath    = AuthenticationPath;
-            this.ReservationId         = ReservationId;
-            this.ChargingProduct       = ChargingProduct;
-            this.ChargingSessionId     = ChargingSessionId;
+            this.ChargingLocation        = ChargingLocation;
+            this.RemoteAuthentication    = RemoteAuthentication;
+            this.AdditionalSessionInfos  = AdditionalSessionInfos;
+            this.AuthenticationPath      = AuthenticationPath;
+            this.ReservationId           = ReservationId;
+            this.ChargingProduct         = ChargingProduct;
+            this.ChargingSessionId       = ChargingSessionId;
 
             unchecked
             {
 
-                hashCode = this.ChargingLocation.    GetHashCode()       * 13 ^
-                           this.RemoteAuthentication.GetHashCode()       * 11 ^
-                          (this.AuthenticationPath?. GetHashCode() ?? 0) *  7 ^
-                          (this.ReservationId?.      GetHashCode() ?? 0) *  5 ^
-                          (this.ChargingProduct?.    GetHashCode() ?? 0) *  3 ^
-                          (this.ChargingSessionId?.  GetHashCode() ?? 0);
+                hashCode = this.ChargingLocation.       GetHashCode()       * 17 ^
+                           this.RemoteAuthentication.   GetHashCode()       * 13 ^
+                          (this.AdditionalSessionInfos?.GetHashCode() ?? 0) * 11 ^
+                          (this.AuthenticationPath?.    GetHashCode() ?? 0) *  7 ^
+                          (this.ReservationId?.         GetHashCode() ?? 0) *  5 ^
+                          (this.ChargingProduct?.       GetHashCode() ?? 0) *  3 ^
+                          (this.ChargingSessionId?.     GetHashCode() ?? 0);
 
             }
 
@@ -205,7 +213,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                     return false;
                 }
 
-                #region Parse ChargingLocation        [mandatory]
+                #region Parse ChargingLocation          [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("chargingLocation",
                                              "charging location",
@@ -219,7 +227,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                 #endregion
 
-                #region Parse RemoteAuthentication    [mandatory]
+                #region Parse RemoteAuthentication      [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("remoteAuthentication",
                                              "remote authentication",
@@ -233,7 +241,13 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                 #endregion
 
-                #region Parse AuthenticationPath      [optional]
+                #region Parse AdditionalSessionInfos    [optional]
+
+                var AdditionalSessionInfos = JSON["additionalSessionInfos"] as JObject;
+
+                #endregion
+
+                #region Parse AuthenticationPath        [optional]
 
                 if (JSON.ParseOptional("authenticationPath",
                                        "authentication path",
@@ -247,7 +261,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                 #endregion
 
-                #region Parse ReservationId           [optional]
+                #region Parse ReservationId             [optional]
 
                 if (JSON.ParseOptional("chargingReservationId",
                                        "charging reservation identification",
@@ -261,7 +275,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                 #endregion
 
-                #region Parse ChargingProduct         [optional]
+                #region Parse ChargingProduct           [optional]
 
                 if (JSON.ParseOptionalJSON("chargingProduct",
                                            "charging product",
@@ -275,7 +289,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                 #endregion
 
-                #region Parse ChargingSessionId       [optional]
+                #region Parse ChargingSessionId         [optional]
 
                 if (JSON.ParseOptional("chargingSessionId",
                                        "charging session identification",
@@ -289,7 +303,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                 #endregion
 
-                #region Parse CustomData              [optional]
+                #region Parse CustomData                [optional]
 
                 var customData = JSON[nameof(CustomData)] as JObject;
 
@@ -299,6 +313,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                 RemoteStartRequest = new RemoteStartRequest(
                                          ChargingLocation,
                                          RemoteAuthentication,
+                                         AdditionalSessionInfos,
                                          AuthenticationPath,
                                          ReservationId,
                                          ChargingProduct,
@@ -340,27 +355,31 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
             var json = JSONObject.Create(
 
-                                 new JProperty("chargingLocation",        ChargingLocation.        ToJSON()),
-                                 new JProperty("remoteAuthentication",    RemoteAuthentication.    ToJSON()),
+                                 new JProperty("chargingLocation",         ChargingLocation.        ToJSON()),
+                                 new JProperty("remoteAuthentication",     RemoteAuthentication.    ToJSON()),
+
+                           AdditionalSessionInfos is not null
+                               ? new JProperty("additionalSessionInfos",   AdditionalSessionInfos)
+                               : null,
 
                            AuthenticationPath.HasValue
-                               ? new JProperty("authenticationPath",      AuthenticationPath.Value.ToString())
+                               ? new JProperty("authenticationPath",       AuthenticationPath.Value.ToString())
                                : null,
 
                            ReservationId.HasValue
-                               ? new JProperty("chargingReservationId",   ReservationId.     Value.ToString())
+                               ? new JProperty("chargingReservationId",    ReservationId.     Value.ToString())
                                : null,
 
                            ChargingProduct is not null
-                               ? new JProperty("chargingProduct",         ChargingProduct.         ToJSON())
+                               ? new JProperty("chargingProduct",          ChargingProduct.         ToJSON())
                                : null,
 
                            ChargingSessionId.HasValue
-                               ? new JProperty("chargingSessionId",       ChargingSessionId. Value.ToString())
+                               ? new JProperty("chargingSessionId",        ChargingSessionId. Value.ToString())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",              CustomData)
+                               ? new JProperty("customData",               CustomData)
                                : null
 
                        );

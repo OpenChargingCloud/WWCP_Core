@@ -17,8 +17,11 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using System.Diagnostics.CodeAnalysis;
+
+using Newtonsoft.Json.Linq;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -183,17 +186,18 @@ namespace cloud.charging.open.protocols.WWCP
         Task<RemoteStartResult>
 
             RemoteStart(ChargingLocation         ChargingLocation,
-                        ChargingProduct?         ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        ChargingSession_Id?      SessionId              = null,
-                        EMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication?    RemoteAuthentication   = null,
-                        Auth_Path?               AuthenticationPath     = null,
+                        ChargingProduct?         ChargingProduct          = null,
+                        ChargingReservation_Id?  ReservationId            = null,
+                        ChargingSession_Id?      SessionId                = null,
+                        EMobilityProvider_Id?    ProviderId               = null,
+                        RemoteAuthentication?    RemoteAuthentication     = null,
+                        JObject?                 AdditionalSessionInfos   = null,
+                        Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                Timestamp              = null,
-                        EventTracking_Id?        EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null,
-                        CancellationToken        CancellationToken      = default);
+                        DateTime?                Timestamp                = null,
+                        EventTracking_Id?        EventTrackingId          = null,
+                        TimeSpan?                RequestTimeout           = null,
+                        CancellationToken        CancellationToken        = default);
 
         #endregion
 
@@ -261,6 +265,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         /// <summary>
         /// Return the charging session specified by the given charging session identification.
+        /// </summary>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
+        ChargingSession? GetChargingSessionById(ChargingSession_Id ChargingSessionId);
+
+        /// <summary>
+        /// Try to return the charging session specified by the given charging session identification.
         /// </summary>
         /// <param name="ChargingSessionId">The charging session identification.</param>
         /// <param name="ChargingSession">The charging session.</param>
@@ -341,17 +351,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         Task<RemoteStartResult>
 
-            RemoteStart(ChargingProduct?         ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        ChargingSession_Id?      SessionId              = null,
-                        EMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication?    RemoteAuthentication   = null,
-                        Auth_Path?               AuthenticationPath     = null,
+            RemoteStart(ChargingProduct?         ChargingProduct          = null,
+                        ChargingReservation_Id?  ReservationId            = null,
+                        ChargingSession_Id?      SessionId                = null,
+                        EMobilityProvider_Id?    ProviderId               = null,
+                        RemoteAuthentication?    RemoteAuthentication     = null,
+                        JObject?                 AdditionalSessionInfos   = null,
+                        Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                Timestamp              = null,
-                        EventTracking_Id?        EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null,
-                        CancellationToken        CancellationToken      = default);
+                        DateTime?                Timestamp                = null,
+                        EventTracking_Id?        EventTrackingId          = null,
+                        TimeSpan?                RequestTimeout           = null,
+                        CancellationToken        CancellationToken        = default);
 
         #endregion
 

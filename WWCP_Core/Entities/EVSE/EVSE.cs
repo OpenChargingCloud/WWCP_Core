@@ -1378,11 +1378,11 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<ChargingSession> ChargingSessions
 
             => ChargingSession is not null
-                   ? new[] { ChargingSession }
-                   : Array.Empty<ChargingSession>();
+                   ? [ ChargingSession ]
+                   : [];
 
 
-        #region Contains(ChargingSessionId)
+        #region ContainsChargingSessionId (ChargingSessionId)
 
         /// <summary>
         /// Whether the given charging session identification is known within the EVSE.
@@ -1394,7 +1394,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region TryGetChargingSessionById(ChargingSessionId, out ChargingSession)
+        #region GetChargingSessionById    (ChargingSessionId)
+
+        /// <summary>
+        /// Return the charging session specified by the given identification.
+        /// </summary>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
+        public ChargingSession? GetChargingSessionById(ChargingSession_Id ChargingSessionId)
+
+            => RoamingNetwork?.GetChargingSessionById(ChargingSessionId);
+
+        #endregion
+
+        #region TryGetChargingSessionById (ChargingSessionId, out ChargingSession)
 
         /// <summary>
         /// Return the charging session specified by the given charging session identification.
@@ -1956,31 +1968,35 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public Task<RemoteStartResult>
 
-            RemoteStart(ChargingProduct?         ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        ChargingSession_Id?      SessionId              = null,
-                        EMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication?    RemoteAuthentication   = null,
-                        Auth_Path?               AuthenticationPath     = null,
+            RemoteStart(ChargingProduct?         ChargingProduct          = null,
+                        ChargingReservation_Id?  ReservationId            = null,
+                        ChargingSession_Id?      SessionId                = null,
+                        EMobilityProvider_Id?    ProviderId               = null,
+                        RemoteAuthentication?    RemoteAuthentication     = null,
+                        JObject?                 AdditionalSessionInfos   = null,
+                        Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                Timestamp              = null,
-                        EventTracking_Id?        EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null,
-                        CancellationToken        CancellationToken      = default)
+                        DateTime?                Timestamp                = null,
+                        EventTracking_Id?        EventTrackingId          = null,
+                        TimeSpan?                RequestTimeout           = null,
+                        CancellationToken        CancellationToken        = default)
 
 
-                => RemoteStart(ChargingLocation.FromEVSEId(Id),
-                               ChargingProduct,
-                               ReservationId,
-                               SessionId,
-                               ProviderId,
-                               RemoteAuthentication,
-                               AuthenticationPath,
+                => RemoteStart(
+                       ChargingLocation.FromEVSEId(Id),
+                       ChargingProduct,
+                       ReservationId,
+                       SessionId,
+                       ProviderId,
+                       RemoteAuthentication,
+                       AdditionalSessionInfos,
+                       AuthenticationPath,
 
-                               Timestamp,
-                               EventTrackingId,
-                               RequestTimeout,
-                               CancellationToken);
+                       Timestamp,
+                       EventTrackingId,
+                       RequestTimeout,
+                       CancellationToken
+                   );
 
         #endregion
 
@@ -2003,17 +2019,18 @@ namespace cloud.charging.open.protocols.WWCP
         public async Task<RemoteStartResult>
 
             RemoteStart(ChargingLocation         ChargingLocation,
-                        ChargingProduct?         ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        ChargingSession_Id?      SessionId              = null,
-                        EMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication?    RemoteAuthentication   = null,
-                        Auth_Path?               AuthenticationPath     = null,
+                        ChargingProduct?         ChargingProduct          = null,
+                        ChargingReservation_Id?  ReservationId            = null,
+                        ChargingSession_Id?      SessionId                = null,
+                        EMobilityProvider_Id?    ProviderId               = null,
+                        RemoteAuthentication?    RemoteAuthentication     = null,
+                        JObject?                 AdditionalSessionInfos   = null,
+                        Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                Timestamp              = null,
-                        EventTracking_Id?        EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null,
-                        CancellationToken        CancellationToken      = default)
+                        DateTime?                Timestamp                = null,
+                        EventTracking_Id?        EventTrackingId          = null,
+                        TimeSpan?                RequestTimeout           = null,
+                        CancellationToken        CancellationToken        = default)
 
         {
 
@@ -2069,19 +2086,21 @@ namespace cloud.charging.open.protocols.WWCP
                     if (RemoteEVSE is not null)
                     {
 
-                        result = await RemoteEVSE.
-                                           RemoteStart(ChargingLocation,
-                                                       ChargingProduct,
-                                                       ReservationId,
-                                                       SessionId,
-                                                       ProviderId,
-                                                       RemoteAuthentication,
-                                                       AuthenticationPath,
+                        result = await RemoteEVSE.RemoteStart(
+                                           ChargingLocation,
+                                           ChargingProduct,
+                                           ReservationId,
+                                           SessionId,
+                                           ProviderId,
+                                           RemoteAuthentication,
+                                           AdditionalSessionInfos,
+                                           AuthenticationPath,
 
-                                                       Timestamp,
-                                                       EventTrackingId,
-                                                       RequestTimeout,
-                                                       CancellationToken);
+                                           Timestamp,
+                                           EventTrackingId,
+                                           RequestTimeout,
+                                           CancellationToken
+                                       );
 
                     }
 
@@ -2092,19 +2111,21 @@ namespace cloud.charging.open.protocols.WWCP
                     else if (ChargingStation?.RemoteChargingStation is not null)
                     {
 
-                        result = await ChargingStation.RemoteChargingStation.
-                                           RemoteStart(ChargingLocation,
-                                                       ChargingProduct,
-                                                       ReservationId,
-                                                       SessionId,
-                                                       ProviderId,
-                                                       RemoteAuthentication,
-                                                       AuthenticationPath,
+                        result = await ChargingStation.RemoteChargingStation.RemoteStart(
+                                           ChargingLocation,
+                                           ChargingProduct,
+                                           ReservationId,
+                                           SessionId,
+                                           ProviderId,
+                                           RemoteAuthentication,
+                                           AdditionalSessionInfos,
+                                           AuthenticationPath,
 
-                                                       Timestamp,
-                                                       EventTrackingId,
-                                                       RequestTimeout,
-                                                       CancellationToken);
+                                           Timestamp,
+                                           EventTrackingId,
+                                           RequestTimeout,
+                                           CancellationToken
+                                       );
 
                     }
 
@@ -2115,19 +2136,21 @@ namespace cloud.charging.open.protocols.WWCP
                     else if (ChargingStation?.ChargingPool?.RemoteChargingPool is not null)
                     {
 
-                        result = await ChargingStation.ChargingPool.RemoteChargingPool.
-                                           RemoteStart(ChargingLocation,
-                                                       ChargingProduct,
-                                                       ReservationId,
-                                                       SessionId,
-                                                       ProviderId,
-                                                       RemoteAuthentication,
-                                                       AuthenticationPath,
+                        result = await ChargingStation.ChargingPool.RemoteChargingPool.RemoteStart(
+                                           ChargingLocation,
+                                           ChargingProduct,
+                                           ReservationId,
+                                           SessionId,
+                                           ProviderId,
+                                           RemoteAuthentication,
+                                           AdditionalSessionInfos,
+                                           AuthenticationPath,
 
-                                                       Timestamp,
-                                                       EventTrackingId,
-                                                       RequestTimeout,
-                                                       CancellationToken);
+                                           Timestamp,
+                                           EventTrackingId,
+                                           RequestTimeout,
+                                           CancellationToken
+                                       );
 
                     }
 
@@ -2138,19 +2161,21 @@ namespace cloud.charging.open.protocols.WWCP
                     else if (ChargingStation?.ChargingPool?.Operator?.RemoteChargingStationOperator is not null)
                     {
 
-                        result = await ChargingStation.ChargingPool.Operator.RemoteChargingStationOperator.
-                                           RemoteStart(ChargingLocation,
-                                                       ChargingProduct,
-                                                       ReservationId,
-                                                       SessionId,
-                                                       ProviderId,
-                                                       RemoteAuthentication,
-                                                       AuthenticationPath,
+                        result = await ChargingStation.ChargingPool.Operator.RemoteChargingStationOperator.RemoteStart(
+                                           ChargingLocation,
+                                           ChargingProduct,
+                                           ReservationId,
+                                           SessionId,
+                                           ProviderId,
+                                           RemoteAuthentication,
+                                           AdditionalSessionInfos,
+                                           AuthenticationPath,
 
-                                                       Timestamp,
-                                                       EventTrackingId,
-                                                       RequestTimeout,
-                                                       CancellationToken);
+                                           Timestamp,
+                                           EventTrackingId,
+                                           RequestTimeout,
+                                           CancellationToken
+                                       );
 
                     }
 
@@ -2161,19 +2186,21 @@ namespace cloud.charging.open.protocols.WWCP
                     else if (ChargingStation?.ChargingPool?.Operator?.EMPRoamingProvider is not null)
                     {
 
-                        result = await ChargingStation.ChargingPool.Operator.EMPRoamingProvider.
-                                           RemoteStart(ChargingLocation,
-                                                       ChargingProduct,
-                                                       ReservationId,
-                                                       SessionId,
-                                                       ProviderId,
-                                                       RemoteAuthentication,
-                                                       AuthenticationPath,
+                        result = await ChargingStation.ChargingPool.Operator.EMPRoamingProvider.RemoteStart(
+                                           ChargingLocation,
+                                           ChargingProduct,
+                                           ReservationId,
+                                           SessionId,
+                                           ProviderId,
+                                           RemoteAuthentication,
+                                           AdditionalSessionInfos,
+                                           AuthenticationPath,
 
-                                                       Timestamp,
-                                                       EventTrackingId,
-                                                       RequestTimeout,
-                                                       CancellationToken);
+                                           Timestamp,
+                                           EventTrackingId,
+                                           RequestTimeout,
+                                           CancellationToken
+                                       );
 
                     }
 
