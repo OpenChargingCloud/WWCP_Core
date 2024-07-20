@@ -90,15 +90,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
-        String?                                  FirmwareVersion              { get; }
-        String?                                  HardwareVersion              { get; }
-        //DateTime                                 LastUpdate                   { get; }
         String?                                  Manufacturer                 { get; }
         URL?                                     ManufacturerURL              { get; }
         String?                                  Model                        { get; }
         URL?                                     ModelURL                     { get; }
-        CertificateChain?                        PublicKeyCertificateChain    { get; }
+        String?                                  SerialNumber                 { get; }
+        String?                                  FirmwareVersion              { get; }
+        String?                                  HardwareVersion              { get; }
         IEnumerable<PublicKey>                   PublicKeys                   { get; }
+        CertificateChain?                        PublicKeyCertificateChain    { get; }
         IEnumerable<TransparencySoftwareStatus>  TransparencySoftwares        { get; }
 
         #endregion

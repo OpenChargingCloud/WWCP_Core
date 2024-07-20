@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// A energy meter.
+    /// An energy meter.
     /// </summary>
     public class EnergyMeter : AEMobilityEntity<EnergyMeter_Id,
                                                 EnergyMeterAdminStatusTypes,
@@ -67,6 +67,18 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
+        /// The optional manufacturer of the energy meter.
+        /// </summary>
+        [Optional]
+        public String?                                  Manufacturer                 { get; }
+
+        /// <summary>
+        /// The optional URL to the manufacturer of the energy meter.
+        /// </summary>
+        [Optional]
+        public URL?                                     ManufacturerURL              { get; }
+
+        /// <summary>
         /// The optional model of the energy meter.
         /// </summary>
         [Optional]
@@ -79,6 +91,12 @@ namespace cloud.charging.open.protocols.WWCP
         public URL?                                     ModelURL                     { get; }
 
         /// <summary>
+        /// The optional serial number of the energy meter.
+        /// </summary>
+        [Optional]
+        public String?                                  SerialNumber                 { get; }
+
+        /// <summary>
         /// The optional hardware version of the energy meter.
         /// </summary>
         [Optional]
@@ -89,18 +107,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         [Optional]
         public String?                                  FirmwareVersion              { get; }
-
-        /// <summary>
-        /// The optional manufacturer of the energy meter.
-        /// </summary>
-        [Optional]
-        public String?                                  Manufacturer                 { get; }
-
-        /// <summary>
-        /// The optional URL to the manufacturer of the energy meter.
-        /// </summary>
-        [Optional]
-        public URL?                                     ManufacturerURL              { get; }
 
         /// <summary>
         /// The optional enumeration of public keys used for signing the energy meter values.
@@ -144,12 +150,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Name">An optional name of the energy meter.</param>
         /// <param name="Description">An optional multi-language description of the energy meter.</param>
         /// 
-        /// <param name="Model">An optional model of the energy meter.</param>
-        /// <param name="ModelURL">An optional URL to the model of the energy meter.</param>
-        /// <param name="HardwareVersion">An optional hardware version of the energy meter.</param>
-        /// <param name="FirmwareVersion">An optional firmware version of the energy meter.</param>
         /// <param name="Manufacturer">An optional manufacturer of the energy meter.</param>
         /// <param name="ManufacturerURL">An optional URL to the manufacturer of the energy meter.</param>
+        /// <param name="Model">An optional model of the energy meter.</param>
+        /// <param name="ModelURL">An optional URL to the model of the energy meter.</param>
+        /// <param name="SerialNumber">An optional serial number to the model of the energy meter.</param>
+        /// <param name="HardwareVersion">An optional hardware version of the energy meter.</param>
+        /// <param name="FirmwareVersion">An optional firmware version of the energy meter.</param>
         /// <param name="PublicKeys">The optional public key of the energy meter used for signeing the energy meter values.</param>
         /// <param name="PublicKeyCertificateChain">One or multiple optional certificates for the public key of the energy meter.</param>
         /// <param name="TransparencySoftwares">An enumeration of transparency softwares and their legal status, which can be used to validate the charging session data.</param>
@@ -159,12 +166,13 @@ namespace cloud.charging.open.protocols.WWCP
                            I18NString?                                Name                         = null,
                            I18NString?                                Description                  = null,
 
-                           String?                                    Model                        = null,
-                           URL?                                       ModelURL                     = null,
-                           String?                                    HardwareVersion              = null,
-                           String?                                    FirmwareVersion              = null,
                            String?                                    Manufacturer                 = null,
                            URL?                                       ManufacturerURL              = null,
+                           String?                                    Model                        = null,
+                           URL?                                       ModelURL                     = null,
+                           String?                                    SerialNumber                 = null,
+                           String?                                    HardwareVersion              = null,
+                           String?                                    FirmwareVersion              = null,
                            IEnumerable<PublicKey>?                    PublicKeys                   = null,
                            CertificateChain?                          PublicKeyCertificateChain    = null,
                            IEnumerable<TransparencySoftwareStatus>?   TransparencySoftwares        = null,
@@ -197,12 +205,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.Model                      = Model;
-            this.ModelURL                   = ModelURL;
-            this.HardwareVersion            = HardwareVersion;
-            this.FirmwareVersion            = FirmwareVersion;
             this.Manufacturer               = Manufacturer;
             this.ManufacturerURL            = ManufacturerURL;
+            this.Model                      = Model;
+            this.ModelURL                   = ModelURL;
+            this.SerialNumber               = SerialNumber;
+            this.HardwareVersion            = HardwareVersion;
+            this.FirmwareVersion            = FirmwareVersion;
             this.PublicKeys                 = PublicKeys?.Distinct()            ?? [];
             this.PublicKeyCertificateChain  = PublicKeyCertificateChain;
             this.TransparencySoftwares      = TransparencySoftwares?.Distinct() ?? [];
@@ -327,6 +336,27 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
+
+                #region Parse Manufacturer                  [optional]
+
+                var Manufacturer = JSON.GetString("manufacturer");
+
+                #endregion
+
+                #region Parse ManufacturerURL               [optional]
+
+                if (JSON.ParseOptional("manufacturerURL",
+                                       "energy meter manufacturer URL",
+                                       URL.TryParse,
+                                       out URL? ManufacturerURL,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Parse Model                         [optional]
 
                 var Model = JSON.GetString("model");
@@ -347,6 +377,12 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
+                #region Parse SerialNumber                  [optional]
+
+                var SerialNumber = JSON.GetString("serialNumber");
+
+                #endregion
+
                 #region Parse HardwareVersion               [optional]
 
                 var HardwareVersion = JSON.GetString("hardwareVersion");
@@ -356,26 +392,6 @@ namespace cloud.charging.open.protocols.WWCP
                 #region Parse FirmwareVersion               [optional]
 
                 var FirmwareVersion = JSON.GetString("firmwareVersion");
-
-                #endregion
-
-                #region Parse Vendor                        [optional]
-
-                var Manufacturer = JSON.GetString("manufacturer");
-
-                #endregion
-
-                #region Parse ManufacturerURL               [optional]
-
-                if (JSON.ParseOptional("manufacturerURL",
-                                       "energy meter manufacturer URL",
-                                       URL.TryParse,
-                                       out URL? ManufacturerURL,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
 
                 #endregion
 
@@ -437,16 +453,16 @@ namespace cloud.charging.open.protocols.WWCP
                 EnergyMeter = new EnergyMeter(
 
                                   Id,
-
                                   Name,
                                   Description,
 
-                                  Model,
-                                  ModelURL,
-                                  HardwareVersion,
-                                  FirmwareVersion,
                                   Manufacturer,
                                   ManufacturerURL,
+                                  Model,
+                                  ModelURL,
+                                  SerialNumber,
+                                  HardwareVersion,
+                                  FirmwareVersion,
                                   PublicKeys,
                                   PublicKeyCertificateChain,
                                   TransparencySoftwares,
@@ -507,12 +523,32 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("@context",                    JSONLDContext)
                                : null,
 
+                           Name.       IsNeitherNullNorEmpty()
+                               ? new JProperty("name",                        Name.       ToJSON())
+                               : null,
+
+                           Description.IsNeitherNullNorEmpty()
+                               ? new JProperty("description",                 Description.ToJSON())
+                               : null,
+
+                           Manufacturer is not null
+                               ? new JProperty("manufacturer",                Manufacturer)
+                               : null,
+
+                           ManufacturerURL.HasValue
+                               ? new JProperty("manufacturerURL",             ManufacturerURL.Value.ToString())
+                               : null,
+
                            Model is not null
                                ? new JProperty("model",                       Model)
                                : null,
 
                            ModelURL.HasValue
                                ? new JProperty("modelURL",                    ModelURL.Value.ToString())
+                               : null,
+
+                           SerialNumber    is not null
+                               ? new JProperty("serialNumber",                SerialNumber)
                                : null,
 
                            HardwareVersion is not null
@@ -523,13 +559,6 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("firmwareVersion",             FirmwareVersion)
                                : null,
 
-                           Manufacturer is not null
-                               ? new JProperty("manufacturer",                Manufacturer)
-                               : null,
-
-                           ManufacturerURL.HasValue
-                               ? new JProperty("manufacturerURL",             ManufacturerURL.Value.ToString())
-                               : null,
 
                            PublicKeys.Any()
                                ? new JProperty("publicKeys",                  new JArray(PublicKeys.Select(publicKey => publicKey.ToString())))
@@ -571,12 +600,13 @@ namespace cloud.charging.open.protocols.WWCP
                    Id.Clone,
                    Name.       IsNotNullOrEmpty() ? Name.       Clone() : I18NString.Empty,
                    Description.IsNotNullOrEmpty() ? Description.Clone() : I18NString.Empty,
-                   Model           is not null ? new String(Model.ToCharArray()) : null,
+                   Manufacturer    is not null ? new String(Manufacturer.   ToCharArray()) : null,
+                   ManufacturerURL.HasValue    ? ManufacturerURL.Value.Clone : null,
+                   Model           is not null ? new String(Model.          ToCharArray()) : null,
                    ModelURL.HasValue           ? ModelURL.Value.Clone : null,
+                   SerialNumber    is not null ? new String(SerialNumber.   ToCharArray()) : null,
                    HardwareVersion is not null ? new String(HardwareVersion.ToCharArray()) : null,
                    FirmwareVersion is not null ? new String(FirmwareVersion.ToCharArray()) : null,
-                   Manufacturer    is not null ? new String(Manufacturer.ToCharArray()) : null,
-                   ManufacturerURL.HasValue    ? ManufacturerURL.Value.Clone : null,
                    PublicKeys.Select(publicKey => publicKey.Clone).ToArray(),
                    PublicKeyCertificateChain.HasValue ? PublicKeyCertificateChain.Value.Clone : null,
                    TransparencySoftwares.Select(transparencySoftwareStatus => transparencySoftwareStatus.Clone()).ToArray(),

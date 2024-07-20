@@ -24,7 +24,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-
     /// <summary>
     /// Extension methods for legal status.
     /// </summary>

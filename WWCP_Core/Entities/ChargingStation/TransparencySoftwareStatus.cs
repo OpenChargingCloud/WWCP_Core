@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -143,9 +145,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="TransparencySoftware">The parsed transparency software.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                          JSON,
-                                       out TransparencySoftwareStatus?  TransparencySoftware,
-                                       out String?                      ErrorResponse)
+        public static Boolean TryParse(JObject                                               JSON,
+                                       [NotNullWhen(true)]  out TransparencySoftwareStatus?  TransparencySoftware,
+                                       [NotNullWhen(false)] out String?                      ErrorResponse)
 
             => TryParse(JSON,
                         out TransparencySoftware,
@@ -161,8 +163,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomTransparencySoftwareStatusParser">An optional delegate to parse custom transparency software status JSON objects.</param>
         public static Boolean TryParse(JObject                                                   JSON,
-                                       out TransparencySoftwareStatus?                           TransparencySoftwareStatus,
-                                       out String?                                               ErrorResponse,
+                                       [NotNullWhen(true)]  out TransparencySoftwareStatus?      TransparencySoftwareStatus,
+                                       [NotNullWhen(false)] out String?                          ErrorResponse,
                                        CustomJObjectParserDelegate<TransparencySoftwareStatus>?  CustomTransparencySoftwareStatusParser   = null)
         {
 
@@ -459,11 +461,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two transparency software status for equality.
         /// </summary>
         /// <param name="TransparencySoftwareStatus">A transparency software status to compare with.</param>
-        public Int32 CompareTo(TransparencySoftwareStatus TransparencySoftwareStatus)
+        public Int32 CompareTo(TransparencySoftwareStatus? TransparencySoftwareStatus)
         {
 
-            if (TransparencySoftware is null)
-                throw new ArgumentNullException(nameof(TransparencySoftware), "The give transparency software must not be null!");
+            if (TransparencySoftwareStatus is null)
+                throw new ArgumentNullException(nameof(TransparencySoftwareStatus), "The give transparency software must not be null!");
 
             var c = TransparencySoftware.Name.CompareTo(TransparencySoftwareStatus.TransparencySoftware.Name);
 
