@@ -1141,8 +1141,8 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                 if      (JSONRequestMessage.     TryParse(jsonArray, out var jsonRequestMessage,  out var requestParsingError,  RequestTimestamp, null, EventTrackingId, sourceNodeId, CancellationToken))
                 {
 
-                    JSONResponseMessage?      jsonResponseMessage       = null;
-                    JSONRequestErrorMessage?  jsonRequestErrorMessage   = null;
+                    JSONResponseMessage?     jsonResponseMessage       = null;
+                    JSONRequestErrorMessage? jsonRequestErrorMessage   = null;
 
                     #region OnJSONMessageRequestReceived
 
@@ -1328,7 +1328,8 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                TextMessage,
                                Timestamp.Now,
                                (jsonResponseMessage?.ToJSON() ?? jsonRequestErrorMessage?.ToJSON())?.ToString(JSONFormatting) ?? String.Empty,
-                               EventTrackingId
+                               EventTrackingId,
+                               CancellationToken
                            );
 
                 }
@@ -1517,7 +1518,8 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                        TextMessage,
                        Timestamp.Now,
                        String.Empty,
-                       EventTrackingId
+                       EventTrackingId,
+                       CancellationToken
                    );
 
         }
@@ -1549,8 +1551,8 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                      if (BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequestMessage,  out var requestParsingError,  RequestTimestamp, EventTrackingId, sourceNodeId, CancellationToken) && binaryRequestMessage  is not null)
                 {
 
-                    BinaryResponseMessage?    binaryResponseMessage     = null;
-                    JSONRequestErrorMessage?  jsonRequestErrorMessage   = null;
+                    BinaryResponseMessage?   binaryResponseMessage     = null;
+                    JSONRequestErrorMessage? jsonRequestErrorMessage   = null;
 
                     #region OnBinaryMessageRequestReceived
 
@@ -1728,7 +1730,8 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                BinaryMessage,
                                Timestamp.Now,
                                binaryResponseMessage?.ToByteArray() ?? [],
-                               EventTrackingId
+                               EventTrackingId,
+                               CancellationToken
                            );
 
                 }
@@ -1873,7 +1876,8 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                        BinaryMessage,
                        Timestamp.Now,
                        [],
-                       EventTrackingId
+                       EventTrackingId,
+                       CancellationToken
                    );
 
             //return new WebSocketBinaryMessageResponse(
