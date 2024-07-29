@@ -64,6 +64,11 @@ namespace cloud.charging.open.protocols.WWCP
         public AuthStartResultTypes              Result                           { get; }
 
         /// <summary>
+        /// The response timestamp.
+        /// </summary>
+        public DateTime                          ResponseTimestamp                { get; }
+
+        /// <summary>
         /// An optional timestamp until the result may be cached.
         /// </summary>
         public DateTime?                         CachedResultEndOfLifeTime        { get; set; }
@@ -192,6 +197,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         private AuthStartResult(IId                                AuthorizatorId,
                                 AuthStartResultTypes               Result,
+                                DateTime?                          ResponseTimestamp            = null,
                                 DateTime?                          CachedResultEndOfLifeTime    = null,
                                 ISendAuthorizeStartStop?           ISendAuthorizeStartStop      = null,
                                 IReceiveAuthorizeStartStop?        IReceiveAuthorizeStartStop   = null,
@@ -216,29 +222,30 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.AuthorizatorId                 = AuthorizatorId       ?? throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
-            this.ISendAuthorizeStartStop        = ISendAuthorizeStartStop;
-            this.IReceiveAuthorizeStartStop     = IReceiveAuthorizeStartStop;
-            this.Result                         = Result;
-            this.CachedResultEndOfLifeTime  = CachedResultEndOfLifeTime;
+            this.AuthorizatorId              = AuthorizatorId       ?? throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
+            this.ISendAuthorizeStartStop     = ISendAuthorizeStartStop;
+            this.IReceiveAuthorizeStartStop  = IReceiveAuthorizeStartStop;
+            this.Result                      = Result;
+            this.ResponseTimestamp           = ResponseTimestamp    ?? Timestamp.Now;
+            this.CachedResultEndOfLifeTime   = CachedResultEndOfLifeTime;
 
-            this.SessionId                      = SessionId;
-            this.EMPPartnerSessionId            = EMPPartnerSessionId;
-            this.ContractId                     = ContractId;
-            this.PrintedNumber                  = PrintedNumber;
-            this.ExpiryDate                     = ExpiryDate;
-            this.MaxkW                          = MaxkW;
-            this.MaxkWh                         = MaxkWh;
-            this.MaxDuration                    = MaxDuration;
-            this.ChargingTariffs                = ChargingTariffs      ?? Array.Empty<ChargingTariff>();
-            this.ListOfAuthStopTokens           = ListOfAuthStopTokens ?? Array.Empty<AuthenticationToken>();
-            this.ListOfAuthStopPINs             = ListOfAuthStopPINs   ?? Array.Empty<UInt32>();
+            this.SessionId                   = SessionId;
+            this.EMPPartnerSessionId         = EMPPartnerSessionId;
+            this.ContractId                  = ContractId;
+            this.PrintedNumber               = PrintedNumber;
+            this.ExpiryDate                  = ExpiryDate;
+            this.MaxkW                       = MaxkW;
+            this.MaxkWh                      = MaxkWh;
+            this.MaxDuration                 = MaxDuration;
+            this.ChargingTariffs             = ChargingTariffs      ?? [];
+            this.ListOfAuthStopTokens        = ListOfAuthStopTokens ?? [];
+            this.ListOfAuthStopPINs          = ListOfAuthStopPINs   ?? [];
 
-            this.ProviderId                     = ProviderId           ?? new EMobilityProvider_Id?();
-            this.Description                    = Description          ?? I18NString.Empty;
-            this.AdditionalInfo                 = AdditionalInfo       ?? I18NString.Empty;
-            this.NumberOfRetries                = NumberOfRetries;
-            this.Runtime                        = Runtime              ?? TimeSpan.FromSeconds(0);
+            this.ProviderId                  = ProviderId           ?? new EMobilityProvider_Id?();
+            this.Description                 = Description          ?? I18NString.Empty;
+            this.AdditionalInfo              = AdditionalInfo       ?? I18NString.Empty;
+            this.NumberOfRetries             = NumberOfRetries;
+            this.Runtime                     = Runtime              ?? TimeSpan.FromSeconds(0);
 
         }
 
@@ -296,6 +303,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             : this(AuthorizatorId,
                    Result,
+                   null,
                    CachedResultEndOfLifeTime,
                    ISendAuthorizeStartStop,
                    null,
@@ -374,6 +382,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             : this(AuthorizatorId,
                    Result,
+                   null,
                    CachedResultEndOfLifeTime,
                    null,
                    IReceiveAuthorizeStartStop,
@@ -1617,28 +1626,29 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("@context",                    JSONLDContext)
                                : null,
 
-                                 new JProperty("result",                      Result.        ToString()),
+                                 new JProperty("result",                      Result.                         ToString()),
+                                 new JProperty("timestamp",                   ResponseTimestamp.              ToIso8601()),
 
                            CachedResultEndOfLifeTime.HasValue
                                ? new JProperty("cachedResultEndOfLifeTime",   CachedResultEndOfLifeTime.Value.ToIso8601())
                                : null,
 
                            SessionId.HasValue
-                               ? new JProperty("sessionId",                   SessionId.     ToString())
+                               ? new JProperty("sessionId",                   SessionId.                      ToString())
                                : null,
 
                            ProviderId.HasValue
-                               ? new JProperty("providerId",                  ProviderId.    ToString())
+                               ? new JProperty("providerId",                  ProviderId.                     ToString())
                                : null,
 
-                                 new JProperty("authorizatorId",              AuthorizatorId.ToString()),
+                                 new JProperty("authorizatorId",              AuthorizatorId.                 ToString()),
 
                            Description.IsNotNullOrEmpty()
-                               ? new JProperty("description",                 Description.   ToJSON())
+                               ? new JProperty("description",                 Description.                    ToJSON())
                                : null,
 
                            Runtime.HasValue
-                               ? new JProperty("runtime",                     Runtime.                      Value.TotalMilliseconds)
+                               ? new JProperty("runtime",                     Runtime.Value.TotalMilliseconds)
                                : null
 
                        );
