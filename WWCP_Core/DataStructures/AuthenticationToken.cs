@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParseHEX(HEX, out var authenticationToken))
                 return authenticationToken;
 
-            throw new ArgumentException($"Invalid text representation of an authentication token: '" + HEX + "'!",
+            throw new ArgumentException($"Invalid text representation of an authentication token: '{HEX}'!",
                                         nameof(HEX));
 
         }
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (!HEX.IsNullOrEmpty())
             {
 
-                HEX = HEX.Trim();
+                HEX = HEX.Trim().Replace("-", "").Replace(":", "").ToUpper();
 
                 if (AuthenticationToken_RegEx.IsMatch(HEX))
                 {

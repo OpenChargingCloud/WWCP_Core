@@ -335,17 +335,17 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                     var now = Timestamp.Now;
 
-                    DE_GEF_E1234_5678_1.MaxPower           = 123.45m;
-                    DE_GEF_E1234_5678_1.MaxPower           = 234.56m;
+                    DE_GEF_E1234_5678_1.MaxPower           = Watt.ParseKW(123.45m);
+                    DE_GEF_E1234_5678_1.MaxPower           = Watt.ParseKW(234.56m);
 
-                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = 345.67m;
-                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = 456.78m;
+                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = Watt.ParseKW(345.67m);
+                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = Watt.ParseKW(456.78m);
 
-                    DE_GEF_E1234_5678_1.MaxPowerPrognoses.Replace(new[] {
-                                                                      new Timestamped<Decimal>(now + TimeSpan.FromMinutes(1), 567.89m),
-                                                                      new Timestamped<Decimal>(now + TimeSpan.FromMinutes(2), 678.91m),
-                                                                      new Timestamped<Decimal>(now + TimeSpan.FromMinutes(3), 789.12m)
-                                                                  });
+                    DE_GEF_E1234_5678_1.MaxPowerPrognoses.Replace([
+                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(1), Watt.ParseKW(567.89m)),
+                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(2), Watt.ParseKW(678.91m)),
+                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(3), Watt.ParseKW(789.12m))
+                                                                  ]);
 
                     ClassicAssert.AreEqual(7, evseDataChanges.                       Count);
                     ClassicAssert.AreEqual(7, chargingStationEVSEDataChanges.        Count);
@@ -357,13 +357,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     DE_GEF_E1234_5678_1.Name.       Set(Languages.it, "namelalala");
                     DE_GEF_E1234_5678_1.Description.Set(Languages.it, "desclalala");
 
-                    DE_GEF_E1234_5678_1.MaxPower           = 234.56m;
-                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = 456.78m;
-                    DE_GEF_E1234_5678_1.MaxPowerPrognoses.Replace(new[] {
-                                                                      new Timestamped<Decimal>(now + TimeSpan.FromMinutes(1), 567.89m),
-                                                                      new Timestamped<Decimal>(now + TimeSpan.FromMinutes(2), 678.91m),
-                                                                      new Timestamped<Decimal>(now + TimeSpan.FromMinutes(3), 789.12m)
-                                                                  });
+                    DE_GEF_E1234_5678_1.MaxPower           = Watt.ParseKW(234.56m);
+                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = Watt.ParseKW(456.78m);
+                    DE_GEF_E1234_5678_1.MaxPowerPrognoses.Replace([
+                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(1), Watt.ParseKW(567.89m)),
+                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(2), Watt.ParseKW(678.91m)),
+                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(3), Watt.ParseKW(789.12m))
+                                                                  ]);
 
                     ClassicAssert.AreEqual(7, evseDataChanges.                       Count);
                     ClassicAssert.AreEqual(7, chargingStationEVSEDataChanges.        Count);

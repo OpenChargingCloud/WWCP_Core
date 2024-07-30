@@ -186,79 +186,79 @@ namespace cloud.charging.open.protocols.WWCP
         CurrentTypes                           CurrentType                  { get; set; }
 
         /// <summary>
-        /// The average voltage of this EVSE [Volt].
+        /// The average voltage of this EVSE.
         /// </summary>
         [Optional, SlowData]
-        Decimal?                               AverageVoltage               { get; set; }
+        Volt?                                  AverageVoltage               { get; set; }
 
         /// <summary>
-        /// The real-time average voltage of this EVSE [Volt].
+        /// The real-time average voltage of this EVSE.
         /// </summary>
         [Optional, FastData]
-        Timestamped<Decimal>?                  AverageVoltageRealTime       { get; set; }
+        Timestamped<Volt>?                     AverageVoltageRealTime       { get; set; }
 
         /// <summary>
-        /// Prognoses on future values of the average voltage of this EVSE [Volt].
+        /// Prognoses on future values of the average voltage of this EVSE.
         /// </summary>
         [Optional, FastData]
-        ReactiveSet<Timestamped<Decimal>>      AverageVoltagePrognoses      { get; }
+        ReactiveSet<Timestamped<Volt>>         AverageVoltagePrognoses      { get; }
 
 
         /// <summary>
-        /// The maximum current of this EVSE [Ampere].
+        /// The maximum current of this EVSE.
         /// </summary>
         [Optional, SlowData]
-        Decimal?                               MaxCurrent                   { get; set; }
+        Ampere?                                MaxCurrent                   { get; set; }
 
         /// <summary>
-        /// The real-time maximum current of this EVSE [Ampere].
+        /// The real-time maximum current of this EVSE.
         /// </summary>
         [Optional, FastData]
-        Timestamped<Decimal>?                  MaxCurrentRealTime           { get; set; }
+        Timestamped<Ampere>?                   MaxCurrentRealTime           { get; set; }
 
         /// <summary>
-        /// Prognoses on future values of the maximum current of this EVSE [Ampere].
+        /// Prognoses on future values of the maximum current of this EVSE.
         /// </summary>
         [Optional, FastData]
-        ReactiveSet<Timestamped<Decimal>>      MaxCurrentPrognoses          { get; }
+        ReactiveSet<Timestamped<Ampere>>       MaxCurrentPrognoses          { get; }
 
 
         /// <summary>
-        /// The maximum power of this EVSE [kWatt].
+        /// The maximum power of this EVSE.
         /// </summary>
         [Optional, SlowData]
-        Decimal?                               MaxPower                     { get; set; }
+        Watt?                                  MaxPower                     { get; set; }
 
         /// <summary>
-        /// The real-time maximum power of this EVSE [kWatt].
+        /// The real-time maximum power of this EVSE.
         /// </summary>
         [Optional, FastData]
-        Timestamped<Decimal>?                  MaxPowerRealTime             { get; set; }
+        Timestamped<Watt>?                     MaxPowerRealTime             { get; set; }
 
         /// <summary>
-        /// Prognoses on future values of the maximum power of this EVSE [kWatt].
+        /// Prognoses on future values of the maximum power of this EVSE.
         /// </summary>
         [Optional, FastData]
-        ReactiveSet<Timestamped<Decimal>>      MaxPowerPrognoses            { get; }
+        ReactiveSet<Timestamped<Watt>>         MaxPowerPrognoses            { get; }
 
 
         /// <summary>
-        /// The maximum capacity of this EVSE [kWh].
+        /// The maximum capacity of this EVSE.
         /// </summary>
         [Optional, SlowData]
-        Decimal?                               MaxCapacity                  { get; set; }
+        WattHour?                              MaxCapacity                  { get; set; }
 
         /// <summary>
-        /// The real-time maximum capacity of this EVSE [kWh].
+        /// The real-time maximum capacity of this EVSE.
         /// </summary>
         [Optional, FastData]
-        Timestamped<Decimal>?                  MaxCapacityRealTime          { get; set; }
+        Timestamped<WattHour>?                 MaxCapacityRealTime          { get; set; }
 
         /// <summary>
-        /// Prognoses on future values of the capacity of this EVSE [kWh].
+        /// Prognoses on future values of the capacity of this EVSE.
         /// </summary>
         [Optional, FastData]
-        ReactiveSet<Timestamped<Decimal>>      MaxCapacityPrognoses         { get; }
+        ReactiveSet<Timestamped<WattHour>>     MaxCapacityPrognoses         { get; }
 
 
         /// <summary>

@@ -70,18 +70,18 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                          IEnumerable<ChargingModes>?                          ChargingModes                  = null,
                                                          IEnumerable<ChargingTariff>?                         ChargingTariffs                = null,
                                                          CurrentTypes?                                        CurrentType                    = null,
-                                                         Decimal?                                             AverageVoltage                 = null,
-                                                         Timestamped<Decimal>?                                AverageVoltageRealTime         = null,
-                                                         IEnumerable<Timestamped<Decimal>>?                   AverageVoltagePrognoses        = null,
-                                                         Decimal?                                             MaxCurrent                     = null,
-                                                         Timestamped<Decimal>?                                MaxCurrentRealTime             = null,
-                                                         IEnumerable<Timestamped<Decimal>>?                   MaxCurrentPrognoses            = null,
-                                                         Decimal?                                             MaxPower                       = null,
-                                                         Timestamped<Decimal>?                                MaxPowerRealTime               = null,
-                                                         IEnumerable<Timestamped<Decimal>>?                   MaxPowerPrognoses              = null,
-                                                         Decimal?                                             MaxCapacity                    = null,
-                                                         Timestamped<Decimal>?                                MaxCapacityRealTime            = null,
-                                                         IEnumerable<Timestamped<Decimal>>?                   MaxCapacityPrognoses           = null,
+                                                         Volt?                                                AverageVoltage                 = null,
+                                                         Timestamped<Volt>?                                   AverageVoltageRealTime         = null,
+                                                         IEnumerable<Timestamped<Volt>>?                      AverageVoltagePrognoses        = null,
+                                                         Ampere?                                              MaxCurrent                     = null,
+                                                         Timestamped<Ampere>?                                 MaxCurrentRealTime             = null,
+                                                         IEnumerable<Timestamped<Ampere>>?                    MaxCurrentPrognoses            = null,
+                                                         Watt?                                                MaxPower                       = null,
+                                                         Timestamped<Watt>?                                   MaxPowerRealTime               = null,
+                                                         IEnumerable<Timestamped<Watt>>?                      MaxPowerPrognoses              = null,
+                                                         WattHour?                                            MaxCapacity                    = null,
+                                                         Timestamped<WattHour>?                               MaxCapacityRealTime            = null,
+                                                         IEnumerable<Timestamped<WattHour>>?                  MaxCapacityPrognoses           = null,
                                                          EnergyMix?                                           EnergyMix                      = null,
                                                          Timestamped<EnergyMix>?                              EnergyMixRealTime              = null,
                                                          EnergyMixPrognosis?                                  EnergyMixPrognoses             = null,
@@ -255,18 +255,18 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                     IEnumerable<ChargingModes>?                          ChargingModes                  = null,
                                                                     IEnumerable<ChargingTariff>?                         ChargingTariffs                = null,
                                                                     CurrentTypes?                                        CurrentType                    = null,
-                                                                    Decimal?                                             AverageVoltage                 = null,
-                                                                    Timestamped<Decimal>?                                AverageVoltageRealTime         = null,
-                                                                    IEnumerable<Timestamped<Decimal>>?                   AverageVoltagePrognoses        = null,
-                                                                    Decimal?                                             MaxCurrent                     = null,
-                                                                    Timestamped<Decimal>?                                MaxCurrentRealTime             = null,
-                                                                    IEnumerable<Timestamped<Decimal>>?                   MaxCurrentPrognoses            = null,
-                                                                    Decimal?                                             MaxPower                       = null,
-                                                                    Timestamped<Decimal>?                                MaxPowerRealTime               = null,
-                                                                    IEnumerable<Timestamped<Decimal>>?                   MaxPowerPrognoses              = null,
-                                                                    Decimal?                                             MaxCapacity                    = null,
-                                                                    Timestamped<Decimal>?                                MaxCapacityRealTime            = null,
-                                                                    IEnumerable<Timestamped<Decimal>>?                   MaxCapacityPrognoses           = null,
+                                                                    Volt?                                                AverageVoltage                 = null,
+                                                                    Timestamped<Volt>?                                   AverageVoltageRealTime         = null,
+                                                                    IEnumerable<Timestamped<Volt>>?                      AverageVoltagePrognoses        = null,
+                                                                    Ampere?                                              MaxCurrent                     = null,
+                                                                    Timestamped<Ampere>?                                 MaxCurrentRealTime             = null,
+                                                                    IEnumerable<Timestamped<Ampere>>?                    MaxCurrentPrognoses            = null,
+                                                                    Watt?                                                MaxPower                       = null,
+                                                                    Timestamped<Watt>?                                   MaxPowerRealTime               = null,
+                                                                    IEnumerable<Timestamped<Watt>>?                      MaxPowerPrognoses              = null,
+                                                                    WattHour?                                            MaxCapacity                    = null,
+                                                                    Timestamped<WattHour>?                               MaxCapacityRealTime            = null,
+                                                                    IEnumerable<Timestamped<WattHour>>?                  MaxCapacityPrognoses           = null,
                                                                     EnergyMix?                                           EnergyMix                      = null,
                                                                     Timestamped<EnergyMix>?                              EnergyMixRealTime              = null,
                                                                     EnergyMixPrognosis?                                  EnergyMixPrognoses             = null,
@@ -440,18 +440,18 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          IEnumerable<ChargingModes>?                          ChargingModes                          = null,
                                                                          IEnumerable<ChargingTariff>?                         ChargingTariffs                        = null,
                                                                          CurrentTypes?                                        CurrentType                            = null,
-                                                                         Decimal?                                             AverageVoltage                         = null,
-                                                                         Timestamped<Decimal>?                                AverageVoltageRealTime                 = null,
-                                                                         IEnumerable<Timestamped<Decimal>>?                   AverageVoltagePrognoses                = null,
-                                                                         Decimal?                                             MaxCurrent                             = null,
-                                                                         Timestamped<Decimal>?                                MaxCurrentRealTime                     = null,
-                                                                         IEnumerable<Timestamped<Decimal>>?                   MaxCurrentPrognoses                    = null,
-                                                                         Decimal?                                             MaxPower                               = null,
-                                                                         Timestamped<Decimal>?                                MaxPowerRealTime                       = null,
-                                                                         IEnumerable<Timestamped<Decimal>>?                   MaxPowerPrognoses                      = null,
-                                                                         Decimal?                                             MaxCapacity                            = null,
-                                                                         Timestamped<Decimal>?                                MaxCapacityRealTime                    = null,
-                                                                         IEnumerable<Timestamped<Decimal>>?                   MaxCapacityPrognoses                   = null,
+                                                                         Volt?                                                AverageVoltage                         = null,
+                                                                         Timestamped<Volt>?                                   AverageVoltageRealTime                 = null,
+                                                                         IEnumerable<Timestamped<Volt>>?                      AverageVoltagePrognoses                = null,
+                                                                         Ampere?                                              MaxCurrent                             = null,
+                                                                         Timestamped<Ampere>?                                 MaxCurrentRealTime                     = null,
+                                                                         IEnumerable<Timestamped<Ampere>>?                    MaxCurrentPrognoses                    = null,
+                                                                         Watt?                                                MaxPower                               = null,
+                                                                         Timestamped<Watt>?                                   MaxPowerRealTime                       = null,
+                                                                         IEnumerable<Timestamped<Watt>>?                      MaxPowerPrognoses                      = null,
+                                                                         WattHour?                                            MaxCapacity                            = null,
+                                                                         Timestamped<WattHour>?                               MaxCapacityRealTime                    = null,
+                                                                         IEnumerable<Timestamped<WattHour>>?                  MaxCapacityPrognoses                   = null,
                                                                          EnergyMix?                                           EnergyMix                              = null,
                                                                          Timestamped<EnergyMix>?                              EnergyMixRealTime                      = null,
                                                                          EnergyMixPrognosis?                                  EnergyMixPrognoses                     = null,
@@ -736,13 +736,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region AverageVoltage
 
-        private Decimal? averageVoltage;
+        private Volt? averageVoltage;
 
         /// <summary>
-        /// The average voltage [Volt].
+        /// The average voltage.
         /// </summary>
         [Optional, SlowData]
-        public Decimal? AverageVoltage
+        public Volt? AverageVoltage
         {
 
             get
@@ -759,7 +759,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     if (!averageVoltage.HasValue)
                         averageVoltage = value;
 
-                    else if (Math.Abs(averageVoltage.Value - value.Value) > EPSILON)
+                    else if (Math.Abs(averageVoltage.Value.Value - value.Value.Value) > EPSILON)
                         SetProperty(ref averageVoltage,
                                     value);
 
@@ -775,13 +775,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region AverageVoltageRealTime
 
-        private Timestamped<Decimal>? averageVoltageRealTime;
+        private Timestamped<Volt>? averageVoltageRealTime;
 
         /// <summary>
-        /// The real-time average voltage [Volt].
+        /// The real-time average voltage.
         /// </summary>
         [Optional, FastData]
-        public Timestamped<Decimal>? AverageVoltageRealTime
+        public Timestamped<Volt>? AverageVoltageRealTime
         {
 
             get
@@ -795,7 +795,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (value is not null)
                 {
 
-                    if (!averageVoltageRealTime.HasValue || Math.Abs(averageVoltageRealTime.Value.Value - value.Value.Value) > EPSILON)
+                    if (!averageVoltageRealTime.HasValue || Math.Abs(averageVoltageRealTime.Value.Value.Value - value.Value.Value.Value) > EPSILON)
                         SetProperty(ref averageVoltageRealTime,
                                     value);
 
@@ -810,21 +810,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
         /// <summary>
-        /// Prognoses on future values of the average voltage [Volt].
+        /// Prognoses on future values of the average voltage.
         /// </summary>
         [Optional, FastData]
-        public ReactiveSet<Timestamped<Decimal>>        AverageVoltagePrognoses     { get; }
+        public ReactiveSet<Timestamped<Volt>>           AverageVoltagePrognoses     { get; }
 
 
         #region MaxCurrent
 
-        private Decimal? maxCurrent;
+        private Ampere? maxCurrent;
 
         /// <summary>
-        /// The maximum current [Ampere].
+        /// The maximum current.
         /// </summary>
         [Mandatory]
-        public Decimal? MaxCurrent
+        public Ampere? MaxCurrent
         {
 
             get
@@ -841,7 +841,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     if (!maxCurrent.HasValue)
                         maxCurrent = value;
 
-                    else if (Math.Abs(maxCurrent.Value - value.Value) > EPSILON)
+                    else if (Math.Abs(maxCurrent.Value.Value - value.Value.Value) > EPSILON)
                         SetProperty(ref maxCurrent,
                                     value);
 
@@ -857,13 +857,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region MaxCurrentRealTime
 
-        private Timestamped<Decimal>? maxCurrentRealTime;
+        private Timestamped<Ampere>? maxCurrentRealTime;
 
         /// <summary>
-        /// The real-time maximum current [Ampere].
+        /// The real-time maximum current.
         /// </summary>
         [Optional, FastData]
-        public Timestamped<Decimal>? MaxCurrentRealTime
+        public Timestamped<Ampere>? MaxCurrentRealTime
         {
 
             get
@@ -877,7 +877,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (value is not null)
                 {
 
-                    if (!maxCurrentRealTime.HasValue || Math.Abs(maxCurrentRealTime.Value.Value - value.Value.Value) > EPSILON)
+                    if (!maxCurrentRealTime.HasValue || Math.Abs(maxCurrentRealTime.Value.Value.Value - value.Value.Value.Value) > EPSILON)
                         SetProperty(ref maxCurrentRealTime,
                                     value);
 
@@ -892,21 +892,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
         /// <summary>
-        /// Prognoses on future values of the maximum current [Ampere].
+        /// Prognoses on future values of the maximum current.
         /// </summary>
         [Optional, FastData]
-        public ReactiveSet<Timestamped<Decimal>>        MaxCurrentPrognoses     { get; }
+        public ReactiveSet<Timestamped<Ampere>>         MaxCurrentPrognoses     { get; }
 
 
         #region MaxPower
 
-        private Decimal? maxPower;
+        private Watt? maxPower;
 
         /// <summary>
-        /// The maximum power [kW].
+        /// The maximum power.
         /// </summary>
         [Mandatory]
-        public Decimal? MaxPower
+        public Watt? MaxPower
         {
 
             get
@@ -923,7 +923,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     if (!maxPower.HasValue)
                         maxPower = value;
 
-                    else if (Math.Abs(maxPower.Value - value.Value) > EPSILON)
+                    else if (Math.Abs(maxPower.Value.Value - value.Value.Value) > EPSILON)
                         SetProperty(ref maxPower,
                                     value);
 
@@ -939,13 +939,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region MaxPowerRealTime
 
-        private Timestamped<Decimal>? maxPowerRealTime;
+        private Timestamped<Watt>? maxPowerRealTime;
 
         /// <summary>
-        /// The real-time maximum power [kW].
+        /// The real-time maximum power.
         /// </summary>
         [Optional, FastData]
-        public Timestamped<Decimal>? MaxPowerRealTime
+        public Timestamped<Watt>? MaxPowerRealTime
         {
 
             get
@@ -959,7 +959,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (value is not null)
                 {
 
-                    if (!maxPowerRealTime.HasValue || Math.Abs(maxPowerRealTime.Value.Value - value.Value.Value) > EPSILON)
+                    if (!maxPowerRealTime.HasValue || Math.Abs(maxPowerRealTime.Value.Value.Value - value.Value.Value.Value) > EPSILON)
                         SetProperty(ref maxPowerRealTime,
                                     value);
 
@@ -974,21 +974,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
         /// <summary>
-        /// Prognoses on future values of the maximum power [kW].
+        /// Prognoses on future values of the maximum power.
         /// </summary>
         [Optional, FastData]
-        public ReactiveSet<Timestamped<Decimal>>        MaxPowerPrognoses     { get; }
+        public ReactiveSet<Timestamped<Watt>>           MaxPowerPrognoses     { get; }
 
 
         #region MaxCapacity
 
-        private Decimal? maxCapacity;
+        private WattHour? maxCapacity;
 
         /// <summary>
-        /// The maximum capacity [kWh].
+        /// The maximum capacity.
         /// </summary>
         [Mandatory]
-        public Decimal? MaxCapacity
+        public WattHour? MaxCapacity
         {
 
             get
@@ -1005,7 +1005,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     if (!maxCapacity.HasValue)
                         maxCapacity = value;
 
-                    else if (Math.Abs(maxCapacity.Value - value.Value) > EPSILON)
+                    else if (Math.Abs(maxCapacity.Value.Value - value.Value.Value) > EPSILON)
                         SetProperty(ref maxCapacity,
                                     value);
 
@@ -1021,13 +1021,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region MaxCapacityRealTime
 
-        private Timestamped<Decimal>? maxCapacityRealTime;
+        private Timestamped<WattHour>? maxCapacityRealTime;
 
         /// <summary>
-        /// The real-time maximum capacity [kWh].
+        /// The real-time maximum capacity.
         /// </summary>
         [Optional, FastData]
-        public Timestamped<Decimal>? MaxCapacityRealTime
+        public Timestamped<WattHour>? MaxCapacityRealTime
         {
 
             get
@@ -1041,7 +1041,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (value is not null)
                 {
 
-                    if (!maxCapacityRealTime.HasValue || Math.Abs(maxCapacityRealTime.Value.Value - value.Value.Value) > EPSILON)
+                    if (!maxCapacityRealTime.HasValue || Math.Abs(maxCapacityRealTime.Value.Value.Value - value.Value.Value.Value) > EPSILON)
                         SetProperty(ref maxCapacityRealTime,
                                     value);
 
@@ -1056,10 +1056,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
         /// <summary>
-        /// Prognoses on future values of the maximum capacity [kWh].
+        /// Prognoses on future values of the maximum capacity.
         /// </summary>
         [Optional, FastData]
-        public ReactiveSet<Timestamped<Decimal>>        MaxCapacityPrognoses     { get; }
+        public ReactiveSet<Timestamped<WattHour>>       MaxCapacityPrognoses     { get; }
 
 
         #region EnergyMix
@@ -1302,45 +1302,45 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Id">The unique identification of this EVSE.</param>
         /// <param name="MaxAdminStatusScheduleSize">The maximum size of the EVSE admin status schedule.</param>
         /// <param name="MaxStatusScheduleSize">The maximum size of the EVSE status schedule.</param>
-        internal VirtualEVSE(EVSE_Id                             Id,
-                             IChargingStation                    ChargingStation,
-                             I18NString?                         Name                         = null,
-                             I18NString?                         Description                  = null,
+        internal VirtualEVSE(EVSE_Id                              Id,
+                             IChargingStation                     ChargingStation,
+                             I18NString?                          Name                         = null,
+                             I18NString?                          Description                  = null,
 
-                             Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
-                             Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
-                             UInt16?                             MaxAdminStatusScheduleSize   = null,
-                             UInt16?                             MaxStatusScheduleSize        = null,
+                             Timestamped<EVSEAdminStatusTypes>?   InitialAdminStatus           = null,
+                             Timestamped<EVSEStatusTypes>?        InitialStatus                = null,
+                             UInt16?                              MaxAdminStatusScheduleSize   = null,
+                             UInt16?                              MaxStatusScheduleSize        = null,
 
-                             IEnumerable<URL>?                   PhotoURLs                    = null,
-                             IEnumerable<Brand>?                 Brands                       = null,
-                             IEnumerable<OpenDataLicense>?       OpenDataLicenses             = null,
-                             IEnumerable<ChargingModes>?         ChargingModes                = null,
-                             IEnumerable<ChargingTariff>?        ChargingTariffs              = null,
-                             CurrentTypes?                       CurrentType                  = null,
-                             Decimal?                            AverageVoltage               = null,
-                             Timestamped<Decimal>?               AverageVoltageRealTime       = null,
-                             IEnumerable<Timestamped<Decimal>>?  AverageVoltagePrognoses      = null,
-                             Decimal?                            MaxCurrent                   = null,
-                             Timestamped<Decimal>?               MaxCurrentRealTime           = null,
-                             IEnumerable<Timestamped<Decimal>>?  MaxCurrentPrognoses          = null,
-                             Decimal?                            MaxPower                     = null,
-                             Timestamped<Decimal>?               MaxPowerRealTime             = null,
-                             IEnumerable<Timestamped<Decimal>>?  MaxPowerPrognoses            = null,
-                             Decimal?                            MaxCapacity                  = null,
-                             Timestamped<Decimal>?               MaxCapacityRealTime          = null,
-                             IEnumerable<Timestamped<Decimal>>?  MaxCapacityPrognoses         = null,
-                             EnergyMix?                          EnergyMix                    = null,
-                             Timestamped<EnergyMix>?             EnergyMixRealTime            = null,
-                             EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
-                             EnergyMeter?                        EnergyMeter                  = null,
-                             Boolean?                            IsFreeOfCharge               = null,
-                             IEnumerable<IChargingConnector>?    ChargingConnectors           = null,
+                             IEnumerable<URL>?                    PhotoURLs                    = null,
+                             IEnumerable<Brand>?                  Brands                       = null,
+                             IEnumerable<OpenDataLicense>?        OpenDataLicenses             = null,
+                             IEnumerable<ChargingModes>?          ChargingModes                = null,
+                             IEnumerable<ChargingTariff>?         ChargingTariffs              = null,
+                             CurrentTypes?                        CurrentType                  = null,
+                             Volt?                                AverageVoltage               = null,
+                             Timestamped<Volt>?                   AverageVoltageRealTime       = null,
+                             IEnumerable<Timestamped<Volt>>?      AverageVoltagePrognoses      = null,
+                             Ampere?                              MaxCurrent                   = null,
+                             Timestamped<Ampere>?                 MaxCurrentRealTime           = null,
+                             IEnumerable<Timestamped<Ampere>>?    MaxCurrentPrognoses          = null,
+                             Watt?                                MaxPower                     = null,
+                             Timestamped<Watt>?                   MaxPowerRealTime             = null,
+                             IEnumerable<Timestamped<Watt>>?      MaxPowerPrognoses            = null,
+                             WattHour?                            MaxCapacity                  = null,
+                             Timestamped<WattHour>?               MaxCapacityRealTime          = null,
+                             IEnumerable<Timestamped<WattHour>>?  MaxCapacityPrognoses         = null,
+                             EnergyMix?                           EnergyMix                    = null,
+                             Timestamped<EnergyMix>?              EnergyMixRealTime            = null,
+                             EnergyMixPrognosis?                  EnergyMixPrognoses           = null,
+                             EnergyMeter?                         EnergyMeter                  = null,
+                             Boolean?                             IsFreeOfCharge               = null,
+                             IEnumerable<IChargingConnector>?     ChargingConnectors           = null,
 
-                             String?                             EllipticCurve                = null,
-                             ECPrivateKeyParameters?             PrivateKey                   = null,
-                             PublicKeyCertificates?              PublicKeyCertificates        = null,
-                             TimeSpan?                           SelfCheckTimeSpan            = null)
+                             String?                              EllipticCurve                = null,
+                             ECPrivateKeyParameters?              PrivateKey                   = null,
+                             PublicKeyCertificates?               PublicKeyCertificates        = null,
+                             TimeSpan?                            SelfCheckTimeSpan            = null)
 
             : base(Id,
                    ChargingStation.RoamingNetwork,
@@ -1425,8 +1425,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             this.averageVoltageRealTime             = AverageVoltageRealTime;
 
             this.AverageVoltagePrognoses            = AverageVoltagePrognoses is null
-                                                          ? new ReactiveSet<Timestamped<Decimal>>()
-                                                          : new ReactiveSet<Timestamped<Decimal>>(AverageVoltagePrognoses);
+                                                          ? new ReactiveSet<Timestamped<Volt>>()
+                                                          : new ReactiveSet<Timestamped<Volt>>(AverageVoltagePrognoses);
             this.AverageVoltagePrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -1441,8 +1441,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             this.maxCurrentRealTime                 = MaxCurrentRealTime;
 
             this.MaxCurrentPrognoses                = MaxCurrentPrognoses is null
-                                                          ? new ReactiveSet<Timestamped<Decimal>>()
-                                                          : new ReactiveSet<Timestamped<Decimal>>(MaxCurrentPrognoses);
+                                                          ? new ReactiveSet<Timestamped<Ampere>>()
+                                                          : new ReactiveSet<Timestamped<Ampere>>(MaxCurrentPrognoses);
             this.MaxCurrentPrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -1456,8 +1456,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             this.maxPowerRealTime                   = MaxPowerRealTime;
 
             this.MaxPowerPrognoses                  = MaxPowerPrognoses is null
-                                                          ? new ReactiveSet<Timestamped<Decimal>>()
-                                                          : new ReactiveSet<Timestamped<Decimal>>(MaxPowerPrognoses);
+                                                          ? new ReactiveSet<Timestamped<Watt>>()
+                                                          : new ReactiveSet<Timestamped<Watt>>(MaxPowerPrognoses);
             this.MaxPowerPrognoses.OnSetChanged    += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -1471,8 +1471,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             this.maxCapacityRealTime                = MaxCapacityRealTime;
 
             this.MaxCapacityPrognoses               = MaxCapacityPrognoses is null
-                                                          ? new ReactiveSet<Timestamped<Decimal>>()
-                                                          : new ReactiveSet<Timestamped<Decimal>>(MaxCapacityPrognoses);
+                                                          ? new ReactiveSet<Timestamped<WattHour>>()
+                                                          : new ReactiveSet<Timestamped<WattHour>>(MaxCapacityPrognoses);
             this.MaxCapacityPrognoses.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -3066,7 +3066,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             __ChargingSession.SessionTime.EndTime = now;
                             var duration             = now - __ChargingSession.SessionTime.StartTime;
                             var consumption          = MaxPower.HasValue
-                                                           ? WattHour.ParseWh(Math.Round(((Decimal) duration.TotalHours) * MaxPower.Value, 2))
+                                                           ? WattHour.ParseWh(Math.Round(((Decimal) duration.TotalHours) * MaxPower.Value.Value, 2))
                                                            : WattHour.Zero;
 
                             __ChargingSession.AddEnergyMeterValue(
@@ -3369,20 +3369,20 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                new JProperty("currentType", CurrentType.ToText()),
 
-                               AverageVoltage.HasValue && AverageVoltage   > 0
-                                   ? new JProperty("averageVoltage", Math.Round(AverageVoltage.Value, 2))
+                               AverageVoltage.HasValue && AverageVoltage.Value.Value > 0
+                                   ? new JProperty("averageVoltage", Math.Round(AverageVoltage.Value.Value, 2))
                                    : null,
 
-                               MaxCurrent.    HasValue && MaxCurrent       > 0
-                                   ? new JProperty("maxCurrent",     Math.Round(MaxCurrent.    Value, 2))
+                               MaxCurrent.    HasValue && MaxCurrent.    Value.Value > 0
+                                   ? new JProperty("maxCurrent",     Math.Round(MaxCurrent.    Value.Value, 2))
                                    : null,
 
-                               MaxPower.      HasValue && MaxPower.   HasValue
-                                   ? new JProperty("maxPower",       Math.Round(MaxPower.      Value, 2))
+                               MaxPower.      HasValue && MaxPower.      Value.Value > 0
+                                   ? new JProperty("maxPower",       Math.Round(MaxPower.      Value.Value, 2))
                                    : null,
 
-                               MaxCapacity.   HasValue && MaxCapacity.HasValue
-                                   ? new JProperty("maxCapacity",    Math.Round(MaxCapacity.   Value, 2))
+                               MaxCapacity.   HasValue && MaxCapacity.   Value.Value > 0
+                                   ? new JProperty("maxCapacity",    Math.Round(MaxCapacity.   Value.Value, 2))
                                    : null,
 
                                ChargingConnectors.Count > 0
