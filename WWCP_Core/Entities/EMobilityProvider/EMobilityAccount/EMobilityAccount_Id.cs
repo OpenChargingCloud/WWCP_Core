@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -162,7 +163,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out var eMobilityAccountId))
                 return eMobilityAccountId;
 
-            throw new ArgumentException("Invalid electric mobility account identification '" + Text + "'!");
+            throw new ArgumentException($"Invalid electric mobility account identification '{Text}'!");
 
         }
 
@@ -241,7 +242,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Text">A text representation of an electric mobility account identification.</param>
         /// <param name="eMobilityAccountId">The parsed electric mobility account identification.</param>
-        public static Boolean TryParse(String Text, out EMobilityAccount_Id eMobilityAccountId)
+        public static Boolean TryParse(String                                       Text,
+                                       [NotNullWhen(true)] out EMobilityAccount_Id  eMobilityAccountId)
         {
 
             #region Initial checks

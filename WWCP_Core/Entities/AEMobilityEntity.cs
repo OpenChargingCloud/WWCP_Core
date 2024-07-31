@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Runtime.CompilerServices;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -542,6 +544,65 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+        #endregion
+
+
+        #region (protected) LogEvent(Logger, LogHandler, ...)
+
+        protected async Task LogEvent<TDelegate>(String                                             WWCPIO,
+                                                 TDelegate?                                         Logger,
+                                                 Func<TDelegate, Task>                              LogHandler,
+                                                 [CallerArgumentExpression(nameof(Logger))] String  EventName   = "",
+                                                 [CallerMemberName()]                       String  Command     = "")
+
+            where TDelegate : Delegate
+
+        {
+            if (Logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              Logger.GetInvocationList().
+                                     OfType<TDelegate>().
+                                     Select(LogHandler)
+                          );
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(WWCPIO, $"{Command}.{EventName}", e);
+                }
+            }
+        }
+
+        #endregion
+
+        #region (virtual) HandleErrors(Module, Caller, ErrorResponse)
+
+        public virtual Task HandleErrors(String  Module,
+                                         String  Caller,
+                                         String  ErrorResponse)
+        {
+
+            return Task.CompletedTask;
+
+        }
+
+        #endregion
+
+        #region (virtual) HandleErrors(Module, Caller, ExceptionOccured)
+
+        public virtual Task HandleErrors(String     Module,
+                                         String     Caller,
+                                         Exception  ExceptionOccured)
+        {
+
+            return Task.CompletedTask;
+
+        }
 
         #endregion
 

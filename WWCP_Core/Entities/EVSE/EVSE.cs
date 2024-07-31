@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Runtime.CompilerServices;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Aegir;
@@ -2012,7 +2014,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
         /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
@@ -2027,7 +2029,7 @@ namespace cloud.charging.open.protocols.WWCP
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                Timestamp                = null,
+                        DateTime?                RequestTimestamp         = null,
                         EventTracking_Id?        EventTrackingId          = null,
                         TimeSpan?                RequestTimeout           = null,
                         CancellationToken        CancellationToken        = default)
@@ -2036,8 +2038,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            Timestamp       ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            EventTrackingId ??= EventTracking_Id.New;
+            RequestTimestamp ??= Timestamp.Now;
+            EventTrackingId  ??= EventTracking_Id.New;
 
             RemoteStartResult? result = null;
 
@@ -2045,31 +2047,27 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnRemoteStartRequest event
 
-            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = Timestamp.Now;
 
-            try
-            {
-
-                OnRemoteStartRequest?.Invoke(startTime,
-                                             Timestamp.Value,
-                                             this,
-                                             EventTrackingId,
-                                             RoamingNetwork.Id,
-                                             ChargingLocation,
-                                             ChargingProduct,
-                                             ReservationId,
-                                             SessionId,
-                                             null,
-                                             null,
-                                             ProviderId,
-                                             RemoteAuthentication,
-                                             RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.LogException(e, nameof(EVSE) + "." + nameof(OnRemoteStartRequest));
-            }
+            await LogEvent(
+                      OnRemoteStartRequest,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          startTime,
+                          RequestTimestamp.Value,
+                          this,
+                          EventTrackingId,
+                          RoamingNetwork.Id,
+                          ChargingLocation,
+                          RemoteAuthentication,
+                          SessionId,
+                          ReservationId,
+                          ChargingProduct,
+                          null,
+                          null,
+                          ProviderId,
+                          RequestTimeout
+                      )
+                  );
 
             #endregion
 
@@ -2096,7 +2094,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            AdditionalSessionInfos,
                                            AuthenticationPath,
 
-                                           Timestamp,
+                                           RequestTimestamp,
                                            EventTrackingId,
                                            RequestTimeout,
                                            CancellationToken
@@ -2121,7 +2119,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            AdditionalSessionInfos,
                                            AuthenticationPath,
 
-                                           Timestamp,
+                                           RequestTimestamp,
                                            EventTrackingId,
                                            RequestTimeout,
                                            CancellationToken
@@ -2146,7 +2144,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            AdditionalSessionInfos,
                                            AuthenticationPath,
 
-                                           Timestamp,
+                                           RequestTimestamp,
                                            EventTrackingId,
                                            RequestTimeout,
                                            CancellationToken
@@ -2171,7 +2169,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            AdditionalSessionInfos,
                                            AuthenticationPath,
 
-                                           Timestamp,
+                                           RequestTimestamp,
                                            EventTrackingId,
                                            RequestTimeout,
                                            CancellationToken
@@ -2196,7 +2194,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            AdditionalSessionInfos,
                                            AuthenticationPath,
 
-                                           Timestamp,
+                                           RequestTimestamp,
                                            EventTrackingId,
                                            RequestTimeout,
                                            CancellationToken
@@ -2250,33 +2248,29 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnRemoteStartResponse event
 
-            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var endTime = Timestamp.Now;
 
-            try
-            {
-
-                OnRemoteStartResponse?.Invoke(endTime,
-                                              Timestamp.Value,
-                                              this,
-                                              EventTrackingId,
-                                              RoamingNetwork.Id,
-                                              ChargingLocation,
-                                              ChargingProduct,
-                                              ReservationId,
-                                              SessionId,
-                                              null,
-                                              null,
-                                              ProviderId,
-                                              RemoteAuthentication,
-                                              RequestTimeout,
-                                              result,
-                                              endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.LogException(e, nameof(EVSE) + "." + nameof(OnRemoteStartResponse));
-            }
+            await LogEvent(
+                      OnRemoteStartResponse,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          endTime,
+                          RequestTimestamp.Value,
+                          this,
+                          EventTrackingId,
+                          RoamingNetwork.Id,
+                          ChargingLocation,
+                          RemoteAuthentication,
+                          SessionId,
+                          ReservationId,
+                          ChargingProduct,
+                          null,
+                          null,
+                          ProviderId,
+                          RequestTimeout,
+                          result,
+                          endTime - startTime
+                      )
+                  );
 
             #endregion
 
@@ -2747,6 +2741,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IEnumerator<IChargingConnector> GetEnumerator()
             => ChargingConnectors.GetEnumerator();
+
+        #endregion
+
+
+        #region (private) LogEvent(Logger, LogHandler, ...)
+
+        private Task LogEvent<TDelegate>(TDelegate?                                         Logger,
+                                         Func<TDelegate, Task>                              LogHandler,
+                                         [CallerArgumentExpression(nameof(Logger))] String  EventName   = "",
+                                         [CallerMemberName()]                       String  Command     = "")
+
+            where TDelegate : Delegate
+
+                => LogEvent(
+                       nameof(EVSE),
+                       Logger,
+                       LogHandler,
+                       EventName,
+                       Command
+                   );
 
         #endregion
 
