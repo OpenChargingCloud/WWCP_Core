@@ -543,44 +543,26 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                                           Counters.RemoteStart.IncRequests_OK();
 
-                                          #region Send OnRemoteStartRequest event
-
-                                          //try
-                                          //{
-
-                                          //    if (OnRemoteStartRequest is not null)
-                                          //        await Task.WhenAll(OnRemoteStartRequest.GetInvocationList().
-                                          //                           Cast<OnRemoteStartRequestDelegate>().
-                                          //                           Select(e => e(Timestamp.Now,
-                                          //                                         this,
-                                          //                                         authorizeRemoteStartRequest!))).
-                                          //                           ConfigureAwait(false);
-
-                                          //}
-                                          //catch (Exception e)
-                                          //{
-                                          //    DebugX.LogException(e, nameof(CPOServerAPI) + "." + nameof(OnRemoteStartRequest));
-                                          //}
-
-                                          #endregion
-
                                           #region Call async subscribers
 
                                           try
                                           {
 
                                               var remoteStartResult = await eMobilityProvider.RemoteStart(
+
                                                                                 remoteStartRequest.ChargingLocation,
+                                                                                remoteStartRequest.RemoteAuthentication,
                                                                                 remoteStartRequest.ChargingProduct,
                                                                                 remoteStartRequest.ReservationId,
-                                                                                remoteStartRequest.RemoteAuthentication,
-                                                                                remoteStartRequest.AuthenticationPath,
-                                                                                remoteStartRequest.AdditionalSessionInfos,
                                                                                 remoteStartRequest.ChargingSessionId,
+                                                                                remoteStartRequest.AdditionalSessionInfos,
+                                                                                remoteStartRequest.AuthenticationPath,
+
                                                                                 remoteStartRequest.Timestamp,
                                                                                 remoteStartRequest.EventTrackingId,
                                                                                 remoteStartRequest.RequestTimeout,
                                                                                 remoteStartRequest.CancellationToken
+
                                                                             );
 
                                               remoteStartResponse = new RemoteStartResponse(
@@ -631,29 +613,6 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                               //                      );
 
                                           }
-
-                                          #endregion
-
-                                          #region Send OnRemoteStartResponse event
-
-                                          //try
-                                          //{
-
-                                          //    if (OnRemoteStartResponse is not null)
-                                          //        await Task.WhenAll(OnRemoteStartResponse.GetInvocationList().
-                                          //                           Cast<OnRemoteStartResponseDelegate>().
-                                          //                           Select(e => e(Timestamp.Now,
-                                          //                                         this,
-                                          //                                         authorizeRemoteStartRequest!,
-                                          //                                         authorizeRemoteStartResponse,
-                                          //                                         Timestamp.Now - startTime))).
-                                          //                           ConfigureAwait(false);
-
-                                          //}
-                                          //catch (Exception e)
-                                          //{
-                                          //    DebugX.LogException(e, nameof(CPOServerAPI) + "." + nameof(OnRemoteStartResponse));
-                                          //}
 
                                           #endregion
 

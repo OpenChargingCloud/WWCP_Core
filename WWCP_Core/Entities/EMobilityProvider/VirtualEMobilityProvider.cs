@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 
 using Newtonsoft.Json.Linq;
 
@@ -32,110 +33,6 @@ using cloud.charging.open.protocols.WWCP.MobilityProvider;
 
 namespace cloud.charging.open.protocols.WWCP
 {
-
-    #region Delegates
-
-    /// <summary>
-    /// Indicate a remote start of the given charging session at the given EVSE
-    /// and for the given provider/eMAId.
-    /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="ChargingLocation">The charging location.</param>
-    /// <param name="ChargingProduct">The choosen charging product.</param>
-    /// <param name="ReservationId">The unique identification for a charging reservation.</param>
-    /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnRemoteStartRequestDelegate2(DateTime                  LogTimestamp,
-                                                       DateTime                  RequestTimestamp,
-                                                       Object                    Sender,
-                                                       EventTracking_Id          EventTrackingId,
-                                                       ChargingLocation          ChargingLocation,
-                                                       ChargingProduct?          ChargingProduct,
-                                                       ChargingReservation_Id?   ReservationId,
-                                                       ChargingSession_Id?       SessionId,
-                                                       RemoteAuthentication?     RemoteAuthentication,
-                                                       TimeSpan?                 RequestTimeout);
-
-
-    /// <summary>
-    /// Indicate a remote start of the given charging session at the given EVSE
-    /// and for the given provider/eMAId.
-    /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="ChargingLocation">The charging location.</param>
-    /// <param name="ChargingProduct">The choosen charging product.</param>
-    /// <param name="ReservationId">The unique identification for a charging reservation.</param>
-    /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    /// <param name="Result">The remote start result.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnRemoteStartResponseDelegate2(DateTime                  LogTimestamp,
-                                                        DateTime                  RequestTimestamp,
-                                                        Object                    Sender,
-                                                        EventTracking_Id          EventTrackingId,
-                                                        ChargingLocation          ChargingLocation,
-                                                        ChargingProduct?          ChargingProduct,
-                                                        ChargingReservation_Id?   ReservationId,
-                                                        ChargingSession_Id?       SessionId,
-                                                        RemoteAuthentication?     RemoteAuthentication,
-                                                        TimeSpan?                 RequestTimeout,
-                                                        RemoteStartResult         Result,
-                                                        TimeSpan                  Runtime);
-
-
-    /// <summary>
-    /// Indicate a remote stop of the given charging session.
-    /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
-    /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnRemoteStopRequestDelegate2(DateTime                LogTimestamp,
-                                                      DateTime                RequestTimestamp,
-                                                      Object                  Sender,
-                                                      EventTracking_Id        EventTrackingId,
-                                                      ChargingSession_Id      SessionId,
-                                                      ReservationHandling?    ReservationHandling,
-                                                      RemoteAuthentication?   RemoteAuthentication,
-                                                      TimeSpan?               RequestTimeout);
-
-
-    /// <summary>
-    /// Indicate a remote stop of the given charging session.
-    /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
-    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-    /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    /// <param name="Result">The remote stop result.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnRemoteStopResponseDelegate2(DateTime                LogTimestamp,
-                                                       DateTime                RequestTimestamp,
-                                                       Object                  Sender,
-                                                       EventTracking_Id        EventTrackingId,
-                                                       ChargingSession_Id      SessionId,
-                                                       ReservationHandling?    ReservationHandling,
-                                                       RemoteAuthentication?   RemoteAuthentication,
-                                                       TimeSpan?               RequestTimeout,
-                                                       RemoteStopResult        Result,
-                                                       TimeSpan                Runtime);
-
-    #endregion
-
 
     /// <summary>
     /// A virtual E-Mobility Provider for (internal) tests.
@@ -164,7 +61,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public IRoamingNetwork?       RoamingNetwork    { get; set; }
 
-        public TimeSpan               RequestTimeout    { get; }
+        public TimeSpan?              RequestTimeout    { get; set; }
 
 
         public Dictionary<ChargingSession_Id, ChargingSession>  ChargingSessions     { get; }
@@ -193,11 +90,11 @@ namespace cloud.charging.open.protocols.WWCP
         public event OnAuthorizeStopRequestDelegate?    OnAuthorizeStopRequest;
         public event OnAuthorizeStopResponseDelegate?   OnAuthorizeStopResponse;
 
-        public event OnRemoteStartRequestDelegate2?     OnRemoteStartRequest;
-        public event OnRemoteStartResponseDelegate2?    OnRemoteStartResponse;
+        public event OnRemoteStartRequestDelegate?      OnRemoteStartRequest;
+        public event OnRemoteStartResponseDelegate?     OnRemoteStartResponse;
 
-        public event OnRemoteStopRequestDelegate2?      OnRemoteStopRequest;
-        public event OnRemoteStopResponseDelegate2?     OnRemoteStopResponse;
+        public event OnRemoteStopRequestDelegate?       OnRemoteStopRequest;
+        public event OnRemoteStopResponseDelegate?      OnRemoteStopResponse;
 
         #endregion
 
@@ -475,41 +372,43 @@ namespace cloud.charging.open.protocols.WWCP
 
         // UI methods
 
-        #region RemoteStart(ChargingLocation, ChargingProduct = null, ReservationId = null, RemoteAuthentication = null, SessionId = null, ...)
+        #region RemoteStart(ChargingLocation, RemoteAuthentication, ChargingProduct = null, ReservationId = null, SessionId = null, AdditionalSessionInfos = null, AuthenticationPath = null, ...)
 
         /// <summary>
         /// Start a charging session at the given charging location.
         /// </summary>
         /// <param name="ChargingLocation">The charging location.</param>
         /// <param name="ChargingProduct">The choosen charging product.</param>
-        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
-        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
+        /// <param name="ReservationId">Use the given optinal unique charging reservation identification for charging.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional cancellation token to cancel this request.</param>
-        public async Task<RemoteStartResult> RemoteStart(ChargingLocation         ChargingLocation,
-                                                         ChargingProduct?         ChargingProduct          = null,
-                                                         ChargingReservation_Id?  ReservationId            = null,
-                                                         RemoteAuthentication?    RemoteAuthentication     = null,
-                                                         Auth_Path?               AuthenticationPath       = null,
-                                                         JObject?                 AdditionalSessionInfos   = null,
-                                                         ChargingSession_Id?      SessionId                = null,
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<RemoteStartResult>
 
-                                                         DateTime?                Timestamp                = null,
-                                                         EventTracking_Id?        EventTrackingId          = null,
-                                                         TimeSpan?                RequestTimeout           = null,
-                                                         CancellationToken        CancellationToken        = default)
+            RemoteStart(ChargingLocation         ChargingLocation,
+                        RemoteAuthentication     RemoteAuthentication,
+                        ChargingProduct?         ChargingProduct          = null,
+                        ChargingReservation_Id?  ReservationId            = null,
+                        ChargingSession_Id?      SessionId                = null,
+                        JObject?                 AdditionalSessionInfos   = null,
+                        Auth_Path?               AuthenticationPath       = null,
+
+                        DateTime?                RequestTimestamp         = null,
+                        EventTracking_Id?        EventTrackingId          = null,
+                        TimeSpan?                RequestTimeout           = null,
+                        CancellationToken        CancellationToken        = default)
+
         {
 
             #region Init
 
-            var startTime        = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            var timestamp        = Timestamp       ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            var eventTrackingId  = EventTrackingId ?? EventTracking_Id.New;
-            var requestTimeout   = RequestTimeout  ?? this.RequestTimeout;
+            RequestTimestamp ??= Timestamp.Now;
+            EventTrackingId  ??= EventTracking_Id.New;
+            RequestTimeout   ??= this.RequestTimeout;
 
             RemoteStartResult? result = null;
 
@@ -517,29 +416,27 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnRemoteStartRequest event
 
-            try
-            {
+            var startTime = Timestamp.Now;
 
-                if (OnRemoteStartRequest is not null)
-                    await Task.WhenAll(OnRemoteStartRequest.GetInvocationList().
-                                       Cast<OnRemoteStartRequestDelegate2>().
-                                       Select(e => e(startTime,
-                                                     timestamp,
-                                                     this,
-                                                     eventTrackingId,
-                                                     ChargingLocation,
-                                                     ChargingProduct,
-                                                     ReservationId,
-                                                     SessionId,
-                                                     RemoteAuthentication,
-                                                     requestTimeout))).
-                                       ConfigureAwait(false);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.LogException(e, nameof(VirtualEMobilityProvider) + "." + nameof(OnRemoteStartRequest));
-            }
+            await LogEvent(
+                      OnRemoteStartRequest,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          startTime,
+                          RequestTimestamp.Value,
+                          this,
+                          EventTrackingId,
+                          RoamingNetwork.Id,
+                          ChargingLocation,
+                          RemoteAuthentication,
+                          SessionId,
+                          ReservationId,
+                          ChargingProduct,
+                          null,
+                          null,
+                          Id,
+                          RequestTimeout
+                      )
+                  );
 
             #endregion
 
@@ -560,7 +457,7 @@ namespace cloud.charging.open.protocols.WWCP
                 ChargingSessions.Add(chargingSessionId,
                                      new ChargingSession(
                                          chargingSessionId,
-                                         eventTrackingId,
+                                         EventTrackingId,
                                          RoamingNetwork
                                      ));
 
@@ -575,9 +472,9 @@ namespace cloud.charging.open.protocols.WWCP
                                    AdditionalSessionInfos,
                                    AuthenticationPath,
 
-                                   timestamp,
-                                   eventTrackingId,
-                                   requestTimeout,
+                                   RequestTimestamp,
+                                   EventTrackingId,
+                                   RequestTimeout,
                                    CancellationToken
                                );
 
@@ -609,33 +506,29 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnRemoteStartResponse event
 
-            var endtime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var endTime = Timestamp.Now;
 
-            try
-            {
-
-                if (OnRemoteStartResponse is not null)
-                    await Task.WhenAll(OnRemoteStartResponse.GetInvocationList().
-                                       Cast<OnRemoteStartResponseDelegate2>().
-                                       Select(e => e(endtime,
-                                                     timestamp,
-                                                     this,
-                                                     eventTrackingId,
-                                                     ChargingLocation,
-                                                     ChargingProduct,
-                                                     ReservationId,
-                                                     SessionId,
-                                                     RemoteAuthentication,
-                                                     RequestTimeout,
-                                                     result,
-                                                     endtime - startTime))).
-                                       ConfigureAwait(false);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.LogException(e, nameof(VirtualEMobilityProvider) + "." + nameof(OnRemoteStartResponse));
-            }
+            await LogEvent(
+                      OnRemoteStartResponse,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          endTime,
+                          RequestTimestamp.Value,
+                          this,
+                          EventTrackingId,
+                          RoamingNetwork.Id,
+                          ChargingLocation,
+                          RemoteAuthentication,
+                          SessionId,
+                          ReservationId,
+                          ChargingProduct,
+                          null,
+                          null,
+                          Id,
+                          RequestTimeout,
+                          result,
+                          endTime - startTime
+                      )
+                  );
 
             #endregion
 
@@ -645,37 +538,39 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region RemoteStop (SessionId, ReservationHandling = null, RemoteAuthentication = null, ...)
+        #region RemoteStop (SessionId, ReservationHandling, RemoteAuthentication = null, AuthenticationPath = null, ...)
 
         /// <summary>
         /// Stop the given charging session.
         /// </summary>
         /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time (default: Close).</param>
-        /// <param name="RemoteAuthentication">An optional remote authentication, e.g. an e-mobility account identification.</param>
+        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<RemoteStopResult> RemoteStop(ChargingSession_Id     SessionId,
-                                                       ReservationHandling?   ReservationHandling    = null,
-                                                       RemoteAuthentication?  RemoteAuthentication   = null,
-                                                       Auth_Path?             AuthenticationPath     = null,
+        public async Task<RemoteStopResult>
 
-                                                       DateTime?              Timestamp              = null,
-                                                       EventTracking_Id?      EventTrackingId        = null,
-                                                       TimeSpan?              RequestTimeout         = null,
-                                                       CancellationToken      CancellationToken      = default)
+            RemoteStop(ChargingSession_Id     SessionId,
+                       ReservationHandling?   ReservationHandling    = null,
+                       RemoteAuthentication?  RemoteAuthentication   = null,
+                       Auth_Path?             AuthenticationPath     = null,
+
+                       DateTime?              RequestTimestamp       = null,
+                       EventTracking_Id?      EventTrackingId        = null,
+                       TimeSpan?              RequestTimeout         = null,
+                       CancellationToken      CancellationToken      = default)
+
         {
 
             #region Init
 
-            var reservationHandling  = ReservationHandling ?? WWCP.ReservationHandling.Close;
-            var startTime            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            var timestamp            = Timestamp           ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            var eventTrackingId      = EventTrackingId     ?? EventTracking_Id.New;
-            var requestTimeout       = RequestTimeout      ?? this.RequestTimeout;
+            ReservationHandling ??= WWCP.ReservationHandling.Close;
+            RequestTimestamp    ??= Timestamp.Now;
+            EventTrackingId     ??= EventTracking_Id.New;
+            RequestTimeout      ??= this.RequestTimeout;
 
             RemoteStopResult? result = null;
 
@@ -683,27 +578,25 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnRemoteStopRequest event
 
-            try
-            {
+            var startTime = Timestamp.Now;
 
-                if (OnRemoteStopRequest is not null)
-                    await Task.WhenAll(OnRemoteStopRequest.GetInvocationList().
-                                       Cast<OnRemoteStopRequestDelegate2>().
-                                       Select(e => e(startTime,
-                                                     timestamp,
-                                                     this,
-                                                     eventTrackingId,
-                                                     SessionId,
-                                                     ReservationHandling,
-                                                     RemoteAuthentication,
-                                                     requestTimeout))).
-                                       ConfigureAwait(false);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.LogException(e, nameof(VirtualEMobilityProvider) + "." + nameof(OnRemoteStopRequest));
-            }
+            await LogEvent(
+                      OnRemoteStopRequest,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          startTime,
+                          RequestTimestamp.Value,
+                          this,
+                          EventTrackingId,
+                          RoamingNetwork.Id,
+                          SessionId,
+                          ReservationHandling,
+                          null,
+                          null,
+                          Id,
+                          RemoteAuthentication,
+                          RequestTimeout
+                      )
+                  );
 
             #endregion
 
@@ -713,16 +606,18 @@ namespace cloud.charging.open.protocols.WWCP
             if (RoamingNetwork is not null)
             {
 
-                result = await RoamingNetwork.RemoteStop(SessionId,
-                                                         ReservationHandling,
-                                                         Id,
-                                                         RemoteAuthentication,
-                                                         AuthenticationPath,
+                result = await RoamingNetwork.RemoteStop(
+                                   SessionId,
+                                   ReservationHandling,
+                                   Id,
+                                   RemoteAuthentication,
+                                   AuthenticationPath,
 
-                                                         Timestamp,
-                                                         EventTrackingId,
-                                                         RequestTimeout,
-                                                         CancellationToken);
+                                   RequestTimestamp,
+                                   EventTrackingId,
+                                   RequestTimeout,
+                                   CancellationToken
+                               );
 
                 switch (result.Result)
                 {
@@ -750,31 +645,27 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnRemoteStopResponse event
 
-            var endtime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var endTime = Timestamp.Now;
 
-            try
-            {
-
-                if (OnRemoteStopResponse is not null)
-                    await Task.WhenAll(OnRemoteStopResponse.GetInvocationList().
-                                       Cast<OnRemoteStopResponseDelegate2>().
-                                       Select(e => e(endtime,
-                                                     timestamp,
-                                                     this,
-                                                     eventTrackingId,
-                                                     SessionId,
-                                                     ReservationHandling,
-                                                     RemoteAuthentication,
-                                                     requestTimeout,
-                                                     result,
-                                                     endtime - startTime))).
-                                       ConfigureAwait(false);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.LogException(e, nameof(VirtualEMobilityProvider) + "." + nameof(OnRemoteStopResponse));
-            }
+            await LogEvent(
+                      OnRemoteStopResponse,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          endTime,
+                          RequestTimestamp.Value,
+                          this,
+                          EventTrackingId,
+                          RoamingNetwork.Id,
+                          SessionId,
+                          ReservationHandling,
+                          null,
+                          null,
+                          Id,
+                          RemoteAuthentication,
+                          RequestTimeout,
+                          result,
+                          endTime - startTime
+                      )
+                  );
 
             #endregion
 
@@ -1071,6 +962,87 @@ namespace cloud.charging.open.protocols.WWCP
         {
             throw new NotImplementedException();
         }
+
+
+
+        #region (private) LogEvent(Logger, LogHandler, ...)
+
+        private Task LogEvent<TDelegate>(TDelegate?                                         Logger,
+                                         Func<TDelegate, Task>                              LogHandler,
+                                         [CallerArgumentExpression(nameof(Logger))] String  EventName   = "",
+                                         [CallerMemberName()]                       String  Command     = "")
+
+            where TDelegate : Delegate
+
+                => LogEvent(
+                       nameof(EVSE),
+                       Logger,
+                       LogHandler,
+                       EventName,
+                       Command
+                   );
+
+        #endregion
+
+        #region (protected) LogEvent(Logger, LogHandler, ...)
+
+        protected async Task LogEvent<TDelegate>(String                                             WWCPIO,
+                                                 TDelegate?                                         Logger,
+                                                 Func<TDelegate, Task>                              LogHandler,
+                                                 [CallerArgumentExpression(nameof(Logger))] String  EventName   = "",
+                                                 [CallerMemberName()]                       String  Command     = "")
+
+            where TDelegate : Delegate
+
+        {
+            if (Logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              Logger.GetInvocationList().
+                                     OfType<TDelegate>().
+                                     Select(LogHandler)
+                          );
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(WWCPIO, $"{Command}.{EventName}", e);
+                }
+            }
+        }
+
+        #endregion
+
+        #region (virtual) HandleErrors(Module, Caller, ErrorResponse)
+
+        public virtual Task HandleErrors(String  Module,
+                                         String  Caller,
+                                         String  ErrorResponse)
+        {
+
+            return Task.CompletedTask;
+
+        }
+
+        #endregion
+
+        #region (virtual) HandleErrors(Module, Caller, ExceptionOccured)
+
+        public virtual Task HandleErrors(String     Module,
+                                         String     Caller,
+                                         Exception  ExceptionOccured)
+        {
+
+            return Task.CompletedTask;
+
+        }
+
+        #endregion
+
+
     }
 
 }

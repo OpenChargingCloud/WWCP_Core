@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Runtime.CompilerServices;
+
 using Newtonsoft.Json.Linq;
 
 using Org.BouncyCastle.Security;
@@ -26,8 +28,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+
 using social.OpenData.UsersAPI;
-using System.Runtime.CompilerServices;
 
 #endregion
 
@@ -2482,6 +2484,336 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public Boolean TryGetChargingReservationsById(ChargingReservation_Id ReservationId, out ChargingReservationCollection? ChargingReservations)
 
             => chargingReservations.TryGetValue(ReservationId, out ChargingReservations);
+
+        #endregion
+
+        #endregion
+
+        #region AuthorizeStart/-Stop
+
+        #region Properties
+
+        public IId      AuthId
+            => RoamingNetwork.AuthId;
+
+        /// <summary>
+        /// Disable the local authorization of charging processes.
+        /// </summary>
+        public Boolean  DisableAuthorization    { get; set; }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// An event fired whenever an AuthorizeStart request was received.
+        /// </summary>
+        public event OnAuthorizeStartRequestDelegate?   OnAuthorizeStartRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an AuthorizeStart request was received.
+        /// </summary>
+        public event OnAuthorizeStartResponseDelegate?  OnAuthorizeStartResponse;
+
+
+        /// <summary>
+        /// An event fired whenever an AuthorizeStop request was received.
+        /// </summary>
+        public event OnAuthorizeStopRequestDelegate?    OnAuthorizeStopRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an AuthorizeStop request was received.
+        /// </summary>
+        public event OnAuthorizeStopResponseDelegate?   OnAuthorizeStopResponse;
+
+        #endregion
+
+        #region AuthorizeStart           (LocalAuthentication, ChargingLocation = null, ChargingProduct = null, SessionId = null, OperatorId = null, ...)
+
+        /// <summary>
+        /// Create an authorize start request at the given EVSE.
+        /// </summary>
+        /// <param name="LocalAuthentication">An user identification.</param>
+        /// <param name="ChargingLocation">The charging location.</param>
+        /// <param name="ChargingProduct">An optional charging product.</param>
+        /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="CPOPartnerSessionId">An optional session identification of the CPO.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<AuthStartResult>
+
+            AuthorizeStart(LocalAuthentication          LocalAuthentication,
+                           ChargingLocation?            ChargingLocation      = null,
+                           ChargingProduct?             ChargingProduct       = null,
+                           ChargingSession_Id?          SessionId             = null,
+                           ChargingSession_Id?          CPOPartnerSessionId   = null,
+                           ChargingStationOperator_Id?  OperatorId            = null,
+
+                           DateTime?                    RequestTimestamp      = null,
+                           EventTracking_Id?            EventTrackingId       = null,
+                           TimeSpan?                    RequestTimeout        = null,
+                           CancellationToken            CancellationToken     = default)
+
+        {
+
+            #region Initial checks
+
+            RequestTimestamp ??= Timestamp.Now;
+            EventTrackingId  ??= EventTracking_Id.New;
+            RequestTimeout   ??= TimeSpan.FromSeconds(10);
+
+            AuthStartResult? result = null;
+
+            #endregion
+
+            #region Send OnAuthorizeStartRequest event
+
+            var startTime = Timestamp.Now;
+
+            await LogEvent(
+                      OnAuthorizeStartRequest,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          startTime,
+                          RequestTimestamp.Value,
+                          this,
+                          Id.ToString(),
+                          EventTrackingId,
+                          RoamingNetwork.Id,
+                          null,
+                          null,
+                          OperatorId,
+                          LocalAuthentication,
+                          ChargingLocation,
+                          ChargingProduct,
+                          SessionId,
+                          CPOPartnerSessionId,
+                          [],
+                          RequestTimeout
+                      )
+                  );
+
+            #endregion
+
+
+            try
+            {
+
+                result = ChargingStation is not null
+
+                             ? await ChargingStation.AuthorizeStart(
+                                         LocalAuthentication,
+                                         ChargingLocation,
+                                         ChargingProduct,
+                                         SessionId,
+                                         CPOPartnerSessionId,
+                                         OperatorId,
+
+                                         RequestTimestamp,
+                                         EventTrackingId,
+                                         RequestTimeout,
+                                         CancellationToken
+                                     )
+
+                             : AuthStartResult.OutOfService(
+                                   Id,
+                                   this,
+                                   SessionId:  SessionId,
+                                   Runtime:    Timestamp.Now - startTime
+                               );
+
+            }
+            catch (Exception e)
+            {
+
+                result = AuthStartResult.Error(
+                             Id,
+                             this,
+                             SessionId:    SessionId,
+                             Description:  I18NString.Create(e.Message),
+                             Runtime:      Timestamp.Now - startTime
+                         );
+
+            }
+
+
+            #region Send OnAuthorizeStartResponse event
+
+            var endTime = Timestamp.Now;
+
+            await LogEvent(
+                      OnAuthorizeStartResponse,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          endTime,
+                          RequestTimestamp.Value,
+                          this,
+                          Id.ToString(),
+                          EventTrackingId,
+                          RoamingNetwork.Id,
+                          null,
+                          null,
+                          OperatorId,
+                          LocalAuthentication,
+                          ChargingLocation,
+                          ChargingProduct,
+                          SessionId,
+                          CPOPartnerSessionId,
+                          [],
+                          RequestTimeout,
+                          result,
+                          endTime - startTime
+                      )
+                  );
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+        #region AuthorizeStop (SessionId, LocalAuthentication, ChargingLocation = null,                                           OperatorId = null, ...)
+
+        /// <summary>
+        /// Create an authorize stop request at the given location.
+        /// </summary>
+        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
+        /// <param name="LocalAuthentication">An user identification.</param>
+        /// <param name="ChargingLocation">The charging location.</param>
+        /// <param name="CPOPartnerSessionId">An optional session identification of the CPO.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<AuthStopResult>
+
+            AuthorizeStop(ChargingSession_Id           SessionId,
+                          LocalAuthentication          LocalAuthentication,
+                          ChargingLocation?            ChargingLocation      = null,
+                          ChargingSession_Id?          CPOPartnerSessionId   = null,
+                          ChargingStationOperator_Id?  OperatorId            = null,
+
+                          DateTime?                    RequestTimestamp      = null,
+                          EventTracking_Id?            EventTrackingId       = null,
+                          TimeSpan?                    RequestTimeout        = null,
+                          CancellationToken            CancellationToken     = default)
+
+        {
+
+            #region Initial checks
+
+            RequestTimestamp ??= Timestamp.Now;
+            EventTrackingId  ??= EventTracking_Id.New;
+            RequestTimeout   ??= TimeSpan.FromSeconds(10);
+
+            AuthStopResult? result = null;
+
+            #endregion
+
+            #region Send OnAuthorizeStopRequest event
+
+            var startTime = Timestamp.Now;
+
+            await LogEvent(
+                      OnAuthorizeStopRequest,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          startTime,
+                          RequestTimestamp.Value,
+                          this,
+                          Id.ToString(),
+                          EventTrackingId,
+                          RoamingNetwork.Id,
+                          null,
+                          null,
+                          OperatorId,
+                          ChargingLocation,
+                          SessionId,
+                          CPOPartnerSessionId,
+                          LocalAuthentication,
+                          RequestTimeout
+                      )
+                  );
+
+            #endregion
+
+
+            try
+            {
+
+                result = ChargingStation is not null
+
+                             ? await ChargingStation.AuthorizeStop(
+                                         SessionId,
+                                         LocalAuthentication,
+                                         ChargingLocation,
+                                         CPOPartnerSessionId,
+                                         OperatorId,
+
+                                         RequestTimestamp,
+                                         EventTrackingId,
+                                         RequestTimeout,
+                                         CancellationToken
+                                     )
+
+                             : AuthStopResult.OutOfService(
+                                   Id,
+                                   this,
+                                   SessionId: SessionId,
+                                   Runtime: Timestamp.Now - startTime
+                               );
+
+            }
+            catch (Exception e)
+            {
+
+                result = AuthStopResult.Error(
+                             SessionId,
+                             this,
+                             SessionId,
+                             I18NString.Create(e.Message),
+                             Timestamp.Now - startTime
+                         );
+
+            }
+
+
+            #region Send OnAuthorizeStopResponse event
+
+            var endTime = Timestamp.Now;
+
+            await LogEvent(
+                      OnAuthorizeStopResponse,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          endTime,
+                          RequestTimestamp.Value,
+                          this,
+                          Id.ToString(),
+                          EventTrackingId,
+                          RoamingNetwork.Id,
+                          null,
+                          null,
+                          OperatorId,
+                          ChargingLocation,
+                          SessionId,
+                          CPOPartnerSessionId,
+                          LocalAuthentication,
+                          RequestTimeout,
+                          result,
+                          endTime - startTime
+                      )
+                  );
+
+            #endregion
+
+            return result;
+
+        }
 
         #endregion
 

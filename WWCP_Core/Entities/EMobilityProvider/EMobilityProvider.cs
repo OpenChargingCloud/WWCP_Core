@@ -2753,7 +2753,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean DisableAuthentication { get; set; }
+        public Boolean DisableAuthorization { get; set; }
         public TimeSpan MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public IEnumerable<ChargingReservation> ChargingReservations => throw new NotImplementedException();
@@ -2831,7 +2831,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisableAuthentication && RemoteEMobilityProvider is not null)
+            if (!DisableAuthorization && RemoteEMobilityProvider is not null)
                 result = await RemoteEMobilityProvider.AuthorizeStart(
                                    LocalAuthentication,
                                    ChargingLocation,
@@ -2966,7 +2966,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisableAuthentication && RemoteEMobilityProvider is not null)
+            if (!DisableAuthorization && RemoteEMobilityProvider is not null)
                 result = await RemoteEMobilityProvider.AuthorizeStop(SessionId,
                                                                      LocalAuthentication,
                                                                      ChargingLocation,

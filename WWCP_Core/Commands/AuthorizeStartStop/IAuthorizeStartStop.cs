@@ -303,9 +303,9 @@ namespace cloud.charging.open.protocols.WWCP
     {
 
         /// <summary>
-        /// This service can be disabled, e.g. for debugging reasons.
+        /// Disable the local authorization of charging processes.
         /// </summary>
-        Boolean  DisableAuthentication   { get; set; }
+        Boolean  DisableAuthorization    { get; set; }
 
     }
 

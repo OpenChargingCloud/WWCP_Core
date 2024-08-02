@@ -422,6 +422,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">A optional description of the remote start result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult Error(System_Id  Sender,
+                                              String?    Description      = null,
+                                              String?    AdditionalInfo   = null,
+                                              TimeSpan?  Runtime          = null)
+
+            => new (
+                   RemoteStartResultTypes.Error,
+                   Sender,
+                   Description?.ToI18NString() ?? I18NString.Create("An error occured!"),
+                   AdditionalInfo,
+                   Runtime: Runtime
+               );
+
+
+        /// <summary>
+        /// The remote start request led to an error.
+        /// </summary>
+        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult Error(System_Id    Sender,
                                               I18NString?  Description      = null,
                                               String?      AdditionalInfo   = null,

@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                                   DisableAuthentication                { get; set; }
+        public Boolean                                   DisableAuthorization                { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="DisablePushData">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisablePushStatus">This service can be disabled, e.g. for debugging reasons.</param>
-        /// <param name="DisableAuthentication">This service can be disabled, e.g. for debugging reasons.</param>
+        /// <param name="DisableAuthorization">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisableSendChargeDetailRecords">This service can be disabled, e.g. for debugging reasons.</param>
         protected AWWCPCSOAdapter(CSORoamingProvider_Id                      Id,
                                   IRoamingNetwork                            RoamingNetwork,
@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   Boolean                                    DisablePushStatus                   = false,
                                   Boolean                                    DisableEVSEStatusRefresh            = false,
                                   Boolean                                    DisablePushEnergyStatus             = false,
-                                  Boolean                                    DisableAuthentication               = false,
+                                  Boolean                                    DisableAuthorization                = false,
                                   Boolean                                    DisableSendChargeDetailRecords      = false,
 
                                   String                                     EllipticCurve                       = "P-256",
@@ -371,7 +371,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.DisableSendStatus                               = DisablePushStatus;
             this.DisableEVSEStatusRefresh                        = DisableEVSEStatusRefresh;
             this.DisableSendEnergyStatus                         = DisablePushEnergyStatus;
-            this.DisableAuthentication                           = DisableAuthentication;
+            this.DisableAuthorization                            = DisableAuthorization;
             this.DisableSendChargeDetailRecords                  = DisableSendChargeDetailRecords;
 
             this.FlushEVSEDataAndStatusEvery                     = FlushEVSEDataAndStatusEvery       ?? DefaultFlushEVSEDataAndStatusEvery;
