@@ -443,7 +443,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult Error(System_Id    Sender,
-                                              I18NString?  Description      = null,
+                                              I18NString?  Description,
                                               String?      AdditionalInfo   = null,
                                               TimeSpan?    Runtime          = null)
 
