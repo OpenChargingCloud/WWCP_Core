@@ -296,13 +296,12 @@ namespace cloud.charging.open.protocols.WWCP
             this.dataLicenses                                = new ReactiveSet<OpenDataLicense>();
 
             this.eMobilityProviders                          = new EntityHashSet       <IRoamingNetwork,       EMobilityProvider_Id,       IEMobilityProvider>      (this);
-
             this.chargingStationOperators                    = new EntityHashSet       <IRoamingNetwork,       ChargingStationOperator_Id, IChargingStationOperator>(this);
+            this.gridOperators                               = new EntityHashSet       <RoamingNetwork,        GridOperator_Id,            IGridOperator>           (this);
 
             this.parkingOperators                            = new EntityHashSet       <RoamingNetwork,        ParkingOperator_Id,         ParkingOperator>         (this);
             this.smartCities                                 = new EntityHashSet       <RoamingNetwork,        SmartCity_Id,               SmartCityProxy>          (this);
             this.navigationProviders                         = new EntityHashSet       <RoamingNetwork,        NavigationProvider_Id,      NavigationProvider>      (this);
-            this.gridOperators                               = new EntityHashSet       <RoamingNetwork,        GridOperator_Id,            GridOperator>            (this);
 
             //this._PushEVSEDataToOperatorRoamingServices      = new ConcurrentDictionary<UInt32, IPushData>();
             //this._PushEVSEStatusToOperatorRoamingServices    = new ConcurrentDictionary<UInt32, IPushStatus>();
@@ -3214,7 +3213,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
         /// <param name="ChargingStationOperator">The charging station operator.</param>
-        protected internal Boolean _TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, [NotNullWhen(true)] out IChargingStationOperator? ChargingStationOperator)
+        protected internal Boolean _TryGetChargingStationOperatorById(ChargingStationOperator_Id                         ChargingStationOperatorId,
+                                                                      [NotNullWhen(true)] out IChargingStationOperator?  ChargingStationOperator)
         {
 
             if (!ChargingStationOperatorId.IsNullOrEmpty &&
@@ -3233,7 +3233,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
         /// <param name="ChargingStationOperator">The charging station operator.</param>
-        protected internal Boolean _TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, [NotNullWhen(true)] out IChargingStationOperator? ChargingStationOperator)
+        protected internal Boolean _TryGetChargingStationOperatorById(ChargingStationOperator_Id?                        ChargingStationOperatorId,
+                                                                      [NotNullWhen(true)] out IChargingStationOperator?  ChargingStationOperator)
         {
 
             if (ChargingStationOperatorId.HasValue &&
@@ -3254,7 +3255,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
         /// <param name="ChargingStationOperator">The charging station operator.</param>
-        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, [NotNullWhen(true)] out IChargingStationOperator? ChargingStationOperator)
+        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id                         ChargingStationOperatorId,
+                                                         [NotNullWhen(true)] out IChargingStationOperator?  ChargingStationOperator)
         {
 
             if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
@@ -3290,7 +3292,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
         /// <param name="ChargingStationOperator">The charging station operator.</param>
-        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, [NotNullWhen(true)] out IChargingStationOperator? ChargingStationOperator)
+        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id?                        ChargingStationOperatorId,
+                                                         [NotNullWhen(true)] out IChargingStationOperator?  ChargingStationOperator)
         {
 
             if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
@@ -5337,6 +5340,197 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region Grid Operators...
+
+        #region GridOperators
+
+        private readonly EntityHashSet<RoamingNetwork, GridOperator_Id, IGridOperator> gridOperators;
+
+        /// <summary>
+        /// Return all smart cities registered within this roaming network.
+        /// </summary>
+        public IEnumerable<IGridOperator> GridOperators
+            => gridOperators;
+
+        #endregion
+
+
+        #region OnGridOperatorAddition
+
+        /// <summary>
+        /// Called whenever an EVServiceProvider will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, IGridOperator, Boolean> OnGridOperatorAddition
+            => gridOperators.OnAddition;
+
+        #endregion
+
+        #region OnGridOperatorRemoval
+
+        /// <summary>
+        /// Called whenever an EVServiceProvider will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, IGridOperator, Boolean> OnGridOperatorRemoval
+            => gridOperators.OnRemoval;
+
+        #endregion
+
+
+        #region GridOperatorsAdminStatus
+
+        /// <summary>
+        /// Return the admin status of all smart cities registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusTypes>>>> GridOperatorsAdminStatus
+
+            => gridOperators.
+                   Select(emp => new KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusTypes>>>(emp.Id, emp.AdminStatusSchedule()));
+
+        #endregion
+
+        #region GridOperatorsStatus
+
+        /// <summary>
+        /// Return the status of all smart cities registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusTypes>>>> GridOperatorsStatus
+
+            => gridOperators.
+                   Select(emp => new KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusTypes>>>(emp.Id, emp.StatusSchedule()));
+
+        #endregion
+
+
+        #region CreateNewGridOperator(GridOperatorId, Configurator = null)
+
+        /// <summary>
+        /// Create and register a new e-mobility (service) provider having the given
+        /// unique smart city identification.
+        /// </summary>
+        /// <param name="GridOperatorId">The unique identification of the new smart city.</param>
+        /// <param name="Name">The offical (multi-language) name of the smart city.</param>
+        /// <param name="Description">An optional (multi-language) description of the smart city.</param>
+        /// <param name="Configurator">An optional delegate to configure the new smart city before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new smart city after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the smart city failed.</param>
+        public GridOperator CreateNewGridOperator(GridOperator_Id                           GridOperatorId,
+                                                  I18NString?                               Name                       = null,
+                                                  I18NString?                               Description                = null,
+                                                  GridOperatorPriority?                     Priority                   = null,
+                                                  GridOperatorAdminStatusTypes              AdminStatus                = GridOperatorAdminStatusTypes.Available,
+                                                  GridOperatorStatusTypes                   Status                     = GridOperatorStatusTypes.Available,
+                                                  Action<GridOperator>?                     Configurator               = null,
+                                                  Action<GridOperator>?                     OnSuccess                  = null,
+                                                  Action<RoamingNetwork, GridOperator_Id>?  OnError                    = null,
+                                                  RemoteGridOperatorCreatorDelegate?        RemoteGridOperatorCreator  = null)
+        {
+
+            var gridOperator = new GridOperator(
+                                   GridOperatorId,
+                                   this,
+                                   Configurator,
+                                   RemoteGridOperatorCreator,
+                                   Name,
+                                   Description,
+                                   Priority,
+                                   AdminStatus,
+                                   Status
+                               );
+
+
+            if (gridOperators.TryAdd(gridOperator,
+                                     EventTracking_Id.New,
+                                     null).Result == CommandResult.Success)
+            {
+
+                // Link events!
+
+                return gridOperator;
+
+            }
+
+            throw new GridOperatorAlreadyExists(this, GridOperatorId);
+
+        }
+
+        #endregion
+
+        #region ContainsGridOperator(GridOperator)
+
+        /// <summary>
+        /// Check if the given GridOperator is already present within the roaming network.
+        /// </summary>
+        /// <param name="GridOperator">An Charging Station Operator.</param>
+        public Boolean ContainsGridOperator(IGridOperator GridOperator)
+
+            => gridOperators.ContainsId(GridOperator.Id);
+
+        #endregion
+
+        #region ContainsGridOperator(GridOperatorId)
+
+        /// <summary>
+        /// Check if the given GridOperator identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="GridOperatorId">The unique identification of the Charging Station Operator.</param>
+        public Boolean ContainsGridOperator(GridOperator_Id GridOperatorId)
+
+            => gridOperators.ContainsId(GridOperatorId);
+
+        #endregion
+
+        #region GetGridOperatorById(GridOperatorId)
+
+        public IGridOperator? GetGridOperatorById(GridOperator_Id GridOperatorId)
+
+            => gridOperators.GetById(GridOperatorId);
+
+        #endregion
+
+        #region TryGetGridOperatorById(GridOperatorId, out GridOperator)
+
+        public Boolean TryGetGridOperatorById(GridOperator_Id                         GridOperatorId,
+                                              [NotNullWhen(true)] out IGridOperator?  GridOperator)
+
+            => gridOperators.TryGet(GridOperatorId, out GridOperator);
+
+        #endregion
+
+        #region RemoveGridOperator(GridOperatorId)
+
+        public IGridOperator? RemoveGridOperator(GridOperator_Id GridOperatorId)
+        {
+
+            if (gridOperators.TryRemove(GridOperatorId,
+                                        out var gridOperator,
+                                        EventTracking_Id.New,
+                                        null))
+            {
+                return gridOperator;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryRemoveGridOperator(RemoveGridOperatorId, out RemoveGridOperator)
+
+        public Boolean TryRemoveGridOperator(GridOperator_Id                         GridOperatorId,
+                                             [NotNullWhen(true)] out IGridOperator?  GridOperator)
+
+            => gridOperators.TryRemove(
+                   GridOperatorId,
+                   out GridOperator,
+                   EventTracking_Id.New,
+                   null
+               );
+
+        #endregion
+
+        #endregion
+
 
         #region Parking Operators...
 
@@ -5718,200 +5912,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                         NewValue);
 
         }
-
-        #endregion
-
-        #endregion
-
-        #region Grid Operators...
-
-        #region GridOperators
-
-        private readonly EntityHashSet<RoamingNetwork, GridOperator_Id, GridOperator> gridOperators;
-
-        /// <summary>
-        /// Return all smart cities registered within this roaming network.
-        /// </summary>
-        public IEnumerable<GridOperator> GridOperators
-            => gridOperators;
-
-        #endregion
-
-
-        #region OnGridOperatorAddition
-
-        /// <summary>
-        /// Called whenever an EVServiceProvider will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, GridOperator, Boolean> OnGridOperatorAddition
-            => gridOperators.OnAddition;
-
-        #endregion
-
-        #region OnGridOperatorRemoval
-
-        /// <summary>
-        /// Called whenever an EVServiceProvider will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, GridOperator, Boolean> OnGridOperatorRemoval
-            => gridOperators.OnRemoval;
-
-        #endregion
-
-
-        #region GridOperatorsAdminStatus
-
-        /// <summary>
-        /// Return the admin status of all smart cities registered within this roaming network.
-        /// </summary>
-        public IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusType>>>> GridOperatorsAdminStatus
-
-            => gridOperators.
-                   Select(emp => new KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule()));
-
-        #endregion
-
-        #region GridOperatorsStatus
-
-        /// <summary>
-        /// Return the status of all smart cities registered within this roaming network.
-        /// </summary>
-        public IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusType>>>> GridOperatorsStatus
-
-            => gridOperators.
-                   Select(emp => new KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusType>>>(emp.Id, emp.StatusSchedule()));
-
-        #endregion
-
-
-        #region CreateNewGridOperator(GridOperatorId, Configurator = null)
-
-        /// <summary>
-        /// Create and register a new e-mobility (service) provider having the given
-        /// unique smart city identification.
-        /// </summary>
-        /// <param name="GridOperatorId">The unique identification of the new smart city.</param>
-        /// <param name="Name">The offical (multi-language) name of the smart city.</param>
-        /// <param name="Description">An optional (multi-language) description of the smart city.</param>
-        /// <param name="Configurator">An optional delegate to configure the new smart city before its successful creation.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new smart city after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the smart city failed.</param>
-        public GridOperator CreateNewGridOperator(GridOperator_Id                          GridOperatorId,
-                                                  I18NString                               Name                       = null,
-                                                  I18NString                               Description                = null,
-                                                  GridOperatorPriority                     Priority                   = null,
-                                                  GridOperatorAdminStatusType              AdminStatus                = GridOperatorAdminStatusType.Available,
-                                                  GridOperatorStatusType                   Status                     = GridOperatorStatusType.Available,
-                                                  Action<GridOperator>                     Configurator               = null,
-                                                  Action<GridOperator>                     OnSuccess                  = null,
-                                                  Action<RoamingNetwork, GridOperator_Id>  OnError                    = null,
-                                                  RemoteGridOperatorCreatorDelegate        RemoteGridOperatorCreator  = null)
-        {
-
-            #region Initial checks
-
-            if (GridOperatorId == null)
-                throw new ArgumentNullException(nameof(GridOperatorId),  "The given smart city identification must not be null!");
-
-            #endregion
-
-            var gridOperator = new GridOperator(GridOperatorId,
-                                                this,
-                                                Configurator,
-                                                RemoteGridOperatorCreator,
-                                                Name,
-                                                Description,
-                                                Priority,
-                                                AdminStatus,
-                                                Status);
-
-
-            if (gridOperators.TryAdd(gridOperator,
-                                     EventTracking_Id.New,
-                                     null).Result == CommandResult.Success)
-            {
-
-                // Link events!
-
-                return gridOperator;
-
-            }
-
-            throw new GridOperatorAlreadyExists(this, GridOperatorId);
-
-        }
-
-        #endregion
-
-        #region ContainsGridOperator(GridOperator)
-
-        /// <summary>
-        /// Check if the given GridOperator is already present within the roaming network.
-        /// </summary>
-        /// <param name="GridOperator">An Charging Station Operator.</param>
-        public Boolean ContainsGridOperator(GridOperator GridOperator)
-
-            => gridOperators.ContainsId(GridOperator.Id);
-
-        #endregion
-
-        #region ContainsGridOperator(GridOperatorId)
-
-        /// <summary>
-        /// Check if the given GridOperator identification is already present within the roaming network.
-        /// </summary>
-        /// <param name="GridOperatorId">The unique identification of the Charging Station Operator.</param>
-        public Boolean ContainsGridOperator(GridOperator_Id GridOperatorId)
-
-            => gridOperators.ContainsId(GridOperatorId);
-
-        #endregion
-
-        #region GetGridOperatorById(GridOperatorId)
-
-        public GridOperator GetGridOperatorById(GridOperator_Id GridOperatorId)
-
-            => gridOperators.GetById(GridOperatorId);
-
-        #endregion
-
-        #region TryGetGridOperatorById(GridOperatorId, out GridOperator)
-
-        public Boolean TryGetGridOperatorById(GridOperator_Id GridOperatorId, out GridOperator GridOperator)
-
-            => gridOperators.TryGet(GridOperatorId, out GridOperator);
-
-        #endregion
-
-        #region RemoveGridOperator(GridOperatorId)
-
-        public GridOperator RemoveGridOperator(GridOperator_Id GridOperatorId)
-        {
-
-            GridOperator _GridOperator = null;
-
-            if (gridOperators.TryRemove(GridOperatorId,
-                                        out _GridOperator,
-                                        EventTracking_Id.New,
-                                        null))
-            {
-                return _GridOperator;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region TryRemoveGridOperator(RemoveGridOperatorId, out RemoveGridOperator)
-
-        public Boolean TryRemoveGridOperator(GridOperator_Id GridOperatorId, out GridOperator GridOperator)
-
-            => gridOperators.TryRemove(GridOperatorId,
-                                       out GridOperator,
-                                       EventTracking_Id.New,
-                                       null);
 
         #endregion
 

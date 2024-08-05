@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The status of an e-mobility provider.
+    /// The admin status of a grid operator.
     /// </summary>
-    public enum GridOperatorStatusType
+    public enum GridOperatorAdminStatusTypes
     {
 
         /// <summary>

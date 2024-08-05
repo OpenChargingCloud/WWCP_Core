@@ -346,12 +346,12 @@ namespace cloud.charging.open.protocols.WWCP
         Boolean                                    ContainsEMobilityProvider   (EMobilityProvider_Id               EMobilityProviderId);
         IEMobilityProvider?                        GetEMobilityProviderById    (EMobilityProvider_Id               EMobilityProviderId);
         IEMobilityProvider?                        GetEMobilityProviderById    (EMobilityProvider_Id?              EMobilityProviderId);
-        Boolean                                    TryGetEMobilityProviderById (EMobilityProvider_Id               EMobilityProviderId, out IEMobilityProvider? EMobilityProvider);
-        Boolean                                    TryGetEMobilityProviderById (EMobilityProvider_Id?              EMobilityProviderId, out IEMobilityProvider? EMobilityProvider);
+        Boolean                                    TryGetEMobilityProviderById (EMobilityProvider_Id               EMobilityProviderId, [NotNullWhen(true)] out IEMobilityProvider? EMobilityProvider);
+        Boolean                                    TryGetEMobilityProviderById (EMobilityProvider_Id?              EMobilityProviderId, [NotNullWhen(true)] out IEMobilityProvider? EMobilityProvider);
         IEMobilityProvider?                        RemoveEMobilityProvider     (EMobilityProvider_Id               EMobilityProviderId);
         IEMobilityProvider?                        RemoveEMobilityProvider     (EMobilityProvider_Id?              EMobilityProviderId);
-        Boolean                                    TryRemoveEMobilityProvider  (EMobilityProvider_Id               EMobilityProviderId, out IEMobilityProvider? EMobilityProvider);
-        Boolean                                    TryRemoveEMobilityProvider  (EMobilityProvider_Id?              EMobilityProviderId, out IEMobilityProvider? EMobilityProvider);
+        Boolean                                    TryRemoveEMobilityProvider  (EMobilityProvider_Id               EMobilityProviderId, [NotNullWhen(true)] out IEMobilityProvider? EMobilityProvider);
+        Boolean                                    TryRemoveEMobilityProvider  (EMobilityProvider_Id?              EMobilityProviderId, [NotNullWhen(true)] out IEMobilityProvider? EMobilityProvider);
 
         IEnumerable<EMobilityProvider_Id>          EMobilityProviderIds        (IncludeEMobilityProviderDelegate?  IncludeEMobilityProvider   = null);
         IEnumerable<EMobilityProviderAdminStatus>  EMobilityProviderAdminStatus(IncludeEMobilityProviderDelegate?  IncludeEMobilityProvider   = null);
@@ -440,8 +440,8 @@ namespace cloud.charging.open.protocols.WWCP
         Boolean                                           ChargingStationOperatorExists        (ChargingStationOperator_Id                 ChargingStationOperatorId);
         IChargingStationOperator?                         GetChargingStationOperatorById       (ChargingStationOperator_Id                 ChargingStationOperatorId);
         IChargingStationOperator?                         GetChargingStationOperatorById       (ChargingStationOperator_Id?                ChargingStationOperatorId);
-        Boolean                                           TryGetChargingStationOperatorById    (ChargingStationOperator_Id                 ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
-        Boolean                                           TryGetChargingStationOperatorById    (ChargingStationOperator_Id?                ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
+        Boolean                                           TryGetChargingStationOperatorById    (ChargingStationOperator_Id                 ChargingStationOperatorId, [NotNullWhen(true)] out IChargingStationOperator? ChargingStationOperator);
+        Boolean                                           TryGetChargingStationOperatorById    (ChargingStationOperator_Id?                ChargingStationOperatorId, [NotNullWhen(true)] out IChargingStationOperator? ChargingStationOperator);
 
 
         IEnumerable<ChargingStationOperator_Id>           ChargingStationOperatorIds           (IncludeChargingStationOperatorDelegate?    IncludeChargingStationOperator   = null);
@@ -736,28 +736,28 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return all smart cities registered within this roaming network.
         /// </summary>
-        IEnumerable<GridOperator> GridOperators { get; }
+        IEnumerable<IGridOperator> GridOperators { get; }
 
 
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was added.
         /// </summary>
-        IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, GridOperator, Boolean> OnGridOperatorAddition { get; }
+        IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, IGridOperator, Boolean> OnGridOperatorAddition { get; }
 
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, GridOperator, Boolean> OnGridOperatorRemoval  { get; }
+        IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, IGridOperator, Boolean> OnGridOperatorRemoval  { get; }
 
         /// <summary>
         /// Return the admin status of all smart cities registered within this roaming network.
         /// </summary>
-        IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusType>>>> GridOperatorsAdminStatus { get; }
+        IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusTypes>>>> GridOperatorsAdminStatus { get; }
 
         /// <summary>
         /// Return the status of all smart cities registered within this roaming network.
         /// </summary>
-        IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusType>>>> GridOperatorsStatus { get; }
+        IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusTypes>>>> GridOperatorsStatus { get; }
 
 
 
@@ -771,22 +771,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new smart city before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new smart city after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the smart city failed.</param>
-        GridOperator CreateNewGridOperator(GridOperator_Id                          GridOperatorId,
-                                           I18NString                               Name                        = null,
-                                           I18NString                               Description                 = null,
-                                           GridOperatorPriority                     Priority                    = null,
-                                           GridOperatorAdminStatusType              AdminStatus                 = GridOperatorAdminStatusType.Available,
-                                           GridOperatorStatusType                   Status                      = GridOperatorStatusType.Available,
-                                           Action<GridOperator>                     Configurator                = null,
-                                           Action<GridOperator>                     OnSuccess                   = null,
-                                           Action<RoamingNetwork, GridOperator_Id>  OnError                     = null,
-                                           RemoteGridOperatorCreatorDelegate        RemoteGridOperatorCreator   = null);
+        GridOperator CreateNewGridOperator(GridOperator_Id                           GridOperatorId,
+                                           I18NString?                               Name                        = null,
+                                           I18NString?                               Description                 = null,
+                                           GridOperatorPriority?                     Priority                    = null,
+                                           GridOperatorAdminStatusTypes              AdminStatus                 = GridOperatorAdminStatusTypes.Available,
+                                           GridOperatorStatusTypes                   Status                      = GridOperatorStatusTypes.Available,
+                                           Action<GridOperator>?                     Configurator                = null,
+                                           Action<GridOperator>?                     OnSuccess                   = null,
+                                           Action<RoamingNetwork, GridOperator_Id>?  OnError                     = null,
+                                           RemoteGridOperatorCreatorDelegate?        RemoteGridOperatorCreator   = null);
 
         /// <summary>
         /// Check if the given GridOperator is already present within the roaming network.
         /// </summary>
         /// <param name="GridOperator">An Charging Station Operator.</param>
-        Boolean ContainsGridOperator(GridOperator GridOperator);
+        Boolean ContainsGridOperator(IGridOperator GridOperator);
 
         /// <summary>
         /// Check if the given GridOperator identification is already present within the roaming network.
@@ -794,13 +794,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="GridOperatorId">The unique identification of the Charging Station Operator.</param>
         Boolean ContainsGridOperator(GridOperator_Id GridOperatorId);
 
-        GridOperator GetGridOperatorById(GridOperator_Id GridOperatorId);
+        IGridOperator? GetGridOperatorById(GridOperator_Id GridOperatorId);
 
-        Boolean TryGetGridOperatorById(GridOperator_Id GridOperatorId, out GridOperator GridOperator);
+        Boolean TryGetGridOperatorById(GridOperator_Id GridOperatorId, [NotNullWhen(true)] out IGridOperator? GridOperator);
 
-        GridOperator RemoveGridOperator(GridOperator_Id GridOperatorId);
+        IGridOperator? RemoveGridOperator(GridOperator_Id GridOperatorId);
 
-        Boolean TryRemoveGridOperator(GridOperator_Id GridOperatorId, out GridOperator GridOperator);
+        Boolean TryRemoveGridOperator(GridOperator_Id GridOperatorId, [NotNullWhen(true)] out IGridOperator? GridOperator);
 
         #endregion
 

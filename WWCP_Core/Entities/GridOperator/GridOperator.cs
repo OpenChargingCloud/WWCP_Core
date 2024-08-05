@@ -17,17 +17,11 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Aegir;
-using org.GraphDefined.Vanaheimr.Hermod;
 using Newtonsoft.Json.Linq;
+
+using org.GraphDefined.Vanaheimr.Aegir;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -35,327 +29,16 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// WWCP JSON I/O.
-    /// </summary>
-    public static partial class JSON_IO
-    {
-
-        #region ToJSON(this GridOperator, Embedded = false, ExpandChargingRoamingNetworkId = false, ExpandChargingStationIds = false, ExpandChargingStationIds = false, ExpandEVSEIds = false)
-
-        public static JObject ToJSON(this GridOperator  GridOperator,
-                                     Boolean                       Embedded                        = false,
-                                     Boolean                       ExpandChargingRoamingNetworkId  = false,
-                                     Boolean                       ExpandChargingPoolIds           = false,
-                                     Boolean                       ExpandChargingStationIds        = false,
-                                     Boolean                       ExpandEVSEIds                   = false)
-
-            => GridOperator != null
-                   ? JSONObject.Create(
-
-                         new JProperty("id",                        GridOperator.Id.ToString()),
-
-                         Embedded
-                             ? null
-                             : ExpandChargingRoamingNetworkId
-                                   ? new JProperty("roamingNetwork",      GridOperator.RoamingNetwork.ToJSON())
-                                   : new JProperty("roamingNetworkId",    GridOperator.RoamingNetwork.Id.ToString()),
-
-                         new JProperty("name",                  GridOperator.Name.       ToJSON()),
-                         new JProperty("description",           GridOperator.Description.ToJSON()),
-
-                         // Address
-                         // LogoURI
-                         // API - RobotKeys, Endpoints, DNS SRV
-                         // MainKeys
-
-                         GridOperator.Logo.IsNotNullOrEmpty()
-                             ? new JProperty("logos",               JSONArray.Create(
-                                                                        JSONObject.Create(
-                                                                            new JProperty("uri",          GridOperator.Logo),
-                                                                            new JProperty("description",  I18NString.Empty.ToJSON())
-                                                                        )
-                                                                    ))
-                             : null,
-
-                         GridOperator.Homepage.IsNotNullOrEmpty()
-                             ? new JProperty("homepage",            GridOperator.Homepage)
-                             : null,
-
-                         GridOperator.HotlinePhoneNumber.IsNotNullOrEmpty()
-                             ? new JProperty("hotline",             GridOperator.HotlinePhoneNumber)
-                             : null,
-
-                         GridOperator.DataLicenses.Any()
-                             ? new JProperty("dataLicenses",        new JArray(GridOperator.DataLicenses.Select(license => license.ToJSON())))
-                             : null
-
-                         //new JProperty("chargingPools",         ExpandChargingPoolIds
-                         //                                           ? new JArray(GridOperator.ChargingPools.     ToJSON(Embedded: true))
-                         //                                           : new JArray(GridOperator.ChargingPoolIds.   Select(id => id.ToString()))),
-
-                         //new JProperty("chargingStations",      ExpandChargingStationIds
-                         //                                           ? new JArray(GridOperator.ChargingStations.  ToJSON(Embedded: true))
-                         //                                           : new JArray(GridOperator.ChargingStationIds.Select(id => id.ToString()))),
-
-                         //new JProperty("evses",                 ExpandEVSEIds
-                         //                                           ? new JArray(GridOperator.EVSEs.             ToJSON(Embedded: true))
-                         //                                           : new JArray(GridOperator.EVSEIds.           Select(id => id.ToString())))
-
-                     )
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this GridOperator, JPropertyKey)
-
-        public static JProperty ToJSON(this GridOperator GridOperator, String JPropertyKey)
-
-            => GridOperator != null
-                   ? new JProperty(JPropertyKey, GridOperator.ToJSON())
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this GridOperators, Skip = null, Take = null, Embedded = false, ExpandChargingRoamingNetworkId = false, ExpandChargingStationIds = false, ExpandChargingStationIds = false, ExpandEVSEIds = false)
-
-        /// <summary>
-        /// Return a JSON representation for the given enumeration of Charging Station Operators.
-        /// </summary>
-        /// <param name="GridOperators">An enumeration of Charging Station Operators.</param>
-        /// <param name="Skip">The optional number of Charging Station Operators to skip.</param>
-        /// <param name="Take">The optional number of Charging Station Operators to return.</param>
-        public static JArray ToJSON(this IEnumerable<GridOperator>  GridOperators,
-                                    UInt64?                         Skip                            = null,
-                                    UInt64?                         Take                            = null,
-                                    Boolean                         Embedded                        = false,
-                                    Boolean                         ExpandChargingRoamingNetworkId  = false,
-                                    Boolean                         ExpandChargingPoolIds           = false,
-                                    Boolean                         ExpandChargingStationIds        = false,
-                                    Boolean                         ExpandEVSEIds                   = false)
-        {
-
-            #region Initial checks
-
-            if (GridOperators == null)
-                return new JArray();
-
-            #endregion
-
-            return new JArray(GridOperators.
-                                  Where     (cso => cso != null).
-                                  OrderBy   (cso => cso.Id).
-                                  SkipTakeFilter(Skip, Take).
-                                  SafeSelect(cso => cso.ToJSON(Embedded,
-                                                               ExpandChargingRoamingNetworkId,
-                                                               ExpandChargingPoolIds,
-                                                               ExpandChargingStationIds,
-                                                               ExpandEVSEIds)));
-
-        }
-
-        #endregion
-
-        #region ToJSON(this GridOperators, JPropertyKey)
-
-        public static JProperty ToJSON(this IEnumerable<GridOperator> GridOperators, String JPropertyKey)
-        {
-
-            #region Initial checks
-
-            if (JPropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(JPropertyKey), "The json property key must not be null or empty!");
-
-            #endregion
-
-            return GridOperators != null
-                       ? new JProperty(JPropertyKey, GridOperators.ToJSON())
-                       : null;
-
-        }
-
-        #endregion
-
-        #region ToJSON(this GridOperatorAdminStatus, Skip = null, Take = null, HistorySize = 1)
-
-        public static JObject ToJSON(this IEnumerable<Timestamped<GridOperatorAdminStatusType>>  GridOperatorAdminStatus,
-                                     UInt64?                                                     Skip         = null,
-                                     UInt64?                                                     Take         = null,
-                                     UInt64?                                                     HistorySize  = 1)
-
-        {
-
-            if (GridOperatorAdminStatus == null)
-                return new JObject();
-
-            try
-            {
-
-                return new JObject(GridOperatorAdminStatus.
-                                       SkipTakeFilter(Skip, Take).
-
-                                       // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                       GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                       Select           (group => group.First()).
-
-                                       OrderByDescending(tsv   => tsv.Timestamp).
-                                       Take             (HistorySize).
-                                       Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                tsv.Value.    ToString())));
-
-            }
-            catch
-            {
-                // e.g. when a Stack behind GridOperatorAdminStatus is empty!
-                return new JObject();
-            }
-
-        }
-
-        #endregion
-
-        #region ToJSON(this GridOperatorAdminStatus, Skip = null, Take = null, HistorySize = 1)
-
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusType>>>>  GridOperatorAdminStatus,
-                                     UInt64?                                                                                                 Skip         = null,
-                                     UInt64?                                                                                                 Take         = null,
-                                     UInt64?                                                                                                 HistorySize  = 1)
-
-        {
-
-            if (GridOperatorAdminStatus == null)
-                return new JObject();
-
-            try
-            {
-
-                return new JObject(GridOperatorAdminStatus.
-                                       SkipTakeFilter(Skip, Take).
-                                       SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
-                                                                    new JObject(statuslist.Value.
-
-                                                                                // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                                GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                                Select           (group => group.First()).
-
-                                                                                OrderByDescending(tsv   => tsv.Timestamp).
-                                                                                Take             (HistorySize).
-                                                                                Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                         tsv.Value.    ToString())))
-
-                                                          )));
-
-            }
-            catch
-            {
-                // e.g. when a Stack behind GridOperatorAdminStatus is empty!
-                return new JObject();
-            }
-
-        }
-
-        #endregion
-
-        #region ToJSON(this GridOperatorStatus,      Skip = null, Take = null, HistorySize = 1)
-
-        public static JObject ToJSON(this IEnumerable<Timestamped<GridOperatorStatusType>>  GridOperatorStatus,
-                                     UInt64?                                                Skip         = null,
-                                     UInt64?                                                Take         = null,
-                                     UInt64?                                                HistorySize  = 1)
-
-        {
-
-            if (GridOperatorStatus == null)
-                return new JObject();
-
-            try
-            {
-
-                return new JObject(GridOperatorStatus.
-                                       SkipTakeFilter(Skip, Take).
-
-                                       // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                       GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                       Select           (group => group.First()).
-
-                                       OrderByDescending(tsv   => tsv.Timestamp).
-                                       Take             (HistorySize).
-                                       Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                tsv.Value.    ToString())));
-
-            }
-            catch
-            {
-                // e.g. when a Stack behind GridOperatorStatus is empty!
-                return new JObject();
-            }
-
-        }
-
-        #endregion
-
-        #region ToJSON(this GridOperatorStatus,      Skip = null, Take = null, HistorySize = 1)
-
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusType>>>>  GridOperatorStatus,
-                                     UInt64?                                                                                            Skip         = null,
-                                     UInt64?                                                                                            Take         = null,
-                                     UInt64?                                                                                            HistorySize  = 1)
-
-        {
-
-            if (GridOperatorStatus == null)
-                return new JObject();
-
-            try
-            {
-
-                return new JObject(GridOperatorStatus.
-                                       SkipTakeFilter(Skip, Take).
-                                       SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
-                                                                    new JObject(statuslist.Value.
-
-                                                                                // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                                GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                                Select           (group => group.First()).
-
-                                                                                OrderByDescending(tsv   => tsv.Timestamp).
-                                                                                Take             (HistorySize).
-                                                                                Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                         tsv.Value.    ToString())))
-
-                                                                )));
-
-            }
-            catch
-            {
-                // e.g. when a Stack behind GridOperatorStatus is empty!
-                return new JObject();
-            }
-
-        }
-
-        #endregion
-
-    }
-
-
-    /// <summary>
-    /// The e-mobility provider is not only the main contract party of the EV driver,
-    /// the e-mobility provider also takes care of the EV driver master data,
-    /// the authentication and autorisation process before charging and for the
-    /// billing process after charging.
-    /// The e-mobility provider provides the EV drivere one or multiple methods for
-    /// authentication (e.g. based on RFID cards, login/passwords, client certificates).
-    /// The e-mobility provider takes care that none of the provided authentication
-    /// methods can be misused by any entity in the ev charging process to track the
-    /// ev driver or its behaviour.
+    /// A grid operator.
     /// </summary>
     public class GridOperator : ACryptoEMobilityEntity<GridOperator_Id,
-                                                       GridOperatorAdminStatusType,
-                                                       GridOperatorStatusType>,
+                                                       GridOperatorAdminStatusTypes,
+                                                       GridOperatorStatusTypes>,
                                 IRemoteGridOperator,
                                 IEquatable <GridOperator>,
                                 IComparable<GridOperator>,
-                                IComparable
+                                IComparable,
+                                IGridOperator
     {
 
         #region Data
@@ -643,8 +326,8 @@ namespace cloud.charging.open.protocols.WWCP
                               I18NString?                         Name                         = null,
                               I18NString?                         Description                  = null,
                               GridOperatorPriority?               Priority                     = null,
-                              GridOperatorAdminStatusType?        InitialAdminStatus           = null,
-                              GridOperatorStatusType?             InitialStatus                = null,
+                              GridOperatorAdminStatusTypes?        InitialAdminStatus           = null,
+                              GridOperatorStatusTypes?             InitialStatus                = null,
                               UInt16?                             MaxAdminStatusScheduleSize   = DefaultMaxAdminStatusScheduleSize,
                               UInt16?                             MaxStatusScheduleSize        = DefaultMaxStatusScheduleSize,
 
@@ -661,8 +344,8 @@ namespace cloud.charging.open.protocols.WWCP
                    null,
                    null,
                    null,
-                   InitialAdminStatus         ?? GridOperatorAdminStatusType.Available,
-                   InitialStatus              ?? GridOperatorStatusType.Available,
+                   InitialAdminStatus         ?? GridOperatorAdminStatusTypes.Available,
+                   InitialStatus              ?? GridOperatorStatusTypes.Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
                    DataSource,
@@ -683,6 +366,96 @@ namespace cloud.charging.open.protocols.WWCP
             Configurator?.Invoke(this);
 
             this.RemoteGridOperator = RemoteGridOperatorCreator?.Invoke(this);
+
+        }
+
+        #endregion
+
+
+        #region  Data/(Admin-)Status management
+
+        #region OnData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data changed.
+        /// </summary>
+        public event OnGridOperatorDataChangedDelegate?         OnDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status changed.
+        /// </summary>
+        public event OnGridOperatorAdminStatusChangedDelegate?  OnAdminStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status changed.
+        /// </summary>
+        public event OnGridOperatorStatusChangedDelegate?       OnStatusChanged;
+
+        #endregion
+
+        #endregion
+
+        #region ToJSON(Embedded = false, ExpandChargingRoamingNetworkId = false)
+
+        public JObject ToJSON(Boolean  Embedded                         = false,
+                              Boolean  ExpandChargingRoamingNetworkId   = false)
+
+        {
+
+             var json = JSONObject.Create(
+
+                         new JProperty("id",                        Id.ToString()),
+
+                         Embedded
+                             ? null
+                             : ExpandChargingRoamingNetworkId
+                                   ? new JProperty("roamingNetwork",      RoamingNetwork.ToJSON())
+                                   : new JProperty("roamingNetworkId",    RoamingNetwork.Id.ToString()),
+
+                         new JProperty("name",                  Name.       ToJSON()),
+                         new JProperty("description",           Description.ToJSON()),
+
+                         // Address
+                         // LogoURI
+                         // API - RobotKeys, Endpoints, DNS SRV
+                         // MainKeys
+
+                         Logo.IsNotNullOrEmpty()
+                             ? new JProperty("logos",               JSONArray.Create(
+                                                                        JSONObject.Create(
+                                                                            new JProperty("uri",          Logo),
+                                                                            new JProperty("description",  I18NString.Empty.ToJSON())
+                                                                        )
+                                                                    ))
+                             : null,
+
+                         Homepage.IsNotNullOrEmpty()
+                             ? new JProperty("homepage",            Homepage)
+                             : null,
+
+                         HotlinePhoneNumber.IsNotNullOrEmpty()
+                             ? new JProperty("hotline",             HotlinePhoneNumber)
+                             : null,
+
+                         DataLicenses.Any()
+                             ? new JProperty("dataLicenses",        new JArray(DataLicenses.Select(license => license.ToJSON())))
+                             : null
+
+                         //new JProperty("chargingPools",         ExpandChargingPoolIds
+                         //                                           ? new JArray(ChargingPools.     ToJSON(Embedded: true))
+                         //                                           : new JArray(ChargingPoolIds.   Select(id => id.ToString()))),
+
+                         //new JProperty("chargingStations",      ExpandChargingStationIds
+                         //                                           ? new JArray(ChargingStations.  ToJSON(Embedded: true))
+                         //                                           : new JArray(ChargingStationIds.Select(id => id.ToString()))),
+
+                         //new JProperty("evses",                 ExpandEVSEIds
+                         //                                           ? new JArray(EVSEs.             ToJSON(Embedded: true))
+                         //                                           : new JArray(EVSEIds.           Select(id => id.ToString())))
+
+                     );
+
+            return json;
 
         }
 

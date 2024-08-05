@@ -690,12 +690,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) TryParse(JSONObject, ..., out SendCDRResult, out ErrorResponse, VerifyContext = false)
 
-        public static Boolean TryParse(JObject                                  JSONObject,
-                                       [NotNullWhen(true)]  out SendCDRResult?  SendCDRResult,
-                                       [NotNullWhen(false)] out String?         ErrorResponse)
-            => TryParse(JSONObject,
-                        out SendCDRResult,
-                        out ErrorResponse);
+        //public static Boolean TryParse(JObject                                  JSONObject,
+        //                               [NotNullWhen(true)]  out SendCDRResult?  SendCDRResult,
+        //                               [NotNullWhen(false)] out String?         ErrorResponse)
+        //    => TryParse(JSONObject,
+        //                out SendCDRResult,
+        //                out ErrorResponse);
 
         public static Boolean TryParse(JObject                                  JSONObject,
                                        [NotNullWhen(true)]  out SendCDRResult?  SendCDRResult,

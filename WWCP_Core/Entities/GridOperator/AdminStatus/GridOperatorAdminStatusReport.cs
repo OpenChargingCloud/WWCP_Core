@@ -17,12 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Collections.Generic;
-
-using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -30,11 +25,17 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The EV Roaming Provider provided EVSE Operator services interface.
+    /// An e-mobility provider admin status report.
     /// </summary>
-    public interface IGridOperator : IRemoteGridOperator
+    public class GridOperatorAdminStatusReport : StatusReport<GridOperator, GridOperatorAdminStatusTypes>
     {
 
+        public GridOperatorAdminStatusReport(IEnumerable<GridOperator> GridOperators)
+
+            : base(GridOperators,
+                   provider => provider.AdminStatus.Value)
+
+        { }
 
     }
 

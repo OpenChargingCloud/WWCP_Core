@@ -25,14 +25,14 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The result of an add charging station operator request.
+    /// The result of an update grid operator request.
     /// </summary>
-    public class AddChargingStationOperatorResult : AEnitityResult<IChargingStationOperator, ChargingStationOperator_Id>
+    public class UpdateGridOperatorResult : AEnitityResult<IGridOperator, GridOperator_Id>
     {
 
         #region Properties
 
-        public IChargingStationOperator?  ChargingStationOperator
+        public IGridOperator?  GridOperator
             => Entity;
 
         public IRoamingNetwork?           RoamingNetwork    { get; internal set; }
@@ -41,17 +41,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        public AddChargingStationOperatorResult(IChargingStationOperator  ChargingStationOperator,
-                                                CommandResult       Result,
-                                                EventTracking_Id?         EventTrackingId   = null,
-                                                IId?                      SenderId          = null,
-                                                Object?                   Sender            = null,
-                                                IRoamingNetwork?          RoamingNetwork    = null,
-                                                I18NString?               Description       = null,
-                                                IEnumerable<Warning>?     Warnings          = null,
-                                                TimeSpan?                 Runtime           = null)
+        public UpdateGridOperatorResult(IGridOperator  GridOperator,
+                                                   CommandResult       Result,
+                                                   EventTracking_Id?         EventTrackingId   = null,
+                                                   IId?                      SenderId          = null,
+                                                   Object?                   Sender            = null,
+                                                   IRoamingNetwork?          RoamingNetwork    = null,
+                                                   I18NString?               Description       = null,
+                                                   IEnumerable<Warning>?     Warnings          = null,
+                                                   TimeSpan?                 Runtime           = null)
 
-            : base(ChargingStationOperator,
+            : base(GridOperator,
                    Result,
                    EventTrackingId,
                    SenderId,
@@ -69,11 +69,11 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) AdminDown    (ChargingStationOperator, ...)
+        #region (static) AdminDown    (GridOperator, ...)
 
-        public static AddChargingStationOperatorResult
+        public static UpdateGridOperatorResult
 
-            AdminDown(IChargingStationOperator  ChargingStationOperator,
+            AdminDown(IGridOperator  GridOperator,
                       EventTracking_Id?         EventTrackingId   = null,
                       IId?                      SenderId          = null,
                       Object?                   Sender            = null,
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.WWCP
                       IEnumerable<Warning>?     Warnings          = null,
                       TimeSpan?                 Runtime           = null)
 
-                => new (ChargingStationOperator,
+                => new (GridOperator,
                         CommandResult.AdminDown,
                         EventTrackingId,
                         SenderId,
@@ -94,11 +94,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) NoOperation  (ChargingStationOperator, ...)
+        #region (static) NoOperation  (GridOperator, ...)
 
-        public static AddChargingStationOperatorResult
+        public static UpdateGridOperatorResult
 
-            NoOperation(IChargingStationOperator  ChargingStationOperator,
+            NoOperation(IGridOperator  GridOperator,
                         EventTracking_Id?         EventTrackingId   = null,
                         IId?                      SenderId          = null,
                         Object?                   Sender            = null,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
                         IEnumerable<Warning>?     Warnings          = null,
                         TimeSpan?                 Runtime           = null)
 
-                => new (ChargingStationOperator,
+                => new (GridOperator,
                         CommandResult.NoOperation,
                         EventTrackingId,
                         SenderId,
@@ -120,11 +120,11 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Enqueued     (ChargingStationOperator, ...)
+        #region (static) Enqueued     (GridOperator, ...)
 
-        public static AddChargingStationOperatorResult
+        public static UpdateGridOperatorResult
 
-            Enqueued(IChargingStationOperator  ChargingStationOperator,
+            Enqueued(IGridOperator  GridOperator,
                      EventTracking_Id?         EventTrackingId   = null,
                      IId?                      SenderId          = null,
                      Object?                   Sender            = null,
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.WWCP
                      IEnumerable<Warning>?     Warnings          = null,
                      TimeSpan?                 Runtime           = null)
 
-                => new (ChargingStationOperator,
+                => new (GridOperator,
                         CommandResult.Enqueued,
                         EventTrackingId,
                         SenderId,
@@ -145,11 +145,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Success      (ChargingStationOperator, ...)
+        #region (static) Success      (GridOperator, ...)
 
-        public static AddChargingStationOperatorResult
+        public static UpdateGridOperatorResult
 
-            Success(IChargingStationOperator  ChargingStationOperator,
+            Success(IGridOperator  GridOperator,
                     EventTracking_Id?         EventTrackingId   = null,
                     IId?                      SenderId          = null,
                     Object?                   Sender            = null,
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<Warning>?     Warnings          = null,
                     TimeSpan?                 Runtime           = null)
 
-                => new (ChargingStationOperator,
+                => new (GridOperator,
                         CommandResult.Success,
                         EventTrackingId,
                         SenderId,
@@ -172,9 +172,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) Exists(...)
 
-        public static AddChargingStationOperatorResult
+        public static UpdateGridOperatorResult
 
-            Exists(IChargingStationOperator  ChargingStationOperator,
+            Exists(IGridOperator  GridOperator,
                    EventTracking_Id?         EventTrackingId   = null,
                    IId?                      SenderId          = null,
                    Object?                   Sender            = null,
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.WWCP
                    IEnumerable<Warning>?     Warnings          = null,
                    TimeSpan?                 Runtime           = null)
 
-                => new (ChargingStationOperator,
+                => new (GridOperator,
                         CommandResult.Exists,
                         EventTrackingId,
                         SenderId,
@@ -196,11 +196,11 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) ArgumentError(ChargingStationOperator, Description, ...)
+        #region (static) ArgumentError(GridOperator, Description, ...)
 
-        public static AddChargingStationOperatorResult
+        public static UpdateGridOperatorResult
 
-            ArgumentError(IChargingStationOperator  ChargingStationOperator,
+            ArgumentError(IGridOperator  GridOperator,
                           I18NString                Description,
                           EventTracking_Id?         EventTrackingId   = null,
                           IId?                      SenderId          = null,
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.WWCP
                           IEnumerable<Warning>?     Warnings          = null,
                           TimeSpan?                 Runtime           = null)
 
-                => new (ChargingStationOperator,
+                => new (GridOperator,
                         CommandResult.ArgumentError,
                         EventTrackingId,
                         SenderId,
@@ -221,11 +221,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Error        (ChargingStationOperator, Description, ...)
+        #region (static) Error        (GridOperator, Description, ...)
 
-        public static AddChargingStationOperatorResult
+        public static UpdateGridOperatorResult
 
-            Error(IChargingStationOperator  ChargingStationOperator,
+            Error(IGridOperator  GridOperator,
                   I18NString                Description,
                   EventTracking_Id?         EventTrackingId   = null,
                   IId?                      SenderId          = null,
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.WWCP
                   IEnumerable<Warning>?     Warnings          = null,
                   TimeSpan?                 Runtime           = null)
 
-                => new (ChargingStationOperator,
+                => new (GridOperator,
                         CommandResult.Error,
                         EventTrackingId,
                         SenderId,
@@ -246,11 +246,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Error        (ChargingStationOperator, Exception,   ...)
+        #region (static) Error        (GridOperator, Exception,   ...)
 
-        public static AddChargingStationOperatorResult
+        public static UpdateGridOperatorResult
 
-            Error(IChargingStationOperator  ChargingStationOperator,
+            Error(IGridOperator  GridOperator,
                   Exception                 Exception,
                   EventTracking_Id?         EventTrackingId   = null,
                   IId?                      SenderId          = null,
@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.WWCP
                   IEnumerable<Warning>?     Warnings          = null,
                   TimeSpan?                 Runtime           = null)
 
-                => new (ChargingStationOperator,
+                => new (GridOperator,
                         CommandResult.Error,
                         EventTrackingId,
                         SenderId,
@@ -271,11 +271,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Timeout      (ChargingStationOperator, Timeout,     ...)
+        #region (static) Timeout      (GridOperator, Timeout,     ...)
 
-        public static AddChargingStationOperatorResult
+        public static UpdateGridOperatorResult
 
-            Timeout(IChargingStationOperator  ChargingStationOperator,
+            Timeout(IGridOperator  GridOperator,
                     TimeSpan                  Timeout,
                     EventTracking_Id?         EventTrackingId   = null,
                     IId?                      SenderId          = null,
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<Warning>?     Warnings          = null,
                     TimeSpan?                 Runtime           = null)
 
-                => new (ChargingStationOperator,
+                => new (GridOperator,
                         CommandResult.Timeout,
                         EventTrackingId,
                         SenderId,
@@ -296,11 +296,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) LockTimeout  (ChargingStationOperator, Timeout,     ...)
+        #region (static) LockTimeout  (GridOperator, Timeout,     ...)
 
-        public static AddChargingStationOperatorResult
+        public static UpdateGridOperatorResult
 
-            LockTimeout(IChargingStationOperator  ChargingStationOperator,
+            LockTimeout(IGridOperator  GridOperator,
                         TimeSpan                  Timeout,
                         EventTracking_Id?         EventTrackingId   = null,
                         IId?                      SenderId          = null,
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.WWCP
                         IEnumerable<Warning>?     Warnings          = null,
                         TimeSpan?                 Runtime           = null)
 
-                => new (ChargingStationOperator,
+                => new (GridOperator,
                         CommandResult.LockTimeout,
                         EventTrackingId,
                         SenderId,

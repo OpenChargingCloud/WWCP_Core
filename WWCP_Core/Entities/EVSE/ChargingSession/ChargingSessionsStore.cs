@@ -698,17 +698,17 @@ namespace cloud.charging.open.protocols.WWCP
                                 now,
                                 systemId,
                                 EventTrackingId,
-                                Result.ChargeDetailRecord,
+                                Result.ChargeDetailRecord
 
-                                SendCDRResult.Success(
-                                    Timestamp:            now,
-                                    AuthorizatorId:       systemId,
-                                    ChargeDetailRecord:   Result.ChargeDetailRecord,
-                                    Description:          null,
-                                    Warnings:             null,
-                                    Location:             null,
-                                    Runtime:              null
-                                )
+                                //SendCDRResult.Success(
+                                //    Timestamp:            now,
+                                //    AuthorizatorId:       systemId,
+                                //    ChargeDetailRecord:   Result.ChargeDetailRecord,
+                                //    Description:          null,
+                                //    Warnings:             null,
+                                //    Location:             null,
+                                //    Runtime:              null
+                                //)
 
                             )
                         );
@@ -853,17 +853,17 @@ namespace cloud.charging.open.protocols.WWCP
                         now,
                         systemId,
                         EventTrackingId,
-                        NewChargeDetailRecord,
+                        NewChargeDetailRecord
 
-                        SendCDRResult.Success(
-                            Timestamp:            now,
-                            AuthorizatorId:       systemId,
-                            ChargeDetailRecord:   NewChargeDetailRecord,
-                            Description:          null,
-                            Warnings:             null,
-                            Location:             null,
-                            Runtime:              null
-                        )
+                        //SendCDRResult.Success(
+                        //    Timestamp:            now,
+                        //    AuthorizatorId:       systemId,
+                        //    ChargeDetailRecord:   NewChargeDetailRecord,
+                        //    Description:          null,
+                        //    Warnings:             null,
+                        //    Location:             null,
+                        //    Runtime:              null
+                        //)
 
                     )
                 );

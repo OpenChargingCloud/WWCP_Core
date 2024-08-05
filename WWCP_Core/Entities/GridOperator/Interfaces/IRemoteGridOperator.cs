@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the e-mobility service provider.
         /// </summary>
-        GridOperator_Id Id { get; }
+  //      GridOperator_Id Id { get; }
 
     }
 
