@@ -6482,12 +6482,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="Sender">The sender of the charging session.</param>
         /// <param name="ChargingSession">The charging session.</param>
-        public async Task RegisterExternalChargingSession(DateTime         Timestamp,
-                                                          Object           Sender,
-                                                          ChargingSession  ChargingSession)
-        {
-            await SessionsStore.AddSession(ChargingSession);
-        }
+        public Task<Boolean> RegisterExternalChargingSession(DateTime         Timestamp,
+                                                             Object           Sender,
+                                                             String           Command,
+                                                             ChargingSession  ChargingSession,
+                                                             DateTime?        NoAutoDeletionBefore   = null)
+
+            => SessionsStore.AddSession(
+                   Command,
+                   ChargingSession,
+                   NoAutoDeletionBefore
+               );
 
         #endregion
 

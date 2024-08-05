@@ -624,6 +624,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         Task ReceiveSendChargeDetailRecordResults(IEnumerable<SendCDRResult> SendCDRResults);
 
+
+        Task<Boolean> RegisterExternalChargingSession(DateTime         Timestamp,
+                                                      Object           Sender,
+                                                      String           Command,
+                                                      ChargingSession  ChargingSession,
+                                                      DateTime?        NoAutoDeletionBefore   = null);
+
         #endregion
 
 

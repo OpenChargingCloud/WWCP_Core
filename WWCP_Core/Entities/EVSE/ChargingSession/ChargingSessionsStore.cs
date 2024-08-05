@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.WWCP.Networking;
+using System.Runtime.InteropServices;
 
 #endregion
 
@@ -147,17 +148,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
+        public RoamingNetwork RoamingNetwork { get; }
+
         /// <summary>
         /// The time span after which a successfully completed charging session
         /// will be removed from the store.
         /// </summary>
-        public TimeSpan  SuccessfulSessionRemovalAfter      { get; set; } = TimeSpan.FromDays(7);
+        public TimeSpan  SuccessfulSessionRemovalAfter      { get; set; } = TimeSpan.FromDays(40);
 
         /// <summary>
         /// The time span after which an unsuccessfully completed charging session
         /// will be removed from the store.
         /// </summary>
-        public TimeSpan  UnsuccessfulSessionRemovalAfter    { get; set; } = TimeSpan.FromDays(90);
+        public TimeSpan  UnsuccessfulSessionRemovalAfter    { get; set; } = TimeSpan.FromDays(120);
 
 
         /// <summary>
@@ -338,6 +341,12 @@ namespace cloud.charging.open.protocols.WWCP
                                            else
                                                internalData[chargingSession.Id] = chargingSession;
 
+                                           if (chargingSession.EVSEId.HasValue && chargingSession.EVSE is null)
+                                               chargingSession.EVSE = RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
+
+                                           if (chargingSession.EVSE is not null)
+                                               chargingSession.EVSE.ChargingSession = null;
+
                                        }
                                        return true;
 
@@ -384,7 +393,11 @@ namespace cloud.charging.open.protocols.WWCP
                    DisableNetworkSync:     DisableNetworkSync,
                    DNSClient:              DNSClient)
 
-        { }
+        {
+
+            this.RoamingNetwork = RoamingNetwork;
+
+        }
 
         #endregion
 
@@ -409,15 +422,27 @@ namespace cloud.charging.open.protocols.WWCP
                         continue;
                     }
 
-                    if (chargingSession.SendCDRResults.Any() &&
-                       (chargingSession.SendCDRResults.Last().Result == SendCDRResultTypes.Success ||
-                        chargingSession.SendCDRResults.Last().Result == SendCDRResultTypes.Enqueued) &&
-                       (now - chargingSession.SendCDRResults.Last().  Timestamp > SuccessfulSessionRemovalAfter))
+                    if (chargingSession.SendCDRResults.Any())
                     {
-                        sessionIdsToBeRemoved.Add(new Tuple<ChargingSession_Id, String>(sessionId, "close"));
-                        continue;
+
+                        // Sessions that at least once delivered a SUCCESSFUL CDR will be removed after 40 days!
+                        if (chargingSession.SendCDRResults.Any(sendCDRResult => sendCDRResult.Result == SendCDRResultTypes.Success) &&
+                            (now - chargingSession.SessionTime.StartTime > SuccessfulSessionRemovalAfter))
+                        {
+                            sessionIdsToBeRemoved.Add(new Tuple<ChargingSession_Id, String>(sessionId, "close"));
+                            continue;
+                        }
+
+                        if (chargingSession.SendCDRResults.Any(sendCDRResult => sendCDRResult.Result == SendCDRResultTypes.Enqueued) &&
+                            (now - chargingSession.SessionTime.StartTime > SuccessfulSessionRemovalAfter))
+                        {
+                            sessionIdsToBeRemoved.Add(new Tuple<ChargingSession_Id, String>(sessionId, "close"));
+                            continue;
+                        }
+
                     }
 
+                    // Sessions that never delivered a SUCCESSFUL CDR will be removed after 120 days!
                     if (now - chargingSession.SessionTime.StartTime > UnsuccessfulSessionRemovalAfter)
                     {
                         sessionIdsToBeRemoved.Add(new Tuple<ChargingSession_Id, String>(sessionId, "remove"));
@@ -457,10 +482,11 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region AddSession         (ChargingSession, NoAutoDeletionBefore = false)
+        #region AddSession         (Command, ChargingSession, NoAutoDeletionBefore = false)
 
-        public async Task AddSession(ChargingSession  ChargingSession,
-                                     DateTime?        NoAutoDeletionBefore   = null)
+        public async Task<Boolean> AddSession(String           Command,
+                                              ChargingSession  ChargingSession,
+                                              DateTime?        NoAutoDeletionBefore   = null)
         {
 
             if (NoAutoDeletionBefore.HasValue)
@@ -469,7 +495,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (InternalData.TryAdd(ChargingSession.Id, ChargingSession))
             {
 
-                await LogIt("new",
+                await LogIt(Command,
                             ChargingSession.Id,
                             "chargingSession",
                             ChargingSession.ToJSON(Embedded:    true,
@@ -479,7 +505,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                    CustomChargeDetailRecordSerializer,
                                                    CustomSendCDRResultSerializer));
 
+                return true;
+
             }
+
+            return false;
 
         }
 
@@ -929,6 +959,279 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+
+
+
+        #region LoadLogFiles2()
+
+        public ReloadStatistics LoadLogfiles2()
+
+            => LoadLogFiles2(LogFilePath,
+                             LogfileSearchPattern(RoamingNetworkId));
+
+        #endregion
+
+        #region LoadLogFiles2(Path, LogfileSearchPattern)
+
+        protected ReloadStatistics LoadLogFiles2(String  Path,
+                                                 String  LogfileSearchPattern)
+        {
+
+            var startTime                = Timestamp.Now;
+            var listOfFilenames          = new List<Tuple<String, UInt64>>();
+            var numberOfCommands         = 0UL;
+            var numberOfSkippedCommands  = 0UL;
+            var removedSessionIds        = new HashSet<ChargingSession_Id>();
+            var numberOfSkippedSessions  = 0UL;
+            var listOfErrors             = new List<String>();
+
+            if (Path.Trim().IsNullOrEmpty() == true)
+                Path = Directory.GetCurrentDirectory();
+
+            try
+            {
+
+                var filenames  = Directory.EnumerateFiles(
+                                     Path,
+                                     LogfileSearchPattern,
+                                     SearchOption.TopDirectoryOnly
+                                 ).
+                                 OrderByDescending(filename => filename).
+                                 ToArray();
+
+                DebugX.Log($"{Name}: Found {filenames.Length} log files matching '{LogfileSearchPattern}' at: '{Path}'!");
+
+                foreach (var filename in filenames)
+                {
+
+                    try
+                    {
+
+                        DebugX.Log($"{Name}: Processing logfile '{filename}' in reverse order!");
+
+                        var allLinesReversed    = File.ReadLines(filename).Reverse();
+                        var totalNumberOfLines  = allLinesReversed.ULongCount();
+                        var lineNumber          = 0UL;
+
+                        foreach (var line in allLinesReversed)
+                        {
+
+                            lineNumber++;
+
+                            if (line.IsNeitherNullNorEmpty() && !line.StartsWith("//") && !line.StartsWith('#'))
+                            {
+                                try
+                                {
+
+                                    var json       = JObject.Parse(line);
+
+                                    var timestamp  =                json["timestamp"]?.Value<DateTime>();
+                                    var id         = StringIdParser(json["id"]?.       Value<String>() ?? "");
+                                    var command    =                json["command"]?.  Value<String>();
+
+                                    if (timestamp.HasValue &&
+                                        id.       HasValue &&
+                                        command.  IsNotNullOrEmpty())
+                                    {
+
+                                        numberOfCommands++;
+
+                                        if (InternalData.ContainsKey(id.Value))
+                                        {
+                                            numberOfSkippedCommands++;
+                                            continue;
+                                        }
+
+                                        if (command == "close" || command == "remove")
+                                        {
+                                            removedSessionIds.Add(id.Value);
+                                            continue;
+                                        }
+
+                                        if (removedSessionIds.Contains(id.Value))
+                                        {
+                                            numberOfSkippedSessions++;
+                                            continue;
+                                        }
+
+
+                                        if (json["chargingSession"] is JObject chargingSessionJSON)
+                                        {
+
+                                            if (ChargingSession.TryParse(chargingSessionJSON,
+                                                                         out var chargingSession,
+                                                                         out var errorResponse))
+                                            {
+
+                                                chargingSession.RoamingNetwork ??= RoamingNetwork;
+
+                                                switch (command)
+                                                {
+
+                                                    #region "remoteStart"
+
+                                                    case "remoteStart":
+
+                                                        if (InternalData.TryAdd(chargingSession.Id, chargingSession))
+                                                        {
+                                                            if (chargingSession.EVSEId.HasValue)
+                                                                chargingSession.EVSE ??= RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
+
+                                                            if (chargingSession.EVSE is not null)
+                                                                chargingSession.EVSE.ChargingSession = chargingSession;
+                                                        }
+                                                        break;
+
+                                                    #endregion
+
+                                                    #region "remoteStop"
+
+                                                    case "remoteStop":
+
+                                                        if (!InternalData.TryAdd(chargingSession.Id, chargingSession))
+                                                            InternalData[chargingSession.Id] = chargingSession;
+
+                                                        if (chargingSession.EVSEId.HasValue)
+                                                            chargingSession.EVSE ??= RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
+
+                                                        if (chargingSession.EVSE is not null)
+                                                            chargingSession.EVSE.ChargingSession = null;
+
+                                                        break;
+
+                                                    #endregion
+
+                                                    #region "authStart"
+
+                                                    case "authStart":
+
+                                                        if (InternalData.TryAdd(chargingSession.Id, chargingSession))
+                                                        {
+                                                            if (chargingSession.EVSEId.HasValue)
+                                                                chargingSession.EVSE ??= RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
+
+                                                            if (chargingSession.EVSE is not null)
+                                                                chargingSession.EVSE.ChargingSession = chargingSession;
+                                                        }
+                                                        break;
+
+                                                    #endregion
+
+                                                    #region "authStop"
+
+                                                    case "authStop":
+
+                                                        if (!InternalData.TryAdd(chargingSession.Id, chargingSession))
+                                                            InternalData[chargingSession.Id] = chargingSession;
+
+                                                        if (chargingSession.EVSEId.HasValue)
+                                                            chargingSession.EVSE ??= RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
+
+                                                        if (chargingSession.EVSE is not null)
+                                                            chargingSession.EVSE.ChargingSession = null;
+
+                                                        break;
+
+                                                    #endregion
+
+                                                    #region "CDRReceived"
+
+                                                    case "CDRReceived":
+
+                                                        if (!InternalData.TryAdd(chargingSession.Id, chargingSession))
+                                                            InternalData[chargingSession.Id] = chargingSession;
+
+                                                        if (chargingSession.EVSEId.HasValue)
+                                                            chargingSession.EVSE ??= RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
+
+                                                        if (chargingSession.EVSE is not null)
+                                                            chargingSession.EVSE.ChargingSession = null;
+
+                                                        break;
+
+                                                    #endregion
+
+                                                    #region "CDRForwarded"
+
+                                                    case "CDRForwarded":
+
+                                                        if (!InternalData.TryAdd(chargingSession.Id, chargingSession))
+                                                            InternalData[chargingSession.Id] = chargingSession;
+
+                                                        if (chargingSession.EVSEId.HasValue)
+                                                            chargingSession.EVSE ??= RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
+
+                                                        if (chargingSession.EVSE is not null)
+                                                            chargingSession.EVSE.ChargingSession = null;
+
+                                                        break;
+
+                                                    #endregion
+
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                DebugX.Log($"Could not parse charging session in {filename} line {totalNumberOfLines-lineNumber}:" + errorResponse);
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+                                catch (Exception e)
+                                {
+
+                                    var errorMessage = $"Could not parse data in '{filename}' line {lineNumber}: {e.Message}";
+
+                                    listOfErrors.Add(errorMessage);
+                                    DebugX.Log(errorMessage);
+
+                                }
+                            }
+
+                        }
+
+                        listOfFilenames.Add(new Tuple<String, UInt64>(filename, lineNumber));
+                        DebugX.Log($"{Name}: Processed logfile '{filename}' with {lineNumber} lines!");
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log($"{Name}: Could not parse logfile '{filename}': {e.Message}");
+                    }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log($"{Name}: Could not reload data: {e.Message}");
+            }
+
+
+            var statistics = new ReloadStatistics(
+                                 LogfileSearchPattern,
+                                 listOfFilenames,
+                                 numberOfCommands,
+                                 listOfErrors,
+                                 Timestamp.Now - startTime
+                             );
+
+            if (listOfFilenames.Count > 0 && numberOfCommands > 0)
+                DebugX.Log($"{Name}: {statistics}");
+
+            ReloadFinished = true;
+
+            return statistics;
+
+        }
+
+        #endregion
+
 
 
     }

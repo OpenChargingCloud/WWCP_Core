@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data
 
-        private          readonly  Func<String, TId?>                StringIdParser;
+        protected        readonly  Func<String, TId?>                StringIdParser;
 
             /// <summary>
             /// The maximum number of retries to write to a logfile.
@@ -258,8 +258,6 @@ namespace cloud.charging.open.protocols.WWCP
             this.LogfileNameCreator       = LogFileNameCreator;
             this.LogfileSearchPattern     = LogfileSearchPattern;
 
-            DebugX.Log($"{Name}: Using logfile path: {LogFilePath} {LogfileSearchPattern(RoamingNetworkId)}");
-
             this.DisableLogfiles          = DisableLogfiles;
             this.ReloadDataOnStart        = ReloadDataOnStart;
 
@@ -276,101 +274,110 @@ namespace cloud.charging.open.protocols.WWCP
             if (RoamingNetworkInfo is not null)
             {
 
-                this.Server = new TCPServer(
-                                  Port:               RoamingNetworkInfo.port,
-                                  ConnectionTimeout:  TimeSpan.FromSeconds(20),
-                                  AutoStart:          true
-                              );
+                try
+                {
 
-                this.Server.OnNotification += (connection) => {
+                    this.Server = new TCPServer(
+                                      Port:               RoamingNetworkInfo.port,
+                                      ConnectionTimeout:  TimeSpan.FromSeconds(20),
+                                      AutoStart:          true
+                                  );
 
-                    try
-                    {
+                    this.Server.OnNotification += (connection) => {
 
-                        var LastDataReceivedAt = Timestamp.Now;
-
-                        do
+                        try
                         {
 
-                            try
+                            var LastDataReceivedAt = Timestamp.Now;
+
+                            do
                             {
 
-                                var data = connection.ReadLine(MaxInitialWaitingTime:  TimeSpan.FromSeconds(5),
-                                                               __ReadTimeout:          TimeSpan.FromSeconds(10));
-
-                                if (data.IsNotNullOrEmpty())
+                                try
                                 {
 
-                                    DebugX.Log($"{Name}: Received '{data}' from '{connection.RemoteSocket}'!");
+                                    var data = connection.ReadLine(MaxInitialWaitingTime:  TimeSpan.FromSeconds(5),
+                                                                   __ReadTimeout:          TimeSpan.FromSeconds(10));
 
-                                    LastDataReceivedAt = Timestamp.Now;
-
-                                    if (data == "BYE!")
-                                        connection.Close();
-
-                                    else
+                                    if (data.IsNotNullOrEmpty())
                                     {
 
-                                        try
+                                        DebugX.Log($"{Name}: Received '{data}' from '{connection.RemoteSocket}'!");
+
+                                        LastDataReceivedAt = Timestamp.Now;
+
+                                        if (data == "BYE!")
+                                            connection.Close();
+
+                                        else
                                         {
 
-                                            var json       = JObject.Parse(data);
-
-                                            var timestamp  =                     json["timestamp"]?.Value<DateTime>();
-                                            var id         = this.StringIdParser(json["id"]?.       Value<String>() ?? "");
-                                            var command    =                     json["command"]?.  Value<String>();
-
-                                            if (timestamp.HasValue    &&
-                                                id        is not null &&
-                                                command.  IsNotNullOrEmpty())
+                                            try
                                             {
 
-                                                if (CommandProcessor(null,
-                                                                     0,
-                                                                     connection.RemoteSocket,
-                                                                     timestamp.Value,
-                                                                     (TId) id,
-                                                                     command,
-                                                                     json,
-                                                                     InternalData))
+                                                var json       = JObject.Parse(data);
+
+                                                var timestamp  =                     json["timestamp"]?.Value<DateTime>();
+                                                var id         = this.StringIdParser(json["id"]?.       Value<String>() ?? "");
+                                                var command    =                     json["command"]?.  Value<String>();
+
+                                                if (timestamp.HasValue    &&
+                                                    id        is not null &&
+                                                    command.  IsNotNullOrEmpty())
                                                 {
-                                                    LogToDisc(data).Wait();
+
+                                                    if (CommandProcessor(null,
+                                                                         0,
+                                                                         connection.RemoteSocket,
+                                                                         timestamp.Value,
+                                                                         (TId) id,
+                                                                         command,
+                                                                         json,
+                                                                         InternalData))
+                                                    {
+                                                        LogToDisc(data).Wait();
+                                                    }
+
+                                                    connection.WriteLineToResponseStream("ack");
+
                                                 }
 
-                                                connection.WriteLineToResponseStream("ack");
-
                                             }
+                                            catch
+                                            { }
 
                                         }
-                                        catch
-                                        { }
 
                                     }
 
                                 }
+                                catch
+                                { }
 
-                            }
-                            catch
-                            { }
+                            } while (!connection.IsClosed && Timestamp.Now - LastDataReceivedAt < TimeSpan.FromSeconds(10));
 
-                        } while (!connection.IsClosed && Timestamp.Now - LastDataReceivedAt < TimeSpan.FromSeconds(10));
+                        }
+                        catch
+                        { }
 
-                    }
-                    catch
-                    { }
+                        try
+                        {
 
-                    try
-                    {
+                            if (!connection.IsClosed)
+                                connection.Close();
 
-                        if (!connection.IsClosed)
-                            connection.Close();
+                        } catch
+                        { }
 
-                    } catch
-                    { }
+                        Console.WriteLine($"{Name}: Connection '{connection.RemoteSocket}' closed!");
 
-                    Console.WriteLine($"{Name}: Connection '{connection.RemoteSocket}' closed!");
+                    };
 
-                };
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, "RoamingNetworkInfo TCP server");
+                }
 
             }
 
@@ -559,6 +566,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
+
+            DebugX.Log($"{Name}: Using logfile path: {LogFilePath} {LogfileSearchPattern(RoamingNetworkId)}");
+            DebugX.Log($"DisableLogfiles: {this.DisableLogfiles}");
+            DebugX.Log($"ReloadDataOnStart: {this.ReloadDataOnStart}");
 
             if (!DisableLogfiles && this.ReloadDataOnStart)
                 LoadLogFiles(LogFilePath,
@@ -818,6 +829,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                     try
                     {
+
+                        DebugX.Log($"{Name}: Processing logfile '{filename}'!");
 
                         var lineNumber = 0UL;
 
