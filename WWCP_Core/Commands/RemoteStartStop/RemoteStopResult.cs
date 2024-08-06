@@ -361,6 +361,32 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region (static) Rejected          (SessionId, Sender, Description = null,                        Runtime = null)
+
+        /// <summary>
+        /// The RemoteStop request was REJECTED.
+        /// This is the same as the generic OCPP RequestStartStopStatus 'REJECTED',
+        /// therefore we do not have any further information why the request was rejected.
+        /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        /// <param name="Description">An optional error message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStopResult Rejected(ChargingSession_Id  SessionId,
+                                                System_Id           Sender,
+                                                I18NString?         Description   = null,
+                                                TimeSpan?           Runtime       = null)
+
+            => new (
+                   SessionId,
+                   RemoteStopResultTypes.Rejected,
+                   Sender,
+                   Description ?? I18NString.Create("The remote Stop request was rejected!"),
+                   Runtime: Runtime
+               );
+
+        #endregion
+
         #region (static) Timeout           (SessionId, Sender, Description = null,                        Runtime = null)
 
         /// <summary>
@@ -776,6 +802,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// An async remote stop was sent successfully.
         /// </summary>
         AsyncOperation,
+
+        /// <summary>
+        /// The RemoteStop request was REJECTED.
+        /// This is the same as the generic OCPP RequestStartStopStatus 'REJECTED',
+        /// therefore we do not have any further information why the request was rejected.
+        /// </summary>
+        Rejected,
 
         /// <summary>
         /// The remote stop ran into a timeout.

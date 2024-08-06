@@ -26,9 +26,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-
     /// <summary>
-    /// The result of a remote start operation.
+    /// The result of a RemoteStart operation.
     /// </summary>
     public class RemoteStartResult
     {
@@ -36,7 +35,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
-        /// The result of a remote start operation.
+        /// The result of a RemoteStart operation.
         /// </summary>
         public RemoteStartResultTypes  Result            { get; }
 
@@ -46,12 +45,12 @@ namespace cloud.charging.open.protocols.WWCP
         public System_Id               Sender            { get; }
 
         /// <summary>
-        /// The charging session for the remote start operation.
+        /// The charging session for the RemoteStart operation.
         /// </summary>
         public ChargingSession?        Session           { get; internal set; }
 
         /// <summary>
-        /// A optional description of the remote start result.
+        /// A optional description of the RemoteStart result.
         /// </summary>
         public I18NString              Description       { get; }
 
@@ -71,11 +70,11 @@ namespace cloud.charging.open.protocols.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new remote start result.
+        /// Create a new RemoteStart result.
         /// </summary>
-        /// <param name="Result">The result of the remote start operation.</param>
+        /// <param name="Result">The result of the RemoteStart operation.</param>
         /// <param name="Sender">The sender of the result.</param>
-        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="Description">A optional description of the RemoteStart result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Session">The charging session.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -99,7 +98,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Unspecified        (Sender)
+        #region (static) Unspecified                       (Sender)
 
         /// <summary>
         /// The result is unknown and/or should be ignored.
@@ -113,7 +112,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) UnknownOperator    (Sender, Runtime = null)
+        #region (static) UnknownOperator                   (Sender, Runtime = null)
 
         /// <summary>
         /// The charging station operator is unknown.
@@ -131,7 +130,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) UnknownLocation    (Sender, Runtime = null)
+        #region (static) UnknownLocation                   (Sender, Runtime = null)
 
         /// <summary>
         /// The charging location is unknown.
@@ -149,7 +148,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) InvalidSessionId   (Sender, Runtime = null)
+        #region (static) InvalidSessionId                  (Sender, Runtime = null)
 
         /// <summary>
         /// The given charging session identification is unknown or invalid.
@@ -167,10 +166,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) InvalidCredentials (Sender, Runtime = null)
+        #region (static) InvalidCredentials                (Sender, Runtime = null)
 
         /// <summary>
-        /// Unauthorized remote start or invalid credentials.
+        /// Unauthorized RemoteStart or invalid credentials.
         /// </summary>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult InvalidCredentials(System_Id  Sender,
@@ -179,13 +178,13 @@ namespace cloud.charging.open.protocols.WWCP
             => new (
                    RemoteStartResultTypes.InvalidCredentials,
                    Sender,
-                   I18NString.Create("Unauthorized remote start or invalid credentials!"),
+                   I18NString.Create("Unauthorized RemoteStart or invalid credentials!"),
                    Runtime: Runtime
                );
 
         #endregion
 
-        #region (static) NoEVConnectedToEVSE(Sender, Runtime = null)
+        #region (static) NoEVConnectedToEVSE               (Sender, Runtime = null)
 
         /// <summary>
         /// No electric vehicle connected to EVSE.
@@ -203,7 +202,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) AlreadyInUse       (Sender, Runtime = null)
+        #region (static) AlreadyInUse                      (Sender, Runtime = null)
 
         /// <summary>
         /// The EVSE is already in use.
@@ -221,7 +220,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) InternalUse        (Sender, Runtime = null)
+        #region (static) InternalUse                       (Sender, Runtime = null)
 
         /// <summary>
         /// The EVSE is reserved for internal use.
@@ -239,7 +238,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) OutOfService       (Sender, Runtime = null)
+        #region (static) OutOfService                      (Sender, Runtime = null)
 
         /// <summary>
         /// The EVSE is out-of-service.
@@ -257,7 +256,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Offline            (Sender, Runtime = null)
+        #region (static) Offline                           (Sender, Runtime = null)
 
         /// <summary>
         /// The EVSE is offline.
@@ -280,7 +279,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The EVSE or charging station is reserved.
         /// </summary>
-        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="Description">A optional description of the RemoteStart result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult Reserved(System_Id    Sender,
@@ -301,7 +300,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) Success                           (Session, Sender,                                            Runtime = null)
 
         /// <summary>
-        /// The remote start was successful and a charging session
+        /// The RemoteStart was successful and a charging session
         /// will be embedded within the response.
         /// </summary>
         /// <param name="Session">The charging session.</param>
@@ -322,9 +321,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) AsyncOperation                    (Session, Sender, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
-        /// The remote start was successful.
+        /// The RemoteStart was successful.
         /// </summary>
-        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="Description">A optional description of the RemoteStart result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Session">The charging session.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -337,7 +336,7 @@ namespace cloud.charging.open.protocols.WWCP
             => new (
                    RemoteStartResultTypes.AsyncOperation,
                    Sender,
-                   Description ?? I18NString.Create("An async remote start was sent successfully!"),
+                   Description ?? I18NString.Create("An async RemoteStart was sent successfully!"),
                    AdditionalInfo,
                    Session,
                    Runtime: Runtime
@@ -348,9 +347,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) SuccessPlugInCableToStartCharging (Session, Sender, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
-        /// The remote start was successful. Please plug in the cable to start charging!
+        /// The RemoteStart was successful. Please plug in the cable to start charging!
         /// </summary>
-        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="Description">A optional description of the RemoteStart result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Session">The charging session.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -363,9 +362,32 @@ namespace cloud.charging.open.protocols.WWCP
             => new (
                    RemoteStartResultTypes.SuccessPlugInCableToStartCharging,
                    Sender,
-                   Description ?? I18NString.Create("The remote start was successful. Please plug in the cable to start charging!"),
+                   Description ?? I18NString.Create("The RemoteStart was successful. Please plug in the cable to start charging!"),
                    AdditionalInfo,
                    Session,
+                   Runtime: Runtime
+               );
+
+        #endregion
+
+        #region (static) Rejected                          (Sender,          Description = null,                        Runtime = null)
+
+        /// <summary>
+        /// The RemoteStart request was REJECTED.
+        /// This is the same as the generic OCPP RequestStartStopStatus 'REJECTED',
+        /// therefore we do not have any further information why the request was rejected.
+        /// </summary>
+        /// <param name="Runtime">The runtime of the request.</param>
+        /// <param name="Description">An optional error message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult Rejected(System_Id    Sender,
+                                                 I18NString?  Description   = null,
+                                                 TimeSpan?    Runtime       = null)
+
+            => new (
+                   RemoteStartResultTypes.Rejected,
+                   Sender,
+                   Description ?? I18NString.Create("The remote start request was rejected!"),
                    Runtime: Runtime
                );
 
@@ -374,7 +396,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) Timeout                           (Sender,          Description = null,                        Runtime = null)
 
         /// <summary>
-        /// The remote start request ran into a timeout.
+        /// The RemoteStart request ran into a timeout.
         /// </summary>
         /// <param name="Runtime">The runtime of the request.</param>
         /// <param name="Description">An optional error message.</param>
@@ -396,7 +418,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A communication error occured.
         /// </summary>
-        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="Description">A optional description of the RemoteStart result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult CommunicationError(System_Id    Sender,
@@ -417,9 +439,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) Error                             (Sender,          Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
-        /// The remote start request led to an error.
+        /// The RemoteStart request led to an error.
         /// </summary>
-        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="Description">A optional description of the RemoteStart result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult Error(System_Id  Sender,
@@ -437,9 +459,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// The remote start request led to an error.
+        /// The RemoteStart request led to an error.
         /// </summary>
-        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="Description">A optional description of the RemoteStart result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult Error(System_Id    Sender,
@@ -457,9 +479,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// The remote start request led to an error.
+        /// The RemoteStart request led to an error.
         /// </summary>
-        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="Description">A optional description of the RemoteStart result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult Error(String     Description,
@@ -482,7 +504,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) Exception                         (Sender,          Exception,                                 Runtime = null)
 
         /// <summary>
-        /// The remote start request led to an exception.
+        /// The RemoteStart request led to an exception.
         /// </summary>
         /// <param name="Exception">An exception.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -503,9 +525,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) NoOperation                       (Sender,          Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
-        /// The remote start request led to an error.
+        /// The RemoteStart request led to an error.
         /// </summary>
-        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="Description">A optional description of the RemoteStart result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult NoOperation(System_Id    Sender,
@@ -523,9 +545,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// The remote start request led to an error.
+        /// The RemoteStart request led to an error.
         /// </summary>
-        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="Description">A optional description of the RemoteStart result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStartResult NoOperation(String     Description,
@@ -599,7 +621,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// Extensions methods for remote start result types.
+    /// Extensions methods for RemoteStart result types.
     /// </summary>
     public static class RemoteStartResultTypesExtensions
     {
@@ -607,16 +629,16 @@ namespace cloud.charging.open.protocols.WWCP
         #region Parse   (Text)
 
         /// <summary>
-        /// Parses the given text representation of a remote start result type.
+        /// Parses the given text representation of a RemoteStart result type.
         /// </summary>
-        /// <param name="Text">A text representation of a remote start result type.</param>
+        /// <param name="Text">A text representation of a RemoteStart result type.</param>
         public static RemoteStartResultTypes Parse(String Text)
         {
 
             if (TryParse(Text, out var remoteStartResultType))
                 return remoteStartResultType;
 
-            throw new ArgumentException("Undefined remote start result type '" + Text + "'!");
+            throw new ArgumentException("Undefined RemoteStart result type '" + Text + "'!");
 
         }
 
@@ -625,9 +647,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region TryParse(Text)
 
         /// <summary>
-        /// Parses the given text representation of a remote start result type.
+        /// Parses the given text representation of a RemoteStart result type.
         /// </summary>
-        /// <param name="Text">A text representation of a remote start result type.</param>
+        /// <param name="Text">A text representation of a RemoteStart result type.</param>
         public static RemoteStartResultTypes? TryParse(String Text)
         {
 
@@ -643,10 +665,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region TryParse(Text, out RemoteStartResultType)
 
         /// <summary>
-        /// Parses the given text representation of a remote start result type.
+        /// Parses the given text representation of a RemoteStart result type.
         /// </summary>
-        /// <param name="Text">A text representation of a remote start result type.</param>
-        /// <param name="RemoteStartResultType">The parsed remote start result type.</param>
+        /// <param name="Text">A text representation of a RemoteStart result type.</param>
+        /// <param name="RemoteStartResultType">The parsed RemoteStart result type.</param>
         public static Boolean TryParse(String Text, out RemoteStartResultTypes RemoteStartResultType)
         {
             switch (Text?.Trim())
@@ -728,9 +750,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region AsString(this RemoteStartResultType)
 
         /// <summary>
-        /// Return a text representation of the given remote start result type.
+        /// Return a text representation of the given RemoteStart result type.
         /// </summary>
-        /// <param name="RemoteStartResultType">An remote start result type.</param>
+        /// <param name="RemoteStartResultType">An RemoteStart result type.</param>
         public static String AsString(this RemoteStartResultTypes RemoteStartResultType)
 
             => RemoteStartResultType switch {
@@ -760,7 +782,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// The result types of a remote start operation at an EVSE.
+    /// The result types of a RemoteStart operation at an EVSE.
     /// </summary>
     public enum RemoteStartResultTypes
     {
@@ -788,7 +810,7 @@ namespace cloud.charging.open.protocols.WWCP
         InvalidSessionId,
 
         /// <summary>
-        /// Unauthorized remote start or invalid credentials.
+        /// Unauthorized RemoteStart or invalid credentials.
         /// </summary>
         InvalidCredentials,
 
@@ -823,22 +845,29 @@ namespace cloud.charging.open.protocols.WWCP
         Reserved,
 
         /// <summary>
-        /// The remote start was successful.
+        /// The RemoteStart was successful.
         /// </summary>
         Success,
 
         /// <summary>
-        /// An async remote start was sent successfully.
+        /// An async RemoteStart was sent successfully.
         /// </summary>
         AsyncOperation,
 
         /// <summary>
-        /// The remote start was successful. Please plug in the cable to start charging!
+        /// The RemoteStart was successful. Please plug in the cable to start charging!
         /// </summary>
         SuccessPlugInCableToStartCharging,
 
         /// <summary>
-        /// The remote start request ran into a timeout.
+        /// The RemoteStart request was REJECTED.
+        /// This is the same as the generic OCPP RequestStartStopStatus 'REJECTED',
+        /// therefore we do not have any further information why the request was rejected.
+        /// </summary>
+        Rejected,
+
+        /// <summary>
+        /// The RemoteStart request ran into a timeout.
         /// </summary>
         Timeout,
 
@@ -858,7 +887,7 @@ namespace cloud.charging.open.protocols.WWCP
         CommunicationError,
 
         /// <summary>
-        /// The remote start request led to an error.
+        /// The RemoteStart request led to an error.
         /// </summary>
         Error,
 
