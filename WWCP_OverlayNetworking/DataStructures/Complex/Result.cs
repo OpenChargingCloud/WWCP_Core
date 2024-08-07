@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// Unknown or unreachable networking node.
         /// </summary>
-        /// <param name="DestinationNodeId">Th eunique identification of the unknown or unreachable networking node.</param>
+        /// <param name="DestinationNodeId">The unique identification of the unknown or unreachable networking node.</param>
         public static Result UnknownOrUnreachable(NetworkingNode_Id DestinationNodeId)
 
             => new (ResultCode.NetworkError,
