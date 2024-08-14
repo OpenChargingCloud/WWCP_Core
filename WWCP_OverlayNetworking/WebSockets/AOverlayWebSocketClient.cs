@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
                                       URL                                                             RemoteURL,
                                       HTTPHostname?                                                   VirtualHostname              = null,
-                                      String?                                                         Description                  = null,
+                                      I18NString?                                                     Description                  = null,
                                       Boolean?                                                        PreferIPv4                   = null,
                                       RemoteTLSServerCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketClient>?  RemoteCertificateValidator   = null,
                                       LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
                                        URL                                                             RemoteURL,
                                        HTTPHostname?                                                   VirtualHostname              = null,
-                                       String?                                                         Description                  = null,
+                                       I18NString?                                                     Description                  = null,
                                        Boolean?                                                        PreferIPv4                   = null,
                                        RemoteTLSServerCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketClient>?  RemoteCertificateValidator   = null,
                                        LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
