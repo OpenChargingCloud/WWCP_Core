@@ -866,7 +866,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                                    ToJSON  ().
                                                                    ToString(JSONFormatting));
 
-                        if (sendStatus == SendStatus.Success)
+                        if (sendStatus == SentStatus.Success)
                             requests.TryAdd(RequestId,
                                             SendRequestState.FromJSONRequest(
                                                 Timestamp.Now,
@@ -992,7 +992,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
                         var sendStatus = await SendBinaryMessage(binaryRequestMessage.ToByteArray());
 
-                        if (sendStatus == SendStatus.Success)
+                        if (sendStatus == SentStatus.Success)
                             requests.TryAdd(RequestId,
                                             SendRequestState.FromBinaryRequest(
                                                 Timestamp.Now,

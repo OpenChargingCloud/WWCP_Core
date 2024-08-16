@@ -392,7 +392,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// An event sent whenever a web socket frame was received.
         /// </summary>
-        public event OnWebSocketFrameDelegate?               OnWebSocketFrameReceived
+        public event OnWebSocketFrameDelegate?                          OnWebSocketFrameReceived
         {
             add    { webSocketServer.OnWebSocketFrameReceived += value; }
             remove { webSocketServer.OnWebSocketFrameReceived -= value; }
@@ -401,7 +401,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// An event sent whenever a web socket frame was sent.
         /// </summary>
-        public event OnWebSocketFrameDelegate?               OnWebSocketFrameSent
+        public event OnWebSocketFrameDelegate?                          OnWebSocketFrameSent
         {
             add    { webSocketServer.OnWebSocketFrameSent += value; }
             remove { webSocketServer.OnWebSocketFrameSent -= value; }
@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// An event sent whenever a text message was received.
         /// </summary>
-        public event OnWebSocketTextMessageDelegate?         OnTextMessageReceived
+        public event OnWebSocketServerTextMessageReceivedDelegate?      OnTextMessageReceived
         {
             add    { webSocketServer.OnTextMessageReceived += value; }
             remove { webSocketServer.OnTextMessageReceived -= value; }
@@ -420,7 +420,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// An event sent whenever a web socket frame was sent.
         /// </summary>
-        public event OnWebSocketTextMessageDelegate?         OnTextMessageSent
+        public event OnWebSocketServerTextMessageSentDelegate?          OnTextMessageSent
         {
             add    { webSocketServer.OnTextMessageSent += value; }
             remove { webSocketServer.OnTextMessageSent -= value; }
@@ -429,7 +429,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// An event sent whenever a binary message was received.
         /// </summary>
-        public event OnWebSocketBinaryMessageDelegate?       OnBinaryMessageReceived
+        public event OnWebSocketServerBinaryMessageReceivedDelegate?    OnBinaryMessageReceived
         {
             add    { webSocketServer.OnBinaryMessageReceived += value; }
             remove { webSocketServer.OnBinaryMessageReceived -= value; }
@@ -438,7 +438,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// An event sent whenever a web socket frame was sent.
         /// </summary>
-        public event OnWebSocketBinaryMessageDelegate?       OnBinaryMessageSent
+        public event OnWebSocketServerBinaryMessageSentDelegate?        OnBinaryMessageSent
         {
             add    { webSocketServer.OnBinaryMessageSent += value; }
             remove { webSocketServer.OnBinaryMessageSent -= value; }
@@ -447,7 +447,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// An event sent whenever a web socket ping frame was received.
         /// </summary>
-        public event OnWebSocketFrameDelegate?               OnPingMessageReceived
+        public event OnWebSocketServerPingMessageReceivedDelegate?      OnPingMessageReceived
         {
             add    { webSocketServer.OnPingMessageReceived += value; }
             remove { webSocketServer.OnPingMessageReceived -= value; }
@@ -456,7 +456,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// An event sent whenever a web socket ping frame was sent.
         /// </summary>
-        public event OnWebSocketFrameDelegate?               OnPingMessageSent
+        public event OnWebSocketServerPingMessageSentDelegate?          OnPingMessageSent
         {
             add    { webSocketServer.OnPingMessageSent += value; }
             remove { webSocketServer.OnPingMessageSent -= value; }
@@ -465,7 +465,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// An event sent whenever a web socket pong frame was received.
         /// </summary>
-        public event OnWebSocketFrameDelegate?               OnPongMessageReceived
+        public event OnWebSocketServerPongMessageReceivedDelegate?      OnPongMessageReceived
         {
             add    { webSocketServer.OnPongMessageReceived += value; }
             remove { webSocketServer.OnPongMessageReceived -= value; }
@@ -1055,11 +1055,12 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
         #endregion
 
-        #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, EventTrackingId, StatusCode, Reason, CancellationToken)
+        #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, Frame, EventTrackingId, StatusCode, Reason, CancellationToken)
 
         protected async Task ProcessCloseMessage(DateTime                          LogTimestamp,
                                                  org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer                  Server,
                                                  WebSocketServerConnection         Connection,
+                                                 WebSocketFrame                    Frame,
                                                  EventTracking_Id                  EventTrackingId,
                                                  WebSocketFrame.ClosingStatusCode  StatusCode,
                                                  String?                           Reason,
@@ -1984,7 +1985,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                     foreach (var webSocketConnection in webSocketConnections)
                     {
 
-                        if (SendStatus.Success == await webSocketServer.SendTextMessage(
+                        if (SentStatus.Success == await webSocketServer.SendTextMessage(
                                                             webSocketConnection.Item1,
                                                             ocppTextMessage,
                                                             EventTrackingId,
@@ -2002,30 +2003,33 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
                             #region OnJSONMessageRequestSent
 
-                            var onJSONMessageRequestSent = OnJSONMessageRequestSent;
-                            if (onJSONMessageRequestSent is not null)
-                            {
-                                try
-                                {
+                            //var onJSONMessageRequestSent = OnJSONMessageRequestSent;
+                            //if (onJSONMessageRequestSent is not null)
+                            //{
+                            //    try
+                            //    {
 
-                                    await Task.WhenAll(onJSONMessageRequestSent.GetInvocationList().
-                                                           OfType<OnWebSocketTextMessageDelegate>().
-                                                           Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                          Timestamp.Now,
-                                                                                          webSocketServer,
-                                                                                          webSocketConnection.Item1,
-                                                                                          EventTrackingId,
-                                                                                          ocppTextMessage,
-                                                                                          CancellationToken
-                                                                                      )).
-                                                           ToArray());
+                            //        await Task.WhenAll(onJSONMessageRequestSent.GetInvocationList().
+                            //                               OfType<OnWebSocketJSONMessageRequestDelegate>().
+                            //                               Select(loggingDelegate => loggingDelegate.Invoke(
+                            //                                                              Timestamp.Now,
+                            //                                                              webSocketServer,
+                            //                                                              webSocketConnection.Item1,
+                            //                                                              NetworkingNodeId,
+                            //                                                              NetworkPath,
+                            //                                                              EventTrackingId,
+                            //                                                              Timestamp.Now,
+                            //                                                              ocppTextMessage,
+                            //                                                              CancellationToken
+                            //                                                          )).
+                            //                               ToArray());
 
-                                }
-                                catch (Exception e)
-                                {
-                                    DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONMessageRequestSent));
-                                }
-                            }
+                            //    }
+                            //    catch (Exception e)
+                            //    {
+                            //        DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONMessageRequestSent));
+                            //    }
+                            //}
 
                             #endregion
 
@@ -2109,7 +2113,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                     foreach (var webSocketConnection in webSocketConnections)
                     {
 
-                        if (SendStatus.Success == await webSocketServer.SendBinaryMessage(
+                        if (SentStatus.Success == await webSocketServer.SendBinaryMessage(
                                                             webSocketConnection.Item1,
                                                             ocppBinaryMessage,
                                                             EventTrackingId,
@@ -2119,30 +2123,30 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
                             #region OnBinaryMessageRequestSent
 
-                            var requestLogger = OnBinaryMessageRequestSent;
-                            if (requestLogger is not null)
-                            {
+                            //var requestLogger = OnBinaryMessageRequestSent;
+                            //if (requestLogger is not null)
+                            //{
 
-                                var loggerTasks = requestLogger.GetInvocationList().
-                                                                OfType <OnWebSocketBinaryMessageDelegate>().
-                                                                Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                                                  webSocketServer,
-                                                                                                                  webSocketConnection.Item1,
-                                                                                                                  EventTrackingId,
-                                                                                                                  ocppBinaryMessage,
-                                                                                                                  CancellationToken)).
-                                                                ToArray();
+                            //    var loggerTasks = requestLogger.GetInvocationList().
+                            //                                    OfType <OnWebSocketBinaryMessageDelegate>().
+                            //                                    Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                            //                                                                                      webSocketServer,
+                            //                                                                                      webSocketConnection.Item1,
+                            //                                                                                      EventTrackingId,
+                            //                                                                                      ocppBinaryMessage,
+                            //                                                                                      CancellationToken)).
+                            //                                    ToArray();
 
-                                try
-                                {
-                                    await Task.WhenAll(loggerTasks);
-                                }
-                                catch (Exception e)
-                                {
-                                    DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnBinaryMessageRequestSent));
-                                }
+                            //    try
+                            //    {
+                            //        await Task.WhenAll(loggerTasks);
+                            //    }
+                            //    catch (Exception e)
+                            //    {
+                            //        DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnBinaryMessageRequestSent));
+                            //    }
 
-                            }
+                            //}
 
                             #endregion
 

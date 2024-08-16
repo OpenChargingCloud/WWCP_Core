@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// An event sent whenever a web socket close frame was received.
         /// </summary>
-        public event OnCloseMessageReceivedDelegate?          OnCloseMessageReceived;
+        public event OnWebSocketServerCloseMessageReceivedDelegate?          OnCloseMessageReceived;
 
         /// <summary>
         /// An event sent whenever a TCP connection was closed.
