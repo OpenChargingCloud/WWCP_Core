@@ -1183,18 +1183,21 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                         methodInfo is not null)
                     {
 
-                        //ToDo: Maybe this could be done via code generation!
-                        var result = methodInfo.Invoke(this,
-                                                       [ jsonRequestMessage.RequestTimestamp,
-                                                         Connection,
-                                                         jsonRequestMessage.DestinationId,
-                                                         jsonRequestMessage.NetworkPath,
-                                                         jsonRequestMessage.EventTrackingId,
-                                                         jsonRequestMessage.RequestId,
-                                                         jsonRequestMessage.Payload,
-                                                         jsonRequestMessage.CancellationToken ]);
+                        var resultTask = methodInfo.Invoke(
+                                             this,
+                                             [
+                                                 jsonRequestMessage.RequestTimestamp,
+                                                 Connection,
+                                                 jsonRequestMessage.DestinationId,
+                                                 jsonRequestMessage.NetworkPath,
+                                                 jsonRequestMessage.EventTrackingId,
+                                                 jsonRequestMessage.RequestId,
+                                                 jsonRequestMessage.Payload,
+                                                 jsonRequestMessage.CancellationToken
+                                             ]
+                                         );
 
-                        if (result is Task<Tuple<JSONResponseMessage?, JSONRequestErrorMessage?>> textProcessor) {
+                        if (resultTask is Task<Tuple<JSONResponseMessage?, JSONRequestErrorMessage?>> textProcessor) {
                             (jsonResponseMessage, jsonRequestErrorMessage) = await textProcessor;
                         }
 
