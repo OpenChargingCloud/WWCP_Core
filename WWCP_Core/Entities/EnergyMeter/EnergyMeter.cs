@@ -607,7 +607,7 @@ namespace cloud.charging.open.protocols.WWCP
                    SerialNumber    is not null ? new String(SerialNumber.   ToCharArray()) : null,
                    HardwareVersion is not null ? new String(HardwareVersion.ToCharArray()) : null,
                    FirmwareVersion is not null ? new String(FirmwareVersion.ToCharArray()) : null,
-                   PublicKeys.Select(publicKey => publicKey.Clone).ToArray(),
+                   PublicKeys.Select(publicKey => publicKey.Clone()).ToArray(),
                    PublicKeyCertificateChain.HasValue ? PublicKeyCertificateChain.Value.Clone : null,
                    TransparencySoftwares.Select(transparencySoftwareStatus => transparencySoftwareStatus.Clone()).ToArray(),
 

@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.WWCP
                 Authentication.PlugAndChargeIdentification.HasValue ||
                 Authentication.RemoteIdentification.       HasValue ||
                 Authentication.PIN.                        HasValue ||
-                Authentication.PublicKey.                  HasValue ||
+                Authentication.PublicKey                is not null ||
                 Authentication.Certificate.                HasValue);
 
 
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.WWCP
                        ? new JProperty("PIN",                           PIN.                        Value.ToString())
                        : null,
 
-                   PublicKey.HasValue
+                   PublicKey is not null
                        ? new JProperty("publicKey",                     PublicKey.                  Value.ToString())
                        : null,
 
@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (PIN.                        HasValue && AAuthentication.PIN.                        HasValue)
                 return PIN.                        Value.CompareTo(AAuthentication.PIN.                        Value);
 
-            if (PublicKey.                  HasValue && AAuthentication.PublicKey.                  HasValue)
+            if (PublicKey is not null                && AAuthentication.PublicKey is not null)
                 return PublicKey.                  Value.CompareTo(AAuthentication.PublicKey.                  Value);
 
             if (Certificate.                HasValue && AAuthentication.Certificate.                HasValue)
@@ -390,8 +390,8 @@ namespace cloud.charging.open.protocols.WWCP
             ((!PIN.                        HasValue && !AAuthentication.PIN.                        HasValue) ||
               (PIN.                        HasValue &&  AAuthentication.PIN.                        HasValue && PIN.                        Value.Equals(AAuthentication.PIN.                        Value))) &&
 
-            ((!PublicKey.                  HasValue && !AAuthentication.PublicKey.                  HasValue) ||
-              (PublicKey.                  HasValue &&  AAuthentication.PublicKey.                  HasValue && PublicKey.                  Value.Equals(AAuthentication.PublicKey.                  Value))) &&
+             ((PublicKey   is null                  &&  AAuthentication.PublicKey is null)                    ||
+              (PublicKey   is not null              &&  AAuthentication.PublicKey is not null                && PublicKey.                        Equals(AAuthentication.PublicKey                        ))) &&
 
             ((!Certificate.                HasValue && !AAuthentication.Certificate.                HasValue) ||
               (Certificate.                HasValue &&  AAuthentication.Certificate.                HasValue && Certificate.                Value.Equals(AAuthentication.Certificate.                Value))) &&
@@ -461,7 +461,7 @@ namespace cloud.charging.open.protocols.WWCP
                        ? $"PIN: {PIN.Value}"
                        : String.Empty,
 
-                   PublicKey.HasValue
+                   PublicKey is not null
                        ? $"Public key: {PublicKey.Value}"
                        : String.Empty,
 

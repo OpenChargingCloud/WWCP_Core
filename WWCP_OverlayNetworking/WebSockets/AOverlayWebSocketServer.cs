@@ -663,6 +663,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                                   HTTPServiceName,
                                                                   Description,
 
+                                                                  RequireAuthentication,
                                                                   SupportedEEBusWebSocketSubprotocols,
                                                                   DisableWebSocketPings,
                                                                   WebSocketPingEvery,

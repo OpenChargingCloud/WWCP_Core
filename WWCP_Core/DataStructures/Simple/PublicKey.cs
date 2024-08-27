@@ -1,365 +1,365 @@
-﻿/*
- * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
- * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
- *
- * Licensed under the Affero GPL license, Version 3.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.gnu.org/licenses/agpl.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-#region Usings
-
-using org.GraphDefined.Vanaheimr.Illias;
-
-#endregion
-
-namespace cloud.charging.open.protocols.WWCP
-{
-
-    /// <summary>
-    /// Extension methods for public keys.
-    /// </summary>
-    public static class PublicKeyExtensions
-    {
-
-        /// <summary>
-        /// Indicates whether this public key is null or empty.
-        /// </summary>
-        /// <param name="PublicKey">A public key.</param>
-        public static Boolean IsNullOrEmpty(this PublicKey? PublicKey)
-            => !PublicKey.HasValue || PublicKey.Value.IsNullOrEmpty;
+﻿///*
+// * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
+// * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
+// *
+// * Licensed under the Affero GPL license, Version 3.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *     http://www.gnu.org/licenses/agpl.html
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// */
+
+//#region Usings
+
+//using org.GraphDefined.Vanaheimr.Illias;
+
+//#endregion
+
+//namespace cloud.charging.open.protocols.WWCP
+//{
+
+//    /// <summary>
+//    /// Extension methods for public keys.
+//    /// </summary>
+//    public static class PublicKeyExtensions
+//    {
+
+//        /// <summary>
+//        /// Indicates whether this public key is null or empty.
+//        /// </summary>
+//        /// <param name="PublicKey">A public key.</param>
+//        public static Boolean IsNullOrEmpty(this PublicKey? PublicKey)
+//            => !PublicKey.HasValue || PublicKey.Value.IsNullOrEmpty;
 
-        /// <summary>
-        /// Indicates whether this public key is NOT null or empty.
-        /// </summary>
-        /// <param name="PublicKey">A public key.</param>
-        public static Boolean IsNotNullOrEmpty(this PublicKey? PublicKey)
-            => PublicKey.HasValue && PublicKey.Value.IsNotNullOrEmpty;
-
-    }
+//        /// <summary>
+//        /// Indicates whether this public key is NOT null or empty.
+//        /// </summary>
+//        /// <param name="PublicKey">A public key.</param>
+//        public static Boolean IsNotNullOrEmpty(this PublicKey? PublicKey)
+//            => PublicKey.HasValue && PublicKey.Value.IsNotNullOrEmpty;
+
+//    }
 
 
-    /// <summary>
-    /// The unique identification of a public key.
-    /// </summary>
-    public readonly struct PublicKey : IId<PublicKey>
-    {
-
-        #region Data
-
-        /// <summary>
-        /// The internal identification.
-        /// </summary>
-        private readonly String InternalId;
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Indicates whether this public key is null or empty.
-        /// </summary>
-        public Boolean IsNullOrEmpty
-            => InternalId.IsNullOrEmpty();
+//    /// <summary>
+//    /// The unique identification of a public key.
+//    /// </summary>
+//    public readonly struct PublicKey : IId<PublicKey>
+//    {
+
+//        #region Data
+
+//        /// <summary>
+//        /// The internal identification.
+//        /// </summary>
+//        private readonly String InternalId;
+
+//        #endregion
+
+//        #region Properties
+
+//        /// <summary>
+//        /// Indicates whether this public key is null or empty.
+//        /// </summary>
+//        public Boolean IsNullOrEmpty
+//            => InternalId.IsNullOrEmpty();
 
-        /// <summary>
-        /// Indicates whether this public key is NOT null or empty.
-        /// </summary>
-        public Boolean IsNotNullOrEmpty
-            => InternalId.IsNotNullOrEmpty();
-
-        /// <summary>
-        /// The length of the public key.
-        /// </summary>
-        public UInt64 Length
-            => (UInt64) (InternalId?.Length ?? 0);
+//        /// <summary>
+//        /// Indicates whether this public key is NOT null or empty.
+//        /// </summary>
+//        public Boolean IsNotNullOrEmpty
+//            => InternalId.IsNotNullOrEmpty();
+
+//        /// <summary>
+//        /// The length of the public key.
+//        /// </summary>
+//        public UInt64 Length
+//            => (UInt64) (InternalId?.Length ?? 0);
 
-        #endregion
+//        #endregion
 
-        #region Constructor(s)
+//        #region Constructor(s)
 
-        /// <summary>
-        /// Create a new public key based on the given text.
-        /// </summary>
-        /// <param name="Text">The text representation of a public key.</param>
-        private PublicKey(String Text)
-        {
-            this.InternalId = Text;
-        }
+//        /// <summary>
+//        /// Create a new public key based on the given text.
+//        /// </summary>
+//        /// <param name="Text">The text representation of a public key.</param>
+//        private PublicKey(String Text)
+//        {
+//            this.InternalId = Text;
+//        }
 
-        #endregion
+//        #endregion
 
 
-        #region (static) Parse   (Text)
+//        #region (static) Parse   (Text)
 
-        /// <summary>
-        /// Parse the given text as a public key.
-        /// </summary>
-        /// <param name="Text">A text representation of a public key.</param>
-        public static PublicKey Parse(String Text)
-        {
+//        /// <summary>
+//        /// Parse the given text as a public key.
+//        /// </summary>
+//        /// <param name="Text">A text representation of a public key.</param>
+//        public static PublicKey Parse(String Text)
+//        {
 
-            if (TryParse(Text, out var publicKey))
-                return publicKey;
+//            if (TryParse(Text, out var publicKey))
+//                return publicKey;
 
-            throw new ArgumentException($"Invalid text representation of a public key: '" + Text + "'!",
-                                        nameof(Text));
+//            throw new ArgumentException($"Invalid text representation of a public key: '" + Text + "'!",
+//                                        nameof(Text));
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region (static) TryParse(Text)
+//        #region (static) TryParse(Text)
 
-        /// <summary>
-        /// Try to parse the given text as a public key.
-        /// </summary>
-        /// <param name="Text">A text representation of a public key.</param>
-        public static PublicKey? TryParse(String Text)
-        {
+//        /// <summary>
+//        /// Try to parse the given text as a public key.
+//        /// </summary>
+//        /// <param name="Text">A text representation of a public key.</param>
+//        public static PublicKey? TryParse(String Text)
+//        {
 
-            if (TryParse(Text, out var publicKey))
-                return publicKey;
+//            if (TryParse(Text, out var publicKey))
+//                return publicKey;
 
-            return null;
+//            return null;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region (static) TryParse(Text, out PublicKey)
+//        #region (static) TryParse(Text, out PublicKey)
 
-        /// <summary>
-        /// Try to parse the given text as a public key.
-        /// </summary>
-        /// <param name="Text">A text representation of a public key.</param>
-        /// <param name="PublicKey">The parsed public key.</param>
-        public static Boolean TryParse(String Text, out PublicKey PublicKey)
-        {
+//        /// <summary>
+//        /// Try to parse the given text as a public key.
+//        /// </summary>
+//        /// <param name="Text">A text representation of a public key.</param>
+//        /// <param name="PublicKey">The parsed public key.</param>
+//        public static Boolean TryParse(String Text, out PublicKey PublicKey)
+//        {
 
-            Text = Text.Trim();
+//            Text = Text.Trim();
 
-            if (Text.IsNotNullOrEmpty())
-            {
-                try
-                {
-                    PublicKey = new PublicKey(Text);
-                    return true;
-                }
-                catch
-                { }
-            }
+//            if (Text.IsNotNullOrEmpty())
+//            {
+//                try
+//                {
+//                    PublicKey = new PublicKey(Text);
+//                    return true;
+//                }
+//                catch
+//                { }
+//            }
 
-            PublicKey = default;
-            return false;
+//            PublicKey = default;
+//            return false;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region Clone
+//        #region Clone
 
-        /// <summary>
-        /// Clone this public key.
-        /// </summary>
-        public PublicKey Clone
+//        /// <summary>
+//        /// Clone this public key.
+//        /// </summary>
+//        public PublicKey Clone
 
-            => new (
-                   new String(InternalId?.ToCharArray())
-               );
+//            => new (
+//                   new String(InternalId?.ToCharArray())
+//               );
 
-        #endregion
+//        #endregion
 
 
-        #region Operator overloading
+//        #region Operator overloading
 
-        #region Operator == (PublicKey1, PublicKey2)
+//        #region Operator == (PublicKey1, PublicKey2)
 
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="PublicKey1">A public key.</param>
-        /// <param name="PublicKey2">Another public key.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (PublicKey PublicKey1,
-                                           PublicKey PublicKey2)
+//        /// <summary>
+//        /// Compares two instances of this object.
+//        /// </summary>
+//        /// <param name="PublicKey1">A public key.</param>
+//        /// <param name="PublicKey2">Another public key.</param>
+//        /// <returns>True if both match; False otherwise.</returns>
+//        public static Boolean operator == (PublicKey PublicKey1,
+//                                           PublicKey PublicKey2)
 
-            => PublicKey1.Equals(PublicKey2);
+//            => PublicKey1.Equals(PublicKey2);
 
-        #endregion
+//        #endregion
 
-        #region Operator != (PublicKey1, PublicKey2)
+//        #region Operator != (PublicKey1, PublicKey2)
 
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="PublicKey1">A public key.</param>
-        /// <param name="PublicKey2">Another public key.</param>
-        /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (PublicKey PublicKey1,
-                                           PublicKey PublicKey2)
+//        /// <summary>
+//        /// Compares two instances of this object.
+//        /// </summary>
+//        /// <param name="PublicKey1">A public key.</param>
+//        /// <param name="PublicKey2">Another public key.</param>
+//        /// <returns>False if both match; True otherwise.</returns>
+//        public static Boolean operator != (PublicKey PublicKey1,
+//                                           PublicKey PublicKey2)
 
-            => !PublicKey1.Equals(PublicKey2);
+//            => !PublicKey1.Equals(PublicKey2);
 
-        #endregion
+//        #endregion
 
-        #region Operator <  (PublicKey1, PublicKey2)
+//        #region Operator <  (PublicKey1, PublicKey2)
 
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="PublicKey1">A public key.</param>
-        /// <param name="PublicKey2">Another public key.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator < (PublicKey PublicKey1,
-                                          PublicKey PublicKey2)
+//        /// <summary>
+//        /// Compares two instances of this object.
+//        /// </summary>
+//        /// <param name="PublicKey1">A public key.</param>
+//        /// <param name="PublicKey2">Another public key.</param>
+//        /// <returns>True if both match; False otherwise.</returns>
+//        public static Boolean operator < (PublicKey PublicKey1,
+//                                          PublicKey PublicKey2)
 
-            => PublicKey1.CompareTo(PublicKey2) < 0;
+//            => PublicKey1.CompareTo(PublicKey2) < 0;
 
-        #endregion
+//        #endregion
 
-        #region Operator <= (PublicKey1, PublicKey2)
+//        #region Operator <= (PublicKey1, PublicKey2)
 
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="PublicKey1">A public key.</param>
-        /// <param name="PublicKey2">Another public key.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator <= (PublicKey PublicKey1,
-                                           PublicKey PublicKey2)
+//        /// <summary>
+//        /// Compares two instances of this object.
+//        /// </summary>
+//        /// <param name="PublicKey1">A public key.</param>
+//        /// <param name="PublicKey2">Another public key.</param>
+//        /// <returns>True if both match; False otherwise.</returns>
+//        public static Boolean operator <= (PublicKey PublicKey1,
+//                                           PublicKey PublicKey2)
 
-            => PublicKey1.CompareTo(PublicKey2) <= 0;
+//            => PublicKey1.CompareTo(PublicKey2) <= 0;
 
-        #endregion
+//        #endregion
 
-        #region Operator >  (PublicKey1, PublicKey2)
+//        #region Operator >  (PublicKey1, PublicKey2)
 
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="PublicKey1">A public key.</param>
-        /// <param name="PublicKey2">Another public key.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator > (PublicKey PublicKey1,
-                                          PublicKey PublicKey2)
+//        /// <summary>
+//        /// Compares two instances of this object.
+//        /// </summary>
+//        /// <param name="PublicKey1">A public key.</param>
+//        /// <param name="PublicKey2">Another public key.</param>
+//        /// <returns>True if both match; False otherwise.</returns>
+//        public static Boolean operator > (PublicKey PublicKey1,
+//                                          PublicKey PublicKey2)
 
-            => PublicKey1.CompareTo(PublicKey2) > 0;
+//            => PublicKey1.CompareTo(PublicKey2) > 0;
 
-        #endregion
+//        #endregion
 
-        #region Operator >= (PublicKey1, PublicKey2)
+//        #region Operator >= (PublicKey1, PublicKey2)
 
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="PublicKey1">A public key.</param>
-        /// <param name="PublicKey2">Another public key.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator >= (PublicKey PublicKey1,
-                                           PublicKey PublicKey2)
+//        /// <summary>
+//        /// Compares two instances of this object.
+//        /// </summary>
+//        /// <param name="PublicKey1">A public key.</param>
+//        /// <param name="PublicKey2">Another public key.</param>
+//        /// <returns>True if both match; False otherwise.</returns>
+//        public static Boolean operator >= (PublicKey PublicKey1,
+//                                           PublicKey PublicKey2)
 
-            => PublicKey1.CompareTo(PublicKey2) >= 0;
+//            => PublicKey1.CompareTo(PublicKey2) >= 0;
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region IComparable<PublicKey> Members
+//        #region IComparable<PublicKey> Members
 
-        #region CompareTo(Object)
+//        #region CompareTo(Object)
 
-        /// <summary>
-        /// Compares two public keys.
-        /// </summary>
-        /// <param name="Object">A public key to compare with.</param>
-        public Int32 CompareTo(Object? Object)
+//        /// <summary>
+//        /// Compares two public keys.
+//        /// </summary>
+//        /// <param name="Object">A public key to compare with.</param>
+//        public Int32 CompareTo(Object? Object)
 
-            => Object is PublicKey publicKey
-                   ? CompareTo(publicKey)
-                   : throw new ArgumentException("The given object is not a public key!",
-                                                 nameof(Object));
+//            => Object is PublicKey publicKey
+//                   ? CompareTo(publicKey)
+//                   : throw new ArgumentException("The given object is not a public key!",
+//                                                 nameof(Object));
 
-        #endregion
+//        #endregion
 
-        #region CompareTo(PublicKey)
+//        #region CompareTo(PublicKey)
 
-        /// <summary>
-        /// Compares two public keys.
-        /// </summary>
-        /// <param name="PublicKey">A public key to compare with.</param>
-        public Int32 CompareTo(PublicKey PublicKey)
+//        /// <summary>
+//        /// Compares two public keys.
+//        /// </summary>
+//        /// <param name="PublicKey">A public key to compare with.</param>
+//        public Int32 CompareTo(PublicKey PublicKey)
 
-            => String.Compare(InternalId,
-                              PublicKey.InternalId,
-                              StringComparison.Ordinal);
+//            => String.Compare(InternalId,
+//                              PublicKey.InternalId,
+//                              StringComparison.Ordinal);
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region IEquatable<PublicKey> Members
+//        #region IEquatable<PublicKey> Members
 
-        #region Equals(Object)
+//        #region Equals(Object)
 
-        /// <summary>
-        /// Compares two public keys for equality.
-        /// </summary>
-        /// <param name="Object">A public key to compare with.</param>
-        public override Boolean Equals(Object? Object)
+//        /// <summary>
+//        /// Compares two public keys for equality.
+//        /// </summary>
+//        /// <param name="Object">A public key to compare with.</param>
+//        public override Boolean Equals(Object? Object)
 
-            => Object is PublicKey publicKey &&
-                   Equals(publicKey);
+//            => Object is PublicKey publicKey &&
+//                   Equals(publicKey);
 
-        #endregion
+//        #endregion
 
-        #region Equals(PublicKey)
+//        #region Equals(PublicKey)
 
-        /// <summary>
-        /// Compares two public keys for equality.
-        /// </summary>
-        /// <param name="PublicKey">A public key to compare with.</param>
-        public Boolean Equals(PublicKey PublicKey)
+//        /// <summary>
+//        /// Compares two public keys for equality.
+//        /// </summary>
+//        /// <param name="PublicKey">A public key to compare with.</param>
+//        public Boolean Equals(PublicKey PublicKey)
 
-            => String.Equals(InternalId,
-                             PublicKey.InternalId,
-                             StringComparison.Ordinal);
+//            => String.Equals(InternalId,
+//                             PublicKey.InternalId,
+//                             StringComparison.Ordinal);
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region (override) GetHashCode()
+//        #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the hash code of this object.
-        /// </summary>
-        /// <returns>The hash code of this object.</returns>
-        public override Int32 GetHashCode()
+//        /// <summary>
+//        /// Return the hash code of this object.
+//        /// </summary>
+//        /// <returns>The hash code of this object.</returns>
+//        public override Int32 GetHashCode()
 
-            => InternalId?.GetHashCode() ?? 0;
+//            => InternalId?.GetHashCode() ?? 0;
 
-        #endregion
+//        #endregion
 
-        #region (override) ToString()
+//        #region (override) ToString()
 
-        /// <summary>
-        /// Return a text representation of this object.
-        /// </summary>
-        public override String ToString()
+//        /// <summary>
+//        /// Return a text representation of this object.
+//        /// </summary>
+//        public override String ToString()
 
-            => InternalId ?? "";
+//            => InternalId ?? "";
 
-        #endregion
+//        #endregion
 
-    }
+//    }
 
-}
+//}
