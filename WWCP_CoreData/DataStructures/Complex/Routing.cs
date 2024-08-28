@@ -23,6 +23,7 @@ using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json.Linq;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -32,7 +33,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
     /// <summary>
     /// The routing of messages within the overlay network.
     /// </summary>
-    public class Routing
+    /// <param name="NetworkingNode">The parent networking node.</param>
+    public class Routing(INetworkingNode NetworkingNode)
     {
 
         #region Data
@@ -40,6 +42,16 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         private readonly ConcurrentDictionary<NetworkingNode_Id, List<Reachability>>  reachableNetworkingNodes = [];
 
         #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The parent networking node.
+        /// </summary>
+        public INetworkingNode NetworkingNode { get; } = NetworkingNode;
+
+        #endregion
+
 
 
         public IEnumerable<IWWCPWebSocketClient> AllWebSocketClients
@@ -103,7 +115,37 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                 reachabilityList.Count > 0)
             {
 
-                var reachability = reachabilityList.OrderBy(entry => entry.Priority).First();
+                var reachabilityGroup  = reachabilityList.
+                                             GroupBy(entry => entry.Priority).
+                                             OrderBy(group => group.Key).
+                                             First  ();
+
+                var reachability       = reachabilityGroup.First();
+
+                if (reachabilityGroup.Count() > 1)
+                {
+
+                    var shuffledGroup     = reachabilityGroup.OrderBy(_ => Guid.NewGuid()).ToArray();
+                    var totalWeight       = reachabilityGroup.Sum(reachability => reachability.Weight);
+                    var randomNumber      = new Random().Next(0, totalWeight);
+                    //var currentWeightSum  = 0;
+
+                    //foreach (var _reachability in shuffledGroup)
+                    //{
+                    //    currentWeightSum += _reachability.Weight;
+                    //    if (randomNumber < currentWeightSum)
+                    //    {
+                    //        reachability = _reachability;
+                    //    }
+                    //}
+
+                    reachability = shuffledGroup.First(r => {
+                                       randomNumber -= r.Weight;
+                                       return randomNumber < 0;
+                                   });
+
+                }
+
 
                 if (reachability.NetworkingHub.HasValue)
                 {
@@ -351,30 +393,44 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                    (id, reachabilityList) => {
 
-                       var reachability = Reachability.FromNetworkingHub(
-                                              DestinationId,
-                                              NetworkingHubId,
-                                              new VirtualNetworkLinkInformation(Distance: 1),
-                                              new VirtualNetworkLinkInformation(Distance: 1),
-                                              Priority,
-                                              Weight,
-                                              Timeout: Timeout
-                                          );
+                       var l = reachabilityList.AddAndReturnList(
+                           Reachability.FromNetworkingHub(
+                               DestinationId,
+                               NetworkingHubId,
+                               new VirtualNetworkLinkInformation(Distance: 1),
+                               new VirtualNetworkLinkInformation(Distance: 1),
+                               Priority,
+                               Weight,
+                               Timeout: Timeout
+                           )
+                       );
 
-                       if (reachabilityList is null)
-                           return [ reachability ];
+                       return l;
 
-                       else
-                       {
+                       //var reachability = Reachability.FromNetworkingHub(
+                       //                       DestinationId,
+                       //                       NetworkingHubId,
+                       //                       new VirtualNetworkLinkInformation(Distance: 1),
+                       //                       new VirtualNetworkLinkInformation(Distance: 1),
+                       //                       Priority,
+                       //                       Weight,
+                       //                       Timeout: Timeout
+                       //                   );
 
-                           // For thread-safety!
-                           var updatedReachabilityList = new List<Reachability>();
-                           updatedReachabilityList.AddRange(reachabilityList.Where(entry => entry.Priority != reachability.Priority));
-                           updatedReachabilityList.Add     (reachability);
+                       //if (reachabilityList is null)
+                       //    return [ reachability ];
 
-                           return updatedReachabilityList;
+                       //else
+                       //{
 
-                       }
+                       //    // For thread-safety!
+                       //    var updatedReachabilityList = new List<Reachability>();
+                       //    updatedReachabilityList.AddRange(reachabilityList.Where(entry => entry.Priority != reachability.Priority));
+                       //    updatedReachabilityList.Add     (reachability);
+
+                       //    return updatedReachabilityList;
+
+                       //}
 
                    }
 

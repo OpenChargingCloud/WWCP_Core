@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
             this.DNSClient                = DNSClient        ?? new DNSClient(SearchForIPv6DNSServers: false);
 
-            this.Routing                  = new Routing();
+            this.Routing                  = new Routing(this);
 
             //this.OCPP                     = new OCPPAdapter(
             //                                    this,
