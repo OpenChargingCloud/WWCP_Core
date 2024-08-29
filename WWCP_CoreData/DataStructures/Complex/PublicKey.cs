@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// An OCPP CSE asymmetric cryptographic public key.
+    /// An asymmetric cryptographic public key.
     /// </summary>
     public class PublicKey : ACustomData,
                              IEquatable<PublicKey>
@@ -50,27 +50,27 @@ namespace cloud.charging.open.protocols.WWCP
         /// The optional cryptographic algorithm of the keys. Default is 'secp256r1'.
         /// </summary>
         [Optional]
-        public   String                  Algorithm             { get; }
+        public   String?                 Algorithm             { get; }
 
         /// <summary>
         /// The optional serialization of the cryptographic keys. Default is 'raw'.
         /// </summary>
         [Optional]
-        public   String                  Serialization         { get; }
+        public   String?                 Serialization         { get; }
 
         /// <summary>
         /// The optional encoding of the cryptographic keys. Default is 'base64'.
         /// </summary>
         [Optional]
-        public   String                  Encoding              { get; }
+        public   String?                 Encoding              { get; }
 
 
-        public   X9ECParameters          ECParameters          { get; }
+        public   X9ECParameters?         ECParameters          { get; }
 
-        public   ECDomainParameters      ECDomainParameters    { get; }
+        public   ECDomainParameters?     ECDomainParameters    { get; }
 
 
-        internal ECPublicKeyParameters   PublicKey2            { get; }
+        internal ECPublicKeyParameters?  PublicKey2            { get; }
 
         #endregion
 
@@ -99,39 +99,6 @@ namespace cloud.charging.open.protocols.WWCP
             this.Serialization       = Serialization ?? "raw";
             this.Encoding            = Encoding      ?? "base64";
 
-            this.ECParameters        = ECNamedCurveTable.GetByName(this.Algorithm);
-
-            if (this.ECParameters is null)
-                throw new ArgumentException("The given cryptographic algorithm is unknown!", nameof(Algorithm));
-
-            this.ECDomainParameters  = new ECDomainParameters(
-                                           ECParameters.Curve,
-                                           ECParameters.G,
-                                           ECParameters.N,
-                                           ECParameters.H,
-                                           ECParameters.GetSeed()
-                                       );
-
-            #region Try to parse the public key
-
-            try
-            {
-
-                this.PublicKey2      = new ECPublicKeyParameters(
-                                           "ECDSA",
-                                           ECParameters.Curve.DecodePoint(this.Value.FromBase64()),
-                                           ECDomainParameters
-                                       );
-
-            }
-            catch (Exception e)
-            {
-                throw new ArgumentException("The given public key is invalid!", nameof(Value), e);
-            }
-
-            #endregion
-
-
             unchecked
             {
 
@@ -139,7 +106,6 @@ namespace cloud.charging.open.protocols.WWCP
                            this.Algorithm.    GetHashCode() *  7 ^
                            this.Serialization.GetHashCode() *  5 ^
                            this.Encoding.     GetHashCode() *  3 ^
-
                            base.              GetHashCode();
 
             }
@@ -161,9 +127,88 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given text representation of a cryptographic public key.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
-        public static PublicKey Parse(String Text)
+        public static PublicKey Parse(String       Text,
+                                      String?      Algorithm       = null, // "secp256r1"
+                                      String?      Serialization   = null, // "raw",
+                                      String?      Encoding        = null, // "base64",
+                                      CustomData?  CustomData      = null)
+        {
 
-            => new (Text);
+            if (TryParse(Text, out var publicKey, out var errorResponse))
+                return publicKey;
+
+            throw new ArgumentException("The given text representation of a public key is invalid!",
+                                        nameof(Text));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse    (Text, out PublicKey, out ErrorResponse, Algorithm = null, Serialization = null, Encoding = null, ...)
+
+        /// <summary>
+        /// Parse the given text representation of a cryptographic public key.
+        /// </summary>
+        /// <param name="Text">The text to be parsed.</param>
+        public static Boolean TryParse(String                               Text,
+                                       [NotNullWhen(true)]  out PublicKey?  PublicKey,
+                                       [NotNullWhen(false)] out String?     ErrorResponse,
+                                       String?                              Algorithm       = null, // "secp256r1"
+                                       String?                              Serialization   = null, // "raw",
+                                       String?                              Encoding        = null, // "base64",
+                                       CustomData?                          CustomData      = null)
+        {
+
+            PublicKey      = null;
+            ErrorResponse  = null;
+
+            if (Algorithm.IsNotNullOrEmpty())
+            {
+
+                var ecParameters = ECNamedCurveTable.GetByName(Algorithm);
+                if (ecParameters is null)
+                {
+                    ErrorResponse = $"The given cryptographic algorithm '{Algorithm}' is unknown!";
+                    return false;
+                }
+
+                var ecDomainParameters = new ECDomainParameters(
+                                             ecParameters.Curve,
+                                             ecParameters.G,
+                                             ecParameters.N,
+                                             ecParameters.H,
+                                             ecParameters.GetSeed()
+                                         );
+
+                try
+                {
+
+                    var publicKey2 = new ECPublicKeyParameters(
+                                         "ECDSA",
+                                         ecParameters.Curve.DecodePoint(Text.FromBase64()),
+                                         ecDomainParameters
+                                     );
+
+                }
+                catch (Exception e)
+                {
+                    ErrorResponse = $"The given public key '{Text}' is invalid: {e.Message}";
+                    return false;
+                }
+
+            }
+
+            PublicKey = new PublicKey(
+                            Text,
+                            Algorithm,
+                            Serialization,
+                            Encoding,
+                            CustomData
+                        );
+
+            return true;
+
+        }
 
         #endregion
 
