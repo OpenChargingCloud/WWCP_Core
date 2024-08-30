@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -299,7 +300,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Text">A text representation of a charging session identification.</param>
         /// <param name="ChargingSessionId">The parsed charging session identification.</param>
-        public static Boolean TryParse(String Text, out ChargingSession_Id ChargingSessionId)
+        public static Boolean TryParse(String                                      Text,
+                                       [NotNullWhen(true)] out ChargingSession_Id  ChargingSessionId)
         {
 
             Text = Text.Trim();

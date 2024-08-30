@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -251,8 +252,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Text">A text representation of a charging station operator identification.</param>
         /// <param name="ChargingStationOperatorId">The parsed charging station operator identification.</param>
-        public static Boolean TryParse(String                          Text,
-                                       out ChargingStationOperator_Id  ChargingStationOperatorId)
+        public static Boolean TryParse(String                                              Text,
+                                       [NotNullWhen(true)] out ChargingStationOperator_Id  ChargingStationOperatorId)
         {
 
             #region Initial checks

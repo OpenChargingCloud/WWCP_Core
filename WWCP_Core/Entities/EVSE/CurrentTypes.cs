@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection.Metadata;
+
 namespace cloud.charging.open.protocols.WWCP
 {
 
@@ -23,6 +26,48 @@ namespace cloud.charging.open.protocols.WWCP
     /// </summary>
     public static class CurrentTypesExtensions
     {
+
+        public static Boolean TryParse(String                                 Text,
+                                       [NotNullWhen(true)] out CurrentTypes?  CurrentType)
+        {
+
+            switch (Text.Trim())
+            {
+
+                case "AC_1_PHASE":
+                case "AC_1Phase":
+                case "AC_OnePhase":
+                    CurrentType = CurrentTypes.AC_OnePhase;
+                    return true;
+
+                case "AC_3_PHASE":
+                case "AC_3Phases":
+                case "AC_ThreePhases":
+                    CurrentType = CurrentTypes.AC_ThreePhases;
+                    return true;
+
+                case "DC":
+                    CurrentType = CurrentTypes.DC;
+                    return true;
+
+                default:
+                    CurrentType = null;
+                    return false;
+
+            }
+
+        }
+
+        public static CurrentTypes? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var currentType))
+                return currentType;
+
+            return null;
+
+        }
+
 
         public static CurrentTypes Reduce(this IEnumerable<CurrentTypes> EnumerationOfCurrentTypes)
         {
