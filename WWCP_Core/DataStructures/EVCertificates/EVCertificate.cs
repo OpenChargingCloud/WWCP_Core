@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
             this.Owner                         = Owner;
             this.signatures                    = Signatures is not null
                                                      ? new List<EVSignature>(Signatures.Distinct())
-                                                     : new List<EVSignature>();
+                                                     : [];
             this.Policy                        = Policy;
             this.DistributionPoints            = DistributionPoints?.          Distinct() ?? Array.Empty<URL>();
             this.RevocationDistributionPoints  = RevocationDistributionPoints?.Distinct() ?? Array.Empty<URL>();
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
             var json1       = JObject.Parse(ToJSON(Embedded: false).ToString(Newtonsoft.Json.Formatting.None, cc));
             json1.Remove("signatures");
 
-            var sha512hash  = SHA512.Create().ComputeHash(json1.ToString(Newtonsoft.Json.Formatting.None, cc).ToUTF8Bytes());
+            var sha512hash  = SHA512.HashData(json1.ToString(Newtonsoft.Json.Formatting.None, cc).ToUTF8Bytes());
             var blockSize   = 64;
 
             var signer      = SignerUtilities.GetSigner("NONEwithECDSA");

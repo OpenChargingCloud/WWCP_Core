@@ -18,11 +18,12 @@
 #region Usings
 
 using System.Diagnostics.CodeAnalysis;
-
+using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Illias;
+using Org.BouncyCastle.Security;
 
 #endregion
 
@@ -52,6 +53,8 @@ namespace cloud.charging.open.protocols.WWCP
         public JSONLDContext  Context
             => DefaultJSONLDContext;
 
+        public Guid                             Id                          { get; }
+        public DateTime                         CreationTimestamp           { get; }
         public String                           Username                    { get; }
         public String                           Password                    { get; }
         public SimpleEMailAddress               EMailAddress                { get; }
@@ -71,16 +74,20 @@ namespace cloud.charging.open.protocols.WWCP
                                             String                            Password,
                                             SimpleEMailAddress                EMailAddress,
                                             IEnumerable<PublicKey>            PublicKeys,
-                                            IEnumerable<Signature>            Signatures,
+                                            IEnumerable<Signature>?           Signatures                 = null,
                                             IEnumerable<SimpleEMailAddress>?  AdditionalEMailAddresses   = null,
-                                            PhoneNumber?                      PhoneNumber                = null)
+                                            PhoneNumber?                      PhoneNumber                = null,
+                                            Guid?                             Id                         = null,
+                                            DateTime?                         CreationTimestamp          = null)
         {
 
+            this.Id                        = Id                                   ?? UUIDv7.Generate();
+            this.CreationTimestamp         = CreationTimestamp                    ?? Timestamp.Now;
             this.Username                  = Username;
             this.Password                  = Password;
             this.EMailAddress              = EMailAddress;
             this.PublicKeys                = PublicKeys;
-            this.Signatures                = Signatures;
+            this.Signatures                = Signatures?.              Distinct() ?? [];
             this.AdditionalEMailAddresses  = AdditionalEMailAddresses?.Distinct() ?? [];
             this.PhoneNumber               = PhoneNumber;
 
@@ -204,15 +211,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Signatures                  [mandatory]
+                #region Signatures                  [optional]
 
-                if (!JSON.ParseMandatoryHashSet("signatures",
-                                                "signatures",
-                                                Signature.TryParse,
-                                                out HashSet<Signature> Signatures,
-                                                out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -245,6 +253,23 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
+                #region PhoneNumber                 [optional]
+
+                //if (JSON.ParseOptional("phoneNumber",
+                //                       "phoneNumber",
+                //                       org.GraphDefined.Vanaheimr.Illias.PhoneNumber.TryParse,
+                //                       out PhoneNumber PhoneNumber,
+                //                       out ErrorResponse))
+                //{
+                //    if (ErrorResponse is not null)
+                //        return false;
+                //}
+
+                #endregion
+
+                //CreationTimestamp
+
+
 
                 RegisterEMobilityAccountData = new RegisterEMobilityAccountData(
                                                    Username,
@@ -253,7 +278,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                    PublicKeys,
                                                    Signatures,
                                                    AdditionalEMailAddresses,
-                                                   PhoneNumber
+                                                   PhoneNumber,
+                                                   //Id,
+                                                   //CreationTimestamp
                                                );
 
                 if (CustomRegisterEMobilityAccountDataParser is not null)
@@ -282,30 +309,40 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CustomRegisterEMobilityAccountDataSerializer">A delegate to serialize custom RegisterEMobilityAccountData requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<RegisterEMobilityAccountData>?  CustomRegisterEMobilityAccountDataSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null)
+        public JObject ToJSON(Boolean                                                         Embedded                                       = false,
+                              CustomJObjectSerializerDelegate<RegisterEMobilityAccountData>?  CustomRegisterEMobilityAccountDataSerializer   = null,
+                              CustomJObjectSerializerDelegate<PublicKey>?                     CustomPublicKeySerializer                      = null,
+                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer                      = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
             var json = JSONObject.Create(
 
-                           //      new JProperty("vendorId",     VendorId.       TextId),
+                                 new JProperty("@id",          Id.       ToString()),
 
-                           //MessageId.HasValue
-                           //    ? new JProperty("messageId",    MessageId.Value.TextId)
-                           //    : null,
+                           Embedded
+                               ? null
+                               : new JProperty("@context",     Context),
 
-                           //Data is not null
-                           //    ? new JProperty("data",         Data)
-                           //    : null,
+                                 new JProperty("creationTimestamp",          CreationTimestamp.ToIso8601()),
+                                 new JProperty("username",                   Username),
+                                 new JProperty("password",                   Password),
+                                 new JProperty("eMailAddress",               EMailAddress.     ToString()),
+                                 new JProperty("publicKeys",                 new JArray(PublicKeys.              Select(publicKey          => publicKey.         ToJSON  (CustomPublicKeySerializer,
+                                                                                                                                                                          CustomCustomDataSerializer)))),
 
-                           //Signatures.Any()
-                           //    ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                           //                                                                                               CustomCustomDataSerializer))))
-                           //    : null,
+                           Signatures.Any()
+                               ? new JProperty("signatures",                 new JArray(Signatures.              Select(signature          => signature.         ToJSON  (CustomSignatureSerializer,
+                                                                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
 
-                           //CustomData is not null
-                           //    ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
-                           //    : null
+                           AdditionalEMailAddresses.Any()
+                               ? new JProperty("additionalEMailAddresses",   new JArray(AdditionalEMailAddresses.Select(simpleEMailAddress => simpleEMailAddress.ToString())))
+                               : null,
+
+                           PhoneNumber.HasValue
+                               ? new JProperty("phoneNumber",                PhoneNumber.Value.ToString())
+                               : null
 
                        );
 
@@ -316,6 +353,47 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+
+        public RegisterEMobilityAccountData Sign(IEnumerable<KeyPair> Keys)
+        {
+
+            var cc = new Newtonsoft.Json.Converters.IsoDateTimeConverter {
+                DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ"
+            };
+
+            var json1       = JObject.Parse(ToJSON(Embedded: false).ToString(Newtonsoft.Json.Formatting.None, cc));
+            json1.Remove("signatures");
+
+            foreach (var key in Keys)
+            {
+
+
+                var sha512hash = SHA512.HashData(json1.ToString(Newtonsoft.Json.Formatting.None, cc).ToUTF8Bytes());
+                var blockSize = 64;
+
+                //var signer = SignerUtilities.GetSigner("NONEwithECDSA");
+                //signer.Init(true, PrivateKey);
+                //signer.BlockUpdate(sha512hash, 0, blockSize);
+
+                //signatures.Add(new ECCSignature(Name,
+                //                                PublicKey,
+                //                                EMailAddress,
+                //                                WWW,
+                //                                signer.GenerateSignature(),
+                //                                NotBefore,
+                //                                NotAfter,
+                //                                HashingAlgorithm,
+                //                                EncryptionAlgorithm,
+                //                                Encoding,
+                //                                this));
+
+            }
+
+            return this;
+
+
+        }
 
 
         #region Operator overloading
