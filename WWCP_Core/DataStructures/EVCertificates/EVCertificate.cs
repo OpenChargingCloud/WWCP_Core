@@ -110,12 +110,12 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
                                                      ? new List<EVSignature>(Signatures.Distinct())
                                                      : [];
             this.Policy                        = Policy;
-            this.DistributionPoints            = DistributionPoints?.          Distinct() ?? Array.Empty<URL>();
-            this.RevocationDistributionPoints  = RevocationDistributionPoints?.Distinct() ?? Array.Empty<URL>();
-            this.DeltaDistributionPoints       = DeltaDistributionPoints?.     Distinct() ?? Array.Empty<URL>();
+            this.DistributionPoints            = DistributionPoints?.          Distinct() ?? [];
+            this.RevocationDistributionPoints  = RevocationDistributionPoints?.Distinct() ?? [];
+            this.DeltaDistributionPoints       = DeltaDistributionPoints?.     Distinct() ?? [];
             this.Edges                         = Edges is not null
                                                      ? Edges.Distinct()
-                                                     : Array.Empty<Tuple<Edge, EVCertificate_Id>>();
+                                                     : [];
 
 
             var cc = new Newtonsoft.Json.Converters.IsoDateTimeConverter {
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
             json1.Remove("@id");
             json1.Remove("signatures");
 
-            this.Id    = EVCertificate_Id.Parse(SHA256.Create().ComputeHash(json1.ToString(Newtonsoft.Json.Formatting.None, cc).ToUTF8Bytes()).ToHexString());
+            this.Id    = EVCertificate_Id.Parse(SHA256.HashData(json1.ToString(Newtonsoft.Json.Formatting.None, cc).ToUTF8Bytes()).ToHexString());
 
         }
 
@@ -202,17 +202,21 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
             signer.Init(true, PrivateKey);
             signer.BlockUpdate(sha512hash, 0, blockSize);
 
-            signatures.Add(new ECCSignature(Name,
-                                            PublicKey,
-                                            EMailAddress,
-                                            WWW,
-                                            signer.GenerateSignature(),
-                                            NotBefore,
-                                            NotAfter,
-                                            HashingAlgorithm,
-                                            EncryptionAlgorithm,
-                                            Encoding,
-                                            this));
+            signatures.Add(
+                new ECCSignature(
+                    Name,
+                    PublicKey,
+                    EMailAddress,
+                    WWW,
+                    signer.GenerateSignature(),
+                    NotBefore,
+                    NotAfter,
+                    HashingAlgorithm,
+                    EncryptionAlgorithm,
+                    Encoding,
+                    this
+                )
+            );
 
             return this;
 

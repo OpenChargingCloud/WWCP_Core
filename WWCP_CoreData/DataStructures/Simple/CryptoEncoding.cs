@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Text;
 
 #endregion
 
@@ -51,14 +52,14 @@ namespace cloud.charging.open.protocols.WWCP
     /// A cryptographic encoding.
     /// </summary>
     public readonly struct CryptoEncoding : IId,
-                                             IEquatable<CryptoEncoding>,
-                                             IComparable<CryptoEncoding>
+                                            IEquatable<CryptoEncoding>,
+                                            IComparable<CryptoEncoding>
     {
 
         #region Data
 
         private readonly static Dictionary<String, CryptoEncoding>  lookup = new (StringComparer.OrdinalIgnoreCase);
-        private readonly        String                               InternalId;
+        private readonly        String                              InternalId;
 
         #endregion
 
@@ -205,6 +206,20 @@ namespace cloud.charging.open.protocols.WWCP
             = Register("hex");
 
         #endregion
+
+
+        public String Encode(Byte[] Bytes)
+        {
+
+            if      (String.Equals(InternalId, "base64", StringComparison.OrdinalIgnoreCase))
+                return Bytes.ToBase64();
+
+            else if (String.Equals(InternalId, "hex",    StringComparison.OrdinalIgnoreCase))
+                return Bytes.ToHexString();
+
+            return "";
+
+        }
 
 
         #region Operator overloading

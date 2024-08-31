@@ -44,25 +44,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// The cryptographic public key.
         /// </summary>
         [Mandatory]
-        public   String                  Value                 { get; }
+        public   Byte[]                  Value                 { get; }
 
         /// <summary>
         /// The optional cryptographic algorithm of the keys. Default is 'secp256r1'.
         /// </summary>
         [Optional]
-        public   String?                 Algorithm             { get; }
+        public   CryptoAlgorithm         Algorithm             { get; }
 
         /// <summary>
         /// The optional serialization of the cryptographic keys. Default is 'raw'.
         /// </summary>
         [Optional]
-        public   String?                 Serialization         { get; }
+        public   CryptoSerialization     Serialization         { get; }
 
         /// <summary>
         /// The optional encoding of the cryptographic keys. Default is 'base64'.
         /// </summary>
         [Optional]
-        public   String?                 Encoding              { get; }
+        public   CryptoEncoding          Encoding              { get; }
 
 
         public   X9ECParameters?         ECParameters          { get; }
@@ -84,20 +84,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Serialization">The optional serialization of the cryptographic keys. Default is 'raw'.</param>
         /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public PublicKey(String       Value,
-                         String?      Algorithm       = "secp256r1",
-                         String?      Serialization   = "raw",
-                         String?      Encoding        = "base64",
-                         CustomData?  CustomData      = null)
+        public PublicKey(Byte[]                Value,
+                         CryptoAlgorithm?      Algorithm       = null,
+                         CryptoSerialization?  Serialization   = null,
+                         CryptoEncoding?       Encoding        = null,
+                         CustomData?           CustomData      = null)
 
             : base(CustomData)
 
         {
 
             this.Value               = Value;
-            this.Algorithm           = Algorithm     ?? "secp256r1";
-            this.Serialization       = Serialization ?? "raw";
-            this.Encoding            = Encoding      ?? "base64";
+            this.Algorithm           = Algorithm     ?? CryptoAlgorithm.    secp256r1;
+            this.Serialization       = Serialization ?? CryptoSerialization.raw;
+            this.Encoding            = Encoding      ?? CryptoEncoding.     BASE64;
 
             unchecked
             {
@@ -127,24 +127,32 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given text representation of a cryptographic public key.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
-        public static PublicKey Parse(String       Text,
-                                      String?      Algorithm       = null, // "secp256r1"
-                                      String?      Serialization   = null, // "raw",
-                                      String?      Encoding        = null, // "base64",
-                                      CustomData?  CustomData      = null)
+        public static PublicKey Parse(String                Text,
+                                      CryptoAlgorithm?      Algorithm       = null,
+                                      CryptoSerialization?  Serialization   = null,
+                                      CryptoEncoding?       Encoding        = null,
+                                      CustomData?           CustomData      = null)
         {
 
-            if (TryParse(Text, out var publicKey, out var errorResponse))
+            if (TryParse(Text,
+                         out var publicKey,
+                         out var errorResponse,
+                         Algorithm,
+                         Serialization,
+                         Encoding,
+                         CustomData))
+            {
                 return publicKey;
+            }
 
-            throw new ArgumentException("The given text representation of a public key is invalid!",
+            throw new ArgumentException("The given text representation of a public key is invalid: " + errorResponse,
                                         nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse    (Text, out PublicKey, out ErrorResponse, Algorithm = null, Serialization = null, Encoding = null, ...)
+        #region (static) TryParse    (Text, out PublicKey, out ErrorResponse, Algorithm = secp256r1, Serialization = raw, Encoding = base64, ...)
 
         /// <summary>
         /// Parse the given text representation of a cryptographic public key.
@@ -153,9 +161,9 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean TryParse(String                               Text,
                                        [NotNullWhen(true)]  out PublicKey?  PublicKey,
                                        [NotNullWhen(false)] out String?     ErrorResponse,
-                                       String?                              Algorithm       = null, // "secp256r1"
-                                       String?                              Serialization   = null, // "raw",
-                                       String?                              Encoding        = null, // "base64",
+                                       CryptoAlgorithm?                     Algorithm       = null,
+                                       CryptoSerialization?                 Serialization   = null,
+                                       CryptoEncoding?                      Encoding        = null,
                                        CustomData?                          CustomData      = null)
         {
 
@@ -165,7 +173,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (Algorithm.IsNotNullOrEmpty())
             {
 
-                var ecParameters = ECNamedCurveTable.GetByName(Algorithm);
+                var ecParameters = ECNamedCurveTable.GetByName((Algorithm ?? CryptoAlgorithm.secp256r1).ToString());
                 if (ecParameters is null)
                 {
                     ErrorResponse = $"The given cryptographic algorithm '{Algorithm}' is unknown!";
@@ -199,7 +207,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
 
             PublicKey = new PublicKey(
-                            Text,
+                            Text.FromBase64(),
                             Algorithm,
                             Serialization,
                             Encoding,
@@ -226,8 +234,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(JSON,
                          out var publicKey,
                          out var errorResponse,
-                         CustomPublicKeyParser) &&
-                publicKey is not null)
+                         CustomPublicKeyParser))
             {
                 return publicKey;
             }
@@ -281,7 +288,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (!JSON.ParseMandatoryText("value",
                                              "public key value",
-                                             out String Value,
+                                             out String? Value,
                                              out ErrorResponse))
                 {
                     return false;
@@ -291,19 +298,43 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Algorithm         [optional]
 
-                var Algorithm      = JSON.GetString("algorithm");
+                if (JSON.ParseOptional("algorithm",
+                                       "crypto algorithm",
+                                       CryptoAlgorithm.TryParse,
+                                       out CryptoAlgorithm Algorithm,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
                 #endregion
 
                 #region Serialization     [optional]
 
-                var Serialization  = JSON.GetString("serialization");
+                if (JSON.ParseOptional("serialization",
+                                       "crypto serialization",
+                                       CryptoSerialization.TryParse,
+                                       out CryptoSerialization Serialization,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
                 #endregion
 
                 #region Encoding          [optional]
 
-                var Encoding       = JSON.GetString("encoding");
+                if (JSON.ParseOptional("encoding",
+                                       "crypto encoding",
+                                       CryptoEncoding.TryParse,
+                                       out CryptoEncoding Encoding,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
                 #endregion
 
@@ -323,7 +354,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 PublicKey = new PublicKey(
-                                Value,
+                                Value.FromBase64(),
                                 Algorithm,
                                 Serialization,
                                 Encoding,
@@ -361,19 +392,19 @@ namespace cloud.charging.open.protocols.WWCP
 
             var json = JSONObject.Create(
 
-                                 new JProperty("value",           Value),
+                                 new JProperty("value",           Encoding.Encode(Value)),
 
-                           Algorithm.    Equals("secp256r1", StringComparison.OrdinalIgnoreCase)
+                           Algorithm     == CryptoAlgorithm.    secp256r1
                                ? null
-                               : new JProperty("algorithm",       Algorithm),
+                               : new JProperty("algorithm",       Algorithm. ToString()),
 
-                           Serialization.Equals("raw",       StringComparison.OrdinalIgnoreCase)
+                           Serialization == CryptoSerialization.raw
                                ? null
                                : new JProperty("serialization",   Serialization),
 
-                           Encoding.     Equals("base64",    StringComparison.OrdinalIgnoreCase)
+                           Encoding      == CryptoEncoding.     BASE64
                                ? null
-                               : new JProperty("encoding",        Encoding),
+                               : new JProperty("encoding",        Encoding.  ToString()),
 
                            CustomData is not null
                                ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))
@@ -398,11 +429,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             => new (
 
-                   new String(Value.ToCharArray()),
+                   (Byte[]) Value.Clone(),
 
-                   Algorithm     is not null ? new String(Algorithm.    ToCharArray()) : null,
-                   Serialization is not null ? new String(Serialization.ToCharArray()) : null,
-                   Encoding      is not null ? new String(Encoding.     ToCharArray()) : null,
+                   Algorithm.    Clone,
+                   Serialization.Clone,
+                   Encoding.     Clone,
 
                    CustomData
 
@@ -481,12 +512,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             => PublicKey is not null &&
 
-               String.Equals(Value,         PublicKey.Value,         StringComparison.Ordinal)           &&
-               String.Equals(Algorithm,     PublicKey.Algorithm,     StringComparison.OrdinalIgnoreCase) &&
-               String.Equals(Serialization, PublicKey.Serialization, StringComparison.OrdinalIgnoreCase) &&
-               String.Equals(Encoding,      PublicKey.Encoding,      StringComparison.OrdinalIgnoreCase) &&
-
-               base.  Equals(PublicKey);
+               Value.        SequenceEqual(PublicKey.Value)         &&
+               Algorithm.    Equals       (PublicKey.Algorithm)     &&
+               Serialization.Equals       (PublicKey.Serialization) &&
+               Encoding.     Equals       (PublicKey.Encoding)      &&
+               base.         Equals       (PublicKey);
 
         #endregion
 
@@ -511,7 +541,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => Value;
+            => Value.ToBase64();
 
         #endregion
 

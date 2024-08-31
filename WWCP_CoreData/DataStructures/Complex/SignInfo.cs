@@ -210,14 +210,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) GenerateKeys(Algorithm = secp256r1)
 
-        public static SignInfo? GenerateKeys(String?                              Algorithm     = "secp256r1",
+        public static SignInfo? GenerateKeys(CryptoAlgorithm?                     Algorithm     = null,
                                              Func<ISignableMessage, String>?      Name          = null,
                                              Func<ISignableMessage, I18NString>?  Description   = null,
                                              Func<ISignableMessage, DateTime>?    Timestamp     = null)
 
-            => KeyPair.GenerateKeys(Algorithm)?.ToSignInfo2(Name,
-                                                            Description,
-                                                            Timestamp);
+            => KeyPair.GenerateKeys(Algorithm ?? CryptoAlgorithm.secp256r1)?.
+                       ToSignInfo2 (Name,
+                                    Description,
+                                    Timestamp);
 
         #endregion
 
@@ -448,19 +449,19 @@ namespace cloud.charging.open.protocols.WWCP
 
             var json = JSONObject.Create(
 
-                                 new JProperty("private",         PrivateKeyBytes),
-                                 new JProperty("public",          PublicKeyBytes),
+                                 new JProperty("private",         Encoding.Encode(PrivateKeyBytes)),
+                                 new JProperty("public",          Encoding.Encode(PublicKeyBytes)),
 
-                           Algorithm.    HasValue && Algorithm.    Value != CryptoAlgorithm.    secp256r1
-                               ? new JProperty("algorithm",       Algorithm)
+                           Algorithm     != CryptoAlgorithm.    secp256r1
+                               ? new JProperty("algorithm",       Algorithm.    ToString())
                                : null,
 
-                           Serialization.HasValue && Serialization.Value != CryptoSerialization.raw
-                               ? new JProperty("serialization",   Serialization)
+                           Serialization != CryptoSerialization.raw
+                               ? new JProperty("serialization",   Serialization.ToString())
                                : null,
 
-                           Encoding.     HasValue && Encoding.     Value != CryptoEncoding.     BASE64
-                               ? new JProperty("encoding",        Encoding)
+                           Encoding      != CryptoEncoding.     BASE64
+                               ? new JProperty("encoding",        Encoding.     ToString())
                                : null,
 
                            SignerName  is not null && SignableMessage is not null

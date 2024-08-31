@@ -337,7 +337,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return PIN.                        Value.CompareTo(AAuthentication.PIN.                        Value);
 
             if (PublicKey is not null                && AAuthentication.PublicKey is not null)
-                return PublicKey.                  Value.CompareTo(AAuthentication.PublicKey.                  Value);
+                return PublicKey.                  Value.ToHexString().CompareTo(AAuthentication.PublicKey.    Value.ToHexString());
 
             if (Certificate.                HasValue && AAuthentication.Certificate.                HasValue)
                 return Certificate.                Value.CompareTo(AAuthentication.Certificate.                Value);

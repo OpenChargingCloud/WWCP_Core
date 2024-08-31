@@ -41,55 +41,55 @@ namespace cloud.charging.open.protocols.WWCP
         /// The unique key identification, e.g. the prefix of the public key.
         /// </summary>
         [Mandatory]
-        public Byte[]                KeyId             { get; }
+        public Byte[]               KeyId             { get; }
 
         /// <summary>
         /// The signature value.
         /// </summary>
         [Mandatory]
-        public Byte[]                Value             { get; }
+        public Byte[]               Value             { get; }
 
         /// <summary>
         /// The optional crypto algorithm used to create the digital signature.
         /// </summary>
         [Optional]
-        public CryptoAlgorithm?      Algorithm         { get; }
+        public CryptoAlgorithm      Algorithm         { get; }
 
         /// <summary>
         /// The optional data representation used to generate the digital signature.
         /// </summary>
         [Optional]
-        public CryptoSigningMethod?  SigningMethod     { get; }
+        public CryptoSigningMethod  SigningMethod     { get; }
 
         /// <summary>
         /// The optional encoding method used.
         /// </summary>
         [Optional]
-        public CryptoEncoding?       Encoding          { get; }
+        public CryptoEncoding       Encoding          { get; }
 
         /// <summary>
         /// The optional name of a person or process signing the message.
         /// </summary>
         [Optional]
-        public String?               Name              { get; }
+        public String?              Name              { get; }
 
         /// <summary>
         /// The optional multi-language description or explanation for signing the message.
         /// </summary>
         [Optional]
-        public I18NString?           Description       { get; }
+        public I18NString?          Description       { get; }
 
         /// <summary>
         /// The optional timestamp of the message signature.
         /// </summary>
         [Optional]
-        public DateTime?             Timestamp         { get; }
+        public DateTime?            Timestamp         { get; }
 
 
         /// <summary>
         /// The verification status of this signature.
         /// </summary>
-        public VerificationStatus?   Status            { get; set; }
+        public VerificationStatus?  Status            { get; set; }
 
         #endregion
 
@@ -120,28 +120,28 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.KeyId           = KeyId;
-            this.Value           = Value;
-            this.Algorithm       = Algorithm;
-            this.SigningMethod   = SigningMethod;
-            this.Encoding  = Encoding;
-            this.Name            = Name;
-            this.Description     = Description;
-            this.Timestamp       = Timestamp;
+            this.KeyId          = KeyId;
+            this.Value          = Value;
+            this.Algorithm      = Algorithm     ?? CryptoAlgorithm.    secp256r1;
+            this.SigningMethod  = SigningMethod ?? CryptoSigningMethod.JSON;
+            this.Encoding       = Encoding      ?? CryptoEncoding.     BASE64;
+            this.Name           = Name;
+            this.Description    = Description;
+            this.Timestamp      = Timestamp;
 
 
             unchecked
             {
 
-                hashCode = KeyId.          GetHashCode()       * 23 ^
-                           Value.          GetHashCode()       * 19 ^
-                          (Algorithm?.     GetHashCode() ?? 0) * 17 ^
-                          (SigningMethod?. GetHashCode() ?? 0) * 13 ^
-                          (Encoding?.GetHashCode() ?? 0) * 11 ^
-                          (Name?.          GetHashCode() ?? 0) *  7 ^
-                          (Description?.   GetHashCode() ?? 0) *  5 ^
-                          (Timestamp?.     GetHashCode() ?? 0) *  3 ^
-                           base.           GetHashCode();
+                hashCode = KeyId.         GetHashCode()       * 23 ^
+                           Value.         GetHashCode()       * 19 ^
+                           Algorithm.     GetHashCode()       * 17 ^
+                           SigningMethod. GetHashCode()       * 13 ^
+                           Encoding.      GetHashCode()       * 11 ^
+                          (Name?.         GetHashCode() ?? 0) *  7 ^
+                          (Description?.  GetHashCode() ?? 0) *  5 ^
+                          (Timestamp?.    GetHashCode() ?? 0) *  3 ^
+                           base.          GetHashCode();
 
             }
 
@@ -480,19 +480,19 @@ namespace cloud.charging.open.protocols.WWCP
 
             var json = JSONObject.Create(
 
-                                 new JProperty("keyId",            KeyId.               ToBase64()),
-                                 new JProperty("value",            Value.               ToBase64()),
+                                 new JProperty("keyId",            Encoding.Encode(KeyId)),
+                                 new JProperty("value",            Encoding.Encode(Value)),
 
-                           SigningMethod.HasValue
-                               ? new JProperty("signingMethod",    SigningMethod. Value.ToString())
+                           SigningMethod != CryptoSigningMethod.JSON
+                               ? new JProperty("signingMethod",    SigningMethod.  ToString())
                                : null,
 
-                           Encoding.HasValue
-                               ? new JProperty("encodingMethod",   Encoding.Value.ToString())
+                           Encoding      != CryptoEncoding.BASE64
+                               ? new JProperty("encoding",         Encoding.       ToString())
                                : null,
 
-                           Algorithm.HasValue && Algorithm.Value != CryptoAlgorithm.secp256r1
-                               ? new JProperty("algorithm",        Algorithm.Value.ToString())
+                           Algorithm     != CryptoAlgorithm.secp256r1
+                               ? new JProperty("algorithm",        Algorithm.      ToString())
                                : null,
 
                            Name        is not null && Name.       IsNotNullOrEmpty()
@@ -570,9 +570,9 @@ namespace cloud.charging.open.protocols.WWCP
                    (Byte[]) KeyId.Clone(),
                    (Byte[]) Value.Clone(),
 
-                   Algorithm?.     Clone,
-                   SigningMethod?. Clone,
-                   Encoding?.Clone,
+                   Algorithm.    Clone,
+                   SigningMethod.Clone,
+                   Encoding.     Clone,
 
                    Name,
                    Description,
@@ -657,14 +657,9 @@ namespace cloud.charging.open.protocols.WWCP
                KeyId.SequenceEqual(Signature.KeyId) &&
                Value.SequenceEqual(Signature.Value) &&
 
-            ((!Algorithm.     HasValue && !Signature.Algorithm.     HasValue) ||
-              (Algorithm.     HasValue &&  Signature.Algorithm.     HasValue && Algorithm.     Value.Equals(Signature.Algorithm.     Value))) &&
-
-            ((!SigningMethod. HasValue && !Signature.SigningMethod. HasValue) ||
-              (SigningMethod. HasValue &&  Signature.SigningMethod. HasValue && SigningMethod. Value.Equals(Signature.SigningMethod. Value))) &&
-
-            ((!Encoding.HasValue && !Signature.Encoding.HasValue) ||
-              (Encoding.HasValue &&  Signature.Encoding.HasValue && Encoding.Value.Equals(Signature.Encoding.Value))) &&
+               Algorithm.    Equals(Signature.Algorithm)     &&
+               SigningMethod.Equals(Signature.SigningMethod) &&
+               Encoding.     Equals(Signature.Encoding)      &&
 
                // Name
                // Description

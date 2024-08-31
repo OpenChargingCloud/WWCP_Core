@@ -19,11 +19,16 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
+
 using Newtonsoft.Json.Linq;
+
+using Org.BouncyCastle.Security;
+
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
-using org.GraphDefined.Vanaheimr.Illias;
-using Org.BouncyCastle.Security;
+
+using cloud.charging.open.protocols.OCPPv2_1;
 
 #endregion
 
@@ -53,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
         public JSONLDContext  Context
             => DefaultJSONLDContext;
 
-        public Guid                             Id                          { get; }
+        public RegisterEMobilityAccountData_Id  Id                          { get; }
         public DateTime                         CreationTimestamp           { get; }
         public String                           Username                    { get; }
         public String                           Password                    { get; }
@@ -77,11 +82,11 @@ namespace cloud.charging.open.protocols.WWCP
                                             IEnumerable<Signature>?           Signatures                 = null,
                                             IEnumerable<SimpleEMailAddress>?  AdditionalEMailAddresses   = null,
                                             PhoneNumber?                      PhoneNumber                = null,
-                                            Guid?                             Id                         = null,
+                                            RegisterEMobilityAccountData_Id?  Id                         = null,
                                             DateTime?                         CreationTimestamp          = null)
         {
 
-            this.Id                        = Id                                   ?? UUIDv7.Generate();
+            this.Id                        = Id                                   ?? RegisterEMobilityAccountData_Id.Random();
             this.CreationTimestamp         = CreationTimestamp                    ?? Timestamp.Now;
             this.Username                  = Username;
             this.Password                  = Password;
@@ -160,6 +165,51 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 RegisterEMobilityAccountData = null;
+
+                #region Id                          [mandatory]
+
+                if (!JSON.ParseMandatory("@id",
+                                         "RegisterEMobilityAccountData identification",
+                                         RegisterEMobilityAccountData_Id.TryParse,
+                                         out RegisterEMobilityAccountData_Id Id,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse Context               [mandatory]
+
+                if (!JSON.ParseMandatory("@context",
+                                         "JSON-LinkedData context information",
+                                         JSONLDContext.TryParse,
+                                         out JSONLDContext Context,
+                                         out ErrorResponse))
+                {
+                    ErrorResponse = $"The JSON-LD \"@context\" information is missing!";
+                    return false;
+                }
+
+                if (Context != DefaultJSONLDContext)
+                {
+                    ErrorResponse = $"The given JSON-LD \"@context\" information '{Context}' is not supported!";
+                    return false;
+                }
+
+                #endregion
+
+                #region CreationTimestamp           [mandatory]
+
+                if (!JSON.ParseMandatory("creationTimestamp",
+                                         "creation timestamp",
+                                         out DateTime CreationTimestamp,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
 
                 #region Username                    [mandatory]
 
@@ -253,23 +303,6 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region PhoneNumber                 [optional]
-
-                //if (JSON.ParseOptional("phoneNumber",
-                //                       "phoneNumber",
-                //                       org.GraphDefined.Vanaheimr.Illias.PhoneNumber.TryParse,
-                //                       out PhoneNumber PhoneNumber,
-                //                       out ErrorResponse))
-                //{
-                //    if (ErrorResponse is not null)
-                //        return false;
-                //}
-
-                #endregion
-
-                //CreationTimestamp
-
-
 
                 RegisterEMobilityAccountData = new RegisterEMobilityAccountData(
                                                    Username,
@@ -279,8 +312,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                    Signatures,
                                                    AdditionalEMailAddresses,
                                                    PhoneNumber,
-                                                   //Id,
-                                                   //CreationTimestamp
+                                                   Id,
+                                                   CreationTimestamp
                                                );
 
                 if (CustomRegisterEMobilityAccountDataParser is not null)
@@ -318,11 +351,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             var json = JSONObject.Create(
 
-                                 new JProperty("@id",          Id.       ToString()),
+                                 new JProperty("@id",                        Id.               ToString()),
 
                            Embedded
                                ? null
-                               : new JProperty("@context",     Context),
+                               : new JProperty("@context",                   Context.          ToString()),
 
                                  new JProperty("creationTimestamp",          CreationTimestamp.ToIso8601()),
                                  new JProperty("username",                   Username),
@@ -355,45 +388,85 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region Sign(Keys)
+
         public RegisterEMobilityAccountData Sign(IEnumerable<KeyPair> Keys)
         {
 
-            var cc = new Newtonsoft.Json.Converters.IsoDateTimeConverter {
+            var signatures = new List<Signature>();
+
+            var cc    = new Newtonsoft.Json.Converters.IsoDateTimeConverter {
                 DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ"
             };
 
-            var json1       = JObject.Parse(ToJSON(Embedded: false).ToString(Newtonsoft.Json.Formatting.None, cc));
+            var json1 = JObject.Parse(ToJSON(Embedded: true).ToString(Newtonsoft.Json.Formatting.None, cc));
             json1.Remove("signatures");
 
             foreach (var key in Keys)
             {
 
+                if (key.PrivateKey is not null)
+                {
 
-                var sha512hash = SHA512.HashData(json1.ToString(Newtonsoft.Json.Formatting.None, cc).ToUTF8Bytes());
-                var blockSize = 64;
+                    Byte[] hash;
+                    Byte   blockSize;
 
-                //var signer = SignerUtilities.GetSigner("NONEwithECDSA");
-                //signer.Init(true, PrivateKey);
-                //signer.BlockUpdate(sha512hash, 0, blockSize);
+                    switch (key.Algorithm.ToString())
+                    {
 
-                //signatures.Add(new ECCSignature(Name,
-                //                                PublicKey,
-                //                                EMailAddress,
-                //                                WWW,
-                //                                signer.GenerateSignature(),
-                //                                NotBefore,
-                //                                NotAfter,
-                //                                HashingAlgorithm,
-                //                                EncryptionAlgorithm,
-                //                                Encoding,
-                //                                this));
+                        case "secp256r1":
+                            hash       = SHA256.HashData(json1.ToString(Newtonsoft.Json.Formatting.None, cc).ToUTF8Bytes());
+                            blockSize  = 32;
+                            break;
+
+                        case "secp384r1":
+                            hash       = SHA384.HashData(json1.ToString(Newtonsoft.Json.Formatting.None, cc).ToUTF8Bytes());
+                            blockSize  = 48;
+                            break;
+
+                        case "secp521r1":
+                            hash       = SHA512.HashData(json1.ToString(Newtonsoft.Json.Formatting.None, cc).ToUTF8Bytes());
+                            blockSize  = 64;
+                            break;
+
+                        default:
+                            throw new Exception("Unknown key algorithm: " + key.Algorithm);
+
+                    }
+
+                    var signer = SignerUtilities.GetSigner("NONEwithECDSA");
+                    signer.Init(true, key.PrivateKey);
+                    signer.BlockUpdate(hash, 0, blockSize);
+
+                    signatures.Add(
+                        new Signature(
+                            key.PublicKeyBytes,
+                            signer.GenerateSignature(),
+                            key.Algorithm,
+                            CryptoSigningMethod.JSON,
+                            CryptoEncoding.BASE64
+                        )
+                    );
+
+                }
 
             }
 
-            return this;
-
+            return new RegisterEMobilityAccountData(
+                       Username,
+                       Password,
+                       EMailAddress,
+                       PublicKeys,
+                       signatures,
+                       AdditionalEMailAddresses,
+                       PhoneNumber,
+                       Id,
+                       CreationTimestamp
+                   );
 
         }
+
+        #endregion
 
 
         #region Operator overloading

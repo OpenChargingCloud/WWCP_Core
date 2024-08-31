@@ -48,48 +48,48 @@ namespace cloud.charging.open.protocols.WWCP
         /// The cryptographic public key.
         /// </summary>
         [Mandatory]
-        public   Byte[]                   PublicKeyBytes                { get; }
+        public  Byte[]                   PublicKeyBytes        { get; }
 
         /// <summary>
         /// The optional cryptographic private key.
         /// </summary>
         [Optional]
-        public   Byte[]                   PrivateKeyBytes               { get; }
+        public  Byte[]                   PrivateKeyBytes       { get; }
 
         /// <summary>
         /// The optional cryptographic algorithm of the keys. Default is 'secp256r1'.
         /// </summary>
         [Optional]
-        public   CryptoAlgorithm?         Algorithm             { get; }
+        public  CryptoAlgorithm          Algorithm             { get; }
 
         /// <summary>
         /// The optional serialization of the cryptographic keys. Default is 'raw'.
         /// </summary>
         [Optional]
-        public   CryptoSerialization?     Serialization         { get; }
+        public  CryptoSerialization      Serialization         { get; }
 
         /// <summary>
         /// The optional encoding of the cryptographic keys. Default is 'base64'.
         /// </summary>
         [Optional]
-        public   CryptoEncoding?          Encoding              { get; }
+        public  CryptoEncoding           Encoding              { get; }
 
 
-        public   X9ECParameters           ECParameters          { get; }
+        public  X9ECParameters?          ECParameters          { get; }
 
-        public   ECDomainParameters       ECDomainParameters    { get; }
-
-
-        internal ECPrivateKeyParameters?  PrivateKey            { get; }
-
-        internal ECPublicKeyParameters    PublicKey             { get; }
+        public  ECDomainParameters?      ECDomainParameters    { get; }
 
 
-        public Byte[] PublicKeyASN1
-            => SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(PublicKey).ToAsn1Object().GetEncoded();
+        public  ECPrivateKeyParameters?  PrivateKey            { get; }
 
-        public Byte[] PrivateKeyASN1
-            => PrivateKeyInfoFactory.CreatePrivateKeyInfo(PrivateKey).ToAsn1Object().GetEncoded();
+        public  ECPublicKeyParameters    PublicKey             { get; }
+
+
+        public  Byte[] PublicKeyASN1
+            => SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(PublicKey). ToAsn1Object().GetEncoded();
+
+        public  Byte[] PrivateKeyASN1
+            => PrivateKeyInfoFactory.      CreatePrivateKeyInfo      (PrivateKey).ToAsn1Object().GetEncoded();
 
         #endregion
 
@@ -117,13 +117,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.PublicKeyBytes              = Public;
-            this.PrivateKeyBytes             = Private ?? [];
-            this.Algorithm           = Algorithm;
-            this.Serialization       = Serialization;
-            this.Encoding            = Encoding;
+            this.PublicKeyBytes      = Public;
+            this.PrivateKeyBytes     = Private       ?? [];
+            this.Algorithm           = Algorithm     ?? CryptoAlgorithm.    secp256r1;
+            this.Serialization       = Serialization ?? CryptoSerialization.raw;
+            this.Encoding            = Encoding      ?? CryptoEncoding.     BASE64;
 
-            this.ECParameters        = ECNamedCurveTable.GetByName(this.Algorithm?.ToString() ?? "secp256r1");
+            this.ECParameters        = ECNamedCurveTable.GetByName(this.Algorithm.ToString());
 
             if (this.ECParameters is null)
                 throw new ArgumentException("The given cryptographic algorithm is unknown!", nameof(Algorithm));
@@ -182,12 +182,12 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                hashCode = this.PublicKeyBytes.       GetHashCode()       * 13 ^
-                           this.PrivateKeyBytes.      GetHashCode()       * 11 ^
-                          (this.Algorithm?.   GetHashCode() ?? 0) *  7 ^
-                           this.Serialization.GetHashCode()       *  5 ^
-                          (this.Encoding?.    GetHashCode() ?? 0) *  3 ^
-                           base.              GetHashCode();
+                hashCode = this.PublicKeyBytes. GetHashCode() * 13 ^
+                           this.PrivateKeyBytes.GetHashCode() * 11 ^
+                           this.Algorithm.      GetHashCode() *  7 ^
+                           this.Serialization.  GetHashCode() *  5 ^
+                           this.Encoding.       GetHashCode() *  3 ^
+                           base.                GetHashCode();
 
             }
 
@@ -219,25 +219,22 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.PublicKey           = PublicKey;
-            this.PublicKeyBytes      = PublicKeyBytes;
-            this.PrivateKey          = PrivateKey;
-            this.PrivateKeyBytes     = PrivateKeyBytes ?? [];
-            this.Algorithm           = Algorithm;
-            this.Serialization       = Serialization;
-            this.Encoding            = Encoding;
-
-        
-
+            this.PublicKey        = PublicKey;
+            this.PublicKeyBytes   = PublicKeyBytes;
+            this.PrivateKey       = PrivateKey;
+            this.PrivateKeyBytes  = PrivateKeyBytes ?? [];
+            this.Algorithm        = Algorithm       ?? CryptoAlgorithm.    secp256r1;
+            this.Serialization    = Serialization   ?? CryptoSerialization.raw;
+            this.Encoding         = Encoding        ?? CryptoEncoding.     BASE64;
 
             unchecked
             {
 
-                hashCode = this.PublicKeyBytes. GetHashCode()       * 13 ^
-                           this.PrivateKeyBytes.GetHashCode()       * 11 ^
-                          (this.Algorithm?.     GetHashCode() ?? 0) *  7 ^
-                           this.Serialization.  GetHashCode()       *  5 ^
-                          (this.Encoding?.      GetHashCode() ?? 0) *  3 ^
+                hashCode = this.PublicKeyBytes. GetHashCode() * 13 ^
+                           this.PrivateKeyBytes.GetHashCode() * 11 ^
+                           this.Algorithm.      GetHashCode() *  7 ^
+                           this.Serialization.  GetHashCode() *  5 ^
+                           this.Encoding.       GetHashCode() *  3 ^
                            base.                GetHashCode();
 
             }
@@ -257,10 +254,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) GenerateKeys(Algorithm = secp256r1)
 
-        public static KeyPair? GenerateKeys(String? Algorithm = "secp256r1")
+        public static KeyPair? GenerateKeys(CryptoAlgorithm? Algorithm = null)
         {
 
-            var ecParameters  = ECNamedCurveTable. GetByName(Algorithm ?? "secp256r1");
+            var ecParameters  = ECNamedCurveTable. GetByName((Algorithm ?? CryptoAlgorithm.secp256r1).ToString());
 
             if (ecParameters is null)
                 return null;
@@ -281,8 +278,9 @@ namespace cloud.charging.open.protocols.WWCP
             var keyPair = g.GenerateKeyPair();
 
             return new KeyPair(
-                       (keyPair.Public  as ECPublicKeyParameters)?. Q.GetEncoded() ?? [],
-                       (keyPair.Private as ECPrivateKeyParameters)?.D.ToByteArray()
+                       Public:    (keyPair.Public  as ECPublicKeyParameters)?. Q.GetEncoded() ?? [],
+                       Private:   (keyPair.Private as ECPrivateKeyParameters)?.D.ToByteArray(),
+                       Algorithm:  Algorithm
                    );
 
         }
@@ -478,23 +476,23 @@ namespace cloud.charging.open.protocols.WWCP
 
             var json = JSONObject.Create(
 
-                                 new JProperty("private",         PrivateKeyBytes),
-                                 new JProperty("public",          PublicKeyBytes),
+                                 new JProperty("private",         Encoding.Encode(PrivateKeyBytes)),
+                                 new JProperty("public",          Encoding.Encode(PublicKeyBytes)),
 
-                           Algorithm.    HasValue && Algorithm.    Value != CryptoAlgorithm.secp256r1
-                               ? new JProperty("algorithm",       Algorithm.Value.ToString())
+                           Algorithm     != CryptoAlgorithm.secp256r1
+                               ? new JProperty("algorithm",       Algorithm.    ToString())
                                : null,
 
-                           Serialization.HasValue && Serialization.Value != CryptoSerialization.raw
-                               ? new JProperty("serialization",   Serialization)
+                           Serialization != CryptoSerialization.raw
+                               ? new JProperty("serialization",   Serialization.ToString())
                                : null,
 
-                           Encoding.     HasValue && Encoding.     Value != CryptoEncoding.BASE64
-                               ? new JProperty("encoding",        Encoding. Value.ToString())
+                           Encoding      != CryptoEncoding.BASE64
+                               ? new JProperty("encoding",        Encoding.     ToString())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData.   ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -519,9 +517,9 @@ namespace cloud.charging.open.protocols.WWCP
                    (Byte[]) PrivateKeyBytes.Clone(),
                    (Byte[]) PublicKeyBytes. Clone(),
 
-                   Algorithm?.    Clone,
-                   Serialization?.Clone,
-                   Encoding?.     Clone,
+                   Algorithm.    Clone,
+                   Serialization.Clone,
+                   Encoding.     Clone,
 
                    CustomData
 
@@ -538,15 +536,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PrivateKey">A text representation of a private key.</param>
         /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the private key. [default: secp256r1]</param>
-        public static KeyPair? ParsePrivateKey(String   PrivateKey,
-                                               String?  Serialization   = "base64",
-                                               String?  Algorithm       = "secp256r1")
+        public static KeyPair? ParsePrivateKey(String                PrivateKey,
+                                               CryptoAlgorithm?      Algorithm       = null,
+                                               CryptoSerialization?  Serialization   = null,
+                                               CryptoEncoding?       Encoding        = null)
         {
 
             if (TryParsePrivateKey(PrivateKey,
                                    out var keyPair,
+                                   Algorithm,
                                    Serialization,
-                                   Algorithm))
+                                   Encoding))
             {
                 return keyPair;
             }
@@ -566,10 +566,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="KeyPair">The parsed key pair.</param>
         /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the private key. [default: secp256r1]</param>
-        public static Boolean TryParsePrivateKey(String        PrivateKey,
-                                                 out KeyPair?  KeyPair,
-                                                 String?       Serialization   = "base64",
-                                                 String?       Algorithm       = "secp256r1")
+        public static Boolean TryParsePrivateKey(String                PrivateKey,
+                                                 out KeyPair?          KeyPair,
+                                                 CryptoAlgorithm?      Algorithm       = null,
+                                                 CryptoSerialization?  Serialization   = null,
+                                                 CryptoEncoding?       Encoding        = null)
         {
 
             KeyPair = null;
@@ -578,7 +579,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                switch (Serialization)
+                switch (Encoding?.ToString() ?? "")
                 {
 
                     case "base64":
@@ -586,7 +587,9 @@ namespace cloud.charging.open.protocols.WWCP
                         break;
 
                     default:
-                        return false;
+                        privateKeyBytes = PrivateKey.FromBase64();
+                        break;
+                        //return false;
 
                 }
 
@@ -596,8 +599,9 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
             }
 
-            var ecParameters      = ECNamedCurveTable.GetByName(Algorithm ?? "secp256r1")
-                                      ?? throw new ArgumentException($"Invalid algorithm: {Algorithm}", nameof(Algorithm));
+            var ecParameters      = ECNamedCurveTable.GetByName((Algorithm ?? CryptoAlgorithm.secp256r1).ToString());
+            if (ecParameters is null)
+                return false;
 
             var d                 = new BigInteger(
                                         1,
@@ -629,7 +633,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) ParsePublicKey     (PublicKey,              Serialization = "base64", Algorithm = "secp256r1")
+        #region (static) ParsePublicKey     (PublicKey,              Algorithm = secp256r1, Serialization = raw, Encoding = base64)
 
         /// <summary>
         /// Parse the given public key.
@@ -637,15 +641,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PublicKey">A text representation of a public key.</param>
         /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the public key. [default: secp256r1]</param>
-        public static KeyPair? ParsePublicKey(String   PublicKey,
-                                              String?  Serialization   = "base64",
-                                              String?  Algorithm       = "secp256r1")
+        public static KeyPair? ParsePublicKey(String                PublicKey,
+                                              CryptoAlgorithm?      Algorithm       = null,
+                                              CryptoSerialization?  Serialization   = null,
+                                              CryptoEncoding?       Encoding        = null)
         {
 
             if (TryParsePublicKey(PublicKey,
                                   out var keyPair,
+                                  Algorithm,
                                   Serialization,
-                                  Algorithm))
+                                  Encoding))
             {
                 return keyPair;
             }
@@ -656,19 +662,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParsePublicKey  (PublicKey, out KeyPair, Serialization = "base64", Algorithm = "secp256r1")
+        #region (static) TryParsePublicKey  (PublicKey, out KeyPair, Algorithm = secp256r1, Serialization = raw, Encoding = base64)
 
         /// <summary>
         /// Try to parse the given public key.
         /// </summary>
         /// <param name="PublicKey">A text representation of a public key.</param>
         /// <param name="KeyPair">The parsed key pair.</param>
-        /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the public key. [default: secp256r1]</param>
-        public static Boolean TryParsePublicKey(String        PublicKey,
-                                                out KeyPair?  KeyPair,
-                                                String?       Serialization   = "base64",
-                                                String?       Algorithm       = "secp256r1")
+        /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
+        /// <param name="Encoding"></param>
+        public static Boolean TryParsePublicKey(String                PublicKey,
+                                                out KeyPair?          KeyPair,
+                                                CryptoAlgorithm?      Algorithm       = null,
+                                                CryptoSerialization?  Serialization   = null,
+                                                CryptoEncoding?       Encoding        = null)
         {
 
             KeyPair = null;
@@ -677,7 +685,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                switch (Serialization)
+                switch (Encoding?.ToString() ?? "")
                 {
 
                     case "base64":
@@ -685,7 +693,9 @@ namespace cloud.charging.open.protocols.WWCP
                         break;
 
                     default:
-                        return false;
+                        publicKeyBytes = PublicKey.FromBase64();
+                        break;
+                        //return false;
 
                 }
 
@@ -696,11 +706,9 @@ namespace cloud.charging.open.protocols.WWCP
             }
 
 
-            var ecParameters = ECNamedCurveTable.GetByName(Algorithm ?? "secp256r1");
-
+            var ecParameters = ECNamedCurveTable.GetByName((Algorithm ?? CryptoAlgorithm.secp256r1).ToString());
             if (ecParameters is null)
                 return false;
-                //throw new ArgumentException("The given cryptographic algorithm is unknown!", nameof(Algorithm));
 
             var ecDomainParameters  = new ECDomainParameters(
                                           ecParameters.Curve,
@@ -732,35 +740,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            #region Try to parse the private key
-
-            //if (this.PrivateKeyBytes.Length > 0)
-            //{
-
-            //    try
-            //    {
-
-            //        this.PrivateKey = new ECPrivateKeyParameters(
-            //                              new BigInteger(this.PrivateKeyBytes),
-            //                              ECDomainParameters
-            //                          );
-
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        throw new ArgumentException("The given private key is invalid!", nameof(PrivateKeyBytes), e);
-            //    }
-
-            //}
-
-            #endregion
-
 
             KeyPair = new KeyPair(
                           publicKey,
                           publicKeyBytes
-                          //q.GetEncoded(false),
-                          //privateKeyParams.D.ToByteArray()
                       );
 
             return true;
@@ -769,6 +752,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
+        public PublicKey ToPublicKey()
+
+            => new (PublicKeyBytes,
+                    Algorithm,
+                    Serialization,
+                    Encoding,
+                    CustomData);
 
 
         #region Operator overloading
@@ -843,17 +834,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                PrivateKeyBytes.SequenceEqual(KeyPair.PrivateKeyBytes) &&
                PublicKeyBytes. SequenceEqual(KeyPair.PublicKeyBytes)  &&
-
-            ((!Algorithm.    HasValue && !KeyPair.Algorithm.    HasValue) ||
-              (Algorithm.    HasValue &&  KeyPair.Algorithm.    HasValue && Algorithm.    Value.Equals(KeyPair.Algorithm.    Value))) &&
-
-            ((!Serialization.HasValue && !KeyPair.Serialization.HasValue) ||
-              (Serialization.HasValue &&  KeyPair.Serialization.HasValue && Serialization.Value.Equals(KeyPair.Serialization.Value))) &&
-
-            ((!Encoding.     HasValue && !KeyPair.Encoding.     HasValue) ||
-              (Encoding.     HasValue &&  KeyPair.Encoding.     HasValue && Encoding.     Value.Equals(KeyPair.Encoding.     Value))) &&
-
-               base.  Equals(KeyPair);
+               Algorithm.      Equals       (KeyPair.Algorithm)       &&
+               Serialization.  Equals       (KeyPair.Serialization)   &&
+               Encoding.       Equals       (KeyPair.Encoding)        &&
+               base.           Equals       (KeyPair);
 
         #endregion
 
