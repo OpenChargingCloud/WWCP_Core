@@ -29,6 +29,9 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 
 using cloud.charging.open.protocols.OCPPv2_1;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Sec;
+using Org.BouncyCastle.Crypto.Parameters;
 
 #endregion
 
@@ -393,14 +396,21 @@ namespace cloud.charging.open.protocols.WWCP
         public RegisterEMobilityAccountData Sign(IEnumerable<KeyPair> Keys)
         {
 
-            var signatures = new List<Signature>();
+            var signatures    = new List<Signature>();
+            var cryptoHashes  = new Dictionary<Int32, Byte[]>();
 
-            var cc    = new Newtonsoft.Json.Converters.IsoDateTimeConverter {
-                DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ"
-            };
+            var jsonCopy      = JObject.Parse(
+                                    ToJSON(
+                                        Embedded: false
+                                    ).
+                                    ToString(
+                                        Formatting.None,
+                                        SignableMessage.DefaultJSONConverters
+                                    )
+                                );
+            jsonCopy.Remove("signatures");
 
-            var json1 = JObject.Parse(ToJSON(Embedded: true).ToString(Newtonsoft.Json.Formatting.None, cc));
-            json1.Remove("signatures");
+            var plainText     = jsonCopy.ToString(Formatting.None, SignableMessage.DefaultJSONConverters);
 
             foreach (var key in Keys)
             {
@@ -408,35 +418,27 @@ namespace cloud.charging.open.protocols.WWCP
                 if (key.PrivateKey is not null)
                 {
 
-                    Byte[] hash;
-                    Byte   blockSize;
+                    var blockSize = key.Algorithm switch {
+                                        var s when s == CryptoAlgorithm.secp256r1  => 32,
+                                        var s when s == CryptoAlgorithm.secp384r1  => 48,
+                                        var s when s == CryptoAlgorithm.secp521r1  => 64,
+                                        _                                          => throw new Exception("Unknown key algorithm: " + key.Algorithm)
+                                    };
 
-                    switch (key.Algorithm.ToString())
-                    {
-
-                        case "secp256r1":
-                            hash       = SHA256.HashData(json1.ToString(Newtonsoft.Json.Formatting.None, cc).ToUTF8Bytes());
-                            blockSize  = 32;
-                            break;
-
-                        case "secp384r1":
-                            hash       = SHA384.HashData(json1.ToString(Newtonsoft.Json.Formatting.None, cc).ToUTF8Bytes());
-                            blockSize  = 48;
-                            break;
-
-                        case "secp521r1":
-                            hash       = SHA512.HashData(json1.ToString(Newtonsoft.Json.Formatting.None, cc).ToUTF8Bytes());
-                            blockSize  = 64;
-                            break;
-
-                        default:
-                            throw new Exception("Unknown key algorithm: " + key.Algorithm);
-
-                    }
+                    if (!cryptoHashes.ContainsKey(blockSize))
+                        cryptoHashes.TryAdd(
+                            blockSize,
+                            key.Algorithm switch {
+                                var s when s == CryptoAlgorithm.secp256r1  => SHA256.HashData(plainText.ToUTF8Bytes()),
+                                var s when s == CryptoAlgorithm.secp384r1  => SHA384.HashData(plainText.ToUTF8Bytes()),
+                                var s when s == CryptoAlgorithm.secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                _                                          => throw new Exception("Unknown key algorithm: " + key.Algorithm)
+                            }
+                        );
 
                     var signer = SignerUtilities.GetSigner("NONEwithECDSA");
                     signer.Init(true, key.PrivateKey);
-                    signer.BlockUpdate(hash, 0, blockSize);
+                    signer.BlockUpdate(cryptoHashes[blockSize], 0, blockSize);
 
                     signatures.Add(
                         new Signature(
@@ -463,6 +465,98 @@ namespace cloud.charging.open.protocols.WWCP
                        Id,
                        CreationTimestamp
                    );
+
+        }
+
+        #endregion
+
+        #region Verify(JSONData,   Context, out ErrorResponse, VerificationRuleAction = VerificationRuleActions.VerifyAll)
+
+        /// <summary>
+        /// Verify the given JSON data structure.
+        /// </summary>
+        /// <param name="JSONData">The JSON representation of the signable/verifiable data.</param>
+        /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
+        public Boolean Verify(JObject        JSONData,
+                              JSONLDContext  Context,
+                              out String?    ErrorResponse)
+        {
+
+            ErrorResponse = null;
+
+            var signatures = JSONData["signatures"] as JArray;
+            if (signatures is null || !signatures.Any())
+            {
+                ErrorResponse = "No digital signatures found!";
+                return false;
+            }
+
+            try
+            {
+
+                //if (JSONData["@context"] is null)
+                //    JSONData.AddFirst(new JProperty("@context", Context.ToString()));
+
+                var jsonCopy      = JObject.Parse(
+                                        JSONData.ToString(
+                                            Formatting.None,
+                                            SignableMessage.DefaultJSONConverters
+                                        )
+                                    );
+
+                jsonCopy.Remove("signatures");
+
+                var plainText     = jsonCopy.ToString(Formatting.None, SignableMessage.DefaultJSONConverters);
+                var cryptoHashes  = new Dictionary<Int32, Byte[]>();
+
+                foreach (var signature in Signatures)
+                {
+
+                    var ecp           = signature.Algorithm switch {
+                                            var s when s == CryptoAlgorithm.secp256r1  => SecNamedCurves.GetByName("secp256r1"),
+                                            var s when s == CryptoAlgorithm.secp384r1  => SecNamedCurves.GetByName("secp384r1"),
+                                            var s when s == CryptoAlgorithm.secp521r1  => SecNamedCurves.GetByName("secp521r1"),
+                                            _                                          => throw new Exception("Unknown signature algorithm: " + signature.Algorithm)
+                    };
+
+                    var ecParams      = new ECDomainParameters   (ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
+                    var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId), ecParams);
+
+                    var blockSize     = signature.Algorithm switch {
+                                            var s when s == CryptoAlgorithm.secp256r1  => 32,
+                                            var s when s == CryptoAlgorithm.secp384r1  => 48,
+                                            var s when s == CryptoAlgorithm.secp521r1  => 64,
+                                            _                                          => throw new Exception("Unknown key algorithm: " + signature.Algorithm)
+                                        };
+
+                    if (!cryptoHashes.ContainsKey(blockSize))
+                        cryptoHashes.TryAdd(
+                            blockSize,
+                            signature.Algorithm switch {
+                                var s when s == CryptoAlgorithm.secp256r1  => SHA256.HashData(plainText.ToUTF8Bytes()),
+                                var s when s == CryptoAlgorithm.secp384r1  => SHA384.HashData(plainText.ToUTF8Bytes()),
+                                var s when s == CryptoAlgorithm.secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                _                                          => throw new Exception("Unknown signature algorithm: " + signature.Algorithm)
+                            }
+                        );
+
+                    var verifier      = SignerUtilities.GetSigner("NONEwithECDSA");
+                    verifier.Init(false, pubKeyParams);
+                    verifier.BlockUpdate(cryptoHashes[blockSize]);
+                    signature.Status  = verifier.VerifySignature(signature.Value)
+                                            ? VerificationStatus.ValidSignature
+                                            : VerificationStatus.InvalidSignature;
+
+                }
+
+                return Signatures.All(signature => signature.Status == VerificationStatus.ValidSignature);
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = e.Message;
+                return false;
+            }
 
         }
 

@@ -28,23 +28,23 @@ namespace cloud.charging.open.protocols.WWCP
     public class SignableMessage : ISignableMessage
     {
 
-        public static readonly JsonConverter[] DefaultJSONConverters  = new[] {
+        public static readonly JsonConverter[] DefaultJSONConverters  = [
                                                                             new Newtonsoft.Json.Converters.IsoDateTimeConverter {
                                                                                 DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ"
                                                                             }
-                                                                        };
+                                                                        ];
 
         public JSONLDContext           Context
             => JSONLDContext.Parse("none");
 
         public IEnumerable<KeyPair>    SignKeys
-            => Array.Empty<KeyPair>();
+            => [];
 
         public IEnumerable<SignInfo>   SignInfos
-            => Array.Empty<SignInfo>();
+            => [];
 
         public IEnumerable<Signature>  Signatures
-            => Array.Empty<Signature>();
+            => [];
 
 
         public void AddSignature(Signature Signature)
