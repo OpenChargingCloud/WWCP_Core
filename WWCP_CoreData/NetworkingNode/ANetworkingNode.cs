@@ -1046,8 +1046,10 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                 DoMaintenance(State).Wait();
         }
 
-        private async Task DoMaintenance(Object State)
+        private async Task DoMaintenance(Object? State)
         {
+
+            DebugX.LogT($"Node {Id}: Enter DoMaintenance(...)");
 
             if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
                                            ConfigureAwait(false))
@@ -1073,11 +1075,13 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                 }
             }
             else
-                DebugX.LogT("Could not aquire the maintenance tasks lock!");
+                DebugX.LogT($"Node {Id}: Could not aquire the maintenance tasks lock!");
+
+            DebugX.LogT($"Node {Id}: Exit DoMaintenance(...)");
 
         }
 
-        protected virtual async Task DoMaintenanceAsync(Object State)
+        protected virtual async Task DoMaintenanceAsync(Object? State)
         {
 
             await Task.Delay(1);

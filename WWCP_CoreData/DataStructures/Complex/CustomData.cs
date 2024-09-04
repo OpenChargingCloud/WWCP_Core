@@ -197,9 +197,19 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 try
                 {
+
+                    if (jtoken is JProperty jProp &&
+                        jProp.Name == "vendorId")
+                    {
+                        continue;
+                    }
+
                     json.Add(jtoken);
+
                 }
-                catch { }
+                catch (Exception e) {
+                    DebugX.Log("Could not serialize CustomData: " + e.Message);
+                }
             }
 
             return CustomCustomDataSerializer is not null
