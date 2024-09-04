@@ -176,6 +176,31 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region Static defaults
+
+        /// <summary>
+        /// Vendor
+        /// </summary>
+        public static UserRole_Id  Vendor     { get; } = Parse("vendor");
+
+        /// <summary>
+        /// Admin
+        /// </summary>
+        public static UserRole_Id  Admin      { get; } = Parse("admin");
+
+        /// <summary>
+        /// Support
+        /// </summary>
+        public static UserRole_Id  Support    { get; } = Parse("support");
+
+        /// <summary>
+        /// Service
+        /// </summary>
+        public static UserRole_Id  Service    { get; } = Parse("service");
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (UserRoleId1, UserRoleId2)
