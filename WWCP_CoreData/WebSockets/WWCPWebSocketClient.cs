@@ -59,9 +59,21 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #region Properties
 
+        /// <summary>
+        /// The parent networking node.
+        /// </summary>
         public INetworkingNode  NetworkingNode    { get; }
 
+        /// <summary>
+        /// The Networking Mode.
+        /// </summary>
         public NetworkingMode   NetworkingMode    { get; } = NetworkingMode.Standard;
+
+        /// <summary>
+        /// The JSON formatting to use.
+        /// </summary>
+        public Formatting       JSONFormatting    { get; set; }
+            = Formatting.None;
 
         #endregion
 
@@ -365,7 +377,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             {
 
                 var sentStatus = await SendTextMessage(
-                                           JSONMessage.ToString(Formatting.None),
+                                           JSONMessage.ToString(JSONFormatting),
                                            EventTrackingId,
                                            CancellationToken
                                        );
