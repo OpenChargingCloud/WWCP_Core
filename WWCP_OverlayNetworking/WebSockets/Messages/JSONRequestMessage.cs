@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
         /// <param name="JSONArray">The JSON array to be parsed.</param>
         /// <param name="RequestMessage">The parsed EEBus WebSocket request message.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP Web Sockets connection.</param>
+        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP WebSockets connection.</param>
         public static Boolean TryParse(JArray                                             JSONArray,
                                        [NotNullWhen(true)]  out JSONRequestMessage?  RequestMessage,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,

@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 {
 
     /// <summary>
-    /// The common interface of all EEBus HTTP Web Socket servers.
+    /// The common interface of all EEBus HTTP WebSocket servers.
     /// </summary>
     public interface IWebSocketServer : org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer
     {

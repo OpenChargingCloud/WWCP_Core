@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         EventTracking_Id   EventTrackingId      { get; }
 
         /// <summary>
-        /// The EEBus HTTP Web Socket action.
+        /// The EEBus HTTP WebSocket action.
         /// </summary>
         [Mandatory]
         String             Action               { get; }

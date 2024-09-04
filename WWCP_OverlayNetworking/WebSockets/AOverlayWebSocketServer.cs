@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="HTTPServiceName">An optional identification string for the HTTP service.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        /// <param name="Description">An optional description of this HTTP WebSocket service.</param>
         /// 
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// 
@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
 
     /// <summary>
-    /// An EEBus HTTP Web Socket server runs on a CSMS or a networking node
+    /// An EEBus HTTP WebSocket server runs on a CSMS or a networking node
     /// accepting connections from charging stations or other networking nodes
     /// to invoke EEBus commands.
     /// </summary>
@@ -620,7 +620,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="HTTPServiceName">An optional identification string for the HTTP service.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        /// <param name="Description">An optional description of this HTTP WebSocket service.</param>
         /// 
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// 
@@ -944,7 +944,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             if (networkingNodeId.HasValue)
             {
 
-                #region Store the NetworkingNodeId within the HTTP Web Socket connection
+                #region Store the NetworkingNodeId within the HTTP WebSocket connection
 
                 Connection.TryAddCustomData(
                                 networkingNodeId_WebSocketKey,
@@ -976,7 +976,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log($"{nameof(AOverlayWebSocketServer)} Closing old HTTP Web Socket connection from {oldConnection.Item1.RemoteSocket} failed: {e.Message}");
+                            DebugX.Log($"{nameof(AOverlayWebSocketServer)} Closing old HTTP WebSocket connection from {oldConnection.Item1.RemoteSocket} failed: {e.Message}");
                         }
                     }
 
@@ -1033,19 +1033,19 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             else
             {
 
-                DebugX.Log($"{nameof(AOverlayWebSocketServer)} Could not get NetworkingNodeId from HTTP Web Socket connection ({Connection.RemoteSocket}): Closing connection!");
+                DebugX.Log($"{nameof(AOverlayWebSocketServer)} Could not get NetworkingNodeId from HTTP WebSocket connection ({Connection.RemoteSocket}): Closing connection!");
 
                 try
                 {
                     await Connection.Close(
                               WebSocketFrame.ClosingStatusCode.PolicyViolation,
-                              "Could not get NetworkingNodeId from HTTP Web Socket connection!",
+                              "Could not get NetworkingNodeId from HTTP WebSocket connection!",
                               CancellationToken
                           );
                 }
                 catch (Exception e)
                 {
-                    DebugX.Log($"{nameof(AOverlayWebSocketServer)} Closing HTTP Web Socket connection ({Connection.RemoteSocket}) failed: {e.Message}");
+                    DebugX.Log($"{nameof(AOverlayWebSocketServer)} Closing HTTP WebSocket connection ({Connection.RemoteSocket}) failed: {e.Message}");
                 }
 
             }

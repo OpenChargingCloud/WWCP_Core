@@ -100,8 +100,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <summary>
         /// Create a new a network path, based on the given enumeration of networking node identifications.
         /// </summary>
-        /// <param name="NetworkingNodeIds">An optional ordered list of networking node identifications along the network path.</param>
-        public NetworkPath(IEnumerable<NetworkingNode_Id>? NetworkingNodeIds = null)
+        /// <param name="NetworkingNodeIds">An enumeration of networking node identifications along the network path.</param>
+        private NetworkPath(IEnumerable<NetworkingNode_Id>? NetworkingNodeIds = null)
         {
 
             if (NetworkingNodeIds is not null && NetworkingNodeIds.Any())
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <summary>
         /// Create a new a network path, based on the given array of networking node identifications.
         /// </summary>
-        /// <param name="NetworkingNodeIds">An optional ordered list of networking node identifications along the network path.</param>
+        /// <param name="NetworkingNodeIds">An array of networking node identifications along the network path.</param>
         public NetworkPath(params NetworkingNode_Id[] NetworkingNodeIds)
         {
 
@@ -258,15 +258,24 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #endregion
 
 
-        #region (static) From(NetworkingNodeId)
+        #region (static) From(NetworkingNodeIds)
 
         /// <summary>
-        /// Create a new network path from the given networking node identification.
+        /// Create a new network path from the given enumeration of networking node identifications.
         /// </summary>
-        /// <param name="NetworkingNodeId">A networking node identification.</param>
-        public static NetworkPath From(NetworkingNode_Id NetworkingNodeId)
+        /// <param name="NetworkingNodeIds">An enumeration of networking node identifications along the network path.</param>
+        public static NetworkPath From(IEnumerable<NetworkingNode_Id>? NetworkingNodeIds = null)
 
-            => new (NetworkingNodeId);
+            => new (NetworkingNodeIds);
+
+
+        /// <summary>
+        /// Create a new network path from the given array of networking node identifications.
+        /// </summary>
+        /// <param name="NetworkingNodeIds">An array of networking node identifications along the network path.</param>
+        public static NetworkPath From(params NetworkingNode_Id[] NetworkingNodeIds)
+
+            => new (NetworkingNodeIds);
 
         #endregion
 
@@ -528,7 +537,9 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// </summary>
         public override String ToString()
 
-            => NetworkingNodeIds.AggregateWith(", ");
+            => NetworkingNodeIds.Any()
+                   ? $"[ {NetworkingNodeIds.AggregateWith(", ")} ]"
+                   : "[]";
 
         #endregion
 

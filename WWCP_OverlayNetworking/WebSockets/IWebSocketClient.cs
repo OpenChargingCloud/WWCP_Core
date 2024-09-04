@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 {
 
     /// <summary>
-    /// The common interface of all EEBus HTTP Web Socket clients.
+    /// The common interface of all EEBus HTTP WebSocket clients.
     /// </summary>
     public interface IWebSocketClient : IHTTPClient
     {

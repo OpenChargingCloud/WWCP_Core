@@ -17,8 +17,7 @@
 
 #region Usings
 
-using System.Collections.Concurrent;
-
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -71,17 +70,36 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
 
     /// <summary>
-    /// The common interface of all WWCP HTTP Web Socket servers.
+    /// The common interface of all WWCP HTTP WebSocket servers.
     /// </summary>
     public interface IWWCPWebSocketServer : IWebSocketServer
     {
 
-        //WWCPAdapter                                       WWCPAdapter              { get; }
-        IEnumerable<NetworkingNode_Id>                    NetworkingNodeIds        { get; }
-        TimeSpan?                                         RequestTimeout           { get; set; }
+        #region Properties
 
-        //Formatting                                        JSONFormatting           { get; set; }
+        /// <summary>
+        /// The parent networking node.
+        /// </summary>
+        INetworkingNode                 NetworkingNode                { get; }
 
+        /// <summary>
+        /// The enumeration of all connected networking nodes.
+        /// </summary>
+        IEnumerable<NetworkingNode_Id>  ConnectedNetworkingNodeIds    { get; }
+
+        /// <summary>
+        /// The request timeout for messages sent by this HTTP WebSocket server.
+        /// </summary>
+        TimeSpan?                       RequestTimeout                { get; set; }
+
+        /// <summary>
+        /// The JSON formatting to use.
+        /// </summary>
+        Formatting                      JSONFormatting                { get; set; }
+
+        #endregion
+
+        #region Events
 
         /// <summary>
         /// An event sent whenever the HTTP connection switched successfully to web socket.
@@ -103,44 +121,31 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <summary>
         /// An event sent whenever a JSON message was sent.
         /// </summary>
-        event     OnWebSocketServerJSONMessageSentDelegate?         OnJSONMessageSent;
+        event     OnWebSocketServerJSONMessageSentDelegate?           OnJSONMessageSent;
 
         /// <summary>
         /// An event sent whenever a JSON message was received.
         /// </summary>
-        event     OnWebSocketServerJSONMessageReceivedDelegate?     OnJSONMessageReceived;
+        event     OnWebSocketServerJSONMessageReceivedDelegate?       OnJSONMessageReceived;
 
 
         /// <summary>
         /// An event sent whenever a binary message was sent.
         /// </summary>
-        new event OnWebSocketServerBinaryMessageSentDelegate?       OnBinaryMessageSent;
+        new event OnWebSocketServerBinaryMessageSentDelegate?         OnBinaryMessageSent;
 
         /// <summary>
         /// An event sent whenever a binary message was received.
         /// </summary>
-        new event OnWebSocketServerBinaryMessageReceivedDelegate?   OnBinaryMessageReceived;
+        new event OnWebSocketServerBinaryMessageReceivedDelegate?     OnBinaryMessageReceived;
 
-
-        //Task<SentMessageResult> SendJSONRequest         (WWCP_JSONRequestMessage          JSONRequestMessage);
-        //Task<SentMessageResult> SendJSONResponse        (WWCP_JSONResponseMessage         JSONResponseMessage);
-        //Task<SentMessageResult> SendJSONRequestError    (WWCP_JSONRequestErrorMessage     JSONRequestErrorMessage);
-        //Task<SentMessageResult> SendJSONResponseError   (WWCP_JSONResponseErrorMessage    JSONResponseErrorMessage);
-        //Task<SentMessageResult> SendJSONSendMessage     (WWCP_JSONSendMessage             JSONSendMessage);
-
-
-        //Task<SentMessageResult> SendBinaryRequest       (WWCP_BinaryRequestMessage        BinaryRequestMessage);
-        //Task<SentMessageResult> SendBinaryResponse      (WWCP_BinaryResponseMessage       BinaryResponseMessage);
-        //Task<SentMessageResult> SendBinaryRequestError  (WWCP_BinaryRequestErrorMessage   BinaryRequestErrorMessage);
-        //Task<SentMessageResult> SendBinaryResponseError (WWCP_BinaryResponseErrorMessage  BinaryResponseErrorMessage);
-        //Task<SentMessageResult> SendBinarySendMessage   (WWCP_BinarySendMessage           BinarySendMessage);
-
+        #endregion
 
 
         HTTPBasicAuthentication  AddOrUpdateHTTPBasicAuth (NetworkingNode_Id DestinationId, String            Password);
-        void                     AddStaticRouting         (NetworkingNode_Id DestinationId, NetworkingNode_Id NetworkingHubId);
+        //void                     AddStaticRouting         (NetworkingNode_Id DestinationId, NetworkingNode_Id NetworkingHubId);
         Boolean                  RemoveHTTPBasicAuth      (NetworkingNode_Id DestinationId);
-        void                     RemoveStaticRouting      (NetworkingNode_Id DestinationId, NetworkingNode_Id NetworkingHubId);
+        //void                     RemoveStaticRouting      (NetworkingNode_Id DestinationId, NetworkingNode_Id NetworkingHubId);
 
 
     }

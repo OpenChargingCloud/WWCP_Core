@@ -38,33 +38,35 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
     #region Common Connection Management
 
     /// <summary>
-    /// A delegate for logging new HTTP Web Socket connections.
+    /// A delegate for logging new HTTP WebSocket connections.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="WWCPWebSocketServer">The HTTP Web Socket server.</param>
-    /// <param name="NewConnection">The new HTTP Web Socket connection.</param>
+    /// <param name="WWCPWebSocketServer">The HTTP WebSocket server.</param>
+    /// <param name="NewConnection">The new HTTP WebSocket connection.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
-    /// <param name="SharedSubprotocols">An enumeration of shared HTTP Web Sockets subprotocols.</param>
+    /// <param name="NetworkingMode">The networking mode of the new connection.</param>
+    /// <param name="SharedSubprotocols">An enumeration of shared HTTP WebSockets subprotocols.</param>
     /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="CancellationToken">A token to cancel the processing.</param>
     public delegate Task OnNetworkingNodeNewWebSocketConnectionDelegate (DateTime                           Timestamp,
                                                                          IWWCPWebSocketServer               WWCPWebSocketServer,
                                                                          WebSocketServerConnection          NewConnection,
                                                                          NetworkingNode_Id                  NetworkingNodeId,
+                                                                         NetworkingMode?                    NetworkingMode,
                                                                          IEnumerable<String>                SharedSubprotocols,
                                                                          EventTracking_Id                   EventTrackingId,
                                                                          CancellationToken                  CancellationToken);
 
     /// <summary>
-    /// A delegate for logging a HTTP Web Socket CLOSE message.
+    /// A delegate for logging a HTTP WebSocket CLOSE message.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="WWCPWebSocketServer">The HTTP Web Socket server.</param>
-    /// <param name="Connection">The HTTP Web Socket connection to be closed.</param>
+    /// <param name="WWCPWebSocketServer">The HTTP WebSocket server.</param>
+    /// <param name="Connection">The HTTP WebSocket connection to be closed.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
     /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-    /// <param name="StatusCode">The HTTP Web Socket Closing Status Code.</param>
-    /// <param name="Reason">An optional HTTP Web Socket closing reason.</param>
+    /// <param name="StatusCode">The HTTP WebSocket Closing Status Code.</param>
+    /// <param name="Reason">An optional HTTP WebSocket closing reason.</param>
     /// <param name="CancellationToken">A token to cancel the processing.</param>
     public delegate Task OnNetworkingNodeCloseMessageReceivedDelegate   (DateTime                           Timestamp,
                                                                          IWWCPWebSocketServer               WWCPWebSocketServer,
@@ -79,8 +81,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
     /// A delegate for logging a closed TCP connection.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="WWCPWebSocketServer">The HTTP Web Socket server.</param>
-    /// <param name="Connection">The HTTP Web Socket connection to be closed.</param>
+    /// <param name="WWCPWebSocketServer">The HTTP WebSocket server.</param>
+    /// <param name="Connection">The HTTP WebSocket connection to be closed.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
     /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="Reason">An optional closing reason.</param>
@@ -491,9 +493,6 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
             wwcpWebSocketClients.Add(wwcpWebSocketClient);
 
-            //wwcpWebSocketClient.OnJSONMessageReceived   += WWCPWebSocketClient_OnJSONMessageReceived;
-            //wwcpWebSocketClient.OnBinaryMessageReceived += WWCPWebSocketClient_OnBinaryMessageReceived;
-
             var connectResponse = await wwcpWebSocketClient.Connect(
                                             EventTrackingId:      EventTrackingId ?? EventTracking_Id.New,
                                             RequestTimeout:       wwcpWebSocketClient.RequestTimeout,
@@ -709,6 +708,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                                                              webSocketServer,
                                                                              newConnection,
                                                                              networkingNodeId,
+                                                                             networkingMode,
                                                                              sharedSubprotocols,
                                                                              eventTrackingId,
                                                                              cancellationToken) => {
@@ -1049,7 +1049,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         private async Task DoMaintenance(Object? State)
         {
 
-            DebugX.LogT($"Node {Id}: Enter DoMaintenance(...)");
+            //DebugX.LogT($"Node {Id}: Enter DoMaintenance(...)");
 
             if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
                                            ConfigureAwait(false))
@@ -1077,7 +1077,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
             else
                 DebugX.LogT($"Node {Id}: Could not aquire the maintenance tasks lock!");
 
-            DebugX.LogT($"Node {Id}: Exit DoMaintenance(...)");
+            //DebugX.LogT($"Node {Id}: Exit DoMaintenance(...)");
 
         }
 

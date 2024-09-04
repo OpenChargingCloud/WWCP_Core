@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="HTTPServiceName">An optional identification string for the HTTP server.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        /// <param name="Description">An optional description of this HTTP WebSocket service.</param>
         /// 
         /// <param name="AutoStart">Start the server immediately.</param>
         public OverlayWebSocketServer AttachWebSocketServer(IEnumerable<String>                                             SupportedEEBusWebSocketSubprotocols,
@@ -810,7 +810,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region Shutdown(Message = null, Wait = true)
 
         /// <summary>
-        /// Shutdown all HTTP Web Socket listeners.
+        /// Shutdown all HTTP WebSocket listeners.
         /// </summary>
         /// <param name="Message">An optional shutdown message.</param>
         /// <param name="Wait">Wait until the server finally shutted down.</param>

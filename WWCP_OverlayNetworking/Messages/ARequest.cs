@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         public EventTracking_Id   EventTrackingId      { get; }
 
         /// <summary>
-        /// The EEBus HTTP Web Socket action.
+        /// The EEBus HTTP WebSocket action.
         /// </summary>
         [Mandatory]
         public String             Action               { get; }
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// Create a new generic EEBus request message.
         /// </summary>
         /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
-        /// <param name="Action">The EEBus HTTP Web Socket action.</param>
+        /// <param name="Action">The EEBus HTTP WebSocket action.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this request.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this request.</param>

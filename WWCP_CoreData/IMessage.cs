@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.WWCP
         EventTracking_Id   EventTrackingId      { get; }
 
         /// <summary>
-        /// The OCPP HTTP Web Socket action.
+        /// The OCPP HTTP WebSocket action.
         /// </summary>
         [Mandatory]
         String             Action               { get; }

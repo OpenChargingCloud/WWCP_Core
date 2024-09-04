@@ -100,8 +100,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <summary>
         /// Create a new a source routing, based on the given enumeration of networking node identifications.
         /// </summary>
-        /// <param name="NetworkingNodeIds">An optional ordered list of networking node identifications along the source routing.</param>
-        public SourceRouting(IEnumerable<NetworkingNode_Id>? NetworkingNodeIds = null)
+        /// <param name="NetworkingNodeIds">An optional enumeration of networking node identifications along the source routing.</param>
+        private SourceRouting(IEnumerable<NetworkingNode_Id>? NetworkingNodeIds = null)
         {
 
             if (NetworkingNodeIds is not null && NetworkingNodeIds.Any())
@@ -112,8 +112,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <summary>
         /// Create a new a source routing, based on the given array of networking node identifications.
         /// </summary>
-        /// <param name="NetworkingNodeIds">An optional ordered list of networking node identifications along the source routing.</param>
-        public SourceRouting(params NetworkingNode_Id[] NetworkingNodeIds)
+        /// <param name="NetworkingNodeIds">An optional array of networking node identifications along the source routing.</param>
+        private SourceRouting(params NetworkingNode_Id[] NetworkingNodeIds)
         {
 
             if (NetworkingNodeIds is not null && NetworkingNodeIds.Length > 0)
@@ -284,12 +284,21 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #region (static) To(NetworkingNodeId)
 
         /// <summary>
-        /// Create a new source routing to the given networking node identification.
+        /// Create a new source routing, based on the given enumeration of networking node identifications.
         /// </summary>
-        /// <param name="NetworkingNodeId">A networking node identification.</param>
-        public static SourceRouting To(NetworkingNode_Id NetworkingNodeId)
+        /// <param name="NetworkingNodeIds">An enumeration of networking node identifications along the source routing.</param>
+        public static SourceRouting To(IEnumerable<NetworkingNode_Id> NetworkingNodeIds)
 
-            => new (NetworkingNodeId);
+            => new (NetworkingNodeIds);
+
+
+        /// <summary>
+        /// Create a new source routing, based on the given array of networking node identifications.
+        /// </summary>
+        /// <param name="NetworkingNodeIds">An array of networking node identifications along the source routing.</param>
+        public static SourceRouting To(params NetworkingNode_Id[] NetworkingNodeIds)
+
+            => new(NetworkingNodeIds);
 
 
         /// <summary>
@@ -558,7 +567,9 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// </summary>
         public override String ToString()
 
-            => NetworkingNodeIds.AggregateWith(", ");
+            => NetworkingNodeIds.Any()
+                   ? $"[ {NetworkingNodeIds.AggregateWith(", ")} ]"
+                   : "[]";
 
         #endregion
 

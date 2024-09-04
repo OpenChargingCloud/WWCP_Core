@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
 {
 
     /// <summary>
-    /// An EEBus HTTP Web Socket binary response message.
+    /// An EEBus HTTP WebSocket binary response message.
     /// </summary>
     /// <param name="ResponseTimestamp">The response time stamp.</param>
     /// <param name="EventTrackingId">An optional event tracking identification.</param>
@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="BinaryResponseMessage">The parsed EEBus WebSocket response message.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP Web Sockets connection.</param>
+        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP WebSockets connection.</param>
         public static Boolean TryParse(Byte[]                           Binary,
                                        out BinaryResponseMessage?  BinaryResponseMessage,
                                        out String?                      ErrorResponse,

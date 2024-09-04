@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="HTTPServiceName">An optional identification string for the HTTP service.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        /// <param name="Description">An optional description of this HTTP WebSocket service.</param>
         /// 
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// 
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
 
     /// <summary>
-    /// An EEBus HTTP Web Socket client runs on a charging station or networking node
+    /// An EEBus HTTP WebSocket client runs on a charging station or networking node
     /// and connects to a CSMS or another networking node to invoke EEBus commands.
     /// </summary>
     public abstract class AOverlayWebSocketClient : WebSocketClient,
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// The default HTTP user agent string.
         /// </summary>
-        public new const        String                                              DefaultHTTPUserAgent              = $"GraphDefined EEBus {Version.String} Charging Station HTTP Web Socket Client";
+        public new const        String                                              DefaultHTTPUserAgent              = $"GraphDefined EEBus {Version.String} Charging Station HTTP WebSocket Client";
 
         public static readonly  TimeSpan                                            DefaultRequestTimeout             = TimeSpan.FromSeconds(30);
 
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new EEBus HTTP Web Socket client running, e.g on a charging station
+        /// Create a new EEBus HTTP WebSocket client running, e.g on a charging station
         /// and connecting to a CSMS to invoke methods.
         /// </summary>
         /// <param name="NetworkingNodeIdentity">The unique identification of this charging station.</param>
@@ -322,12 +322,12 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region ProcessWebSocketTextFrame   (RequestTimestamp, Client, Connection, Frame, EventTrackingId, TextMessage,   CancellationToken)
 
         /// <summary>
-        /// Process a HTTP Web Socket text message.
+        /// Process a HTTP WebSocket text message.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
-        /// <param name="Client">The HTTP Web Socket client.</param>
-        /// <param name="Connection">The HTTP Web Socket connection.</param>
-        /// <param name="Frame">The HTTP Web Socket frame.</param>
+        /// <param name="Client">The HTTP WebSocket client.</param>
+        /// <param name="Connection">The HTTP WebSocket connection.</param>
+        /// <param name="Frame">The HTTP WebSocket frame.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="TextMessage">The received text message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
@@ -611,12 +611,12 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region ProcessWebSocketBinaryFrame (RequestTimestamp, Client, Connection, Frame, EventTrackingId, BinaryMessage, CancellationToken)
 
         /// <summary>
-        /// Process a HTTP Web Socket binary message.
+        /// Process a HTTP WebSocket binary message.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
-        /// <param name="Client">The HTTP Web Socket client.</param>
-        /// <param name="Connection">The HTTP Web Socket connection.</param>
-        /// <param name="Frame">The HTTP Web Socket frame.</param>
+        /// <param name="Client">The HTTP WebSocket client.</param>
+        /// <param name="Connection">The HTTP WebSocket connection.</param>
+        /// <param name="Frame">The HTTP WebSocket frame.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="BinaryMessage">The received binary message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
@@ -920,7 +920,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                  RequestId,
                                                  Action,
                                                  JSONMessage,
-                                                 ErrorMessage: "Invalid HTTP Web Socket connection!"
+                                                 ErrorMessage: "Invalid HTTP WebSocket connection!"
                                              );
 
                     }
@@ -1046,7 +1046,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                    RequestId,
                                                    Action,
                                                    BinaryMessage,
-                                                   ErrorMessage: "Invalid HTTP Web Socket connection!"
+                                                   ErrorMessage: "Invalid HTTP WebSocket connection!"
                                                );
 
                     }

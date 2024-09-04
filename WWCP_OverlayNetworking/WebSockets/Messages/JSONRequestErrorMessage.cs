@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
 {
 
     /// <summary>
-    /// A EEBus Web Socket JSON request error message.
+    /// A EEBus WebSocket JSON request error message.
     /// </summary>
     /// <param name="ResponseTimestamp">The response time stamp.</param>
     /// <param name="EventTrackingId">An optional event tracking identification.</param>
@@ -462,7 +462,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
         /// </summary>
         /// <param name="JSONArray">The JSON array to be parsed.</param>
         /// <param name="ErrorMessage">The parsed EEBus WebSocket error message.</param>
-        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP Web Sockets connection.</param>
+        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP WebSockets connection.</param>
         public static Boolean TryParse(JArray                                          JSONArray,
                                        [NotNullWhen(true)] out JSONRequestErrorMessage?  ErrorMessage,
                                        NetworkingNode_Id?                              ImplicitSourceNodeId   = null)

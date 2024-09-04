@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
             // Sec-WebSocket-Version:   13
 
             ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    connectionSetupResponse1.HTTPStatusCode);
-            ClassicAssert.AreEqual($"GraphDefined HTTP Web Socket Service v2.0",                         connectionSetupResponse1.Server);
+            ClassicAssert.AreEqual($"GraphDefined HTTP WebSocket Service v2.0",                         connectionSetupResponse1.Server);
             ClassicAssert.AreEqual("Upgrade",                                                            connectionSetupResponse1.Connection);
             ClassicAssert.AreEqual("websocket",                                                          connectionSetupResponse1.Upgrade);
             ClassicAssert.IsTrue  (connectionSetupResponse1.SecWebSocketProtocol.Contains("ocpp2.0.1"));

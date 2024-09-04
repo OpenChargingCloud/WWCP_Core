@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System.Reflection;
 using System.Collections.Concurrent;
 using System.Security.Authentication;
 using System.Runtime.CompilerServices;
@@ -30,11 +29,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-//using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -49,10 +48,34 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
     //                                        CancellationToken                                                 CancellationToken);
 
 
+    public class NetworkingNodeConnectionInfo(WebSocketServerConnection  WebSocketServerConnection,
+                                              DateTime                   ConnectedSince,
+                                              NetworkingMode?            NetworkingMode = null)
+    {
+
+        public WebSocketServerConnection  WebSocketServerConnection    { get; }      = WebSocketServerConnection;
+        public NetworkingMode?            NetworkingMode               { get; set; } = NetworkingMode;
+        public DateTime                   ConnectedSince               { get; }      = ConnectedSince;
+        public DateTime?                  LastSentTo                   { get; set; } = ConnectedSince;
+        public DateTime?                  LastReceivedFrom             { get; set; } = ConnectedSince;
+        public Boolean                    IsAlive                      { get; set; } = true;
+
+    }
+
+    public class NetworkingNodeConnections(NetworkingNode_Id                   DestinationNodeId,
+                                           List<NetworkingNodeConnectionInfo>  ConnectionInfos)
+    {
+
+        public NetworkingNode_Id                   DestinationNodeId    { get; } = DestinationNodeId;
+        public List<NetworkingNodeConnectionInfo>  ConnectionInfos      { get; } = ConnectionInfos;
+
+    }
+
+
     /// <summary>
-    /// The WWCP HTTP Web Socket server.
+    /// The WWCP HTTP WebSocket server.
     /// </summary>
-    public partial class WWCPWebSocketServer : org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServer,
+    public partial class WWCPWebSocketServer : WebSocketServer,
                                                IWWCPWebSocketServer
     {
 
@@ -61,57 +84,37 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public  const           String                                                                               DefaultHTTPServiceName            = $"GraphDefined WWCP Web Socket Server";
+        public const       String                                                              DefaultHTTPServiceName    = $"GraphDefined WWCP WebSocket Server";
 
-        /// <summary>
-        /// The default HTTP server TCP port.
-        /// </summary>
-        public static readonly  IPPort                                                                               DefaultHTTPServerPort             = IPPort.Parse(2010);
+        public const       String                                                              LogfileName               = "CSMSWSServer.log";
 
-        /// <summary>
-        /// The default HTTP server URI prefix.
-        /// </summary>
-        public static readonly  HTTPPath                                                                             DefaultURLPrefix                  = HTTPPath.Parse("/");
-
-        protected readonly      Dictionary<String, MethodInfo>                                                       incomingMessageProcessorsLookup   = [];
-        protected readonly      ConcurrentDictionary<NetworkingNode_Id, Tuple<org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection, DateTime>>  connectedNetworkingNodes          = [];
-        protected readonly      ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>                           reachableViaNetworkingHubs        = [];
-        //protected readonly      ConcurrentDictionary<Request_Id, SendRequestState>                                   requests                          = [];
-
-        public const            String                                                                               LogfileName                       = "CSMSWSServer.log";
+        protected readonly ConcurrentDictionary<NetworkingNode_Id, NetworkingNodeConnections>  connectedNetworkingNodes  = [];
 
         #endregion
 
         #region Properties
 
-        ///// <summary>
-        ///// The parent WWCP adapter.
-        ///// </summary>
-        //public WWCPAdapter                                       WWCPAdapter              { get; }
+        /// <summary>
+        /// The parent networking node.
+        /// </summary>
+        public INetworkingNode                 NetworkingNode    { get; }
 
         /// <summary>
         /// The enumeration of all connected networking nodes.
         /// </summary>
-        public IEnumerable<NetworkingNode_Id>                    NetworkingNodeIds
+        public IEnumerable<NetworkingNode_Id>  ConnectedNetworkingNodeIds
             => connectedNetworkingNodes.Keys;
-
-        ///// <summary>
-        ///// Require a HTTP Basic Authentication of all networking nodes.
-        ///// </summary>
-        //public Boolean                                           RequireAuthentication    { get; }
-
-        ///// <summary>
-        ///// The JSON formatting to use.
-        ///// </summary>
-        //public Formatting                                        JSONFormatting           { get; set; }
-        //    = Formatting.None;
 
         /// <summary>
         /// The request timeout for messages sent by this HTTP WebSocket server.
         /// </summary>
-        public TimeSpan?                                         RequestTimeout           { get; set; }
+        public TimeSpan?                       RequestTimeout    { get; set; }
 
-        public INetworkingNode NetworkingNode { get; }
+        /// <summary>
+        /// The JSON formatting to use.
+        /// </summary>
+        public Formatting                      JSONFormatting    { get; set; }
+            = Formatting.None;
 
         #endregion
 
@@ -136,6 +139,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #endregion
 
+        #region JSON/Binary Message Sent/Received
 
         /// <summary>
         /// An event sent whenever a JSON message was sent.
@@ -160,15 +164,17 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #endregion
 
+        #endregion
+
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new WWCP HTTP Web Socket server.
+        /// Create a new WWCP HTTP WebSocket server.
         /// </summary>
         /// <param name="HTTPServiceName">An optional identification string for the HTTP service.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        /// <param name="Description">An optional description of this HTTP WebSocket service.</param>
         /// 
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// 
@@ -188,7 +194,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                    TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
                                    Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
-                                   RemoteTLSClientCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer>?  ClientCertificateValidator   = null,
+                                   RemoteTLSClientCertificateValidationHandler<IWebSocketServer>?  ClientCertificateValidator   = null,
                                    LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
                                    SslProtocols?                                                   AllowedTLSProtocols          = null,
                                    Boolean?                                                        ClientCertificateRequired    = null,
@@ -250,17 +256,17 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             base.OnBinaryMessageReceived        += ProcessBinaryMessage;
 
             base.OnPingMessageReceived          += (timestamp, server, connection, frame, eventTrackingId, pingMessage, ct) => {
-                                                       DebugX.Log($"HTTP Web Socket Server '{connection.RemoteSocket}' Ping received:   '{frame.Payload.ToUTF8String()}'");
+                                                       DebugX.Log($"HTTP WebSocket Server '{connection.RemoteSocket}' Ping received:   '{frame.Payload.ToUTF8String()}'");
                                                        return Task.CompletedTask;
                                                    };
 
             base.OnPongMessageReceived          += (timestamp, server, connection, frame, eventTrackingId, pingMessage, ct) => {
-                                                       DebugX.Log($"HTTP Web Socket Server '{connection.RemoteSocket}' Pong received:   '{frame.Payload.ToUTF8String()}'");
+                                                       DebugX.Log($"HTTP WebSocket Server '{connection.RemoteSocket}' Pong received:   '{frame.Payload.ToUTF8String()}'");
                                                        return Task.CompletedTask;
                                                    };
 
             base.OnCloseMessageReceived         += (timestamp, server, connection, frame, eventTrackingId, closingStatusCode, closingReason, ct) => {
-                                                       DebugX.Log($"HTTP Web Socket Server '{connection.RemoteSocket}' Close received:  '{closingStatusCode}', '{closingReason ?? ""}'");
+                                                       DebugX.Log($"HTTP WebSocket Server '{connection.RemoteSocket}' Close received:  '{closingStatusCode}', '{closingReason ?? ""}'");
                                                        return Task.CompletedTask;
                                                    };
 
@@ -271,6 +277,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #endregion
 
+
+        // HTTP Basic Auth
 
         #region AddOrUpdateHTTPBasicAuth (NetworkingNodeId, Password)
 
@@ -309,7 +317,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region (protected) ValidateTCPConnection         (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         private Task<ConnectionFilterResponse> ValidateTCPConnection(DateTime                      LogTimestamp,
-                                                                     org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer              Server,
+                                                                     IWebSocketServer              Server,
                                                                      System.Net.Sockets.TcpClient  Connection,
                                                                      EventTracking_Id              EventTrackingId,
                                                                      CancellationToken             CancellationToken)
@@ -324,8 +332,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region (protected) ValidateWebSocketConnection   (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         private Task<HTTPResponse?> ValidateWebSocketConnection(DateTime                   LogTimestamp,
-                                                                org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer           Server,
-                                                                org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection  Connection,
+                                                                IWebSocketServer           Server,
+                                                                WebSocketServerConnection  Connection,
                                                                 EventTracking_Id           EventTrackingId,
                                                                 CancellationToken          CancellationToken)
         {
@@ -421,8 +429,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region (protected) ProcessNewWebSocketConnection (LogTimestamp, Server, Connection, SharedSubprotocols, EventTrackingId, CancellationToken)
 
         protected async Task ProcessNewWebSocketConnection(DateTime                   LogTimestamp,
-                                                           org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer           Server,
-                                                           org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection  Connection,
+                                                           IWebSocketServer           Server,
+                                                           WebSocketServerConnection  Connection,
                                                            IEnumerable<String>        SharedSubprotocols,
                                                            EventTracking_Id           EventTrackingId,
                                                            CancellationToken          CancellationToken)
@@ -484,7 +492,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             if (networkingNodeId.HasValue)
             {
 
-                #region Store the NetworkingNodeId within the HTTP Web Socket connection
+                #region Store the NetworkingNodeId within the HTTP WebSocket connection
 
                 Connection.TryAddCustomData(
                                WebSocketKeys.NetworkingNodeId,
@@ -493,57 +501,81 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                 #endregion
 
-                #region Register new NetworkingNode
+                #region Try to get NetworkingMode from HTTP Headers and store it within the HTTP WebSocket connection
 
-                if (!connectedNetworkingNodes.TryAdd(networkingNodeId.Value,
-                                                     new Tuple<org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection, DateTime>(
-                                                         Connection,
-                                                         Timestamp.Now
-                                                     )))
-                {
-
-                    DebugX.Log($"{nameof(WWCPWebSocketServer)} Duplicate networking node '{networkingNodeId.Value}' detected: Trying to close old one!");
-
-                    if (connectedNetworkingNodes.TryRemove(networkingNodeId.Value, out var oldConnection))
-                    {
-                        try
-                        {
-                            await oldConnection.Item1.Close(
-                                      org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketFrame.ClosingStatusCode.NormalClosure,
-                                      "Newer connection detected!",
-                                      CancellationToken
-                                  );
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log($"{nameof(WWCPWebSocketServer)} Closing old HTTP Web Socket connection from {oldConnection.Item1.RemoteSocket} failed: {e.Message}");
-                        }
-                    }
-
-                    connectedNetworkingNodes.TryAdd(networkingNodeId.Value,
-                                                    new Tuple<org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection, DateTime>(
-                                                        Connection,
-                                                        Timestamp.Now
-                                                    ));
-
-                }
-
-                #endregion
-
-
-                #region Store the Networking Mode within the HTTP Web Socket connection
+                NetworkingMode? networkingMode = null;
 
                 if (Connection.HTTPRequest.TryGetHeaderField(WebSocketKeys.X_WWCP_NetworkingMode, out var networkingModeString) &&
-                    Enum.TryParse<NetworkingMode>(networkingModeString?.ToString(), out var networkingMode))
+                    Enum.TryParse<NetworkingMode>(networkingModeString?.ToString(), out var networkingModeFromHTTPHeader))
                 {
+
+                    networkingMode = networkingModeFromHTTPHeader;
+
                     Connection.TryAddCustomData(
                                    WebSocketKeys.NetworkingMode,
                                    networkingMode
                                );
+
                 }
 
                 #endregion
 
+
+                #region Register new NetworkingNode
+
+                if (!connectedNetworkingNodes.TryAdd(
+                        networkingNodeId.Value,
+                        new NetworkingNodeConnections(
+                            networkingNodeId.Value,
+                            [
+                                new NetworkingNodeConnectionInfo(
+                                    Connection,
+                                    Timestamp.Now,
+                                    networkingMode
+                                )
+                            ]
+                        )
+                   ))
+                {
+
+                    DebugX.Log($"{nameof(WWCPWebSocketServer)} Duplicate networking node '{networkingNodeId.Value}' detected: Trying to close old one(s)!");
+
+                    if (connectedNetworkingNodes.TryRemove(networkingNodeId.Value, out var oldConnection))
+                    {
+                        foreach (var nodeConnectionInfo in oldConnection.ConnectionInfos)
+                        {
+                            try
+                            {
+                                await nodeConnectionInfo.WebSocketServerConnection.Close(
+                                          WebSocketFrame.ClosingStatusCode.NormalClosure,
+                                          "Newer connection detected!",
+                                          CancellationToken
+                                      );
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log($"{nameof(WWCPWebSocketServer)} Closing old HTTP WebSocket connection from {nodeConnectionInfo.WebSocketServerConnection.RemoteSocket} failed: {e.Message}");
+                            }
+                        }
+                    }
+
+                    connectedNetworkingNodes.TryAdd(
+                        networkingNodeId.Value,
+                        new NetworkingNodeConnections(
+                            networkingNodeId.Value,
+                            [
+                                new NetworkingNodeConnectionInfo(
+                                    Connection,
+                                    Timestamp.Now,
+                                    networkingMode
+                                )
+                            ]
+                        )
+                    );
+
+                }
+
+                #endregion
 
                 #region Send OnNewNetworkingNodeWSConnection event
 
@@ -554,6 +586,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                               this,
                               Connection,
                               networkingNodeId.Value,
+                              networkingMode,
                               SharedSubprotocols,
                               EventTrackingId,
                               CancellationToken
@@ -569,19 +602,19 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             else
             {
 
-                DebugX.Log($"{nameof(WWCPWebSocketServer)} Could not get NetworkingNodeId from HTTP Web Socket connection ({Connection.RemoteSocket}): Closing connection!");
+                DebugX.Log($"{nameof(WWCPWebSocketServer)} Could not get NetworkingNodeId from HTTP WebSocket connection ({Connection.RemoteSocket}): Closing connection!");
 
                 try
                 {
                     await Connection.Close(
-                              org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketFrame.ClosingStatusCode.PolicyViolation,
-                              "Could not get NetworkingNodeId from HTTP Web Socket connection!",
+                              WebSocketFrame.ClosingStatusCode.PolicyViolation,
+                              "Could not get NetworkingNodeId from HTTP WebSocket connection!",
                               CancellationToken
                           );
                 }
                 catch (Exception e)
                 {
-                    DebugX.Log($"{nameof(WWCPWebSocketServer)} Closing HTTP Web Socket connection ({Connection.RemoteSocket}) failed: {e.Message}");
+                    DebugX.Log($"{nameof(WWCPWebSocketServer)} Closing HTTP WebSocket connection ({Connection.RemoteSocket}) failed: {e.Message}");
                 }
 
             }
@@ -595,11 +628,11 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region (protected) ProcessCloseMessage           (LogTimestamp, Server, Connection, Frame, EventTrackingId, StatusCode, Reason, CancellationToken)
 
         protected async Task ProcessCloseMessage(DateTime                          LogTimestamp,
-                                                 org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer                  Server,
-                                                 org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection         Connection,
-                                                 org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketFrame                    Frame,
+                                                 IWebSocketServer                  Server,
+                                                 WebSocketServerConnection         Connection,
+                                                 WebSocketFrame                    Frame,
                                                  EventTracking_Id                  EventTrackingId,
-                                                 org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketFrame.ClosingStatusCode  StatusCode,
+                                                 WebSocketFrame.ClosingStatusCode  StatusCode,
                                                  String?                           Reason,
                                                  CancellationToken                 CancellationToken)
         {
@@ -609,41 +642,49 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                 connectedNetworkingNodes.TryRemove(networkingNodeId, out _);
 
-                #region Send OnNetworkingNodeCloseMessageReceived event
-
-                var logger = OnNetworkingNodeCloseMessageReceived;
-                if (logger is not null)
-                {
-
-                    try
-                    {
-                        await Task.WhenAll(logger.GetInvocationList().
-                                                  OfType<OnNetworkingNodeCloseMessageReceivedDelegate>().
-                                                  Select(loggingDelegate => loggingDelegate.Invoke(LogTimestamp,
-                                                                                                   this,
-                                                                                                   Connection,
-                                                                                                   networkingNodeId,
-                                                                                                   EventTrackingId,
-                                                                                                   StatusCode,
-                                                                                                   Reason,
-                                                                                                   CancellationToken)).
-                                                  ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(WWCPWebSocketServer),
-                                  nameof(OnNetworkingNodeCloseMessageReceived),
-                                  e
-                              );
-                    }
-
-                }
-
-                #endregion
+                await LogEvent(
+                    OnNetworkingNodeCloseMessageReceived,
+                    loggingDelegate => loggingDelegate.Invoke(
+                        LogTimestamp,
+                        this,
+                        Connection,
+                        networkingNodeId,
+                        EventTrackingId,
+                        StatusCode,
+                        Reason,
+                        CancellationToken
+                    )
+                );
 
             }
+
+        }
+
+        #endregion
+
+        #region (protected) GetConnectionsFor             (DestinationId)
+
+        protected IEnumerable<WebSocketServerConnection> GetConnectionsFor(NetworkingNode_Id DestinationId)
+        {
+
+            if (DestinationId == NetworkingNode_Id.Zero)
+                return [];
+
+            if (DestinationId == NetworkingNode_Id.Broadcast)
+                return WebSocketConnections;
+
+            var nextHop = DestinationId;
+
+            // The destination might only be reachable via a networking hop...
+            if (NetworkingNode.Routing.LookupNetworkingNode(nextHop, out var reachability))
+                nextHop = reachability.DestinationId;
+
+            if (connectedNetworkingNodes.TryGetValue(nextHop, out var networkingNodeConnections))
+                return networkingNodeConnections.ConnectionInfos.
+                           Where (connectionInfo => connectionInfo.IsAlive).
+                           Select(connectionInfo => connectionInfo.WebSocketServerConnection);
+
+            return [];
 
         }
 
@@ -652,22 +693,22 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         // Receive data...
 
-        #region (protected) ProcessTextMessage   (RequestTimestamp, Server, WebSocketConnection, Frame, EventTrackingId, TextMessage,   CancellationToken)
+        #region (protected) ProcessTextMessage            (RequestTimestamp, Server, WebSocketConnection, Frame, EventTrackingId, TextMessage,   CancellationToken)
 
         /// <summary>
-        /// Process a HTTP Web Socket text message.
+        /// Process a HTTP WebSocket text message.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
-        /// <param name="Server">The HTTP Web Socket server.</param>
-        /// <param name="WebSocketConnection">The HTTP Web Socket connection.</param>
-        /// <param name="Frame">The HTTP Web Socket frame.</param>
+        /// <param name="Server">The HTTP WebSocket server.</param>
+        /// <param name="WebSocketConnection">The HTTP WebSocket connection.</param>
+        /// <param name="Frame">The HTTP WebSocket frame.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="TextMessage">The received text message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
         public async Task ProcessTextMessage(DateTime                   RequestTimestamp,
-                                             org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer           Server,
-                                             org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection  WebSocketConnection,
-                                             org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketFrame             Frame,
+                                             IWebSocketServer           Server,
+                                             WebSocketServerConnection  WebSocketConnection,
+                                             WebSocketFrame             Frame,
                                              EventTracking_Id           EventTrackingId,
                                              String                     TextMessage,
                                              CancellationToken          CancellationToken)
@@ -719,15 +760,6 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                           )
                       );
 
-                //await WWCPAdapter.IN.ProcessJSONMessage(
-                //          RequestTimestamp,
-                //          WebSocketConnection,
-                //          sourceNodeId,
-                //          jsonMessage,
-                //          EventTrackingId,
-                //          CancellationToken
-                //      );
-
             }
             catch (Exception e)
             {
@@ -742,22 +774,22 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #endregion
 
-        #region (protected) ProcessBinaryMessage (RequestTimestamp, Server, WebSocketConnection, Frame, EventTrackingId, BinaryMessage, CancellationToken)
+        #region (protected) ProcessBinaryMessage          (RequestTimestamp, Server, WebSocketConnection, Frame, EventTrackingId, BinaryMessage, CancellationToken)
 
         /// <summary>
-        /// Process a HTTP Web Socket binary message.
+        /// Process a HTTP WebSocket binary message.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
-        /// <param name="Server">The HTTP Web Socket server.</param>
-        /// <param name="WebSocketConnection">The HTTP Web Socket connection.</param>
-        /// <param name="Frame">The HTTP Web Socket frame.</param>
+        /// <param name="Server">The HTTP WebSocket server.</param>
+        /// <param name="WebSocketConnection">The HTTP WebSocket connection.</param>
+        /// <param name="Frame">The HTTP WebSocket frame.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="BinaryMessage">The received binary message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
         public async Task ProcessBinaryMessage(DateTime                   RequestTimestamp,
-                                               org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer           Server,
-                                               org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection  WebSocketConnection,
-                                               org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketFrame             Frame,
+                                               IWebSocketServer           Server,
+                                               WebSocketServerConnection  WebSocketConnection,
+                                               WebSocketFrame             Frame,
                                                EventTracking_Id           EventTrackingId,
                                                Byte[]                     BinaryMessage,
                                                CancellationToken          CancellationToken)
@@ -804,15 +836,6 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                           )
                       );
 
-                //await WWCPAdapter.IN.ProcessBinaryMessage(
-                //          RequestTimestamp,
-                //          WebSocketConnection,
-                //          sourceNodeId,
-                //          BinaryMessage,
-                //          EventTrackingId,
-                //          CancellationToken
-                //      );
-
             }
             catch (Exception e)
             {
@@ -828,88 +851,23 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #endregion
 
 
-        private IEnumerable<org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection> LookupNetworkingNode(NetworkingNode_Id NetworkingNodeId)
-        {
+        // Send data...
 
-            if (NetworkingNodeId == NetworkingNode_Id.Zero)
-                return [];
-
-            if (NetworkingNodeId == NetworkingNode_Id.Broadcast)
-                return WebSocketConnections;
-
-            var lookUpNetworkingNodeId = NetworkingNodeId;
-
-            if (NetworkingNode.Routing.LookupNetworkingNode(lookUpNetworkingNodeId, out var reachability) &&
-                reachability is not null)
-            {
-                lookUpNetworkingNodeId = reachability.DestinationId;
-            }
-
-            if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
-            {
-                lookUpNetworkingNodeId = networkingHubId;
-                return WebSocketConnections.Where (connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId) == lookUpNetworkingNodeId);
-            }
-
-            return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId) == lookUpNetworkingNodeId).ToArray();
-
-        }
-
-        public void AddStaticRouting(NetworkingNode_Id DestinationId,
-                                     NetworkingNode_Id NetworkingHubId)
-        {
-
-            reachableViaNetworkingHubs.TryAdd(DestinationId,
-                                              NetworkingHubId);
-
-        }
-
-        public void RemoveStaticRouting(NetworkingNode_Id DestinationId,
-                                        NetworkingNode_Id NetworkingHubId)
-        {
-
-            reachableViaNetworkingHubs.TryRemove(new KeyValuePair<NetworkingNode_Id, NetworkingNode_Id>(DestinationId, NetworkingHubId));
-
-        }
-
-
-
-        protected Task SendOnJSONMessageSent(DateTime                                                                Timestamp,
-                                             IWWCPWebSocketServer                                                    Server,
-                                             org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection   WebSocketConnection,
-                                             EventTracking_Id                                                        EventTrackingId,
-                                             DateTime                                                                MessageTimestamp,
-                                             JArray                                                                  Message,
-                                             org.GraphDefined.Vanaheimr.Hermod.WebSocket.SentStatus                  SentStatus,
-                                             CancellationToken                                                       CancellationToken)
-
-            => LogEvent(
-                   OnJSONMessageSent,
-                   loggingDelegate => loggingDelegate.Invoke(
-                       Timestamp,
-                       Server,
-                       WebSocketConnection,
-                       EventTrackingId,
-                       MessageTimestamp,
-                       Message,
-                       SentStatus,
-                       CancellationToken
-                   )
-               );
-
-
-        #region SendJSONRequest         (JSONRequestMessage)
+        #region SendJSONMessage   (WebSocketConnection, JSONMessage,   RequestTimestamp, EventTrackingId, ...)
 
         /// <summary>
-        /// Send (and forget) the given JSON OCPP request message.
+        /// Send the given JSON message.
         /// </summary>
-        /// <param name="JSONRequestMessage">A JSON OCPP request message.</param>
-        public async Task<SentMessageResult> SendJSONMessage(org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection WebSocketConnection,
-                                                             JArray             JSONMessage,
-                                                             DateTime           RequestTimestamp,
-                                                             NetworkingNode_Id  NetworkingNodeId,
-                                                             EventTracking_Id   EventTrackingId,
-                                                             CancellationToken  CancellationToken = default)
+        /// <param name="WebSocketConnection">A WebSocket connection.</param>
+        /// <param name="JSONMessage">A JSON message.</param>
+        /// <param name="RequestTimestamp">A request timestamp (for logging).</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">A cancellation token.</param>
+        public async Task<SentMessageResult> SendJSONMessage(WebSocketServerConnection  WebSocketConnection,
+                                                             JArray                     JSONMessage,
+                                                             DateTime                   RequestTimestamp,
+                                                             EventTracking_Id           EventTrackingId,
+                                                             CancellationToken          CancellationToken = default)
         {
 
             try
@@ -917,7 +875,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                 var sentStatus = await SendTextMessage(
                                            WebSocketConnection,
-                                           JSONMessage.ToString(Formatting.None),
+                                           JSONMessage.ToString(JSONFormatting),
                                            EventTrackingId,
                                            CancellationToken
                                        );
@@ -936,7 +894,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                           )
                       );
 
-                if (sentStatus == org.GraphDefined.Vanaheimr.Hermod.WebSocket.SentStatus.Success)
+                if (sentStatus == SentStatus.Success)
                     return SentMessageResult.Success(WebSocketConnection);
 
                 return SentMessageResult.UnknownClient();
@@ -951,18 +909,21 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #endregion
 
-        #region SendJSONRequest         (JSONRequestMessage)
+        #region SendBinaryMessage (WebSocketConnection, BinaryMessage, RequestTimestamp, EventTrackingId, ...)
 
         /// <summary>
-        /// Send (and forget) the given JSON OCPP request message.
+        /// Send the given binary message.
         /// </summary>
-        /// <param name="JSONRequestMessage">A JSON OCPP request message.</param>
-        public async Task<SentMessageResult> SendBinaryMessage(org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection WebSocketConnection,
-                                                               Byte[]             BinaryMessage,
-                                                               DateTime           RequestTimestamp,
-                                                               NetworkingNode_Id  NetworkingNodeId,
-                                                               EventTracking_Id   EventTrackingId,
-                                                               CancellationToken  CancellationToken = default)
+        /// <param name="WebSocketConnection">A WebSocket connection.</param>
+        /// <param name="BinaryMessage">A binary message.</param>
+        /// <param name="RequestTimestamp">A request timestamp (for logging).</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">A cancellation token.</param>
+        public async Task<SentMessageResult> SendBinaryMessage(WebSocketServerConnection  WebSocketConnection,
+                                                               Byte[]                     BinaryMessage,
+                                                               DateTime                   RequestTimestamp,
+                                                               EventTracking_Id           EventTrackingId,
+                                                               CancellationToken          CancellationToken = default)
         {
 
             try
@@ -989,7 +950,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                           )
                       );
 
-                if (sentStatus == org.GraphDefined.Vanaheimr.Hermod.WebSocket.SentStatus.Success)
+                if (sentStatus == SentStatus.Success)
                     return SentMessageResult.Success(WebSocketConnection);
 
                 return SentMessageResult.UnknownClient();
@@ -1004,7 +965,59 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #endregion
 
+        #region (protected) SendOnJSONMessageSent   (...)
 
+        protected Task SendOnJSONMessageSent(DateTime                    Timestamp,
+                                             IWWCPWebSocketServer        Server,
+                                             WebSocketServerConnection   WebSocketConnection,
+                                             EventTracking_Id            EventTrackingId,
+                                             DateTime                    MessageTimestamp,
+                                             JArray                      JSONMessage,
+                                             SentStatus                  SentStatus,
+                                             CancellationToken           CancellationToken)
+
+            => LogEvent(
+                   OnJSONMessageSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Server,
+                       WebSocketConnection,
+                       EventTrackingId,
+                       MessageTimestamp,
+                       JSONMessage,
+                       SentStatus,
+                       CancellationToken
+                   )
+               );
+
+        #endregion
+
+        #region (protected) SendOnBinaryMessageSent (...)
+
+        protected Task SendOnBinaryMessageSent(DateTime                    Timestamp,
+                                               IWWCPWebSocketServer        Server,
+                                               WebSocketServerConnection   WebSocketConnection,
+                                               EventTracking_Id            EventTrackingId,
+                                               DateTime                    MessageTimestamp,
+                                               Byte[]                      BinaryMessage,
+                                               SentStatus                  SentStatus,
+                                               CancellationToken           CancellationToken)
+
+            => LogEvent(
+                   OnBinaryMessageSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Server,
+                       WebSocketConnection,
+                       EventTrackingId,
+                       MessageTimestamp,
+                       BinaryMessage,
+                       SentStatus,
+                       CancellationToken
+                   )
+               );
+
+        #endregion
 
 
 
