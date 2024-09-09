@@ -367,8 +367,8 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 Signature = new Signature(
-                                KeyId.FromBase64(),
-                                Value.FromBase64(),
+                                KeyId.FromBASE64(),
+                                Value.FromBASE64(),
                                 Algorithm,
                                 SigningMethod,
                                 EncodingMethod,

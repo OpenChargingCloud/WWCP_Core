@@ -351,8 +351,8 @@ namespace cloud.charging.open.protocols.WWCP
                         return false;
                 }
 
-                var Private = PrivateText.FromBase64();
-                var Public  = PublicText. FromBase64();
+                var Private = PrivateText.FromBASE64();
+                var Public  = PublicText. FromBASE64();
 
                 #endregion
 
@@ -456,7 +456,7 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("algorithm",       Algorithm.    ToString())
                                : null,
 
-                           Serialization != CryptoSerialization.raw
+                           Serialization != CryptoSerialization.RAW
                                ? new JProperty("serialization",   Serialization.ToString())
                                : null,
 

@@ -942,13 +942,13 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         public Byte[] GetEncryptionKey(NetworkingNode_Id  DestinationId,
                                        UInt16?            KeyId   = null)
         {
-            return "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".HexStringToByteArray();
+            return "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".FromHEX();
         }
 
         public Byte[] GetDecryptionKey(NetworkingNode_Id  SourceNodeId,
                                        UInt16?            KeyId   = null)
         {
-            return "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".HexStringToByteArray();
+            return "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".FromHEX();
         }
 
 

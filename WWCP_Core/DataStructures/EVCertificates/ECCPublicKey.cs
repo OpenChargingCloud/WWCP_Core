@@ -19,10 +19,10 @@
 
 using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Crypto.Parameters;
-using System.Security.Cryptography;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -63,14 +63,14 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
             if (!Encoding.HasValue ||
                  Encoding. ToString() == EVCertificates.Encoding.BASE64.ToString())
             {
-                x = X.FromBase64();
-                y = Y.FromBase64();
+                x = X.FromBASE64();
+                y = Y.FromBASE64();
             }
 
             if ( Encoding?.ToString() == EVCertificates.Encoding.HEX.   ToString())
             {
-                x = X.HexStringToByteArray();
-                y = Y.HexStringToByteArray();
+                x = X.FromHEX();
+                y = Y.FromHEX();
             }
 
             var encodedPublicKey = new Byte[1 + x.Length + y.Length];
@@ -125,10 +125,10 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
 
             if (!Encoding.HasValue ||
                  Encoding. ToString() == EVCertificates.Encoding.BASE64.ToString())
-                data = EncodedPublicKey.FromBase64();
+                data = EncodedPublicKey.FromBASE64();
 
             if ( Encoding?.ToString() == EVCertificates.Encoding.HEX.   ToString())
-                data = EncodedPublicKey.HexStringToByteArray();
+                data = EncodedPublicKey.FromHEX();
 
             this.PublicKey = new("ECDSA",
                                  ECParameters.Curve.DecodePoint(data),

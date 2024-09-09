@@ -27,6 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using social.OpenData.UsersAPI;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -995,9 +996,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         IChargingPool? GetChargingPoolById(ChargingPool_Id ChargingPoolId);
 
-        Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool);
+        Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, [NotNullWhen(true)] out IChargingPool? ChargingPool);
 
-        Boolean TryGetChargingPoolByStationId(ChargingStation_Id ChargingStationId, out IChargingPool? ChargingPool);
+        Boolean TryGetChargingPoolByStationId(ChargingStation_Id ChargingStationId, [NotNullWhen(true)] out IChargingPool? ChargingPool);
 
 
 

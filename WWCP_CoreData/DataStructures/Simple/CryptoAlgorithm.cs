@@ -195,16 +195,25 @@ namespace cloud.charging.open.protocols.WWCP
 #pragma warning disable IDE1006 // Naming Styles
 
         /// <summary>
+        /// secp256k1
+        /// </summary>
+        public static CryptoAlgorithm  secp256k1    { get; }
+            = Register("secp256k1");
+
+
+        /// <summary>
         /// secp256r1
         /// </summary>
         public static CryptoAlgorithm  secp256r1    { get; }
             = Register("secp256r1");
+
 
         /// <summary>
         /// secp384r1
         /// </summary>
         public static CryptoAlgorithm  secp384r1    { get; }
             = Register("secp384r1");
+
 
         /// <summary>
         /// secp521r1

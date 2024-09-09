@@ -1503,7 +1503,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
         /// <param name="ChargingPool">The charging pool.</param>
-        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolById(ChargingPool_Id                         ChargingPoolId,
+                                              [NotNullWhen(true)] out IChargingPool?  ChargingPool)
         {
 
             if (!ChargingPoolId.IsNullOrEmpty &&
@@ -1523,7 +1524,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
         /// <param name="ChargingPool">The charging pool.</param>
-        public Boolean TryGetChargingPoolById(ChargingPool_Id? ChargingPoolId, out IChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolById(ChargingPool_Id?                        ChargingPoolId,
+                                              [NotNullWhen(true)] out IChargingPool?  ChargingPool)
         {
 
             if (ChargingPoolId.IsNotNullOrEmpty() &&
@@ -1542,7 +1544,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetChargingPoolByStationId(ChargingStationId, out ChargingPool)
 
-        public Boolean TryGetChargingPoolByStationId(ChargingStation_Id ChargingStationId, out IChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolByStationId(ChargingStation_Id                      ChargingStationId,
+                                                     [NotNullWhen(true)] out IChargingPool?  ChargingPool)
         {
 
             foreach (var chargingPool in chargingPools)

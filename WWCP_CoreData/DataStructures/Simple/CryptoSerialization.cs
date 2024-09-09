@@ -192,27 +192,46 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Static definitions
 
-#pragma warning disable IDE1006 // Naming Styles
-
         /// <summary>
         /// RAW
         /// </summary>
-        public static CryptoSerialization raw        { get; }
+        public static CryptoSerialization  RAW        { get; }
             = Register("raw");
+
+
+        /// <summary>
+        /// ASN.1 Distinguished Encoding Rules (DER)
+        /// </summary>
+        public static CryptoSerialization  DER        { get; }
+            = Register("DER");
+
+
+        /// <summary>
+        /// ASN.1 Basic Encoding Rules (BER)
+        /// </summary>
+        public static CryptoSerialization  BER        { get; }
+            = Register("BER");
+
+
+        /// <summary>
+        /// ASN.1 Canonical Encoding Rules (CER)
+        /// </summary>
+        public static CryptoSerialization  CER        { get; }
+            = Register("CER");
+
 
         /// <summary>
         /// ECC "rs"
         /// </summary>
-        public static CryptoSerialization ECC_rs     { get; }
+        public static CryptoSerialization  ECC_rs     { get; }
             = Register("ECC_rs");
+
 
         /// <summary>
         /// ECC: [r, s]
         /// </summary>
-        public static CryptoSerialization ECC_r_s    { get; }
+        public static CryptoSerialization  ECC_r_s    { get; }
             = Register("ECC_r_s");
-
-#pragma warning restore IDE1006 // Naming Styles
 
         #endregion
 

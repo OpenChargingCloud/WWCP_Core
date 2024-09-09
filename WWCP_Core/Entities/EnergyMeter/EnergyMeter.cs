@@ -879,7 +879,7 @@ namespace cloud.charging.open.protocols.WWCP
             => EnergyMeter is not null &&
 
                Id.                    Equals(EnergyMeter.Id) &&
-               LastChangeDate.ToIso8601().Equals(EnergyMeter.LastChangeDate.ToIso8601()) &&
+               //LastChangeDate.ToIso8601().Equals(EnergyMeter.LastChangeDate.ToIso8601()) &&
 
              ((Model is null && EnergyMeter.Model is null) ||
               (Model is not null && EnergyMeter.Model is not null && Model.Equals(EnergyMeter.Model))) &&

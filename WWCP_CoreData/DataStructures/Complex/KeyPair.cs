@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.PublicKeyBytes      = Public;
             this.PrivateKeyBytes     = Private       ?? [];
             this.Algorithm           = Algorithm     ?? CryptoAlgorithm.    secp256r1;
-            this.Serialization       = Serialization ?? CryptoSerialization.raw;
+            this.Serialization       = Serialization ?? CryptoSerialization.RAW;
             this.Encoding            = Encoding      ?? CryptoEncoding.     BASE64;
 
             this.ECParameters        = ECNamedCurveTable.GetByName(this.Algorithm.ToString());
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.PrivateKey       = PrivateKey;
             this.PrivateKeyBytes  = PrivateKeyBytes ?? [];
             this.Algorithm        = Algorithm       ?? CryptoAlgorithm.    secp256r1;
-            this.Serialization    = Serialization   ?? CryptoSerialization.raw;
+            this.Serialization    = Serialization   ?? CryptoSerialization.RAW;
             this.Encoding         = Encoding        ?? CryptoEncoding.     BASE64;
 
             unchecked
@@ -416,8 +416,8 @@ namespace cloud.charging.open.protocols.WWCP
                         return false;
                 }
 
-                var Private  = PrivateText.FromBase64();
-                var Public   = PublicText. FromBase64();
+                var Private  = PrivateText.FromBASE64();
+                var Public   = PublicText. FromBASE64();
 
                 #endregion
 
@@ -483,7 +483,7 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("algorithm",       Algorithm.    ToString())
                                : null,
 
-                           Serialization != CryptoSerialization.raw
+                           Serialization != CryptoSerialization.RAW
                                ? new JProperty("serialization",   Serialization.ToString())
                                : null,
 
@@ -583,11 +583,11 @@ namespace cloud.charging.open.protocols.WWCP
                 {
 
                     case "base64":
-                        privateKeyBytes = PrivateKey.FromBase64();
+                        privateKeyBytes = PrivateKey.FromBASE64();
                         break;
 
                     default:
-                        privateKeyBytes = PrivateKey.FromBase64();
+                        privateKeyBytes = PrivateKey.FromBASE64();
                         break;
                         //return false;
 
@@ -689,11 +689,11 @@ namespace cloud.charging.open.protocols.WWCP
                 {
 
                     case "base64":
-                        publicKeyBytes = PublicKey.FromBase64();
+                        publicKeyBytes = PublicKey.FromBASE64();
                         break;
 
                     default:
-                        publicKeyBytes = PublicKey.FromBase64();
+                        publicKeyBytes = PublicKey.FromBASE64();
                         break;
                         //return false;
 
