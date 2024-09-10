@@ -350,8 +350,8 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                         return false;
                 }
 
-                var Private = PrivateText.FromBase64();
-                var Public  = PublicText. FromBase64();
+                var Private = PrivateText.FromBASE64();
+                var Public  = PublicText. FromBASE64();
 
                 #endregion
 
@@ -451,7 +451,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                  new JProperty("private",         Private),
                                  new JProperty("public",          Public),
 
-                           Algorithm.    HasValue && Algorithm.    Value != CryptoAlgorithm.    secp256r1
+                           Algorithm.    HasValue && Algorithm.    Value != CryptoAlgorithm.    Secp256r1
                                ? new JProperty("algorithm",       Algorithm)
                                : null,
 
