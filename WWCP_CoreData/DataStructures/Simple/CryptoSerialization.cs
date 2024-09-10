@@ -233,6 +233,13 @@ namespace cloud.charging.open.protocols.WWCP
         public static CryptoSerialization  ECC_r_s    { get; }
             = Register("ECC_r_s");
 
+
+        /// <summary>
+        /// ECC Public Key: [x, y]
+        /// </summary>
+        public static CryptoSerialization  ECC_x_y    { get; }
+            = Register("ECC_x_y");
+
         #endregion
 
 

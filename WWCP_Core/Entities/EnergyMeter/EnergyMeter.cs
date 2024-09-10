@@ -399,8 +399,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (JSON.ParseOptionalHashSet("publicKeys",
                                               "energy meter public keys",
-                                              PublicKey.TryParse,
-                                              out HashSet<PublicKey> PublicKeys,
+                                              ECCPublicKey.TryParse,
+                                              out HashSet<ECCPublicKey> PublicKeys,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

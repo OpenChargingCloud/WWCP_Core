@@ -193,10 +193,10 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
         }
 
 
-        public override Boolean Verify(EVPublicKey? PublicKey = null)
+        public override Boolean Verify(ECCPublicKey? PublicKey = null)
         {
 
-            var publicKey = ((this.PublicKey ?? PublicKey) as ECCPublicKey)?.PublicKey;
+            var publicKey = ((this.PublicKey ?? PublicKey) as ECCPublicKey)?.ParsedPublicKey;
 
             //var ECParameters = NistNamedCurves.GetByName(EncryptionAlgorithm?.BouncyCastleId ?? "P-256");
 

@@ -700,7 +700,7 @@ namespace cloud.charging.open.protocols.WWCP
                        plugAndChargeIdentification is not null ? EMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
                        remoteIdentification        is not null ? EMobilityAccount_Id.Parse(remoteIdentification)        : null,
                        pin                         is not null ? WWCP.PIN.           Parse(pin)                         : null,
-                       publicKey                   is not null ? WWCP.PublicKey.     Parse(publicKey)                   : null,
+                       publicKey                   is not null ? WWCP.ECCPublicKey.  Parse(publicKey)                   : null,
                        certificate                 is not null ? WWCP.Certificate.   Parse(certificate)                 : null,
 
                        authMethod                  is not null ? null : null,
@@ -944,7 +944,7 @@ namespace cloud.charging.open.protocols.WWCP
                        plugAndChargeIdentification is not null ? EMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
                        remoteIdentification        is not null ? EMobilityAccount_Id.Parse(remoteIdentification)        : null,
                        pin                         is not null ? WWCP.PIN.           Parse(pin)                         : null,
-                       publicKey                   is not null ? WWCP.PublicKey.     Parse(publicKey)                   : null,
+                       publicKey                   is not null ? WWCP.ECCPublicKey.  Parse(publicKey)                   : null,
                        certificate                 is not null ? WWCP.Certificate.   Parse(certificate)                 : null,
 
                        authMethod                  is not null ? null : null,
@@ -977,7 +977,7 @@ namespace cloud.charging.open.protocols.WWCP
                        plugAndChargeIdentification is not null ? EMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
                        remoteIdentification        is not null ? EMobilityAccount_Id.Parse(remoteIdentification)        : null,
                        pin                         is not null ? WWCP.PIN.           Parse(pin)                         : null,
-                       publicKey                   is not null ? WWCP.PublicKey.     Parse(publicKey)                   : null,
+                       publicKey                   is not null ? WWCP.ECCPublicKey.  Parse(publicKey)                   : null,
                        certificate                 is not null ? WWCP.Certificate.   Parse(certificate)                 : null,
 
                        authMethod                  is not null ? null : null,

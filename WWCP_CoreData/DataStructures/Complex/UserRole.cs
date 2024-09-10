@@ -424,8 +424,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (JSON.ParseOptionalHashSet("keyPairs",
                                               "crypto algorithm",
-                                              KeyPair.TryParse,
-                                              out HashSet<KeyPair> KeyPairs,
+                                              ECCKeyPair.TryParse,
+                                              out HashSet<ECCKeyPair> KeyPairs,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

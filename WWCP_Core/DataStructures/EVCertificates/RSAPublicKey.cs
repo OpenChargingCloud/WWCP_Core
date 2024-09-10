@@ -1,80 +1,80 @@
-﻿/*
- * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
- * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
- *
- * Licensed under the Affero GPL license, Version 3.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.gnu.org/licenses/agpl.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+﻿///*
+// * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
+// * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
+// *
+// * Licensed under the Affero GPL license, Version 3.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *     http://www.gnu.org/licenses/agpl.html
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// */
 
-#region Usings
+//#region Usings
 
-using Newtonsoft.Json.Linq;
+//using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+//using org.GraphDefined.Vanaheimr.Illias;
 
-#endregion
+//#endregion
 
-namespace cloud.charging.open.protocols.WWCP.EVCertificates
-{
+//namespace cloud.charging.open.protocols.WWCP.EVCertificates
+//{
 
-    public class RSAPublicKey : EVPublicKey
-    {
+//    public class RSAPublicKey : PublicKey
+//    {
 
-        public const String Context = "https://open.charging.cloud/context/certificates/rsaPublicKey";
-
-
-        public String  Data    { get; }
+//        public const String Context = "https://open.charging.cloud/context/certificates/rsaPublicKey";
 
 
-
-        public RSAPublicKey(String      Data,
-                            EncryptionAlgorithm?  Algorithm   = null,
-                            Encoding?   Encoding    = null)
-
-            : base(Algorithm,
-                   Encoding)
-
-        {
-
-            this.Data = Data;
-
-        }
+//        public String  Data    { get; }
 
 
-        public override JObject ToJSON(Boolean    Embedded   = false,
-                                       Encoding?  Encoding   = null)
-        {
 
-            var json = JSONObject.Create(
+//        public RSAPublicKey(String      Data,
+//                            EncryptionAlgorithm?  Algorithm   = null,
+//                            Encoding?   Encoding    = null)
 
-                           Embedded
-                               ? new JProperty("@context",   Context)
-                               : null,
+//            : base(Algorithm,
+//                   Encoding)
 
-                                 new JProperty("data",       Data),
+//        {
 
-                           EncryptionAlgorithm.HasValue
-                               ? new JProperty("algorithm",  EncryptionAlgorithm)
-                               : null,
+//            this.Data = Data;
 
-                           Encoding.HasValue
-                               ? new JProperty("encoding",   Encoding)
-                               : null
-                       );
+//        }
 
-            return json;
 
-        }
+//        public override JObject ToJSON(Boolean    Embedded   = false,
+//                                       Encoding?  Encoding   = null)
+//        {
 
-    }
+//            var json = JSONObject.Create(
 
-}
+//                           Embedded
+//                               ? new JProperty("@context",   Context)
+//                               : null,
+
+//                                 new JProperty("data",       Data),
+
+//                           EncryptionAlgorithm.HasValue
+//                               ? new JProperty("algorithm",  EncryptionAlgorithm)
+//                               : null,
+
+//                           Encoding.HasValue
+//                               ? new JProperty("encoding",   Encoding)
+//                               : null
+//                       );
+
+//            return json;
+
+//        }
+
+//    }
+
+//}

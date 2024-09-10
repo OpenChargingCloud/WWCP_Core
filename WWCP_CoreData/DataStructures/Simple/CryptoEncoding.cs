@@ -194,6 +194,13 @@ namespace cloud.charging.open.protocols.WWCP
         #region Static definitions
 
         /// <summary>
+        /// None
+        /// </summary>
+        public static CryptoEncoding  NONE      { get; }
+            = Register("none");
+
+
+        /// <summary>
         /// Hexadecimal (BASE16)
         /// </summary>
         public static CryptoEncoding  HEX       { get; }
@@ -230,16 +237,13 @@ namespace cloud.charging.open.protocols.WWCP
         public String Encode(Byte[] Bytes)
         {
 
-            if      (String.Equals(InternalId, "base32", StringComparison.OrdinalIgnoreCase))
-                return Bytes.ToBase32();
-
-            else if (String.Equals(InternalId, "base64", StringComparison.OrdinalIgnoreCase))
-                return Bytes.ToBase64();
-
-            else if (String.Equals(InternalId, "hex",    StringComparison.OrdinalIgnoreCase))
+            if      (String.Equals(InternalId, HEX.   ToString(), StringComparison.OrdinalIgnoreCase))
                 return Bytes.ToHexString();
 
-            return "";
+            else if (String.Equals(InternalId, BASE32.ToString(), StringComparison.OrdinalIgnoreCase))
+                return Bytes.ToBase32();
+
+            return Bytes.ToBase64();
 
         }
 

@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
 
         public String                                      Description                     { get; }
 
-        public IEnumerable<EVPublicKey>                    PublicKeys                      { get; }
+        public IEnumerable<ECCPublicKey>                   PublicKeys                      { get; }
 
         public IEnumerable<Usages>                         Usages                          { get; }
 
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
 
         public EVCertificate(String                                       Description,
 
-                             IEnumerable<EVPublicKey>                     PublicKeys,
+                             IEnumerable<ECCPublicKey>                    PublicKeys,
 
                              IEnumerable<Usages>                          Usages,
 

@@ -36,44 +36,19 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// An OCPP CSE asymmetric cryptographic key pair.
+    /// An asymmetric cryptographic key pair.
     /// </summary>
-    public class KeyPair : ACustomData,
-                           IEquatable<KeyPair>
+    public class ECCKeyPair : KeyPair,
+                              IEquatable<ECCKeyPair>
     {
 
+        #region Data
+
+        public const String Context = "https://open.charging.cloud/context//context/cryptography/ecc/keyPair";
+
+        #endregion
+
         #region Properties
-
-        /// <summary>
-        /// The cryptographic public key.
-        /// </summary>
-        [Mandatory]
-        public  Byte[]                   PublicKeyBytes        { get; }
-
-        /// <summary>
-        /// The optional cryptographic private key.
-        /// </summary>
-        [Optional]
-        public  Byte[]                   PrivateKeyBytes       { get; }
-
-        /// <summary>
-        /// The optional cryptographic algorithm of the keys. Default is 'secp256r1'.
-        /// </summary>
-        [Optional]
-        public  CryptoAlgorithm          Algorithm             { get; }
-
-        /// <summary>
-        /// The optional serialization of the cryptographic keys. Default is 'raw'.
-        /// </summary>
-        [Optional]
-        public  CryptoSerialization      Serialization         { get; }
-
-        /// <summary>
-        /// The optional encoding of the cryptographic keys. Default is 'base64'.
-        /// </summary>
-        [Optional]
-        public  CryptoEncoding           Encoding              { get; }
-
 
         public  X9ECParameters?          ECParameters          { get; }
 
@@ -95,10 +70,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region KeyPair(...)
+        #region ECCKeyPair(...)
 
         /// <summary>
-        /// Create a new OCPP CSE asymmetric cryptographic key pair.
+        /// Create a new asymmetric elliptic curve cryptographic key pair.
         /// </summary>
         /// <param name="Private">The private key.</param>
         /// <param name="Public">The public key.</param>
@@ -106,22 +81,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Serialization">The optional serialization of the cryptographic keys. Default is 'raw'.</param>
         /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public KeyPair(Byte[]                Public,
-                       Byte[]?               Private         = null,
-                       CryptoAlgorithm?      Algorithm       = null,
-                       CryptoSerialization?  Serialization   = null,
-                       CryptoEncoding?       Encoding        = null,
-                       CustomData?           CustomData      = null)
+        public ECCKeyPair(Byte[]                Public,
+                          Byte[]?               Private         = null,
+                          CryptoAlgorithm?      Algorithm       = null,
+                          CryptoSerialization?  Serialization   = null,
+                          CryptoEncoding?       Encoding        = null,
+                          CustomData?           CustomData      = null)
 
-            : base(CustomData)
+            : base(Public,
+                   Private,
+                   Algorithm,
+                   Serialization,
+                   Encoding,
+                   CustomData)
 
         {
-
-            this.PublicKeyBytes      = Public;
-            this.PrivateKeyBytes     = Private       ?? [];
-            this.Algorithm           = Algorithm     ?? CryptoAlgorithm.    secp256r1;
-            this.Serialization       = Serialization ?? CryptoSerialization.RAW;
-            this.Encoding            = Encoding      ?? CryptoEncoding.     BASE64;
 
             this.ECParameters        = ECNamedCurveTable.GetByName(this.Algorithm.ToString());
 
@@ -181,24 +155,17 @@ namespace cloud.charging.open.protocols.WWCP
 
             unchecked
             {
-
-                hashCode = this.PublicKeyBytes. GetHashCode() * 13 ^
-                           this.PrivateKeyBytes.GetHashCode() * 11 ^
-                           this.Algorithm.      GetHashCode() *  7 ^
-                           this.Serialization.  GetHashCode() *  5 ^
-                           this.Encoding.       GetHashCode() *  3 ^
-                           base.                GetHashCode();
-
+                hashCode = base.GetHashCode();
             }
 
         }
 
         #endregion
 
-        #region KeyPair(...)
+        #region ECCKeyPair(...)
 
         /// <summary>
-        /// Create a new OCPP CSE asymmetric cryptographic key pair.
+        /// Create a new asymmetric elliptic curve cryptographic key pair.
         /// </summary>
         /// <param name="PrivateKeyBytes">The private key.</param>
         /// <param name="PublicKeyBytes">The public key.</param>
@@ -206,37 +173,30 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Serialization">The optional serialization of the cryptographic keys. Default is 'raw'.</param>
         /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public KeyPair(ECPublicKeyParameters    PublicKey,
-                       Byte[]                   PublicKeyBytes,
-                       ECPrivateKeyParameters?  PrivateKey        = null,
-                       Byte[]?                  PrivateKeyBytes   = null,
-                       CryptoAlgorithm?         Algorithm         = null,
-                       CryptoSerialization?     Serialization     = null,
-                       CryptoEncoding?          Encoding          = null,
-                       CustomData?              CustomData        = null)
+        public ECCKeyPair(ECPublicKeyParameters    PublicKey,
+                          Byte[]                   PublicKeyBytes,
+                          ECPrivateKeyParameters?  PrivateKey        = null,
+                          Byte[]?                  PrivateKeyBytes   = null,
+                          CryptoAlgorithm?         Algorithm         = null,
+                          CryptoSerialization?     Serialization     = null,
+                          CryptoEncoding?          Encoding          = null,
+                          CustomData?              CustomData        = null)
 
-            : base(CustomData)
+            : base(PublicKeyBytes,
+                   PrivateKeyBytes,
+                   Algorithm,
+                   Serialization,
+                   Encoding,
+                   CustomData)
 
         {
 
-            this.PublicKey        = PublicKey;
-            this.PublicKeyBytes   = PublicKeyBytes;
-            this.PrivateKey       = PrivateKey;
-            this.PrivateKeyBytes  = PrivateKeyBytes ?? [];
-            this.Algorithm        = Algorithm       ?? CryptoAlgorithm.    secp256r1;
-            this.Serialization    = Serialization   ?? CryptoSerialization.RAW;
-            this.Encoding         = Encoding        ?? CryptoEncoding.     BASE64;
+            this.PublicKey   = PublicKey;
+            this.PrivateKey  = PrivateKey;
 
             unchecked
             {
-
-                hashCode = this.PublicKeyBytes. GetHashCode() * 13 ^
-                           this.PrivateKeyBytes.GetHashCode() * 11 ^
-                           this.Algorithm.      GetHashCode() *  7 ^
-                           this.Serialization.  GetHashCode() *  5 ^
-                           this.Encoding.       GetHashCode() *  3 ^
-                           base.                GetHashCode();
-
+                hashCode = base.GetHashCode();
             }
 
         }
@@ -257,7 +217,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static KeyPair? GenerateKeys(CryptoAlgorithm? Algorithm = null)
         {
 
-            var ecParameters  = ECNamedCurveTable. GetByName((Algorithm ?? CryptoAlgorithm.secp256r1).ToString());
+            var ecParameters  = ECNamedCurveTable. GetByName((Algorithm ?? CryptoAlgorithm.Secp256r1).ToString());
 
             if (ecParameters is null)
                 return null;
@@ -287,34 +247,34 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Parse       (JSON, CustomKeyPairParser = null)
+        #region (static) Parse       (JSON, CustomECCKeyPairParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a cryptographic key pair.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomKeyPairParser">An optional delegate to parse custom cryptographic key pairs.</param>
-        public static KeyPair Parse(JObject                                JSON,
-                                    CustomJObjectParserDelegate<KeyPair>?  CustomKeyPairParser   = null)
+        /// <param name="CustomECCKeyPairParser">An optional delegate to parse custom cryptographic key pairs.</param>
+        public static KeyPair Parse(JObject                                   JSON,
+                                    CustomJObjectParserDelegate<ECCKeyPair>?  CustomECCKeyPairParser   = null)
         {
 
             if (TryParse(JSON,
                          out var keyPair,
                          out var errorResponse,
-                         CustomKeyPairParser) &&
+                         CustomECCKeyPairParser) &&
                 keyPair is not null)
             {
                 return keyPair;
             }
 
-            throw new ArgumentException("The given JSON representation of a key pair is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an elliptic curve key pair is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse    (JSON, out KeyPair, out ErrorResponse, CustomKeyPairParser = null)
+        #region (static) TryParse    (JSON, out ECCKeyPair, out ErrorResponse, CustomECCKeyPairParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -322,14 +282,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// Try to parse the given JSON representation of a key pair.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="KeyPair">The parsed connector type.</param>
+        /// <param name="ECCKeyPair">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                            JSON,
-                                       [NotNullWhen(true)]  out KeyPair?  KeyPair,
-                                       [NotNullWhen(false)] out String?   ErrorResponse)
+        public static Boolean TryParse(JObject                               JSON,
+                                       [NotNullWhen(true)]  out ECCKeyPair?  ECCKeyPair,
+                                       [NotNullWhen(false)] out String?      ErrorResponse)
 
             => TryParse(JSON,
-                        out KeyPair,
+                        out ECCKeyPair,
                         out ErrorResponse,
                         null);
 
@@ -338,19 +298,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// Try to parse the given JSON representation of a key pair.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="KeyPair">The parsed connector type.</param>
+        /// <param name="ECCKeyPair">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomKeyPairParser">An optional delegate to parse custom key pairs.</param>
-        public static Boolean TryParse(JObject                                JSON,
-                                       [NotNullWhen(true)]  out KeyPair?      KeyPair,
-                                       [NotNullWhen(false)] out String?       ErrorResponse,
-                                       CustomJObjectParserDelegate<KeyPair>?  CustomKeyPairParser   = null)
+        /// <param name="CustomECCKeyPairParser">An optional delegate to parse custom key pairs.</param>
+        public static Boolean TryParse(JObject                                   JSON,
+                                       [NotNullWhen(true)]  out ECCKeyPair?      ECCKeyPair,
+                                       [NotNullWhen(false)] out String?          ErrorResponse,
+                                       CustomJObjectParserDelegate<ECCKeyPair>?  CustomECCKeyPairParser   = null)
         {
 
             try
             {
 
-                KeyPair = default;
+                ECCKeyPair = default;
 
                 #region Private          [mandatory]
 
@@ -436,25 +396,25 @@ namespace cloud.charging.open.protocols.WWCP
                 #endregion
 
 
-                KeyPair = new KeyPair(
-                              Private,
-                              Public,
-                              Algorithm,
-                              Serialization,
-                              Encoding,
-                              CustomData
-                          );
+                ECCKeyPair = new ECCKeyPair(
+                                 Private,
+                                 Public,
+                                 Algorithm,
+                                 Serialization,
+                                 Encoding,
+                                 CustomData
+                             );
 
-                if (CustomKeyPairParser is not null)
-                    KeyPair = CustomKeyPairParser(JSON,
-                                                  KeyPair);
+                if (CustomECCKeyPairParser is not null)
+                    ECCKeyPair = CustomECCKeyPairParser(JSON,
+                                                        ECCKeyPair);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                KeyPair        = default;
+                ECCKeyPair        = default;
                 ErrorResponse  = "The given JSON representation of a key pair is invalid: " + e.Message;
                 return false;
             }
@@ -479,7 +439,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  new JProperty("private",         Encoding.Encode(PrivateKeyBytes)),
                                  new JProperty("public",          Encoding.Encode(PublicKeyBytes)),
 
-                           Algorithm     != CryptoAlgorithm.secp256r1
+                           Algorithm     != CryptoAlgorithm.Secp256r1
                                ? new JProperty("algorithm",       Algorithm.    ToString())
                                : null,
 
@@ -528,7 +488,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) ParsePrivateKey    (PrivateKey,              Serialization = "base64", Algorithm = "secp256r1")
+        #region (static) ParsePrivateKey    (PrivateKey,                 Serialization = "base64", Algorithm = "secp256r1")
 
         /// <summary>
         /// Parse the given private key and calculate its public key.
@@ -536,19 +496,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PrivateKey">A text representation of a private key.</param>
         /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the private key. [default: secp256r1]</param>
-        public static KeyPair? ParsePrivateKey(String                PrivateKey,
-                                               CryptoAlgorithm?      Algorithm       = null,
-                                               CryptoSerialization?  Serialization   = null,
-                                               CryptoEncoding?       Encoding        = null)
+        public static ECCKeyPair? ParsePrivateKey(String                PrivateKey,
+                                                  CryptoAlgorithm?      Algorithm       = null,
+                                                  CryptoSerialization?  Serialization   = null,
+                                                  CryptoEncoding?       Encoding        = null)
         {
 
             if (TryParsePrivateKey(PrivateKey,
-                                   out var keyPair,
+                                   out var eccKeyPair,
                                    Algorithm,
                                    Serialization,
                                    Encoding))
             {
-                return keyPair;
+                return eccKeyPair;
             }
 
             return null;
@@ -557,23 +517,23 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParsePrivateKey (PrivateKey, out KeyPair, Serialization = "base64", Algorithm = "secp256r1")
+        #region (static) TryParsePrivateKey (PrivateKey, out ECCKeyPair, Serialization = "base64", Algorithm = "secp256r1")
 
         /// <summary>
         /// Try to parse the given private key and calculate its public key.
         /// </summary>
         /// <param name="PrivateKey">A text representation of a private key.</param>
-        /// <param name="KeyPair">The parsed key pair.</param>
+        /// <param name="ECCKeyPair">The parsed key pair.</param>
         /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the private key. [default: secp256r1]</param>
         public static Boolean TryParsePrivateKey(String                PrivateKey,
-                                                 out KeyPair?          KeyPair,
+                                                 out ECCKeyPair?       ECCKeyPair,
                                                  CryptoAlgorithm?      Algorithm       = null,
                                                  CryptoSerialization?  Serialization   = null,
                                                  CryptoEncoding?       Encoding        = null)
         {
 
-            KeyPair = null;
+            ECCKeyPair = null;
 
             Byte[]? privateKeyBytes;
             try
@@ -599,7 +559,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
             }
 
-            var ecParameters      = ECNamedCurveTable.GetByName((Algorithm ?? CryptoAlgorithm.secp256r1).ToString());
+            var ecParameters      = ECNamedCurveTable.GetByName((Algorithm ?? CryptoAlgorithm.Secp256r1).ToString());
             if (ecParameters is null)
                 return false;
 
@@ -621,10 +581,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             var q                 = ecParameters.G.Multiply(privateKeyParams.D);
 
-            KeyPair = new KeyPair(
-                          q.GetEncoded(false),
-                          privateKeyParams.D.ToByteArray()
-                      );
+            ECCKeyPair = new ECCKeyPair(
+                             q.GetEncoded(false),
+                             privateKeyParams.D.ToByteArray()
+                         );
 
             return true;
 
@@ -633,7 +593,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) ParsePublicKey     (PublicKey,              Algorithm = secp256r1, Serialization = raw, Encoding = base64)
+        #region (static) ParsePublicKey     (PublicKey,                 Algorithm = secp256r1, Serialization = raw, Encoding = base64)
 
         /// <summary>
         /// Parse the given public key.
@@ -641,19 +601,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PublicKey">A text representation of a public key.</param>
         /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the public key. [default: secp256r1]</param>
-        public static KeyPair? ParsePublicKey(String                PublicKey,
-                                              CryptoAlgorithm?      Algorithm       = null,
-                                              CryptoSerialization?  Serialization   = null,
-                                              CryptoEncoding?       Encoding        = null)
+        public static ECCKeyPair? ParsePublicKey(String                PublicKey,
+                                                 CryptoAlgorithm?      Algorithm       = null,
+                                                 CryptoSerialization?  Serialization   = null,
+                                                 CryptoEncoding?       Encoding        = null)
         {
 
             if (TryParsePublicKey(PublicKey,
-                                  out var keyPair,
+                                  out var eccKeyPair,
                                   Algorithm,
                                   Serialization,
                                   Encoding))
             {
-                return keyPair;
+                return eccKeyPair;
             }
 
             return null;
@@ -662,24 +622,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParsePublicKey  (PublicKey, out KeyPair, Algorithm = secp256r1, Serialization = raw, Encoding = base64)
+        #region (static) TryParsePublicKey  (PublicKey, out ECCKeyPair, Algorithm = secp256r1, Serialization = raw, Encoding = base64)
 
         /// <summary>
         /// Try to parse the given public key.
         /// </summary>
         /// <param name="PublicKey">A text representation of a public key.</param>
-        /// <param name="KeyPair">The parsed key pair.</param>
+        /// <param name="ECCKeyPair">The parsed ECC key pair.</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the public key. [default: secp256r1]</param>
         /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
         /// <param name="Encoding"></param>
         public static Boolean TryParsePublicKey(String                PublicKey,
-                                                out KeyPair?          KeyPair,
+                                                out ECCKeyPair?       ECCKeyPair,
                                                 CryptoAlgorithm?      Algorithm       = null,
                                                 CryptoSerialization?  Serialization   = null,
                                                 CryptoEncoding?       Encoding        = null)
         {
 
-            KeyPair = null;
+            ECCKeyPair = null;
 
             Byte[]? publicKeyBytes;
             try
@@ -706,7 +666,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
 
 
-            var ecParameters = ECNamedCurveTable.GetByName((Algorithm ?? CryptoAlgorithm.secp256r1).ToString());
+            var ecParameters = ECNamedCurveTable.GetByName((Algorithm ?? CryptoAlgorithm.Secp256r1).ToString());
             if (ecParameters is null)
                 return false;
 
@@ -741,7 +701,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            KeyPair = new KeyPair(
+            ECCKeyPair = new ECCKeyPair(
                           publicKey,
                           publicKeyBytes
                       );
@@ -753,13 +713,368 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        public PublicKey ToPublicKey()
+        public ECCPublicKey ToECCPublicKey()
 
             => new (PublicKeyBytes,
                     Algorithm,
                     Serialization,
                     Encoding,
-                    CustomData);
+                    CustomData,
+
+                    ECParameters,
+                    ECDomainParameters,
+                    PublicKey);
+
+
+        #region Operator overloading
+
+        #region Operator == (KeyPair1, KeyPair2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="KeyPair1">A key pair.</param>
+        /// <param name="KeyPair2">Another key pair.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (ECCKeyPair? KeyPair1,
+                                           ECCKeyPair? KeyPair2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (ReferenceEquals(KeyPair1, KeyPair2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (KeyPair1 is null || KeyPair2 is null)
+                return false;
+
+            return KeyPair1.Equals(KeyPair2);
+
+        }
+
+        #endregion
+
+        #region Operator != (KeyPair1, KeyPair2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="KeyPair1">A key pair.</param>
+        /// <param name="KeyPair2">Another key pair.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (ECCKeyPair? KeyPair1,
+                                           ECCKeyPair? KeyPair2)
+
+            => !(KeyPair1 == KeyPair2);
+
+        #endregion
+
+        #endregion
+
+        #region IEquatable<ECCKeyPair> Members
+
+        #region Equals(Object)
+
+        /// <summary>
+        /// Compares two key pairs for equality.
+        /// </summary>
+        /// <param name="Object">A key pair to compare with.</param>
+        public override Boolean Equals(Object? Object)
+
+            => Object is ECCKeyPair ecckeyPair &&
+                   Equals(ecckeyPair);
+
+        #endregion
+
+        #region Equals(ECCKeyPair)
+
+        /// <summary>
+        /// Compares two key pairs for equality.
+        /// </summary>
+        /// <param name="ECCKeyPair">A key pair to compare with.</param>
+        public Boolean Equals(ECCKeyPair? ECCKeyPair)
+
+            => ECCKeyPair is not null &&
+
+               PrivateKeyBytes.SequenceEqual(ECCKeyPair.PrivateKeyBytes) &&
+               PublicKeyBytes. SequenceEqual(ECCKeyPair.PublicKeyBytes)  &&
+               Algorithm.      Equals       (ECCKeyPair.Algorithm)       &&
+               Serialization.  Equals       (ECCKeyPair.Serialization)   &&
+               Encoding.       Equals       (ECCKeyPair.Encoding)        &&
+               base.           Equals       (ECCKeyPair);
+
+        #endregion
+
+        #endregion
+
+        #region (override) GetHashCode()
+
+        private readonly Int32 hashCode;
+
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
+
+        #endregion
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
+        public override String ToString()
+
+            => String.Concat(
+
+                   PrivateKeyBytes is not null
+                       ? $"ecc private: {PrivateKeyBytes.ToBase64()}, "
+                       : "",
+
+                   $"ecc public: {PublicKeyBytes.ToBase64()}"
+
+               );
+
+        #endregion
+
+    }
+
+
+    /// <summary>
+    /// An asymmetric cryptographic key pair.
+    /// </summary>
+    public class KeyPair : ACustomData,
+                           IEquatable<KeyPair>
+    {
+
+        #region Data
+
+        public const String Context = "https://open.charging.cloud/context//context/cryptography/keyPair";
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The cryptographic public key.
+        /// </summary>
+        [Mandatory]
+        public  Byte[]                   PublicKeyBytes        { get; }
+
+        /// <summary>
+        /// The optional cryptographic private key.
+        /// </summary>
+        [Optional]
+        public  Byte[]                   PrivateKeyBytes       { get; }
+
+        /// <summary>
+        /// The optional cryptographic algorithm of the keys. Default is 'secp256r1'.
+        /// </summary>
+        [Optional]
+        public  CryptoAlgorithm          Algorithm             { get; }
+
+        /// <summary>
+        /// The optional serialization of the cryptographic keys. Default is 'raw'.
+        /// </summary>
+        [Optional]
+        public  CryptoSerialization      Serialization         { get; }
+
+        /// <summary>
+        /// The optional encoding of the cryptographic keys. Default is 'base64'.
+        /// </summary>
+        [Optional]
+        public  CryptoEncoding           Encoding              { get; }
+
+
+        //public  X9ECParameters?          ECParameters          { get; }
+
+        //public  ECDomainParameters?      ECDomainParameters    { get; }
+
+
+        //public  ECPrivateKeyParameters?  PrivateKey            { get; }
+
+        //public  ECPublicKeyParameters    PublicKey             { get; }
+
+
+        //public  Byte[] PublicKeyASN1
+        //    => SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(PublicKey). ToAsn1Object().GetEncoded();
+
+        //public  Byte[] PrivateKeyASN1
+        //    => PrivateKeyInfoFactory.      CreatePrivateKeyInfo      (PrivateKey).ToAsn1Object().GetEncoded();
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new asymmetric cryptographic key pair.
+        /// </summary>
+        /// <param name="Private">The private key.</param>
+        /// <param name="Public">The public key.</param>
+        /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
+        /// <param name="Serialization">The optional serialization of the cryptographic keys. Default is 'raw'.</param>
+        /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public KeyPair(Byte[]                Public,
+                       Byte[]?               Private         = null,
+                       CryptoAlgorithm?      Algorithm       = null,
+                       CryptoSerialization?  Serialization   = null,
+                       CryptoEncoding?       Encoding        = null,
+                       CustomData?           CustomData      = null)
+
+            : base(CustomData)
+
+        {
+
+            this.PublicKeyBytes      = Public;
+            this.PrivateKeyBytes     = Private       ?? [];
+            this.Algorithm           = Algorithm     ?? CryptoAlgorithm.    Secp256r1;
+            this.Serialization       = Serialization ?? CryptoSerialization.RAW;
+            this.Encoding            = Encoding      ?? CryptoEncoding.     BASE64;
+
+            //this.ECParameters        = ECNamedCurveTable.GetByName(this.Algorithm.ToString());
+
+            //if (this.ECParameters is null)
+            //    throw new ArgumentException("The given cryptographic algorithm is unknown!", nameof(Algorithm));
+
+            //this.ECDomainParameters  = new ECDomainParameters(
+            //                               ECParameters.Curve,
+            //                               ECParameters.G,
+            //                               ECParameters.N,
+            //                               ECParameters.H,
+            //                               ECParameters.GetSeed()
+            //                           );
+
+            //#region Try to parse the public key
+
+            //try
+            //{
+
+            //    this.PublicKey       = new ECPublicKeyParameters(
+            //                               "ECDSA",
+            //                               ECParameters.Curve.DecodePoint(this.PublicKeyBytes),
+            //                               ECDomainParameters
+            //                           );
+
+            //}
+            //catch (Exception e)
+            //{
+            //    throw new ArgumentException("The given public key is invalid!", nameof(Public), e);
+            //}
+
+            //#endregion
+
+            //#region Try to parse the private key
+
+            //if (this.PrivateKeyBytes.Length > 0)
+            //{
+
+            //    try
+            //    {
+
+            //        this.PrivateKey = new ECPrivateKeyParameters(
+            //                              new BigInteger(this.PrivateKeyBytes),
+            //                              ECDomainParameters
+            //                          );
+
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        throw new ArgumentException("The given private key is invalid!", nameof(Private), e);
+            //    }
+
+            //}
+
+            //#endregion
+
+
+            unchecked
+            {
+
+                hashCode = this.PublicKeyBytes. GetHashCode() * 13 ^
+                           this.PrivateKeyBytes.GetHashCode() * 11 ^
+                           this.Algorithm.      GetHashCode() *  7 ^
+                           this.Serialization.  GetHashCode() *  5 ^
+                           this.Encoding.       GetHashCode() *  3 ^
+                           base.                GetHashCode();
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region Documentation
+
+        // tba.
+
+        #endregion
+
+        #region ToJSON(CustomKeyPairSerializer = null, CustomCustomDataSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomKeyPairSerializer">A delegate to serialize cryptographic key pairs.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<KeyPair>?     CustomKeyPairSerializer      = null,
+                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
+        {
+
+            var json = JSONObject.Create(
+
+                                 new JProperty("private",         Encoding.Encode(PrivateKeyBytes)),
+                                 new JProperty("public",          Encoding.Encode(PublicKeyBytes)),
+
+                           Algorithm     != CryptoAlgorithm.Secp256r1
+                               ? new JProperty("algorithm",       Algorithm.    ToString())
+                               : null,
+
+                           Serialization != CryptoSerialization.RAW
+                               ? new JProperty("serialization",   Serialization.ToString())
+                               : null,
+
+                           Encoding      != CryptoEncoding.BASE64
+                               ? new JProperty("encoding",        Encoding.     ToString())
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",      CustomData.   ToJSON(CustomCustomDataSerializer))
+                               : null
+
+                       );
+
+            return CustomKeyPairSerializer is not null
+                       ? CustomKeyPairSerializer(this, json)
+                       : json;
+
+        }
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public KeyPair Clone()
+
+            => new (
+
+                   (Byte[]) PrivateKeyBytes.Clone(),
+                   (Byte[]) PublicKeyBytes. Clone(),
+
+                   Algorithm.    Clone,
+                   Serialization.Clone,
+                   Encoding.     Clone,
+
+                   CustomData
+
+               );
+
+        #endregion
 
 
         #region Operator overloading
