@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                                    };
 
             base.OnCloseMessageReceived         += (timestamp, server, connection, frame, eventTrackingId, closingStatusCode, closingReason, ct) => {
-                                                       DebugX.Log($"HTTP WebSocket Server '{connection.RemoteSocket}' Close received:  '{closingStatusCode}', '{closingReason ?? ""}'");
+                                                       DebugX.Log($"HTTP WebSocket Server '{connection.Login}' Close received:  '{closingStatusCode}', '{closingReason ?? ""}'");
                                                        return Task.CompletedTask;
                                                    };
 

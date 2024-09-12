@@ -19,11 +19,9 @@
 
 using System.Runtime.CompilerServices;
 
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
-
-using cloud.charging.open.protocols.WWCP;
-using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
@@ -52,6 +50,21 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         Routing                    Routing                  { get; }
 
+        String?                    ClientCloseMessage       { get; }
+
+
+
+        /// <summary>
+        /// An event sent whenever the HTTP web socket server started.
+        /// </summary>
+        event OnServerStartedDelegate?                         OnWebSocketServerStarted;
+
+        /// <summary>
+        /// An event sent whenever a new TCP connection was accepted.
+        /// </summary>
+        event OnNewTCPConnectionDelegate?                      OnNewWebSocketTCPConnection;
+
+
 
         Byte[]  GetEncryptionKey     (NetworkingNode_Id DestinationId, UInt16? KeyId = null);
         Byte[]  GetDecryptionKey     (NetworkingNode_Id SourceNodeId,  UInt16? KeyId = null);
@@ -60,8 +73,6 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         UInt64  GetEncryptionCounter (NetworkingNode_Id DestinationId, UInt16? KeyId = null);
 
 
-
-        String? ClientCloseMessage { get; }
 
 
 
