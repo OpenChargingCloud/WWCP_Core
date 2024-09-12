@@ -17,14 +17,13 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
-
-using social.OpenData.UsersAPI;
-using System.Diagnostics.CodeAnalysis;
 
 #endregion
 

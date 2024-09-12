@@ -17,19 +17,14 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Diagnostics;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
 
+using org.GraphDefined.Vanaheimr.Aegir;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using org.GraphDefined.Vanaheimr.Aegir;
-using System.Threading.Tasks;
-using org.GraphDefined.Vanaheimr.Hermod;
-using social.OpenData.UsersAPI;
+
 using Newtonsoft.Json.Linq;
 
 #endregion

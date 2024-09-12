@@ -25,9 +25,6 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
-using social.OpenData.UsersAPI;
-using System.Configuration;
-
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP

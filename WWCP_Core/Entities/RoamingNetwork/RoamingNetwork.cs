@@ -31,8 +31,6 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using cloud.charging.open.protocols.WWCP.Networking;
 
-using social.OpenData.UsersAPI;
-
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
