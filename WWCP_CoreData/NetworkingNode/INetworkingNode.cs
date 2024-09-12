@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
 
         /// <summary>
-        /// An event sent whenever the HTTP web socket server started.
+        /// An event sent whenever the HTTP WebSocket server started.
         /// </summary>
         event OnServerStartedDelegate?                         OnWebSocketServerStarted;
 

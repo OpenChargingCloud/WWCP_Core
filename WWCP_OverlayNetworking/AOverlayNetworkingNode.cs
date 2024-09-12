@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region WebSocket connections
 
         /// <summary>
-        /// An event sent whenever the HTTP web socket server started.
+        /// An event sent whenever the HTTP WebSocket server started.
         /// </summary>
         public event OnServerStartedDelegate?                 OnServerStarted;
 
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         public event OnTCPConnectionClosedDelegate?           OnTCPConnectionClosed;
 
         /// <summary>
-        /// An event sent whenever the HTTP web socket server stopped.
+        /// An event sent whenever the HTTP WebSocket server stopped.
         /// </summary>
         public event OnServerStoppedDelegate?                 OnServerStopped;
 

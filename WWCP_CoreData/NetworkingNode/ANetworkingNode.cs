@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #region WebSocket Server
 
         /// <summary>
-        /// An event sent whenever the HTTP web socket server started.
+        /// An event sent whenever the HTTP WebSocket server started.
         /// </summary>
         public event OnServerStartedDelegate?                         OnWebSocketServerStarted;
 
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         public event OnTCPConnectionClosedDelegate?                   OnWebSocketServerTCPConnectionClosed;
 
         /// <summary>
-        /// An event sent whenever the HTTP web socket server stopped.
+        /// An event sent whenever the HTTP WebSocket server stopped.
         /// </summary>
         public event OnServerStoppedDelegate?                         OnWebSocketServerStopped;
 
@@ -624,79 +624,41 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
             #region OnWebSocketServerStarted
 
-            WebSocketServer.OnServerStarted += async (timestamp,
-                                                      server,
-                                                      eventTrackingId,
-                                                      cancellationToken) => {
+            WebSocketServer.OnServerStarted += (timestamp,
+                                                server,
+                                                eventTrackingId,
+                                                cancellationToken) =>
 
-                var onServerStarted = OnWebSocketServerStarted;
-                if (onServerStarted is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onServerStarted.GetInvocationList().
-                                               OfType <OnServerStartedDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              timestamp,
-                                                                              server,
-                                                                              eventTrackingId,
-                                                                              cancellationToken
-                                                                          )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(AWWCPNetworkingNode),
-                                  nameof(OnWebSocketServerStarted),
-                                  e
-                              );
-                    }
-                }
-
-            };
+                LogEvent(
+                    OnWebSocketServerStarted,
+                    loggingDelegate => loggingDelegate.Invoke(
+                         timestamp,
+                         server,
+                         eventTrackingId,
+                         cancellationToken
+                    )
+                );
 
             #endregion
 
             #region OnNewWebSocketTCPConnection
 
-            WebSocketServer.OnNewTCPConnection += async (timestamp,
-                                                         webSocketServer,
-                                                         newTCPConnection,
-                                                         eventTrackingId,
-                                                         cancellationToken) => {
+            WebSocketServer.OnNewTCPConnection += (timestamp,
+                                                   webSocketServer,
+                                                   newTCPConnection,
+                                                   eventTrackingId,
+                                                   cancellationToken) =>
 
-                var onNewTCPConnection = OnNewWebSocketTCPConnection;
-                if (onNewTCPConnection is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onNewTCPConnection.GetInvocationList().
-                                               OfType <OnNewTCPConnectionDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              timestamp,
-                                                                              webSocketServer,
-                                                                              newTCPConnection,
-                                                                              eventTrackingId,
-                                                                              cancellationToken
-                                                                          )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(AWWCPNetworkingNode),
-                                  nameof(OnNewWebSocketTCPConnection),
-                                  e
-                              );
-                    }
-                }
-
-            };
+                LogEvent(
+                    OnNewWebSocketTCPConnection,
+                    loggingDelegate => loggingDelegate.Invoke(
+                         timestamp,
+                         webSocketServer,
+                         newTCPConnection,
+                         eventTrackingId,
+                         cancellationToken
+                    )
+                );
 
             #endregion
 
@@ -856,41 +818,22 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
             #region OnWebSocketServerStopped
 
-            WebSocketServer.OnServerStopped += async (timestamp,
-                                                      server,
-                                                      eventTrackingId,
-                                                      reason,
-                                                      cancellationToken) => {
+            WebSocketServer.OnServerStopped += (timestamp,
+                                                server,
+                                                eventTrackingId,
+                                                reason,
+                                                cancellationToken) =>
 
-                var logger = OnWebSocketServerStopped;
-                if (logger is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(logger.GetInvocationList().
-                                                 OfType <OnServerStoppedDelegate>().
-                                                 Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                                timestamp,
-                                                                                server,
-                                                                                eventTrackingId,
-                                                                                reason,
-                                                                                cancellationToken
-                                                                            )).
-                                                 ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(AWWCPNetworkingNode),
-                                  nameof(OnWebSocketServerStopped),
-                                  e
-                              );
-                    }
-                }
-
-            };
+                LogEvent(
+                    OnWebSocketServerStopped,
+                    loggingDelegate => loggingDelegate.Invoke(
+                         timestamp,
+                         server,
+                         eventTrackingId,
+                         reason,
+                         cancellationToken
+                    )
+                );
 
             #endregion
 
@@ -905,7 +848,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #region Shutdown(Message = null, Wait = true)
 
         /// <summary>
-        /// Shutdown the HTTP web socket listener thread.
+        /// Shutdown the HTTP WebSocket listener thread.
         /// </summary>
         /// <param name="Message">An optional shutdown message.</param>
         /// <param name="Wait">Wait until the server finally shutted down.</param>
@@ -1136,6 +1079,25 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #endregion
 
 
+
+        #region (private) LogEvent(Logger, LogHandler, ...)
+
+        private Task LogEvent<TDelegate>(TDelegate?                                         Logger,
+                                         Func<TDelegate, Task>                              LogHandler,
+                                         [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
+                                         [CallerMemberName()]                       String  OCPPCommand   = "")
+
+            where TDelegate : Delegate
+
+                => LogEvent(
+                       nameof(AWWCPNetworkingNode),
+                       Logger,
+                       LogHandler,
+                       EventName,
+                       OCPPCommand
+                   );
+
+        #endregion
 
         #region LogEvent(OCPPIO, Logger, LogHandler, ...)
 

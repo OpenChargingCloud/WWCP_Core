@@ -40,14 +40,6 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 namespace cloud.charging.open.protocols.WWCP.WebSockets
 {
 
-    //public delegate Task ProcessJSONMessage(DateTime                                                          MessageTimestamp,
-    //                                        org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketConnection  WebSocketConnection,
-    //                                        NetworkingNode_Id?                                                sourceNodeId,
-    //                                        JArray                                                            JSONMessage,
-    //                                        EventTracking_Id                                                  EventTrackingId,
-    //                                        CancellationToken                                                 CancellationToken);
-
-
     public class NetworkingNodeConnectionInfo(WebSocketServerConnection  WebSocketServerConnection,
                                               DateTime                   ConnectedSince,
                                               NetworkingMode?            NetworkingMode = null)
@@ -394,8 +386,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 if (Connection.HTTPRequest?.Authorization is HTTPBasicAuthentication basicAuthentication)
                 {
 
-                    if (ClientLogins.TryGetValue(basicAuthentication.Username, out var password) &&
-                        basicAuthentication.Password == password)
+                    if (ClientLogins.TryGetValue(basicAuthentication.Username, out var securePassword) &&
+                        securePassword.Equals(basicAuthentication.Password))
                     {
                         DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'");
                         return Task.FromResult<HTTPResponse?>(null);
