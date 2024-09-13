@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Status">An EVSE status.</param>
         public static Boolean Contains(this IEnumerable<EVSEStatus>  EVSEStatus,
                                        EVSE_Id                       Id,
-                                       EVSEStatusTypes               Status)
+                                       EVSEStatusType               Status)
         {
 
             foreach (var status in EVSEStatus)
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The current status of the EVSE.
         /// </summary>
-        public EVSEStatusTypes  Status       { get; }
+        public EVSEStatusType  Status       { get; }
 
         /// <summary>
         /// The timestamp of the current status of the EVSE.
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamped status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusTypes> TimestampedStatus
+        public Timestamped<EVSEStatusType> TimestampedStatus
             => new (Timestamp, Status);
 
         #endregion
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Status">The current timestamped status of the EVSE.</param>
         /// <param name="Context">An optional data source or context for the EVSE status.</param>
         public EVSEStatus(EVSE_Id                       Id,
-                          Timestamped<EVSEStatusTypes>  Status,
+                          Timestamped<EVSEStatusType>  Status,
                           Context?                      Context   = null)
 
             : this(Id,
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp of the status change of the EVSE.</param>
         /// <param name="Context">An optional data source or context for the EVSE status.</param>
         public EVSEStatus(EVSE_Id          Id,
-                          EVSEStatusTypes  Status,
+                          EVSEStatusType  Status,
                           DateTime         Timestamp,
                           Context?         Context   = null)
         {

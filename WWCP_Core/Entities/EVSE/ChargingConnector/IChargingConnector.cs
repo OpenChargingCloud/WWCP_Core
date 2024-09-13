@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP
         IEVSE?                EVSE             { get; set; }
 
         ChargingConnector_Id  Id               { get; }
-        Boolean?              CableAttached    { get; }
+        Boolean               CableAttached    { get; }
         Meter?                CableLength      { get; }
         Boolean?              Lockable         { get; }
         ChargingPlugTypes     Plug             { get; }

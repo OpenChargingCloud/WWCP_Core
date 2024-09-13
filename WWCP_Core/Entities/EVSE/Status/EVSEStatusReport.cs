@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// An EVSE status report.
     /// </summary>
-    public class EVSEStatusReport : StatusReport<IEVSE, EVSEStatusTypes>
+    public class EVSEStatusReport : StatusReport<IEVSE, EVSEStatusType>
     {
 
         /// <summary>

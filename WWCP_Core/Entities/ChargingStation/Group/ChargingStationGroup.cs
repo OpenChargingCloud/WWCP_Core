@@ -762,8 +762,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
                                              EventTracking_Id              EventTrackingId,
                                              EVSE                          EVSE,
-                                             Timestamped<EVSEStatusTypes>  OldStatus,
-                                             Timestamped<EVSEStatusTypes>  NewStatus)
+                                             Timestamped<EVSEStatusType>  OldStatus,
+                                             Timestamped<EVSEStatusType>  NewStatus)
         {
 
             var onEVSEStatusChanged = OnEVSEStatusChanged;

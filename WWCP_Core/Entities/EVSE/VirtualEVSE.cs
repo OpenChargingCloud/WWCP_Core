@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                          I18NString?                                          Description                    = null,
 
                                                          Timestamped<EVSEAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                         Timestamped<EVSEStatusTypes>?                        InitialStatus                  = null,
+                                                         Timestamped<EVSEStatusType>?                        InitialStatus                  = null,
                                                          UInt16                                               MaxAdminStatusScheduleSize     = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
                                                          UInt16                                               MaxStatusScheduleSize          = VirtualEVSE.DefaultMaxStatusScheduleSize,
 
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    ChargingSession,
 
                    InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
-                   InitialStatus      ?? EVSEStatusTypes.Available,
+                   InitialStatus      ?? EVSEStatusType.Available,
                    MaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize,
                    LastStatusUpdate,
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                     I18NString?                                          Description                    = null,
 
                                                                     Timestamped<EVSEAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                                    Timestamped<EVSEStatusTypes>?                        InitialStatus                  = null,
+                                                                    Timestamped<EVSEStatusType>?                        InitialStatus                  = null,
                                                                     UInt16                                               MaxAdminStatusScheduleSize     = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
                                                                     UInt16                                               MaxStatusScheduleSize          = VirtualEVSE.DefaultMaxStatusScheduleSize,
 
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                    ChargingSession,
 
                                    InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
-                                   InitialStatus      ?? EVSEStatusTypes.Available,
+                                   InitialStatus      ?? EVSEStatusType.Available,
                                    MaxAdminStatusScheduleSize,
                                    MaxStatusScheduleSize,
                                    LastStatusUpdate,
@@ -430,7 +430,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          I18NString?                                          Description                            = null,
 
                                                                          Timestamped<EVSEAdminStatusTypes>?                   InitialAdminStatus                     = null,
-                                                                         Timestamped<EVSEStatusTypes>?                        InitialStatus                          = null,
+                                                                         Timestamped<EVSEStatusType>?                        InitialStatus                          = null,
                                                                          UInt16                                               MaxAdminStatusScheduleSize             = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
                                                                          UInt16                                               MaxStatusScheduleSize                  = VirtualEVSE.DefaultMaxStatusScheduleSize,
 
@@ -493,7 +493,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    Description,
 
                    InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
-                   InitialStatus      ?? EVSEStatusTypes.Available,
+                   InitialStatus      ?? EVSEStatusType.Available,
                    MaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize,
 
@@ -604,7 +604,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
     /// </summary>
     public class VirtualEVSE : ACryptoEMobilityEntity<EVSE_Id,
                                                       EVSEAdminStatusTypes,
-                                                      EVSEStatusTypes>,
+                                                      EVSEStatusType>,
                                IEquatable<VirtualEVSE>, IComparable<VirtualEVSE>, IComparable,
                                IRemoteEVSE
     {
@@ -1309,7 +1309,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                              I18NString?                          Description                  = null,
 
                              Timestamped<EVSEAdminStatusTypes>?   InitialAdminStatus           = null,
-                             Timestamped<EVSEStatusTypes>?        InitialStatus                = null,
+                             Timestamped<EVSEStatusType>?        InitialStatus                = null,
                              UInt16?                              MaxAdminStatusScheduleSize   = null,
                              UInt16?                              MaxStatusScheduleSize        = null,
 
@@ -1351,7 +1351,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    PrivateKey,
                    PublicKeyCertificates,
                    InitialAdminStatus         ?? EVSEAdminStatusTypes.Operational,
-                   InitialStatus              ?? EVSEStatusTypes.Available,
+                   InitialStatus              ?? EVSEStatusType.Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxEVSEAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxEVSEStatusScheduleSize)
 
@@ -1803,8 +1803,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="NewStatus">The new EVSE status.</param>
         internal async Task UpdateStatus(DateTime                       Timestamp,
                                          EventTracking_Id               EventTrackingId,
-                                         Timestamped<EVSEStatusTypes>   NewStatus,
-                                         Timestamped<EVSEStatusTypes>?  OldStatus    = null,
+                                         Timestamped<EVSEStatusType>   NewStatus,
+                                         Timestamped<EVSEStatusType>?  OldStatus    = null,
                                          Context?                       DataSource   = null)
         {
 
@@ -2079,12 +2079,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         else
                         {
 
-                            if (Status.Value == EVSEStatusTypes.OutOfService)
+                            if (Status.Value == EVSEStatusType.OutOfService)
                                 result = ReservationResult.OutOfService;
 
-                            else if (Status.Value == EVSEStatusTypes.Charging ||
-                                     Status.Value == EVSEStatusTypes.Reserved ||
-                                     Status.Value == EVSEStatusTypes.Available)
+                            else if (Status.Value == EVSEStatusType.Charging ||
+                                     Status.Value == EVSEStatusType.Reserved ||
+                                     Status.Value == EVSEStatusType.Available)
                             {
 
                                  newReservation = new ChargingReservation(
@@ -2135,7 +2135,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     newReservation != null)
                 {
 
-                    Status = EVSEStatusTypes.Reserved;
+                    Status = EVSEStatusType.Reserved;
 
                     OnNewReservation?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                              this,
@@ -2294,11 +2294,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (result.Result == CancelReservationResultTypes.Success)
                 {
 
-                    if (Status.Value == EVSEStatusTypes.Reserved &&
+                    if (Status.Value == EVSEStatusType.Reserved &&
                     !chargingReservations.Any())
                     {
                         // Will send events!
-                        Status = EVSEStatusTypes.Available;
+                        Status = EVSEStatusType.Available;
                     }
 
                     OnReservationCanceled?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
@@ -2382,11 +2382,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             chargingReservations.Remove(expiredReservation.Id);
                         }
 
-                        if (Status.Value == EVSEStatusTypes.Reserved &&
+                        if (Status.Value == EVSEStatusType.Reserved &&
                             !chargingReservations.Any())
                         {
                             // Will send events!
-                            Status = EVSEStatusTypes.Available;
+                            Status = EVSEStatusType.Available;
                         }
 
                         OnReservationCanceled?.Invoke(Timestamp.Now,
@@ -2904,7 +2904,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     if (chargingSession is not null)
                     {
 
-                        Status = EVSEStatusTypes.Charging;
+                        Status = EVSEStatusType.Charging;
 
                         OnNewChargingSession?.Invoke(Timestamp.Now,
                                                      this,
@@ -2913,7 +2913,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     }
 
                     else
-                        Status = EVSEStatusTypes.Available;
+                        Status = EVSEStatusType.Available;
 
                 }
 
@@ -3092,8 +3092,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     #region Available
 
-                    if (Status.Value == EVSEStatusTypes.Available ||
-                        Status.Value == EVSEStatusTypes.DoorNotClosed)
+                    if (Status.Value == EVSEStatusType.Available ||
+                        Status.Value == EVSEStatusType.DoorNotClosed)
                     {
 
                         chargingSession = new ChargingSession(
@@ -3123,7 +3123,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             EnergyMeterInterval
                         );
 
-                        Status = EVSEStatusTypes.Charging;
+                        Status = EVSEStatusType.Charging;
 
                         result = RemoteStartResult.Success(
                                      chargingSession,
@@ -3136,7 +3136,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     #region Reserved
 
-                    else if (Status.Value == EVSEStatusTypes.Reserved)
+                    else if (Status.Value == EVSEStatusType.Reserved)
                     {
 
                         var firstReservation = chargingReservations.Values.OrderBy(reservation => reservation.LastOrDefault().StartTime).FirstOrDefault();
@@ -3195,7 +3195,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                 EnergyMeterInterval
                             );
 
-                            Status = EVSEStatusTypes.Charging;
+                            Status = EVSEStatusType.Charging;
 
                             result = RemoteStartResult.Success(
                                          chargingSession,
@@ -3212,21 +3212,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     #region Charging
 
-                    else if (Status.Value == EVSEStatusTypes.Charging)
+                    else if (Status.Value == EVSEStatusType.Charging)
                         result = RemoteStartResult.AlreadyInUse(System_Id.Local);
 
                     #endregion
 
                     #region OutOfService
 
-                    else if (Status.Value == EVSEStatusTypes.OutOfService)
+                    else if (Status.Value == EVSEStatusType.OutOfService)
                         result = RemoteStartResult.OutOfService(System_Id.Local);
 
                     #endregion
 
                     #region Offline
 
-                    else if (Status.Value == EVSEStatusTypes.Offline)
+                    else if (Status.Value == EVSEStatusType.Offline)
                         result = RemoteStartResult.Offline(System_Id.Local);
 
                     #endregion
@@ -3358,21 +3358,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     #region Available
 
-                    if (Status.Value == EVSEStatusTypes.Available)
+                    if (Status.Value == EVSEStatusType.Available)
                         result = RemoteStopResult.InvalidSessionId(SessionId, System_Id.Local);
 
                     #endregion
 
                     #region Reserved
 
-                    else if (Status.Value == EVSEStatusTypes.Reserved)
+                    else if (Status.Value == EVSEStatusType.Reserved)
                         result = RemoteStopResult.InvalidSessionId(SessionId, System_Id.Local);
 
                     #endregion
 
                     #region Charging
 
-                    else if (Status.Value == EVSEStatusTypes.Charging)
+                    else if (Status.Value == EVSEStatusType.Charging)
                     {
 
                         #region Matching session identification...
@@ -3471,14 +3471,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     #region OutOfService
 
-                    else if (Status.Value == EVSEStatusTypes.OutOfService)
+                    else if (Status.Value == EVSEStatusType.OutOfService)
                         result = RemoteStopResult.OutOfService(SessionId, System_Id.Local);
 
                     #endregion
 
                     #region Offline
 
-                    else if (Status.Value == EVSEStatusTypes.Offline)
+                    else if (Status.Value == EVSEStatusType.Offline)
                         result = RemoteStopResult.Offline(SessionId, System_Id.Local);
 
                     #endregion

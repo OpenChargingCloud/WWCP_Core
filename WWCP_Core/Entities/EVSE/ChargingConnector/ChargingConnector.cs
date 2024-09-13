@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Whether the charging plug has an attached cable or not.
         /// </summary>
         [Optional]
-        public Boolean?              CableAttached    { get; }
+        public Boolean               CableAttached    { get; }
 
         /// <summary>
         /// The length of the charging cable.
@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingConnector(ChargingConnector_Id  Id,
                                  ChargingPlugTypes     Plug,
                                  Boolean?              Lockable        = null,
-                                 Boolean?              CableAttached   = null,
+                                 Boolean               CableAttached   = false,
                                  Meter?                CableLength     = null)
         {
 
@@ -135,12 +135,12 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                hashCode = this.Id.            GetHashCode()       * 11 ^
-                           this.Plug.          GetHashCode()       *  7 ^
-                          (this.Lockable?.     GetHashCode() ?? 0) *  5 ^
-                          (this.CableAttached?.GetHashCode() ?? 0) *  3 ^
-                          (this.CableLength?.  GetHashCode() ?? 0);
-                           base.               GetHashCode();
+                hashCode = this.Id.           GetHashCode()       * 11 ^
+                           this.Plug.         GetHashCode()       *  7 ^
+                          (this.Lockable?.    GetHashCode() ?? 0) *  5 ^
+                           this.CableAttached.GetHashCode()       *  3 ^
+                          (this.CableLength?. GetHashCode() ?? 0);
+                           base.              GetHashCode();
 
             }
 
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  ChargingConnector_Id  Id,
                                  ChargingPlugTypes     Plug,
                                  Boolean?              Lockable        = null,
-                                 Boolean?              CableAttached   = null,
+                                 Boolean               CableAttached   = false,
                                  Meter?                CableLength     = null)
         {
 
@@ -172,12 +172,12 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                hashCode = this.Id.            GetHashCode()       * 11 ^
-                           this.Plug.          GetHashCode()       *  7 ^
-                          (this.Lockable?.     GetHashCode() ?? 0) *  5 ^
-                          (this.CableAttached?.GetHashCode() ?? 0) *  3 ^
-                          (this.CableLength?.  GetHashCode() ?? 0);
-                           base.               GetHashCode();
+                hashCode = this.Id.           GetHashCode()       * 11 ^
+                           this.Plug.         GetHashCode()       *  7 ^
+                          (this.Lockable?.    GetHashCode() ?? 0) *  5 ^
+                           this.CableAttached.GetHashCode()       *  3 ^
+                          (this.CableLength?. GetHashCode() ?? 0);
+                           base.              GetHashCode();
 
             }
 
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CableLength">The length of the charging cable.</param>
         public ChargingConnector(ChargingPlugTypes  Plug,
                                  Boolean?           Lockable        = null,
-                                 Boolean?           CableAttached   = null,
+                                 Boolean            CableAttached   = false,
                                  Meter?             CableLength     = null)
         {
 
@@ -205,12 +205,12 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                hashCode = this.Id.            GetHashCode()       * 11 ^
-                           this.Plug.          GetHashCode()       *  7 ^
-                          (this.Lockable?.     GetHashCode() ?? 0) *  5 ^
-                          (this.CableAttached?.GetHashCode() ?? 0) *  3 ^
-                          (this.CableLength?.  GetHashCode() ?? 0);
-                           base.               GetHashCode();
+                hashCode = this.Id.           GetHashCode()       * 11 ^
+                           this.Plug.         GetHashCode()       *  7 ^
+                          (this.Lockable?.    GetHashCode() ?? 0) *  5 ^
+                           this.CableAttached.GetHashCode()       *  3 ^
+                          (this.CableLength?. GetHashCode() ?? 0);
+                           base.              GetHashCode();
 
             }
 
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingConnector(IEVSE?             ParentEVSE,
                                  ChargingPlugTypes  Plug,
                                  Boolean?           Lockable        = null,
-                                 Boolean?           CableAttached   = null,
+                                 Boolean            CableAttached   = false,
                                  Meter?             CableLength     = null)
         {
 
@@ -240,12 +240,12 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                hashCode = this.Id.            GetHashCode()       * 11 ^
-                           this.Plug.          GetHashCode()       *  7 ^
-                          (this.Lockable?.     GetHashCode() ?? 0) *  5 ^
-                          (this.CableAttached?.GetHashCode() ?? 0) *  3 ^
-                          (this.CableLength?.  GetHashCode() ?? 0);
-                           base.               GetHashCode();
+                hashCode = this.Id.           GetHashCode()       * 11 ^
+                           this.Plug.         GetHashCode()       *  7 ^
+                          (this.Lockable?.    GetHashCode() ?? 0) *  5 ^
+                           this.CableAttached.GetHashCode()       *  3 ^
+                          (this.CableLength?. GetHashCode() ?? 0);
+                           base.              GetHashCode();
 
             }
 
@@ -272,10 +272,7 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
                                  new JProperty("plug",            Plug.         ToString()),
-
-                           CableAttached.HasValue
-                               ? new JProperty("cableAttached",   CableAttached.ToString())
-                               : null,
+                                 new JProperty("cableAttached",   CableAttached.ToString()),
 
                            CableLength.HasValue
                                ? new JProperty("cableLength",     CableLength.Value)
@@ -366,17 +363,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             => ChargingConnector is not null &&
 
-               Id.  Equals(ChargingConnector.Id)   &&
-               Plug.Equals(ChargingConnector.Plug) &&
+               Id.           Equals(ChargingConnector.Id)            &&
+               Plug.         Equals(ChargingConnector.Plug)          &&
+               CableAttached.Equals(ChargingConnector.CableAttached) &&
 
-             ((!Lockable.     HasValue && !ChargingConnector.Lockable.     HasValue) ||
-               (Lockable.     HasValue &&  ChargingConnector.Lockable.     HasValue && Lockable.     Equals(ChargingConnector.Lockable)))      &&
+             ((!Lockable.   HasValue && !ChargingConnector.Lockable.   HasValue) ||
+               (Lockable.   HasValue &&  ChargingConnector.Lockable.   HasValue && Lockable.   Equals(ChargingConnector.Lockable))) &&
 
-             ((!CableAttached.HasValue && !ChargingConnector.CableAttached.HasValue) ||
-               (CableAttached.HasValue &&  ChargingConnector.CableAttached.HasValue && CableAttached.Equals(ChargingConnector.CableAttached))) &&
-
-             ((!CableLength.  HasValue && !ChargingConnector.CableLength.  HasValue) ||
-               (CableLength.  HasValue &&  ChargingConnector.CableLength.  HasValue && CableLength.  Equals(ChargingConnector.CableLength)));
+             ((!CableLength.HasValue && !ChargingConnector.CableLength.HasValue) ||
+               (CableLength.HasValue &&  ChargingConnector.CableLength.HasValue && CableLength.Equals(ChargingConnector.CableLength)));
 
         #endregion
 
@@ -404,7 +399,7 @@ namespace cloud.charging.open.protocols.WWCP
             => String.Concat(
                    $"{Id}: {Plug}",
                    Lockable.     HasValue ? ", lockable "         : "",
-                   CableAttached.HasValue ? ", with cable "       : "",
+                   CableAttached          ? ", with cable "       : "",
                    CableLength.  HasValue ? $", {CableLength} cm" : ""
                );
 

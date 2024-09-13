@@ -556,10 +556,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                                          UInt64?                               Skip                = null,
                                                                          UInt64?                               Take                = null);
 
-        IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>>
+        IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>>
                                                  EVSEStatusSchedule     (IncludeEVSEDelegate?                  IncludeEVSEs        = null,
                                                                          Func<DateTime,        Boolean>?       TimestampFilter     = null,
-                                                                         Func<EVSEStatusTypes, Boolean>?       StatusFilter        = null,
+                                                                         Func<EVSEStatusType, Boolean>?       StatusFilter        = null,
                                                                          UInt64?                               Skip                = null,
                                                                          UInt64?                               Take                = null);
 
@@ -586,14 +586,14 @@ namespace cloud.charging.open.protocols.WWCP
         void SetEVSEStatus(IEnumerable<EVSEStatus> EVSEStatusList);
 
         void SetEVSEStatus(EVSE_Id                       EVSEId,
-                           Timestamped<EVSEStatusTypes>  NewStatus);
+                           Timestamped<EVSEStatusType>  NewStatus);
 
         void SetEVSEStatus(EVSE_Id          EVSEId,
                            DateTime         Timestamp,
-                           EVSEStatusTypes  NewStatus);
+                           EVSEStatusType  NewStatus);
 
         void SetEVSEStatus(EVSE_Id                                    EVSEId,
-                           IEnumerable<Timestamped<EVSEStatusTypes>>  StatusList,
+                           IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
                            ChangeMethods                              ChangeMethod  = ChangeMethods.Replace);
 
         #endregion
