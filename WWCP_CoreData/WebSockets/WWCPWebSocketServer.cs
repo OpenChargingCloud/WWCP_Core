@@ -353,7 +353,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                            }.AsImmutable);
 
             }
-            else if (!SecWebSocketProtocols.Overlaps(Connection.HTTPRequest?.SecWebSocketProtocol ?? Array.Empty<String>()))
+            else if (!new HashSet<String>(SecWebSocketProtocols).Overlaps(Connection.HTTPRequest?.SecWebSocketProtocol ?? []))
             {
 
                 var error = $"This WebSocket service only supports {SecWebSocketProtocols.Select(id => $"'{id}'").AggregateWith(", ")}!";
@@ -394,6 +394,23 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                     }
                     else
                         DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'!");
+
+                }
+                else if (Connection.HTTPRequest?.QueryString is not null)
+                {
+
+                    var queryString  = Connection.HTTPRequest?.QueryString;
+                    var username     = queryString?.GetString("u") ?? "";
+                    var password     = queryString?.GetString("p") ?? "";
+
+                    if (ClientLogins.TryGetValue(username, out var securePassword) &&
+                        securePassword.Equals(password))
+                    {
+                        DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using authorization: '{username}' / '{password}'");
+                        return Task.FromResult<HTTPResponse?>(null);
+                    }
+                    else
+                        DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid authorization: '{username}' / '{password}'!");
 
                 }
                 else
