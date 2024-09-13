@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP
             PullEVSEStatus(DateTime?              LastCall            = null,
                            GeoCoordinate?         SearchCenter        = null,
                            Single                 DistanceKM          = 0f,
-                           EVSEStatusTypes?       EVSEStatusFilter    = null,
+                           EVSEStatusType?       EVSEStatusFilter    = null,
                            EMobilityProvider_Id?  ProviderId          = null,
 
                            DateTime?              Timestamp           = null,

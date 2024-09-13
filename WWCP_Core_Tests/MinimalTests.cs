@@ -77,16 +77,16 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
             var f3 = s2.AddEVSE(EVSE_Id.Parse("DE*822*E2222*3")).Result.EVSE;
 
 
-            e1.Status = EVSEStatusTypes.Available;
-            e2.Status = EVSEStatusTypes.Available;
-            e3.Status = EVSEStatusTypes.Available;
+            e1.Status = EVSEStatusType.Available;
+            e2.Status = EVSEStatusType.Available;
+            e3.Status = EVSEStatusType.Available;
 
-            f1.Status = EVSEStatusTypes.Available;
-            f2.Status = EVSEStatusTypes.Available;
-            f3.Status = EVSEStatusTypes.Available;
+            f1.Status = EVSEStatusType.Available;
+            f2.Status = EVSEStatusType.Available;
+            f3.Status = EVSEStatusType.Available;
 
-            e2.Status = EVSEStatusTypes.Charging;
-            e3.Status = EVSEStatusTypes.Charging;
+            e2.Status = EVSEStatusType.Charging;
+            e3.Status = EVSEStatusType.Charging;
 
         }
 

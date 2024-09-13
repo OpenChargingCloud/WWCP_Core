@@ -797,7 +797,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                               encodedPublicKey,
                                               Algorithm,
-                                              CryptoSerialization.DER,
+                                              CryptoSerialization.ASN1_DER,
                                               CryptoEncoding.HEX,
                                               CustomData,
 
@@ -993,7 +993,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                 ASN1,
                                                 cryptoAlgorithm,
-                                                CryptoSerialization.DER,
+                                                CryptoSerialization.ASN1_DER,
                                                 encoding,
                                                 CustomData,
 

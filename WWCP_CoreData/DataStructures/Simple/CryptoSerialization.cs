@@ -195,50 +195,51 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// RAW
         /// </summary>
-        public static CryptoSerialization  RAW        { get; }
+        public static CryptoSerialization  RAW         { get; }
             = Register("raw");
-
-
-        /// <summary>
-        /// ASN.1 Distinguished Encoding Rules (DER)
-        /// </summary>
-        public static CryptoSerialization  DER        { get; }
-            = Register("DER");
-
-
-        /// <summary>
-        /// ASN.1 Basic Encoding Rules (BER)
-        /// </summary>
-        public static CryptoSerialization  BER        { get; }
-            = Register("BER");
-
-
-        /// <summary>
-        /// ASN.1 Canonical Encoding Rules (CER)
-        /// </summary>
-        public static CryptoSerialization  CER        { get; }
-            = Register("CER");
 
 
         /// <summary>
         /// ECC "rs"
         /// </summary>
-        public static CryptoSerialization  ECC_rs     { get; }
+        public static CryptoSerialization  ECC_rs      { get; }
             = Register("ECC_rs");
 
 
         /// <summary>
         /// ECC: [r, s]
         /// </summary>
-        public static CryptoSerialization  ECC_r_s    { get; }
+        public static CryptoSerialization  ECC_r_s     { get; }
             = Register("ECC_r_s");
 
 
         /// <summary>
         /// ECC Public Key: [x, y]
         /// </summary>
-        public static CryptoSerialization  ECC_x_y    { get; }
+        public static CryptoSerialization  ECC_x_y     { get; }
             = Register("ECC_x_y");
+
+
+
+        /// <summary>
+        /// ASN.1 Distinguished Encoding Rules (DER)
+        /// </summary>
+        public static CryptoSerialization  ASN1_DER    { get; }
+            = Register("ASN1_DER");
+
+
+        /// <summary>
+        /// ASN.1 Basic Encoding Rules (BER)
+        /// </summary>
+        public static CryptoSerialization  ASN1_BER    { get; }
+            = Register("ASN1_BER");
+
+
+        /// <summary>
+        /// ASN.1 Canonical Encoding Rules (CER)
+        /// </summary>
+        public static CryptoSerialization  ASN1_CER    { get; }
+            = Register("ASN1_CER");
 
         #endregion
 
