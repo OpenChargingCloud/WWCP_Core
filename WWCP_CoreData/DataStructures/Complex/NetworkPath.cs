@@ -55,6 +55,14 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
 
         /// <summary>
+        /// An empty network path.
+        /// </summary>
+        public static NetworkPath              Empty    { get; }
+
+            = new();
+
+
+        /// <summary>
         /// The length of the network path.
         /// </summary>
         [Mandatory]
@@ -87,11 +95,27 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
 
         /// <summary>
-        /// An empty network path.
+        /// Return e.g. a request error message to the last sending networking hop
+        /// of the received message.
         /// </summary>
-        public static NetworkPath              Empty    { get; }
+        [Optional]
+        public SourceRouting                   BackToLastHop
 
-            = new();
+            => networkingNodeIds.Count > 0
+                   ? SourceRouting.To(networkingNodeIds.Last())
+                   : SourceRouting.Zero;
+
+
+        /// <summary>
+        /// Return e.g. a request error message to the source of the message
+        /// and thus normally to a charging station identification or CSMS.
+        /// </summary>
+        [Optional]
+        public SourceRouting                   BackToSource
+
+            => networkingNodeIds.Count > 0
+                   ? SourceRouting.To(networkingNodeIds.First())
+                   : SourceRouting.Zero;
 
         #endregion
 

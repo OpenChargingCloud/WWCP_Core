@@ -1153,7 +1153,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                          Exception  ExceptionOccured)
         {
 
-            DebugX.LogException(ExceptionOccured, Caller);
+            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
 
             return Task.CompletedTask;
 

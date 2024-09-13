@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         public static SentMessageResult UnknownClient()
 
-            => new(SentMessageResults.UnknownClient);
+            => new (SentMessageResults.UnknownClient);
 
         public static SentMessageResult Broadcast()
 
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// </summary>
         public override String ToString()
 
-            => $"{Result} via '{Connection?.ToString() ?? "-"}'{(Exception is not null ? $", Exception: {Exception.Message}" : "")}";
+            => $"{Result}{(Connection is not null ? $" via '{Connection}'" : "")}{(Exception is not null ? $", Exception: {Exception.Message}" : "")}";
 
         #endregion
 
