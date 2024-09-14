@@ -404,7 +404,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region IComparable<EVSEStatusTypes> Members
+        #region IComparable<EVSEStatusType> Members
 
         #region CompareTo(Object)
 
@@ -437,7 +437,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region IEquatable<EVSEStatusTypes> Members
+        #region IEquatable<EVSEStatusType> Members
 
         #region Equals(Object)
 

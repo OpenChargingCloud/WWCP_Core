@@ -544,37 +544,6 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #endregion
 
 
-
-        //protected virtual Task WWCPWebSocketClient_OnJSONMessageReceived(DateTime                     Timestamp,
-        //                                                                 IWWCPWebSocketClient         Client,
-        //                                                                 WebSocketClientConnection    Connection,
-        //                                                                 EventTracking_Id             EventTrackingId,
-        //                                                                 DateTime                     MessageTimestamp,
-        //                                                                 NetworkingNode_Id            SourceNodeId,
-        //                                                                 Newtonsoft.Json.Linq.JArray  Message,
-        //                                                                 CancellationToken            CancellationToken)
-        //{
-        //    return Task.CompletedTask;
-        //}
-
-        //protected virtual Task WWCPWebSocketClient_OnBinaryMessageReceived(DateTime                     Timestamp,
-        //                                                                   IWWCPWebSocketClient         Client,
-        //                                                                   WebSocketClientConnection    Connection,
-        //                                                                   EventTracking_Id             EventTrackingId,
-        //                                                                   DateTime                     MessageTimestamp,
-        //                                                                   NetworkingNode_Id            SourceNodeId,
-        //                                                                   Byte[]                       MessageMessage,
-        //                                                                   CancellationToken            CancellationToken)
-        //{
-        //    return Task.CompletedTask;
-        //}
-
-
-
-
-
-
-
         #region AddOrUpdateHTTPBasicAuth(NetworkingNodeId, Password)
 
         /// <summary>

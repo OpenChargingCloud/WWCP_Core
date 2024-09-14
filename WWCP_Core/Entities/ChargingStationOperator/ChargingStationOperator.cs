@@ -3277,7 +3277,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region CalcEVSEStatusDiff(EVSEStatus, IncludeEVSE = null)
 
-        //public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusTypes>  EVSEStatus,
+        //public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusType>  EVSEStatus,
         //                                         Func<EVSE, Boolean>                  IncludeEVSE  = null)
         //{
 

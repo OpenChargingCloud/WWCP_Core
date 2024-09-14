@@ -1854,7 +1854,7 @@ namespace cloud.charging.open.protocols.WWCP
             //UpdateEVSEStatus(Now,
             //                 EventTracking_Id.New,
             //                 _EVSE,
-            //                 new Timestamped<EVSEStatusTypes>(Now, EVSEStatusTypes.Unspecified),
+            //                 new Timestamped<EVSEStatusType>(Now, EVSEStatusType.Unspecified),
             //                 _EVSE.Status).Wait();
 
             if (RemoteChargingStation is not null)

@@ -1812,11 +1812,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             chargingReservations.Remove(expiredReservation.Id);
                         }
 
-                        //if (Status.Value == EVSEStatusTypes.Reserved &&
+                        //if (Status.Value == EVSEStatusType.Reserved &&
                         //    !_Reservations.Any())
                         //{
                         //    // Will send events!
-                        //    SetStatus(EVSEStatusTypes.Available);
+                        //    SetStatus(EVSEStatusType.Available);
                         //}
 
                         OnReservationCanceled?.Invoke(Timestamp.Now,
