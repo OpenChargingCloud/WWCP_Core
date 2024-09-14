@@ -39,6 +39,7 @@ using cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets;
 namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 {
 
+    #region Delegates
 
     public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,
                                                                   IEventSender                Server,
@@ -99,6 +100,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                                   Byte[]                      ResponseMessage,
                                                                   CancellationToken           CancellationToken);
 
+    #endregion
 
     public class OverlayWebSocketServer : AOverlayWebSocketServer
     {
@@ -247,7 +249,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             => webSocketServer.IPSocket;
         public Boolean                                 IsRunning
             => webSocketServer.IsRunning;
-        public HashSet<String>                         SecWebSocketProtocols
+        public IEnumerable<String>                     SecWebSocketProtocols
             => webSocketServer.SecWebSocketProtocols;
         public Boolean                                 ServerThreadIsBackground
             => webSocketServer.ServerThreadIsBackground;
@@ -814,7 +816,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                            }.AsImmutable);
 
             }
-            else if (!webSocketServer.SecWebSocketProtocols.Overlaps(Connection.HTTPRequest?.SecWebSocketProtocol ?? []))
+            else if (!new HashSet<String>(webSocketServer.SecWebSocketProtocols).Overlaps(Connection.HTTPRequest?.SecWebSocketProtocol ?? []))
             {
 
                 var error = $"This WebSocket service only supports {(webSocketServer.SecWebSocketProtocols.Select(id => $"'{id}'").AggregateWith(", "))}!";
