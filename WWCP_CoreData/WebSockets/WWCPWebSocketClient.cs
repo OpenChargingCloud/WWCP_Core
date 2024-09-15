@@ -31,7 +31,6 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
-using cloud.charging.open.protocols.WWCP.WebSockets;
 
 #endregion
 
@@ -472,32 +471,20 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #region (private) LogEvent(Logger, LogHandler, ...)
 
-        private async Task LogEvent<TDelegate>(TDelegate?                                         Logger,
-                                               Func<TDelegate, Task>                              LogHandler,
-                                               [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
-                                               [CallerMemberName()]                       String  OCPPCommand   = "")
+        private Task LogEvent<TDelegate>(TDelegate?                                         Logger,
+                                         Func<TDelegate, Task>                              LogHandler,
+                                         [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
+                                         [CallerMemberName()]                       String  OCPPCommand   = "")
 
             where TDelegate : Delegate
 
-        {
-            if (Logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              Logger.GetInvocationList().
-                                     OfType<TDelegate>().
-                                     Select(LogHandler)
-                          );
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(nameof(WWCPWebSocketClient), $"{OCPPCommand}.{EventName}", e);
-                }
-            }
-        }
+                => LogEvent(
+                       nameof(WWCPWebSocketClient),
+                       Logger,
+                       LogHandler,
+                       EventName,
+                       OCPPCommand
+                   );
 
         #endregion
 

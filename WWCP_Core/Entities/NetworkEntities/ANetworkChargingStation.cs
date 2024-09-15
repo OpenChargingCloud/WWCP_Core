@@ -1021,8 +1021,8 @@
 //        internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
 //                                             EventTracking_Id             EventTrackingId,
 //                                             IRemoteEVSE                  RemoteEVSE,
-//                                             Timestamped<EVSEStatusTypes>  OldStatus,
-//                                             Timestamped<EVSEStatusTypes>  NewStatus)
+//                                             Timestamped<EVSEStatusType>  OldStatus,
+//                                             Timestamped<EVSEStatusType>  NewStatus)
 //        {
 
 //            var onEVSEStatusChanged = OnEVSEStatusChanged;
@@ -1047,7 +1047,7 @@
 //                                                                         TimeSpan?          RequestTimeout = null)
 
 //            => new EVSEStatus[] {
-//                   new EVSEStatus(EVSE_Id.Parse("DE*822*E222*1"), new Timestamped<EVSEStatusTypes>(EVSEStatusTypes.Charging))
+//                   new EVSEStatus(EVSE_Id.Parse("DE*822*E222*1"), new Timestamped<EVSEStatusType>(EVSEStatusType.Charging))
 //               };
 
 

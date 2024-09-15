@@ -40,14 +40,6 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 namespace cloud.charging.open.protocols.WWCP.WebSockets
 {
 
-    //public delegate Task ProcessJSONMessage(DateTime                                                          MessageTimestamp,
-    //                                        org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketConnection  WebSocketConnection,
-    //                                        NetworkingNode_Id?                                                sourceNodeId,
-    //                                        JArray                                                            JSONMessage,
-    //                                        EventTracking_Id                                                  EventTrackingId,
-    //                                        CancellationToken                                                 CancellationToken);
-
-
     public class NetworkingNodeConnectionInfo(WebSocketServerConnection  WebSocketServerConnection,
                                               DateTime                   ConnectedSince,
                                               NetworkingMode?            NetworkingMode = null)
@@ -266,7 +258,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                                    };
 
             base.OnCloseMessageReceived         += (timestamp, server, connection, frame, eventTrackingId, closingStatusCode, closingReason, ct) => {
-                                                       DebugX.Log($"HTTP WebSocket Server '{connection.RemoteSocket}' Close received:  '{closingStatusCode}', '{closingReason ?? ""}'");
+                                                       DebugX.Log($"HTTP WebSocket Server '{connection.Login}' Close received:  '{closingStatusCode}', '{closingReason ?? ""}'");
                                                        return Task.CompletedTask;
                                                    };
 
@@ -361,7 +353,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                            }.AsImmutable);
 
             }
-            else if (!SecWebSocketProtocols.Overlaps(Connection.HTTPRequest?.SecWebSocketProtocol ?? Array.Empty<String>()))
+            else if (!new HashSet<String>(SecWebSocketProtocols).Overlaps(Connection.HTTPRequest?.SecWebSocketProtocol ?? []))
             {
 
                 var error = $"This WebSocket service only supports {SecWebSocketProtocols.Select(id => $"'{id}'").AggregateWith(", ")}!";
@@ -391,11 +383,13 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             if (RequireAuthentication)
             {
 
+                #region HTTP Basic Authentication
+
                 if (Connection.HTTPRequest?.Authorization is HTTPBasicAuthentication basicAuthentication)
                 {
 
-                    if (ClientLogins.TryGetValue(basicAuthentication.Username, out var password) &&
-                        basicAuthentication.Password == password)
+                    if (ClientLogins.TryGetValue(basicAuthentication.Username, out var securePassword) &&
+                        securePassword.Equals(basicAuthentication.Password))
                     {
                         DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'");
                         return Task.FromResult<HTTPResponse?>(null);
@@ -404,8 +398,114 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                         DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'!");
 
                 }
+
+                #endregion
+
+                #region HTTP TOTP  Authentication
+
+                else if (Connection.HTTPRequest?.Authorization is HTTPTOTPAuthentication totpAuthentication)
+                {
+
+                    if (ClientTOTPConfig.TryGetValue(totpAuthentication.Username, out var totpConfig))
+                    {
+
+                        var (previousTOTP,
+                             currentTOTP,
+                             nextTOTP,
+                             remainingTime,
+                             endTime) = TOTPGenerator.GenerateTOTPs(
+                                            Timestamp.Now,
+                                            totpConfig.SharedSecret,
+                                            totpConfig.ValidityTime,
+                                            totpConfig.TOTPLength,
+                                            totpConfig.Alphabet
+                                        );
+
+                        if (totpAuthentication.TOTP == previousTOTP ||
+                            totpAuthentication.TOTP == currentTOTP  ||
+                            totpAuthentication.TOTP == nextTOTP)
+                        {
+                            DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using TOTP authorization: '{totpAuthentication.Username}' / '{totpAuthentication.TOTP}'");
+                            return Task.FromResult<HTTPResponse?>(null);
+                        }
+                        else
+                            DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid or outdated TOTP authorization: '{totpAuthentication.Username}' / '{totpAuthentication.TOTP}'!");
+
+                    }
+                    else
+                        DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid TOTP authorization: '{totpAuthentication.Username}' / '{totpAuthentication.TOTP}'!");
+
+                }
+
+                #endregion
+
+                #region QueryString u/p    Authentication
+
+                else if (Connection.HTTPRequest?.QueryString is not null)
+                {
+
+                    var queryString  = Connection.HTTPRequest?.QueryString;
+                    var username     = queryString?.GetString("u") ?? "";
+                    var password     = queryString?.GetString("p") ?? "";
+
+                    if (ClientLogins.TryGetValue(username, out var securePassword) &&
+                        securePassword.Equals(password))
+                    {
+                        DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using authorization: '{username}' / '{password}'");
+                        return Task.FromResult<HTTPResponse?>(null);
+                    }
+                    else
+                        DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid authorization: '{username}' / '{password}'!");
+
+                }
+
+                #endregion
+
+                #region QueryString u/totp Authentication
+
+                else if (Connection.HTTPRequest?.QueryString is not null)
+                {
+
+                    var queryString  = Connection.HTTPRequest?.QueryString;
+                    var username     = queryString?.GetString("u")    ?? "";
+                    var totp         = queryString?.GetString("totp") ?? "";
+
+                    if (ClientTOTPConfig.TryGetValue(username, out var totpConfig))
+                    {
+
+                        var (previousTOTP,
+                             currentTOTP,
+                             nextTOTP,
+                             remainingTime,
+                             endTime) = TOTPGenerator.GenerateTOTPs(
+                                            Timestamp.Now,
+                                            totpConfig.SharedSecret,
+                                            totpConfig.ValidityTime,
+                                            totpConfig.TOTPLength,
+                                            totpConfig.Alphabet
+                                        );
+
+                        if (totp == previousTOTP ||
+                            totp == currentTOTP  ||
+                            totp == nextTOTP)
+                        {
+                            DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using authorization: '{username}' / '{totp}'");
+                            return Task.FromResult<HTTPResponse?>(null);
+                        }
+                        else
+                            DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid or outdated TOTP authorization: '{username}' / '{totp}'!");
+
+                    }
+                    else
+                        DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid authorization: '{username}' / '{totp}'!");
+
+                }
+
+                #endregion
+
                 else
-                    DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} missing authorization!");
+                    DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} missing or invalid authorization!");
+
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder() {

@@ -754,8 +754,8 @@ namespace cloud.charging.open.protocols.WWCP
                         var plainText   = JSONMessage.ToString(Formatting.None, WWCP.SignableMessage.DefaultJSONConverters);
 
                         var cryptoHash  = signInfo.Algorithm switch {
-                                              var s when s == CryptoAlgorithm.secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                              var s when s == CryptoAlgorithm.secp384r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                              var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                              var s when s == CryptoAlgorithm.Secp384r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
                                               _                                          => SHA256.HashData(plainText.ToUTF8Bytes()),
                                           };
 
@@ -976,8 +976,8 @@ namespace cloud.charging.open.protocols.WWCP
                         #endregion
 
                         var cryptoHash  = signInfo.Algorithm switch {
-                                              var s when s == CryptoAlgorithm.secp521r1  => SHA512.HashData(BinaryMessage),
-                                              var s when s == CryptoAlgorithm.secp384r1  => SHA512.HashData(BinaryMessage),
+                                              var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(BinaryMessage),
+                                              var s when s == CryptoAlgorithm.Secp384r1  => SHA512.HashData(BinaryMessage),
                                               _                                          => SHA256.HashData(BinaryMessage),
                                           };
 
@@ -1264,16 +1264,16 @@ namespace cloud.charging.open.protocols.WWCP
                 {
 
                     var ecp           = signature.Algorithm switch {
-                                            var s when s == CryptoAlgorithm.secp521r1  => SecNamedCurves.GetByName("secp521r1"),
-                                            var s when s == CryptoAlgorithm.secp384r1  => SecNamedCurves.GetByName("secp384r1"),
+                                            var s when s == CryptoAlgorithm.Secp521r1  => SecNamedCurves.GetByName("secp521r1"),
+                                            var s when s == CryptoAlgorithm.Secp384r1  => SecNamedCurves.GetByName("secp384r1"),
                                             _                                          => SecNamedCurves.GetByName("secp256r1"),
                                         };
                     var ecParams      = new ECDomainParameters(ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
                     var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId), ecParams);
 
                     var cryptoHash    = signature.Algorithm switch {
-                                            var s when s == CryptoAlgorithm.secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                            var s when s == CryptoAlgorithm.secp384r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                            var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                            var s when s == CryptoAlgorithm.Secp384r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
                                             _                                          => SHA256.HashData(plainText.ToUTF8Bytes()),
                                         };
 
@@ -1410,16 +1410,16 @@ namespace cloud.charging.open.protocols.WWCP
                 {
 
                     var ecp           = signature.Algorithm switch {
-                                            var s when s == CryptoAlgorithm.secp521r1  => SecNamedCurves.GetByName("secp521r1"),
-                                            var s when s == CryptoAlgorithm.secp384r1  => SecNamedCurves.GetByName("secp384r1"),
+                                            var s when s == CryptoAlgorithm.Secp521r1  => SecNamedCurves.GetByName("secp521r1"),
+                                            var s when s == CryptoAlgorithm.Secp384r1  => SecNamedCurves.GetByName("secp384r1"),
                                             _                                          => SecNamedCurves.GetByName("secp256r1"),
                                         };
                     var ecParams      = new ECDomainParameters(ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
                     var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId), ecParams);
 
                     var cryptoHash    = signature.Algorithm switch {
-                                            var s when s == CryptoAlgorithm.secp521r1  => SHA512.HashData(BinaryMessage),
-                                            var s when s == CryptoAlgorithm.secp384r1  => SHA512.HashData(BinaryMessage),
+                                            var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(BinaryMessage),
+                                            var s when s == CryptoAlgorithm.Secp384r1  => SHA512.HashData(BinaryMessage),
                                             _                                          => SHA256.HashData(BinaryMessage),
                                         };
 

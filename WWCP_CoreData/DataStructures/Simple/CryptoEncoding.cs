@@ -194,16 +194,42 @@ namespace cloud.charging.open.protocols.WWCP
         #region Static definitions
 
         /// <summary>
+        /// None
+        /// </summary>
+        public static CryptoEncoding  NONE      { get; }
+            = Register("none");
+
+
+        /// <summary>
+        /// Hexadecimal (BASE16)
+        /// </summary>
+        public static CryptoEncoding  HEX       { get; }
+            = Register("hex");
+
+
+        /// <summary>
+        /// BASE32
+        /// </summary>
+        public static CryptoEncoding  BASE32    { get; }
+            = Register("base32");
+
+
+        // Base36: 0-9, A-Z
+        // Base58: Which is Base64 without 0, O, I and l
+        // Base62: Which is Base64 without + and /
+
+
+        /// <summary>
         /// BASE64
         /// </summary>
         public static CryptoEncoding  BASE64    { get; }
             = Register("base64");
 
-        /// <summary>
-        /// Hexadecimal
-        /// </summary>
-        public static CryptoEncoding  HEX       { get; }
-            = Register("hex");
+
+        // Base85
+        // Base91
+        // Base92
+        // Base100
 
         #endregion
 
@@ -211,13 +237,13 @@ namespace cloud.charging.open.protocols.WWCP
         public String Encode(Byte[] Bytes)
         {
 
-            if      (String.Equals(InternalId, "base64", StringComparison.OrdinalIgnoreCase))
-                return Bytes.ToBase64();
-
-            else if (String.Equals(InternalId, "hex",    StringComparison.OrdinalIgnoreCase))
+            if      (String.Equals(InternalId, HEX.   ToString(), StringComparison.OrdinalIgnoreCase))
                 return Bytes.ToHexString();
 
-            return "";
+            else if (String.Equals(InternalId, BASE32.ToString(), StringComparison.OrdinalIgnoreCase))
+                return Bytes.ToBase32();
+
+            return Bytes.ToBase64();
 
         }
 

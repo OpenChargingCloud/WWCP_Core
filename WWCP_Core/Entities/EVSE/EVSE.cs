@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// </summary>
     public class EVSE : AEMobilityEntity<EVSE_Id,
                                          EVSEAdminStatusTypes,
-                                         EVSEStatusTypes>,
+                                         EVSEStatusType>,
                         IEquatable<EVSE>, IComparable<EVSE>,
                         IEVSE
     {
@@ -867,7 +867,7 @@ namespace cloud.charging.open.protocols.WWCP
                     ChargingSession?                     ChargingSession              = null,
 
                     Timestamped<EVSEAdminStatusTypes>?   InitialAdminStatus           = null,
-                    Timestamped<EVSEStatusTypes>?        InitialStatus                = null,
+                    Timestamped<EVSEStatusType>?        InitialStatus                = null,
                     UInt16?                              MaxAdminStatusScheduleSize   = null,
                     UInt16?                              MaxStatusScheduleSize        = null,
                     DateTime?                            LastStatusUpdate             = null,
@@ -885,7 +885,7 @@ namespace cloud.charging.open.protocols.WWCP
                    Name,
                    Description,
                    InitialAdminStatus         ?? EVSEAdminStatusTypes.Operational,
-                   InitialStatus              ?? EVSEStatusTypes.Available,
+                   InitialStatus              ?? EVSEStatusType.Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxEVSEAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxEVSEStatusScheduleSize,
                    DataSource,
@@ -1316,8 +1316,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DataSource">An optional data source or context for the status update.</param>
         internal async Task UpdateStatus(DateTime                       Timestamp,
                                          EventTracking_Id               EventTrackingId,
-                                         Timestamped<EVSEStatusTypes>   NewStatus,
-                                         Timestamped<EVSEStatusTypes>?  OldStatus    = null,
+                                         Timestamped<EVSEStatusType>   NewStatus,
+                                         Timestamped<EVSEStatusType>?  OldStatus    = null,
                                          Context?                       DataSource   = null)
         {
 

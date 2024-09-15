@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.WWCP
         public String                           Username                    { get; }
         public String                           Password                    { get; }
         public SimpleEMailAddress               EMailAddress                { get; }
-        public IEnumerable<PublicKey>           PublicKeys                  { get; }
+        public IEnumerable<ECCPublicKey>        PublicKeys                  { get; }
         public IEnumerable<Signature>           Signatures                  { get; }
         public IEnumerable<SimpleEMailAddress>  AdditionalEMailAddresses    { get; }
         public PhoneNumber?                     PhoneNumber                 { get; }
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.WWCP
         public RegisterEMobilityAccountData(String                            Username,
                                             String                            Password,
                                             SimpleEMailAddress                EMailAddress,
-                                            IEnumerable<PublicKey>            PublicKeys,
+                                            IEnumerable<ECCPublicKey>         PublicKeys,
                                             IEnumerable<Signature>?           Signatures                 = null,
                                             IEnumerable<SimpleEMailAddress>?  AdditionalEMailAddresses   = null,
                                             PhoneNumber?                      PhoneNumber                = null,
@@ -255,8 +255,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (!JSON.ParseMandatoryHashSet("publicKeys",
                                                 "public keys",
-                                                PublicKey.TryParse,
-                                                out HashSet<PublicKey> PublicKeys,
+                                                ECCPublicKey.TryParse,
+                                                out HashSet<ECCPublicKey> PublicKeys,
                                                 out ErrorResponse))
                 {
                     return false;
@@ -364,7 +364,9 @@ namespace cloud.charging.open.protocols.WWCP
                                  new JProperty("username",                   Username),
                                  new JProperty("password",                   Password),
                                  new JProperty("eMailAddress",               EMailAddress.     ToString()),
-                                 new JProperty("publicKeys",                 new JArray(PublicKeys.              Select(publicKey          => publicKey.         ToJSON  (CustomPublicKeySerializer,
+                                 new JProperty("publicKeys",                 new JArray(PublicKeys.              Select(publicKey          => publicKey.         ToJSON  (CryptoSerialization.RAW,
+                                                                                                                                                                          true,
+                                                                                                                                                                          CustomPublicKeySerializer,
                                                                                                                                                                           CustomCustomDataSerializer)))),
 
                            Signatures.Any()
@@ -393,7 +395,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Sign(Keys)
 
-        public RegisterEMobilityAccountData Sign(IEnumerable<KeyPair> Keys)
+        public RegisterEMobilityAccountData Sign(IEnumerable<ECCKeyPair> Keys)
         {
 
             var signatures    = new List<Signature>();
@@ -419,9 +421,9 @@ namespace cloud.charging.open.protocols.WWCP
                 {
 
                     var blockSize = key.Algorithm switch {
-                                        var s when s == CryptoAlgorithm.secp256r1  => 32,
-                                        var s when s == CryptoAlgorithm.secp384r1  => 48,
-                                        var s when s == CryptoAlgorithm.secp521r1  => 64,
+                                        var s when s == CryptoAlgorithm.Secp256r1  => 32,
+                                        var s when s == CryptoAlgorithm.Secp384r1  => 48,
+                                        var s when s == CryptoAlgorithm.Secp521r1  => 64,
                                         _                                          => throw new Exception("Unknown key algorithm: " + key.Algorithm)
                                     };
 
@@ -429,9 +431,9 @@ namespace cloud.charging.open.protocols.WWCP
                         cryptoHashes.TryAdd(
                             blockSize,
                             key.Algorithm switch {
-                                var s when s == CryptoAlgorithm.secp256r1  => SHA256.HashData(plainText.ToUTF8Bytes()),
-                                var s when s == CryptoAlgorithm.secp384r1  => SHA384.HashData(plainText.ToUTF8Bytes()),
-                                var s when s == CryptoAlgorithm.secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                var s when s == CryptoAlgorithm.Secp256r1  => SHA256.HashData(plainText.ToUTF8Bytes()),
+                                var s when s == CryptoAlgorithm.Secp384r1  => SHA384.HashData(plainText.ToUTF8Bytes()),
+                                var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
                                 _                                          => throw new Exception("Unknown key algorithm: " + key.Algorithm)
                             }
                         );
@@ -513,9 +515,9 @@ namespace cloud.charging.open.protocols.WWCP
                 {
 
                     var ecp           = signature.Algorithm switch {
-                                            var s when s == CryptoAlgorithm.secp256r1  => SecNamedCurves.GetByName("secp256r1"),
-                                            var s when s == CryptoAlgorithm.secp384r1  => SecNamedCurves.GetByName("secp384r1"),
-                                            var s when s == CryptoAlgorithm.secp521r1  => SecNamedCurves.GetByName("secp521r1"),
+                                            var s when s == CryptoAlgorithm.Secp256r1  => SecNamedCurves.GetByName("secp256r1"),
+                                            var s when s == CryptoAlgorithm.Secp384r1  => SecNamedCurves.GetByName("secp384r1"),
+                                            var s when s == CryptoAlgorithm.Secp521r1  => SecNamedCurves.GetByName("secp521r1"),
                                             _                                          => throw new Exception("Unknown signature algorithm: " + signature.Algorithm)
                     };
 
@@ -523,9 +525,9 @@ namespace cloud.charging.open.protocols.WWCP
                     var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId), ecParams);
 
                     var blockSize     = signature.Algorithm switch {
-                                            var s when s == CryptoAlgorithm.secp256r1  => 32,
-                                            var s when s == CryptoAlgorithm.secp384r1  => 48,
-                                            var s when s == CryptoAlgorithm.secp521r1  => 64,
+                                            var s when s == CryptoAlgorithm.Secp256r1  => 32,
+                                            var s when s == CryptoAlgorithm.Secp384r1  => 48,
+                                            var s when s == CryptoAlgorithm.Secp521r1  => 64,
                                             _                                          => throw new Exception("Unknown key algorithm: " + signature.Algorithm)
                                         };
 
@@ -533,9 +535,9 @@ namespace cloud.charging.open.protocols.WWCP
                         cryptoHashes.TryAdd(
                             blockSize,
                             signature.Algorithm switch {
-                                var s when s == CryptoAlgorithm.secp256r1  => SHA256.HashData(plainText.ToUTF8Bytes()),
-                                var s when s == CryptoAlgorithm.secp384r1  => SHA384.HashData(plainText.ToUTF8Bytes()),
-                                var s when s == CryptoAlgorithm.secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                var s when s == CryptoAlgorithm.Secp256r1  => SHA256.HashData(plainText.ToUTF8Bytes()),
+                                var s when s == CryptoAlgorithm.Secp384r1  => SHA384.HashData(plainText.ToUTF8Bytes()),
+                                var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
                                 _                                          => throw new Exception("Unknown signature algorithm: " + signature.Algorithm)
                             }
                         );

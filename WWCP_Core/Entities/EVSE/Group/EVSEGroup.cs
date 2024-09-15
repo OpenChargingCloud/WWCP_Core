@@ -17,20 +17,15 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Diagnostics;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
+
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
-using System.Threading.Tasks;
 using org.GraphDefined.Vanaheimr.Hermod;
-using social.OpenData.UsersAPI;
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -746,8 +741,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
                                              EventTracking_Id              EventTrackingId,
                                              EVSE                          EVSE,
-                                             Timestamped<EVSEStatusTypes>  OldStatus,
-                                             Timestamped<EVSEStatusTypes>  NewStatus)
+                                             Timestamped<EVSEStatusType>  OldStatus,
+                                             Timestamped<EVSEStatusType>  NewStatus)
         {
 
             var onEVSEStatusChanged = OnEVSEStatusChanged;

@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
 
         public EVSignature_Id        Id                     { get; private set; }
         public String                Name                   { get; }
-        public EVPublicKey?          PublicKey              { get; }
+        public ECCPublicKey?         PublicKey              { get; }
         public SimpleEMailAddress?   EMail                  { get; }
         public URL?                  WWW                    { get; }
         public DateTime?             NotBefore              { get; }
@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
 
         public EVSignature(//String                Id,
                            String                Name,
-                           EVPublicKey?          PublicKey,
+                           ECCPublicKey?         PublicKey,
                            SimpleEMailAddress?   EMail,
                            URL?                  WWW,
                            DateTime?             NotBefore,
@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
                                        Encoding?  Encoding   = null);
 
 
-        public abstract Boolean Verify(EVPublicKey? PublicKey = null);
+        public abstract Boolean Verify(ECCPublicKey? PublicKey = null);
 
     }
 

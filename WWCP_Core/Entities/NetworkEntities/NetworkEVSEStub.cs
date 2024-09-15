@@ -41,7 +41,7 @@
 //    public class NetworkEVSEStub : AEMobilityEntity<EVSE_Id>,
 //                                   IEquatable<NetworkEVSEStub>, IComparable<NetworkEVSEStub>, IComparable,
 //                                   IEnumerable<SocketOutlet>,
-//                                   IStatus<EVSEStatusTypes>,
+//                                   IStatus<EVSEStatusType>,
 //                                   IRemoteEVSE
 //    {
 
@@ -359,7 +359,7 @@
 //        /// The current EVSE status.
 //        /// </summary>
 //        [InternalUseOnly]
-//        public Timestamped<EVSEStatusTypes> Status
+//        public Timestamped<EVSEStatusType> Status
 //        {
 
 //            get
@@ -378,12 +378,12 @@
 
 //        #region StatusSchedule
 
-//        private StatusSchedule<EVSEStatusTypes> _StatusSchedule;
+//        private StatusSchedule<EVSEStatusType> _StatusSchedule;
 
 //        /// <summary>
 //        /// The EVSE status schedule.
 //        /// </summary>
-//        public IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule
+//        public IEnumerable<Timestamped<EVSEStatusType>> StatusSchedule
 //        {
 //            get
 //            {
@@ -534,8 +534,8 @@
 //            this._ChargingModes         = new ReactiveSet<ChargingModes>();
 //            this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
 
-//            this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusScheduleSize);
-//            this._StatusSchedule.Insert(EVSEStatusTypes.OutOfService);
+//            this._StatusSchedule        = new StatusSchedule<EVSEStatusType>(MaxStatusScheduleSize);
+//            this._StatusSchedule.Insert(EVSEStatusType.OutOfService);
 
 //            this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusTypes>(MaxStatusScheduleSize);
 //            this._AdminStatusSchedule.Insert(EVSEAdminStatusTypes.OutOfService);
@@ -579,8 +579,8 @@
 //            //                               OldStatus,
 //            //                               NewStatus) => {
 
-//            //    if (OldStatus.Value == EVSEStatusTypes.Reserved &&
-//            //        NewStatus.Value != EVSEStatusTypes.Reserved &&
+//            //    if (OldStatus.Value == EVSEStatusType.Reserved &&
+//            //        NewStatus.Value != EVSEStatusType.Reserved &&
 //            //        _Reservation != null)
 //            //    {
 
@@ -624,7 +624,7 @@
 //        /// Set the current status.
 //        /// </summary>
 //        /// <param name="NewStatus">A new status.</param>
-//        public void SetStatus(EVSEStatusTypes  NewStatus)
+//        public void SetStatus(EVSEStatusType  NewStatus)
 //        {
 //            _StatusSchedule.Insert(NewStatus);
 //        }
@@ -637,7 +637,7 @@
 //        /// Set the current status.
 //        /// </summary>
 //        /// <param name="NewTimestampedStatus">A new timestamped status.</param>
-//        public void SetStatus(Timestamped<EVSEStatusTypes> NewTimestampedStatus)
+//        public void SetStatus(Timestamped<EVSEStatusType> NewTimestampedStatus)
 //        {
 //            _StatusSchedule.Insert(NewTimestampedStatus);
 //        }
@@ -651,7 +651,7 @@
 //        /// </summary>
 //        /// <param name="NewStatus">A new status.</param>
 //        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-//        public void SetStatus(EVSEStatusTypes  NewStatus,
+//        public void SetStatus(EVSEStatusType  NewStatus,
 //                              DateTime        Timestamp)
 //        {
 //            _StatusSchedule.Insert(NewStatus, Timestamp);
@@ -666,7 +666,7 @@
 //        /// </summary>
 //        /// <param name="NewStatusList">A list of new timestamped status.</param>
 //        /// <param name="ChangeMethod">The change mode.</param>
-//        public void SetStatus(IEnumerable<Timestamped<EVSEStatusTypes>>  NewStatusList,
+//        public void SetStatus(IEnumerable<Timestamped<EVSEStatusType>>  NewStatusList,
 //                              ChangeMethods                             ChangeMethod = ChangeMethods.Replace)
 //        {
 //            _StatusSchedule.Set(NewStatusList, ChangeMethod);
@@ -770,8 +770,8 @@
 //        /// <param name="NewStatus">The new EVSE status.</param>
 //        internal async Task UpdateStatus(DateTime                     Timestamp,
 //                                         EventTracking_Id             EventTrackingId,
-//                                         Timestamped<EVSEStatusTypes>  OldStatus,
-//                                         Timestamped<EVSEStatusTypes>  NewStatus)
+//                                         Timestamped<EVSEStatusType>  OldStatus,
+//                                         Timestamped<EVSEStatusType>  NewStatus)
 //        {
 
 //            var onStatusChanged = OnStatusChanged;
@@ -1075,14 +1075,14 @@
 //                    if (_ChargingSession != null)
 //                    {
 
-//                        SetStatus(EVSEStatusTypes.Charging);
+//                        SetStatus(EVSEStatusType.Charging);
 
 //                        OnNewChargingSession?.Invoke(Timestamp.Now, this, _ChargingSession);
 
 //                    }
 
 //                    else
-//                        SetStatus(EVSEStatusTypes.Available);
+//                        SetStatus(EVSEStatusType.Available);
 
 //                }
 

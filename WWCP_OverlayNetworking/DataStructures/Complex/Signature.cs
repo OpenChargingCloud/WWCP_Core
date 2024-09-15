@@ -367,8 +367,8 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
 
                 Signature = new Signature(
-                                KeyId.FromBase64(),
-                                Value.FromBase64(),
+                                KeyId.FromBASE64(),
+                                Value.FromBASE64(),
                                 Algorithm,
                                 SigningMethod,
                                 EncodingMethod,
@@ -491,7 +491,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                ? new JProperty("encodingMethod",   Encoding.Value.ToString())
                                : null,
 
-                           Algorithm.HasValue && Algorithm.Value != CryptoAlgorithm.secp256r1
+                           Algorithm.HasValue && Algorithm.Value != CryptoAlgorithm.Secp256r1
                                ? new JProperty("algorithm",        Algorithm.Value.ToString())
                                : null,
 

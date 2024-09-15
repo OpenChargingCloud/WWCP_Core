@@ -190,8 +190,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (!JSON.ParseMandatoryHashSet("publicKeys",
                                                 "public keys",
-                                                PublicKey.TryParse,
-                                                out HashSet<PublicKey> PublicKeys,
+                                                ECCPublicKey.TryParse,
+                                                out HashSet<ECCPublicKey> PublicKeys,
                                                 out ErrorResponse))
                 {
                     return false;

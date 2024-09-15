@@ -39,6 +39,7 @@ using cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets;
 namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 {
 
+    #region Delegates
 
     public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,
                                                                   IEventSender                Server,
@@ -99,6 +100,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                                   Byte[]                      ResponseMessage,
                                                                   CancellationToken           CancellationToken);
 
+    #endregion
 
     public class OverlayWebSocketServer : AOverlayWebSocketServer
     {
@@ -247,7 +249,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             => webSocketServer.IPSocket;
         public Boolean                                 IsRunning
             => webSocketServer.IsRunning;
-        public HashSet<String>                         SecWebSocketProtocols
+        public IEnumerable<String>                     SecWebSocketProtocols
             => webSocketServer.SecWebSocketProtocols;
         public Boolean                                 ServerThreadIsBackground
             => webSocketServer.ServerThreadIsBackground;
@@ -317,7 +319,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region Events
 
         /// <summary>
-        /// An event sent whenever the HTTP web socket server started.
+        /// An event sent whenever the HTTP WebSocket server started.
         /// </summary>
         public event OnServerStartedDelegate?                OnServerStarted
         {
@@ -481,7 +483,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         //}
 
         /// <summary>
-        /// An event sent whenever the HTTP web socket server stopped.
+        /// An event sent whenever the HTTP WebSocket server stopped.
         /// </summary>
         public event OnServerStoppedDelegate?                OnServerStopped
         {
@@ -814,7 +816,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                            }.AsImmutable);
 
             }
-            else if (!webSocketServer.SecWebSocketProtocols.Overlaps(Connection.HTTPRequest?.SecWebSocketProtocol ?? []))
+            else if (!new HashSet<String>(webSocketServer.SecWebSocketProtocols).Overlaps(Connection.HTTPRequest?.SecWebSocketProtocol ?? []))
             {
 
                 var error = $"This WebSocket service only supports {(webSocketServer.SecWebSocketProtocols.Select(id => $"'{id}'").AggregateWith(", "))}!";
@@ -2521,7 +2523,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region Start()
 
         /// <summary>
-        /// Start the HTTP web socket listener thread.
+        /// Start the HTTP WebSocket listener thread.
         /// </summary>
         public void Start()
         {
@@ -2533,7 +2535,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region Shutdown(Message = null, Wait = true)
 
         /// <summary>
-        /// Shutdown the HTTP web socket listener thread.
+        /// Shutdown the HTTP WebSocket listener thread.
         /// </summary>
         /// <param name="Message">An optional shutdown message.</param>
         /// <param name="Wait">Wait until the server finally shutted down.</param>

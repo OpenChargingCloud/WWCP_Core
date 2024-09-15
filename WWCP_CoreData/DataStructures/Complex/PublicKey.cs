@@ -21,9 +21,6 @@ using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
-using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Crypto.Parameters;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -44,45 +41,38 @@ namespace cloud.charging.open.protocols.WWCP
         /// The cryptographic public key.
         /// </summary>
         [Mandatory]
-        public   Byte[]                  Value                 { get; }
+        public   Byte[]               Value            { get; protected set; }
 
         /// <summary>
-        /// The optional cryptographic algorithm of the keys. Default is 'secp256r1'.
+        /// The optional cryptographic algorithm of the public key.
+        /// The algorithm is optional as in some situations we just do not know it!
         /// </summary>
         [Optional]
-        public   CryptoAlgorithm         Algorithm             { get; }
+        public   CryptoAlgorithm?     Algorithm        { get; }
 
         /// <summary>
-        /// The optional serialization of the cryptographic keys. Default is 'raw'.
+        /// The serialization of the cryptographic public key. Default is 'raw'.
         /// </summary>
-        [Optional]
-        public   CryptoSerialization     Serialization         { get; }
+        [Mandatory]
+        public   CryptoSerialization  Serialization    { get; }
 
         /// <summary>
-        /// The optional encoding of the cryptographic keys. Default is 'base64'.
+        /// The encoding of the cryptographic public key. Default is 'base64'.
         /// </summary>
-        [Optional]
-        public   CryptoEncoding          Encoding              { get; }
-
-
-        public   X9ECParameters?         ECParameters          { get; }
-
-        public   ECDomainParameters?     ECDomainParameters    { get; }
-
-
-        internal ECPublicKeyParameters?  PublicKey2            { get; }
+        [Mandatory]
+        public   CryptoEncoding       Encoding         { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new OCPP CSE asymmetric cryptographic public key.
+        /// Create a new asymmetric cryptographic public key.
         /// </summary>
         /// <param name="Value">The public key.</param>
-        /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
-        /// <param name="Serialization">The optional serialization of the cryptographic keys. Default is 'raw'.</param>
-        /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
+        /// <param name="Algorithm">An optional cryptographic algorithm of the public key. Default is 'secp256r1'.</param>
+        /// <param name="Serialization">An optional serialization of the public key. Default is 'raw'.</param>
+        /// <param name="Encoding">An optional encoding of the public key. Default is 'base64'.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public PublicKey(Byte[]                Value,
                          CryptoAlgorithm?      Algorithm       = null,
@@ -94,18 +84,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.Value               = Value;
-            this.Algorithm           = Algorithm     ?? CryptoAlgorithm.    secp256r1;
-            this.Serialization       = Serialization ?? CryptoSerialization.raw;
-            this.Encoding            = Encoding      ?? CryptoEncoding.     BASE64;
+            this.Value          = Value;
+            this.Algorithm      = Algorithm;
+            this.Serialization  = Serialization ?? CryptoSerialization.RAW;
+            this.Encoding       = Encoding      ?? CryptoEncoding.     NONE;
 
             unchecked
             {
 
-                hashCode = this.Value.        GetHashCode() * 11 ^
-                           this.Algorithm.    GetHashCode() *  7 ^
-                           this.Serialization.GetHashCode() *  5 ^
-                           this.Encoding.     GetHashCode() *  3 ^
+                hashCode = this.Value.        GetHashCode()       * 11 ^
+                          (this.Algorithm?.   GetHashCode() ?? 0) *  7 ^
+                           this.Serialization.GetHashCode()       *  5 ^
+                           this.Encoding.     GetHashCode()       *  3 ^
                            base.              GetHashCode();
 
             }
@@ -121,259 +111,48 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Parse       (Text)
+        #region (static) TryParseASN1 (ASN1, out PublicKey, out ErrorResponse, ...)
 
         /// <summary>
-        /// Parse the given text representation of a cryptographic public key.
+        /// Try to parse the given ASN.1 DER representation of an asymmetric public key.
         /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        public static PublicKey Parse(String                Text,
-                                      CryptoAlgorithm?      Algorithm       = null,
-                                      CryptoSerialization?  Serialization   = null,
-                                      CryptoEncoding?       Encoding        = null,
-                                      CustomData?           CustomData      = null)
+        /// <param name="ASN1">The ASN.1 DER representation of the public key.</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public static Boolean TryParseASN1(Byte[]                               ASN1,
+                                           [NotNullWhen(true)]  out PublicKey?  PublicKey,
+                                           [NotNullWhen(false)] out String?     ErrorResponse,
+                                           CustomData?                          CustomData   = null)
         {
 
-            if (TryParse(Text,
-                         out var publicKey,
-                         out var errorResponse,
-                         Algorithm,
-                         Serialization,
-                         Encoding,
-                         CustomData))
-            {
-                return publicKey;
-            }
-
-            throw new ArgumentException("The given text representation of a public key is invalid: " + errorResponse,
-                                        nameof(Text));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse    (Text, out PublicKey, out ErrorResponse, Algorithm = secp256r1, Serialization = raw, Encoding = base64, ...)
-
-        /// <summary>
-        /// Parse the given text representation of a cryptographic public key.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        public static Boolean TryParse(String                               Text,
-                                       [NotNullWhen(true)]  out PublicKey?  PublicKey,
-                                       [NotNullWhen(false)] out String?     ErrorResponse,
-                                       CryptoAlgorithm?                     Algorithm       = null,
-                                       CryptoSerialization?                 Serialization   = null,
-                                       CryptoEncoding?                      Encoding        = null,
-                                       CustomData?                          CustomData      = null)
-        {
-
-            PublicKey      = null;
-            ErrorResponse  = null;
-
-            if (Algorithm.IsNotNullOrEmpty())
-            {
-
-                var ecParameters = ECNamedCurveTable.GetByName((Algorithm ?? CryptoAlgorithm.secp256r1).ToString());
-                if (ecParameters is null)
-                {
-                    ErrorResponse = $"The given cryptographic algorithm '{Algorithm}' is unknown!";
-                    return false;
-                }
-
-                var ecDomainParameters = new ECDomainParameters(
-                                             ecParameters.Curve,
-                                             ecParameters.G,
-                                             ecParameters.N,
-                                             ecParameters.H,
-                                             ecParameters.GetSeed()
-                                         );
-
-                try
-                {
-
-                    var publicKey2 = new ECPublicKeyParameters(
-                                         "ECDSA",
-                                         ecParameters.Curve.DecodePoint(Text.FromBase64()),
-                                         ecDomainParameters
-                                     );
-
-                }
-                catch (Exception e)
-                {
-                    ErrorResponse = $"The given public key '{Text}' is invalid: {e.Message}";
-                    return false;
-                }
-
-            }
-
-            PublicKey = new PublicKey(
-                            Text.FromBase64(),
-                            Algorithm,
-                            Serialization,
-                            Encoding,
-                            CustomData
-                        );
-
-            return true;
-
-        }
-
-        #endregion
-
-        #region (static) Parse       (JSON, CustomPublicKeyParser = null)
-
-        /// <summary>
-        /// Parse the given JSON representation of a cryptographic public key.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomPublicKeyParser">An optional delegate to parse custom cryptographic public keys.</param>
-        public static PublicKey Parse(JObject                                  JSON,
-                                      CustomJObjectParserDelegate<PublicKey>?  CustomPublicKeyParser   = null)
-        {
-
-            if (TryParse(JSON,
-                         out var publicKey,
-                         out var errorResponse,
-                         CustomPublicKeyParser))
-            {
-                return publicKey;
-            }
-
-            throw new ArgumentException("The given JSON representation of a public key is invalid: " + errorResponse,
-                                        nameof(JSON));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse    (JSON, out PublicKey, out ErrorResponse, CustomPublicKeyParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a public key.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="PublicKey">The parsed connector type.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                              JSON,
-                                       [NotNullWhen(true)]  out PublicKey?  PublicKey,
-                                       [NotNullWhen(false)] out String?     ErrorResponse)
-
-            => TryParse(JSON,
-                        out PublicKey,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a public key.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="PublicKey">The parsed connector type.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomPublicKeyParser">An optional delegate to parse custom public keys.</param>
-        public static Boolean TryParse(JObject                                  JSON,
-                                       [NotNullWhen(true)]  out PublicKey?      PublicKey,
-                                       [NotNullWhen(false)] out String?         ErrorResponse,
-                                       CustomJObjectParserDelegate<PublicKey>?  CustomPublicKeyParser   = null)
-        {
+            PublicKey = null;
 
             try
             {
 
-                PublicKey = default;
-
-                #region Value             [mandatory]
-
-                if (!JSON.ParseMandatoryText("value",
-                                             "public key value",
-                                             out String? Value,
-                                             out ErrorResponse))
+                // Most likely an ASN.1 DER encoding sequence of a public key
+                if (ASN1[0] != 0x30)
                 {
+                    PublicKey      = null;
+                    ErrorResponse  = $"The given ASN.1 DER representation '{ASN1.ToHexString()}' of a public key is invalid!";
                     return false;
                 }
 
-                #endregion
-
-                #region Algorithm         [optional]
-
-                if (JSON.ParseOptional("algorithm",
-                                       "crypto algorithm",
-                                       CryptoAlgorithm.TryParse,
-                                       out CryptoAlgorithm Algorithm,
-                                       out ErrorResponse))
+                if (ECCPublicKey.TryParseASN1(ASN1,
+                                              out var eccPublicKey,
+                                              out ErrorResponse,
+                                              CustomData))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    PublicKey = eccPublicKey;
+                    return true;
                 }
 
-                #endregion
 
-                #region Serialization     [optional]
-
-                if (JSON.ParseOptional("serialization",
-                                       "crypto serialization",
-                                       CryptoSerialization.TryParse,
-                                       out CryptoSerialization Serialization,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region Encoding          [optional]
-
-                if (JSON.ParseOptional("encoding",
-                                       "crypto encoding",
-                                       CryptoEncoding.TryParse,
-                                       out CryptoEncoding Encoding,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region CustomData        [optional]
-
-                if (JSON.ParseOptionalJSON("customData",
-                                           "custom data",
-                                           WWCP.CustomData.TryParse,
-                                           out CustomData CustomData,
-                                           out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-
-                PublicKey = new PublicKey(
-                                Value.FromBase64(),
-                                Algorithm,
-                                Serialization,
-                                Encoding,
-                                CustomData
-                            );
-
-                if (CustomPublicKeyParser is not null)
-                    PublicKey = CustomPublicKeyParser(JSON,
-                                                      PublicKey);
-
-                return true;
-
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
-                PublicKey      = default;
-                ErrorResponse  = "The given JSON representation of a public key is invalid: " + e.Message;
-                return false;
+                ErrorResponse  = $"The given ASN.1 DER representation '{ASN1.ToHexString()}' of a public key is invalid: " + e.Message;
             }
+
+            return false;
 
         }
 
@@ -386,28 +165,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="CustomPublicKeySerializer">A delegate to serialize cryptographic public keys.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<PublicKey>?   CustomPublicKeySerializer    = null,
+        public JObject ToJSON(Boolean                                       Embedded                     = true,
+                              CustomJObjectSerializerDelegate<PublicKey>?   CustomPublicKeySerializer    = null,
                               CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("value",           Encoding.Encode(Value)),
+                                 new JProperty("value",           Encoding.       Encode(Value)),
 
-                           Algorithm     == CryptoAlgorithm.    secp256r1
-                               ? null
-                               : new JProperty("algorithm",       Algorithm. ToString()),
+                           Algorithm.HasValue
+                               ? new JProperty("algorithm",       Algorithm.Value.ToString())
+                               : null,
 
-                           Serialization == CryptoSerialization.raw
+                           Serialization == CryptoSerialization.RAW
                                ? null
                                : new JProperty("serialization",   Serialization),
 
                            Encoding      == CryptoEncoding.     BASE64
                                ? null
-                               : new JProperty("encoding",        Encoding.  ToString()),
+                               : new JProperty("encoding",        Encoding.       ToString()),
 
                            CustomData is not null
-                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData.     ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -431,7 +211,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                    (Byte[]) Value.Clone(),
 
-                   Algorithm.    Clone,
+                   Algorithm?.   Clone,
                    Serialization.Clone,
                    Encoding.     Clone,
 
@@ -513,7 +293,10 @@ namespace cloud.charging.open.protocols.WWCP
             => PublicKey is not null &&
 
                Value.        SequenceEqual(PublicKey.Value)         &&
-               Algorithm.    Equals       (PublicKey.Algorithm)     &&
+
+            ((!Algorithm.HasValue && !PublicKey.Algorithm.HasValue) ||
+              (Algorithm.HasValue &&  PublicKey.Algorithm.HasValue && Algorithm.Value.Equals(PublicKey.Algorithm.Value))) &&
+
                Serialization.Equals       (PublicKey.Serialization) &&
                Encoding.     Equals       (PublicKey.Encoding)      &&
                base.         Equals       (PublicKey);
@@ -540,8 +323,30 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+        {
 
-            => Value.ToBase64();
+            var parameters = new List<String>();
+
+            if (Encoding      != CryptoEncoding.     NONE)
+                parameters.Add(Encoding.       ToString());
+
+            if (Serialization != CryptoSerialization.RAW)
+                parameters.Add(Serialization.  ToString());
+
+            if (Algorithm.HasValue)
+                parameters.Add(Algorithm.Value.ToString());
+
+            return String.Concat(
+
+                       Encoding.Encode(Value),
+
+                       parameters.Count > 0
+                           ? $" [{parameters.AggregateWith(", ")}]"
+                           : ""
+
+                   );
+
+        }
 
         #endregion
 

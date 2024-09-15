@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamped status of the EVSE.
         /// </summary>
-        public IEnumerable<Timestamped<EVSEStatusTypes>>  StatusSchedule    { get; }
+        public IEnumerable<Timestamped<EVSEStatusType>>  StatusSchedule    { get; }
 
         #endregion
 
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="StatusSchedule">The timestamped admin status of the EVSE.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public EVSEStatusSchedule(EVSE_Id                                    Id,
-                                  IEnumerable<Timestamped<EVSEStatusTypes>>  StatusSchedule,
+                                  IEnumerable<Timestamped<EVSEStatusType>>  StatusSchedule,
                                   JObject?                                   CustomData     = null,
                                   UserDefinedDictionary?                     InternalData   = null)
 

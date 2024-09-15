@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.KeyId          = KeyId;
             this.Value          = Value;
-            this.Algorithm      = Algorithm     ?? CryptoAlgorithm.    secp256r1;
+            this.Algorithm      = Algorithm     ?? CryptoAlgorithm.    Secp256r1;
             this.SigningMethod  = SigningMethod ?? CryptoSigningMethod.JSON;
             this.Encoding       = Encoding      ?? CryptoEncoding.     BASE64;
             this.Name           = Name;
@@ -133,15 +133,15 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                hashCode = KeyId.         GetHashCode()       * 23 ^
-                           Value.         GetHashCode()       * 19 ^
-                           Algorithm.     GetHashCode()       * 17 ^
-                           SigningMethod. GetHashCode()       * 13 ^
-                           Encoding.      GetHashCode()       * 11 ^
-                          (Name?.         GetHashCode() ?? 0) *  7 ^
-                          (Description?.  GetHashCode() ?? 0) *  5 ^
-                          (Timestamp?.    GetHashCode() ?? 0) *  3 ^
-                           base.          GetHashCode();
+                hashCode = KeyId.        GetHashCode()       * 23 ^
+                           Value.        GetHashCode()       * 19 ^
+                           Algorithm.    GetHashCode()       * 17 ^
+                           SigningMethod.GetHashCode()       * 13 ^
+                           Encoding.     GetHashCode()       * 11 ^
+                          (Name?.        GetHashCode() ?? 0) *  7 ^
+                          (Description?. GetHashCode() ?? 0) *  5 ^
+                          (Timestamp?.   GetHashCode() ?? 0) *  3 ^
+                           base.         GetHashCode();
 
             }
 
@@ -367,8 +367,8 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 Signature = new Signature(
-                                KeyId.FromBase64(),
-                                Value.FromBase64(),
+                                KeyId.FromBASE64(),
+                                Value.FromBASE64(),
                                 Algorithm,
                                 SigningMethod,
                                 EncodingMethod,
@@ -487,11 +487,11 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("signingMethod",    SigningMethod.  ToString())
                                : null,
 
-                           Encoding      != CryptoEncoding.BASE64
+                           Encoding      != CryptoEncoding.     BASE64
                                ? new JProperty("encoding",         Encoding.       ToString())
                                : null,
 
-                           Algorithm     != CryptoAlgorithm.secp256r1
+                           Algorithm     != CryptoAlgorithm.    Secp256r1
                                ? new JProperty("algorithm",        Algorithm.      ToString())
                                : null,
 

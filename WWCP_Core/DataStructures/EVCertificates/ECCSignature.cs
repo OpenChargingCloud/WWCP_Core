@@ -17,18 +17,16 @@
 
 #region Usings
 
+using System.Security.Cryptography;
+
 using Newtonsoft.Json.Linq;
+
+using Org.BouncyCastle.Asn1;
+using Org.BouncyCastle.Security;
 
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Illias;
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Math;
-using System.Security.Cryptography;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Asn1.Nist;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Asn1.Ocsp;
 
 #endregion
 
@@ -110,14 +108,14 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
             if (!Encoding.HasValue ||
                  Encoding.ToString() == EVCertificates.Encoding.BASE64.ToString())
             {
-                this.R = R.FromBase64();
-                this.S = S.FromBase64();
+                this.R = R.FromBASE64();
+                this.S = S.FromBASE64();
             }
 
             if ( Encoding.ToString() == EVCertificates.Encoding.HEX.   ToString())
             {
-                this.R = R.HexStringToByteArray();
-                this.S = S.HexStringToByteArray();
+                this.R = R.FromHEX();
+                this.S = S.FromHEX();
             }
 
             CalcId();
@@ -195,10 +193,10 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
         }
 
 
-        public override Boolean Verify(EVPublicKey? PublicKey = null)
+        public override Boolean Verify(ECCPublicKey? PublicKey = null)
         {
 
-            var publicKey = ((this.PublicKey ?? PublicKey) as ECCPublicKey)?.PublicKey;
+            var publicKey = ((this.PublicKey ?? PublicKey) as ECCPublicKey)?.ParsedPublicKey;
 
             //var ECParameters = NistNamedCurves.GetByName(EncryptionAlgorithm?.BouncyCastleId ?? "P-256");
 

@@ -3473,7 +3473,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>> EVSEStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, Boolean>? TimestampFilter = null, Func<EVSEStatusTypes, Boolean>? StatusFilter = null, UInt64? Skip = null, UInt64? Take = null)
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, Boolean>? TimestampFilter = null, Func<EVSEStatusType, Boolean>? StatusFilter = null, UInt64? Skip = null, UInt64? Take = null)
         {
             throw new NotImplementedException();
         }

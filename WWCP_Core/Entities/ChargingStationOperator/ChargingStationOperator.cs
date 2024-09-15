@@ -32,8 +32,6 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 
-using social.OpenData.UsersAPI;
-
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
@@ -1503,7 +1501,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
         /// <param name="ChargingPool">The charging pool.</param>
-        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolById(ChargingPool_Id                         ChargingPoolId,
+                                              [NotNullWhen(true)] out IChargingPool?  ChargingPool)
         {
 
             if (!ChargingPoolId.IsNullOrEmpty &&
@@ -1523,7 +1522,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
         /// <param name="ChargingPool">The charging pool.</param>
-        public Boolean TryGetChargingPoolById(ChargingPool_Id? ChargingPoolId, out IChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolById(ChargingPool_Id?                        ChargingPoolId,
+                                              [NotNullWhen(true)] out IChargingPool?  ChargingPool)
         {
 
             if (ChargingPoolId.IsNotNullOrEmpty() &&
@@ -1542,7 +1542,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetChargingPoolByStationId(ChargingStationId, out ChargingPool)
 
-        public Boolean TryGetChargingPoolByStationId(ChargingStation_Id ChargingStationId, out IChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolByStationId(ChargingStation_Id                      ChargingStationId,
+                                                     [NotNullWhen(true)] out IChargingPool?  ChargingPool)
         {
 
             foreach (var chargingPool in chargingPools)
@@ -2916,11 +2917,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="StatusFilter">An optional admin status value filter.</param>
         /// <param name="Skip">The number of status entries per pool to skip.</param>
         /// <param name="Take">The number of status entries per pool to return.</param>
-        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>>
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>>
 
             EVSEStatusSchedule(IncludeEVSEDelegate?             IncludeEVSEs      = null,
                                Func<DateTime,        Boolean>?  TimestampFilter   = null,
-                               Func<EVSEStatusTypes, Boolean>?  StatusFilter      = null,
+                               Func<EVSEStatusType, Boolean>?  StatusFilter      = null,
                                UInt64?                          Skip              = null,
                                UInt64?                          Take              = null)
 
@@ -2930,7 +2931,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             return evseLookup.Values.
                        Where (evse => IncludeEVSEs(evse)).
-                       Select(evse => new Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>(
+                       Select(evse => new Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>(
                                           evse.Id,
                                           evse.StatusSchedule(TimestampFilter,
                                                               StatusFilter,
@@ -3213,7 +3214,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVSEStatus(EVSEId, NewStatus)
 
         public void SetEVSEStatus(EVSE_Id          EVSEId,
-                                  EVSEStatusTypes  NewStatus)
+                                  EVSEStatusType  NewStatus)
         {
 
             if (TryGetEVSEById(EVSEId, out var evse) &&
@@ -3229,7 +3230,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVSEStatus(EVSEId, NewTimestampedStatus)
 
         public void SetEVSEStatus(EVSE_Id                       EVSEId,
-                                  Timestamped<EVSEStatusTypes>  NewTimestampedStatus)
+                                  Timestamped<EVSEStatusType>  NewTimestampedStatus)
         {
 
             if (TryGetEVSEById(EVSEId, out var evse) &&
@@ -3245,14 +3246,14 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVSEStatus(EVSEId, NewStatus, Timestamp)
 
         public void SetEVSEStatus(EVSE_Id          EVSEId,
-                                  EVSEStatusTypes  NewStatus,
+                                  EVSEStatusType  NewStatus,
                                   DateTime         Timestamp)
         {
 
             if (TryGetEVSEById(EVSEId, out var evse) &&
                 evse is not null)
             {
-                evse.Status = new Timestamped<EVSEStatusTypes>(Timestamp, NewStatus);
+                evse.Status = new Timestamped<EVSEStatusType>(Timestamp, NewStatus);
             }
 
         }
@@ -3262,7 +3263,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVSEStatus(EVSEId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
         public void SetEVSEStatus(EVSE_Id                                    EVSEId,
-                                  IEnumerable<Timestamped<EVSEStatusTypes>>  StatusList,
+                                  IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
                                   ChangeMethods                              ChangeMethod  = ChangeMethods.Replace)
         {
             if (TryGetEVSEById(EVSEId, out var evse) &&
@@ -3276,7 +3277,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region CalcEVSEStatusDiff(EVSEStatus, IncludeEVSE = null)
 
-        //public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusTypes>  EVSEStatus,
+        //public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusType>  EVSEStatus,
         //                                         Func<EVSE, Boolean>                  IncludeEVSE  = null)
         //{
 
@@ -3501,8 +3502,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateEVSEStatus(DateTime                       Timestamp,
                                              EventTracking_Id               EventTrackingId,
                                              IEVSE                          EVSE,
-                                             Timestamped<EVSEStatusTypes>   NewStatus,
-                                             Timestamped<EVSEStatusTypes>?  OldStatus    = null,
+                                             Timestamped<EVSEStatusType>   NewStatus,
+                                             Timestamped<EVSEStatusType>?  OldStatus    = null,
                                              Context?                       DataSource   = null)
         {
 

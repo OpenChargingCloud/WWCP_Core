@@ -28,8 +28,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using social.OpenData.UsersAPI;
-
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
@@ -1814,11 +1812,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TimestampFilter">An optional status timestamp filter.</param>
         /// <param name="StatusFilter">An optional status value filter.</param>
         /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>>
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>>
 
             EVSEStatusSchedule(IncludeEVSEDelegate?             IncludeEVSEs      = null,
                                Func<DateTime,        Boolean>?  TimestampFilter   = null,
-                               Func<EVSEStatusTypes, Boolean>?  StatusFilter      = null,
+                               Func<EVSEStatusType, Boolean>?  StatusFilter      = null,
                                UInt64?                          Skip              = null,
                                UInt64?                          Take              = null)
 
@@ -1827,7 +1825,7 @@ namespace cloud.charging.open.protocols.WWCP
             IncludeEVSEs ??= (evse => true);
 
             return EVSEs.Where (evse => IncludeEVSEs(evse)).
-                         Select(evse => new Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>(
+                         Select(evse => new Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>(
                                             evse.Id,
                                             evse.StatusSchedule(TimestampFilter,
                                                                 StatusFilter,
@@ -1856,7 +1854,7 @@ namespace cloud.charging.open.protocols.WWCP
             //UpdateEVSEStatus(Now,
             //                 EventTracking_Id.New,
             //                 _EVSE,
-            //                 new Timestamped<EVSEStatusTypes>(Now, EVSEStatusTypes.Unspecified),
+            //                 new Timestamped<EVSEStatusType>(Now, EVSEStatusType.Unspecified),
             //                 _EVSE.Status).Wait();
 
             if (RemoteChargingStation is not null)
@@ -2615,8 +2613,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateEVSEStatus(DateTime                       Timestamp,
                                              EventTracking_Id               EventTrackingId,
                                              IEVSE                          EVSE,
-                                             Timestamped<EVSEStatusTypes>   NewStatus,
-                                             Timestamped<EVSEStatusTypes>?  OldStatus    = null,
+                                             Timestamped<EVSEStatusType>   NewStatus,
+                                             Timestamped<EVSEStatusType>?  OldStatus    = null,
                                              Context?                       DataSource   = null)
         {
 

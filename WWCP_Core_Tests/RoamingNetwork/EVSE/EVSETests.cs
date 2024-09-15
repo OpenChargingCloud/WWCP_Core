@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 ClassicAssert.AreEqual (EVSEAdminStatusTypes.OutOfService,     DE_GEF_E0001_AAAA_1.AdminStatus);
                 ClassicAssert.AreEqual (1,                                     DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Count());
 
-                ClassicAssert.AreEqual (EVSEStatusTypes.Offline,               DE_GEF_E0001_AAAA_1.Status);
+                ClassicAssert.AreEqual (EVSEStatusType.Offline,               DE_GEF_E0001_AAAA_1.Status);
                 ClassicAssert.AreEqual (1,                                     DE_GEF_E0001_AAAA_1.StatusSchedule().     Count());
 
 
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     ClassicAssert.AreEqual ("powered by GraphDefined EVSEs GmbH",  DE_GEF_E0001_AAAA_X.Description.FirstText());
 
                     ClassicAssert.AreEqual (EVSEAdminStatusTypes.Operational,      DE_GEF_E0001_AAAA_X.AdminStatus);
-                    ClassicAssert.AreEqual (EVSEStatusTypes.Available,             DE_GEF_E0001_AAAA_X.Status);
+                    ClassicAssert.AreEqual (EVSEStatusType.Available,             DE_GEF_E0001_AAAA_X.Status);
 
                     ClassicAssert.IsTrue   (roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")));
                     ClassicAssert.IsNotNull(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")));
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                 Name:                I18NString.Create(Languages.de, "DE*GEF EVSE 1234*5678*1"),
                                                                 Description:         I18NString.Create(Languages.de, "powered by GraphDefined EVSEs GmbH"),
                                                                 InitialAdminStatus:  EVSEAdminStatusTypes.OutOfService,
-                                                                InitialStatus:       EVSEStatusTypes.Offline,
+                                                                InitialStatus:       EVSEStatusType.Offline,
                                                                 OnSuccess:           (evse, et) => success = true,
                                                                 Configurator:        evse => {
 
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     ClassicAssert.AreEqual ("powered by GraphDefined EVSEs GmbH",  DE_GEF_E1234_5678_1.Description.FirstText());
 
                     ClassicAssert.AreEqual (EVSEAdminStatusTypes.OutOfService,     DE_GEF_E1234_5678_1.AdminStatus);
-                    ClassicAssert.AreEqual (EVSEStatusTypes.Offline,               DE_GEF_E1234_5678_1.Status);
+                    ClassicAssert.AreEqual (EVSEStatusType.Offline,               DE_GEF_E1234_5678_1.Status);
 
                     ClassicAssert.IsTrue   (roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
                     ClassicAssert.IsNotNull(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
@@ -467,15 +467,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 // Status entries are compared by their ISO 8601 timestamps!
                 Thread.Sleep(1000);
 
-                DE_GEF_E0001_AAAA_1.Status = EVSEStatusTypes.Reserved;
-                ClassicAssert.AreEqual(EVSEStatusTypes.Reserved,    DE_GEF_E0001_AAAA_1.Status);
+                DE_GEF_E0001_AAAA_1.Status = EVSEStatusType.Reserved;
+                ClassicAssert.AreEqual(EVSEStatusType.Reserved,    DE_GEF_E0001_AAAA_1.Status);
                 ClassicAssert.AreEqual("reserved, offline",         DE_GEF_E0001_AAAA_1.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 ClassicAssert.AreEqual(2,                           DE_GEF_E0001_AAAA_1.StatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
-                DE_GEF_E0001_AAAA_1.Status = EVSEStatusTypes.Error;
-                ClassicAssert.AreEqual(EVSEStatusTypes.Error,       DE_GEF_E0001_AAAA_1.Status);
+                DE_GEF_E0001_AAAA_1.Status = EVSEStatusType.Error;
+                ClassicAssert.AreEqual(EVSEStatusType.Error,       DE_GEF_E0001_AAAA_1.Status);
                 ClassicAssert.AreEqual("error, reserved, offline",  DE_GEF_E0001_AAAA_1.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 ClassicAssert.AreEqual(3,                           DE_GEF_E0001_AAAA_1.StatusSchedule().Count());
 

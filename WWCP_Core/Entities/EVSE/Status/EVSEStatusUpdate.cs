@@ -42,12 +42,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The new timestamped status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusTypes>   NewStatus    { get; }
+        public Timestamped<EVSEStatusType>   NewStatus    { get; }
 
         /// <summary>
         /// The optional old timestamped status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusTypes>?  OldStatus    { get; }
+        public Timestamped<EVSEStatusType>?  OldStatus    { get; }
 
         /// <summary>
         /// An optional data source or context for this EVSE status update.
@@ -66,8 +66,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OldStatus">The optional old timestamped status of the EVSE.</param>
         /// <param name="Context">An optional data source or context for the EVSE status update.</param>
         public EVSEStatusUpdate(EVSE_Id                        Id,
-                                Timestamped<EVSEStatusTypes>   NewStatus,
-                                Timestamped<EVSEStatusTypes>?  OldStatus   = null,
+                                Timestamped<EVSEStatusType>   NewStatus,
+                                Timestamped<EVSEStatusType>?  OldStatus   = null,
                                 Context?                       Context     = null)
 
         {

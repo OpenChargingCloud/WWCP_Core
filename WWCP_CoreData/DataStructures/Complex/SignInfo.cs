@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// An OCPP CSE asymmetric cryptographic signature information.
     /// </summary>
-    public class SignInfo : KeyPair,
+    public class SignInfo : ECCKeyPair,
                             IEquatable<SignInfo>
     {
 
@@ -208,17 +208,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) GenerateKeys(Algorithm = secp256r1)
+        #region (static) GenerateKeys(Algorithm = Secp256r1)
 
         public static SignInfo? GenerateKeys(CryptoAlgorithm?                     Algorithm     = null,
                                              Func<ISignableMessage, String>?      Name          = null,
                                              Func<ISignableMessage, I18NString>?  Description   = null,
                                              Func<ISignableMessage, DateTime>?    Timestamp     = null)
 
-            => KeyPair.GenerateKeys(Algorithm ?? CryptoAlgorithm.secp256r1)?.
-                       ToSignInfo2 (Name,
-                                    Description,
-                                    Timestamp);
+            => ECCKeyPair.GenerateKeys(Algorithm ?? CryptoAlgorithm.Secp256r1)?.
+                          ToSignInfo2 (Name,
+                                       Description,
+                                       Timestamp);
 
         #endregion
 
@@ -351,8 +351,8 @@ namespace cloud.charging.open.protocols.WWCP
                         return false;
                 }
 
-                var Private = PrivateText.FromBase64();
-                var Public  = PublicText. FromBase64();
+                var Private = PrivateText.FromBASE64();
+                var Public  = PublicText. FromBASE64();
 
                 #endregion
 
@@ -452,11 +452,11 @@ namespace cloud.charging.open.protocols.WWCP
                                  new JProperty("private",         Encoding.Encode(PrivateKeyBytes)),
                                  new JProperty("public",          Encoding.Encode(PublicKeyBytes)),
 
-                           Algorithm     != CryptoAlgorithm.    secp256r1
+                           Algorithm     != CryptoAlgorithm.    Secp256r1
                                ? new JProperty("algorithm",       Algorithm.    ToString())
                                : null,
 
-                           Serialization != CryptoSerialization.raw
+                           Serialization != CryptoSerialization.RAW
                                ? new JProperty("serialization",   Serialization.ToString())
                                : null,
 

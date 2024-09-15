@@ -3143,8 +3143,8 @@ namespace cloud.charging.open.protocols.WWCP
         //public Task<PushEVSEStatusResult>
 
         //    EnqueueEVSEStatusUpdate(EVSE                          EVSE,
-        //                            Timestamped<EVSEStatusTypes>  OldStatus,
-        //                            Timestamped<EVSEStatusTypes>  NewStatus)
+        //                            Timestamped<EVSEStatusType>  OldStatus,
+        //                            Timestamped<EVSEStatusType>  NewStatus)
 
         //{
 

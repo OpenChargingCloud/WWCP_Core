@@ -207,8 +207,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (JSON.ParseOptionalJSON("keyPair",
                                            "cryptographic key pair",
-                                           WWCP.KeyPair.TryParse,
-                                           out KeyPair? KeyPair,
+                                           ECCKeyPair.TryParse,
+                                           out ECCKeyPair? KeyPair,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

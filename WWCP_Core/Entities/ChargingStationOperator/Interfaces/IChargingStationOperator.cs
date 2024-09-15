@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Aegir;
@@ -25,8 +27,6 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
-
-using social.OpenData.UsersAPI;
 
 #endregion
 
@@ -995,9 +995,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         IChargingPool? GetChargingPoolById(ChargingPool_Id ChargingPoolId);
 
-        Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool);
+        Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, [NotNullWhen(true)] out IChargingPool? ChargingPool);
 
-        Boolean TryGetChargingPoolByStationId(ChargingStation_Id ChargingStationId, out IChargingPool? ChargingPool);
+        Boolean TryGetChargingPoolByStationId(ChargingStation_Id ChargingStationId, [NotNullWhen(true)] out IChargingPool? ChargingPool);
 
 
 
@@ -1489,11 +1489,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
-        IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>>
+        IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>>
 
             EVSEStatusSchedule(IncludeEVSEDelegate?             IncludeEVSEs      = null,
                                Func<DateTime,        Boolean>?  TimestampFilter   = null,
-                               Func<EVSEStatusTypes, Boolean>?  StatusFilter      = null,
+                               Func<EVSEStatusType, Boolean>?  StatusFilter      = null,
                                UInt64?                          Skip              = null,
                                UInt64?                          Take              = null);
 
@@ -1594,17 +1594,17 @@ namespace cloud.charging.open.protocols.WWCP
         void SetEVSEStatus(EVSEStatus  NewStatus);
 
         void SetEVSEStatus(EVSE_Id          EVSEId,
-                           EVSEStatusTypes  NewStatus);
+                           EVSEStatusType  NewStatus);
 
         void SetEVSEStatus(EVSE_Id                       EVSEId,
-                           Timestamped<EVSEStatusTypes>  NewTimestampedStatus);
+                           Timestamped<EVSEStatusType>  NewTimestampedStatus);
 
         void SetEVSEStatus(EVSE_Id          EVSEId,
-                           EVSEStatusTypes  NewStatus,
+                           EVSEStatusType  NewStatus,
                            DateTime         Timestamp);
 
         void SetEVSEStatus(EVSE_Id                                    EVSEId,
-                           IEnumerable<Timestamped<EVSEStatusTypes>>  StatusList,
+                           IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
                            ChangeMethods                              ChangeMethod  = ChangeMethods.Replace);
 
         EVSEStatusDiff ApplyEVSEStatusDiff(EVSEStatusDiff EVSEStatusDiff);

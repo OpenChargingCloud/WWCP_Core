@@ -31,8 +31,6 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using cloud.charging.open.protocols.WWCP.Networking;
 
-using social.OpenData.UsersAPI;
-
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
@@ -5057,7 +5055,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVSEStatus(EVSEId, NewStatus)
 
         public void SetEVSEStatus(EVSE_Id                       EVSEId,
-                                  Timestamped<EVSEStatusTypes>  NewStatus)
+                                  Timestamped<EVSEStatusType>  NewStatus)
         {
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator) &&
@@ -5077,7 +5075,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public void SetEVSEStatus(EVSE_Id          EVSEId,
                                   DateTime         Timestamp,
-                                  EVSEStatusTypes  NewStatus)
+                                  EVSEStatusType  NewStatus)
         {
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator) &&
@@ -5085,7 +5083,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 chargingStationOperator.SetEVSEStatus(EVSEId,
-                                                      new Timestamped<EVSEStatusTypes>(Timestamp,
+                                                      new Timestamped<EVSEStatusType>(Timestamp,
                                                                                        NewStatus));
 
             }
@@ -5097,7 +5095,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVSEStatus(EVSEId, StatusList)
 
         public void SetEVSEStatus(EVSE_Id                                    EVSEId,
-                                  IEnumerable<Timestamped<EVSEStatusTypes>>  StatusList,
+                                  IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
                                   ChangeMethods                              ChangeMethod  = ChangeMethods.Replace)
         {
 
@@ -5137,11 +5135,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TimestampFilter">An optional status timestamp filter.</param>
         /// <param name="StatusFilter">An optional status value filter.</param>
         /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>>
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>>
 
             EVSEStatusSchedule(IncludeEVSEDelegate?             IncludeEVSEs      = null,
                                Func<DateTime,        Boolean>?  TimestampFilter   = null,
-                               Func<EVSEStatusTypes, Boolean>?  StatusFilter      = null,
+                               Func<EVSEStatusType, Boolean>?  StatusFilter      = null,
                                UInt64?                          Skip              = null,
                                UInt64?                          Take              = null)
 
@@ -5174,8 +5172,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateEVSEStatus(DateTime                       Timestamp,
                                              EventTracking_Id               EventTrackingId,
                                              IEVSE                          EVSE,
-                                             Timestamped<EVSEStatusTypes>   NewStatus,
-                                             Timestamped<EVSEStatusTypes>?  OldStatus    = null,
+                                             Timestamped<EVSEStatusType>   NewStatus,
+                                             Timestamped<EVSEStatusType>?  OldStatus    = null,
                                              Context?                       DataSource   = null)
         {
 

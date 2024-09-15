@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -65,21 +66,32 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
+        /// The JSON-LD context of this cryptographic algorithm.
+        /// </summary>
+        public JSONLDContext        JSONLDContext    { get; }
+
+        /// <summary>
+        /// Optional nicknames for this cryptographic algorithm.
+        /// </summary>
+        public IEnumerable<String>  Nicknames        { get; }
+
+
+        /// <summary>
         /// Indicates whether this cryptographic algorithm is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly Boolean  IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this cryptographic algorithm is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly Boolean  IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the cryptographic algorithm.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly UInt64   Length
             => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
@@ -90,37 +102,73 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new cryptographic algorithm based on the given text.
         /// </summary>
         /// <param name="Text">The text representation of a cryptographic algorithm.</param>
-        private CryptoAlgorithm(String Text)
+        /// <param name="JSONLDContext">The JSON-LD context of this cryptographic algorithm.</param>
+        /// <param name="Nicknames">Optional nicknames for this cryptographic algorithm.</param>
+        private CryptoAlgorithm(String               Text,
+                                JSONLDContext        JSONLDContext,
+                                IEnumerable<String>  Nicknames)
         {
-            this.InternalId = Text;
+
+            this.InternalId     = Text;
+            this.JSONLDContext  = JSONLDContext;
+            this.Nicknames      = Nicknames;
+
         }
 
         #endregion
 
 
-        #region (private static) Register(Text)
+        #region (private static) Register(Text, JSONLDContext, params Nicknames)
 
-        private static CryptoAlgorithm Register(String Text)
+        private static CryptoAlgorithm Register(String           Text,
+                                                JSONLDContext    JSONLDContext,
+                                                params String[]  Nicknames)
+        {
 
-            => lookup.AddAndReturnValue(
-                   Text,
-                   new CryptoAlgorithm(Text)
-               );
+            var cryptoAlgorithm = new CryptoAlgorithm(
+                                      Text,
+                                      JSONLDContext,
+                                      Nicknames
+                                  );
+
+            lookup.TryAdd(
+                Text,
+                cryptoAlgorithm
+            );
+
+            foreach (var nickname in Nicknames)
+                lookup.TryAdd(
+                    nickname,
+                    cryptoAlgorithm
+                );
+
+            return cryptoAlgorithm;
+
+        }
 
         #endregion
 
 
-        #region (static) Parse   (Text)
+        #region (static) Parse   (Text, JSONLDContext = null, Nicknames = null)
 
         /// <summary>
         /// Parse the given string as a cryptographic algorithm.
         /// </summary>
         /// <param name="Text">A text representation of a cryptographic algorithm.</param>
-        public static CryptoAlgorithm Parse(String Text)
+        /// <param name="JSONLDContext">An optional JSON-LD context of this cryptographic algorithm.</param>
+        /// <param name="Nicknames">Optional nicknames for this cryptographic algorithm.</param>
+        public static CryptoAlgorithm Parse(String                Text,
+                                            JSONLDContext?        JSONLDContext   = null,
+                                            IEnumerable<String>?  Nicknames       = null)
         {
 
-            if (TryParse(Text, out var cryptoAlgorithm))
+            if (TryParse(Text,
+                         out var cryptoAlgorithm,
+                         JSONLDContext,
+                         Nicknames))
+            {
                 return cryptoAlgorithm;
+            }
 
             throw new ArgumentException($"Invalid text representation of a cryptographic algorithm: '{Text}'!",
                                         nameof(Text));
@@ -147,6 +195,33 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region (static) TryParse(Text, JSONLDContext, Nicknames = null)
+
+        /// <summary>
+        /// Try to parse the given text as a cryptographic algorithm.
+        /// </summary>
+        /// <param name="Text">A text representation of a cryptographic algorithm.</param>
+        /// <param name="JSONLDContext">The JSON-LD context of this cryptographic algorithm.</param>
+        /// <param name="Nicknames">Optional nicknames for this cryptographic algorithm.</param>
+        public static CryptoAlgorithm? TryParse(String                Text,
+                                                JSONLDContext         JSONLDContext,
+                                                IEnumerable<String>?  Nicknames = null)
+        {
+
+            if (TryParse(Text,
+                         out var cryptoAlgorithm,
+                         JSONLDContext,
+                         Nicknames))
+            {
+                return cryptoAlgorithm;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
         #region (static) TryParse(Text, out CryptoAlgorithm)
 
         /// <summary>
@@ -154,7 +229,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Text">A text representation of a cryptographic algorithm.</param>
         /// <param name="CryptoAlgorithm">The parsed cryptographic algorithm.</param>
-        public static Boolean TryParse(String Text, out CryptoAlgorithm CryptoAlgorithm)
+        public static Boolean TryParse(String               Text,
+                                       out CryptoAlgorithm  CryptoAlgorithm)
+
+            => TryParse(Text,
+                        out CryptoAlgorithm,
+                        JSONLDContext.Empty,
+                        []);
+
+
+        /// <summary>
+        /// Try to parse the given text as a cryptographic algorithm.
+        /// </summary>
+        /// <param name="Text">A text representation of a cryptographic algorithm.</param>
+        /// <param name="CryptoAlgorithm">The parsed cryptographic algorithm.</param>
+        /// <param name="JSONLDContext">An optional JSON-LD context of this cryptographic algorithm.</param>
+        /// <param name="Nicknames">Optional nicknames for this cryptographic algorithm.</param>
+        public static Boolean TryParse(String                Text,
+                                       out CryptoAlgorithm   CryptoAlgorithm,
+                                       JSONLDContext?        JSONLDContext   = null,
+                                       IEnumerable<String>?  Nicknames       = null)
         {
 
             Text = Text.Trim();
@@ -163,7 +257,11 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (!lookup.TryGetValue(Text, out CryptoAlgorithm))
-                    CryptoAlgorithm = Register(Text);
+                    CryptoAlgorithm = Register(
+                                          Text,
+                                          JSONLDContext ?? org.GraphDefined.Vanaheimr.Illias.JSONLDContext.Empty,
+                                          Nicknames?.ToArray() ?? []
+                                      );
 
                 return true;
 
@@ -184,7 +282,9 @@ namespace cloud.charging.open.protocols.WWCP
         public CryptoAlgorithm Clone
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   new String(InternalId?.ToCharArray()),
+                   JSONLDContext.Clone,
+                   Nicknames.ToArray()
                );
 
         #endregion
@@ -192,27 +292,48 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Static definitions
 
-#pragma warning disable IDE1006 // Naming Styles
+        /// <summary>
+        /// secp256r1
+        /// </summary>
+        public static CryptoAlgorithm  Secp192r1    { get; }
+            = Register("secp192r1",
+                       JSONLDContext.Parse("https://open.charging.cloud/context/cryptography/algorithms/secp192r1"),
+                       "P192", "P-192");
+
+
+        /// <summary>
+        /// secp256k1
+        /// </summary>
+        public static CryptoAlgorithm  Secp256k1    { get; }
+            = Register("secp256k1",
+                       JSONLDContext.Parse("https://open.charging.cloud/context/cryptography/algorithms/secp256k1"));
+
 
         /// <summary>
         /// secp256r1
         /// </summary>
-        public static CryptoAlgorithm  secp256r1    { get; }
-            = Register("secp256r1");
+        public static CryptoAlgorithm  Secp256r1    { get; }
+            = Register("secp256r1",
+                       JSONLDContext.Parse("https://open.charging.cloud/context/cryptography/algorithms/secp256r1"),
+                       "prime256v1", "P256", "P-256");
+
 
         /// <summary>
         /// secp384r1
         /// </summary>
-        public static CryptoAlgorithm  secp384r1    { get; }
-            = Register("secp384r1");
+        public static CryptoAlgorithm  Secp384r1    { get; }
+            = Register("secp384r1",
+                       JSONLDContext.Parse("https://open.charging.cloud/context/cryptography/algorithms/secp384r1"),
+                       "P384", "P-384");
+
 
         /// <summary>
         /// secp521r1
         /// </summary>
-        public static CryptoAlgorithm  secp521r1    { get; }
-            = Register("secp521r1");
-
-#pragma warning restore IDE1006 // Naming Styles
+        public static CryptoAlgorithm  Secp521r1    { get; }
+            = Register("secp521r1",
+                       JSONLDContext.Parse("https://open.charging.cloud/context/cryptography/algorithms/secp521r1"),
+                       "P384", "P-384");
 
         #endregion
 

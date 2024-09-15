@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region WebSocket connections
 
         /// <summary>
-        /// An event sent whenever the HTTP web socket server started.
+        /// An event sent whenever the HTTP WebSocket server started.
         /// </summary>
         public event OnServerStartedDelegate?                 OnServerStarted;
 
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         public event OnTCPConnectionClosedDelegate?           OnTCPConnectionClosed;
 
         /// <summary>
-        /// An event sent whenever the HTTP web socket server stopped.
+        /// An event sent whenever the HTTP WebSocket server stopped.
         /// </summary>
         public event OnServerStoppedDelegate?                 OnServerStopped;
 
@@ -288,13 +288,13 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         public Byte[] GetEncryptionKey(NetworkingNode_Id  DestinationNodeId,
                                        UInt16?            KeyId   = null)
         {
-            return "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".HexStringToByteArray();
+            return "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".FromHEX();
         }
 
         public Byte[] GetDecryptionKey(NetworkingNode_Id  SourceNodeId,
                                        UInt16?            KeyId   = null)
         {
-            return "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".HexStringToByteArray();
+            return "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".FromHEX();
         }
 
 

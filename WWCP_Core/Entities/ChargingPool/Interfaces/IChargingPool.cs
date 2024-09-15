@@ -25,9 +25,6 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
-using social.OpenData.UsersAPI;
-using System.Configuration;
-
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
@@ -1145,11 +1142,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TimestampFilter">An optional status timestamp filter.</param>
         /// <param name="StatusFilter">An optional status value filter.</param>
         /// <param name="HistorySize">The size of the history.</param>
-        IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>>
+        IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>>
 
             EVSEStatusSchedule(IncludeEVSEDelegate?             IncludeEVSEs      = null,
                                Func<DateTime,        Boolean>?  TimestampFilter   = null,
-                               Func<EVSEStatusTypes, Boolean>?  StatusFilter      = null,
+                               Func<EVSEStatusType, Boolean>?  StatusFilter      = null,
                                UInt64?                          Skip              = null,
                                UInt64?                          Take              = null);
 

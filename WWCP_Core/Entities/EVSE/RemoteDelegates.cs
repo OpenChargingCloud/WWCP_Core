@@ -65,8 +65,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnRemoteEVSEStatusChangedDelegate(DateTime                      Timestamp,
                                                            EventTracking_Id              EventTrackingId,
                                                            IRemoteEVSE                   RemoteEVSE,
-                                                           Timestamped<EVSEStatusTypes>  OldStatus,
-                                                           Timestamped<EVSEStatusTypes>  NewStatus);
+                                                           Timestamped<EVSEStatusType>  OldStatus,
+                                                           Timestamped<EVSEStatusType>  NewStatus);
 
 
     ///// <summary>

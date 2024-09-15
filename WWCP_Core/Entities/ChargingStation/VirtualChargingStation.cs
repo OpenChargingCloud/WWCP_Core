@@ -914,7 +914,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                               I18NString?                          Description                  = null,
 
                                               EVSEAdminStatusTypes?                InitialAdminStatus           = null,
-                                              EVSEStatusTypes?                     InitialStatus                = null,
+                                              EVSEStatusType?                     InitialStatus                = null,
                                               UInt16                               MaxAdminStatusScheduleSize       = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
                                               UInt16                               MaxStatusScheduleSize            = VirtualEVSE.DefaultMaxStatusScheduleSize,
 
@@ -972,7 +972,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                   Description,
 
                                                   InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
-                                                  InitialStatus      ?? EVSEStatusTypes.Available,
+                                                  InitialStatus      ?? EVSEStatusType.Available,
                                                   MaxAdminStatusScheduleSize,
                                                   MaxStatusScheduleSize,
 
@@ -1131,8 +1131,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         internal async Task UpdateEVSEStatus(DateTime                       Timestamp,
                                              EventTracking_Id               EventTrackingId,
                                              IEVSE                          RemoteEVSE,
-                                             Timestamped<EVSEStatusTypes>   NewStatus,
-                                             Timestamped<EVSEStatusTypes>?  OldStatus    = null,
+                                             Timestamped<EVSEStatusType>   NewStatus,
+                                             Timestamped<EVSEStatusType>?  OldStatus    = null,
                                              Context?                       DataSource   = null)
         {
 
@@ -1158,7 +1158,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                  TimeSpan?          RequestTimeout  = null)
 
             => _EVSEs.Select(evse => new EVSEStatus(evse.Id,
-                                                    new Timestamped<EVSEStatusTypes>(
+                                                    new Timestamped<EVSEStatusType>(
                                                         evse.Status.Timestamp,
                                                         evse.Status.Value
                                                     )));
@@ -1812,11 +1812,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             chargingReservations.Remove(expiredReservation.Id);
                         }
 
-                        //if (Status.Value == EVSEStatusTypes.Reserved &&
+                        //if (Status.Value == EVSEStatusType.Reserved &&
                         //    !_Reservations.Any())
                         //{
                         //    // Will send events!
-                        //    SetStatus(EVSEStatusTypes.Available);
+                        //    SetStatus(EVSEStatusType.Available);
                         //}
 
                         OnReservationCanceled?.Invoke(Timestamp.Now,
@@ -3266,7 +3266,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>> EVSEStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, Boolean>? TimestampFilter = null, Func<EVSEStatusTypes, Boolean>? StatusFilter = null, UInt64? Skip = null, UInt64? Take = null)
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, Boolean>? TimestampFilter = null, Func<EVSEStatusType, Boolean>? StatusFilter = null, UInt64? Skip = null, UInt64? Take = null)
         {
             throw new NotImplementedException();
         }
@@ -3281,12 +3281,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             throw new NotImplementedException();
         }
 
-        public Task<AddEVSEResult> AddEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusScheduleSize = null, UInt16? MaxStatusScheduleSize = null, IEnumerable<URL>? PhotoURLs = null, IEnumerable<Brand>? Brands = null, IEnumerable<OpenDataLicense>? OpenDataLicenses = null, IEnumerable<ChargingModes>? ChargingModes = null, IEnumerable<ChargingTariff>? ChargingTariffs = null, CurrentTypes? CurrentType = null, Decimal? AverageVoltage = null, Timestamped<Decimal>? AverageVoltageRealTime = null, IEnumerable<Timestamped<Decimal>>? AverageVoltagePrognoses = null, Decimal? MaxCurrent = null, Timestamped<Decimal>? MaxCurrentRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCurrentPrognoses = null, Decimal? MaxPower = null, Timestamped<Decimal>? MaxPowerRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxPowerPrognoses = null, Decimal? MaxCapacity = null, Timestamped<Decimal>? MaxCapacityRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCapacityPrognoses = null, EnergyMix? EnergyMix = null, Timestamped<EnergyMix>? EnergyMixRealTime = null, EnergyMixPrognosis? EnergyMixPrognoses = null, EnergyMeter? EnergyMeter = null, Boolean? IsFreeOfCharge = null, IEnumerable<IChargingConnector>? ChargingConnectors = null, ChargingSession? ChargingSession = null, DateTime? LastStatusUpdate = null, String? DataSource = null, DateTime? LastChange = null, JObject? CustomData = null, UserDefinedDictionary? InternalData = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
+        public Task<AddEVSEResult> AddEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusType>? InitialStatus = null, UInt16? MaxAdminStatusScheduleSize = null, UInt16? MaxStatusScheduleSize = null, IEnumerable<URL>? PhotoURLs = null, IEnumerable<Brand>? Brands = null, IEnumerable<OpenDataLicense>? OpenDataLicenses = null, IEnumerable<ChargingModes>? ChargingModes = null, IEnumerable<ChargingTariff>? ChargingTariffs = null, CurrentTypes? CurrentType = null, Decimal? AverageVoltage = null, Timestamped<Decimal>? AverageVoltageRealTime = null, IEnumerable<Timestamped<Decimal>>? AverageVoltagePrognoses = null, Decimal? MaxCurrent = null, Timestamped<Decimal>? MaxCurrentRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCurrentPrognoses = null, Decimal? MaxPower = null, Timestamped<Decimal>? MaxPowerRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxPowerPrognoses = null, Decimal? MaxCapacity = null, Timestamped<Decimal>? MaxCapacityRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCapacityPrognoses = null, EnergyMix? EnergyMix = null, Timestamped<EnergyMix>? EnergyMixRealTime = null, EnergyMixPrognosis? EnergyMixPrognoses = null, EnergyMeter? EnergyMeter = null, Boolean? IsFreeOfCharge = null, IEnumerable<IChargingConnector>? ChargingConnectors = null, ChargingSession? ChargingSession = null, DateTime? LastStatusUpdate = null, String? DataSource = null, DateTime? LastChange = null, JObject? CustomData = null, UserDefinedDictionary? InternalData = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<AddOrUpdateEVSEResult> AddOrUpdateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusScheduleSize = null, UInt16? MaxStatusScheduleSize = null, IEnumerable<URL>? PhotoURLs = null, IEnumerable<Brand>? Brands = null, IEnumerable<OpenDataLicense>? OpenDataLicenses = null, IEnumerable<ChargingModes>? ChargingModes = null, IEnumerable<ChargingTariff>? ChargingTariffs = null, CurrentTypes? CurrentType = null, Decimal? AverageVoltage = null, Timestamped<Decimal>? AverageVoltageRealTime = null, IEnumerable<Timestamped<Decimal>>? AverageVoltagePrognoses = null, Decimal? MaxCurrent = null, Timestamped<Decimal>? MaxCurrentRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCurrentPrognoses = null, Decimal? MaxPower = null, Timestamped<Decimal>? MaxPowerRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxPowerPrognoses = null, Decimal? MaxCapacity = null, Timestamped<Decimal>? MaxCapacityRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCapacityPrognoses = null, EnergyMix? EnergyMix = null, Timestamped<EnergyMix>? EnergyMixRealTime = null, EnergyMixPrognosis? EnergyMixPrognoses = null, EnergyMeter? EnergyMeter = null, Boolean? IsFreeOfCharge = null, IEnumerable<IChargingConnector>? ChargingConnectors = null, ChargingSession? ChargingSession = null, DateTime? LastStatusUpdate = null, String? DataSource = null, DateTime? LastChange = null, JObject? CustomData = null, UserDefinedDictionary? InternalData = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
+        public Task<AddOrUpdateEVSEResult> AddOrUpdateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusType>? InitialStatus = null, UInt16? MaxAdminStatusScheduleSize = null, UInt16? MaxStatusScheduleSize = null, IEnumerable<URL>? PhotoURLs = null, IEnumerable<Brand>? Brands = null, IEnumerable<OpenDataLicense>? OpenDataLicenses = null, IEnumerable<ChargingModes>? ChargingModes = null, IEnumerable<ChargingTariff>? ChargingTariffs = null, CurrentTypes? CurrentType = null, Decimal? AverageVoltage = null, Timestamped<Decimal>? AverageVoltageRealTime = null, IEnumerable<Timestamped<Decimal>>? AverageVoltagePrognoses = null, Decimal? MaxCurrent = null, Timestamped<Decimal>? MaxCurrentRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCurrentPrognoses = null, Decimal? MaxPower = null, Timestamped<Decimal>? MaxPowerRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxPowerPrognoses = null, Decimal? MaxCapacity = null, Timestamped<Decimal>? MaxCapacityRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCapacityPrognoses = null, EnergyMix? EnergyMix = null, Timestamped<EnergyMix>? EnergyMixRealTime = null, EnergyMixPrognosis? EnergyMixPrognoses = null, EnergyMeter? EnergyMeter = null, Boolean? IsFreeOfCharge = null, IEnumerable<IChargingConnector>? ChargingConnectors = null, ChargingSession? ChargingSession = null, DateTime? LastStatusUpdate = null, String? DataSource = null, DateTime? LastChange = null, JObject? CustomData = null, UserDefinedDictionary? InternalData = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
         {
             throw new NotImplementedException();
         }
