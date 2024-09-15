@@ -1051,8 +1051,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
             //DebugX.LogT($"Node {Id}: Enter DoMaintenance(...)");
 
-            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
-                                           ConfigureAwait(false))
+            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout))
             {
                 try
                 {
@@ -1083,6 +1082,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         protected virtual async Task DoMaintenanceAsync(Object? State)
         {
+
+            DebugX.Log($"Node {Id}: DoMaintenanceAsync(State)");
 
             await Task.Delay(1);
 
