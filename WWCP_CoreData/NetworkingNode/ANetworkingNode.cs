@@ -488,9 +488,6 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                                                CancellationToken                CancellationToken          = default)
         {
 
-            NextHopNetworkingNodeId ??= NetworkingNode_Id.CSMS;
-
-
             wwcpWebSocketClients.Add(wwcpWebSocketClient);
 
             var connectResponse = await wwcpWebSocketClient.Connect(
