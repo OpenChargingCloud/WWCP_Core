@@ -278,6 +278,10 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="RemoteCertificateValidator">The remote TLS certificate validator.</param>
         /// <param name="LocalCertificateSelector">A delegate to select a TLS client certificate.</param>
         /// <param name="ClientCert">The TLS client certificate to use of HTTP authentication.</param>
+        /// <param name="TLSProtocol">The TLS protocol to use.</param>
+        /// <param name="ContentType">An optional HTTP content type.</param>
+        /// <param name="Accept">The optional HTTP accept header.</param>
+        /// <param name="HTTPAuthentication">The optional HTTP authentication to use, e.g. HTTP Basic Auth.</param>
         /// <param name="HTTPUserAgent">The HTTP user agent identification.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         /// <param name="TransmissionRetryDelay">The delay between transmission retries.</param>
@@ -296,8 +300,10 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                           LocalCertificateSelectionHandler?                          LocalCertificateSelector     = null,
                                           X509Certificate?                                           ClientCert                   = null,
                                           SslProtocols?                                              TLSProtocol                  = null,
-                                          String                                                     HTTPUserAgent                = DefaultHTTPUserAgent,
-                                          IHTTPAuthentication?                                       HTTPAuthentication           = null,
+                                          HTTPContentType?                                           ContentType                  = null,
+                                          AcceptTypes?                                               Accept                       = null,
+                                          IHTTPAuthentication?                                       Authentication               = null,
+                                          String?                                                    HTTPUserAgent                = DefaultHTTPUserAgent,
                                           TimeSpan?                                                  RequestTimeout               = null,
                                           TransmissionRetryDelayDelegate?                            TransmissionRetryDelay       = null,
                                           UInt16?                                                    MaxNumberOfRetries           = null,
@@ -316,8 +322,11 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                    LocalCertificateSelector,
                    ClientCert,
                    TLSProtocol,
+                   ContentType,
+                   Accept,
+                   Authentication,
                    HTTPUserAgent ?? DefaultHTTPUserAgent,
-                   HTTPAuthentication,
+                   ConnectionType.Close,
                    RequestTimeout,
                    TransmissionRetryDelay,
                    MaxNumberOfRetries,
@@ -415,8 +424,11 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                       LocalCertificateSelector,
                                                                       ClientCert,
                                                                       TLSProtocol,
+                                                                      ContentType,
+                                                                      Accept,
+                                                                      Authentication,
                                                                       HTTPUserAgent,
-                                                                      HTTPAuthentication,
+                                                                      Connection,
                                                                       RequestTimeout,
                                                                       TransmissionRetryDelay,
                                                                       MaxNumberOfRetries,
@@ -427,13 +439,13 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                       DNSClient).
 
                                               Execute(client => client.POSTRequest(RemoteURL.Path + "remoteStart",
-                                                                                   requestbuilder => {
-                                                                                       requestbuilder.Accept.Add(HTTPContentType.Application.JSON_UTF8);
-                                                                                       requestbuilder.ContentType  = HTTPContentType.Application.JSON_UTF8;
-                                                                                       requestbuilder.Content      = Request.ToJSON(CustomRemoteStartRequestSerializer).
+                                                                                   RequestBuilder: requestBuilder => {
+                                                                                       requestBuilder.Accept.Add(HTTPContentType.Application.JSON_UTF8);
+                                                                                       requestBuilder.ContentType  = HTTPContentType.Application.JSON_UTF8;
+                                                                                       requestBuilder.Content      = Request.ToJSON(CustomRemoteStartRequestSerializer).
                                                                                                                              ToString(JSONFormatting).
                                                                                                                              ToUTF8Bytes();
-                                                                                       requestbuilder.Connection   = "close";
+                                                                                       requestBuilder.Connection   = ConnectionType.Close;
                                                                                    }),
 
                                                       RequestLogDelegate:   OnRemoteStartHTTPRequest,
@@ -806,8 +818,11 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                       LocalCertificateSelector,
                                                                       ClientCert,
                                                                       TLSProtocol,
+                                                                      ContentType,
+                                                                      Accept,
+                                                                      Authentication,
                                                                       HTTPUserAgent,
-                                                                      HTTPAuthentication,
+                                                                      Connection,
                                                                       RequestTimeout,
                                                                       TransmissionRetryDelay,
                                                                       MaxNumberOfRetries,
@@ -818,13 +833,13 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                       DNSClient).
 
                                               Execute(client => client.POSTRequest(RemoteURL.Path + "remoteStop",
-                                                                                   requestbuilder => {
-                                                                                       requestbuilder.Accept.Add(HTTPContentType.Application.JSON_UTF8);
-                                                                                       requestbuilder.ContentType  = HTTPContentType.Application.JSON_UTF8;
-                                                                                       requestbuilder.Content      = Request.ToJSON(CustomRemoteStopRequestSerializer).
+                                                                                   RequestBuilder: requestBuilder => {
+                                                                                       requestBuilder.Accept.Add(HTTPContentType.Application.JSON_UTF8);
+                                                                                       requestBuilder.ContentType  = HTTPContentType.Application.JSON_UTF8;
+                                                                                       requestBuilder.Content      = Request.ToJSON(CustomRemoteStopRequestSerializer).
                                                                                                                              ToString(JSONFormatting).
                                                                                                                              ToUTF8Bytes();
-                                                                                       requestbuilder.Connection   = "close";
+                                                                                       requestBuilder.Connection   = ConnectionType.Close;
                                                                                    }),
 
                                                       RequestLogDelegate:   OnRemoteStopHTTPRequest,

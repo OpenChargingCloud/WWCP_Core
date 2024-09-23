@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                                                            new JProperty("publicKeys",       new JArray()),
                                                                            new JProperty("signature",        "...")
                                                                        ).ToUTF8Bytes(),
-                                                     Connection      = "close"
+                                                     Connection      = ConnectionType.Close
                                                  });
 
                                          });
@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                              //            WWWAuthenticate  = @"Basic realm=""WWCP tracker""",
                                              //            Server           = HTTPServer.DefaultServerName,
                                              //            Date             = DateTime.Now,
-                                             //            Connection       = "close"
+                                             //            Connection       = ConnectionType.Close
                                              //        });
 
                                              //}
@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                                      HTTPStatusCode  = HTTPStatusCode.OK,
                                                      Server          = HTTPServer.DefaultServerName,
                                                      Date            = DateTime.Now,
-                                                     Connection      = "close"
+                                                     Connection      = ConnectionType.Close
                                                  });
 
                                          });
