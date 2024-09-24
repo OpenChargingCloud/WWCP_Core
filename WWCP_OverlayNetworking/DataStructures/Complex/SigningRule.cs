@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="UserIdGenerator">An optional user identification generator for signing.</param>
         /// <param name="DescriptionGenerator">An optional multi-language description generator for signing.</param>
         /// <param name="TimestampGenerator">An optional timestamp generator for signing.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public SigningRule(JSONLDContext                        Context,
                            UInt32                               Priority,
                            SigningRuleActions                   Action,

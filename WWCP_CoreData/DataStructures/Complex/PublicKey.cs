@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Algorithm">An optional cryptographic algorithm of the public key. Default is 'secp256r1'.</param>
         /// <param name="Serialization">An optional serialization of the public key. Default is 'raw'.</param>
         /// <param name="Encoding">An optional encoding of the public key. Default is 'base64'.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public PublicKey(Byte[]                Value,
                          CryptoAlgorithm?      Algorithm       = null,
                          CryptoSerialization?  Serialization   = null,
@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Try to parse the given ASN.1 DER representation of an asymmetric public key.
         /// </summary>
         /// <param name="ASN1">The ASN.1 DER representation of the public key.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public static Boolean TryParseASN1(Byte[]                               ASN1,
                                            [NotNullWhen(true)]  out PublicKey?  PublicKey,
                                            [NotNullWhen(false)] out String?     ErrorResponse,

@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SignerName">An optional name of a person or process signing the message.</param>
         /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
         /// <param name="Timestamp">An optional timestamp of the message signature.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public UserRole(UserRole_Id                          Id,
                         I18NString?                          Description             = null,
                         IEnumerable<KeyPair>?                KeyPairs                = null,
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// <param name="SignerNameCreator">An optional name of a person or process signing the message.</param>
         ///// <param name="DescriptionCreator">An optional multi-language description or explanation for signing the message.</param>
         ///// <param name="TimestampCreator">An optional timestamp of the message signature.</param>
-        ///// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        ///// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         //public UserRole(//Byte[]                               Public,
 
         //                //Byte[]?                              Private                 = null,

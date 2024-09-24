@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <param name="Downlink"></param>
         /// <param name="Priority"></param>
         /// <param name="Weight"></param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public NetworkRoutingInformation(NetworkingNode_Id               DestinationId,
                                          VirtualNetworkLinkInformation?  Uplink       = null,
                                          VirtualNetworkLinkInformation?  Downlink     = null,

@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <param name="Capacity">The optional capacity between this node and the destination node.</param>
         /// <param name="Latency">The optional latency between this node and the destination node.</param>
         /// <param name="PacketLoss">The optional error rate between this node and the destination node.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public VirtualNetworkLinkInformation(UInt16                     Distance,
                                              StdDev<BitsPerSecond>?     Capacity     = null,
                                              StdDev<TimeSpan>?          Latency      = null,
@@ -535,7 +535,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <param name="Capacity">The optional capacity of the network link.</param>
         /// <param name="Latency">The optional latency of the network link.</param>
         /// <param name="PacketLoss">The optional error rate of the network link.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public NetworkLinkInformation(StdDev<BitsPerSecond>?     Capacity    = null,
                                       StdDev<TimeSpan>?          Latency      = null,
                                       StdDev<PercentageDouble>?  PacketLoss   = null,
