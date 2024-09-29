@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Algorithm">An optional cryptographic algorithm of the ECC public key. Default is 'secp256r1'.</param>
         /// <param name="Serialization">An optional serialization of the ECC public key. Default is 'raw'.</param>
         /// <param name="Encoding">An optional encoding of the ECC public key. Default is 'base64'.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         internal ECCPublicKey(Byte[]                  Value,
                               CryptoAlgorithm?        Algorithm            = null,
                               CryptoSerialization?    Serialization        = null,
@@ -657,7 +657,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Y">The text representation of the y-coordinate of the public key.</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
         /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public static Boolean TryParse(String                                  X,
                                        String                                  Y,
                                        [NotNullWhen(true)]  out ECCPublicKey?  ECCPublicKey,
@@ -741,7 +741,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="X">The x-coordinate of the public key.</param>
         /// <param name="Y">The y-coordinate of the public key.</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public static Boolean TryParse(Byte[]                                  X,
                                        Byte[]                                  Y,
                                        CryptoAlgorithm                         Algorithm,
@@ -832,7 +832,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
         /// <param name="Serialization">An optional serialization of the public key. Default is 'raw'.</param>
         /// <param name="Encoding">An optional encoding of the public key.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public static Boolean TryParse(Byte[]                                  ByteArray,
                                        [NotNullWhen(true)]  out ECCPublicKey?  ECCPublicKey,
                                        [NotNullWhen(false)] out String?        ErrorResponse,
@@ -939,7 +939,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ECCPublicKey">The parsed ECC public key.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="Encoding">An optional encoding of the public key.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public static Boolean TryParseASN1(Byte[]                                  ASN1,
                                            [NotNullWhen(true)]  out ECCPublicKey?  ECCPublicKey,
                                            [NotNullWhen(false)] out String?        ErrorResponse,

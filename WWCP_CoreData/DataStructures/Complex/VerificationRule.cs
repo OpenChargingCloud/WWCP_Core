@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Priority">The priority of the cryptographic verificationRule entry.</param>
         /// <param name="Action">The context of the cryptographic verificationRule action.</param>
         /// <param name="KeyPair">The optional cryptographic key pair for verification.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public VerificationRule(JSONLDContext            Context,
                                 UInt32                   Priority,
                                 VerificationRuleActions  Action,

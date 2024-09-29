@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.WWCP
         String             Action               { get; }
 
         /// <summary>
-        /// The custom data object to allow to store any kind of customer specific data.
+        /// An optional custom data object allowing to store any kind of customer specific data.
         /// </summary>
         [Optional]
         CustomData?        CustomData           { get; }

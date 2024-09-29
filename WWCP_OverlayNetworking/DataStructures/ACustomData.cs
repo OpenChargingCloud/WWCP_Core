@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region Properties
 
         /// <summary>
-        /// An optional custom data object to allow to store any kind of customer specific data.
+        /// An optional custom data object allowing to store any kind of customer specific data.
         /// </summary>
         public CustomData?  CustomData    { get; }
 
@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// Create a new abstract custom data container.
         /// </summary>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ACustomData(CustomData? CustomData = null)
         {
 

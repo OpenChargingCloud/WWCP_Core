@@ -340,7 +340,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
             //                                     Date            = Timestamp.Now,
             //                                     ContentType     = HTTPContentType.Text.HTML_UTF8,
             //                                     Content         = _MemoryStream.ToArray(),
-            //                                     Connection      = "close"
+            //                                     Connection      = ConnectionType.Close
             //                                 };
 
             //                             });

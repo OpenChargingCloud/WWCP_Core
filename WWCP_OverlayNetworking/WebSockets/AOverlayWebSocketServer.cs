@@ -812,7 +812,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                      JSONObject.Create(
                                                          new JProperty("en", "Missing 'Sec-WebSocket-Protocol' HTTP header!")
                                                      ))).ToUTF8Bytes(),
-                               Connection      = "close"
+                               Connection      = ConnectionType.Close
                            }.AsImmutable);
 
             }
@@ -834,7 +834,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                          JSONObject.Create(
                                                              new JProperty("en", error)
                                                      ))).ToUTF8Bytes(),
-                               Connection      = "close"
+                               Connection      = ConnectionType.Close
                            }.AsImmutable);
 
             }
@@ -867,7 +867,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                HTTPStatusCode  = HTTPStatusCode.Unauthorized,
                                Server          = webSocketServer.HTTPServiceName,
                                Date            = Timestamp.Now,
-                               Connection      = "close"
+                               Connection      = ConnectionType.Close
                            }.AsImmutable);
 
             }

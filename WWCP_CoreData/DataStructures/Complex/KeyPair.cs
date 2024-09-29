@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
         /// <param name="Serialization">The optional serialization of the cryptographic keys. Default is 'raw'.</param>
         /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public KeyPair(Byte[]                Public,
                        Byte[]?               Private         = null,
                        CryptoAlgorithm?      Algorithm       = null,
