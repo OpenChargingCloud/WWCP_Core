@@ -53,6 +53,24 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
             => networkingNodeIds;
 
+        /// <summary>
+        /// Indicates whether this network path is null or empty.
+        /// </summary>
+        public Boolean                         IsNullOrEmpty
+            => networkingNodeIds.Count == 0;
+
+        /// <summary>
+        /// Indicates whether this network path is NOT null or empty.
+        /// </summary>
+        public Boolean                         IsNotNullOrEmpty
+            => networkingNodeIds.Count != 0;
+
+        /// <summary>
+        /// The length of the network path.
+        /// </summary>
+        public UInt64                          Length
+            => networkingNodeIds.ULongCount();
+
 
         /// <summary>
         /// An empty network path.
@@ -60,15 +78,6 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         public static NetworkPath              Empty    { get; }
 
             = new();
-
-
-        /// <summary>
-        /// The length of the network path.
-        /// </summary>
-        [Mandatory]
-        public UInt16                          Length
-
-            => (UInt16) networkingNodeIds.Count;
 
 
         /// <summary>

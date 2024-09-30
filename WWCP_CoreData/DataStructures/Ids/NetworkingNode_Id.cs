@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Collections;
 
 #endregion
 
@@ -194,19 +193,25 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <summary>
         /// Do not route this message over multiple hops.
         /// </summary>
-        public static NetworkingNode_Id  Broadcast     { get; }
+        public static NetworkingNode_Id  Broadcast        { get; }
             = new ("*");
 
         /// <summary>
         /// Do not route this message over multiple hops.
         /// </summary>
-        public static NetworkingNode_Id  Zero    { get; }
+        public static NetworkingNode_Id  Zero             { get; }
             = new ("0");
 
         /// <summary>
         /// Route this message to the next Charging Station Management System.
         /// </summary>
-        public static NetworkingNode_Id  CSMS    { get; }
+        public static NetworkingNode_Id  CentralSystem    { get; }
+            = new ("CentralSystem");
+
+        /// <summary>
+        /// Route this message to the next Charging Station Management System.
+        /// </summary>
+        public static NetworkingNode_Id  CSMS             { get; }
             = new ("CSMS");
 
         #endregion
@@ -392,6 +397,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
             => InternalId ?? "";
 
         #endregion
+
 
     }
 

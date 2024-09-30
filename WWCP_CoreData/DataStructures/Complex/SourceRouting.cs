@@ -53,14 +53,23 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
             => networkingNodeIds;
 
+        /// <summary>
+        /// Indicates whether this source routing is null or empty.
+        /// </summary>
+        public Boolean                         IsNullOrEmpty
+            => networkingNodeIds.Count == 0;
+
+        /// <summary>
+        /// Indicates whether this source routing is NOT null or empty.
+        /// </summary>
+        public Boolean                         IsNotNullOrEmpty
+            => networkingNodeIds.Count != 0;
 
         /// <summary>
         /// The length of the source routing.
         /// </summary>
-        [Mandatory]
-        public UInt16                          Length
-
-            => (UInt16) networkingNodeIds.Count;
+        public UInt64                          Length
+            => networkingNodeIds.ULongCount();
 
 
         /// <summary>
