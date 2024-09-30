@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -40,6 +41,12 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// The cryptographic public key.
+        /// </summary>
+        public PublicKey             PublicKey
+            => PublicKey.Parse(PublicKeyBytes);
 
         /// <summary>
         /// The cryptographic public key.
@@ -123,6 +130,121 @@ namespace cloud.charging.open.protocols.WWCP
         // tba.
 
         #endregion
+
+        public static KeyPair Parse(String                PublicKey,
+                                    String?               PrivateKey      = null,
+                                    CryptoAlgorithm?      Algorithm       = null,
+                                    CryptoSerialization?  Serialization   = null,
+                                    CryptoEncoding?       Encoding        = null,
+                                    CustomData?           CustomData      = null)
+        {
+
+            if (TryParse(PublicKey,
+                         out var keyPair,
+                         out var errorResponse,
+                         PrivateKey,
+                         Algorithm,
+                         Serialization,
+                         Encoding,
+                         CustomData))
+            {
+                return keyPair;
+            }
+
+            throw new ArgumentException("The given public key is invalid!");
+
+        }
+
+
+        public static Boolean TryParse(String                             PublicKey,
+                                       [NotNullWhen(true)]  out KeyPair?  KeyPair,
+                                       [NotNullWhen(false)] out String?   ErrorResponse,
+                                       String?                            PrivateKey      = null,
+                                       CryptoAlgorithm?                   Algorithm       = null,
+                                       CryptoSerialization?               Serialization   = null,
+                                       CryptoEncoding?                    Encoding        = null,
+                                       CustomData?                        CustomData      = null)
+        {
+
+            KeyPair        = null;
+            ErrorResponse  = null;
+
+            if (Encoding is null ||
+                Encoding == CryptoEncoding.HEX)
+            {
+
+                KeyPair = new KeyPair(
+                              PublicKey.  FromHEX(),
+                              PrivateKey?.FromHEX(),
+                              Algorithm,
+                              Serialization,
+                              CryptoEncoding.HEX,
+                              CustomData
+                          );
+
+                return true;
+
+            }
+
+            else if (Encoding == CryptoEncoding.BASE64)
+            {
+
+                KeyPair = new KeyPair(
+                              PublicKey.  FromBASE64(),
+                              PrivateKey?.FromBASE64(),
+                              Algorithm,
+                              Serialization,
+                              CryptoEncoding.BASE64,
+                              CustomData
+                          );
+
+                return true;
+
+            }
+
+
+            ErrorResponse = "The given encoding is not supported!";
+            return false;
+
+        }
+
+
+
+
+        public static Boolean TryParse(JObject                            JSON,
+                                       [NotNullWhen(true)]  out KeyPair?  KeyPair,
+                                       [NotNullWhen(false)] out String?   ErrorResponse)
+
+            => TryParse(JSON,
+                        out KeyPair,
+                        out ErrorResponse,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null);
+
+
+        public static Boolean TryParse(JObject                            JSON,
+                                       [NotNullWhen(true)]  out KeyPair?  KeyPair,
+                                       [NotNullWhen(false)] out String?   ErrorResponse,
+                                       String?                            PrivateKey      = null,
+                                       CryptoAlgorithm?                   Algorithm       = null,
+                                       CryptoSerialization?               Serialization   = null,
+                                       CryptoEncoding?                    Encoding        = null,
+                                       CustomData?                        CustomData      = null)
+        {
+
+            KeyPair        = null;
+            ErrorResponse  = null;
+
+            return false;
+
+        }
+
+
+
+
 
         #region ToJSON(CustomKeyPairSerializer = null, CustomCustomDataSerializer = null)
 
