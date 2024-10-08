@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data
 
-        public const String Context = "https://open.charging.cloud/context//context/cryptography/ecc/keyPair";
+        public new const String Context = "https://open.charging.cloud/context//context/cryptography/ecc/keyPair";
 
         #endregion
 
@@ -487,22 +487,23 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) ParsePrivateKey    (PrivateKey,                 Serialization = "base64", Algorithm = "secp256r1")
+        #region (static) ParsePrivateKey    (Text,                 Serialization = "base64", Algorithm = "secp256r1")
 
         /// <summary>
         /// Parse the given private key and calculate its public key.
         /// </summary>
-        /// <param name="PrivateKey">A text representation of a private key.</param>
+        /// <param name="Text">A text representation of a private key.</param>
         /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the private key. [default: secp256r1]</param>
-        public static ECCKeyPair? ParsePrivateKey(String                PrivateKey,
-                                                  CryptoAlgorithm?      Algorithm       = null,
-                                                  CryptoSerialization?  Serialization   = null,
-                                                  CryptoEncoding?       Encoding        = null)
+        public static ECCKeyPair ParsePrivateKey(String                Text,
+                                                 CryptoAlgorithm?      Algorithm       = null,
+                                                 CryptoSerialization?  Serialization   = null,
+                                                 CryptoEncoding?       Encoding        = null)
         {
 
-            if (TryParsePrivateKey(PrivateKey,
+            if (TryParsePrivateKey(Text,
                                    out var eccKeyPair,
+                                   out var errorResponse,
                                    Algorithm,
                                    Serialization,
                                    Encoding))
@@ -510,86 +511,325 @@ namespace cloud.charging.open.protocols.WWCP
                 return eccKeyPair;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a private ECC key is invalid: " + errorResponse,
+                                        nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParsePrivateKey (PrivateKey, out ECCKeyPair, Serialization = "base64", Algorithm = "secp256r1")
+        #region (static) ParsePrivateKey    (ByteArray,            Serialization = "base64", Algorithm = "secp256r1")
 
         /// <summary>
-        /// Try to parse the given private key and calculate its public key.
+        /// Parse the given private key and calculate its public key.
         /// </summary>
-        /// <param name="PrivateKey">A text representation of a private key.</param>
-        /// <param name="ECCKeyPair">The parsed key pair.</param>
+        /// <param name="ByteArray">A text representation of a private key.</param>
         /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the private key. [default: secp256r1]</param>
-        public static Boolean TryParsePrivateKey(String                PrivateKey,
-                                                 out ECCKeyPair?       ECCKeyPair,
+        public static ECCKeyPair ParsePrivateKey(Byte[]                ByteArray,
                                                  CryptoAlgorithm?      Algorithm       = null,
                                                  CryptoSerialization?  Serialization   = null,
                                                  CryptoEncoding?       Encoding        = null)
         {
 
-            ECCKeyPair = null;
-
-            Byte[]? privateKeyBytes;
-            try
+            if (TryParsePrivateKey(ByteArray,
+                                   out var eccKeyPair,
+                                   out var errorResponse,
+                                   Algorithm,
+                                   Serialization,
+                                   Encoding))
             {
-
-                switch (Encoding?.ToString() ?? "")
-                {
-
-                    case "base64":
-                        privateKeyBytes = PrivateKey.FromBASE64();
-                        break;
-
-                    default:
-                        privateKeyBytes = PrivateKey.FromBASE64();
-                        break;
-                        //return false;
-
-                }
-
-            }
-            catch
-            {
-                return false;
+                return eccKeyPair;
             }
 
-            var ecParameters      = ECNamedCurveTable.GetByName((Algorithm ?? CryptoAlgorithm.Secp256r1).ToString());
-            if (ecParameters is null)
-                return false;
-
-            var d                 = new BigInteger(
-                                        1,
-                                        privateKeyBytes
-                                    );
-
-            var privateKeyParams  = new ECPrivateKeyParameters(
-                                        d,
-                                        new ECDomainParameters(
-                                            ecParameters.Curve,
-                                            ecParameters.G,
-                                            ecParameters.N,
-                                            ecParameters.H,
-                                            ecParameters.GetSeed()
-                                        )
-                                    );
-
-            var q                 = ecParameters.G.Multiply(privateKeyParams.D);
-
-            ECCKeyPair = new ECCKeyPair(
-                             q.GetEncoded(false),
-                             privateKeyParams.D.ToByteArray()
-                         );
-
-            return true;
+            throw new ArgumentException("The given text representation of a private ECC key is invalid: " + errorResponse,
+                                        nameof(ByteArray));
 
         }
 
         #endregion
+
+        #region (static) TryParsePrivateKey (Text, out ECCKeyPair, Serialization = "base64", Algorithm = "secp256r1")
+
+        /// <summary>
+        /// Try to parse the given private key and calculate its public key.
+        /// </summary>
+        /// <param name="Text">A text representation of a private key.</param>
+        /// <param name="ECCKeyPair">The parsed key pair.</param>
+        /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
+        /// <param name="Algorithm">The optional cryptographic algorithm of the private key. [default: secp256r1]</param>
+        public static Boolean TryParsePrivateKey(String                                Text,
+                                                 [NotNullWhen(true)]  out ECCKeyPair?  ECCKeyPair,
+                                                 [NotNullWhen(false)] out String?      ErrorResponse,
+                                                 CryptoAlgorithm?                      Algorithm       = null,
+                                                 CryptoSerialization?                  Serialization   = null,
+                                                 CryptoEncoding?                       Encoding        = null,
+                                                 CustomData?                           CustomData      = null)
+        {
+
+            ECCKeyPair     = null;
+            ErrorResponse  = null;
+
+            try
+            {
+
+                Byte[]? byteArray = null;
+
+                #region HEX    encoding
+
+                if (Encoding == CryptoEncoding.HEX)
+                {
+                    if (!Text.TryParseHEX(out byteArray, out var errorResponse1))
+                    {
+                        ErrorResponse = $"The given HEX encoding of a public key '{Text}' is invalid: " + errorResponse1;
+                        return false;
+                    }
+                }
+
+                #endregion
+
+                #region BASE32 encoding
+
+                else if (Encoding == CryptoEncoding.BASE32)
+                {
+                    if (!Text.TryParseBASE32(out byteArray, out var errorResponse1))
+                    {
+                        ErrorResponse = $"The given base32 encoding of a public key '{Text}' is invalid: " + errorResponse1;
+                        return false;
+                    }
+                }
+
+                #endregion
+
+                #region BASE64 encoding
+
+                else if (Encoding == CryptoEncoding.BASE64)
+                {
+                    if (!Text.TryParseBASE64(out byteArray, out var errorResponse1))
+                    {
+                        ErrorResponse = $"The given base64 encoding of a public key '{Text}' is invalid: " + errorResponse1;
+                        return false;
+                    }
+                }
+
+                #endregion
+
+                if (byteArray is not null &&
+                    TryParsePrivateKey(byteArray,
+                                       out var eccKeyPair,
+                                       out ErrorResponse,
+                                       Algorithm,
+                                       Serialization,
+                                       Encoding,
+                                       CustomData))
+                {
+                    ECCKeyPair = eccKeyPair;
+                    return true;
+                }
+
+
+                // ...or an unknown encoding!
+
+                var eccKeyPairs = new List<ECCKeyPair>();
+
+                #region Try to parse HEX (0-9, A-F, a-f)  // same as Base16
+
+                if (Text.TryParseHEX(out byteArray, out ErrorResponse) &&
+                    TryParsePrivateKey(byteArray,
+                                       out eccKeyPair,
+                                       out ErrorResponse,
+                                       Algorithm,
+                                       Serialization,
+                                       CryptoEncoding.HEX,
+                                       CustomData))
+                {
+                    eccKeyPairs.Add(
+                        eccKeyPair
+                    );
+                }
+
+                #endregion
+
+                #region Try to parse Base32
+
+                if (Text.TryParseBASE32(out byteArray, out ErrorResponse) &&
+                    TryParsePrivateKey(byteArray,
+                                       out eccKeyPair,
+                                       out ErrorResponse,
+                                       Algorithm,
+                                       Serialization,
+                                       CryptoEncoding.BASE32,
+                                       CustomData))
+                {
+                    eccKeyPairs.Add(
+                        eccKeyPair
+                    );
+                }
+
+                #endregion
+
+                // Base36: 0-9, A-Z
+                // Base58: Which is Base64 without 0, O, I and l
+                // Base62: Which is Base64 without + and /
+
+                #region Try to parse Base64
+
+                if (Text.TryParseBASE64(out byteArray, out ErrorResponse) &&
+                    TryParsePrivateKey(byteArray,
+                                       out eccKeyPair,
+                                       out ErrorResponse,
+                                       Algorithm,
+                                       Serialization,
+                                       CryptoEncoding.BASE64,
+                                       CustomData))
+                {
+                    eccKeyPairs.Add(
+                        eccKeyPair
+                    );
+                }
+
+                #endregion
+
+                // Base85
+                // Base91
+                // Base92
+                // Base100
+
+
+                #region ...or not matches any encoding!
+
+                if (eccKeyPairs.Count == 0)
+                {
+                    ErrorResponse = $"The given public key '{Text}' could not be parsed!";
+                    return false;
+                }
+
+                #endregion
+
+                #region ...or ambiguous encodings!
+
+                if (eccKeyPairs.Count > 1)
+                {
+
+                    var hashSet = eccKeyPairs.Select(pk => pk.Encoding).ToHashSet();
+
+                    if (hashSet.Count == 2 &&
+                        hashSet.Contains(CryptoEncoding.HEX) &&
+                        hashSet.Contains(CryptoEncoding.BASE64))
+                    {
+                        ECCKeyPair = eccKeyPairs.First(publicKey => publicKey.Encoding == CryptoEncoding.HEX);
+                    }
+
+                    else if (hashSet.Count == 2 &&
+                        hashSet.Contains(CryptoEncoding.BASE32) &&
+                        hashSet.Contains(CryptoEncoding.BASE64))
+                    {
+                        ECCKeyPair = eccKeyPairs.First(publicKey => publicKey.Encoding == CryptoEncoding.BASE64);
+                    }
+
+                    else
+                    {
+                        ErrorResponse = $"The given public key '{Text}' could be parsed as multiple different encodings: {eccKeyPairs.Select(publicKey => publicKey.Encoding.ToString()).AggregateWith(", ")}!";
+                        return false;
+                    }
+
+                }
+
+                #endregion
+
+                else
+                {
+                    ECCKeyPair = eccKeyPairs.First();
+                    return true;
+                }
+
+
+            } catch (Exception e)
+            {
+                ECCKeyPair     = null;
+                ErrorResponse  = "The given private key is invalid: " + e.Message;
+                return false;
+            }
+
+            ErrorResponse = "The given private key is invalid!";
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParsePrivateKey (Text, out ECCKeyPair, Serialization = "base64", Algorithm = "secp256r1")
+
+        /// <summary>
+        /// Try to parse the given private key and calculate its public key.
+        /// </summary>
+        /// <param name="ByteArray">A text representation of a private key.</param>
+        /// <param name="ECCKeyPair">The parsed key pair.</param>
+        /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
+        /// <param name="Algorithm">The optional cryptographic algorithm of the private key. [default: secp256r1]</param>
+        public static Boolean TryParsePrivateKey(Byte[]                                ByteArray,
+                                                 [NotNullWhen(true)]  out ECCKeyPair?  ECCKeyPair,
+                                                 [NotNullWhen(false)] out String?      ErrorResponse,
+                                                 CryptoAlgorithm?                      Algorithm       = null,
+                                                 CryptoSerialization?                  Serialization   = null,
+                                                 CryptoEncoding?                       Encoding        = null,
+                                                 CustomData?                           CustomData      = null)
+        {
+
+            ECCKeyPair     = null;
+            ErrorResponse  = null;
+
+            try
+            {
+
+                var algorithm     = Algorithm ?? CryptoAlgorithm.Secp256r1;
+                var ecParameters  = ECNamedCurveTable.GetByName(algorithm.ToString());
+                if (ecParameters is null)
+                {
+                    ErrorResponse = $"The given cryptographic algorithm '{Algorithm}' is unknown!";
+                    return false;
+                }
+
+                var d                       = new BigInteger(
+                                                  1,
+                                                  ByteArray
+                                              );
+
+                var ecPrivateKeyParameters  = new ECPrivateKeyParameters(
+                                                  d,
+                                                  new ECDomainParameters(
+                                                      ecParameters.Curve,
+                                                      ecParameters.G,
+                                                      ecParameters.N,
+                                                      ecParameters.H,
+                                                      ecParameters.GetSeed()
+                                                  )
+                                              );
+
+                var q                       = ecParameters.G.Multiply(ecPrivateKeyParameters.D);
+
+                ECCKeyPair = new ECCKeyPair(
+                                 q.GetEncoded(compressed: false),
+                                 ecPrivateKeyParameters.D.ToByteArray(),
+                                 algorithm,
+                                 Serialization,
+                                 Encoding,
+                                 CustomData
+                             );
+
+                return true;
+
+            } catch (Exception e)
+            {
+                ErrorResponse = "The given private key is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+
 
 
         #region (static) ParsePublicKey     (PublicKey,                 Algorithm = secp256r1, Serialization = raw, Encoding = base64)

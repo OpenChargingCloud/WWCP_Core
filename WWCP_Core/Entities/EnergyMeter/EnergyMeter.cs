@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SerialNumber">An optional serial number to the model of the energy meter.</param>
         /// <param name="HardwareVersion">An optional hardware version of the energy meter.</param>
         /// <param name="FirmwareVersion">An optional firmware version of the energy meter.</param>
-        /// <param name="PublicKeys">The optional public key of the energy meter used for signeing the energy meter values.</param>
+        /// <param name="PublicKeys">The optional public key of the energy meter used for signing the energy meter values.</param>
         /// <param name="PublicKeyCertificateChain">One or multiple optional certificates for the public key of the energy meter.</param>
         /// <param name="TransparencySoftwares">An enumeration of transparency softwares and their legal status, which can be used to validate the charging session data.</param>
         /// 

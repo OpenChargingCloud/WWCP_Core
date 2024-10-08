@@ -152,9 +152,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestChargingTicketsData">The parsed RequestChargingTicketsData.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomRequestChargingTicketsDataParser">A delegate to parse custom RequestChargingTicketsData requests.</param>
-        public static Boolean TryParse(JObject                                                     JSON,
+        public static Boolean TryParse(JObject                                                   JSON,
                                        [NotNullWhen(true)]  out RequestChargingTicketsData?      RequestChargingTicketsData,
-                                       [NotNullWhen(false)] out String?                            ErrorResponse,
+                                       [NotNullWhen(false)] out String?                          ErrorResponse,
                                        CustomJObjectParserDelegate<RequestChargingTicketsData>?  CustomRequestChargingTicketsDataParser   = null)
         {
 
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 RequestChargingTicketsData = new RequestChargingTicketsData(
-                                                   ECCPublicKey.Parse(""),
+                                                   ECCPublicKey.ParseASN1(""),
                                                    [],
                                                    Timestamp.Now,
                                                    null,

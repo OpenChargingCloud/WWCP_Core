@@ -111,36 +111,413 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParseASN1 (ASN1, out PublicKey, out ErrorResponse, ...)
+
+        #region (static) Parse    (Text)
+
+        /// <summary>
+        /// Parse the given text representation of an asymmetric elliptic curve cryptographic public key.
+        /// </summary>
+        /// <param name="Text">The text to be parsed.</param>
+        public static PublicKey Parse(String                Text,
+                                      CryptoAlgorithm?      Algorithm       = null,
+                                      CryptoSerialization?  Serialization   = null,
+                                      CryptoEncoding?       Encoding        = null,
+                                      CustomData?           CustomData      = null)
+        {
+
+            if (TryParse(Text,
+                         out var eccPublicKey,
+                         out var errorResponse,
+                         Algorithm,
+                         Serialization,
+                         Encoding,
+                         CustomData))
+            {
+                return eccPublicKey;
+            }
+
+            throw new ArgumentException("The given ASN.1 DER representation of a public key is invalid: " + errorResponse,
+                                        nameof(Text));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse (Text, out PublicKey, out ErrorResponse, Encoding = null, ...)
+
+        /// <summary>
+        /// Try to parse the given text representation of an asymmetric public key.
+        /// </summary>
+        /// <param name="Text">The text representation of the public key.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        public static Boolean TryParse(String                               Text,
+                                       [NotNullWhen(true)]  out PublicKey?  PublicKey,
+                                       [NotNullWhen(false)] out String?     ErrorResponse,
+                                       CryptoAlgorithm?                     Algorithm       = null,
+                                       CryptoSerialization?                 Serialization   = null,
+                                       CryptoEncoding?                      Encoding        = null,
+                                       CustomData?                          CustomData      = null)
+        {
+
+            PublicKey      = null;
+            ErrorResponse  = null;
+
+            try
+            {
+
+                #region HEX    encoding
+
+                if (Encoding == CryptoEncoding.HEX)
+                {
+
+                    if (!Text.TryParseHEX(out var hexByteArray1, out var errorResponse1))
+                    {
+                        ErrorResponse = $"The given HEX encoding of a public key '{Text}' is invalid: " + errorResponse1;
+                        return false;
+                    }
+
+                    if (TryParse(hexByteArray1,
+                                 out var publicKey,
+                                 out ErrorResponse,
+                                 Algorithm,
+                                 Serialization,
+                                 Encoding,
+                                 CustomData))
+                    {
+                        PublicKey = publicKey;
+                    }
+
+                }
+
+                #endregion
+
+                #region BASE32 encoding
+
+                else if (Encoding == CryptoEncoding.BASE32)
+                {
+                    if (!Text.TryParseBASE32(out var base32ByteArray1, out var errorResponse1))
+                    {
+                        ErrorResponse = $"The given base32 encoding of a public key '{Text}' is invalid: " + errorResponse1;
+                        return false;
+                    }
+                }
+
+                #endregion
+
+                #region BASE64 encoding
+
+                else if (Encoding == CryptoEncoding.BASE64)
+                {
+                    if (!Text.TryParseBASE64(out var base64ByteArray1, out var errorResponse1))
+                    {
+                        ErrorResponse = $"The given base64 encoding of a public key '{Text}' is invalid: " + errorResponse1;
+                        return false;
+                    }
+                }
+
+                #endregion
+
+                #region ...or an unknown encoding!
+
+                else
+                {
+
+                    var publicKeys = new List<PublicKey>();
+
+                    #region Try to parse HEX (0-9, A-F, a-f)  // same as Base16
+
+                    if (Text.TryParseHEX(out var hexByteArray, out var errorResponse))
+                    {
+                        try
+                        {
+
+                            if (hexByteArray[0] == 0x30 &&
+                                TryParse(hexByteArray,
+                                         out var publicKey,
+                                         out var errorResponse2,
+                                         Algorithm,
+                                         Serialization,
+                                         CryptoEncoding.HEX,
+                                         CustomData))
+                            {
+                                publicKeys.Add(
+                                    publicKey
+                                );
+                            }
+
+                            else
+                                publicKeys.Add(
+                                    new ECCPublicKey(
+                                        hexByteArray,
+                                        Algorithm,
+                                        Serialization,
+                                        CryptoEncoding.HEX,
+                                        CustomData
+                                    )
+                                );
+
+                        }
+                        catch (Exception)
+                        {
+                            ErrorResponse = $"The given HEX encoding of a public key '{Text}' is invalid: " + errorResponse;
+                        }
+                    }
+
+                    #endregion
+
+                    #region Try to parse Base32
+
+                    if (Text.TryParseBASE32(out var base32ByteArray, out errorResponse))
+                    {
+                        try
+                        {
+
+                            if (TryParse(base32ByteArray,
+                                         out var publicKey,
+                                         out var errorResponse2,
+                                         Algorithm,
+                                         Serialization,
+                                         CryptoEncoding.BASE32,
+                                         CustomData))
+                            {
+                                publicKeys.Add(
+                                    publicKey
+                                );
+                            }
+
+                            else
+                                publicKeys.Add(
+                                    new ECCPublicKey(
+                                        base32ByteArray,
+                                        Algorithm,
+                                        Serialization,
+                                        CryptoEncoding.BASE32,
+                                        CustomData
+                                    )
+                                );
+
+                        }
+                        catch (Exception)
+                        {
+                            ErrorResponse = $"The given base32 encoding of a public key '{Text}' is invalid: " + errorResponse;
+                        }
+                    }
+
+                    #endregion
+
+                    // Base36: 0-9, A-Z
+                    // Base58: Which is Base64 without 0, O, I and l
+                    // Base62: Which is Base64 without + and /
+
+                    #region Try to parse Base64
+
+                    if (Text.TryParseBASE64(out var base64ByteArray, out errorResponse))
+                    {
+                        try
+                        {
+
+                            if (TryParse(base64ByteArray,
+                                         out var publicKey,
+                                         out var errorResponse2,
+                                         Algorithm,
+                                         Serialization,
+                                         CryptoEncoding.BASE64,
+                                         CustomData))
+                            {
+                                publicKeys.Add(
+                                    publicKey
+                                );
+                            }
+
+                            else
+                                publicKeys.Add(
+                                    new ECCPublicKey(
+                                        base64ByteArray,
+                                        Algorithm,
+                                        Serialization,
+                                        CryptoEncoding.BASE64,
+                                        CustomData
+                                    )
+                                );
+
+                        }
+                        catch (Exception)
+                        {
+                            ErrorResponse = $"The given base64 encoding of a public key '{Text}' is invalid: " + errorResponse;
+                        }
+                    }
+
+                    #endregion
+
+                    // Base85
+                    // Base91
+                    // Base92
+                    // Base100
+
+
+                    #region ...or not matches any encoding!
+
+                    if (publicKeys.Count == 0)
+                    {
+                        ErrorResponse = $"The given public key '{Text}' could not be parsed!";
+                        return false;
+                    }
+
+                    #endregion
+
+                    #region ...or ambiguous encodings!
+
+                    if (publicKeys.Count > 1)
+                    {
+
+                        var hashSet = publicKeys.Select(pk => pk.Encoding).ToHashSet();
+
+                        if (hashSet.Count == 2 &&
+                            hashSet.Contains(CryptoEncoding.HEX) &&
+                            hashSet.Contains(CryptoEncoding.BASE64))
+                        {
+                            PublicKey = publicKeys.First(publicKey => publicKey.Encoding == CryptoEncoding.HEX);
+                        }
+
+                        else if (hashSet.Count == 2 &&
+                            hashSet.Contains(CryptoEncoding.BASE32) &&
+                            hashSet.Contains(CryptoEncoding.BASE64))
+                        {
+                            PublicKey = publicKeys.First(publicKey => publicKey.Encoding == CryptoEncoding.BASE64);
+                        }
+
+                        else
+                        {
+                            ErrorResponse = $"The given public key '{Text}' could be parsed as multiple different encodings: {publicKeys.Select(publicKey => publicKey.Encoding.ToString()).AggregateWith(", ")}!";
+                            return false;
+                        }
+
+                    }
+
+                    #endregion
+
+                    else
+                    {
+                        PublicKey = publicKeys.First();
+                        return true;
+                    }
+
+                }
+
+                #endregion
+
+
+
+                //// Most likely an ASN.1 DER encoding sequence of a public key
+                //if (ASN1[0] != 0x30)
+                //{
+                //    PublicKey      = null;
+                //    ErrorResponse  = $"The given ASN.1 DER representation '{ASN1.ToHexString()}' of a public key is invalid!";
+                //    return false;
+                //}
+
+                //if (ECCPublicKey.TryParseASN1(ASN1,
+                //                              out ECCPublicKey eccPublicKey,
+                //                              out ErrorResponse,
+                //                              CustomData))
+                //{
+                //    PublicKey = eccPublicKey;
+                //    return true;
+                //}
+
+
+            } catch (Exception e)
+            {
+                ErrorResponse  = $"The given text representation '{Text}' of a public key is invalid: " + e.Message;
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region (static) Parse    (ByteArray)
+
+        /// <summary>
+        /// Parse the given binary representation of an asymmetric elliptic curve cryptographic public key.
+        /// </summary>
+        /// <param name="ByteArray">The byte array to be parsed.</param>
+        public static PublicKey Parse(Byte[]                ByteArray,
+                                      CryptoAlgorithm?      Algorithm       = null,
+                                      CryptoSerialization?  Serialization   = null,
+                                      CryptoEncoding?       Encoding        = null,
+                                      CustomData?           CustomData      = null)
+        {
+
+            if (TryParse(ByteArray,
+                         out var eccPublicKey,
+                         out var errorResponse,
+                         Algorithm,
+                         Serialization,
+                         Encoding,
+                         CustomData))
+            {
+                return eccPublicKey;
+            }
+
+            throw new ArgumentException("The given binary representation of a public key is invalid: " + errorResponse,
+                                        nameof(ByteArray));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse (ByteArray, out PublicKey, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given ASN.1 DER representation of an asymmetric public key.
         /// </summary>
-        /// <param name="ASN1">The ASN.1 DER representation of the public key.</param>
+        /// <param name="ByteArray">The ASN.1 DER representation of the public key.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public static Boolean TryParseASN1(Byte[]                               ASN1,
-                                           [NotNullWhen(true)]  out PublicKey?  PublicKey,
-                                           [NotNullWhen(false)] out String?     ErrorResponse,
-                                           CustomData?                          CustomData   = null)
+        public static Boolean TryParse(Byte[]                               ByteArray,
+                                       [NotNullWhen(true)]  out PublicKey?  PublicKey,
+                                       [NotNullWhen(false)] out String?     ErrorResponse,
+                                       CryptoAlgorithm?                     Algorithm       = null,
+                                       CryptoSerialization?                 Serialization   = null,
+                                       CryptoEncoding?                      Encoding        = null,
+                                       CustomData?                          CustomData      = null)
         {
 
-            PublicKey = null;
+            PublicKey      = null;
+            ErrorResponse  = null;
 
             try
             {
 
                 // Most likely an ASN.1 DER encoding sequence of a public key
-                if (ASN1[0] != 0x30)
+                //if (ByteArray[0] != 0x30)
+                //{
+                //    PublicKey      = null;
+                //    ErrorResponse  = $"The given ASN.1 DER representation '{ByteArray.ToHexString()}' of a public key is invalid!";
+                //    return false;
+                //}
+
+                if (ByteArray[0] == 0x30 &&
+                    ECCPublicKey.TryParse(ByteArray,
+                                          out var eccPublicKey,
+                                          out ErrorResponse,
+                                          Algorithm,
+                                          Serialization,
+                                          Encoding,
+                                          CustomData))
                 {
-                    PublicKey      = null;
-                    ErrorResponse  = $"The given ASN.1 DER representation '{ASN1.ToHexString()}' of a public key is invalid!";
-                    return false;
+                    PublicKey = eccPublicKey;
+                    return true;
                 }
 
-                if (ECCPublicKey.TryParseASN1(ASN1,
-                                              out var eccPublicKey,
-                                              out ErrorResponse,
-                                              CustomData))
+                else if (ByteArray[0] == 0x30 &&
+                         ECCPublicKey.TryParseASN1(ByteArray,
+                                                   out eccPublicKey,
+                                                   out ErrorResponse,
+                                                   Encoding,
+                                                   CustomData))
                 {
                     PublicKey = eccPublicKey;
                     return true;
@@ -149,7 +526,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             } catch (Exception e)
             {
-                ErrorResponse  = $"The given ASN.1 DER representation '{ASN1.ToHexString()}' of a public key is invalid: " + e.Message;
+                ErrorResponse  = $"The given ASN.1 DER representation '{ByteArray.ToHexString()}' of a public key is invalid: " + e.Message;
             }
 
             return false;
@@ -157,6 +534,7 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
 
         #region ToJSON(CustomPublicKeySerializer = null, CustomCustomDataSerializer = null)
 
