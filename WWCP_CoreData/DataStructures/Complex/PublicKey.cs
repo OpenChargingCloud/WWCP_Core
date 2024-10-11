@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return eccPublicKey;
             }
 
-            throw new ArgumentException("The given ASN.1 DER representation of a public key is invalid: " + errorResponse,
+            throw new ArgumentException("The given text representation of a public key is invalid: " + errorResponse,
                                         nameof(Text));
 
         }
@@ -162,6 +162,8 @@ namespace cloud.charging.open.protocols.WWCP
             PublicKey      = null;
             ErrorResponse  = null;
 
+            var text       = Text.Trim().Replace(" ", "");
+
             try
             {
 
@@ -170,7 +172,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (Encoding == CryptoEncoding.HEX)
                 {
 
-                    if (!Text.TryParseHEX(out var hexByteArray1, out var errorResponse1))
+                    if (!text.TryParseHEX(out var hexByteArray1, out var errorResponse1))
                     {
                         ErrorResponse = $"The given HEX encoding of a public key '{Text}' is invalid: " + errorResponse1;
                         return false;
@@ -195,7 +197,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 else if (Encoding == CryptoEncoding.BASE32)
                 {
-                    if (!Text.TryParseBASE32(out var base32ByteArray1, out var errorResponse1))
+                    if (!text.TryParseBASE32(out var base32ByteArray1, out var errorResponse1))
                     {
                         ErrorResponse = $"The given base32 encoding of a public key '{Text}' is invalid: " + errorResponse1;
                         return false;
@@ -208,7 +210,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 else if (Encoding == CryptoEncoding.BASE64)
                 {
-                    if (!Text.TryParseBASE64(out var base64ByteArray1, out var errorResponse1))
+                    if (!text.TryParseBASE64(out var base64ByteArray1, out var errorResponse1))
                     {
                         ErrorResponse = $"The given base64 encoding of a public key '{Text}' is invalid: " + errorResponse1;
                         return false;
@@ -226,7 +228,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Try to parse HEX (0-9, A-F, a-f)  // same as Base16
 
-                    if (Text.TryParseHEX(out var hexByteArray, out var errorResponse))
+                    if (text.TryParseHEX(out var hexByteArray, out var errorResponse))
                     {
                         try
                         {
@@ -267,7 +269,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Try to parse Base32
 
-                    if (Text.TryParseBASE32(out var base32ByteArray, out errorResponse))
+                    if (text.TryParseBASE32(out var base32ByteArray, out errorResponse))
                     {
                         try
                         {
@@ -311,7 +313,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Try to parse Base64
 
-                    if (Text.TryParseBASE64(out var base64ByteArray, out errorResponse))
+                    if (text.TryParseBASE64(out var base64ByteArray, out errorResponse))
                     {
                         try
                         {

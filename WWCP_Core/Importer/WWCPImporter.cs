@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
             this.AllChargingStationOperators        = AllChargingStationOperators;
             this.GetChargingStationOperators        = GetChargingStationOperators;
             this.GetDefaultChargingStationOperator  = GetDefaultChargingStationOperator;
-            this.importedData                       = new List<Timestamped<TImportData>>();
+            this.importedData                       = [];
 
             this.IsRunning                          = false;
             this.ImporterRunTimer                   = new Timer(ImporterRun);
