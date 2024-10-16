@@ -262,6 +262,7 @@ namespace cloud.charging.open.protocols.WWCP
                         catch (Exception)
                         {
                             ErrorResponse = $"The given HEX encoding of a public key '{Text}' is invalid: " + errorResponse;
+                            return false;
                         }
                     }
 
@@ -302,6 +303,7 @@ namespace cloud.charging.open.protocols.WWCP
                         catch (Exception)
                         {
                             ErrorResponse = $"The given base32 encoding of a public key '{Text}' is invalid: " + errorResponse;
+                            return false;
                         }
                     }
 
@@ -346,6 +348,7 @@ namespace cloud.charging.open.protocols.WWCP
                         catch (Exception)
                         {
                             ErrorResponse = $"The given base64 encoding of a public key '{Text}' is invalid: " + errorResponse;
+                            return false;
                         }
                     }
 
@@ -379,6 +382,7 @@ namespace cloud.charging.open.protocols.WWCP
                             hashSet.Contains(CryptoEncoding.BASE64))
                         {
                             PublicKey = publicKeys.First(publicKey => publicKey.Encoding == CryptoEncoding.HEX);
+                            return true;
                         }
 
                         else if (hashSet.Count == 2 &&
@@ -386,6 +390,7 @@ namespace cloud.charging.open.protocols.WWCP
                             hashSet.Contains(CryptoEncoding.BASE64))
                         {
                             PublicKey = publicKeys.First(publicKey => publicKey.Encoding == CryptoEncoding.BASE64);
+                            return true;
                         }
 
                         else
@@ -428,11 +433,13 @@ namespace cloud.charging.open.protocols.WWCP
                 //}
 
 
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
-                ErrorResponse  = $"The given text representation '{Text}' of a public key is invalid: " + e.Message;
+                ErrorResponse = $"The given text representation '{Text}' of a public key is invalid: " + e.Message;
             }
 
+            ErrorResponse = "Unknown error!";
             return false;
 
         }
