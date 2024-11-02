@@ -40,26 +40,12 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 namespace cloud.charging.open.protocols.WWCP.WebSockets
 {
 
-    public class NetworkingNodeConnectionInfo(WebSocketServerConnection  WebSocketServerConnection,
-                                              DateTime                   ConnectedSince,
-                                              NetworkingMode?            NetworkingMode = null)
+    public class NetworkingNodeConnections(NetworkingNode_Id                DestinationNodeId,
+                                           List<WebSocketServerConnection>  ConnectionInfos)
     {
 
-        public WebSocketServerConnection  WebSocketServerConnection    { get; }      = WebSocketServerConnection;
-        public NetworkingMode?            NetworkingMode               { get; set; } = NetworkingMode;
-        public DateTime                   ConnectedSince               { get; }      = ConnectedSince;
-        public DateTime?                  LastSentTo                   { get; set; } = ConnectedSince;
-        public DateTime?                  LastReceivedFrom             { get; set; } = ConnectedSince;
-        public Boolean                    IsAlive                      { get; set; } = true;
-
-    }
-
-    public class NetworkingNodeConnections(NetworkingNode_Id                   DestinationNodeId,
-                                           List<NetworkingNodeConnectionInfo>  ConnectionInfos)
-    {
-
-        public NetworkingNode_Id                   DestinationNodeId    { get; } = DestinationNodeId;
-        public List<NetworkingNodeConnectionInfo>  ConnectionInfos      { get; } = ConnectionInfos;
+        public NetworkingNode_Id                DestinationNodeId             { get; } = DestinationNodeId;
+        public List<WebSocketServerConnection>  WebSocketServerConnections    { get; } = ConnectionInfos;
 
     }
 
@@ -93,6 +79,12 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         /// <summary>
         /// The enumeration of all connected networking nodes.
+        /// </summary>
+        public IEnumerable<NetworkingNodeConnections>  ConnectedNetworkingNodes
+            => connectedNetworkingNodes.Values;
+
+        /// <summary>
+        /// The enumeration of all connected networking node identifications.
         /// </summary>
         public IEnumerable<NetworkingNode_Id>  ConnectedNetworkingNodeIds
             => connectedNetworkingNodes.Keys;
@@ -627,13 +619,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                         networkingNodeId.Value,
                         new NetworkingNodeConnections(
                             networkingNodeId.Value,
-                            [
-                                new NetworkingNodeConnectionInfo(
-                                    Connection,
-                                    Timestamp.Now,
-                                    networkingMode
-                                )
-                            ]
+                            [ Connection ]
                         )
                    ))
                 {
@@ -642,11 +628,11 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                     if (connectedNetworkingNodes.TryRemove(networkingNodeId.Value, out var oldConnection))
                     {
-                        foreach (var nodeConnectionInfo in oldConnection.ConnectionInfos)
+                        foreach (var webSocketServerConnection in oldConnection.WebSocketServerConnections)
                         {
                             try
                             {
-                                await nodeConnectionInfo.WebSocketServerConnection.Close(
+                                await webSocketServerConnection.Close(
                                           WebSocketFrame.ClosingStatusCode.NormalClosure,
                                           "Newer connection detected!",
                                           CancellationToken
@@ -654,7 +640,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log($"{nameof(WWCPWebSocketServer)} Closing old HTTP WebSocket connection from {nodeConnectionInfo.WebSocketServerConnection.RemoteSocket} failed: {e.Message}");
+                                DebugX.Log($"{nameof(WWCPWebSocketServer)} Closing old HTTP WebSocket connection from {webSocketServerConnection.RemoteSocket} failed: {e.Message}");
                             }
                         }
                     }
@@ -663,13 +649,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                         networkingNodeId.Value,
                         new NetworkingNodeConnections(
                             networkingNodeId.Value,
-                            [
-                                new NetworkingNodeConnectionInfo(
-                                    Connection,
-                                    Timestamp.Now,
-                                    networkingMode
-                                )
-                            ]
+                            [ Connection ]
                         )
                     );
 
@@ -780,9 +760,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 nextHop = reachability.DestinationId;
 
             if (connectedNetworkingNodes.TryGetValue(nextHop, out var networkingNodeConnections))
-                return networkingNodeConnections.ConnectionInfos.
-                           Where (connectionInfo => connectionInfo.IsAlive).
-                           Select(connectionInfo => connectionInfo.WebSocketServerConnection);
+                return networkingNodeConnections.WebSocketServerConnections.
+                           Where(webSocketServerConnection => webSocketServerConnection.IsAlive);
 
             return [];
 

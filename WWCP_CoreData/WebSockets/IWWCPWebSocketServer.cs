@@ -80,22 +80,27 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <summary>
         /// The parent networking node.
         /// </summary>
-        INetworkingNode                 NetworkingNode                { get; }
+        INetworkingNode                         NetworkingNode                { get; }
 
         /// <summary>
         /// The enumeration of all connected networking nodes.
         /// </summary>
-        IEnumerable<NetworkingNode_Id>  ConnectedNetworkingNodeIds    { get; }
+        IEnumerable<NetworkingNodeConnections>  ConnectedNetworkingNodes      { get; }
+
+        /// <summary>
+        /// The enumeration of all connected networking node identifications.
+        /// </summary>
+        IEnumerable<NetworkingNode_Id>          ConnectedNetworkingNodeIds    { get; }
 
         /// <summary>
         /// The request timeout for messages sent by this HTTP WebSocket server.
         /// </summary>
-        TimeSpan?                       RequestTimeout                { get; set; }
+        TimeSpan?                               RequestTimeout                { get; set; }
 
         /// <summary>
         /// The JSON formatting to use.
         /// </summary>
-        Formatting                      JSONFormatting                { get; set; }
+        Formatting                              JSONFormatting                { get; set; }
 
         #endregion
 
