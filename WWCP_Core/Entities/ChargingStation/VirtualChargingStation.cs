@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                        GeoCoordinate?                                                  GeoLocation                          = null,
                                                                        OpeningTimes?                                                   OpeningTimes                         = null,
                                                                        Boolean?                                                        ChargingWhenClosed                   = null,
-                                                                       AccessibilityTypes?                                             Accessibility                        = null,
+                                                                       AccessibilityType?                                              Accessibility                        = null,
                                                                        Languages?                                                      LocationLanguage                     = null,
                                                                        String?                                                         PhysicalReference                    = null,
                                                                        PhoneNumber?                                                    HotlinePhoneNumber                   = null,
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                                   GeoCoordinate?                                                  GeoLocation                          = null,
                                                                                   OpeningTimes?                                                   OpeningTimes                         = null,
                                                                                   Boolean?                                                        ChargingWhenClosed                   = null,
-                                                                                  AccessibilityTypes?                                             Accessibility                        = null,
+                                                                                  AccessibilityType?                                              Accessibility                        = null,
                                                                                   Languages?                                                      LocationLanguage                     = null,
                                                                                   String?                                                         PhysicalReference                    = null,
                                                                                   PhoneNumber?                                                    HotlinePhoneNumber                   = null,
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                                        GeoCoordinate?                                                  GeoLocation                            = null,
                                                                                        OpeningTimes?                                                   OpeningTimes                           = null,
                                                                                        Boolean?                                                        ChargingWhenClosed                     = null,
-                                                                                       AccessibilityTypes?                                             Accessibility                          = null,
+                                                                                       AccessibilityType?                                              Accessibility                          = null,
                                                                                        Languages?                                                      LocationLanguage                       = null,
                                                                                        String?                                                         PhysicalReference                      = null,
                                                                                        PhoneNumber?                                                    HotlinePhoneNumber                     = null,
@@ -2911,7 +2911,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public ReactiveSet<PaymentOptions> PaymentOptions => throw new NotImplementedException();
 
-        public AccessibilityTypes? Accessibility { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public AccessibilityType? Accessibility { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public ReactiveSet<String> PhotoURIs => throw new NotImplementedException();
 

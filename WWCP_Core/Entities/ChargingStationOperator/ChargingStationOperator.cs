@@ -6714,6 +6714,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                 OrderBy(brand => brand).
                                                                                                 ToJSON (Embedded:                         true,
                                                                                                         ExpandDataLicenses:               InfoStatus.ShowIdOnly))))
+                                   : null,
+
+                               CustomData.HasValues
+                                   ? new JProperty("customData",            CustomData)
                                    : null
 
                                );

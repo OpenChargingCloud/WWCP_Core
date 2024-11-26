@@ -63,7 +63,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          Time_Zone?                                                          TimeZone                          = null,
                                                                          OpeningTimes?                                                       OpeningTimes                      = null,
                                                                          Boolean?                                                            ChargingWhenClosed                = null,
-                                                                         AccessibilityTypes?                                                 Accessibility                     = null,
+                                                                         ParkingType?                                                        ParkingType                       = null,
+                                                                         AccessibilityType?                                                  Accessibility                     = null,
                                                                          Languages?                                                          LocationLanguage                  = null,
                                                                          PhoneNumber?                                                        HotlinePhoneNumber                = null,
 
@@ -107,6 +108,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    TimeZone,
                    OpeningTimes,
                    ChargingWhenClosed,
+                   ParkingType,
                    Accessibility,
                    LocationLanguage,
                    HotlinePhoneNumber,
@@ -230,6 +232,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public ReactiveSet<Brand>            Brands                 { get; }
 
         /// <summary>
+        /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20, available in this charging pool.
+        /// </summary>
+        [Optional, SlowData]
+        public ReactiveSet<RootCAInfo>       MobilityRootCAs        { get; }
+
+        /// <summary>
         /// The license of the charging pool data.
         /// </summary>
         [Mandatory, SlowData]
@@ -341,6 +349,42 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     // Delete inherited geo locations
                     chargingStations.ForEach(station => station.GeoLocation = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region ParkingType
+
+        private ParkingType? parkingType;
+
+        /// <summary>
+        /// The parking type.
+        /// </summary>
+        [Optional]
+        public ParkingType? ParkingType
+        {
+
+            get
+            {
+                return parkingType;
+            }
+
+            set
+            {
+
+                if (parkingType != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref parkingType);
+
+                    else
+                        SetProperty(ref parkingType, value);
 
                 }
 
@@ -539,13 +583,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region Accessibility
 
-        private AccessibilityTypes? accessibility;
+        private AccessibilityType? accessibility;
 
         /// <summary>
         /// The accessibility of the charging station.
         /// </summary>
         [Optional]
-        public AccessibilityTypes? Accessibility
+        public AccessibilityType? Accessibility
         {
 
             get

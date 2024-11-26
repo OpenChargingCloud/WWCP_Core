@@ -92,6 +92,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         /// <summary>
         /// The charging station sub operator of this charging pool.
+        /// (Better use brands!)
         /// </summary>
         [Optional]
         public IChargingStationOperator?     SubOperator            { get; }
@@ -224,6 +225,42 @@ namespace cloud.charging.open.protocols.WWCP
 
                     // Delete inherited geo locations
                     chargingStations.ForEach(station => station.GeoLocation = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region ParkingType
+
+        private ParkingType? parkingType;
+
+        /// <summary>
+        /// The parking type.
+        /// </summary>
+        [Optional]
+        public ParkingType? ParkingType
+        {
+
+            get
+            {
+                return parkingType;
+            }
+
+            set
+            {
+
+                if (parkingType != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref parkingType);
+
+                    else
+                        SetProperty(ref parkingType, value);
 
                 }
 
@@ -473,13 +510,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Accessibility
 
-        private AccessibilityTypes? accessibility;
+        private AccessibilityType? accessibility;
 
         /// <summary>
-        /// The accessibility of the charging station.
+        /// The accessibility of the charging pool.
         /// </summary>
         [Optional]
-        public AccessibilityTypes? Accessibility
+        public AccessibilityType? Accessibility
         {
 
             get
@@ -997,6 +1034,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        /// <summary>
+        /// The license of the charging pool data.
+        /// </summary>
+        [Mandatory, SlowData]
+        public ReactiveSet<OpenDataLicense>             DataLicenses           { get; }
+
 
         #region StatusAggregationDelegate
 
@@ -1006,12 +1049,6 @@ namespace cloud.charging.open.protocols.WWCP
         public Func<ChargingStationStatusReport, ChargingPoolStatusTypes>? StatusAggregationDelegate { get; set; }
 
         #endregion
-
-        /// <summary>
-        /// The license of the charging pool data.
-        /// </summary>
-        [Mandatory, SlowData]
-        public ReactiveSet<OpenDataLicense>  DataLicenses           { get; }
 
         #endregion
 
@@ -1040,7 +1077,8 @@ namespace cloud.charging.open.protocols.WWCP
                             Time_Zone?                                  TimeZone                         = null,
                             OpeningTimes?                               OpeningTimes                     = null,
                             Boolean?                                    ChargingWhenClosed               = null,
-                            AccessibilityTypes?                         Accessibility                    = null,
+                            ParkingType?                                ParkingType                      = null,
+                            AccessibilityType?                          Accessibility                    = null,
                             Languages?                                  LocationLanguage                 = null,
                             PhoneNumber?                                HotlinePhoneNumber               = null,
 
@@ -1082,6 +1120,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.timeZone                          = TimeZone;
             this.openingTimes                      = OpeningTimes ?? OpeningTimes.Open24Hours;
             this.ChargingWhenClosed                = ChargingWhenClosed;
+            this.parkingType                       = ParkingType;
             this.accessibility                     = Accessibility;
             this.locationLanguage                  = LocationLanguage;
             this.hotlinePhoneNumber                = HotlinePhoneNumber;
@@ -4295,37 +4334,39 @@ namespace cloud.charging.open.protocols.WWCP
                                    ? new JProperty("description",  Description.ToJSON())
                                    : null,
 
-                               ((!Embedded || DataSource != Operator.DataSource) && DataSource is not null)
+                               ((!Embedded || DataSource != Operator?.DataSource) && DataSource is not null)
                                    ? new JProperty("dataSource",   DataSource)
                                    : null,
 
-                               ExpandDataLicenses.Switch(
-                                   () => new JProperty("dataLicenseIds",  new JArray(DataLicenses.SafeSelect(license => license.Id.ToString()))),
-                                   () => new JProperty("dataLicenses",    DataLicenses.ToJSON())),
-
+                               !Embedded && DataLicenses.Any()
+                                   ? ExpandDataLicenses.Switch(
+                                         () => new JProperty("dataLicenseIds",  new JArray(DataLicenses.SafeSelect(dataLicense => dataLicense.Id.ToString()))),
+                                         () => new JProperty("dataLicenses",    DataLicenses.ToJSON())
+                                     )
+                                   : null,
 
                                ExpandRoamingNetworkId != InfoStatus.Hidden && RoamingNetwork is not null
                                    ? ExpandRoamingNetworkId.Switch(
-                                         () => new JProperty("roamingNetworkId",                  RoamingNetwork.Id. ToString()),
-                                         () => new JProperty("roamingNetwork",                    RoamingNetwork.    ToJSON(Embedded:                          true,
-                                                                                                                            ExpandChargingStationOperatorIds:  InfoStatus.Hidden,
-                                                                                                                            ExpandChargingPoolIds:             InfoStatus.Hidden,
-                                                                                                                            ExpandChargingStationIds:          InfoStatus.Hidden,
-                                                                                                                            ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                            ExpandBrandIds:                    ExpandBrandIds,
-                                                                                                                            ExpandDataLicenses:                ExpandDataLicenses)))
+                                         () => new JProperty("roamingNetworkId",           RoamingNetwork.Id.ToString()),
+                                         () => new JProperty("roamingNetwork",             RoamingNetwork.   ToJSON(Embedded:                          true,
+                                                                                                                    ExpandChargingStationOperatorIds:  InfoStatus.Hidden,
+                                                                                                                    ExpandChargingPoolIds:             InfoStatus.Hidden,
+                                                                                                                    ExpandChargingStationIds:          InfoStatus.Hidden,
+                                                                                                                    ExpandEVSEIds:                     InfoStatus.Hidden,
+                                                                                                                    ExpandBrandIds:                    ExpandBrandIds,
+                                                                                                                    ExpandDataLicenses:                ExpandDataLicenses)))
                                    : null,
 
                                ExpandChargingStationOperatorId != InfoStatus.Hidden && Operator is not null
                                    ? ExpandChargingStationOperatorId.Switch(
-                                         () => new JProperty("chargingStationOperatorperatorId",  Operator.Id.       ToString()),
-                                         () => new JProperty("chargingStationOperatorperator",    Operator.          ToJSON(Embedded:                          true,
-                                                                                                                            ExpandRoamingNetworkId:            InfoStatus.Hidden,
-                                                                                                                            ExpandChargingPoolIds:             InfoStatus.Hidden,
-                                                                                                                            ExpandChargingStationIds:          InfoStatus.Hidden,
-                                                                                                                            ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                            ExpandBrandIds:                    ExpandBrandIds,
-                                                                                                                            ExpandDataLicenses:                ExpandDataLicenses)))
+                                         () => new JProperty("chargingStationOperatorId",  Operator.Id.      ToString()),
+                                         () => new JProperty("chargingStationOperator",    Operator.         ToJSON(Embedded:                          true,
+                                                                                                                    ExpandRoamingNetworkId:            InfoStatus.Hidden,
+                                                                                                                    ExpandChargingPoolIds:             InfoStatus.Hidden,
+                                                                                                                    ExpandChargingStationIds:          InfoStatus.Hidden,
+                                                                                                                    ExpandEVSEIds:                     InfoStatus.Hidden,
+                                                                                                                    ExpandBrandIds:                    ExpandBrandIds,
+                                                                                                                    ExpandDataLicenses:                ExpandDataLicenses)))
                                    : null,
 
                                GeoLocation.HasValue
@@ -4334,6 +4375,14 @@ namespace cloud.charging.open.protocols.WWCP
 
                                Address is not null
                                    ? new JProperty("address",              Address.            ToJSON())
+                                   : null,
+
+                               ParkingType.IsNotNullOrEmpty()
+                                   ? new JProperty("locationType",         ParkingType)
+                                   : null,
+
+                               Accessibility.HasValue
+                                   ? new JProperty("accessibility",        Accessibility.      ToString())
                                    : null,
 
                                AuthenticationModes.Any()
@@ -4408,6 +4457,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                ToJSON (Embedded:            true,
                                                                                        ExpandDataLicenses:  ExpandDataLicenses))))
 
+                                   : null,
+
+                               CustomData.HasValues
+                                   ? new JProperty("customData",            CustomData)
                                    : null
 
                          );
@@ -4448,6 +4501,7 @@ namespace cloud.charging.open.protocols.WWCP
                     TimeZone,
                     OpeningTimes,
                     ChargingWhenClosed,
+                    ParkingType,
                     Accessibility,
                     LocationLanguage,
                     HotlinePhoneNumber,

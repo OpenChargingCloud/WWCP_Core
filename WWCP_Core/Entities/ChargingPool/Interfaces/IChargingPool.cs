@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         GeoCoordinate?                                                  GeoLocation                    = null,
                                                                         OpeningTimes?                                                   OpeningTimes                   = null,
                                                                         Boolean?                                                        ChargingWhenClosed             = null,
-                                                                        AccessibilityTypes?                                             Accessibility                  = null,
+                                                                        AccessibilityType?                                              Accessibility                  = null,
                                                                         Languages?                                                      LocationLanguage               = null,
                                                                         String?                                                         PhysicalReference              = null,
                                                                         PhoneNumber?                                                    HotlinePhoneNumber             = null,
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                    GeoCoordinate?                                                  GeoLocation                    = null,
                                                                                    OpeningTimes?                                                   OpeningTimes                   = null,
                                                                                    Boolean?                                                        ChargingWhenClosed             = null,
-                                                                                   AccessibilityTypes?                                             Accessibility                  = null,
+                                                                                   AccessibilityType?                                              Accessibility                  = null,
                                                                                    Languages?                                                      LocationLanguage               = null,
                                                                                    String?                                                         PhysicalReference              = null,
                                                                                    PhoneNumber?                                                    HotlinePhoneNumber             = null,
@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                         GeoCoordinate?                                                  GeoLocation                            = null,
                                                                                         OpeningTimes?                                                   OpeningTimes                           = null,
                                                                                         Boolean?                                                        ChargingWhenClosed                     = null,
-                                                                                        AccessibilityTypes?                                             Accessibility                          = null,
+                                                                                        AccessibilityType?                                              Accessibility                          = null,
                                                                                         Languages?                                                      LocationLanguage                       = null,
                                                                                         String?                                                         PhysicalReference                      = null,
                                                                                         PhoneNumber?                                                    HotlinePhoneNumber                     = null,
@@ -420,7 +420,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                               GeoCoordinate?                                                  GeoLocation                    = null,
                                                                               OpeningTimes?                                                   OpeningTimes                   = null,
                                                                               Boolean?                                                        ChargingWhenClosed             = null,
-                                                                              AccessibilityTypes?                                             Accessibility                  = null,
+                                                                              AccessibilityType?                                              Accessibility                  = null,
                                                                               Languages?                                                      LocationLanguage               = null,
                                                                               String?                                                         PhysicalReference              = null,
                                                                               PhoneNumber?                                                    HotlinePhoneNumber             = null,
@@ -598,16 +598,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         /// <summary>
         /// The charging station sub operator of this charging pool.
+        /// (Better use brands!)
         /// </summary>
         [Optional]
         IChargingStationOperator?               SubOperator                 { get; }
-
-        /// <summary>
-        /// The remote charging pool.
-        /// </summary>
-        [Optional]
-        IRemoteChargingPool?                    RemoteChargingPool          { get; }
-
 
         /// <summary>
         /// All brands registered for this charging pool.
@@ -616,10 +610,20 @@ namespace cloud.charging.open.protocols.WWCP
         ReactiveSet<Brand>                      Brands                      { get; }
 
         /// <summary>
-        /// The license of the charging pool data.
+        /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20, available in this charging pool.
+        /// </summary>
+        [Optional, SlowData]
+        ReactiveSet<RootCAInfo>                 MobilityRootCAs             { get; }
+
+
+        /// <summary>
+        /// The remote charging pool.
         /// </summary>
         [Optional]
-        ReactiveSet<OpenDataLicense>            DataLicenses                { get; }
+        IRemoteChargingPool?                    RemoteChargingPool          { get; }
+
+
+        #region Address related
 
         /// <summary>
         /// The official language at this charging pool.
@@ -640,10 +644,34 @@ namespace cloud.charging.open.protocols.WWCP
         GeoCoordinate?                          GeoLocation                 { get; set; }
 
         /// <summary>
+        /// The parking type.
+        /// </summary>
+        [Optional]
+        ParkingType?                            ParkingType                 { get; set; }
+
+        /// <summary>
         /// The time zone of this charging pool.
         /// </summary>
         [Optional]
         Time_Zone?                              TimeZone                    { get; set; }
+
+        /// <summary>
+        /// The opening times of this charging pool.
+        /// </summary>
+        [Optional]
+        OpeningTimes                            OpeningTimes                { get; set; }
+
+        /// <summary>
+        /// Indicates if the charging stations are still charging outside the opening hours of the charging pool.
+        /// </summary>
+        [Optional]
+        Boolean?                                ChargingWhenClosed          { get; set; }
+
+        /// <summary>
+        /// An optional (multi-language) description of how to find the charging pool.
+        /// </summary>
+        [Optional]
+        I18NString                              ArrivalInstructions         { get; }
 
         /// <summary>
         /// The address of the entrance to this charging pool.
@@ -660,22 +688,34 @@ namespace cloud.charging.open.protocols.WWCP
         GeoCoordinate?                          EntranceLocation            { get; set; }
 
         /// <summary>
-        /// An optional (multi-language) description of how to find the charging pool.
+        /// The address of the exit of this charging pool.
+        /// (If different from 'Address').
         /// </summary>
         [Optional]
-        I18NString                              ArrivalInstructions         { get; }
+        Address                                 ExitAddress                 { get; set; }
 
         /// <summary>
-        /// The opening times of this charging pool.
+        /// The geographical location of the exit of this charging pool.
+        /// (If different from 'GeoLocation').
         /// </summary>
         [Optional]
-        OpeningTimes                            OpeningTimes                { get; set; }
+        GeoCoordinate?                          ExitLocation                { get; set; }
+
+        #endregion
+
 
         /// <summary>
-        /// Indicates if the charging stations are still charging outside the opening hours of the charging pool.
+        /// The accessibility of the charging pool.
         /// </summary>
         [Optional]
-        Boolean?                                ChargingWhenClosed          { get; set; }
+        AccessibilityType?                      Accessibility               { get; set; }
+
+        /// <summary>
+        /// Charging features of the charging pool, when those features
+        /// are not features of the charging stations, e.g. hasARoof.
+        /// </summary>
+        [Optional]
+        ReactiveSet<ChargingPoolFeature>        Features                    { get; }
 
         /// <summary>
         /// User interface features of the charging pool, when those features
@@ -697,24 +737,10 @@ namespace cloud.charging.open.protocols.WWCP
         ReactiveSet<PaymentOptions>             PaymentOptions              { get; }
 
         /// <summary>
-        /// The accessibility of the charging station.
-        /// </summary>
-        [Optional]
-        AccessibilityTypes?                     Accessibility               { get; set; }
-
-        /// <summary>
-        /// Charging features of the charging pool, when those features
-        /// are not features of the charging stations, e.g. hasARoof.
-        /// </summary>
-        [Optional]
-        ReactiveSet<ChargingPoolFeature>        Features                    { get; }
-
-        /// <summary>
         /// Charging facilities of the charging pool, e.g. a supermarket.
         /// </summary>
         [Optional]
         ReactiveSet<Facilities>                 Facilities                  { get; }
-
 
         /// <summary>
         /// URIs of photos of this charging pool.
@@ -727,6 +753,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         [Optional]
         PhoneNumber?                            HotlinePhoneNumber          { get; }
+
+
+        #region Energy related
 
         /// <summary>
         /// The grid connection of the charging pool.
@@ -810,20 +839,15 @@ namespace cloud.charging.open.protocols.WWCP
         [Optional]
         EnergyMixPrognosis?                     EnergyMixPrognoses          { get; set; }
 
+        #endregion
+
 
         /// <summary>
-        /// The address of the exit of this charging pool.
-        /// (If different from 'Address').
+        /// The license of the charging pool data.
         /// </summary>
         [Optional]
-        Address                                 ExitAddress                 { get; set; }
+        ReactiveSet<OpenDataLicense>            DataLicenses                { get; }
 
-        /// <summary>
-        /// The geographical location of the exit of this charging pool.
-        /// (If different from 'GeoLocation').
-        /// </summary>
-        [Optional]
-        GeoCoordinate?                          ExitLocation                { get; set; }
 
 
         /// <summary>

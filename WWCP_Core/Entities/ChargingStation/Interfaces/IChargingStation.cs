@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                   ChargingSession?                                     ChargingSession                = null,
 
                                                   Timestamped<EVSEAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                  Timestamped<EVSEStatusType>?                        InitialStatus                  = null,
+                                                  Timestamped<EVSEStatusType>?                         InitialStatus                  = null,
                                                   UInt16?                                              MaxAdminStatusScheduleSize     = null,
                                                   UInt16?                                              MaxStatusScheduleSize          = null,
                                                   DateTime?                                            LastStatusUpdate               = null,
@@ -731,7 +731,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The accessibility of the charging station.
         /// </summary>
-        AccessibilityTypes?                     Accessibility               { get; set; }
+        AccessibilityType?                      Accessibility               { get; set; }
 
         /// <summary>
         /// Charging features of the charging station.

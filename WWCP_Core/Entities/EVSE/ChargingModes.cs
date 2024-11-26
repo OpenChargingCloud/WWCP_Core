@@ -15,14 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-#endregion
-
 namespace cloud.charging.open.protocols.WWCP
 {
 
@@ -35,19 +27,18 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingModes Reduce(this IEnumerable<ChargingModes> EnumerationOfChargingModes)
         {
 
-            var _ChargingModes = ChargingModes.Unspecified;
+            var chargingModes = ChargingModes.Unspecified;
 
-            foreach (var ChargingMode in EnumerationOfChargingModes)
-                _ChargingModes |= ChargingMode;
+            foreach (var chargingMode in EnumerationOfChargingModes)
+                chargingModes |= chargingMode;
 
-            return _ChargingModes;
+            return chargingModes;
 
         }
 
         public static IEnumerable<ChargingModes> ToEnumeration(this ChargingModes ChargingModesEnum)
 
-            => Enum.GetValues(typeof(ChargingModes)).
-                    Cast<ChargingModes>().
+            => Enum.GetValues<ChargingModes>().
                     Where(flag => ChargingModesEnum.HasFlag(flag) && flag != ChargingModes.Unspecified);
 
 

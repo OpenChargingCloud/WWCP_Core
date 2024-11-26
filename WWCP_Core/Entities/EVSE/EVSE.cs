@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// An enumeration of all data license(s) of this EVSE.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<OpenDataLicense>             OpenDataLicenses            { get; }
+        public ReactiveSet<OpenDataLicense>             DataLicenses            { get; }
 
         /// <summary>
         /// An enumeration of all supported charging modes of this EVSE.
@@ -144,6 +144,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         [Optional, SlowData]
         public ReactiveSet<ChargingTariff>              ChargingTariffs             { get; }
+
+
+        public Dictionary<EMPRoamingProvider_Id, List<ChargingTariff_Id>>  ChargingTariffIds    { get; }
 
 
         #region CurrentType
@@ -867,7 +870,7 @@ namespace cloud.charging.open.protocols.WWCP
                     ChargingSession?                     ChargingSession              = null,
 
                     Timestamped<EVSEAdminStatusTypes>?   InitialAdminStatus           = null,
-                    Timestamped<EVSEStatusType>?        InitialStatus                = null,
+                    Timestamped<EVSEStatusType>?         InitialStatus                = null,
                     UInt16?                              MaxAdminStatusScheduleSize   = null,
                     UInt16?                              MaxStatusScheduleSize        = null,
                     DateTime?                            LastStatusUpdate             = null,
@@ -936,10 +939,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.OpenDataLicenses                   = OpenDataLicenses is null
+            this.DataLicenses                   = OpenDataLicenses is null
                                                       ? new ReactiveSet<OpenDataLicense>()
                                                       : new ReactiveSet<OpenDataLicense>(OpenDataLicenses);
-            this.OpenDataLicenses.OnSetChanged     += (timestamp, reactiveSet, newItems, oldItems) =>
+            this.DataLicenses.OnSetChanged     += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
                 PropertyChanged("DataLicenses",
@@ -1044,7 +1047,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.IsFreeOfCharge                     = IsFreeOfCharge ?? false;
 
             this.ChargingConnectors                 = ChargingConnectors is null
-                                                          ? new ReactiveSet<IChargingConnector>()
+                                                          ? []
                                                           : new ReactiveSet<IChargingConnector>(ChargingConnectors);
             this.ChargingConnectors.OnSetChanged   += (timestamp, reactiveSet, newItems, oldItems) =>
             {
@@ -1134,8 +1137,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             Brands.                 Replace(OtherEVSE.Brands);
             ChargingModes.          Replace(OtherEVSE.ChargingModes);
-            ChargingConnectors.          Replace(OtherEVSE.ChargingConnectors);
-            OpenDataLicenses.       Replace(OtherEVSE.OpenDataLicenses);
+            ChargingConnectors.     Replace(OtherEVSE.ChargingConnectors);
+            DataLicenses.           Replace(OtherEVSE.DataLicenses);
             AverageVoltagePrognoses.Replace(OtherEVSE.AverageVoltagePrognoses);
             MaxCurrentPrognoses.    Replace(OtherEVSE.MaxCurrentPrognoses);
             MaxPowerPrognoses.      Replace(OtherEVSE.MaxPowerPrognoses);
@@ -2909,61 +2912,61 @@ namespace cloud.charging.open.protocols.WWCP
                                          () => new JProperty("brand",   Brands.ToJSON()))
                                    : null,
 
-                               (!Embedded || (ChargingStation is not null && DataSource       != ChargingStation.DataSource))
+                               !Embedded && DataSource != ChargingStation?.DataSource
                                    ? new JProperty("dataSource", DataSource)
                                    : null,
 
-                               (!Embedded || (ChargingStation is not null && OpenDataLicenses != ChargingStation.DataLicenses))
+                               !Embedded && DataLicenses != ChargingStation?.DataLicenses && DataLicenses.Any()
                                    ? ExpandDataLicenses.Switch(
-                                         () => new JProperty("openDataLicenseIds",                new JArray(OpenDataLicenses.SafeSelect(license => license.Id.ToString()))),
-                                         () => new JProperty("openDataLicenses",                  OpenDataLicenses.ToJSON()))
+                                         () => new JProperty("dataLicenseIds",             new JArray(DataLicenses.SafeSelect(dataLicense => dataLicense.Id.ToString()))),
+                                         () => new JProperty("dataLicenses",               DataLicenses.ToJSON()))
                                    : null,
 
                                ExpandRoamingNetworkId != InfoStatus.Hidden && RoamingNetwork is not null
                                    ? ExpandRoamingNetworkId.Switch(
-                                         () => new JProperty("roamingNetworkId",                  RoamingNetwork.Id.ToString()),
-                                         () => new JProperty("roamingNetwork",                    RoamingNetwork.ToJSON(Embedded:                          true,
-                                                                                                                        ExpandChargingStationOperatorIds:  InfoStatus.Hidden,
-                                                                                                                        ExpandChargingPoolIds:             InfoStatus.Hidden,
-                                                                                                                        ExpandChargingStationIds:          InfoStatus.Hidden,
-                                                                                                                        ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                        ExpandBrandIds:                    ExpandBrandIds,
-                                                                                                                        ExpandDataLicenses:                ExpandDataLicenses)))
+                                         () => new JProperty("roamingNetworkId",           RoamingNetwork.Id.ToString()),
+                                         () => new JProperty("roamingNetwork",             RoamingNetwork.   ToJSON(Embedded:                          true,
+                                                                                                                    ExpandChargingStationOperatorIds:  InfoStatus.Hidden,
+                                                                                                                    ExpandChargingPoolIds:             InfoStatus.Hidden,
+                                                                                                                    ExpandChargingStationIds:          InfoStatus.Hidden,
+                                                                                                                    ExpandEVSEIds:                     InfoStatus.Hidden,
+                                                                                                                    ExpandBrandIds:                    ExpandBrandIds,
+                                                                                                                    ExpandDataLicenses:                ExpandDataLicenses)))
                                    : null,
 
                                ExpandChargingStationOperatorId != InfoStatus.Hidden && Operator is not null
                                    ? ExpandChargingStationOperatorId.Switch(
-                                         () => new JProperty("chargingStationOperatorperatorId",  Operator.Id.ToString()),
-                                         () => new JProperty("chargingStationOperatorperator",    Operator.ToJSON(Embedded:                          true,
-                                                                                                                  ExpandRoamingNetworkId:            InfoStatus.Hidden,
-                                                                                                                  ExpandChargingPoolIds:             InfoStatus.Hidden,
-                                                                                                                  ExpandChargingStationIds:          InfoStatus.Hidden,
-                                                                                                                  ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                  ExpandBrandIds:                    ExpandBrandIds,
-                                                                                                                  ExpandDataLicenses:                ExpandDataLicenses)))
+                                         () => new JProperty("chargingStationOperatorId",  Operator.Id.      ToString()),
+                                         () => new JProperty("chargingStationOperator",    Operator.         ToJSON(Embedded:                          true,
+                                                                                                                    ExpandRoamingNetworkId:            InfoStatus.Hidden,
+                                                                                                                    ExpandChargingPoolIds:             InfoStatus.Hidden,
+                                                                                                                    ExpandChargingStationIds:          InfoStatus.Hidden,
+                                                                                                                    ExpandEVSEIds:                     InfoStatus.Hidden,
+                                                                                                                    ExpandBrandIds:                    ExpandBrandIds,
+                                                                                                                    ExpandDataLicenses:                ExpandDataLicenses)))
                                    : null,
 
                                ExpandChargingPoolId != InfoStatus.Hidden && ChargingPool is not null
                                    ? ExpandChargingPoolId.Switch(
-                                         () => new JProperty("chargingPoolId",                    ChargingPool.Id.ToString()),
-                                         () => new JProperty("chargingPool",                      ChargingPool.ToJSON(Embedded:                          true,
-                                                                                                                      ExpandRoamingNetworkId:            InfoStatus.Hidden,
-                                                                                                                      ExpandChargingStationOperatorId:   InfoStatus.Hidden,
-                                                                                                                      ExpandChargingStationIds:          InfoStatus.Hidden,
-                                                                                                                      ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                      ExpandBrandIds:                    ExpandBrandIds,
-                                                                                                                      ExpandDataLicenses:                ExpandDataLicenses)))
+                                         () => new JProperty("chargingPoolId",            ChargingPool.Id.   ToString()),
+                                         () => new JProperty("chargingPool",              ChargingPool.      ToJSON(Embedded:                          true,
+                                                                                                                    ExpandRoamingNetworkId:            InfoStatus.Hidden,
+                                                                                                                    ExpandChargingStationOperatorId:   InfoStatus.Hidden,
+                                                                                                                    ExpandChargingStationIds:          InfoStatus.Hidden,
+                                                                                                                    ExpandEVSEIds:                     InfoStatus.Hidden,
+                                                                                                                    ExpandBrandIds:                    ExpandBrandIds,
+                                                                                                                    ExpandDataLicenses:                ExpandDataLicenses)))
                                    : null,
 
                                ExpandChargingStationId != InfoStatus.Hidden && ChargingStation is not null
                                    ? ExpandChargingStationId.Switch(
-                                         () => new JProperty("chargingStationId",                 ChargingStation.Id.ToString()),
-                                         () => new JProperty("chargingStation",                   ChargingStation.ToJSON(Embedded:                          true,
-                                                                                                                         ExpandRoamingNetworkId:            InfoStatus.Hidden,
-                                                                                                                         ExpandChargingStationOperatorId:   InfoStatus.Hidden,
-                                                                                                                         ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                         ExpandBrandIds:                    ExpandBrandIds,
-                                                                                                                         ExpandDataLicenses:                ExpandDataLicenses)))
+                                         () => new JProperty("chargingStationId",         ChargingStation.Id.ToString()),
+                                         () => new JProperty("chargingStation",           ChargingStation.   ToJSON(Embedded:                          true,
+                                                                                                                    ExpandRoamingNetworkId:            InfoStatus.Hidden,
+                                                                                                                    ExpandChargingStationOperatorId:   InfoStatus.Hidden,
+                                                                                                                    ExpandEVSEIds:                     InfoStatus.Hidden,
+                                                                                                                    ExpandBrandIds:                    ExpandBrandIds,
+                                                                                                                    ExpandDataLicenses:                ExpandDataLicenses)))
                                    : null,
 
                                !Embedded && ChargingStation is not null && ChargingPool is not null && (ChargingStation.GeoLocation.HasValue || ChargingPool.GeoLocation.HasValue)
@@ -2976,6 +2979,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                                !Embedded && ChargingStation is not null && ChargingStation.AuthenticationModes.Any()
                                    ? new JProperty("authenticationModes",   ChargingStation.AuthenticationModes.ToJSON())
+                                   : null,
+
+                               IsFreeOfCharge
+                                   ? new JProperty("isFreeOfCharge",        IsFreeOfCharge)
                                    : null,
 
                                ChargingModes.SafeAny()
@@ -3011,6 +3018,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                                !Embedded && ChargingStation?.OpeningTimes is not null
                                    ? new JProperty("openingTimes",          ChargingStation.OpeningTimes.ToJSON())
+                                   : null,
+
+                               CustomData.HasValues
+                                   ? new JProperty("customData",            CustomData)
                                    : null
 
                          );

@@ -293,10 +293,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Accessibility
 
-        internal AccessibilityTypes _Accessibility;
+        internal AccessibilityType _Accessibility;
 
         [Optional]
-        public AccessibilityTypes Accessibility
+        public AccessibilityType Accessibility
         {
 
             get
