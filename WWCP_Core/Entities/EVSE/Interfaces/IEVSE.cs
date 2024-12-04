@@ -173,11 +173,11 @@ namespace cloud.charging.open.protocols.WWCP
         [Mandatory, SlowData]
         ReactiveSet<ChargingModes>             ChargingModes                { get; }
 
-        /// <summary>
-        /// An enumeration of all available charging tariffs at this EVSE.
-        /// </summary>
-        [Optional, SlowData]
-        ReactiveSet<ChargingTariff>            ChargingTariffs              { get; }
+        ///// <summary>
+        ///// An enumeration of all available charging tariffs at this EVSE.
+        ///// </summary>
+        //[Optional, SlowData]
+        //ReactiveSet<ChargingTariff>            ChargingTariffs              { get; }
 
 
         /// <summary>

@@ -641,17 +641,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                 TariffURL:       null,
                                                 Currency:        Currency.EUR,
                                                 EnergyMix:       null,
-                                                TariffElements:  new ChargingTariffElement[] {
+                                                TariffElements:  [
                                                                      new ChargingTariffElement(
-
                                                                          new ChargingPriceComponent(
                                                                              Type:       ChargingDimensionTypes.ENERGY,
                                                                              Price:      0.25M,
                                                                              StepSize:   1000
                                                                          )
-
                                                                      )
-                                                                 }
+                                                                 ]
                                             );
                     ClassicAssert.IsNotNull(tariff_0_25_kWh);
 
@@ -660,10 +658,10 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                         tariff_0_25_kWh   is not null)
                     {
 
-                        DE_GEF_E0001_AAAA_1.ChargingTariffs.Add(tariff_3_98_60min);
-                        DE_GEF_E0001_AAAA_1.ChargingTariffs.Add(tariff_0_25_kWh);
+                        //DE_GEF_E0001_AAAA_1.ChargingTariffs.Add(tariff_3_98_60min);
+                        //DE_GEF_E0001_AAAA_1.ChargingTariffs.Add(tariff_0_25_kWh);
 
-                        ClassicAssert.AreEqual(2, DE_GEF_E0001_AAAA_1.ChargingTariffs.   Count);
+                        //ClassicAssert.AreEqual(2, DE_GEF_E0001_AAAA_1.ChargingTariffs.   Count);
 
                         ClassicAssert.AreEqual(2, evseDataChanges.                       Count);
                         ClassicAssert.AreEqual(2, chargingStationEVSEDataChanges.        Count);
@@ -676,9 +674,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                       Id:         EVSEGroup_Id.Parse(DE_GEF.Id, tariffGroup_VW.Id, "_T0.25_per_kWh"),
                                                       Name:       I18NString.Create(Languages.de, "0,25 € / kWh"),
                                                       Tariff:     tariff_0_25_kWh,
-                                                      MemberIds:  new[] {
-                                                                      DE_GEF_E0001_AAAA_1.Id
-                                                                  }
+                                                      MemberIds:  [ DE_GEF_E0001_AAAA_1.Id ]
                                                   );
 
                         ClassicAssert.IsNotNull(evseGroup_0_25_kWh);

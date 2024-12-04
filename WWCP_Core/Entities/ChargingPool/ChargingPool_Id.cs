@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingPool_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out ChargingPool_Id chargingPoolId))
+            if (TryParse(Text, out var chargingPoolId))
                 return chargingPoolId;
 
             throw new ArgumentException($"Invalid text representation of a charging pool identification: '{Text}'!",

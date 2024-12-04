@@ -33,14 +33,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// The EVSE of this charging connector.
         /// </summary>
         [InternalUseOnly]
-        IEVSE?                EVSE             { get; set; }
+        IEVSE?                          EVSE             { get; set; }
 
-        ChargingConnector_Id  Id               { get; }
-        Boolean               CableAttached    { get; }
-        Meter?                CableLength      { get; }
-        Boolean?              Lockable         { get; }
-        ChargingPlugTypes     Plug             { get; }
-        Boolean               IsDC             { get; }
+        ChargingConnector_Id            Id               { get; }
+        Boolean                         CableAttached    { get; }
+        Meter?                          CableLength      { get; }
+        Boolean?                        Lockable         { get; }
+        ChargingPlugTypes               Plug             { get; }
+        Boolean                         IsDC             { get; }
+
+        IEnumerable<ChargingTariff_Id>  Tariffs          { get; }
 
         JObject? ToJSON(Boolean                                              Embedded                            = false,
                         CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null);

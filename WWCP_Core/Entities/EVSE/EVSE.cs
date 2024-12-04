@@ -139,14 +139,14 @@ namespace cloud.charging.open.protocols.WWCP
         [Mandatory, SlowData]
         public ReactiveSet<ChargingModes>               ChargingModes               { get; }
 
-        /// <summary>
-        /// An enumeration of all available charging tariffs at this EVSE.
-        /// </summary>
-        [Optional, SlowData]
-        public ReactiveSet<ChargingTariff>              ChargingTariffs             { get; }
+        ///// <summary>
+        ///// An enumeration of all available charging tariffs at this EVSE.
+        ///// </summary>
+        //[Optional, SlowData]
+        //public ReactiveSet<ChargingTariff>              ChargingTariffs             { get; }
 
 
-        public Dictionary<EMPRoamingProvider_Id, List<ChargingTariff_Id>>  ChargingTariffIds    { get; }
+        //public Dictionary<EMPRoamingProvider_Id, List<ChargingTariff_Id>>  ChargingTariffIds    { get; }
 
 
         #region CurrentType
@@ -963,17 +963,17 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.ChargingTariffs                    = ChargingTariffs is null
-                                                          ? new ReactiveSet<ChargingTariff>()
-                                                          : new ReactiveSet<ChargingTariff>(ChargingTariffs);
-            this.ChargingTariffs.OnSetChanged      += (timestamp, reactiveSet, newItems, oldItems) =>
-            {
+            //this.ChargingTariffs                    = ChargingTariffs is null
+            //                                              ? new ReactiveSet<ChargingTariff>()
+            //                                              : new ReactiveSet<ChargingTariff>(ChargingTariffs);
+            //this.ChargingTariffs.OnSetChanged      += (timestamp, reactiveSet, newItems, oldItems) =>
+            //{
 
-                PropertyChanged("ChargingTariffs",
-                                oldItems,
-                                newItems);
+            //    PropertyChanged("ChargingTariffs",
+            //                    oldItems,
+            //                    newItems);
 
-            };
+            //};
 
             this.currentType                        = CurrentType ?? CurrentTypes.AC_ThreePhases;
 
