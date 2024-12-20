@@ -385,14 +385,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public TransparencySoftware Clone()
 
-            => new (new String(Name.   ToCharArray()),
-                    new String(Version.ToCharArray()),
-                    OpenSourceLicense.Clone(),
-                    new String(Vendor. ToCharArray()),
-                    Logo?.                Clone,
-                    HowToUse?.            Clone,
-                    MoreInformation?.     Clone,
-                    SourceCodeRepository?.Clone);
+            => new (
+                   Name.                 CloneString(),
+                   Version.              CloneString(),
+                   OpenSourceLicense.    Clone(),
+                   Vendor.               CloneString(),
+                   Logo?.                Clone(),
+                   HowToUse?.            Clone(),
+                   MoreInformation?.     Clone(),
+                   SourceCodeRepository?.Clone()
+               );
 
         #endregion
 
