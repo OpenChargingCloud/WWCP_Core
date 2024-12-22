@@ -155,47 +155,53 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   User_Id?                                                            CurrentUserId                  = null)
 
 
-            => ChargingStationOperator.AddChargingPool(new ChargingPool(
-                                                           Id ?? ChargingPool_Id.NewRandom(ChargingStationOperator.Id),
-                                                           ChargingStationOperator,
-                                                           Name,
-                                                           Description,
+            => ChargingStationOperator.AddChargingPool(
 
-                                                           Address,
-                                                           GeoLocation,
-                                                           TimeZone,
-                                                           OpeningTimes,
-                                                           ChargingWhenClosed,
-                                                           ParkingType,
-                                                           Accessibility,
-                                                           LocationLanguage,
-                                                           HotlinePhoneNumber,
+                   new ChargingPool(
 
-                                                           Brands,
-                                                           MobilityRootCAs,
+                       Id ?? ChargingPool_Id.NewRandom(ChargingStationOperator.Id),
+                       ChargingStationOperator,
+                       Name,
+                       Description,
 
-                                                           InitialAdminStatus,
-                                                           InitialStatus,
-                                                           MaxAdminStatusScheduleSize,
-                                                           MaxStatusScheduleSize,
+                       Address,
+                       GeoLocation,
+                       TimeZone,
+                       OpeningTimes,
+                       ChargingWhenClosed,
+                       ParkingType,
+                       Accessibility,
+                       LocationLanguage,
+                       HotlinePhoneNumber,
 
-                                                           DataSource,
-                                                           LastChange,
+                       Brands,
+                       MobilityRootCAs,
 
-                                                           CustomData,
-                                                           InternalData,
+                       InitialAdminStatus,
+                       InitialStatus,
+                       MaxAdminStatusScheduleSize,
+                       MaxStatusScheduleSize,
 
-                                                           Configurator,
-                                                           RemoteChargingPoolCreator
-                                                       ),
+                       DataSource,
+                       LastChange,
 
-                                                       OnSuccess,
-                                                       OnError,
+                       CustomData,
+                       InternalData,
 
-                                                       SkipAddedNotifications,
-                                                       AllowInconsistentOperatorIds,
-                                                       EventTrackingId,
-                                                       CurrentUserId);
+                       Configurator,
+                       RemoteChargingPoolCreator
+
+                   ),
+
+                   OnSuccess,
+                   OnError,
+
+                   SkipAddedNotifications,
+                   AllowInconsistentOperatorIds,
+                   EventTrackingId,
+                   CurrentUserId
+
+               );
 
         #endregion
 
@@ -253,46 +259,52 @@ namespace cloud.charging.open.protocols.WWCP
                                                                              User_Id?                                                     CurrentUserId                  = null)
 
 
-            => ChargingStationOperator.AddChargingPoolIfNotExists(new ChargingPool(
-                                                                      Id ?? ChargingPool_Id.NewRandom(ChargingStationOperator.Id),
-                                                                      ChargingStationOperator,
-                                                                      Name,
-                                                                      Description,
+            => ChargingStationOperator.AddChargingPoolIfNotExists(
 
-                                                                      Address,
-                                                                      GeoLocation,
-                                                                      TimeZone,
-                                                                      OpeningTimes,
-                                                                      ChargingWhenClosed,
-                                                                      ParkingType,
-                                                                      Accessibility,
-                                                                      LocationLanguage,
-                                                                      HotlinePhoneNumber,
+                   new ChargingPool(
 
-                                                                      Brands,
-                                                                      MobilityRootCAs,
+                       Id ?? ChargingPool_Id.NewRandom(ChargingStationOperator.Id),
+                       ChargingStationOperator,
+                       Name,
+                       Description,
 
-                                                                      InitialAdminStatus,
-                                                                      InitialStatus,
-                                                                      MaxAdminStatusScheduleSize,
-                                                                      MaxStatusScheduleSize,
+                       Address,
+                       GeoLocation,
+                       TimeZone,
+                       OpeningTimes,
+                       ChargingWhenClosed,
+                       ParkingType,
+                       Accessibility,
+                       LocationLanguage,
+                       HotlinePhoneNumber,
 
-                                                                      DataSource,
-                                                                      LastChange,
+                       Brands,
+                       MobilityRootCAs,
 
-                                                                      CustomData,
-                                                                      InternalData,
+                       InitialAdminStatus,
+                       InitialStatus,
+                       MaxAdminStatusScheduleSize,
+                       MaxStatusScheduleSize,
 
-                                                                      Configurator,
-                                                                      RemoteChargingPoolCreator
-                                                                  ),
+                       DataSource,
+                       LastChange,
 
-                                                                  OnSuccess,
+                       CustomData,
+                       InternalData,
 
-                                                                  SkipAddedNotifications,
-                                                                  AllowInconsistentOperatorIds,
-                                                                  EventTrackingId,
-                                                                  CurrentUserId);
+                       Configurator,
+                       RemoteChargingPoolCreator
+
+                   ),
+
+                   OnSuccess,
+
+                   SkipAddedNotifications,
+                   AllowInconsistentOperatorIds,
+                   EventTrackingId,
+                   CurrentUserId
+
+               );
 
         #endregion
 
@@ -354,48 +366,54 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                   User_Id?                                                            CurrentUserId                          = null)
 
 
-            => ChargingStationOperator.AddOrUpdateChargingPool(new ChargingPool(
-                                                                   Id,
-                                                                   ChargingStationOperator,
-                                                                   Name,
-                                                                   Description,
+            => ChargingStationOperator.AddOrUpdateChargingPool(
 
-                                                                   Address,
-                                                                   GeoLocation,
-                                                                   TimeZone,
-                                                                   OpeningTimes,
-                                                                   ChargingWhenClosed,
-                                                                   ParkingType,
-                                                                   Accessibility,
-                                                                   LocationLanguage,
-                                                                   HotlinePhoneNumber,
+                   new ChargingPool(
 
-                                                                   Brands,
-                                                                   MobilityRootCAs,
+                       Id,
+                       ChargingStationOperator,
+                       Name,
+                       Description,
 
-                                                                   InitialAdminStatus,
-                                                                   InitialStatus,
-                                                                   MaxAdminStatusScheduleSize,
-                                                                   MaxStatusScheduleSize,
+                       Address,
+                       GeoLocation,
+                       TimeZone,
+                       OpeningTimes,
+                       ChargingWhenClosed,
+                       ParkingType,
+                       Accessibility,
+                       LocationLanguage,
+                       HotlinePhoneNumber,
 
-                                                                   DataSource,
-                                                                   LastChange,
+                       Brands,
+                       MobilityRootCAs,
 
-                                                                   CustomData,
-                                                                   InternalData,
+                       InitialAdminStatus,
+                       InitialStatus,
+                       MaxAdminStatusScheduleSize,
+                       MaxStatusScheduleSize,
 
-                                                                   Configurator,
-                                                                   RemoteChargingPoolCreator
-                                                               ),
+                       DataSource,
+                       LastChange,
 
-                                                               OnAdditionSuccess,
-                                                               OnUpdateSuccess,
-                                                               OnError,
+                       CustomData,
+                       InternalData,
 
-                                                               SkipAddOrUpdatedUpdatedNotifications,
-                                                               AllowInconsistentOperatorIds,
-                                                               EventTrackingId,
-                                                               CurrentUserId);
+                       Configurator,
+                       RemoteChargingPoolCreator
+
+                   ),
+
+                   OnAdditionSuccess,
+                   OnUpdateSuccess,
+                   OnError,
+
+                   SkipAddOrUpdatedUpdatedNotifications,
+                   AllowInconsistentOperatorIds,
+                   EventTrackingId,
+                   CurrentUserId
+
+               );
 
         #endregion
 
@@ -455,47 +473,53 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         User_Id?                                                            CurrentUserId                  = null)
 
 
-            => ChargingStationOperator.UpdateChargingPool(new ChargingPool(
-                                                              Id,
-                                                              ChargingStationOperator,
-                                                              Name,
-                                                              Description,
+            => ChargingStationOperator.UpdateChargingPool(
 
-                                                              Address,
-                                                              GeoLocation,
-                                                              TimeZone,
-                                                              OpeningTimes,
-                                                              ChargingWhenClosed,
-                                                              ParkingType,
-                                                              Accessibility,
-                                                              LocationLanguage,
-                                                              HotlinePhoneNumber,
+                   new ChargingPool(
 
-                                                              Brands,
-                                                              MobilityRootCAs,
+                       Id,
+                       ChargingStationOperator,
+                       Name,
+                       Description,
 
-                                                              InitialAdminStatus,
-                                                              InitialStatus,
-                                                              MaxAdminStatusScheduleSize,
-                                                              MaxStatusScheduleSize,
+                       Address,
+                       GeoLocation,
+                       TimeZone,
+                       OpeningTimes,
+                       ChargingWhenClosed,
+                       ParkingType,
+                       Accessibility,
+                       LocationLanguage,
+                       HotlinePhoneNumber,
 
-                                                              DataSource,
-                                                              LastChange,
+                       Brands,
+                       MobilityRootCAs,
 
-                                                              CustomData,
-                                                              InternalData,
+                       InitialAdminStatus,
+                       InitialStatus,
+                       MaxAdminStatusScheduleSize,
+                       MaxStatusScheduleSize,
 
-                                                              Configurator,
-                                                              RemoteChargingPoolCreator
-                                                          ),
+                       DataSource,
+                       LastChange,
 
-                                                          OnSuccess,
-                                                          OnError,
+                       CustomData,
+                       InternalData,
 
-                                                          SkipUpdatedNotifications,
-                                                          AllowInconsistentOperatorIds,
-                                                          EventTrackingId,
-                                                          CurrentUserId);
+                       Configurator,
+                       RemoteChargingPoolCreator
+
+                   ),
+
+                   OnSuccess,
+                   OnError,
+
+                   SkipUpdatedNotifications,
+                   AllowInconsistentOperatorIds,
+                   EventTrackingId,
+                   CurrentUserId
+
+               );
 
         #endregion
 
@@ -540,31 +564,37 @@ namespace cloud.charging.open.protocols.WWCP
                                  User_Id?                                                              CurrentUserId                  = null)
 
 
-            => ChargingStationOperator.AddChargingTariff(new ChargingTariff(
-                                                             Id,
-                                                             ChargingStationOperator,
-                                                             Name,
-                                                             Description,
-                                                             TariffElements,
-                                                             Currency,
-                                                             Brand,
-                                                             TariffURL,
-                                                             EnergyMix,
+            => ChargingStationOperator.AddChargingTariff(
 
-                                                             DataSource,
-                                                             LastChange,
+                   new ChargingTariff(
 
-                                                             CustomData,
-                                                             InternalData
-                                                         ),
+                       Id,
+                       ChargingStationOperator,
+                       Name,
+                       Description,
+                       TariffElements,
+                       Currency,
+                       Brand,
+                       TariffURL,
+                       EnergyMix,
 
-                                                         OnSuccess,
-                                                         OnError,
+                       DataSource,
+                       LastChange,
 
-                                                         SkipAddedNotifications,
-                                                         AllowInconsistentOperatorIds,
-                                                         EventTrackingId,
-                                                         CurrentUserId);
+                       CustomData,
+                       InternalData
+
+                   ),
+
+                   OnSuccess,
+                   OnError,
+
+                   SkipAddedNotifications,
+                   AllowInconsistentOperatorIds,
+                   EventTrackingId,
+                   CurrentUserId
+
+               );
 
         #endregion
 
@@ -616,28 +646,32 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return ChargingStationOperator.CreateChargingTariff(ChargingTariff_Id.Parse(Id),
-                                                                Name,
-                                                                Description,
-                                                                TariffElements,
-                                                                Currency,
-                                                                Brand,
-                                                                TariffURL,
-                                                                EnergyMix,
+            return ChargingStationOperator.CreateChargingTariff(
 
-                                                                DataSource,
-                                                                LastChange,
+                       ChargingTariff_Id.Parse(Id),
+                       Name,
+                       Description,
+                       TariffElements,
+                       Currency,
+                       Brand,
+                       TariffURL,
+                       EnergyMix,
 
-                                                                CustomData,
-                                                                InternalData,
+                       DataSource,
+                       LastChange,
 
-                                                                OnSuccess,
-                                                                OnError,
+                       CustomData,
+                       InternalData,
 
-                                                                SkipAddedNotifications,
-                                                                AllowInconsistentOperatorIds,
-                                                                EventTrackingId,
-                                                                CurrentUserId);
+                       OnSuccess,
+                       OnError,
+
+                       SkipAddedNotifications,
+                       AllowInconsistentOperatorIds,
+                       EventTrackingId,
+                       CurrentUserId
+
+                   );
 
         }
 
@@ -671,24 +705,28 @@ namespace cloud.charging.open.protocols.WWCP
 
             => ChargingStationOperators?.Any() == true
 
-                   ? new JArray(ChargingStationOperators.
-                                    Where         (cso => cso is not null).
-                                    OrderBy       (cso => cso.Id).
-                                    SkipTakeFilter(Skip, Take).
-                                    SafeSelect    (cso => cso.ToJSON(Embedded,
-                                                                     ExpandRoamingNetworkId,
-                                                                     ExpandChargingPoolIds,
-                                                                     ExpandChargingStationIds,
-                                                                     ExpandEVSEIds,
-                                                                     ExpandBrandIds,
-                                                                     ExpandDataLicenses,
-                                                                     CustomChargingStationOperatorSerializer,
-                                                                     CustomChargingPoolSerializer,
-                                                                     CustomChargingStationSerializer,
-                                                                     CustomEVSESerializer)).
-                                    Where         (cso => cso is not null))
+                   ? new JArray(
 
-                   : new JArray();
+                         ChargingStationOperators.
+                             Where          (cso => cso is not null).
+                             OrderBy        (cso => cso.Id).
+                             SkipTakeFilter (Skip, Take).
+                             SafeSelect     (cso => cso.ToJSON(Embedded,
+                                                               ExpandRoamingNetworkId,
+                                                               ExpandChargingPoolIds,
+                                                               ExpandChargingStationIds,
+                                                               ExpandEVSEIds,
+                                                               ExpandBrandIds,
+                                                               ExpandDataLicenses,
+                                                               CustomChargingStationOperatorSerializer,
+                                                               CustomChargingPoolSerializer,
+                                                               CustomChargingStationSerializer,
+                                                               CustomEVSESerializer)).
+                             Where          (cso => cso is not null)
+
+                     )
+
+                   : [];
 
         #endregion
 
