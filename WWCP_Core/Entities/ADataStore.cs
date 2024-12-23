@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.WWCP
                                       AutoStart:          true
                                   );
 
-                    this.Server.OnNotification += (connection) => {
+                    this.Server.OnNotification += (eventTrackingId, connection) => {
 
                         try
                         {

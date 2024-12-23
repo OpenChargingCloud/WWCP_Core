@@ -3389,7 +3389,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public IEnumerable<IEVSE> EVSEs => throw new NotImplementedException();
 
-        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, EventTracking_Id, User_Id,  IChargingPool, IChargingStation, Boolean> OnChargingStationAddition => throw new NotImplementedException();
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, User_Id,  IChargingPool, IChargingStation, Boolean> OnChargingStationAddition => throw new NotImplementedException();
 
         public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval => throw new NotImplementedException();
 
@@ -3402,15 +3402,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public Func<ChargingStationStatusReport, ChargingPoolStatusTypes> StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         TimeSpan IChargingReservations.MaxReservationDuration { get; set; }
 
-        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition => throw new NotImplementedException();
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition => throw new NotImplementedException();
 
-        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> OnChargingStationUpdate => throw new NotImplementedException();
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> OnChargingStationUpdate => throw new NotImplementedException();
 
-        org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> IChargingPool.OnChargingStationRemoval => throw new NotImplementedException();
+        org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, User_Id, IChargingPool, IChargingStation, Boolean> IChargingPool.OnChargingStationRemoval => throw new NotImplementedException();
 
-        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate => throw new NotImplementedException();
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate => throw new NotImplementedException();
 
-        org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> IChargingPool.OnEVSERemoval => throw new NotImplementedException();
+        org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> IChargingPool.OnEVSERemoval => throw new NotImplementedException();
 
         public Boolean Equals(IChargingPool? other)
         {

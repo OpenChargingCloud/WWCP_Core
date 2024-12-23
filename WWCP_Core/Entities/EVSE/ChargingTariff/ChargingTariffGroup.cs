@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                          EnergyMix);
 
 
-                if (ChargingTariffAddition.SendVoting(Timestamp.Now, this, _ChargingTariff))
+                if (ChargingTariffAddition.SendVoting(EventTracking_Id.New, Timestamp.Now, this, _ChargingTariff))
                 {
 
                     _ChargingTariffs.Add(_ChargingTariff.Id, _ChargingTariff);
@@ -223,7 +223,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     OnSuccess?.Invoke(_ChargingTariff);
 
-                    ChargingTariffAddition.SendNotification(Timestamp.Now,
+                    ChargingTariffAddition.SendNotification(EventTracking_Id.New, Timestamp.Now,
                                                             this,
                                                             _ChargingTariff);
 

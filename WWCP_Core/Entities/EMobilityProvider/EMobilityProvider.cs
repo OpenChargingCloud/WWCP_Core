@@ -918,7 +918,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryGeteMobilityStationById(eMobilityStationId, out _eMobilityStation))
             {
 
-                if (eMobilityStationRemoval.SendVoting(Timestamp.Now, this, _eMobilityStation))
+                if (eMobilityStationRemoval.SendVoting(EventTracking_Id.New, Timestamp.Now, this, _eMobilityStation))
                 {
 
                     if (eMobilityStations.TryRemove(eMobilityStationId,
@@ -927,7 +927,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                      null))
                     {
 
-                        eMobilityStationRemoval.SendNotification(Timestamp.Now, this, _eMobilityStation);
+                        eMobilityStationRemoval.SendNotification(EventTracking_Id.New, Timestamp.Now, this, _eMobilityStation);
 
                         return _eMobilityStation;
 
@@ -951,7 +951,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryGeteMobilityStationById(eMobilityStationId, out eMobilityStation))
             {
 
-                if (eMobilityStationRemoval.SendVoting(Timestamp.Now, this, eMobilityStation))
+                if (eMobilityStationRemoval.SendVoting(EventTracking_Id.New, Timestamp.Now, this, eMobilityStation))
                 {
 
                     if (eMobilityStations.TryRemove(eMobilityStationId,
@@ -960,7 +960,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                      null))
                     {
 
-                        eMobilityStationRemoval.SendNotification(Timestamp.Now, this, eMobilityStation);
+                        eMobilityStationRemoval.SendNotification(EventTracking_Id.New, Timestamp.Now, this, eMobilityStation);
 
                         return true;
 
@@ -1314,7 +1314,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryGetEVehicleById(eVehicleId, out _eVehicle))
             {
 
-                if (eVehicleRemoval.SendVoting(Timestamp.Now, this, _eVehicle))
+                if (eVehicleRemoval.SendVoting(EventTracking_Id.New, Timestamp.Now, this, _eVehicle))
                 {
 
                     if (eVehicles.TryRemove(eVehicleId,
@@ -1323,7 +1323,7 @@ namespace cloud.charging.open.protocols.WWCP
                                              null))
                     {
 
-                        eVehicleRemoval.SendNotification(Timestamp.Now, this, _eVehicle);
+                        eVehicleRemoval.SendNotification(EventTracking_Id.New, Timestamp.Now, this, _eVehicle);
 
                         return _eVehicle;
 
@@ -1347,7 +1347,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryGetEVehicleById(eVehicleId, out eVehicle))
             {
 
-                if (eVehicleRemoval.SendVoting(Timestamp.Now, this, eVehicle))
+                if (eVehicleRemoval.SendVoting(EventTracking_Id.New, Timestamp.Now, this, eVehicle))
                 {
 
                     if (eVehicles.TryRemove(eVehicleId,
@@ -1356,7 +1356,7 @@ namespace cloud.charging.open.protocols.WWCP
                                              null))
                     {
 
-                        eVehicleRemoval.SendNotification(Timestamp.Now, this, eVehicle);
+                        eVehicleRemoval.SendNotification(EventTracking_Id.New, Timestamp.Now, this, eVehicle);
 
                         return true;
 

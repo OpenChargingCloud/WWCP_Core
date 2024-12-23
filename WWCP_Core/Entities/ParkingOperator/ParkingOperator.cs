@@ -1092,7 +1092,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryGetParkingGaragebyId(ParkingGarageId, out ParkingGarage))
             {
 
-                if (ParkingGarageRemoval.SendVoting(Timestamp.Now, this, ParkingGarage))
+                if (ParkingGarageRemoval.SendVoting(EventTracking_Id.New, Timestamp.Now, this, ParkingGarage))
                 {
 
                     if (_ParkingGarages.TryRemove(ParkingGarageId,
@@ -1101,7 +1101,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                   null))
                     {
 
-                        ParkingGarageRemoval.SendNotification(Timestamp.Now, this, ParkingGarage);
+                        ParkingGarageRemoval.SendNotification(EventTracking_Id.New, Timestamp.Now, this, ParkingGarage);
 
                         return true;
 

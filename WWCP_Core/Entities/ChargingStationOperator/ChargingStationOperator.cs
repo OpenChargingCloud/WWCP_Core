@@ -486,18 +486,18 @@ namespace cloud.charging.open.protocols.WWCP
             #region Init data and properties
 
             this.chargingPools               = new EntityHashSet <IChargingStationOperator, ChargingPool_Id,         IChargingPool>        (this,
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,                    Boolean>(() => new VetoVote(), true),
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,                    Boolean>(() => new VetoVote(), true),
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,   IChargingPool,   Boolean>(() => new VetoVote(), true),
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,   IChargingPool,   Boolean>(() => new VetoVote(), true),
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,                    Boolean>(() => new VetoVote(), true));
+                                                                                                                                            new VotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingPool,                    Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingPool,                    Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingPool,   IChargingPool,   Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingPool,   IChargingPool,   Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingPool,                    Boolean>(() => new VetoVote(), true));
 
             this.chargingTariffs             = new EntityHashSet <IChargingStationOperator, ChargingTariff_Id,      IChargingTariff>       (this,
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff,                  Boolean>(() => new VetoVote(), true),
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff,                  Boolean>(() => new VetoVote(), true),
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean>(() => new VetoVote(), true),
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean>(() => new VetoVote(), true),
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff,                  Boolean>(() => new VetoVote(), true));
+                                                                                                                                            new VotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingTariff,                  Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingTariff,                  Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingTariff,                  Boolean>(() => new VetoVote(), true));
 
             this.evseGroups                  = new EntityHashSet <ChargingStationOperator,  EVSEGroup_Id,            EVSEGroup>           (this);
             this.chargingStationGroups       = new EntityHashSet <ChargingStationOperator,  ChargingStationGroup_Id, ChargingStationGroup>(this);
@@ -507,21 +507,21 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init events
 
-            this.ChargingStationAddition       = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool,               IChargingStation,                   Boolean>(() => new VetoVote(), true);
-            this.ChargingStationUpdate         = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool,               IChargingStation, IChargingStation, Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval        = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool,               IChargingStation,                   Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition       = new VotingNotificator<DateTime, User_Id, IChargingPool,               IChargingStation,                   Boolean>(() => new VetoVote(), true);
+            this.ChargingStationUpdate         = new VotingNotificator<DateTime, User_Id, IChargingPool,               IChargingStation, IChargingStation, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationRemoval        = new VotingNotificator<DateTime, User_Id, IChargingPool,               IChargingStation,                   Boolean>(() => new VetoVote(), true);
             this.ChargingStationGroupAddition  = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
             this.ChargingStationGroupRemoval   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
 
-            this.evseAddition                  = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation,            IEVSE,                              Boolean>(() => new VetoVote(), true);
-            this.evseUpdate                    = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation,            IEVSE,            IEVSE,            Boolean>(() => new VetoVote(), true);
-            this.evseRemoval                   = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation,            IEVSE,                              Boolean>(() => new VetoVote(), true);
+            this.evseAddition                  = new VotingNotificator<DateTime, User_Id, IChargingStation,            IEVSE,                              Boolean>(() => new VetoVote(), true);
+            this.evseUpdate                    = new VotingNotificator<DateTime, User_Id, IChargingStation,            IEVSE,            IEVSE,            Boolean>(() => new VetoVote(), true);
+            this.evseRemoval                   = new VotingNotificator<DateTime, User_Id, IChargingStation,            IEVSE,                              Boolean>(() => new VetoVote(), true);
             this.evseGroupAddition             = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
             this.evseGroupRemoval              = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
 
-            this.chargingTariffAddition        = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator,    IChargingTariff,                    Boolean>(() => new VetoVote(), true);
-            this.chargingTariffUpdate          = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator,    IChargingTariff,  IChargingTariff,  Boolean>(() => new VetoVote(), true);
-            this.chargingTariffRemoval         = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator,    IChargingTariff,                    Boolean>(() => new VetoVote(), true);
+            this.chargingTariffAddition        = new VotingNotificator<DateTime, User_Id, IChargingStationOperator,    IChargingTariff,                    Boolean>(() => new VetoVote(), true);
+            this.chargingTariffUpdate          = new VotingNotificator<DateTime, User_Id, IChargingStationOperator,    IChargingTariff,  IChargingTariff,  Boolean>(() => new VetoVote(), true);
+            this.chargingTariffRemoval         = new VotingNotificator<DateTime, User_Id, IChargingStationOperator,    IChargingTariff,                    Boolean>(() => new VetoVote(), true);
             this.chargingTariffGroupAddition   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariffGroup,  Boolean>(() => new VetoVote(), true);
             this.chargingTariffGroupRemoval    = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariffGroup,  Boolean>(() => new VetoVote(), true);
 
@@ -686,7 +686,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an charging pool will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolAddition
+        public IVotingSender<DateTime, User_Id, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolAddition
 
             => chargingPools.OnAddition;
 
@@ -697,7 +697,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an charging pool will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, IChargingPool, Boolean> OnChargingPoolUpdate
+        public IVotingSender<DateTime, User_Id, IChargingStationOperator, IChargingPool, IChargingPool, Boolean> OnChargingPoolUpdate
 
             => chargingPools.OnUpdate;
 
@@ -728,7 +728,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an charging pool will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolRemoval
+        public IVotingSender<DateTime, User_Id, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolRemoval
 
             => chargingPools.OnRemoval;
 
@@ -873,32 +873,32 @@ namespace cloud.charging.open.protocols.WWCP
             ChargingPool.OnAdminStatusChanged                      += UpdateChargingPoolAdminStatus;
             ChargingPool.OnStatusChanged                           += UpdateChargingPoolStatus;
 
-            ChargingPool.OnChargingStationAddition.OnVoting        += (timestamp, eventTrackingId, userId, chargingPool, chargingStation, vote) => ChargingStationAddition.SendVoting(timestamp, eventTrackingId, userId, chargingPool, chargingStation, vote);
-            ChargingPool.OnChargingStationAddition.OnNotification  += (timestamp, eventTrackingId, userId, chargingPool, chargingStation)       => {
+            ChargingPool.OnChargingStationAddition.OnVoting        += (eventTrackingId, timestamp, userId, chargingPool, chargingStation, vote) => ChargingStationAddition.SendVoting(eventTrackingId, timestamp, userId, chargingPool, chargingStation, vote);
+            ChargingPool.OnChargingStationAddition.OnNotification  += (eventTrackingId, timestamp, userId, chargingPool, chargingStation)       => {
                 chargingStationLookup.TryAdd(chargingStation.Id, chargingStation);
-                ChargingStationAddition.SendNotification(timestamp, eventTrackingId, userId, chargingPool, chargingStation);
+                ChargingStationAddition.SendNotification(eventTrackingId, timestamp, userId, chargingPool, chargingStation);
             };
             ChargingPool.OnChargingStationDataChanged              += UpdateChargingStationData;
             ChargingPool.OnChargingStationAdminStatusChanged       += UpdateChargingStationAdminStatus;
             ChargingPool.OnChargingStationStatusChanged            += UpdateChargingStationStatus;
-            ChargingPool.OnChargingStationRemoval. OnVoting        += (timestamp, eventTrackingId, userId, chargingPool, chargingStation, vote) => ChargingStationRemoval. SendVoting(timestamp, eventTrackingId, userId, chargingPool, chargingStation, vote);
-            ChargingPool.OnChargingStationRemoval. OnNotification  += (timestamp, eventTrackingId, userId, chargingPool, chargingStation)       => {
+            ChargingPool.OnChargingStationRemoval. OnVoting        += (eventTrackingId, timestamp, userId, chargingPool, chargingStation, vote) => ChargingStationRemoval. SendVoting(eventTrackingId, timestamp, userId, chargingPool, chargingStation, vote);
+            ChargingPool.OnChargingStationRemoval. OnNotification  += (eventTrackingId, timestamp, userId, chargingPool, chargingStation)       => {
                 chargingStationLookup.TryRemove(chargingStation.Id, out _);
-                ChargingStationRemoval.SendNotification(timestamp, eventTrackingId, userId, chargingPool, chargingStation);
+                ChargingStationRemoval.SendNotification(eventTrackingId, timestamp, userId, chargingPool, chargingStation);
             };
 
-            ChargingPool.OnEVSEAddition.           OnVoting        += (timestamp, eventTrackingId, userId, station, evse, vote) => evseAddition.SendVoting(timestamp, eventTrackingId, userId, station, evse, vote);
-            ChargingPool.OnEVSEAddition.           OnNotification  += (timestamp, eventTrackingId, userId, station, evse)       => {
+            ChargingPool.OnEVSEAddition.           OnVoting        += (eventTrackingId, timestamp, userId, station, evse, vote) => evseAddition.SendVoting(eventTrackingId, timestamp, userId, station, evse, vote);
+            ChargingPool.OnEVSEAddition.           OnNotification  += (eventTrackingId, timestamp, userId, station, evse)       => {
                 evseLookup.TryAdd(evse.Id, evse);
-                evseAddition.SendNotification(timestamp, eventTrackingId, userId, station, evse);
+                evseAddition.SendNotification(eventTrackingId, timestamp, userId, station, evse);
             };
             ChargingPool.OnEVSEDataChanged                         += UpdateEVSEData;
             ChargingPool.OnEVSEAdminStatusChanged                  += UpdateEVSEAdminStatus;
             ChargingPool.OnEVSEStatusChanged                       += UpdateEVSEStatus;
-            ChargingPool.OnEVSERemoval.            OnVoting        += (timestamp, eventTrackingId, userId, station, evse, vote) => evseRemoval .SendVoting(timestamp, eventTrackingId, userId, station, evse, vote);
-            ChargingPool.OnEVSERemoval.            OnNotification  += (timestamp, eventTrackingId, userId, station, evse)       => {
+            ChargingPool.OnEVSERemoval.            OnVoting        += (eventTrackingId, timestamp, userId, station, evse, vote) => evseRemoval .SendVoting(eventTrackingId, timestamp, userId, station, evse, vote);
+            ChargingPool.OnEVSERemoval.            OnNotification  += (eventTrackingId, timestamp, userId, station, evse)       => {
                 evseLookup.TryRemove(evse.Id, out _);
-                evseRemoval.SendNotification(timestamp, eventTrackingId, userId, station, evse);
+                evseRemoval.SendNotification(eventTrackingId, timestamp, userId, station, evse);
             };
 
 
@@ -1747,12 +1747,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationAddition
 
-        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> ChargingStationAddition;
+        internal readonly IVotingNotificator<DateTime, User_Id, IChargingPool, IChargingStation, Boolean> ChargingStationAddition;
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition
+        public IVotingSender<DateTime, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition
 
             => ChargingStationAddition;
 
@@ -1760,12 +1760,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationUpdate
 
-        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> ChargingStationUpdate;
+        internal readonly IVotingNotificator<DateTime, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> ChargingStationUpdate;
 
         /// <summary>
         /// Called whenever a charging station will be or was updated.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> OnChargingStationUpdate
+        public IVotingSender<DateTime, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> OnChargingStationUpdate
 
             => ChargingStationUpdate;
 
@@ -1773,12 +1773,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationRemoval
 
-        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> ChargingStationRemoval;
+        internal readonly IVotingNotificator<DateTime, User_Id, IChargingPool, IChargingStation, Boolean> ChargingStationRemoval;
 
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval
+        public IVotingSender<DateTime, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval
 
             => ChargingStationRemoval;
 
@@ -2664,29 +2664,37 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationGroupId">The unique identification of the charging station group to be removed.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station group after its successful deletion.</param>
         /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging station group failed.</param>
-        public ChargingStationGroup RemoveChargingStationGroup(ChargingStationGroup_Id                                   ChargingStationGroupId,
-                                                               Action<ChargingStationOperator, ChargingStationGroup>     OnSuccess   = null,
-                                                               Action<ChargingStationOperator, ChargingStationGroup_Id>  OnError     = null)
+        public ChargingStationGroup RemoveChargingStationGroup(ChargingStationGroup_Id                                    ChargingStationGroupId,
+                                                               Action<ChargingStationOperator, ChargingStationGroup>?     OnSuccess   = null,
+                                                               Action<ChargingStationOperator, ChargingStationGroup_Id>?  OnError     = null)
         {
 
             lock (chargingStationGroups)
             {
 
                 if (chargingStationGroups.TryGet(ChargingStationGroupId, out var ChargingStationGroup) &&
-                    ChargingStationGroupRemoval.SendVoting(Timestamp.Now,
-                                                           this,
-                                                           ChargingStationGroup) &&
-                    chargingStationGroups.TryRemove(ChargingStationGroupId,
-                                                    out var _ChargingStationGroup,
-                                                    EventTracking_Id.New,
-                                                    null))
-                {
+                    ChargingStationGroupRemoval.SendVoting(
+                        EventTracking_Id.New,
+                        Timestamp.Now,
+                        this,
+                        ChargingStationGroup
+                    ) &&
+                    chargingStationGroups.TryRemove(
+                        ChargingStationGroupId,
+                        out var _ChargingStationGroup,
+                        EventTracking_Id.New,
+                        null
+                    )
+                ) {
 
                     OnSuccess?.Invoke(this, ChargingStationGroup);
 
-                    ChargingStationGroupRemoval.SendNotification(Timestamp.Now,
-                                                                 this,
-                                                                 _ChargingStationGroup);
+                    ChargingStationGroupRemoval.SendNotification(
+                        EventTracking_Id.New,
+                        Timestamp.Now,
+                        this,
+                        _ChargingStationGroup
+                    );
 
                     return _ChargingStationGroup;
 
@@ -2718,20 +2726,27 @@ namespace cloud.charging.open.protocols.WWCP
             lock (chargingStationGroups)
             {
 
-                if (ChargingStationGroupRemoval.SendVoting(Timestamp.Now,
-                                                           this,
-                                                           ChargingStationGroup) &&
-                    chargingStationGroups.TryRemove(ChargingStationGroup.Id,
-                                                    out var _ChargingStationGroup,
-                                                    EventTracking_Id.New,
-                                                    null))
-                {
+                if (ChargingStationGroupRemoval.SendVoting(
+                    EventTracking_Id.New,
+                    Timestamp.Now,
+                    this,
+                    ChargingStationGroup) &&
+                    chargingStationGroups.TryRemove(
+                        ChargingStationGroup.Id,
+                        out var _ChargingStationGroup,
+                        EventTracking_Id.New,
+                        null
+                    )
+                ){
 
                     OnSuccess?.Invoke(this, _ChargingStationGroup);
 
-                    ChargingStationGroupRemoval.SendNotification(Timestamp.Now,
-                                                                 this,
-                                                                 _ChargingStationGroup);
+                    ChargingStationGroupRemoval.SendNotification(
+                        EventTracking_Id.New,
+                        Timestamp.Now,
+                        this,
+                        _ChargingStationGroup
+                    );
 
                     return _ChargingStationGroup;
 
@@ -2767,15 +2782,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> evseAddition;
+        internal readonly IVotingNotificator<DateTime, User_Id, IChargingStation, IEVSE, Boolean> evseAddition;
 
-        public IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> EVSEAddition
+        public IVotingNotificator<DateTime, User_Id, IChargingStation, IEVSE, Boolean> EVSEAddition
             => evseAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition
 
             => evseAddition;
 
@@ -2783,15 +2798,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEUpdate
 
-        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> evseUpdate;
+        internal readonly IVotingNotificator<DateTime, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> evseUpdate;
 
-        public IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> EVSEUpdate
+        public IVotingNotificator<DateTime, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> EVSEUpdate
             => evseUpdate;
 
         /// <summary>
         /// Called whenever an EVSE will be or was update.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate
+        public IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate
 
             => evseUpdate;
 
@@ -2799,15 +2814,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSERemoval
 
-        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> evseRemoval;
+        internal readonly IVotingNotificator<DateTime, User_Id, IChargingStation, IEVSE, Boolean> evseRemoval;
 
-        public IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> EVSERemoval
+        public IVotingNotificator<DateTime, User_Id, IChargingStation, IEVSE, Boolean> EVSERemoval
             => evseRemoval;
 
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval
+        public IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval
 
             => evseRemoval;
 
@@ -3947,7 +3962,9 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (evseGroups.TryGet(EVSEGroupId, out var EVSEGroup) &&
-                    evseGroupRemoval.SendVoting(Timestamp.Now,
+                    evseGroupRemoval.SendVoting(
+                        EventTracking_Id.New,
+                        Timestamp.Now,
                                                 this,
                                                 EVSEGroup) &&
                     evseGroups.TryRemove(EVSEGroupId,
@@ -3958,7 +3975,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                     OnSuccess?.Invoke(this, EVSEGroup);
 
-                    evseGroupRemoval.SendNotification(Timestamp.Now,
+                    evseGroupRemoval.SendNotification(
+                        EventTracking_Id.New,
+                        Timestamp.Now,
                                                       this,
                                                       _EVSEGroup);
 
@@ -3992,7 +4011,7 @@ namespace cloud.charging.open.protocols.WWCP
             lock (evseGroups)
             {
 
-                if (evseGroupRemoval.SendVoting(Timestamp.Now,
+                if (evseGroupRemoval.SendVoting(EventTracking_Id.New, Timestamp.Now,
                                                 this,
                                                 EVSEGroup) &&
                     evseGroups.TryRemove(EVSEGroup.Id,
@@ -4003,7 +4022,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     OnSuccess?.Invoke(this, _EVSEGroup);
 
-                    evseGroupRemoval.SendNotification(Timestamp.Now,
+                    evseGroupRemoval.SendNotification(EventTracking_Id.New, Timestamp.Now,
                                                       this,
                                                       _EVSEGroup);
 
@@ -4041,45 +4060,45 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingTariffAddition
 
-        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, Boolean> chargingTariffAddition;
+        internal readonly IVotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingTariff, Boolean> chargingTariffAddition;
 
-        public IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, Boolean> ChargingTariffAddition
+        public IVotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingTariff, Boolean> ChargingTariffAddition
             => chargingTariffAddition;
 
         /// <summary>
         /// Called whenever a charging tariff will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, Boolean> OnChargingTariffAddition
+        public IVotingSender<DateTime, User_Id, IChargingStationOperator, IChargingTariff, Boolean> OnChargingTariffAddition
             => chargingTariffAddition;
 
         #endregion
 
         #region ChargingTariffUpdate
 
-        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean> chargingTariffUpdate;
+        internal readonly IVotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean> chargingTariffUpdate;
 
-        public IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean> ChargingTariffUpdate
+        public IVotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean> ChargingTariffUpdate
             => chargingTariffUpdate;
 
         /// <summary>
         /// Called whenever a charging Tariff will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean> OnChargingTariffUpdate
+        public IVotingSender<DateTime, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean> OnChargingTariffUpdate
             => chargingTariffUpdate;
 
         #endregion
 
         #region ChargingTariffRemoval
 
-        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, Boolean> chargingTariffRemoval;
+        internal readonly IVotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingTariff, Boolean> chargingTariffRemoval;
 
-        public IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, Boolean> ChargingTariffRemoval
+        public IVotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingTariff, Boolean> ChargingTariffRemoval
             => chargingTariffRemoval;
 
         /// <summary>
         /// Called whenever a charging Tariff will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, Boolean> OnChargingTariffRemoval
+        public IVotingSender<DateTime, User_Id, IChargingStationOperator, IChargingTariff, Boolean> OnChargingTariffRemoval
             => chargingTariffRemoval;
 
         #endregion
@@ -5083,7 +5102,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (chargingTariffGroups.TryGet(ChargingTariffGroupId, out var chargingTariffGroup) &&
                     chargingTariffGroup is not null                                                 &&
-                    chargingTariffGroupRemoval.SendVoting(Timestamp.Now, this, chargingTariffGroup) &&
+                    chargingTariffGroupRemoval.SendVoting(EventTracking_Id.New, Timestamp.Now, this, chargingTariffGroup) &&
                     chargingTariffGroups.TryRemove(ChargingTariffGroupId,
                                                    out _,
                                                    EventTracking_Id.New,
@@ -5092,7 +5111,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     OnSuccess?.Invoke(this, chargingTariffGroup);
 
-                    chargingTariffGroupRemoval.SendNotification(Timestamp.Now,
+                    chargingTariffGroupRemoval.SendNotification(EventTracking_Id.New, Timestamp.Now,
                                                                 this,
                                                                 chargingTariffGroup);
 
@@ -5126,7 +5145,7 @@ namespace cloud.charging.open.protocols.WWCP
             lock (chargingTariffGroups)
             {
 
-                if (chargingTariffGroupRemoval.SendVoting(Timestamp.Now, this, ChargingTariffGroup) &&
+                if (chargingTariffGroupRemoval.SendVoting(EventTracking_Id.New, Timestamp.Now, this, ChargingTariffGroup) &&
                     chargingTariffGroups.TryRemove(ChargingTariffGroup.Id,
                                                    out var chargingTariffGroup,
                                                    EventTracking_Id.New,
@@ -5136,7 +5155,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     OnSuccess?.Invoke(this, chargingTariffGroup);
 
-                    chargingTariffGroupRemoval.SendNotification(Timestamp.Now,
+                    chargingTariffGroupRemoval.SendNotification(EventTracking_Id.New, Timestamp.Now,
                                                                 this,
                                                                 chargingTariffGroup);
 

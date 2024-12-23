@@ -643,12 +643,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever a parking operator will be or was added.
         /// </summary>
-        IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorAddition { get; }
+        IVotingSender<DateTime, User_Id, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorAddition { get; }
 
         /// <summary>
         /// Called whenever a parking operator will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorRemoval  { get; }
+        IVotingSender<DateTime, User_Id, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorRemoval  { get; }
 
 
         /// <summary>
@@ -748,12 +748,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was added.
         /// </summary>
-        IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, IGridOperator, Boolean> OnGridOperatorAddition { get; }
+        IVotingSender<DateTime, User_Id, RoamingNetwork, IGridOperator, Boolean> OnGridOperatorAddition { get; }
 
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, IGridOperator, Boolean> OnGridOperatorRemoval  { get; }
+        IVotingSender<DateTime, User_Id, RoamingNetwork, IGridOperator, Boolean> OnGridOperatorRemoval  { get; }
 
         /// <summary>
         /// Return the admin status of all smart cities registered within this roaming network.
@@ -831,12 +831,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was added.
         /// </summary>
-        IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, SmartCityProxy, Boolean> OnSmartCityAddition { get; }
+        IVotingSender<DateTime, User_Id, RoamingNetwork, SmartCityProxy, Boolean> OnSmartCityAddition { get; }
 
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, SmartCityProxy, Boolean> OnSmartCityRemoval  { get; }
+        IVotingSender<DateTime, User_Id, RoamingNetwork, SmartCityProxy, Boolean> OnSmartCityRemoval  { get; }
 
 
 

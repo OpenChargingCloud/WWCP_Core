@@ -2946,9 +2946,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public String HubjectStationId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Func<EVSEStatusReport, ChargingStationStatusTypes> StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition => throw new NotImplementedException();
+        public IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition => throw new NotImplementedException();
 
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval => throw new NotImplementedException();
+        public IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval => throw new NotImplementedException();
 
         ReactiveSet<Brand> IChargingStation.Brands => throw new NotImplementedException();
 
@@ -2959,7 +2959,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public ReactiveSet<ChargingStationFeature> Features => throw new NotImplementedException();
 
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate => throw new NotImplementedException();
+        public IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate => throw new NotImplementedException();
 
         public Boolean Equals(IChargingStation? other)
         {

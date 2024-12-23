@@ -456,24 +456,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, ChargingStation, EVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<DateTime, User_Id, ChargingStation, EVSE, Boolean> EVSEAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, ChargingStation, EVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTime, User_Id, ChargingStation, EVSE, Boolean> OnEVSEAddition
             => EVSEAddition;
 
         #endregion
 
         #region EVSERemoval
 
-        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, ChargingStation, EVSE, Boolean> EVSERemoval;
+        internal readonly IVotingNotificator<DateTime, User_Id, ChargingStation, EVSE, Boolean> EVSERemoval;
 
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, ChargingStation, EVSE, Boolean> OnEVSERemoval
+        public IVotingSender<DateTime, User_Id, ChargingStation, EVSE, Boolean> OnEVSERemoval
         {
             get
             {
@@ -558,8 +558,8 @@ namespace cloud.charging.open.protocols.WWCP
             #region Init events
 
             // EVSEGroup events
-            this.EVSEAddition             = new VotingNotificator<DateTime, EventTracking_Id, User_Id, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval              = new VotingNotificator<DateTime, EventTracking_Id, User_Id, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition             = new VotingNotificator<DateTime, User_Id, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval              = new VotingNotificator<DateTime, User_Id, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
 
@@ -578,11 +578,11 @@ namespace cloud.charging.open.protocols.WWCP
             //this.OnChargingStationRemoval. OnNotification += (timestamp, evseoperator, pool)       => EVSEOperator.ChargingStationRemoval. SendNotification(timestamp, evseoperator, pool);
 
             // ChargingStation events
-            this.OnEVSEAddition.           OnVoting       += (timestamp, eventTrackingId, userId, station, evse, vote)      => Operator.evseAddition.           SendVoting      (timestamp, eventTrackingId, userId, station, evse, vote);
-            this.OnEVSEAddition.           OnNotification += (timestamp, eventTrackingId, userId, station, evse)            => Operator.evseAddition.           SendNotification(timestamp, eventTrackingId, userId, station, evse);
+            this.OnEVSEAddition.           OnVoting       += (eventTrackingId, timestamp, userId, station, evse, vote)      => Operator.evseAddition.           SendVoting      (eventTrackingId, timestamp, userId, station, evse, vote);
+            this.OnEVSEAddition.           OnNotification += (eventTrackingId, timestamp, userId, station, evse)            => Operator.evseAddition.           SendNotification(eventTrackingId, timestamp, userId, station, evse);
 
-            this.OnEVSERemoval.            OnVoting       += (timestamp, eventTrackingId, userId, station, evse, vote)      => Operator.evseRemoval .           SendVoting      (timestamp, eventTrackingId, userId, station, evse, vote);
-            this.OnEVSERemoval.            OnNotification += (timestamp, eventTrackingId, userId, station, evse)            => Operator.evseRemoval .           SendNotification(timestamp, eventTrackingId, userId, station, evse);
+            this.OnEVSERemoval.            OnVoting       += (eventTrackingId, timestamp, userId, station, evse, vote)      => Operator.evseRemoval .           SendVoting      (eventTrackingId, timestamp, userId, station, evse, vote);
+            this.OnEVSERemoval.            OnNotification += (eventTrackingId, timestamp, userId, station, evse)            => Operator.evseRemoval .           SendNotification(eventTrackingId, timestamp, userId, station, evse);
 
             #endregion
 

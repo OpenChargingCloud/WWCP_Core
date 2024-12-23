@@ -214,10 +214,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            if (roamingNetworkAddition.SendVoting(this, RoamingNetwork) &&
+            if (roamingNetworkAddition.SendVoting(EventTracking_Id.New, this, RoamingNetwork) &&
                 roamingNetworks.TryAdd(RoamingNetwork.Id, RoamingNetwork))
             {
-                roamingNetworkAddition.SendNotification(this, RoamingNetwork);
+                roamingNetworkAddition.SendNotification(EventTracking_Id.New, this, RoamingNetwork);
                 return RoamingNetwork;
             }
 
