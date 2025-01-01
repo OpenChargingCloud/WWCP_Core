@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2025 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -1006,11 +1006,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse EnergyMeteringValues          [optional]
 
-                if (JSON.ParseMandatoryJSON("energyMeteringValues",
-                                            "energy metering values",
-                                            EnergyMeteringValue.TryParse,
-                                            out IEnumerable<EnergyMeteringValue>? EnergyMeteringValues,
-                                            out ErrorResponse))
+                if (JSON.ParseOptionalJSON("energyMeteringValues",
+                                           "energy metering values",
+                                           EnergyMeteringValue.TryParse,
+                                           out IEnumerable<EnergyMeteringValue>? EnergyMeteringValues,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

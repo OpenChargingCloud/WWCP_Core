@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2025 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -225,10 +225,10 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                 #region Priority         [optional]
 
-                if (JSON.ParseMandatory("priority",
-                                        "priority",
-                                        out Byte Priority,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("priority",
+                                       "priority",
+                                       out Byte? Priority,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -238,10 +238,10 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                 #region Weight           [optional]
 
-                if (JSON.ParseMandatory("weight",
-                                        "weight",
-                                        out Byte Weight,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("weight",
+                                       "weight",
+                                       out Byte? Weight,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
