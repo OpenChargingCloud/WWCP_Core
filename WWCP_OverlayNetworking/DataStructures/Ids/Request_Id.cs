@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2025 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP OverlayNetworking <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         public Request_Id Clone
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   InternalId.CloneString()
                );
 
         #endregion
