@@ -128,18 +128,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this parking sensor identification.
         /// </summary>
-        public ParkingSensor_Id Clone
-        {
-            get
-            {
-                return new ParkingSensor_Id(InternalId);
-            }
-        }
+        public ParkingSensor_Id Clone()
+
+            => new (
+                   InternalId.CloneString()
+               );
 
         #endregion
 

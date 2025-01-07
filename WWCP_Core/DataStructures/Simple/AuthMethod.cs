@@ -163,15 +163,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this authentication method.
         /// </summary>
-        public AuthMethod Clone
+        public AuthMethod Clone()
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   InternalId.CloneString()
                );
 
         #endregion

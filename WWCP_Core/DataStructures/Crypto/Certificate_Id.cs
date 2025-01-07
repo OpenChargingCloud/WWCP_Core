@@ -176,15 +176,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this certificate identification.
         /// </summary>
-        public Certificate_Id Clone
+        public Certificate_Id Clone()
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   InternalId.CloneString()
                );
 
         #endregion

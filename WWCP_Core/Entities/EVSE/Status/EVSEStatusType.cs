@@ -166,15 +166,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this EVSE status type.
         /// </summary>
-        public EVSEStatusType Clone
+        public EVSEStatusType Clone()
 
-            => new(
-                   new String(InternalId?.ToCharArray())
+            => new (
+                   InternalId.CloneString()
                );
 
         #endregion

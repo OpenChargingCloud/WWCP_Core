@@ -97,14 +97,16 @@ namespace cloud.charging.open.protocols.WWCP.CSM
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging station model.
         /// </summary>
-        public ChargingStationModel Clone
+        public ChargingStationModel Clone()
 
-            => new (Id.Clone);
+            => new (
+                   Id.Clone()
+               );
 
         #endregion
 

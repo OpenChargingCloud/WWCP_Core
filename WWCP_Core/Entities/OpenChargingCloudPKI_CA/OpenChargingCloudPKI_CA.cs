@@ -103,12 +103,12 @@ namespace cloud.charging.open.protocols.WWCP.PKI
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this public key infrastructure certification authority.
         /// </summary>
-        public OpenChargingCloudPKI_CA Clone
+        public OpenChargingCloudPKI_CA Clone()
 
             => new (
                    Name.        Clone(),

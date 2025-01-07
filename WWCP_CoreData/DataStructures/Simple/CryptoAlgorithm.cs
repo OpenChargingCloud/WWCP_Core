@@ -274,17 +274,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this cryptographic algorithm.
         /// </summary>
-        public CryptoAlgorithm Clone
+        public CryptoAlgorithm Clone()
 
             => new (
-                   new String(InternalId?.ToCharArray()),
-                   JSONLDContext.Clone,
-                   Nicknames.ToArray()
+                   InternalId.   CloneString(),
+                   JSONLDContext.Clone(),
+                   Nicknames.    Select(nickname => nickname.CloneString())
                );
 
         #endregion

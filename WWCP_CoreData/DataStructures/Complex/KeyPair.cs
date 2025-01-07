@@ -300,9 +300,9 @@ namespace cloud.charging.open.protocols.WWCP
                    (Byte[]) PrivateKeyBytes.Clone(),
                    (Byte[]) PublicKeyBytes. Clone(),
 
-                   Algorithm.    Clone,
-                   Serialization.Clone,
-                   Encoding.     Clone,
+                   Algorithm.    Clone(),
+                   Serialization.Clone(),
+                   Encoding.     Clone(),
 
                    CustomData
 

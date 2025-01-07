@@ -224,15 +224,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging pool group identification.
         /// </summary>
-        public ChargingPoolGroup_Id Clone
+        public ChargingPoolGroup_Id Clone()
 
-            => new (OperatorId.Clone,
-                    new String(Suffix.ToCharArray()));
+            => new (
+                   OperatorId.Clone(),
+                   Suffix.    CloneString()
+               );
 
         #endregion
 

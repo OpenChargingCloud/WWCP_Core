@@ -378,10 +378,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this transparency software.
         /// </summary>
         public TransparencySoftware Clone()
 

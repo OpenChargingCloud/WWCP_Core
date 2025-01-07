@@ -177,15 +177,15 @@ namespace cloud.charging.open.protocols.WWCP.MCL
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this metering calibration law agency identification.
         /// </summary>
-        public MeteringCalibrationLawAgency_Id Clone
+        public MeteringCalibrationLawAgency_Id Clone()
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   InternalId.CloneString()
                );
 
         #endregion

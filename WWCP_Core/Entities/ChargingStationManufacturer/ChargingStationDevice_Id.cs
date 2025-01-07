@@ -177,15 +177,15 @@ namespace cloud.charging.open.protocols.WWCP.CSM
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging station device identification.
         /// </summary>
-        public ChargingStationDevice_Id Clone
+        public ChargingStationDevice_Id Clone()
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   InternalId.CloneString()
                );
 
         #endregion

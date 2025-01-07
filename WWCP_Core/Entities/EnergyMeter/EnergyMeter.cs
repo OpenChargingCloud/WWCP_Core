@@ -597,7 +597,8 @@ namespace cloud.charging.open.protocols.WWCP
         public EnergyMeter Clone()
 
             => new (
-                   Id.Clone,
+
+                   Id.Clone(),
                    Name.       IsNotNullOrEmpty() ? Name.       Clone() : I18NString.Empty,
                    Description.IsNotNullOrEmpty() ? Description.Clone() : I18NString.Empty,
                    Manufacturer    is not null ? new String(Manufacturer.   ToCharArray()) : null,
@@ -608,7 +609,7 @@ namespace cloud.charging.open.protocols.WWCP
                    HardwareVersion is not null ? new String(HardwareVersion.ToCharArray()) : null,
                    FirmwareVersion is not null ? new String(FirmwareVersion.ToCharArray()) : null,
                    PublicKeys.Select(publicKey => publicKey.Clone()).ToArray(),
-                   PublicKeyCertificateChain.HasValue ? PublicKeyCertificateChain.Value.Clone : null,
+                   PublicKeyCertificateChain?.Clone(),
                    TransparencySoftwares.Select(transparencySoftwareStatus => transparencySoftwareStatus.Clone()).ToArray(),
 
                    AdminStatus,
@@ -623,6 +624,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                    JObject.Parse(CustomData.ToString()),
                    InternalData
+
                );
 
         #endregion

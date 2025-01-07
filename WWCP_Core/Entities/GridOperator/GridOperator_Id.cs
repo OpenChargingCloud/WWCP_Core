@@ -315,16 +315,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging station operator identification.
         /// </summary>
-        public GridOperator_Id Clone
+        public GridOperator_Id Clone()
 
-            => new GridOperator_Id(CountryCode,
-                                              Suffix,
-                                              Format);
+            => new (
+                   CountryCode.Clone(),
+                   Suffix.     CloneString(),
+                   Format
+               );
 
         #endregion
 

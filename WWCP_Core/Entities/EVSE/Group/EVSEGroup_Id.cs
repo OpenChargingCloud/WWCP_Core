@@ -237,15 +237,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this EVSE group identification.
         /// </summary>
-        public EVSEGroup_Id Clone
+        public EVSEGroup_Id Clone()
 
-            => new EVSEGroup_Id(OperatorId.Clone,
-                                new String(Suffix.ToCharArray()));
+            => new (
+                   OperatorId.Clone(),
+                   Suffix.    CloneString()
+               );
 
         #endregion
 

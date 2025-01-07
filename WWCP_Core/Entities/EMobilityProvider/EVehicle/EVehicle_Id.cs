@@ -328,15 +328,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this electric vehicle identification.
         /// </summary>
-        public EVehicle_Id Clone
+        public EVehicle_Id Clone()
 
-            => new (ProviderId,
-                    new String(Suffix.ToCharArray()));
+            => new (
+                   ProviderId.Clone(),
+                   Suffix.    CloneString()
+               );
 
         #endregion
 

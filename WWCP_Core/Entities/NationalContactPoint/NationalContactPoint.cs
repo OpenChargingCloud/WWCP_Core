@@ -111,14 +111,16 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this national contact point.
         /// </summary>
-        public NationalContactPoint Clone
+        public NationalContactPoint Clone()
 
-            => new (Id.Clone);
+            => new (
+                   Id.Clone()
+               );
 
         #endregion
 

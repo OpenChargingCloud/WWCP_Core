@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         public void Clone_Test()
         {
             var evseId1 = EVSE_Id.Parse(ChargingStationOperatorId, "5678");
-            var evseId2 = evseId1.Clone;
+            var evseId2 = evseId1.Clone();
             ClassicAssert.AreEqual(evseId1.ToString(), evseId2.ToString());
             ClassicAssert.AreEqual(evseId1.Length,     evseId2.Length);
             ClassicAssert.AreEqual(evseId1,            evseId2);

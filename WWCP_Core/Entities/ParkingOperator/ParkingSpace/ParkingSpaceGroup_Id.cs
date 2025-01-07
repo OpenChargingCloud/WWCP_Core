@@ -129,18 +129,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this Electric Vehicle parking space identification.
         /// </summary>
-        public ParkingSpaceGroup_Id Clone
-        {
-            get
-            {
-                return new ParkingSpaceGroup_Id(InternalId);
-            }
-        }
+        public ParkingSpaceGroup_Id Clone()
+
+            => new (
+                   InternalId.CloneString()
+               );
 
         #endregion
 

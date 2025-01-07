@@ -179,15 +179,15 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this tracker identification.
         /// </summary>
-        public Tracker_Id Clone
+        public Tracker_Id Clone()
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   InternalId.CloneString()
                );
 
         #endregion

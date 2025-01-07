@@ -166,15 +166,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this roaming network status type.
         /// </summary>
-        public RoamingNetworkStatusTypes Clone
+        public RoamingNetworkStatusTypes Clone()
 
-            => new(
-                   new String(InternalId?.ToCharArray())
+            => new (
+                   InternalId.CloneString()
                );
 
         #endregion

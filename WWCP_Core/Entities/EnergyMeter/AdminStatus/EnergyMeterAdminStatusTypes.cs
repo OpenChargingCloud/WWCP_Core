@@ -166,15 +166,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this energy meter admin status type.
         /// </summary>
-        public EnergyMeterAdminStatusTypes Clone
+        public EnergyMeterAdminStatusTypes Clone()
 
-            => new(
-                   new String(InternalId?.ToCharArray())
+            => new (
+                   InternalId.CloneString()
                );
 
         #endregion

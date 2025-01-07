@@ -148,14 +148,16 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging node.
         /// </summary>
-        public new ChargingNode Clone
+        public new ChargingNode Clone()
 
-            => new (Id.Clone);
+            => new (
+                   Id.Clone()
+               );
 
         #endregion
 

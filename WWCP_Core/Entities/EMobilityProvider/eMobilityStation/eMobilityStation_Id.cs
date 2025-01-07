@@ -337,15 +337,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this Electric Vehicle Charging Station identification.
         /// </summary>
-        public eMobilityStation_Id Clone
+        public eMobilityStation_Id Clone()
 
-            => new (ProviderId,
-                    new String(Suffix.ToCharArray()));
+            => new (
+                   ProviderId.Clone(),
+                   Suffix.    CloneString()
+               );
 
         #endregion
 

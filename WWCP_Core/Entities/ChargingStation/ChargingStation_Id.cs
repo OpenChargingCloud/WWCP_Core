@@ -699,15 +699,17 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging station identification.
         /// </summary>
-        public ChargingStation_Id Clone
+        public ChargingStation_Id Clone()
 
-            => new (OperatorId.Clone,
-                    new String(Suffix?.ToCharArray()));
+            => new (
+                   OperatorId.Clone(),
+                   Suffix.    CloneString()
+               );
 
         #endregion
 

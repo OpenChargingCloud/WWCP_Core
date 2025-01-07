@@ -469,16 +469,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Clone this object.
         /// </summary>
-        public KeyPair Clone()
+        public new KeyPair Clone()
 
             => new (
 
                    (Byte[]) PrivateKeyBytes.Clone(),
                    (Byte[]) PublicKeyBytes. Clone(),
 
-                   Algorithm.    Clone,
-                   Serialization.Clone,
-                   Encoding.     Clone,
+                   Algorithm.    Clone(),
+                   Serialization.Clone(),
+                   Encoding.     Clone(),
 
                    CustomData
 

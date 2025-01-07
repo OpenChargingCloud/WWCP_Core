@@ -144,15 +144,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this authentication token status.
         /// </summary>
-        public AuthenticationTokenStatus Clone
+        public AuthenticationTokenStatus Clone()
 
-            => new(
-                   new String(InternalId?.ToCharArray())
+            => new (
+                   InternalId.CloneString()
                );
 
         #endregion

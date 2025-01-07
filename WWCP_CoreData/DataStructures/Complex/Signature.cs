@@ -570,9 +570,9 @@ namespace cloud.charging.open.protocols.WWCP
                    (Byte[]) KeyId.Clone(),
                    (Byte[]) Value.Clone(),
 
-                   Algorithm.    Clone,
-                   SigningMethod.Clone,
-                   Encoding.     Clone,
+                   Algorithm.    Clone(),
+                   SigningMethod.Clone(),
+                   Encoding.     Clone(),
 
                    Name,
                    Description,

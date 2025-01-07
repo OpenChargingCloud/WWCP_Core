@@ -398,27 +398,30 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging session identification.
         /// </summary>
-        public ChargingSession_Id Clone
+        public ChargingSession_Id Clone()
         {
-            get
-            {
 
-                if (OperatorId.HasValue)
-                    return new (OperatorId.Value.Clone,
-                                new String(Suffix?.ToCharArray()));
+            if (OperatorId.HasValue)
+                return new (
+                           OperatorId.Value.Clone(),
+                           Suffix.          CloneString()
+                       );
 
-                if (ProviderId.HasValue)
-                    return new (ProviderId.Value.Clone,
-                                new String(Suffix?.ToCharArray()));
+            if (ProviderId.HasValue)
+                return new (
+                           ProviderId.Value.Clone(),
+                           Suffix.          CloneString()
+                       );
 
-                    return new (new String(Suffix?.ToCharArray()));
+            return new (
+                       Suffix.CloneString()
+                   );
 
-            }
         }
 
         #endregion

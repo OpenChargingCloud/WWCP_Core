@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         public void Clone_Test()
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "5678");
-            var poolId2 = poolId1.Clone;
+            var poolId2 = poolId1.Clone();
             ClassicAssert.AreEqual(poolId1.ToString(), poolId2.ToString());
             ClassicAssert.AreEqual(poolId1.Length,     poolId2.Length);
             ClassicAssert.AreEqual(poolId1,            poolId2);

@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         public void ChargingStationOperator_IdChargingStationOperator_IdConstructorTest()
         {
             var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            var csoId2 = csoId1.Clone;
+            var csoId2 = csoId1.Clone();
             ClassicAssert.AreEqual(csoId1.ToString(), csoId2.ToString());
             ClassicAssert.AreEqual(csoId1.Length,     csoId2.Length);
             ClassicAssert.AreEqual(csoId1,            csoId2);

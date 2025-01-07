@@ -365,16 +365,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this e-mobility provider identification.
         /// </summary>
-        public EMobilityProvider_Id Clone
+        public EMobilityProvider_Id Clone()
 
-            => new (CountryCode,
-                    new String(Suffix.ToCharArray()),
-                    Format);
+            => new (
+                   CountryCode.Clone(),
+                   Suffix.     CloneString(),
+                   Format
+               );
 
         #endregion
 

@@ -216,15 +216,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging tariff group identification.
         /// </summary>
-        public ChargingTariffGroup_Id Clone
+        public ChargingTariffGroup_Id Clone()
 
-            => new (OperatorId.Clone,
-                    new String(Suffix.ToCharArray()));
+            => new (
+                   OperatorId.Clone(),
+                   Suffix.    CloneString()
+               );
 
         #endregion
 

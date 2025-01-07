@@ -177,15 +177,15 @@ namespace cloud.charging.open.protocols.WWCP.MCL
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this national contact point identification.
         /// </summary>
-        public NationalContactPoint_Id Clone
+        public NationalContactPoint_Id Clone()
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   InternalId.CloneString()
                );
 
         #endregion

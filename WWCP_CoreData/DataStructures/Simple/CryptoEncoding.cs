@@ -177,15 +177,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this cryptographic encoding.
         /// </summary>
-        public CryptoEncoding Clone
+        public CryptoEncoding Clone()
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   InternalId.CloneString()
                );
 
         #endregion

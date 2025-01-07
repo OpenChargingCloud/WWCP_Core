@@ -598,9 +598,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                    (Byte[]) Value.Clone(),
 
-                   Algorithm?.   Clone,
-                   Serialization.Clone,
-                   Encoding.     Clone,
+                   Algorithm?.   Clone(),
+                   Serialization.Clone(),
+                   Encoding.     Clone(),
 
                    CustomData
 

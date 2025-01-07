@@ -281,16 +281,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this smart city identification.
         /// </summary>
 
-        public SmartCity_Id Clone
+        public SmartCity_Id Clone()
 
-            => new SmartCity_Id(CountryCode,
-                                new String(Suffix.ToCharArray()));
+            => new (
+                   CountryCode.Clone(),
+                   Suffix.     CloneString()
+               );
 
         #endregion
 

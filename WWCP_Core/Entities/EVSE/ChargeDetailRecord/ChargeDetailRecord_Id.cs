@@ -270,23 +270,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charge detail record identification.
         /// </summary>
-        public ChargeDetailRecord_Id Clone
+        public ChargeDetailRecord_Id Clone()
         {
-            get
-            {
 
-                if (OperatorId.HasValue)
-                    return new(OperatorId.Value.Clone,
-                                new String(Suffix?.ToCharArray()));
+            if (OperatorId.HasValue)
+                return new (
+                           OperatorId.Value.Clone(),
+                           Suffix.          CloneString()
+                       );
 
-                return new(new String(Suffix?.ToCharArray()));
+            return new (
+                       Suffix.CloneString()
+                   );
 
-            }
         }
 
         #endregion

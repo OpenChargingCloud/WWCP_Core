@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         public void Clone_Test()
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("TEST");
-            var roamingNetworkId2 = roamingNetworkId1.Clone;
+            var roamingNetworkId2 = roamingNetworkId1.Clone();
             ClassicAssert.AreEqual(roamingNetworkId1.ToString(), roamingNetworkId2.ToString());
             ClassicAssert.AreEqual(roamingNetworkId1.Length,     roamingNetworkId2.Length);
             ClassicAssert.AreEqual(roamingNetworkId1,            roamingNetworkId2);

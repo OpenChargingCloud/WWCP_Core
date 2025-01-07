@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         public void Clone_Test()
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingStationOperatorId, "5678");
-            var stationId2 = stationId1.Clone;
+            var stationId2 = stationId1.Clone();
             ClassicAssert.AreEqual(stationId1.ToString(), stationId2.ToString());
             ClassicAssert.AreEqual(stationId1.Length, stationId2.Length);
             ClassicAssert.AreEqual(stationId1, stationId2);

@@ -302,15 +302,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this vendor identification.
         /// </summary>
-        public Vendor_Id Clone
+        public Vendor_Id Clone()
 
             => new (
-                   new String(TextId?.ToCharArray()),
+                   TextId.CloneString(),
                    NumericId
                );
 

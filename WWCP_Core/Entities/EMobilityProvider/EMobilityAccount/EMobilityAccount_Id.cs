@@ -313,17 +313,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this electric mobility account identification identification.
         /// </summary>
-        public EMobilityAccount_Id Clone
+        public EMobilityAccount_Id Clone()
 
             => new (
-                   new String(InternalId?.ToCharArray()),
-                   ProviderId.Clone,
-                   new String(Suffix?.ToCharArray())
+                   InternalId.CloneString(),
+                   ProviderId.Clone(),
+                   Suffix.    CloneString()
                );
 
         #endregion

@@ -228,15 +228,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this parking reservation identification.
         /// </summary>
-        public ParkingReservation_Id Clone
+        public ParkingReservation_Id Clone()
 
-            => new ParkingReservation_Id(OperatorId.Clone,
-                                          Suffix);
+            => new (
+                   OperatorId.Clone(),
+                   Suffix.    CloneString()
+               );
 
         #endregion
 

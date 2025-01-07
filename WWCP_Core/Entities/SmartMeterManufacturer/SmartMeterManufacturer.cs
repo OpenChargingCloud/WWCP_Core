@@ -111,14 +111,16 @@ namespace cloud.charging.open.protocols.WWCP.SMM
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this smart meter manufacturer.
         /// </summary>
-        public SmartMeterManufacturer Clone
+        public SmartMeterManufacturer Clone()
 
-            => new (Id.Clone);
+            => new (
+                   Id.Clone()
+               );
 
         #endregion
 

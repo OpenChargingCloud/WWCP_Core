@@ -174,15 +174,15 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this networking node identification.
         /// </summary>
-        public NetworkingNode_Id Clone
+        public NetworkingNode_Id Clone()
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   InternalId.CloneString()
                );
 
         #endregion

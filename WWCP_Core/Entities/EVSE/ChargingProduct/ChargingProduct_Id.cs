@@ -186,14 +186,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging product identification.
         /// </summary>
-        public ChargingProduct_Id Clone
+        public ChargingProduct_Id Clone()
 
-            => new (new String(InternalId?.ToCharArray()));
+            => new (
+                   InternalId.CloneString()
+               );
 
         #endregion
 
