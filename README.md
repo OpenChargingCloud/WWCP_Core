@@ -38,7 +38,7 @@ The following projects are no longer in active devlopment, but left for educatio
 
 #### Requirements & Configuration
 
-1. You will need .NET8
+1. You will need .NET9
 2. (Stress) tested under Debian GNU/Linux running in a KVM environment on AMD Ryzen 9 16-Core Zen3 machines
 
 
