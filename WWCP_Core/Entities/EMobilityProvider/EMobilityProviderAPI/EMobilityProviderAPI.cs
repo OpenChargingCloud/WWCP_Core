@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                   //            StatusMessage        = "Invalid or blocked access token!",
                                   //            HTTPResponseBuilder  = new HTTPResponse.Builder(Request.HTTPRequest) {
                                   //                HTTPStatusCode             = HTTPStatusCode.Forbidden,
-                                  //                AccessControlAllowMethods  = new[] { "OPTIONS", "GET", "DELETE" },
+                                  //                AccessControlAllowMethods  = [ "OPTIONS", "GET", "DELETE" ],
                                   //                AccessControlAllowHeaders  = [ "Authorization" ]
                                   //            }
                                   //        });
@@ -653,7 +653,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                                       return new HTTPResponse.Builder(Request) {
                                                  HTTPStatusCode             = HTTPStatusCode.OK,
-                                                 AccessControlAllowMethods  = new[] { "OPTIONS", "POST" },
+                                                 AccessControlAllowMethods  = [ "OPTIONS", "POST" ],
                                                  Allow                      = new[] {
                                                                                   HTTPMethod.OPTIONS,
                                                                                   HTTPMethod.POST
@@ -677,7 +677,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                                       return new HTTPResponse.Builder(Request) {
                                                  HTTPStatusCode             = HTTPStatusCode.Forbidden,
-                                                 AccessControlAllowMethods  = new[] { "OPTIONS", "POST" },
+                                                 AccessControlAllowMethods  = [ "OPTIONS", "POST" ],
                                                  Allow                      = new[] {
                                                                                   HTTPMethod.OPTIONS,
                                                                                   HTTPMethod.POST
