@@ -6489,12 +6489,17 @@ namespace cloud.charging.open.protocols.WWCP
                                                              String           Command,
                                                              ChargingSession  ChargingSession,
                                                              DateTime?        NoAutoDeletionBefore   = null)
+        {
 
-            => SessionsStore.AddSession(
-                   Command,
-                   ChargingSession,
-                   NoAutoDeletionBefore
-               );
+            ChargingSession.RoamingNetwork = this;
+
+            return SessionsStore.AddSession(
+                       Command,
+                       ChargingSession,
+                       NoAutoDeletionBefore
+                   );
+
+        }
 
         #endregion
 
@@ -8848,7 +8853,7 @@ namespace cloud.charging.open.protocols.WWCP
                 var cdrTargets = new Dictionary<ISendChargeDetailRecords, List<ChargeDetailRecord>>();
 
                 foreach (var isendcdr in allRemoteSendChargeDetailRecord)
-                    cdrTargets.Add(isendcdr, new List<ChargeDetailRecord>());
+                    cdrTargets.Add(isendcdr, []);
 
                 #endregion
 

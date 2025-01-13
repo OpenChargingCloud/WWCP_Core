@@ -1551,7 +1551,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     if (JSON["receivedCDRInfos"] is JArray receivedCDRInfosJSON)
                     {
-                        foreach (JObject receivedCDRInfoJSON in receivedCDRInfosJSON)
+                        foreach (var receivedCDRInfoJSON in receivedCDRInfosJSON.Cast<JObject>())
                         {
                             if (ReceivedCDRInfo.TryParse(receivedCDRInfoJSON, out var receivedCDRInfo, out _))
                             {
@@ -1562,7 +1562,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     if (JSON["sendCDRResults"] is JArray sendCDRResultsJSON)
                     {
-                        foreach (JObject sendCDRResultJSON in sendCDRResultsJSON)
+                        foreach (var sendCDRResultJSON in sendCDRResultsJSON.Cast<JObject>())
                         {
                             if (SendCDRResult.TryParse(sendCDRResultJSON, out var sendCDRResult, out _))
                             {
