@@ -59,15 +59,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                          I18NString?                                          Name                           = null,
                                                          I18NString?                                          Description                    = null,
 
-                                                         Timestamped<EVSEAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                         Timestamped<EVSEStatusType>?                        InitialStatus                  = null,
+                                                         Timestamped<EVSEAdminStatusType>?                    InitialAdminStatus             = null,
+                                                         Timestamped<EVSEStatusType>?                         InitialStatus                  = null,
                                                          UInt16                                               MaxAdminStatusScheduleSize     = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
                                                          UInt16                                               MaxStatusScheduleSize          = VirtualEVSE.DefaultMaxStatusScheduleSize,
 
                                                          IEnumerable<URL>?                                    PhotoURLs                      = null,
                                                          IEnumerable<Brand>?                                  Brands                         = null,
                                                          IEnumerable<RootCAInfo>?                             MobilityRootCAs                = null,
-                                                         IEnumerable<OpenDataLicense>?                        OpenDataLicenses               = null,
+                                                         IEnumerable<DataLicense>?                            OpenDataLicenses               = null,
                                                          IEnumerable<ChargingModes>?                          ChargingModes                  = null,
                                                          IEnumerable<ChargingTariff>?                         ChargingTariffs                = null,
                                                          CurrentTypes?                                        CurrentType                    = null,
@@ -88,11 +88,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                          EnergyMixPrognosis?                                  EnergyMixPrognoses             = null,
                                                          EnergyMeter?                                         EnergyMeter                    = null,
                                                          Boolean?                                             IsFreeOfCharge                 = null,
+                                                         URL?                                                 CalibrationInfo                = null,
                                                          IEnumerable<IChargingConnector>?                     ChargingConnectors             = null,
 
                                                          ChargingSession?                                     ChargingSession                = null,
+
                                                          DateTime?                                            LastStatusUpdate               = null,
                                                          String?                                              DataSource                     = null,
+                                                         DateTime?                                            Created                        = null,
                                                          DateTime?                                            LastChange                     = null,
 
                                                          Action<IEVSE>?                                       Configurator                   = null,
@@ -145,16 +148,18 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    EnergyMixPrognoses,
                    EnergyMeter,
                    IsFreeOfCharge,
+                   CalibrationInfo,
                    ChargingConnectors,
                    ChargingSession,
 
-                   InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
+                   InitialAdminStatus ?? EVSEAdminStatusType.Operational,
                    InitialStatus      ?? EVSEStatusType.Available,
                    MaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize,
                    LastStatusUpdate,
 
                    DataSource,
+                   Created,
                    LastChange,
 
                    CustomData,
@@ -198,6 +203,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                              EnergyMixPrognoses,
                                              EnergyMeter,
                                              IsFreeOfCharge,
+                                             CalibrationInfo,
                                              ChargingConnectors,
 
                                              EllipticCurve,
@@ -244,15 +250,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                     I18NString?                                          Name                           = null,
                                                                     I18NString?                                          Description                    = null,
 
-                                                                    Timestamped<EVSEAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                                    Timestamped<EVSEStatusType>?                        InitialStatus                  = null,
+                                                                    Timestamped<EVSEAdminStatusType>?                    InitialAdminStatus             = null,
+                                                                    Timestamped<EVSEStatusType>?                         InitialStatus                  = null,
                                                                     UInt16                                               MaxAdminStatusScheduleSize     = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
                                                                     UInt16                                               MaxStatusScheduleSize          = VirtualEVSE.DefaultMaxStatusScheduleSize,
 
                                                                     IEnumerable<URL>?                                    PhotoURLs                      = null,
                                                                     IEnumerable<Brand>?                                  Brands                         = null,
                                                                     IEnumerable<RootCAInfo>?                             MobilityRootCAs                = null,
-                                                                    IEnumerable<OpenDataLicense>?                        OpenDataLicenses               = null,
+                                                                    IEnumerable<DataLicense>?                            OpenDataLicenses               = null,
                                                                     IEnumerable<ChargingModes>?                          ChargingModes                  = null,
                                                                     IEnumerable<ChargingTariff>?                         ChargingTariffs                = null,
                                                                     CurrentTypes?                                        CurrentType                    = null,
@@ -273,11 +279,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                     EnergyMixPrognosis?                                  EnergyMixPrognoses             = null,
                                                                     EnergyMeter?                                         EnergyMeter                    = null,
                                                                     Boolean?                                             IsFreeOfCharge                 = null,
+                                                                    URL?                                                 CalibrationInfo                = null,
                                                                     IEnumerable<IChargingConnector>?                     ChargingConnectors             = null,
 
                                                                     ChargingSession?                                     ChargingSession                = null,
+
                                                                     DateTime?                                            LastStatusUpdate               = null,
                                                                     String?                                              DataSource                     = null,
+                                                                    DateTime?                                            Created                        = null,
                                                                     DateTime?                                            LastChange                     = null,
 
                                                                     Action<IEVSE>?                                       Configurator                   = null,
@@ -329,16 +338,18 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                    EnergyMixPrognoses,
                                    EnergyMeter,
                                    IsFreeOfCharge,
+                                   CalibrationInfo,
                                    ChargingConnectors,
                                    ChargingSession,
 
-                                   InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
+                                   InitialAdminStatus ?? EVSEAdminStatusType.Operational,
                                    InitialStatus      ?? EVSEStatusType.Available,
                                    MaxAdminStatusScheduleSize,
                                    MaxStatusScheduleSize,
                                    LastStatusUpdate,
 
                                    DataSource,
+                                   Created,
                                    LastChange,
 
                                    CustomData,
@@ -382,6 +393,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                              EnergyMixPrognoses,
                                                              EnergyMeter,
                                                              IsFreeOfCharge,
+                                                             CalibrationInfo,
+
                                                              ChargingConnectors,
 
                                                              EllipticCurve,
@@ -429,15 +442,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          I18NString?                                          Name                                   = null,
                                                                          I18NString?                                          Description                            = null,
 
-                                                                         Timestamped<EVSEAdminStatusTypes>?                   InitialAdminStatus                     = null,
-                                                                         Timestamped<EVSEStatusType>?                        InitialStatus                          = null,
+                                                                         Timestamped<EVSEAdminStatusType>?                    InitialAdminStatus                     = null,
+                                                                         Timestamped<EVSEStatusType>?                         InitialStatus                          = null,
                                                                          UInt16                                               MaxAdminStatusScheduleSize             = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
                                                                          UInt16                                               MaxStatusScheduleSize                  = VirtualEVSE.DefaultMaxStatusScheduleSize,
 
                                                                          IEnumerable<URL>?                                    PhotoURLs                              = null,
                                                                          IEnumerable<Brand>?                                  Brands                                 = null,
                                                                          IEnumerable<RootCAInfo>?                             MobilityRootCAs                        = null,
-                                                                         IEnumerable<OpenDataLicense>?                        OpenDataLicenses                       = null,
+                                                                         IEnumerable<DataLicense>?                            OpenDataLicenses                       = null,
                                                                          IEnumerable<ChargingModes>?                          ChargingModes                          = null,
                                                                          IEnumerable<ChargingTariff>?                         ChargingTariffs                        = null,
                                                                          CurrentTypes?                                        CurrentType                            = null,
@@ -458,11 +471,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          EnergyMixPrognosis?                                  EnergyMixPrognoses                     = null,
                                                                          EnergyMeter?                                         EnergyMeter                            = null,
                                                                          Boolean?                                             IsFreeOfCharge                         = null,
+                                                                         URL?                                                 CalibrationInfo                        = null,
                                                                          IEnumerable<IChargingConnector>?                     ChargingConnectors                     = null,
 
                                                                          ChargingSession?                                     ChargingSession                        = null,
+
                                                                          DateTime?                                            LastStatusUpdate                       = null,
                                                                          String?                                              DataSource                             = null,
+                                                                         DateTime?                                            Created                                = null,
                                                                          DateTime?                                            LastChange                             = null,
 
                                                                          Action<IEVSE>?                                       Configurator                           = null,
@@ -492,7 +508,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    Name,
                    Description,
 
-                   InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
+                   InitialAdminStatus ?? EVSEAdminStatusType.Operational,
                    InitialStatus      ?? EVSEStatusType.Available,
                    MaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize,
@@ -521,11 +537,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    EnergyMixPrognoses,
                    EnergyMeter,
                    IsFreeOfCharge,
+                   CalibrationInfo,
                    ChargingConnectors,
 
                    ChargingSession,
+
                    LastStatusUpdate,
                    DataSource,
+                   Created,
                    LastChange,
                    CustomData,
                    InternalData,
@@ -568,6 +587,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                              EnergyMixPrognoses,
                                              EnergyMeter,
                                              IsFreeOfCharge,
+                                             CalibrationInfo,
                                              ChargingConnectors,
 
                                              EllipticCurve,
@@ -603,7 +623,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
     /// A virtual EVSE for (internal) tests.
     /// </summary>
     public class VirtualEVSE : ACryptoEMobilityEntity<EVSE_Id,
-                                                      EVSEAdminStatusTypes,
+                                                      EVSEAdminStatusType,
                                                       EVSEStatusType>,
                                IEquatable<VirtualEVSE>, IComparable<VirtualEVSE>, IComparable,
                                IRemoteEVSE
@@ -690,7 +710,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// An enumeration of all data license(s) of this EVSE.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<OpenDataLicense>             DataLicenses            { get; }
+        public ReactiveSet<DataLicense>                 DataLicenses                { get; }
 
         /// <summary>
         /// An enumeration of all supported charging modes of this EVSE.
@@ -703,6 +723,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         [Optional, SlowData]
         public ReactiveSet<ChargingTariff>              ChargingTariffs             { get; }
+
+        /// <summary>
+        /// The optional URL where certificates, identifiers and public keys related to the calibration
+        /// of meters in this EVSE can be found.
+        /// </summary>
+        public URL?                                     CalibrationInfo             { get; }
 
 
         #region CurrentType
@@ -1308,14 +1334,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                              I18NString?                          Name                         = null,
                              I18NString?                          Description                  = null,
 
-                             Timestamped<EVSEAdminStatusTypes>?   InitialAdminStatus           = null,
-                             Timestamped<EVSEStatusType>?        InitialStatus                = null,
+                             Timestamped<EVSEAdminStatusType>?   InitialAdminStatus           = null,
+                             Timestamped<EVSEStatusType>?         InitialStatus                = null,
                              UInt16?                              MaxAdminStatusScheduleSize   = null,
                              UInt16?                              MaxStatusScheduleSize        = null,
 
                              IEnumerable<URL>?                    PhotoURLs                    = null,
                              IEnumerable<Brand>?                  Brands                       = null,
-                             IEnumerable<OpenDataLicense>?        OpenDataLicenses             = null,
+                             IEnumerable<DataLicense>?            OpenDataLicenses             = null,
                              IEnumerable<ChargingModes>?          ChargingModes                = null,
                              IEnumerable<ChargingTariff>?         ChargingTariffs              = null,
                              CurrentTypes?                        CurrentType                  = null,
@@ -1336,6 +1362,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                              EnergyMixPrognosis?                  EnergyMixPrognoses           = null,
                              EnergyMeter?                         EnergyMeter                  = null,
                              Boolean?                             IsFreeOfCharge               = null,
+                             URL?                                 CalibrationInfo              = null,
+
                              IEnumerable<IChargingConnector>?     ChargingConnectors           = null,
 
                              String?                              EllipticCurve                = null,
@@ -1350,7 +1378,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    EllipticCurve,
                    PrivateKey,
                    PublicKeyCertificates,
-                   InitialAdminStatus         ?? EVSEAdminStatusTypes.Operational,
+                   InitialAdminStatus         ?? EVSEAdminStatusType.Operational,
                    InitialStatus              ?? EVSEStatusType.Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxEVSEAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxEVSEStatusScheduleSize)
@@ -1385,8 +1413,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             };
 
             this.DataLicenses                       = OpenDataLicenses is null
-                                                          ? new ReactiveSet<OpenDataLicense>()
-                                                          : new ReactiveSet<OpenDataLicense>(OpenDataLicenses);
+                                                          ? new ReactiveSet<DataLicense>()
+                                                          : new ReactiveSet<DataLicense>(OpenDataLicenses);
             this.DataLicenses.OnSetChanged         += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -1505,10 +1533,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             this.ChargingModes          = new ReactiveSet<ChargingModes>();
             this._ChargingConnectors    = new ReactiveSet<IChargingConnector>();
+            this.CalibrationInfo        = CalibrationInfo;
 
             this.energyMeter            = EnergyMeter;
 
-            this.SelfCheckTimeSpan      = SelfCheckTimeSpan != null && SelfCheckTimeSpan.HasValue ? SelfCheckTimeSpan.Value : DefaultSelfCheckTimeSpan;
+            this.SelfCheckTimeSpan      = SelfCheckTimeSpan is not null && SelfCheckTimeSpan.HasValue ? SelfCheckTimeSpan.Value : DefaultSelfCheckTimeSpan;
 
             this.chargingReservations   = new Dictionary<ChargingReservation_Id, ChargingReservationCollection>();
 
@@ -1774,8 +1803,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="NewStatus">The new EVSE admin status.</param>
         internal async Task UpdateAdminStatus(DateTime                            Timestamp,
                                               EventTracking_Id                    EventTrackingId,
-                                              Timestamped<EVSEAdminStatusTypes>   NewStatus,
-                                              Timestamped<EVSEAdminStatusTypes>?  OldStatus    = null,
+                                              Timestamped<EVSEAdminStatusType>   NewStatus,
+                                              Timestamped<EVSEAdminStatusType>?  OldStatus    = null,
                                               Context?                            DataSource   = null)
         {
 
@@ -2028,8 +2057,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (ChargingLocation.EVSEId.HasValue && ChargingLocation.EVSEId.Value != Id)
                     result = ReservationResult.UnknownLocation;
 
-                else if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                         AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
+                else if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
+                         AdminStatus.Value == EVSEAdminStatusType.InternalUse)
                 {
 
                     lock (chargingReservations)
@@ -2254,8 +2283,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             try
             {
 
-                if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                    AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
+                    AdminStatus.Value == EVSEAdminStatusType.InternalUse)
                 {
 
                     lock (chargingReservations)
@@ -3085,8 +3114,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     result = RemoteStartResult.UnknownLocation(System_Id.Local);
                 }
 
-                else if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                         AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
+                else if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
+                         AdminStatus.Value == EVSEAdminStatusType.InternalUse)
                 {
 
 
@@ -3352,8 +3381,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             try {
 
-                if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                    AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
+                    AdminStatus.Value == EVSEAdminStatusType.InternalUse)
                 {
 
                     #region Available

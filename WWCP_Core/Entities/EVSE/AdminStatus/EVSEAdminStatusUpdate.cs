@@ -42,12 +42,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The new timestamped admin status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEAdminStatusTypes>   NewStatus    { get; }
+        public Timestamped<EVSEAdminStatusType>   NewStatus    { get; }
 
         /// <summary>
         /// The optional old timestamped admin status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEAdminStatusTypes>?  OldStatus    { get; }
+        public Timestamped<EVSEAdminStatusType>?  OldStatus    { get; }
 
         /// <summary>
         /// An optional data source or context for this EVSE admin status update.
@@ -66,8 +66,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OldStatus">The optional old timestamped admin status of the EVSE.</param>
         /// <param name="Context">An optional data source or context for the EVSE admin status update.</param>
         public EVSEAdminStatusUpdate(EVSE_Id                             Id,
-                                     Timestamped<EVSEAdminStatusTypes>   NewStatus,
-                                     Timestamped<EVSEAdminStatusTypes>?  OldStatus   = null,
+                                     Timestamped<EVSEAdminStatusType>   NewStatus,
+                                     Timestamped<EVSEAdminStatusType>?  OldStatus   = null,
                                      Context?                            Context     = null)
 
         {

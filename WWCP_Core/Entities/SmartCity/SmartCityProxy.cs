@@ -553,13 +553,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region DataLicense
 
-        private List<OpenDataLicense> _DataLicenses;
+        private List<DataLicense> _DataLicenses;
 
         /// <summary>
         /// The license of the charging station operator data.
         /// </summary>
         [Mandatory]
-        public IEnumerable<OpenDataLicense> DataLicenses
+        public IEnumerable<DataLicense> DataLicenses
             => _DataLicenses;
 
         #endregion
@@ -724,6 +724,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 UInt16?                          MaxStatusScheduleSize        = null,
 
                                 String?                          DataSource                   = null,
+                                DateTime?                        Created                      = null,
                                 DateTime?                        LastChange                   = null,
 
                                 JObject?                         CustomData                   = null,
@@ -741,6 +742,7 @@ namespace cloud.charging.open.protocols.WWCP
                    MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
                    DataSource,
+                   Created,
                    LastChange,
                    CustomData,
                    InternalData)
@@ -756,7 +758,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this._DataLicenses                = new List<OpenDataLicense>();
+            this._DataLicenses                = new List<DataLicense>();
 
             this.Priority                     = Priority    ?? new SmartCityPriority(0);
 

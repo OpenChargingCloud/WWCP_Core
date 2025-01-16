@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// independently. Thus there could be multiple interdependent power sockets.
     /// </summary>
     public class EVSE : AEMobilityEntity<EVSE_Id,
-                                         EVSEAdminStatusTypes,
+                                         EVSEAdminStatusType,
                                          EVSEStatusType>,
                         IEquatable<EVSE>, IComparable<EVSE>,
                         IEVSE
@@ -131,7 +131,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// An enumeration of all data license(s) of this EVSE.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<OpenDataLicense>             DataLicenses            { get; }
+        public ReactiveSet<DataLicense>                 DataLicenses                { get; }
+
+        /// <summary>
+        /// The optional URL where certificates, identifiers and public keys related to the calibration
+        /// of meters in this EVSE can be found.
+        /// </summary>
+        public URL?                                     CalibrationInfo             { get; }
 
         /// <summary>
         /// An enumeration of all supported charging modes of this EVSE.
@@ -845,7 +851,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<URL>?                    PhotoURLs                    = null,
                     IEnumerable<Brand>?                  Brands                       = null,
                     IEnumerable<RootCAInfo>?             MobilityRootCAs              = null,
-                    IEnumerable<OpenDataLicense>?        OpenDataLicenses             = null,
+                    IEnumerable<DataLicense>?            OpenDataLicenses             = null,
                     IEnumerable<ChargingModes>?          ChargingModes                = null,
                     IEnumerable<ChargingTariff>?         ChargingTariffs              = null,
                     CurrentTypes?                        CurrentType                  = null,
@@ -866,16 +872,19 @@ namespace cloud.charging.open.protocols.WWCP
                     EnergyMixPrognosis?                  EnergyMixPrognoses           = null,
                     EnergyMeter?                         EnergyMeter                  = null,
                     Boolean?                             IsFreeOfCharge               = null,
+                    URL?                                 CalibrationInfo              = null,
                     IEnumerable<IChargingConnector>?     ChargingConnectors           = null,
+
                     ChargingSession?                     ChargingSession              = null,
 
-                    Timestamped<EVSEAdminStatusTypes>?   InitialAdminStatus           = null,
+                    Timestamped<EVSEAdminStatusType>?   InitialAdminStatus           = null,
                     Timestamped<EVSEStatusType>?         InitialStatus                = null,
                     UInt16?                              MaxAdminStatusScheduleSize   = null,
                     UInt16?                              MaxStatusScheduleSize        = null,
                     DateTime?                            LastStatusUpdate             = null,
 
                     String?                              DataSource                   = null,
+                    DateTime?                            Created                      = null,
                     DateTime?                            LastChange                   = null,
 
                     JObject?                             CustomData                   = null,
@@ -887,11 +896,12 @@ namespace cloud.charging.open.protocols.WWCP
             : base(Id,
                    Name,
                    Description,
-                   InitialAdminStatus         ?? EVSEAdminStatusTypes.Operational,
+                   InitialAdminStatus         ?? EVSEAdminStatusType.Operational,
                    InitialStatus              ?? EVSEStatusType.Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxEVSEAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxEVSEStatusScheduleSize,
                    DataSource,
+                   Created,
                    LastChange,
                    CustomData,
                    InternalData)
@@ -940,8 +950,8 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
             this.DataLicenses                   = OpenDataLicenses is null
-                                                      ? new ReactiveSet<OpenDataLicense>()
-                                                      : new ReactiveSet<OpenDataLicense>(OpenDataLicenses);
+                                                      ? new ReactiveSet<DataLicense>()
+                                                      : new ReactiveSet<DataLicense>(OpenDataLicenses);
             this.DataLicenses.OnSetChanged     += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -974,6 +984,8 @@ namespace cloud.charging.open.protocols.WWCP
             //                    newItems);
 
             //};
+
+            this.CalibrationInfo                    = CalibrationInfo;
 
             this.currentType                        = CurrentType ?? CurrentTypes.AC_ThreePhases;
 
@@ -1276,8 +1288,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DataSource">An optional data source or context for the status update.</param>
         internal async Task UpdateAdminStatus(DateTime                            Timestamp,
                                               EventTracking_Id                    EventTrackingId,
-                                              Timestamped<EVSEAdminStatusTypes>   NewAdminStatus,
-                                              Timestamped<EVSEAdminStatusTypes>?  OldAdminStatus   = null,
+                                              Timestamped<EVSEAdminStatusType>   NewAdminStatus,
+                                              Timestamped<EVSEAdminStatusType>?  OldAdminStatus   = null,
                                               Context?                            DataSource       = null)
         {
 
@@ -1619,8 +1631,8 @@ namespace cloud.charging.open.protocols.WWCP
                 if (ChargingLocation.EVSEId.HasValue && ChargingLocation.EVSEId.Value != Id)
                     result = ReservationResult.UnknownLocation;
 
-                else if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                         AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
+                else if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
+                         AdminStatus.Value == EVSEAdminStatusType.InternalUse)
                 {
 
                     if (RemoteEVSE != null)
@@ -1786,8 +1798,8 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                    AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
+                    AdminStatus.Value == EVSEAdminStatusType.InternalUse)
                 {
 
                     if (RemoteEVSE != null)
@@ -2408,8 +2420,8 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                    AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
+                    AdminStatus.Value == EVSEAdminStatusType.InternalUse)
                 {
 
                     #region Try remote EVSE
@@ -2664,8 +2676,8 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                    AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
+                    AdminStatus.Value == EVSEAdminStatusType.InternalUse)
                 {
 
                     if (SessionId == ChargingSession?.Id)

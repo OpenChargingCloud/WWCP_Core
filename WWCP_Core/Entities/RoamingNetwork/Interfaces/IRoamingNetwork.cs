@@ -258,6 +258,8 @@ namespace cloud.charging.open.protocols.WWCP
                              RoamingNetwork,
                              Name,
                              Description,
+                             null,
+                             null,
                              Configurator,
                              RemoteChargingStationOperatorCreator,
                              InitialAdminStatus,
@@ -301,7 +303,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         new RoamingNetwork_Id         Id                          { get; }
 
-        ReactiveSet<OpenDataLicense>  DataLicenses                { get; }
+        ReactiveSet<DataLicense>  DataLicenses                { get; }
 
 
 
@@ -549,10 +551,10 @@ namespace cloud.charging.open.protocols.WWCP
         IEnumerable<EVSEStatus>                  EVSEStatus             (IncludeEVSEDelegate?                  IncludeEVSEs        = null);
 
 
-        IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>>
+        IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>>
                                                  EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs        = null,
                                                                          Func<DateTime,             Boolean>?  TimestampFilter     = null,
-                                                                         Func<EVSEAdminStatusTypes, Boolean>?  AdminStatusFilter   = null,
+                                                                         Func<EVSEAdminStatusType, Boolean>?  AdminStatusFilter   = null,
                                                                          UInt64?                               Skip                = null,
                                                                          UInt64?                               Take                = null);
 
@@ -569,14 +571,14 @@ namespace cloud.charging.open.protocols.WWCP
         void SetEVSEAdminStatus(IEnumerable<EVSEAdminStatus> EVSEAdminStatusList);
 
         void SetEVSEAdminStatus(EVSE_Id                            EVSEId,
-                                Timestamped<EVSEAdminStatusTypes>  NewAdminStatus);
+                                Timestamped<EVSEAdminStatusType>  NewAdminStatus);
 
         void SetEVSEAdminStatus(EVSE_Id               EVSEId,
                                 DateTime              Timestamp,
-                                EVSEAdminStatusTypes  NewAdminStatus);
+                                EVSEAdminStatusType  NewAdminStatus);
 
         void SetEVSEAdminStatus(EVSE_Id                                         EVSEId,
-                                IEnumerable<Timestamped<EVSEAdminStatusTypes>>  AdminStatusList,
+                                IEnumerable<Timestamped<EVSEAdminStatusType>>  AdminStatusList,
                                 ChangeMethods                                   ChangeMethod  = ChangeMethods.Replace);
 
         #endregion

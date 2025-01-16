@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdminStatus">An EVSE admin status.</param>
         public static Boolean Contains(this IEnumerable<EVSEAdminStatus>  EVSEAdminStatus,
                                        EVSE_Id                            Id,
-                                       EVSEAdminStatusTypes               AdminStatus)
+                                       EVSEAdminStatusType               AdminStatus)
         {
 
             foreach (var status in EVSEAdminStatus)
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The current admin status of the EVSE.
         /// </summary>
-        public EVSEAdminStatusTypes  Status       { get; }
+        public EVSEAdminStatusType  Status       { get; }
 
         /// <summary>
         /// The timestamp of the current admin status of the EVSE.
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamped admin status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEAdminStatusTypes> TimestampedAdminStatus
+        public Timestamped<EVSEAdminStatusType> TimestampedAdminStatus
             => new (Timestamp, Status);
 
         #endregion
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Status">The current timestamped admin status of the EVSE.</param>
         /// <param name="Context">An optional data source or context for the EVSE admin status.</param>
         public EVSEAdminStatus(EVSE_Id                            Id,
-                               Timestamped<EVSEAdminStatusTypes>  Status,
+                               Timestamped<EVSEAdminStatusType>  Status,
                                Context?                           Context   = null)
 
             : this(Id,
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp of the admin status of the EVSE.</param>
         /// <param name="Context">An optional data source or context for the EVSE admin status.</param>
         public EVSEAdminStatus(EVSE_Id               Id,
-                               EVSEAdminStatusTypes  Status,
+                               EVSEAdminStatusType  Status,
                                DateTime              Timestamp,
                                Context?              Context   = null)
         {

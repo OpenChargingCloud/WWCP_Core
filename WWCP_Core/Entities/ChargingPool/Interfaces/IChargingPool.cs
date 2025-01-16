@@ -75,6 +75,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         IEnumerable<AuthenticationModes>?                               AuthenticationModes            = null,
                                                                         IEnumerable<PaymentOptions>?                                    PaymentOptions                 = null,
                                                                         IEnumerable<ChargingStationFeature>?                            Features                       = null,
+                                                                        IEnumerable<VehicleType>?                                       VehicleTypes                   = null,
+                                                                        IEnumerable<Image>?                                             Images                         = null,
 
                                                                         String?                                                         ServiceIdentification          = null,
                                                                         String?                                                         ModelCode                      = null,
@@ -84,6 +86,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                         IEnumerable<Brand>?                                             Brands                         = null,
                                                                         IEnumerable<RootCAInfo>?                                        MobilityRootCAs                = null,
+                                                                        IEnumerable<EVRoamingPartnerInfo>?                              EVRoamingPartners              = null,
+                                                                        URL?                                                            CertificationInfo              = null,
+                                                                        URL?                                                            CalibrationInfo                = null,
 
                                                                         Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                         Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
@@ -91,6 +96,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         UInt16?                                                         MaxStatusScheduleSize          = null,
 
                                                                         String?                                                         DataSource                     = null,
+                                                                        DateTime?                                                       Created                        = null,
                                                                         DateTime?                                                       LastChange                     = null,
 
                                                                         JObject?                                                        CustomData                     = null,
@@ -108,56 +114,66 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         User_Id?                                                        CurrentUserId                  = null)
 
 
-            => ChargingPool.AddChargingStation(new ChargingStation(
-                                                   Id,
-                                                   ChargingPool,
-                                                   Name,
-                                                   Description,
+            => ChargingPool.AddChargingStation(
+                   new ChargingStation(
 
-                                                   Address,
-                                                   GeoLocation,
-                                                   OpeningTimes,
-                                                   ChargingWhenClosed,
-                                                   Accessibility,
-                                                   LocationLanguage,
-                                                   PhysicalReference,
-                                                   HotlinePhoneNumber,
+                       Id,
+                       ChargingPool,
+                       Name,
+                       Description,
 
-                                                   AuthenticationModes,
-                                                   PaymentOptions,
-                                                   Features,
+                       Address,
+                       GeoLocation,
+                       OpeningTimes,
+                       ChargingWhenClosed,
+                       Accessibility,
+                       LocationLanguage,
+                       PhysicalReference,
+                       HotlinePhoneNumber,
 
-                                                   ServiceIdentification,
-                                                   ModelCode,
+                       AuthenticationModes,
+                       PaymentOptions,
+                       Features,
+                       VehicleTypes,
+                       Images,
 
-                                                   Published,
-                                                   Disabled,
+                       ServiceIdentification,
+                       ModelCode,
 
-                                                   Brands,
-                                                   MobilityRootCAs,
+                       Published,
+                       Disabled,
 
-                                                   InitialAdminStatus,
-                                                   InitialStatus,
-                                                   MaxAdminStatusScheduleSize,
-                                                   MaxStatusScheduleSize,
+                       Brands,
+                       MobilityRootCAs,
+                       EVRoamingPartners,
+                       CertificationInfo,
+                       CalibrationInfo,
 
-                                                   DataSource,
-                                                   LastChange,
+                       InitialAdminStatus,
+                       InitialStatus,
+                       MaxAdminStatusScheduleSize,
+                       MaxStatusScheduleSize,
 
-                                                   CustomData,
-                                                   InternalData,
+                       DataSource,
+                       Created,
+                       LastChange,
 
-                                                   Configurator,
-                                                   RemoteChargingStationCreator
-                                               ),
+                       CustomData,
+                       InternalData,
 
-                                               OnSuccess,
-                                               OnError,
+                       Configurator,
+                       RemoteChargingStationCreator
+                   ),
 
-                                               SkipAddedNotifications,
-                                               AllowInconsistentOperatorIds,
-                                               EventTrackingId,
-                                               CurrentUserId);
+                   OnSuccess,
+                   OnError,
+
+                   SkipAddedNotifications,
+                   AllowInconsistentOperatorIds,
+                   EventTrackingId,
+                   CurrentUserId
+
+               );
 
         #endregion
 
@@ -192,6 +208,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                    IEnumerable<AuthenticationModes>?                               AuthenticationModes            = null,
                                                                                    IEnumerable<PaymentOptions>?                                    PaymentOptions                 = null,
                                                                                    IEnumerable<ChargingStationFeature>?                            Features                       = null,
+                                                                                   IEnumerable<VehicleType>?                                       VehicleTypes                   = null,
+                                                                                   IEnumerable<Image>?                                             Images                         = null,
 
                                                                                    String?                                                         ServiceIdentification          = null,
                                                                                    String?                                                         ModelCode                      = null,
@@ -201,6 +219,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                                    IEnumerable<Brand>?                                             Brands                         = null,
                                                                                    IEnumerable<RootCAInfo>?                                        MobilityRootCAs                = null,
+                                                                                   IEnumerable<EVRoamingPartnerInfo>?                              EVRoamingPartners              = null,
+                                                                                   URL?                                                            CertificationInfo              = null,
+                                                                                   URL?                                                            CalibrationInfo                = null,
 
                                                                                    Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                                    Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
@@ -208,6 +229,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                    UInt16?                                                         MaxStatusScheduleSize          = null,
 
                                                                                    String?                                                         DataSource                     = null,
+                                                                                   DateTime?                                                       Created                        = null,
                                                                                    DateTime?                                                       LastChange                     = null,
 
                                                                                    JObject?                                                        CustomData                     = null,
@@ -224,55 +246,65 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                    User_Id?                                                        CurrentUserId                  = null)
 
 
-            => ChargingPool.AddChargingStationIfNotExists(new ChargingStation(
-                                                              Id,
-                                                              ChargingPool,
-                                                              Name,
-                                                              Description,
+            => ChargingPool.AddChargingStationIfNotExists(
+                   new ChargingStation(
 
-                                                              Address,
-                                                              GeoLocation,
-                                                              OpeningTimes,
-                                                              ChargingWhenClosed,
-                                                              Accessibility,
-                                                              LocationLanguage,
-                                                              PhysicalReference,
-                                                              HotlinePhoneNumber,
+                       Id,
+                       ChargingPool,
+                       Name,
+                       Description,
 
-                                                              AuthenticationModes,
-                                                              PaymentOptions,
-                                                              Features,
+                       Address,
+                       GeoLocation,
+                       OpeningTimes,
+                       ChargingWhenClosed,
+                       Accessibility,
+                       LocationLanguage,
+                       PhysicalReference,
+                       HotlinePhoneNumber,
 
-                                                              ServiceIdentification,
-                                                              ModelCode,
+                       AuthenticationModes,
+                       PaymentOptions,
+                       Features,
+                       VehicleTypes,
+                       Images,
 
-                                                              Published,
-                                                              Disabled,
+                       ServiceIdentification,
+                       ModelCode,
 
-                                                              Brands,
-                                                              MobilityRootCAs,
+                       Published,
+                       Disabled,
 
-                                                              InitialAdminStatus,
-                                                              InitialStatus,
-                                                              MaxAdminStatusScheduleSize,
-                                                              MaxStatusScheduleSize,
+                       Brands,
+                       MobilityRootCAs,
+                       EVRoamingPartners,
+                       CertificationInfo,
+                       CalibrationInfo,
 
-                                                              DataSource,
-                                                              LastChange,
+                       InitialAdminStatus,
+                       InitialStatus,
+                       MaxAdminStatusScheduleSize,
+                       MaxStatusScheduleSize,
 
-                                                              CustomData,
-                                                              InternalData,
+                       DataSource,
+                       Created,
+                       LastChange,
 
-                                                              Configurator,
-                                                              RemoteChargingStationCreator
-                                                          ),
+                       CustomData,
+                       InternalData,
 
-                                                          OnSuccess,
+                       Configurator,
+                       RemoteChargingStationCreator
+                   ),
 
-                                                          SkipAddedNotifications,
-                                                          AllowInconsistentOperatorIds,
-                                                          EventTrackingId,
-                                                          CurrentUserId);
+                   OnSuccess,
+
+                   SkipAddedNotifications,
+                   AllowInconsistentOperatorIds,
+                   EventTrackingId,
+                   CurrentUserId
+
+               );
 
         #endregion
 
@@ -309,15 +341,20 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                         IEnumerable<AuthenticationModes>?                               AuthenticationModes                    = null,
                                                                                         IEnumerable<PaymentOptions>?                                    PaymentOptions                         = null,
                                                                                         IEnumerable<ChargingStationFeature>?                            Features                               = null,
+                                                                                        IEnumerable<VehicleType>?                                       VehicleTypes                           = null,
+                                                                                        IEnumerable<Image>?                                             Images                                 = null,
 
                                                                                         String?                                                         ServiceIdentification                  = null,
                                                                                         String?                                                         ModelCode                              = null,
 
-                                                                                        Boolean?                                                        Published                      = null,
-                                                                                        Boolean?                                                        Disabled                       = null,
+                                                                                        Boolean?                                                        Published                              = null,
+                                                                                        Boolean?                                                        Disabled                               = null,
 
                                                                                         IEnumerable<Brand>?                                             Brands                                 = null,
                                                                                         IEnumerable<RootCAInfo>?                                        MobilityRootCAs                        = null,
+                                                                                        IEnumerable<EVRoamingPartnerInfo>?                              EVRoamingPartners                      = null,
+                                                                                        URL?                                                            CertificationInfo                      = null,
+                                                                                        URL?                                                            CalibrationInfo                        = null,
 
                                                                                         Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus                     = null,
                                                                                         Timestamped<ChargingStationStatusTypes>?                        InitialStatus                          = null,
@@ -325,6 +362,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                         UInt16?                                                         MaxStatusScheduleSize                  = null,
 
                                                                                         String?                                                         DataSource                             = null,
+                                                                                        DateTime?                                                       Created                                = null,
                                                                                         DateTime?                                                       LastChange                             = null,
 
                                                                                         JObject?                                                        CustomData                             = null,
@@ -342,57 +380,67 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                         EventTracking_Id?                                               EventTrackingId                        = null,
                                                                                         User_Id?                                                        CurrentUserId                          = null)
 
-            => ChargingPool.AddOrUpdateChargingStation(new ChargingStation(
-                                                           Id,
-                                                           ChargingPool,
-                                                           Name,
-                                                           Description,
+            => ChargingPool.AddOrUpdateChargingStation(
+                   new ChargingStation(
 
-                                                           Address,
-                                                           GeoLocation,
-                                                           OpeningTimes,
-                                                           ChargingWhenClosed,
-                                                           Accessibility,
-                                                           LocationLanguage,
-                                                           PhysicalReference,
-                                                           HotlinePhoneNumber,
+                       Id,
+                       ChargingPool,
+                       Name,
+                       Description,
 
-                                                           AuthenticationModes,
-                                                           PaymentOptions,
-                                                           Features,
+                       Address,
+                       GeoLocation,
+                       OpeningTimes,
+                       ChargingWhenClosed,
+                       Accessibility,
+                       LocationLanguage,
+                       PhysicalReference,
+                       HotlinePhoneNumber,
 
-                                                           ServiceIdentification,
-                                                           ModelCode,
+                       AuthenticationModes,
+                       PaymentOptions,
+                       Features,
+                       VehicleTypes,
+                       Images,
 
-                                                           Published,
-                                                           Disabled,
+                       ServiceIdentification,
+                       ModelCode,
 
-                                                           Brands,
-                                                           MobilityRootCAs,
+                       Published,
+                       Disabled,
 
-                                                           InitialAdminStatus,
-                                                           InitialStatus,
-                                                           MaxAdminStatusScheduleSize,
-                                                           MaxStatusScheduleSize,
+                       Brands,
+                       MobilityRootCAs,
+                       EVRoamingPartners,
+                       CertificationInfo,
+                       CalibrationInfo,
 
-                                                           DataSource,
-                                                           LastChange,
+                       InitialAdminStatus,
+                       InitialStatus,
+                       MaxAdminStatusScheduleSize,
+                       MaxStatusScheduleSize,
 
-                                                           CustomData,
-                                                           InternalData,
+                       DataSource,
+                       Created,
+                       LastChange,
 
-                                                           Configurator,
-                                                           RemoteChargingStationCreator
-                                                       ),
+                       CustomData,
+                       InternalData,
 
-                                                       OnAdditionSuccess,
-                                                       OnUpdateSuccess,
-                                                       OnError,
+                       Configurator,
+                       RemoteChargingStationCreator
+                   ),
 
-                                                       SkipAddOrUpdatedUpdatedNotifications,
-                                                       AllowInconsistentOperatorIds,
-                                                       EventTrackingId,
-                                                       CurrentUserId);
+                   OnAdditionSuccess,
+                   OnUpdateSuccess,
+                   OnError,
+
+                   SkipAddOrUpdatedUpdatedNotifications,
+                   AllowInconsistentOperatorIds,
+                   EventTrackingId,
+                   CurrentUserId
+
+               );
 
         #endregion
 
@@ -428,6 +476,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                               IEnumerable<AuthenticationModes>?                               AuthenticationModes            = null,
                                                                               IEnumerable<PaymentOptions>?                                    PaymentOptions                 = null,
                                                                               IEnumerable<ChargingStationFeature>?                            Features                       = null,
+                                                                              IEnumerable<VehicleType>?                                       VehicleTypes                   = null,
+                                                                              IEnumerable<Image>?                                             Images                         = null,
 
                                                                               String?                                                         ServiceIdentification          = null,
                                                                               String?                                                         ModelCode                      = null,
@@ -437,6 +487,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                               IEnumerable<Brand>?                                             Brands                         = null,
                                                                               IEnumerable<RootCAInfo>?                                        MobilityRootCAs                = null,
+                                                                              IEnumerable<EVRoamingPartnerInfo>?                              EVRoamingPartners              = null,
+                                                                              URL?                                                            CertificationInfo              = null,
+                                                                              URL?                                                            CalibrationInfo                = null,
 
                                                                               Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                               Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
@@ -444,6 +497,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                               UInt16?                                                         MaxStatusScheduleSize          = null,
 
                                                                               String?                                                         DataSource                     = null,
+                                                                              DateTime?                                                       Created                        = null,
                                                                               DateTime?                                                       LastChange                     = null,
 
                                                                               JObject?                                                        CustomData                     = null,
@@ -460,56 +514,66 @@ namespace cloud.charging.open.protocols.WWCP
                                                                               EventTracking_Id?                                               EventTrackingId                = null,
                                                                               User_Id?                                                        CurrentUserId                  = null)
 
-            => ChargingPool.UpdateChargingStation(new ChargingStation(
-                                                      Id,
-                                                      ChargingPool,
-                                                      Name,
-                                                      Description,
+            => ChargingPool.UpdateChargingStation(
+                   new ChargingStation(
 
-                                                      Address,
-                                                      GeoLocation,
-                                                      OpeningTimes,
-                                                      ChargingWhenClosed,
-                                                      Accessibility,
-                                                      LocationLanguage,
-                                                      PhysicalReference,
-                                                      HotlinePhoneNumber,
+                       Id,
+                       ChargingPool,
+                       Name,
+                       Description,
 
-                                                      AuthenticationModes,
-                                                      PaymentOptions,
-                                                      Features,
+                       Address,
+                       GeoLocation,
+                       OpeningTimes,
+                       ChargingWhenClosed,
+                       Accessibility,
+                       LocationLanguage,
+                       PhysicalReference,
+                       HotlinePhoneNumber,
 
-                                                      ServiceIdentification,
-                                                      ModelCode,
+                       AuthenticationModes,
+                       PaymentOptions,
+                       Features,
+                       VehicleTypes,
+                       Images,
 
-                                                      Published,
-                                                      Disabled,
+                       ServiceIdentification,
+                       ModelCode,
 
-                                                      Brands,
-                                                      MobilityRootCAs,
+                       Published,
+                       Disabled,
 
-                                                      InitialAdminStatus,
-                                                      InitialStatus,
-                                                      MaxAdminStatusScheduleSize,
-                                                      MaxStatusScheduleSize,
+                       Brands,
+                       MobilityRootCAs,
+                       EVRoamingPartners,
+                       CertificationInfo,
+                       CalibrationInfo,
 
-                                                      DataSource,
-                                                      LastChange,
+                       InitialAdminStatus,
+                       InitialStatus,
+                       MaxAdminStatusScheduleSize,
+                       MaxStatusScheduleSize,
 
-                                                      CustomData,
-                                                      InternalData,
+                       DataSource,
+                       Created,
+                       LastChange,
 
-                                                      Configurator,
-                                                      RemoteChargingStationCreator
-                                                  ),
+                       CustomData,
+                       InternalData,
 
-                                                  OnUpdateSuccess,
-                                                  OnError,
+                       Configurator,
+                       RemoteChargingStationCreator
+                   ),
 
-                                                  SkipUpdatedNotifications,
-                                                  AllowInconsistentOperatorIds,
-                                                  EventTrackingId,
-                                                  CurrentUserId);
+                   OnUpdateSuccess,
+                   OnError,
+
+                   SkipUpdatedNotifications,
+                   AllowInconsistentOperatorIds,
+                   EventTrackingId,
+                   CurrentUserId
+
+               );
 
         #endregion
 
@@ -610,11 +674,16 @@ namespace cloud.charging.open.protocols.WWCP
         ReactiveSet<Brand>                      Brands                      { get; }
 
         /// <summary>
-        /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20, available in this charging pool.
+        /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20 available at this charging pool.
         /// </summary>
         [Optional, SlowData]
-        ReactiveSet<RootCAInfo>                 MobilityRootCAs             { get; }
+        IEnumerable<RootCAInfo>                 MobilityRootCAs             { get; }
 
+        /// <summary>
+        /// An optional enumeration of EV roaming partners available at this charging pool.
+        /// </summary>
+        [Optional, SlowData]
+        IEnumerable<EVRoamingPartnerInfo>       EVRoamingPartners           { get; }
 
         /// <summary>
         /// The remote charging pool.
@@ -629,7 +698,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The official language at this charging pool.
         /// </summary>
         [Optional]
-        Languages?                              LocationLanguage            { get; set; }
+        IEnumerable<Languages>                  LocationLanguages           { get; }
 
         /// <summary>
         /// The address of this charging pool.
@@ -846,7 +915,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The license of the charging pool data.
         /// </summary>
         [Optional]
-        ReactiveSet<OpenDataLicense>            DataLicenses                { get; }
+        IEnumerable<DataLicense>                DataLicenses                { get; }
 
 
 
@@ -1145,11 +1214,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TimestampFilter">An optional status timestamp filter.</param>
         /// <param name="StatusFilter">An optional status value filter.</param>
         /// <param name="HistorySize">The size of the history.</param>
-        IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>>
+        IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>>
 
             EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs      = null,
                                     Func<DateTime,             Boolean>?  TimestampFilter   = null,
-                                    Func<EVSEAdminStatusTypes, Boolean>?  StatusFilter      = null,
+                                    Func<EVSEAdminStatusType, Boolean>?  StatusFilter      = null,
                                     UInt64?                               Skip              = null,
                                     UInt64?                               Take              = null);
 

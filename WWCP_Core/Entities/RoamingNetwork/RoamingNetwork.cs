@@ -206,13 +206,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data licenses
 
-        private ReactiveSet<OpenDataLicense> dataLicenses;
+        private ReactiveSet<DataLicense> dataLicenses;
 
         /// <summary>
         /// The license of the roaming network data.
         /// </summary>
         [Mandatory]
-        public ReactiveSet<OpenDataLicense> DataLicenses
+        public ReactiveSet<DataLicense> DataLicenses
             => dataLicenses;
 
         #endregion
@@ -270,6 +270,7 @@ namespace cloud.charging.open.protocols.WWCP
                               String?                                    LoggingPath                                  = null,
 
                               String?                                    DataSource                                   = null,
+                              DateTime?                                  Created                                      = null,
                               DateTime?                                  LastChange                                   = null,
 
                               JObject?                                   CustomData                                   = null,
@@ -283,6 +284,7 @@ namespace cloud.charging.open.protocols.WWCP
                    MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
                    DataSource,
+                   Created,
                    LastChange,
                    CustomData,
                    InternalData)
@@ -291,7 +293,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this.dataLicenses                                = new ReactiveSet<OpenDataLicense>();
+            this.dataLicenses                                = new ReactiveSet<DataLicense>();
 
             this.eMobilityProviders                          = new EntityHashSet       <IRoamingNetwork,       EMobilityProvider_Id,       IEMobilityProvider>      (this);
             this.chargingStationOperators                    = new EntityHashSet       <IRoamingNetwork,       ChargingStationOperator_Id, IChargingStationOperator>(this);
@@ -4882,7 +4884,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVSEAdminStatus(EVSEId, NewAdminStatus)
 
         public void SetEVSEAdminStatus(EVSE_Id                            EVSEId,
-                                       Timestamped<EVSEAdminStatusTypes>  NewAdminStatus)
+                                       Timestamped<EVSEAdminStatusType>  NewAdminStatus)
         {
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator) &&
@@ -4899,7 +4901,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public void SetEVSEAdminStatus(EVSE_Id               EVSEId,
                                        DateTime              Timestamp,
-                                       EVSEAdminStatusTypes  NewAdminStatus)
+                                       EVSEAdminStatusType  NewAdminStatus)
         {
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator) &&
@@ -4907,7 +4909,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 chargingStationOperator.SetEVSEAdminStatus(EVSEId,
-                                                           new Timestamped<EVSEAdminStatusTypes>(Timestamp,
+                                                           new Timestamped<EVSEAdminStatusType>(Timestamp,
                                                            NewAdminStatus));
 
             }
@@ -4919,7 +4921,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVSEAdminStatus(EVSEId, AdminStatusList)
 
         public void SetEVSEAdminStatus(EVSE_Id                                         EVSEId,
-                                       IEnumerable<Timestamped<EVSEAdminStatusTypes>>  AdminStatusList,
+                                       IEnumerable<Timestamped<EVSEAdminStatusType>>  AdminStatusList,
                                        ChangeMethods                                   ChangeMethod  = ChangeMethods.Replace)
         {
 
@@ -4957,8 +4959,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateEVSEAdminStatus(DateTime                            Timestamp,
                                                   EventTracking_Id                    EventTrackingId,
                                                   IEVSE                               EVSE,
-                                                  Timestamped<EVSEAdminStatusTypes>   NewAdminStatus,
-                                                  Timestamped<EVSEAdminStatusTypes>?  OldAdminStatus   = null,
+                                                  Timestamped<EVSEAdminStatusType>   NewAdminStatus,
+                                                  Timestamped<EVSEAdminStatusType>?  OldAdminStatus   = null,
                                                   Context?                            DataSource       = null)
         {
 
@@ -5017,11 +5019,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TimestampFilter">An optional status timestamp filter.</param>
         /// <param name="StatusFilter">An optional status value filter.</param>
         /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>>
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>>
 
             EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs      = null,
                                     Func<DateTime,             Boolean>?  TimestampFilter   = null,
-                                    Func<EVSEAdminStatusTypes, Boolean>?  StatusFilter      = null,
+                                    Func<EVSEAdminStatusType, Boolean>?  StatusFilter      = null,
                                     UInt64?                               Skip              = null,
                                     UInt64?                               Take              = null)
 

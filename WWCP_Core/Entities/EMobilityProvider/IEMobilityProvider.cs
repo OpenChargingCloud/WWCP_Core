@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         Address Address { get; set; }
-        ReactiveSet<OpenDataLicense> DataLicenses { get; set; }
+        ReactiveSet<DataLicense> DataLicenses { get; set; }
         SimpleEMailAddress? EMailAddress { get; set; }
         IEnumerable<KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusTypes>> EMobilityStationAdminStatus { get; }
         IEnumerable<eMobilityStation> EMobilityStations { get; }

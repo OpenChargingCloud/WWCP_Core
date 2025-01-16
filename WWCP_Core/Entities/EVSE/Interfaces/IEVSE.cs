@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// The common interface of all Electric Vehicle Supply Equipments (EVSEs).
     /// </summary>
     public interface IEVSE : IEntity<EVSE_Id>,
-                             IAdminStatus<EVSEAdminStatusTypes>,
+                             IAdminStatus<EVSEAdminStatusType>,
                              IStatus<EVSEStatusType>,
                              ISendAuthorizeStartStop,
                              ILocalRemoteStartStop,
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// An enumeration of all data license(s) of this EVSE.
         /// </summary>
         [Optional, SlowData]
-        ReactiveSet<OpenDataLicense>           DataLicenses             { get; }
+        ReactiveSet<DataLicense>               DataLicenses                 { get; }
 
         /// <summary>
         /// An enumeration of all supported charging modes of this EVSE.
@@ -178,6 +178,13 @@ namespace cloud.charging.open.protocols.WWCP
         ///// </summary>
         //[Optional, SlowData]
         //ReactiveSet<ChargingTariff>            ChargingTariffs              { get; }
+
+        /// <summary>
+        /// The optional URL where certificates, identifiers and public keys related to the calibration
+        /// of meters in this EVSE can be found.
+        /// </summary>
+        [Optional]
+        URL?                                   CalibrationInfo              { get; }
 
 
         /// <summary>

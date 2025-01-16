@@ -183,6 +183,7 @@ namespace cloud.charging.open.protocols.WWCP
                            UInt16?                                    MaxStatusScheduleSize        = null,
 
                            String?                                    DataSource                   = null,
+                           DateTime?                                  Created                      = null,
                            DateTime?                                  LastChange                   = null,
 
                            JObject?                                   CustomData                   = null,
@@ -199,6 +200,7 @@ namespace cloud.charging.open.protocols.WWCP
                    MaxAdminStatusScheduleSize ?? DefaultMaxEnergyMeterAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxEnergyMeterStatusScheduleSize,
                    DataSource,
+                   Created,
                    LastChange,
                    CustomData,
                    InternalData)
@@ -620,6 +622,8 @@ namespace cloud.charging.open.protocols.WWCP
                    DataSource is not null
                        ? new String(DataSource.ToCharArray())
                        : null,
+
+                   Created,
                    LastChangeDate,
 
                    JObject.Parse(CustomData.ToString()),

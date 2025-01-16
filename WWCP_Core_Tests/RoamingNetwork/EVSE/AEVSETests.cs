@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                             Id:                  EVSE_Id.Parse(DE_GEF_S0001_AAAA.Id, "1"),
                                                             Name:                I18NString.Create(Languages.de, "GraphDefined EVSE #1"),
                                                             Description:         I18NString.Create(Languages.de, "powered by GraphDefined EVSEs GmbH"),
-                                                            InitialAdminStatus:  EVSEAdminStatusTypes.OutOfService,
+                                                            InitialAdminStatus:  EVSEAdminStatusType.OutOfService,
                                                             InitialStatus:       EVSEStatusType.Offline
                                                         ).Result.EVSE;
 

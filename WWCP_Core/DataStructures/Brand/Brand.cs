@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The optional data licenses of this brand.
         /// </summary>
         [Optional]
-        public IEnumerable<OpenDataLicense>  DataLicenses    { get; }
+        public IEnumerable<DataLicense>  DataLicenses    { get; }
 
         #endregion
 
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.WWCP
                      I18NString?                Description    = null,
                      URL?                       Logo           = null,
                      URL?                       Homepage       = null,
-                     IEnumerable<OpenDataLicense>?  DataLicenses   = null)
+                     IEnumerable<DataLicense>?  DataLicenses   = null)
         {
 
             #region Initial checks
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.Description   = Description ?? I18NString.Empty;
             this.Logo          = Logo;
             this.Homepage      = Homepage;
-            this.DataLicenses  = DataLicenses?.Distinct() ?? Array.Empty<OpenDataLicense>();
+            this.DataLicenses  = DataLicenses?.Distinct() ?? Array.Empty<DataLicense>();
 
         }
 

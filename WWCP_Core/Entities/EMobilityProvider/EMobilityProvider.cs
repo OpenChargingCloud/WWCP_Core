@@ -331,13 +331,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region DataLicense
 
-        private ReactiveSet<OpenDataLicense> _DataLicenses;
+        private ReactiveSet<DataLicense> _DataLicenses;
 
         /// <summary>
         /// The license of the charging station operator data.
         /// </summary>
         [Mandatory]
-        public ReactiveSet<OpenDataLicense> DataLicenses
+        public ReactiveSet<DataLicense> DataLicenses
         {
 
             get
@@ -702,6 +702,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    UInt16?                                  MaxStatusScheduleSize            = null,
 
                                    String?                                  DataSource                       = null,
+                                   DateTime?                                Created                          = null,
                                    DateTime?                                LastChange                       = null,
 
                                    JObject?                                 CustomData                       = null,
@@ -719,6 +720,7 @@ namespace cloud.charging.open.protocols.WWCP
                    MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
                    DataSource,
+                   Created,
                    LastChange,
                    CustomData,
                    InternalData)
@@ -732,7 +734,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this._DataLicenses = new ReactiveSet<OpenDataLicense>();
+            this._DataLicenses = new ReactiveSet<DataLicense>();
 
             this.Priority = Priority ?? new EMobilityProviderPriority(0);
 

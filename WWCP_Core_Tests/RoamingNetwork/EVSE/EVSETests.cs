@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 ClassicAssert.AreEqual ("GraphDefined EVSE #1",                DE_GEF_E0001_AAAA_1.Name.       FirstText());
                 ClassicAssert.AreEqual ("powered by GraphDefined EVSEs GmbH",  DE_GEF_E0001_AAAA_1.Description.FirstText());
 
-                ClassicAssert.AreEqual (EVSEAdminStatusTypes.OutOfService,     DE_GEF_E0001_AAAA_1.AdminStatus);
+                ClassicAssert.AreEqual (EVSEAdminStatusType.OutOfService,     DE_GEF_E0001_AAAA_1.AdminStatus);
                 ClassicAssert.AreEqual (1,                                     DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Count());
 
                 ClassicAssert.AreEqual (EVSEStatusType.Offline,               DE_GEF_E0001_AAAA_1.Status);
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     ClassicAssert.AreEqual ("DE*GEF EVSE 1234",                    DE_GEF_E0001_AAAA_X.Name.       FirstText());
                     ClassicAssert.AreEqual ("powered by GraphDefined EVSEs GmbH",  DE_GEF_E0001_AAAA_X.Description.FirstText());
 
-                    ClassicAssert.AreEqual (EVSEAdminStatusTypes.Operational,      DE_GEF_E0001_AAAA_X.AdminStatus);
+                    ClassicAssert.AreEqual (EVSEAdminStatusType.Operational,      DE_GEF_E0001_AAAA_X.AdminStatus);
                     ClassicAssert.AreEqual (EVSEStatusType.Available,             DE_GEF_E0001_AAAA_X.Status);
 
                     ClassicAssert.IsTrue   (roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")));
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                 Id:                  EVSE_Id.Parse("DE*GEF*E1234*5678*1"),
                                                                 Name:                I18NString.Create(Languages.de, "DE*GEF EVSE 1234*5678*1"),
                                                                 Description:         I18NString.Create(Languages.de, "powered by GraphDefined EVSEs GmbH"),
-                                                                InitialAdminStatus:  EVSEAdminStatusTypes.OutOfService,
+                                                                InitialAdminStatus:  EVSEAdminStatusType.OutOfService,
                                                                 InitialStatus:       EVSEStatusType.Offline,
                                                                 OnSuccess:           (evse, et) => success = true,
                                                                 Configurator:        evse => {
@@ -194,8 +194,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                                                              Name:          I18NString.Create(Languages.de, "Open Charging Cloud EVSE"),
                                                                                                              Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
                                                                                                              Homepage:      URL.Parse("https://open.charging.cloud"),
-                                                                                                             DataLicenses:  new OpenDataLicense[] {
-                                                                                                                                OpenDataLicense.CreativeCommons_BY_SA_4
+                                                                                                             DataLicenses:  new DataLicense[] {
+                                                                                                                                DataLicense.CreativeCommons_BY_SA_4
                                                                                                                             }
                                                                                                          ));
 
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     ClassicAssert.AreEqual ("DE*GEF EVSE 1234*5678*1",             DE_GEF_E1234_5678_1.Name.       FirstText());
                     ClassicAssert.AreEqual ("powered by GraphDefined EVSEs GmbH",  DE_GEF_E1234_5678_1.Description.FirstText());
 
-                    ClassicAssert.AreEqual (EVSEAdminStatusTypes.OutOfService,     DE_GEF_E1234_5678_1.AdminStatus);
+                    ClassicAssert.AreEqual (EVSEAdminStatusType.OutOfService,     DE_GEF_E1234_5678_1.AdminStatus);
                     ClassicAssert.AreEqual (EVSEStatusType.Offline,               DE_GEF_E1234_5678_1.Status);
 
                     ClassicAssert.IsTrue   (roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
@@ -237,8 +237,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                        Name:          I18NString.Create(Languages.de, "Open Charging Cloud 23"),
                                                        Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
                                                        Homepage:      URL.Parse("https://open.charging.cloud"),
-                                                       DataLicenses:  new OpenDataLicense[] {
-                                                                          OpenDataLicense.CreativeCommons_BY_SA_4
+                                                       DataLicenses:  new DataLicense[] {
+                                                                          DataLicense.CreativeCommons_BY_SA_4
                                                                       }
                                                    ));
 
@@ -406,15 +406,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 // Status entries are compared by their ISO 8601 timestamps!
                 Thread.Sleep(1000);
 
-                DE_GEF_E0001_AAAA_1.AdminStatus = EVSEAdminStatusTypes.InternalUse;
-                ClassicAssert.AreEqual(EVSEAdminStatusTypes.InternalUse,          DE_GEF_E0001_AAAA_1.AdminStatus);
+                DE_GEF_E0001_AAAA_1.AdminStatus = EVSEAdminStatusType.InternalUse;
+                ClassicAssert.AreEqual(EVSEAdminStatusType.InternalUse,          DE_GEF_E0001_AAAA_1.AdminStatus);
                 ClassicAssert.AreEqual("internalUse, outOfService",               DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 ClassicAssert.AreEqual(2,                                         DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
-                DE_GEF_E0001_AAAA_1.AdminStatus = EVSEAdminStatusTypes.Operational;
-                ClassicAssert.AreEqual(EVSEAdminStatusTypes.Operational,          DE_GEF_E0001_AAAA_1.AdminStatus);
+                DE_GEF_E0001_AAAA_1.AdminStatus = EVSEAdminStatusType.Operational;
+                ClassicAssert.AreEqual(EVSEAdminStatusType.Operational,          DE_GEF_E0001_AAAA_1.AdminStatus);
                 ClassicAssert.AreEqual("operational, internalUse, outOfService",  DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 ClassicAssert.AreEqual(3,                                         DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Count());
 

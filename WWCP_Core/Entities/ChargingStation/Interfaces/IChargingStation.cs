@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                   IEnumerable<URL>?                                    PhotoURLs                      = null,
                                                   IEnumerable<Brand>?                                  Brands                         = null,
                                                   IEnumerable<RootCAInfo>?                             MobilityRootCAs                = null,
-                                                  IEnumerable<OpenDataLicense>?                        OpenDataLicenses               = null,
+                                                  IEnumerable<DataLicense>?                            OpenDataLicenses               = null,
                                                   IEnumerable<ChargingModes>?                          ChargingModes                  = null,
                                                   IEnumerable<ChargingTariff>?                         ChargingTariffs                = null,
                                                   CurrentTypes?                                        CurrentType                    = null,
@@ -87,16 +87,19 @@ namespace cloud.charging.open.protocols.WWCP
                                                   EnergyMixPrognosis?                                  EnergyMixPrognoses             = null,
                                                   EnergyMeter?                                         EnergyMeter                    = null,
                                                   Boolean?                                             IsFreeOfCharge                 = null,
+                                                  URL?                                                 CalibrationInfo                = null,
                                                   IEnumerable<IChargingConnector>?                     ChargingConnectors             = null,
+
                                                   ChargingSession?                                     ChargingSession                = null,
 
-                                                  Timestamped<EVSEAdminStatusTypes>?                   InitialAdminStatus             = null,
+                                                  Timestamped<EVSEAdminStatusType>?                    InitialAdminStatus             = null,
                                                   Timestamped<EVSEStatusType>?                         InitialStatus                  = null,
                                                   UInt16?                                              MaxAdminStatusScheduleSize     = null,
                                                   UInt16?                                              MaxStatusScheduleSize          = null,
                                                   DateTime?                                            LastStatusUpdate               = null,
 
                                                   String?                                              DataSource                     = null,
+                                                  DateTime?                                            Created                        = null,
                                                   DateTime?                                            LastChange                     = null,
 
                                                   JObject?                                             CustomData                     = null,
@@ -113,62 +116,70 @@ namespace cloud.charging.open.protocols.WWCP
                                                   EventTracking_Id?                                    EventTrackingId                = null,
                                                   User_Id?                                             CurrentUserId                  = null)
 
-            => ChargingStation.AddEVSE(new EVSE(
-                                           Id,
-                                           ChargingStation,
-                                           Name,
-                                           Description,
+            => ChargingStation.AddEVSE(
+                   new EVSE(
 
-                                           PhotoURLs,
-                                           Brands,
-                                           MobilityRootCAs,
-                                           OpenDataLicenses,
-                                           ChargingModes,
-                                           ChargingTariffs,
-                                           CurrentType,
-                                           AverageVoltage,
-                                           AverageVoltageRealTime,
-                                           AverageVoltagePrognoses,
-                                           MaxCurrent,
-                                           MaxCurrentRealTime,
-                                           MaxCurrentPrognoses,
-                                           MaxPower,
-                                           MaxPowerRealTime,
-                                           MaxPowerPrognoses,
-                                           MaxCapacity,
-                                           MaxCapacityRealTime,
-                                           MaxCapacityPrognoses,
-                                           EnergyMix,
-                                           EnergyMixRealTime,
-                                           EnergyMixPrognoses,
-                                           EnergyMeter,
-                                           IsFreeOfCharge,
-                                           ChargingConnectors,
-                                           ChargingSession,
+                       Id,
+                       ChargingStation,
+                       Name,
+                       Description,
 
-                                           InitialAdminStatus,
-                                           InitialStatus,
-                                           MaxAdminStatusScheduleSize,
-                                           MaxStatusScheduleSize,
-                                           LastStatusUpdate,
+                       PhotoURLs,
+                       Brands,
+                       MobilityRootCAs,
+                       OpenDataLicenses,
+                       ChargingModes,
+                       ChargingTariffs,
+                       CurrentType,
+                       AverageVoltage,
+                       AverageVoltageRealTime,
+                       AverageVoltagePrognoses,
+                       MaxCurrent,
+                       MaxCurrentRealTime,
+                       MaxCurrentPrognoses,
+                       MaxPower,
+                       MaxPowerRealTime,
+                       MaxPowerPrognoses,
+                       MaxCapacity,
+                       MaxCapacityRealTime,
+                       MaxCapacityPrognoses,
+                       EnergyMix,
+                       EnergyMixRealTime,
+                       EnergyMixPrognoses,
+                       EnergyMeter,
+                       IsFreeOfCharge,
+                       CalibrationInfo,
+                       ChargingConnectors,
 
-                                           DataSource,
-                                           LastChange,
+                       ChargingSession,
 
-                                           CustomData,
-                                           InternalData,
+                       InitialAdminStatus,
+                       InitialStatus,
+                       MaxAdminStatusScheduleSize,
+                       MaxStatusScheduleSize,
+                       LastStatusUpdate,
 
-                                           Configurator,
-                                           RemoteEVSECreator
-                                       ),
+                       DataSource,
+                       Created,
+                       LastChange,
 
-                                       OnSuccess,
-                                       OnError,
+                       CustomData,
+                       InternalData,
 
-                                       SkipAddedNotifications,
-                                       AllowInconsistentOperatorIds,
-                                       EventTrackingId,
-                                       CurrentUserId);
+                       Configurator,
+                       RemoteEVSECreator
+
+                   ),
+
+                   OnSuccess,
+                   OnError,
+
+                   SkipAddedNotifications,
+                   AllowInconsistentOperatorIds,
+                   EventTrackingId,
+                   CurrentUserId
+
+               );
 
         #endregion
 
@@ -194,7 +205,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                              IEnumerable<URL>?                                    PhotoURLs                      = null,
                                                              IEnumerable<Brand>?                                  Brands                         = null,
                                                              IEnumerable<RootCAInfo>?                             MobilityRootCAs                = null,
-                                                             IEnumerable<OpenDataLicense>?                        OpenDataLicenses               = null,
+                                                             IEnumerable<DataLicense>?                            OpenDataLicenses               = null,
                                                              IEnumerable<ChargingModes>?                          ChargingModes                  = null,
                                                              IEnumerable<ChargingTariff>?                         ChargingTariffs                = null,
                                                              CurrentTypes?                                        CurrentType                    = null,
@@ -215,17 +226,19 @@ namespace cloud.charging.open.protocols.WWCP
                                                              EnergyMixPrognosis?                                  EnergyMixPrognoses             = null,
                                                              EnergyMeter?                                         EnergyMeter                    = null,
                                                              Boolean?                                             IsFreeOfCharge                 = null,
+                                                             URL?                                                 CalibrationInfo                = null,
                                                              IEnumerable<IChargingConnector>?                     ChargingConnectors             = null,
 
                                                              ChargingSession?                                     ChargingSession                = null,
 
-                                                             Timestamped<EVSEAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                             Timestamped<EVSEStatusType>?                        InitialStatus                  = null,
+                                                             Timestamped<EVSEAdminStatusType>?                    InitialAdminStatus             = null,
+                                                             Timestamped<EVSEStatusType>?                         InitialStatus                  = null,
                                                              UInt16?                                              MaxAdminStatusScheduleSize     = null,
                                                              UInt16?                                              MaxStatusScheduleSize          = null,
                                                              DateTime?                                            LastStatusUpdate               = null,
 
                                                              String?                                              DataSource                     = null,
+                                                             DateTime?                                            Created                        = null,
                                                              DateTime?                                            LastChange                     = null,
 
                                                              JObject?                                             CustomData                     = null,
@@ -241,61 +254,69 @@ namespace cloud.charging.open.protocols.WWCP
                                                              EventTracking_Id?                                    EventTrackingId                = null,
                                                              User_Id?                                             CurrentUserId                  = null)
 
-            => ChargingStation.AddEVSEIfNotExists(new EVSE(
-                                                      Id,
-                                                      ChargingStation,
-                                                      Name,
-                                                      Description,
+            => ChargingStation.AddEVSEIfNotExists(
+                   new EVSE(
 
-                                                      PhotoURLs,
-                                                      Brands,
-                                                      MobilityRootCAs,
-                                                      OpenDataLicenses,
-                                                      ChargingModes,
-                                                      ChargingTariffs,
-                                                      CurrentType,
-                                                      AverageVoltage,
-                                                      AverageVoltageRealTime,
-                                                      AverageVoltagePrognoses,
-                                                      MaxCurrent,
-                                                      MaxCurrentRealTime,
-                                                      MaxCurrentPrognoses,
-                                                      MaxPower,
-                                                      MaxPowerRealTime,
-                                                      MaxPowerPrognoses,
-                                                      MaxCapacity,
-                                                      MaxCapacityRealTime,
-                                                      MaxCapacityPrognoses,
-                                                      EnergyMix,
-                                                      EnergyMixRealTime,
-                                                      EnergyMixPrognoses,
-                                                      EnergyMeter,
-                                                      IsFreeOfCharge,
-                                                      ChargingConnectors,
-                                                      ChargingSession,
+                       Id,
+                       ChargingStation,
+                       Name,
+                       Description,
 
-                                                      InitialAdminStatus,
-                                                      InitialStatus,
-                                                      MaxAdminStatusScheduleSize,
-                                                      MaxStatusScheduleSize,
-                                                      LastStatusUpdate,
+                       PhotoURLs,
+                       Brands,
+                       MobilityRootCAs,
+                       OpenDataLicenses,
+                       ChargingModes,
+                       ChargingTariffs,
+                       CurrentType,
+                       AverageVoltage,
+                       AverageVoltageRealTime,
+                       AverageVoltagePrognoses,
+                       MaxCurrent,
+                       MaxCurrentRealTime,
+                       MaxCurrentPrognoses,
+                       MaxPower,
+                       MaxPowerRealTime,
+                       MaxPowerPrognoses,
+                       MaxCapacity,
+                       MaxCapacityRealTime,
+                       MaxCapacityPrognoses,
+                       EnergyMix,
+                       EnergyMixRealTime,
+                       EnergyMixPrognoses,
+                       EnergyMeter,
+                       IsFreeOfCharge,
+                       CalibrationInfo,
+                       ChargingConnectors,
 
-                                                      DataSource,
-                                                      LastChange,
+                       ChargingSession,
 
-                                                      CustomData,
-                                                      InternalData,
+                       InitialAdminStatus,
+                       InitialStatus,
+                       MaxAdminStatusScheduleSize,
+                       MaxStatusScheduleSize,
+                       LastStatusUpdate,
 
-                                                      Configurator,
-                                                      RemoteEVSECreator
-                                                  ),
+                       DataSource,
+                       Created,
+                       LastChange,
 
-                                                  OnSuccess,
+                       CustomData,
+                       InternalData,
 
-                                                  SkipAddedNotifications,
-                                                  AllowInconsistentOperatorIds,
-                                                  EventTrackingId,
-                                                  CurrentUserId);
+                       Configurator,
+                       RemoteEVSECreator
+
+                   ),
+
+                   OnSuccess,
+
+                   SkipAddedNotifications,
+                   AllowInconsistentOperatorIds,
+                   EventTrackingId,
+                   CurrentUserId
+
+               );
 
         #endregion
 
@@ -320,15 +341,15 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   I18NString?                                          Name                                   = null,
                                                                   I18NString?                                          Description                            = null,
 
-                                                                  Timestamped<EVSEAdminStatusTypes>?                   InitialAdminStatus                     = null,
-                                                                  Timestamped<EVSEStatusType>?                        InitialStatus                          = null,
+                                                                  Timestamped<EVSEAdminStatusType>?                    InitialAdminStatus                     = null,
+                                                                  Timestamped<EVSEStatusType>?                         InitialStatus                          = null,
                                                                   UInt16?                                              MaxAdminStatusScheduleSize             = null,
                                                                   UInt16?                                              MaxStatusScheduleSize                  = null,
 
                                                                   IEnumerable<URL>?                                    PhotoURLs                              = null,
                                                                   IEnumerable<Brand>?                                  Brands                                 = null,
                                                                   IEnumerable<RootCAInfo>?                             MobilityRootCAs                        = null,
-                                                                  IEnumerable<OpenDataLicense>?                        OpenDataLicenses                       = null,
+                                                                  IEnumerable<DataLicense>?                            OpenDataLicenses                       = null,
                                                                   IEnumerable<ChargingModes>?                          ChargingModes                          = null,
                                                                   IEnumerable<ChargingTariff>?                         ChargingTariffs                        = null,
                                                                   CurrentTypes?                                        CurrentType                            = null,
@@ -349,12 +370,14 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   EnergyMixPrognosis?                                  EnergyMixPrognoses                     = null,
                                                                   EnergyMeter?                                         EnergyMeter                            = null,
                                                                   Boolean?                                             IsFreeOfCharge                         = null,
+                                                                  URL?                                                 CalibrationInfo                        = null,
                                                                   IEnumerable<IChargingConnector>?                     ChargingConnectors                     = null,
 
                                                                   ChargingSession?                                     ChargingSession                        = null,
                                                                   DateTime?                                            LastStatusUpdate                       = null,
 
                                                                   String?                                              DataSource                             = null,
+                                                                  DateTime?                                            Created                                = null,
                                                                   DateTime?                                            LastChange                             = null,
 
                                                                   JObject?                                             CustomData                             = null,
@@ -372,63 +395,71 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   EventTracking_Id?                                    EventTrackingId                        = null,
                                                                   User_Id?                                             CurrentUserId                          = null)
 
-            => ChargingStation.AddOrUpdateEVSE(new EVSE(
-                                                   Id,
-                                                   ChargingStation,
-                                                   Name,
-                                                   Description,
+            => ChargingStation.AddOrUpdateEVSE(
+                   new EVSE(
 
-                                                   PhotoURLs,
-                                                   Brands,
-                                                   MobilityRootCAs,
-                                                   OpenDataLicenses,
-                                                   ChargingModes,
-                                                   ChargingTariffs,
-                                                   CurrentType,
-                                                   AverageVoltage,
-                                                   AverageVoltageRealTime,
-                                                   AverageVoltagePrognoses,
-                                                   MaxCurrent,
-                                                   MaxCurrentRealTime,
-                                                   MaxCurrentPrognoses,
-                                                   MaxPower,
-                                                   MaxPowerRealTime,
-                                                   MaxPowerPrognoses,
-                                                   MaxCapacity,
-                                                   MaxCapacityRealTime,
-                                                   MaxCapacityPrognoses,
-                                                   EnergyMix,
-                                                   EnergyMixRealTime,
-                                                   EnergyMixPrognoses,
-                                                   EnergyMeter,
-                                                   IsFreeOfCharge,
-                                                   ChargingConnectors,
-                                                   ChargingSession,
+                       Id,
+                       ChargingStation,
+                       Name,
+                       Description,
 
-                                                   InitialAdminStatus,
-                                                   InitialStatus,
-                                                   MaxAdminStatusScheduleSize,
-                                                   MaxStatusScheduleSize,
-                                                   LastStatusUpdate,
+                       PhotoURLs,
+                       Brands,
+                       MobilityRootCAs,
+                       OpenDataLicenses,
+                       ChargingModes,
+                       ChargingTariffs,
+                       CurrentType,
+                       AverageVoltage,
+                       AverageVoltageRealTime,
+                       AverageVoltagePrognoses,
+                       MaxCurrent,
+                       MaxCurrentRealTime,
+                       MaxCurrentPrognoses,
+                       MaxPower,
+                       MaxPowerRealTime,
+                       MaxPowerPrognoses,
+                       MaxCapacity,
+                       MaxCapacityRealTime,
+                       MaxCapacityPrognoses,
+                       EnergyMix,
+                       EnergyMixRealTime,
+                       EnergyMixPrognoses,
+                       EnergyMeter,
+                       IsFreeOfCharge,
+                       CalibrationInfo,
+                       ChargingConnectors,
 
-                                                   DataSource,
-                                                   LastChange,
+                       ChargingSession,
 
-                                                   CustomData,
-                                                   InternalData,
+                       InitialAdminStatus,
+                       InitialStatus,
+                       MaxAdminStatusScheduleSize,
+                       MaxStatusScheduleSize,
+                       LastStatusUpdate,
 
-                                                   Configurator,
-                                                   RemoteEVSECreator
-                                               ),
+                       DataSource,
+                       Created,
+                       LastChange,
 
-                                               OnAdditionSuccess,
-                                               OnUpdateSuccess,
-                                               OnError,
+                       CustomData,
+                       InternalData,
 
-                                               SkipAddOrUpdatedUpdatedNotifications,
-                                               AllowInconsistentOperatorIds,
-                                               EventTrackingId,
-                                               CurrentUserId);
+                       Configurator,
+                       RemoteEVSECreator
+
+                   ),
+
+                   OnAdditionSuccess,
+                   OnUpdateSuccess,
+                   OnError,
+
+                   SkipAddOrUpdatedUpdatedNotifications,
+                   AllowInconsistentOperatorIds,
+                   EventTrackingId,
+                   CurrentUserId
+
+               );
 
         #endregion
 
@@ -455,7 +486,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                         IEnumerable<URL>?                                    PhotoURLs                      = null,
                                                         IEnumerable<Brand>?                                  Brands                         = null,
                                                         IEnumerable<RootCAInfo>?                             MobilityRootCAs                = null,
-                                                        IEnumerable<OpenDataLicense>?                        OpenDataLicenses               = null,
+                                                        IEnumerable<DataLicense>?                            OpenDataLicenses               = null,
                                                         IEnumerable<ChargingModes>?                          ChargingModes                  = null,
                                                         IEnumerable<ChargingTariff>?                         ChargingTariffs                = null,
                                                         CurrentTypes?                                        CurrentType                    = null,
@@ -476,16 +507,19 @@ namespace cloud.charging.open.protocols.WWCP
                                                         EnergyMixPrognosis?                                  EnergyMixPrognoses             = null,
                                                         EnergyMeter?                                         EnergyMeter                    = null,
                                                         Boolean?                                             IsFreeOfCharge                 = null,
+                                                        URL?                                                 CalibrationInfo                = null,
                                                         IEnumerable<IChargingConnector>?                     ChargingConnectors             = null,
+
                                                         ChargingSession?                                     ChargingSession                = null,
 
-                                                        Timestamped<EVSEAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                        Timestamped<EVSEStatusType>?                        InitialStatus                  = null,
+                                                        Timestamped<EVSEAdminStatusType>?                    InitialAdminStatus             = null,
+                                                        Timestamped<EVSEStatusType>?                         InitialStatus                  = null,
                                                         UInt16?                                              MaxAdminStatusScheduleSize     = null,
                                                         UInt16?                                              MaxStatusScheduleSize          = null,
                                                         DateTime?                                            LastStatusUpdate               = null,
 
                                                         String?                                              DataSource                     = null,
+                                                        DateTime?                                            Created                        = null,
                                                         DateTime?                                            LastChange                     = null,
 
                                                         JObject?                                             CustomData                     = null,
@@ -502,62 +536,70 @@ namespace cloud.charging.open.protocols.WWCP
                                                         EventTracking_Id?                                    EventTrackingId                = null,
                                                         User_Id?                                             CurrentUserId                  = null)
 
-            => ChargingStation.UpdateEVSE(new EVSE(
-                                              Id,
-                                              ChargingStation,
-                                              Name,
-                                              Description,
+            => ChargingStation.UpdateEVSE(
+                   new EVSE(
 
-                                              PhotoURLs,
-                                              Brands,
-                                              MobilityRootCAs,
-                                              OpenDataLicenses,
-                                              ChargingModes,
-                                              ChargingTariffs,
-                                              CurrentType,
-                                              AverageVoltage,
-                                              AverageVoltageRealTime,
-                                              AverageVoltagePrognoses,
-                                              MaxCurrent,
-                                              MaxCurrentRealTime,
-                                              MaxCurrentPrognoses,
-                                              MaxPower,
-                                              MaxPowerRealTime,
-                                              MaxPowerPrognoses,
-                                              MaxCapacity,
-                                              MaxCapacityRealTime,
-                                              MaxCapacityPrognoses,
-                                              EnergyMix,
-                                              EnergyMixRealTime,
-                                              EnergyMixPrognoses,
-                                              EnergyMeter,
-                                              IsFreeOfCharge,
-                                              ChargingConnectors,
-                                              ChargingSession,
+                       Id,
+                       ChargingStation,
+                       Name,
+                       Description,
 
-                                              InitialAdminStatus,
-                                              InitialStatus,
-                                              MaxAdminStatusScheduleSize,
-                                              MaxStatusScheduleSize,
-                                              LastStatusUpdate,
+                       PhotoURLs,
+                       Brands,
+                       MobilityRootCAs,
+                       OpenDataLicenses,
+                       ChargingModes,
+                       ChargingTariffs,
+                       CurrentType,
+                       AverageVoltage,
+                       AverageVoltageRealTime,
+                       AverageVoltagePrognoses,
+                       MaxCurrent,
+                       MaxCurrentRealTime,
+                       MaxCurrentPrognoses,
+                       MaxPower,
+                       MaxPowerRealTime,
+                       MaxPowerPrognoses,
+                       MaxCapacity,
+                       MaxCapacityRealTime,
+                       MaxCapacityPrognoses,
+                       EnergyMix,
+                       EnergyMixRealTime,
+                       EnergyMixPrognoses,
+                       EnergyMeter,
+                       IsFreeOfCharge,
+                       CalibrationInfo,
+                       ChargingConnectors,
 
-                                              DataSource,
-                                              LastChange,
+                       ChargingSession,
 
-                                              CustomData,
-                                              InternalData,
+                       InitialAdminStatus,
+                       InitialStatus,
+                       MaxAdminStatusScheduleSize,
+                       MaxStatusScheduleSize,
+                       LastStatusUpdate,
 
-                                              Configurator,
-                                              RemoteEVSECreator
-                                          ),
+                       DataSource,
+                       Created,
+                       LastChange,
 
-                                          OnSuccess,
-                                          OnError,
+                       CustomData,
+                       InternalData,
 
-                                          SkipUpdatedNotifications,
-                                          AllowInconsistentOperatorIds,
-                                          EventTrackingId,
-                                          CurrentUserId);
+                       Configurator,
+                       RemoteEVSECreator
+
+                   ),
+
+                   OnSuccess,
+                   OnError,
+
+                   SkipUpdatedNotifications,
+                   AllowInconsistentOperatorIds,
+                   EventTrackingId,
+                   CurrentUserId
+
+               );
 
         #endregion
 
@@ -666,9 +708,33 @@ namespace cloud.charging.open.protocols.WWCP
         ReactiveSet<Brand>                      Brands                      { get; }
 
         /// <summary>
+        /// The optional URL where declarations of conformity, certificates and other documents can be found.
+        /// </summary>
+        URL?                                    CertificationInfo           { get; }
+
+        /// <summary>
+        /// The optional URL where certificates, identifiers and public keys related to the calibration
+        /// of the charging station can be found.
+        /// </summary>
+        URL?                                    CalibrationInfo             { get; }
+
+        /// <summary>
         /// The license of the charging station data.
         /// </summary>
-        ReactiveSet<OpenDataLicense>            DataLicenses                { get; }
+        IEnumerable<DataLicense>                DataLicenses                { get; }
+
+
+        /// <summary>
+        /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20, available at this charging station.
+        /// </summary>
+        [Optional, SlowData]
+        IEnumerable<RootCAInfo>                 MobilityRootCAs             { get; }
+
+        /// <summary>
+        /// An optional enumeration of EV roaming partners.
+        /// </summary>
+        [Optional, SlowData]
+        IEnumerable<EVRoamingPartnerInfo>       EVRoamingPartners           { get; }
 
 
         /// <summary>
@@ -930,11 +996,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TimestampFilter">An optional status timestamp filter.</param>
         /// <param name="StatusFilter">An optional status value filter.</param>
         /// <param name="HistorySize">The size of the history.</param>
-        IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>>
+        IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>>
 
             EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs      = null,
                                     Func<DateTime,             Boolean>?  TimestampFilter   = null,
-                                    Func<EVSEAdminStatusTypes, Boolean>?  StatusFilter      = null,
+                                    Func<EVSEAdminStatusType, Boolean>?  StatusFilter      = null,
                                     UInt64?                               Skip              = null,
                                     UInt64?                               Take              = null);
 

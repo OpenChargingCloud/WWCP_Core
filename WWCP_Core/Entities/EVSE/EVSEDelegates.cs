@@ -57,8 +57,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnEVSEAdminStatusChangedDelegate(DateTime                            Timestamp,
                                                           EventTracking_Id                    EventTrackingId,
                                                           IEVSE                               EVSE,
-                                                          Timestamped<EVSEAdminStatusTypes>   NewEVSEStatus,
-                                                          Timestamped<EVSEAdminStatusTypes>?  OldEVSEStatus   = null,
+                                                          Timestamped<EVSEAdminStatusType>   NewEVSEStatus,
+                                                          Timestamped<EVSEAdminStatusType>?  OldEVSEStatus   = null,
                                                           Context?                            DataSource      = null);
 
     /// <summary>

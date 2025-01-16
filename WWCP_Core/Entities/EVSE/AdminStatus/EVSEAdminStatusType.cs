@@ -34,14 +34,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// Indicates whether this EVSE admin status types is null or empty.
         /// </summary>
         /// <param name="EVSEAdminStatusType">An EVSE admin status type.</param>
-        public static Boolean IsNullOrEmpty(this EVSEAdminStatusTypes? EVSEAdminStatusType)
+        public static Boolean IsNullOrEmpty(this EVSEAdminStatusType? EVSEAdminStatusType)
             => !EVSEAdminStatusType.HasValue || EVSEAdminStatusType.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this EVSE admin status types is null or empty.
         /// </summary>
         /// <param name="EVSEAdminStatusType">An EVSE admin status type.</param>
-        public static Boolean IsNotNullOrEmpty(this EVSEAdminStatusTypes? EVSEAdminStatusType)
+        public static Boolean IsNotNullOrEmpty(this EVSEAdminStatusType? EVSEAdminStatusType)
             => EVSEAdminStatusType.HasValue && EVSEAdminStatusType.Value.IsNotNullOrEmpty;
 
     }
@@ -50,9 +50,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The admin status type of an EVSE.
     /// </summary>
-    public readonly struct EVSEAdminStatusTypes : IId,
-                                                  IEquatable <EVSEAdminStatusTypes>,
-                                                  IComparable<EVSEAdminStatusTypes>
+    public readonly struct EVSEAdminStatusType : IId,
+                                                 IEquatable <EVSEAdminStatusType>,
+                                                 IComparable<EVSEAdminStatusType>
     {
 
         #region Data
@@ -69,19 +69,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
-        public Boolean IsNullOrEmpty
+        public Boolean  IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
-        public Boolean IsNotNullOrEmpty
+        public Boolean  IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the EVSE admin status.
         /// </summary>
-        public UInt64 Length
+        public UInt64   Length
             => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new EVSE admin status type based on the given string.
         /// </summary>
-        private EVSEAdminStatusTypes(String Text)
+        private EVSEAdminStatusType(String Text)
         {
             InternalId = Text;
         }
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given string as an EVSE admin status type.
         /// </summary>
         /// <param name="Text">A text representation of an EVSE admin status type.</param>
-        public static EVSEAdminStatusTypes Parse(String Text)
+        public static EVSEAdminStatusType Parse(String Text)
         {
 
             if (TryParse(Text, out var evseAdminStatusType))
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Try to parse the given string as an EVSE admin status type.
         /// </summary>
         /// <param name="Text">A text representation of an EVSE admin status type.</param>
-        public static EVSEAdminStatusTypes? TryParse(String Text)
+        public static EVSEAdminStatusType? TryParse(String Text)
         {
 
             if (TryParse(Text, out var evseAdminStatusType))
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Text">A text representation of an EVSE admin status type.</param>
         /// <param name="EVSEAdminStatusType">The parsed EVSE admin status type.</param>
-        public static Boolean TryParse(String Text, out EVSEAdminStatusTypes EVSEAdminStatusType)
+        public static Boolean TryParse(String Text, out EVSEAdminStatusType EVSEAdminStatusType)
         {
 
             Text = Text.Trim();
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 try
                 {
-                    EVSEAdminStatusType = new EVSEAdminStatusTypes(Text);
+                    EVSEAdminStatusType = new EVSEAdminStatusType(Text);
                     return true;
                 }
                 catch
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Clone this EVSE admin status type.
         /// </summary>
-        public EVSEAdminStatusTypes Clone()
+        public EVSEAdminStatusType Clone()
 
             => new (
                    InternalId.CloneString()
@@ -185,55 +185,55 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Unkown admin status of the EVSE.
         /// </summary>
-        public static readonly EVSEAdminStatusTypes Unkown        = new("unkown");
+        public static readonly EVSEAdminStatusType Unkown        = new("unkown");
 
         /// <summary>
         /// Unclear admin status of the EVSE.
         /// </summary>
-        public static readonly EVSEAdminStatusTypes Unspecified   = new("unspecified");
+        public static readonly EVSEAdminStatusType Unspecified   = new("unspecified");
 
         /// <summary>
         /// Planned for the future.
         /// </summary>
-        public static readonly EVSEAdminStatusTypes Planned       = new("planned");
+        public static readonly EVSEAdminStatusType Planned       = new("planned");
 
         /// <summary>
         /// The EVSE is currently in deployment, but not fully operational yet.
         /// </summary>
-        public static readonly EVSEAdminStatusTypes InDeployment  = new("inDeployment");
+        public static readonly EVSEAdminStatusType InDeployment  = new("inDeployment");
 
         /// <summary>
         /// The EVSE is under maintenance.
         /// </summary>
-        public static readonly EVSEAdminStatusTypes OutOfService  = new("outOfService");
+        public static readonly EVSEAdminStatusType OutOfService  = new("outOfService");
 
         /// <summary>
         /// The EVSE not accessible because of a physical barrier,
         /// i.e. a car, a construction area or a city festival in front
         /// of the EVSE.
         /// </summary>
-        public static readonly EVSEAdminStatusTypes Blocked       = new("blocked");
+        public static readonly EVSEAdminStatusType Blocked       = new("blocked");
 
         /// <summary>
         /// The EVSE is operational.
         /// </summary>
-        public static readonly EVSEAdminStatusTypes Operational   = new("operational");
+        public static readonly EVSEAdminStatusType Operational   = new("operational");
 
         /// <summary>
         /// The EVSE does no longer exist.
         /// </summary>
-        public static readonly EVSEAdminStatusTypes Deleted       = new("deleted");
+        public static readonly EVSEAdminStatusType Deleted       = new("deleted");
 
         /// <summary>
         /// Private or internal use.
         /// </summary>
-        public static readonly EVSEAdminStatusTypes InternalUse   = new("internalUse");
+        public static readonly EVSEAdminStatusType InternalUse   = new("internalUse");
 
         /// <summary>
         /// The EVSE was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        public static readonly EVSEAdminStatusTypes UnknownEVSE   = new("unknownEVSE");
+        public static readonly EVSEAdminStatusType UnknownEVSE   = new("unknownEVSE");
 
         #endregion
 
@@ -248,8 +248,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEAdminStatusType1">An EVSE admin status type.</param>
         /// <param name="EVSEAdminStatusType2">Another EVSE admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (EVSEAdminStatusTypes EVSEAdminStatusType1,
-                                           EVSEAdminStatusTypes EVSEAdminStatusType2)
+        public static Boolean operator == (EVSEAdminStatusType EVSEAdminStatusType1,
+                                           EVSEAdminStatusType EVSEAdminStatusType2)
 
             => EVSEAdminStatusType1.Equals(EVSEAdminStatusType2);
 
@@ -263,8 +263,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEAdminStatusType1">An EVSE admin status type.</param>
         /// <param name="EVSEAdminStatusType2">Another EVSE admin status type.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (EVSEAdminStatusTypes EVSEAdminStatusType1,
-                                           EVSEAdminStatusTypes EVSEAdminStatusType2)
+        public static Boolean operator != (EVSEAdminStatusType EVSEAdminStatusType1,
+                                           EVSEAdminStatusType EVSEAdminStatusType2)
 
             => !EVSEAdminStatusType1.Equals(EVSEAdminStatusType2);
 
@@ -278,8 +278,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEAdminStatusType1">An EVSE admin status type.</param>
         /// <param name="EVSEAdminStatusType2">Another EVSE admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator < (EVSEAdminStatusTypes EVSEAdminStatusType1,
-                                          EVSEAdminStatusTypes EVSEAdminStatusType2)
+        public static Boolean operator < (EVSEAdminStatusType EVSEAdminStatusType1,
+                                          EVSEAdminStatusType EVSEAdminStatusType2)
 
             => EVSEAdminStatusType1.CompareTo(EVSEAdminStatusType2) < 0;
 
@@ -293,8 +293,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEAdminStatusType1">An EVSE admin status type.</param>
         /// <param name="EVSEAdminStatusType2">Another EVSE admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator <= (EVSEAdminStatusTypes EVSEAdminStatusType1,
-                                           EVSEAdminStatusTypes EVSEAdminStatusType2)
+        public static Boolean operator <= (EVSEAdminStatusType EVSEAdminStatusType1,
+                                           EVSEAdminStatusType EVSEAdminStatusType2)
 
             => EVSEAdminStatusType1.CompareTo(EVSEAdminStatusType2) <= 0;
 
@@ -308,8 +308,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEAdminStatusType1">An EVSE admin status type.</param>
         /// <param name="EVSEAdminStatusType2">Another EVSE admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator > (EVSEAdminStatusTypes EVSEAdminStatusType1,
-                                          EVSEAdminStatusTypes EVSEAdminStatusType2)
+        public static Boolean operator > (EVSEAdminStatusType EVSEAdminStatusType1,
+                                          EVSEAdminStatusType EVSEAdminStatusType2)
 
             => EVSEAdminStatusType1.CompareTo(EVSEAdminStatusType2) > 0;
 
@@ -323,8 +323,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEAdminStatusType1">An EVSE admin status type.</param>
         /// <param name="EVSEAdminStatusType2">Another EVSE admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator >= (EVSEAdminStatusTypes EVSEAdminStatusType1,
-                                           EVSEAdminStatusTypes EVSEAdminStatusType2)
+        public static Boolean operator >= (EVSEAdminStatusType EVSEAdminStatusType1,
+                                           EVSEAdminStatusType EVSEAdminStatusType2)
 
             => EVSEAdminStatusType1.CompareTo(EVSEAdminStatusType2) >= 0;
 
@@ -342,7 +342,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">An EVSE admin status type to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is EVSEAdminStatusTypes evseAdminStatusType
+            => Object is EVSEAdminStatusType evseAdminStatusType
                    ? CompareTo(evseAdminStatusType)
                    : throw new ArgumentException("The given object is not an EVSE admin status type!",
                                                  nameof(Object));
@@ -355,7 +355,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two EVSE admin status types.
         /// </summary>
         /// <param name="EVSEAdminStatusType">An EVSE admin status type to compare with.</param>
-        public Int32 CompareTo(EVSEAdminStatusTypes EVSEAdminStatusType)
+        public Int32 CompareTo(EVSEAdminStatusType EVSEAdminStatusType)
 
             => String.Compare(InternalId,
                               EVSEAdminStatusType.InternalId,
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">An EVSE admin status type to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is EVSEAdminStatusTypes evseAdminStatusType &&
+            => Object is EVSEAdminStatusType evseAdminStatusType &&
                    Equals(evseAdminStatusType);
 
         #endregion
@@ -386,7 +386,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two EVSE admin status types for equality.
         /// </summary>
         /// <param name="EVSEAdminStatusType">An EVSE admin status type to compare with.</param>
-        public Boolean Equals(EVSEAdminStatusTypes EVSEAdminStatusType)
+        public Boolean Equals(EVSEAdminStatusType EVSEAdminStatusType)
 
             => String.Equals(InternalId,
                              EVSEAdminStatusType.InternalId,

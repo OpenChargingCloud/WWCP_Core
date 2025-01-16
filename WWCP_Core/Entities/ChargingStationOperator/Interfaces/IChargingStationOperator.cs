@@ -126,11 +126,15 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   Boolean?                                                            ChargingWhenClosed             = null,
                                                                   ParkingType?                                                        ParkingType                    = null,
                                                                   AccessibilityType?                                                  Accessibility                  = null,
-                                                                  Languages?                                                          LocationLanguage               = null,
+                                                                  IEnumerable<Languages>?                                             LocationLanguages              = null,
                                                                   PhoneNumber?                                                        HotlinePhoneNumber             = null,
+
+                                                                  IEnumerable<LocationService>?                                       Services                       = null,
+                                                                  IEnumerable<AdditionalGeoLocation>?                                 RelatedLocations               = null,
 
                                                                   IEnumerable<Brand>?                                                 Brands                         = null,
                                                                   IEnumerable<RootCAInfo>?                                            MobilityRootCAs                = null,
+                                                                  IEnumerable<EVRoamingPartnerInfo>?                                  EVRoamingPartners              = null,
 
                                                                   Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus             = null,
                                                                   Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                  = null,
@@ -138,6 +142,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   UInt16?                                                             MaxStatusScheduleSize          = null,
 
                                                                   String?                                                             DataSource                     = null,
+                                                                  DateTime?                                                           Created                        = null,
                                                                   DateTime?                                                           LastChange                     = null,
 
                                                                   JObject?                                                            CustomData                     = null,
@@ -171,11 +176,15 @@ namespace cloud.charging.open.protocols.WWCP
                        ChargingWhenClosed,
                        ParkingType,
                        Accessibility,
-                       LocationLanguage,
+                       LocationLanguages,
                        HotlinePhoneNumber,
+
+                       Services,
+                       RelatedLocations,
 
                        Brands,
                        MobilityRootCAs,
+                       EVRoamingPartners,
 
                        InitialAdminStatus,
                        InitialStatus,
@@ -183,6 +192,7 @@ namespace cloud.charging.open.protocols.WWCP
                        MaxStatusScheduleSize,
 
                        DataSource,
+                       Created,
                        LastChange,
 
                        CustomData,
@@ -231,11 +241,15 @@ namespace cloud.charging.open.protocols.WWCP
                                                                              Boolean?                                                     ChargingWhenClosed             = null,
                                                                              AccessibilityType?                                           Accessibility                  = null,
                                                                              ParkingType?                                                 ParkingType                    = null,
-                                                                             Languages?                                                   LocationLanguage               = null,
+                                                                             IEnumerable<Languages>?                                      LocationLanguages              = null,
                                                                              PhoneNumber?                                                 HotlinePhoneNumber             = null,
+
+                                                                             IEnumerable<LocationService>?                                Services                       = null,
+                                                                             IEnumerable<AdditionalGeoLocation>?                          RelatedLocations               = null,
 
                                                                              IEnumerable<Brand>?                                          Brands                         = null,
                                                                              IEnumerable<RootCAInfo>?                                     MobilityRootCAs                = null,
+                                                                             IEnumerable<EVRoamingPartnerInfo>?                           EVRoamingPartners              = null,
 
                                                                              Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                              Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
@@ -243,6 +257,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                              UInt16?                                                      MaxStatusScheduleSize          = null,
 
                                                                              String?                                                      DataSource                     = null,
+                                                                             DateTime?                                                    Created                        = null,
                                                                              DateTime?                                                    LastChange                     = null,
 
                                                                              JObject?                                                     CustomData                     = null,
@@ -275,11 +290,15 @@ namespace cloud.charging.open.protocols.WWCP
                        ChargingWhenClosed,
                        ParkingType,
                        Accessibility,
-                       LocationLanguage,
+                       LocationLanguages,
                        HotlinePhoneNumber,
+
+                       Services,
+                       RelatedLocations,
 
                        Brands,
                        MobilityRootCAs,
+                       EVRoamingPartners,
 
                        InitialAdminStatus,
                        InitialStatus,
@@ -287,6 +306,7 @@ namespace cloud.charging.open.protocols.WWCP
                        MaxStatusScheduleSize,
 
                        DataSource,
+                       Created,
                        LastChange,
 
                        CustomData,
@@ -336,11 +356,15 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                   Boolean?                                                            ChargingWhenClosed                     = null,
                                                                                   ParkingType?                                                        ParkingType                            = null,
                                                                                   AccessibilityType?                                                  Accessibility                          = null,
-                                                                                  Languages?                                                          LocationLanguage                       = null,
+                                                                                  IEnumerable<Languages>?                                             LocationLanguages                      = null,
                                                                                   PhoneNumber?                                                        HotlinePhoneNumber                     = null,
+
+                                                                                  IEnumerable<LocationService>?                                       Services                               = null,
+                                                                                  IEnumerable<AdditionalGeoLocation>?                                 RelatedLocations                       = null,
 
                                                                                   IEnumerable<Brand>?                                                 Brands                                 = null,
                                                                                   IEnumerable<RootCAInfo>?                                            MobilityRootCAs                        = null,
+                                                                                  IEnumerable<EVRoamingPartnerInfo>?                                  EVRoamingPartners                      = null,
 
                                                                                   Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus                     = null,
                                                                                   Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                          = null,
@@ -348,6 +372,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                   UInt16?                                                             MaxStatusScheduleSize                  = null,
 
                                                                                   String?                                                             DataSource                             = null,
+                                                                                  DateTime?                                                           Created                                = null,
                                                                                   DateTime?                                                           LastChange                             = null,
 
                                                                                   JObject?                                                            CustomData                             = null,
@@ -382,11 +407,15 @@ namespace cloud.charging.open.protocols.WWCP
                        ChargingWhenClosed,
                        ParkingType,
                        Accessibility,
-                       LocationLanguage,
+                       LocationLanguages,
                        HotlinePhoneNumber,
+
+                       Services,
+                       RelatedLocations,
 
                        Brands,
                        MobilityRootCAs,
+                       EVRoamingPartners,
 
                        InitialAdminStatus,
                        InitialStatus,
@@ -394,6 +423,7 @@ namespace cloud.charging.open.protocols.WWCP
                        MaxStatusScheduleSize,
 
                        DataSource,
+                       Created,
                        LastChange,
 
                        CustomData,
@@ -444,11 +474,15 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         Boolean?                                                            ChargingWhenClosed             = null,
                                                                         ParkingType?                                                        ParkingType                    = null,
                                                                         AccessibilityType?                                                  Accessibility                  = null,
-                                                                        Languages?                                                          LocationLanguage               = null,
+                                                                        IEnumerable<Languages>?                                             LocationLanguages              = null,
                                                                         PhoneNumber?                                                        HotlinePhoneNumber             = null,
+
+                                                                        IEnumerable<LocationService>?                                       Services                       = null,
+                                                                        IEnumerable<AdditionalGeoLocation>?                                 RelatedLocations               = null,
 
                                                                         IEnumerable<Brand>?                                                 Brands                         = null,
                                                                         IEnumerable<RootCAInfo>?                                            MobilityRootCAs                = null,
+                                                                        IEnumerable<EVRoamingPartnerInfo>?                                  EVRoamingPartners              = null,
 
                                                                         Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus             = null,
                                                                         Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                  = null,
@@ -456,6 +490,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         UInt16?                                                             MaxStatusScheduleSize          = null,
 
                                                                         String?                                                             DataSource                     = null,
+                                                                        DateTime?                                                           Created                        = null,
                                                                         DateTime?                                                           LastChange                     = null,
 
                                                                         JObject?                                                            CustomData                     = null,
@@ -489,11 +524,15 @@ namespace cloud.charging.open.protocols.WWCP
                        ChargingWhenClosed,
                        ParkingType,
                        Accessibility,
-                       LocationLanguage,
+                       LocationLanguages,
                        HotlinePhoneNumber,
+
+                       Services,
+                       RelatedLocations,
 
                        Brands,
                        MobilityRootCAs,
+                       EVRoamingPartners,
 
                        InitialAdminStatus,
                        InitialStatus,
@@ -501,6 +540,7 @@ namespace cloud.charging.open.protocols.WWCP
                        MaxStatusScheduleSize,
 
                        DataSource,
+                       Created,
                        LastChange,
 
                        CustomData,
@@ -831,7 +871,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// The license(s) of the charging station operator data.
         /// </summary>
         [Optional]
-        ReactiveSet<OpenDataLicense>     DataLicenses                     { get; }
+        ReactiveSet<DataLicense>         DataLicenses                     { get; }
+
+
+        /// <summary>
+        /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20, available at this charging station.
+        /// </summary>
+        [Optional, SlowData]
+        IEnumerable<RootCAInfo>               MobilityRootCAs                  { get; }
+
+        /// <summary>
+        /// An optional enumeration of EV roaming partners.
+        /// </summary>
+        [Optional, SlowData]
+        IEnumerable<EVRoamingPartnerInfo>     EVRoamingPartners                { get; }
 
         #endregion
 
@@ -1317,7 +1370,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                         Brand                                                               Brand                         = null,
                                                         Priority?                                                           Priority                      = null,
                                                         ChargingTariff                                                      Tariff                        = null,
-                                                        IEnumerable<OpenDataLicense>                                            DataLicenses                  = null,
+                                                        IEnumerable<DataLicense>                                            DataLicenses                  = null,
 
                                                         IEnumerable<IChargingStation>                                       Members                       = null,
                                                         IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
@@ -1517,11 +1570,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
-        IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>>
+        IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>>
 
             EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs      = null,
                                     Func<DateTime,             Boolean>?  TimestampFilter   = null,
-                                    Func<EVSEAdminStatusTypes, Boolean>?  StatusFilter      = null,
+                                    Func<EVSEAdminStatusType, Boolean>?  StatusFilter      = null,
                                     UInt64?                               Skip              = null,
                                     UInt64?                               Take              = null);
 
@@ -1618,17 +1671,17 @@ namespace cloud.charging.open.protocols.WWCP
         void SetEVSEAdminStatus(EVSEAdminStatus NewAdminStatus);
 
         void SetEVSEAdminStatus(EVSE_Id EVSEId,
-                                EVSEAdminStatusTypes NewAdminStatus);
+                                EVSEAdminStatusType NewAdminStatus);
 
         void SetEVSEAdminStatus(EVSE_Id                            EVSEId,
-                                Timestamped<EVSEAdminStatusTypes>  NewTimestampedAdminStatus);
+                                Timestamped<EVSEAdminStatusType>  NewTimestampedAdminStatus);
 
         void SetEVSEAdminStatus(EVSE_Id               EVSEId,
-                                EVSEAdminStatusTypes  NewAdminStatus,
+                                EVSEAdminStatusType  NewAdminStatus,
                                 DateTime              Timestamp);
 
         void SetEVSEAdminStatus(EVSE_Id                                         EVSEId,
-                                IEnumerable<Timestamped<EVSEAdminStatusTypes>>  AdminStatusList,
+                                IEnumerable<Timestamped<EVSEAdminStatusType>>  AdminStatusList,
                                 ChangeMethods                                   ChangeMethod  = ChangeMethods.Replace);
 
         EVSEAdminStatusDiff ApplyEVSEAdminStatusDiff(EVSEAdminStatusDiff EVSEAdminStatusDiff);
@@ -1697,7 +1750,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   Brand                                          Brand                         = null,
                                   Priority?                                      Priority                      = null,
                                   ChargingTariff                                 Tariff                        = null,
-                                  IEnumerable<OpenDataLicense>                       DataLicenses                  = null,
+                                  IEnumerable<DataLicense>                       DataLicenses                  = null,
 
                                   IEnumerable<EVSE>                              Members                       = null,
                                   IEnumerable<EVSE_Id>                           MemberIds                     = null,
@@ -1736,7 +1789,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   Brand                                          Brand                         = null,
                                   Priority?                                      Priority                      = null,
                                   ChargingTariff                                 Tariff                        = null,
-                                  IEnumerable<OpenDataLicense>                       DataLicenses                  = null,
+                                  IEnumerable<DataLicense>                       DataLicenses                  = null,
 
                                   IEnumerable<EVSE>                              Members                       = null,
                                   IEnumerable<EVSE_Id>                           MemberIds                     = null,
@@ -1775,7 +1828,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        Brand                                          Brand                         = null,
                                        Priority?                                      Priority                      = null,
                                        ChargingTariff                                 Tariff                        = null,
-                                       IEnumerable<OpenDataLicense>                       DataLicenses                  = null,
+                                       IEnumerable<DataLicense>                       DataLicenses                  = null,
 
                                        IEnumerable<EVSE>                              Members                       = null,
                                        IEnumerable<EVSE_Id>                           MemberIds                     = null,
@@ -1814,7 +1867,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        Brand                                          Brand                         = null,
                                        Priority?                                      Priority                      = null,
                                        ChargingTariff                                 Tariff                        = null,
-                                       IEnumerable<OpenDataLicense>                       DataLicenses                  = null,
+                                       IEnumerable<DataLicense>                       DataLicenses                  = null,
 
                                        IEnumerable<EVSE>                              Members                       = null,
                                        IEnumerable<EVSE_Id>                           MemberIds                     = null,

@@ -17,8 +17,6 @@
 
 #region Usings
 
-using Org.BouncyCastle.Crypto.Parameters;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -27,33 +25,27 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
 
-    public class RootCAInfo
+    public class EVRoamingPartnerInfo
     {
 
+        public EMobilityProvider_Id   EMPId        { get; }
         public I18NString             Name         { get; }
-        public RootCAProtocol         Protocol     { get; }
-        public ECPublicKeyParameters  PublicKey    { get; }
-        public DateTime               NotBefore    { get; }
-        public DateTime               NotAfter     { get; }
-        public String                 Algorithm    { get; }
+        public DateTime?              NotBefore    { get; }
+        public DateTime?              NotAfter     { get; }
         public I18NString             Comment      { get; }
 
-        public RootCAInfo(I18NString             Name,
-                          RootCAProtocol         Protocol,
-                          ECPublicKeyParameters  PublicKey,
-                          DateTime               NotBefore,
-                          DateTime               NotAfter,
-                          String                 Algorithm   = "P-256",
-                          I18NString?            Comment     = null)
+        public EVRoamingPartnerInfo(EMobilityProvider_Id  EMPId,
+                                    I18NString?           Name,
+                                    DateTime?             NotBefore,
+                                    DateTime?             NotAfter,
+                                    I18NString?           Comment     = null)
         {
 
-            this.Name       = Name;
-            this.Protocol   = Protocol;
-            this.PublicKey  = PublicKey;
+            this.EMPId      = EMPId;
+            this.Name       = Name    ?? I18NString.Empty;
             this.NotBefore  = NotBefore;
             this.NotAfter   = NotAfter;
-            this.Algorithm  = Algorithm ?? "P-256";
-            this.Comment    = Comment   ?? I18NString.Empty;
+            this.Comment    = Comment ?? I18NString.Empty;
 
         }
 
@@ -63,16 +55,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Clone this root CA information.
         /// </summary>
-        public RootCAInfo Clone()
+        public EVRoamingPartnerInfo Clone()
 
             => new (
-                   Name.     Clone(),
-                   Protocol. Clone(),
-                   PublicKey,
+                   EMPId.  Clone(),
+                   Name.   Clone(),
                    NotBefore,
                    NotAfter,
-                   Algorithm.CloneString(),
-                   Comment.  Clone()
+                   Comment.Clone()
                );
 
         #endregion

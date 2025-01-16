@@ -203,13 +203,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// The remote charging station operator.
         /// </summary>
         [InternalUseOnly]
-        public IRemoteChargingStationOperator?  RemoteChargingStationOperator    { get; }
+        public IRemoteChargingStationOperator?       RemoteChargingStationOperator    { get; }
 
         /// <summary>
         /// The roaming provider of this charging station operator.
         /// </summary>
         [InternalUseOnly]
-        public IEMPRoamingProvider?             EMPRoamingProvider               { get; }
+        public IEMPRoamingProvider?                  EMPRoamingProvider               { get; }
+
+
+        /// <summary>
+        /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20, available at this charging station.
+        /// </summary>
+        [Optional, SlowData]
+        public IEnumerable<RootCAInfo>               MobilityRootCAs                  { get; }
+
+        /// <summary>
+        /// An optional enumeration of EV roaming partners.
+        /// </summary>
+        [Optional, SlowData]
+        public IEnumerable<EVRoamingPartnerInfo>     EVRoamingPartners                { get; }
 
 
         #region Logo
@@ -425,13 +438,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region DataLicenses
 
-        private readonly ReactiveSet<OpenDataLicense> dataLicenses = new();
+        private readonly ReactiveSet<DataLicense> dataLicenses = new();
 
         /// <summary>
         /// The license(s) of the charging station operator data.
         /// </summary>
         [Optional]
-        public ReactiveSet<OpenDataLicense> DataLicenses
+        public ReactiveSet<DataLicense> DataLicenses
 
             => dataLicenses.Any()
                    ? dataLicenses
@@ -448,19 +461,28 @@ namespace cloud.charging.open.protocols.WWCP
         /// charging station operator identification (CSO Id).
         /// </summary>
         /// <param name="Id">The unique identification of the Charging Station Operator.</param>
+        /// <param name="RoamingNetwork">The associated roaming network.</param>
         /// <param name="Name">The offical (multi-language) name of the EVSE Operator.</param>
         /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
-        /// <param name="RoamingNetwork">The associated roaming network.</param>
+        /// <param name="EVRoamingPartners">An enumeration of EV roaming partners.</param>
+        /// 
+        /// <param name="Configurator">A delegate to configure the new charging station operator after its creation.</param>
         public ChargingStationOperator(ChargingStationOperator_Id                             Id,
                                        IRoamingNetwork                                        RoamingNetwork,
                                        I18NString?                                            Name                                   = null,
                                        I18NString?                                            Description                            = null,
+                                       IEnumerable<RootCAInfo>?                               MobilityRootCAs                        = null,
+                                       IEnumerable<EVRoamingPartnerInfo>?                     EVRoamingPartners                      = null,
+
                                        Action<ChargingStationOperator>?                       Configurator                           = null,
                                        RemoteChargingStationOperatorCreatorDelegate?          RemoteChargingStationOperatorCreator   = null,
                                        Timestamped<ChargingStationOperatorAdminStatusTypes>?  InitialAdminStatus                     = null,
                                        Timestamped<ChargingStationOperatorStatusTypes>?       InitialStatus                          = null,
                                        UInt16?                                                MaxAdminStatusScheduleSize             = DefaultMaxAdminStatusScheduleSize,
                                        UInt16?                                                MaxStatusScheduleSize                  = DefaultMaxStatusScheduleSize,
+
+                                       DateTime?                                              Created                                = null,
+                                       DateTime?                                              LastChange                             = null,
 
                                        JObject?                                               CustomData                             = null,
                                        UserDefinedDictionary?                                 InternalData                           = null)
@@ -477,13 +499,17 @@ namespace cloud.charging.open.protocols.WWCP
                    MaxAdminStatusScheduleSize ?? DefaultMaxChargingStationOperatorAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxChargingStationOperatorStatusScheduleSize,
                    null,
-                   null,
+                   Created,
+                   LastChange,
                    CustomData,
                    InternalData)
 
         {
 
             #region Init data and properties
+
+            this.MobilityRootCAs             = MobilityRootCAs?.  Distinct() ?? [];
+            this.EVRoamingPartners           = EVRoamingPartners?.Distinct() ?? [];
 
             this.chargingPools               = new EntityHashSet <IChargingStationOperator, ChargingPool_Id,         IChargingPool>        (this,
                                                                                                                                             new VotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingPool,                    Boolean>(() => new VetoVote(), true),
@@ -2354,7 +2380,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                Brand                                                               Brand                         = null,
                                                                Priority?                                                           Priority                      = null,
                                                                ChargingTariff                                                      Tariff                        = null,
-                                                               IEnumerable<OpenDataLicense>                                        DataLicenses                  = null,
+                                                               IEnumerable<DataLicense>                                        DataLicenses                  = null,
 
                                                                IEnumerable<IChargingStation>                                       Members                       = null,
                                                                IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
@@ -2877,11 +2903,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdminStatusFilter">An optional admin status value filter.</param>
         /// <param name="Skip">The number of admin status entries per pool to skip.</param>
         /// <param name="Take">The number of admin status entries per pool to return.</param>
-        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>>
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>>
 
             EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs        = null,
                                     Func<DateTime,             Boolean>?  TimestampFilter     = null,
-                                    Func<EVSEAdminStatusTypes, Boolean>?  AdminStatusFilter   = null,
+                                    Func<EVSEAdminStatusType, Boolean>?  AdminStatusFilter   = null,
                                     UInt64?                               Skip                = null,
                                     UInt64?                               Take                = null)
 
@@ -2891,7 +2917,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             return evseLookup.Values.
                        Where (evse => IncludeEVSEs(evse)).
-                       Select(evse => new Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>(
+                       Select(evse => new Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>(
                                           evse.Id,
                                           evse.AdminStatusSchedule(TimestampFilter,
                                                                    AdminStatusFilter,
@@ -3125,7 +3151,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVSEAdminStatus(EVSEId, NewAdminStatus)
 
         public void SetEVSEAdminStatus(EVSE_Id EVSEId,
-                                       EVSEAdminStatusTypes NewAdminStatus)
+                                       EVSEAdminStatusType NewAdminStatus)
         {
 
             if (TryGetEVSEById(EVSEId, out var evse) &&
@@ -3141,7 +3167,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVSEAdminStatus(EVSEId, NewTimestampedAdminStatus)
 
         public void SetEVSEAdminStatus(EVSE_Id                            EVSEId,
-                                       Timestamped<EVSEAdminStatusTypes>  NewTimestampedAdminStatus)
+                                       Timestamped<EVSEAdminStatusType>  NewTimestampedAdminStatus)
         {
 
             if (TryGetEVSEById(EVSEId, out var evse) &&
@@ -3157,14 +3183,14 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVSEAdminStatus(EVSEId, NewAdminStatus, Timestamp)
 
         public void SetEVSEAdminStatus(EVSE_Id               EVSEId,
-                                       EVSEAdminStatusTypes  NewAdminStatus,
+                                       EVSEAdminStatusType  NewAdminStatus,
                                        DateTime              Timestamp)
         {
 
             if (TryGetEVSEById(EVSEId, out var evse) &&
                 evse is not null)
             {
-                evse.AdminStatus = new Timestamped<EVSEAdminStatusTypes>(Timestamp, NewAdminStatus);
+                evse.AdminStatus = new Timestamped<EVSEAdminStatusType>(Timestamp, NewAdminStatus);
             }
 
         }
@@ -3174,7 +3200,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVSEAdminStatus(EVSEId, AdminStatusList, ChangeMethod = ChangeMethods.Replace)
 
         public void SetEVSEAdminStatus(EVSE_Id                                         EVSEId,
-                                       IEnumerable<Timestamped<EVSEAdminStatusTypes>>  AdminStatusList,
+                                       IEnumerable<Timestamped<EVSEAdminStatusType>>  AdminStatusList,
                                        ChangeMethods                                   ChangeMethod  = ChangeMethods.Replace)
         {
             if (TryGetEVSEById(EVSEId, out var evse) &&
@@ -3476,8 +3502,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateEVSEAdminStatus(DateTime                            Timestamp,
                                                   EventTracking_Id                    EventTrackingId,
                                                   IEVSE                               EVSE,
-                                                  Timestamped<EVSEAdminStatusTypes>   NewAdminStatus,
-                                                  Timestamped<EVSEAdminStatusTypes>?  OldAdminStatus   = null,
+                                                  Timestamped<EVSEAdminStatusType>   NewAdminStatus,
+                                                  Timestamped<EVSEAdminStatusType>?  OldAdminStatus   = null,
                                                   Context?                            DataSource       = null)
         {
 
@@ -3615,7 +3641,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          Brand                                          Brand                         = null,
                                          Priority?                                      Priority                      = null,
                                          ChargingTariff                                 Tariff                        = null,
-                                         IEnumerable<OpenDataLicense>                   DataLicenses                  = null,
+                                         IEnumerable<DataLicense>                   DataLicenses                  = null,
 
                                          IEnumerable<EVSE>                              Members                       = null,
                                          IEnumerable<EVSE_Id>                           MemberIds                     = null,
@@ -3727,7 +3753,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          Brand                                          Brand                         = null,
                                          Priority?                                      Priority                      = null,
                                          ChargingTariff                                 Tariff                        = null,
-                                         IEnumerable<OpenDataLicense>                       DataLicenses                  = null,
+                                         IEnumerable<DataLicense>                       DataLicenses                  = null,
 
                                          IEnumerable<EVSE>                              Members                       = null,
                                          IEnumerable<EVSE_Id>                           MemberIds                     = null,
@@ -3801,7 +3827,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               Brand                                          Brand                         = null,
                                               Priority?                                      Priority                      = null,
                                               ChargingTariff                                 Tariff                        = null,
-                                              IEnumerable<OpenDataLicense>                       DataLicenses                  = null,
+                                              IEnumerable<DataLicense>                       DataLicenses                  = null,
 
                                               IEnumerable<EVSE>                              Members                       = null,
                                               IEnumerable<EVSE_Id>                           MemberIds                     = null,
@@ -3882,7 +3908,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               Brand                                          Brand                         = null,
                                               Priority?                                      Priority                      = null,
                                               ChargingTariff                                 Tariff                        = null,
-                                              IEnumerable<OpenDataLicense>                       DataLicenses                  = null,
+                                              IEnumerable<DataLicense>                       DataLicenses                  = null,
 
                                               IEnumerable<EVSE>                              Members                       = null,
                                               IEnumerable<EVSE_Id>                           MemberIds                     = null,

@@ -51,8 +51,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnRemoteEVSEAdminStatusChangedDelegate(DateTime                           Timestamp,
                                                                 EventTracking_Id                   EventTrackingId,
                                                                 IRemoteEVSE                        RemoteEVSE,
-                                                                Timestamped<EVSEAdminStatusTypes>  OldStatus,
-                                                                Timestamped<EVSEAdminStatusTypes>  NewStatus);
+                                                                Timestamped<EVSEAdminStatusType>  OldStatus,
+                                                                Timestamped<EVSEAdminStatusType>  NewStatus);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of any subordinated EVSE changed.

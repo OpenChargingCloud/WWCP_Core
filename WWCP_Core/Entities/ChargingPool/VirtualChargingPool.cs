@@ -65,11 +65,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          Boolean?                                                            ChargingWhenClosed                = null,
                                                                          ParkingType?                                                        ParkingType                       = null,
                                                                          AccessibilityType?                                                  Accessibility                     = null,
-                                                                         Languages?                                                          LocationLanguage                  = null,
+                                                                         IEnumerable<Languages>?                                             LocationLanguages                 = null,
                                                                          PhoneNumber?                                                        HotlinePhoneNumber                = null,
+
+                                                                         IEnumerable<LocationService>?                                       Services                          = null,
+                                                                         IEnumerable<AdditionalGeoLocation>?                                 RelatedLocations                  = null,
 
                                                                          IEnumerable<Brand>?                                                 Brands                            = null,
                                                                          IEnumerable<RootCAInfo>?                                            MobilityRootCAs                   = null,
+                                                                         IEnumerable<EVRoamingPartnerInfo>?                                  EVRoamingPartners                 = null,
 
                                                                          Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus                = null,
                                                                          Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                     = null,
@@ -81,6 +85,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          UInt16?                                                             MaxStatusScheduleSize             = null,
 
                                                                          String?                                                             DataSource                        = null,
+                                                                         DateTime?                                                           Created                           = null,
                                                                          DateTime?                                                           LastChange                        = null,
 
                                                                          JObject?                                                            CustomData                        = null,
@@ -110,11 +115,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    ChargingWhenClosed,
                    ParkingType,
                    Accessibility,
-                   LocationLanguage,
+                   LocationLanguages,
                    HotlinePhoneNumber,
+
+                   Services,
+                   RelatedLocations,
 
                    Brands,
                    MobilityRootCAs,
+                   EVRoamingPartners,
 
                    InitialAdminStatus ?? ChargingPoolAdminStatusTypes.Operational,
                    InitialStatus      ?? ChargingPoolStatusTypes.Available,
@@ -122,6 +131,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    MaxStatusScheduleSize,
 
                    DataSource,
+                   Created,
                    LastChange,
 
                    CustomData,
@@ -232,51 +242,31 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public ReactiveSet<Brand>            Brands                 { get; }
 
         /// <summary>
-        /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20, available in this charging pool.
+        /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20 available in this charging pool.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<RootCAInfo>       MobilityRootCAs        { get; }
+        public IEnumerable<RootCAInfo>               MobilityRootCAs        { get; }
+
+        /// <summary>
+        /// An optional enumeration of EV roaming partners available in this charging pool.
+        /// </summary>
+        [Optional, SlowData]
+        public IEnumerable<EVRoamingPartnerInfo>     EVRoamingPartners      { get; }
 
         /// <summary>
         /// The license of the charging pool data.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<OpenDataLicense>  DataLicenses           { get; }
+        public IEnumerable<DataLicense>      DataLicenses           { get; }
 
 
         #region LocationLanguage
-
-        private Languages? locationLanguage;
 
         /// <summary>
         /// The official language at this charging pool.
         /// </summary>
         [Optional]
-        public Languages? LocationLanguage
-        {
-
-            get
-            {
-                return locationLanguage;
-            }
-
-            set
-            {
-
-                if (locationLanguage != value)
-                {
-
-                    if (value == null)
-                        DeleteProperty(ref locationLanguage);
-
-                    else
-                        SetProperty(ref locationLanguage, value);
-
-                }
-
-            }
-
-        }
+        public IEnumerable<Languages>        LocationLanguages      { get; private set; }
 
         #endregion
 
@@ -1182,6 +1172,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                    UInt16?                                     MaxStatusScheduleSize        = null,
 
                                    String?                                     DataSource                   = null,
+                                   DateTime?                                   Created                      = null,
                                    DateTime?                                   LastChange                   = null,
 
                                    JObject?                                    CustomData                   = null,
@@ -1199,6 +1190,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
                    DataSource,
+                   Created,
                    LastChange,
                    CustomData,
                    InternalData)
@@ -3512,7 +3504,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>> EVSEAdminStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, Boolean>? TimestampFilter = null, Func<EVSEAdminStatusTypes, Boolean>? StatusFilter = null, UInt64? Skip = null, UInt64? Take = null)
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, Boolean>? TimestampFilter = null, Func<EVSEAdminStatusType, Boolean>? StatusFilter = null, UInt64? Skip = null, UInt64? Take = null)
         {
             throw new NotImplementedException();
         }

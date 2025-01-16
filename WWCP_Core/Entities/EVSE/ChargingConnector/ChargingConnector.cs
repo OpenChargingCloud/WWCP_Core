@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -68,37 +69,37 @@ namespace cloud.charging.open.protocols.WWCP
         /// The parent EVSE of this charging connector.
         /// </summary>
         [InternalUseOnly]
-        public IEVSE?                          EVSE             { get; set; }
+        public IEVSE?                          EVSE                  { get; set; }
 
         /// <summary>
         /// The optional charging connector identification.
         /// </summary>
         [Mandatory]
-        public ChargingConnector_Id            Id               { get; }
+        public ChargingConnector_Id            Id                    { get; }
 
         /// <summary>
         /// The type of the charging plug.
         /// </summary>
         [Mandatory]
-        public ChargingPlugTypes               Plug             { get; }
+        public ChargingPlugTypes               Plug                  { get; }
 
         /// <summary>
         /// Whether the charging plug is lockable or not.
         /// </summary>
         [Optional]
-        public Boolean?                        Lockable         { get; }
+        public Boolean?                        Lockable              { get; }
 
         /// <summary>
         /// Whether the charging plug has an attached cable or not.
         /// </summary>
         [Optional]
-        public Boolean                         CableAttached    { get; }
+        public Boolean                         CableAttached         { get; }
 
         /// <summary>
         /// The length of the charging cable.
         /// </summary>
         [Optional]
-        public Meter?                          CableLength      { get; }
+        public Meter?                          CableLength           { get; }
 
         /// <summary>
         /// Whether the charging connector is DC or AC.
@@ -110,7 +111,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The tariffs that can be used with this charging connector.
         /// </summary>
-        public IEnumerable<ChargingTariff_Id>  Tariffs          { get; }
+        public IEnumerable<ChargingTariff_Id>  Tariffs               { get; }
+
+        /// <summary>
+        /// URL to the operator’s terms and conditions.
+        /// </summary>
+        /// <remarks>Ask OCPI why this is here!</remarks>
+        public URL?                            TermsAndConditions    { get; }
 
         #endregion
 
@@ -124,34 +131,41 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Lockable">Whether the charging plug is lockable or not.</param>
         /// <param name="CableAttached">The type of the charging cable.</param>
         /// <param name="CableLength">The length of the charging cable.</param>
+        /// <param name="Tariffs">The tariffs that can be used with this charging connector.</param>
+        /// <param name="TermsAndConditions">URL to the operator’s terms and conditions.</param>
         public ChargingConnector(ChargingConnector_Id             Id,
                                  ChargingPlugTypes                Plug,
-                                 Boolean?                         Lockable        = null,
-                                 Boolean                          CableAttached   = false,
-                                 Meter?                           CableLength     = null,
-                                 IEnumerable<ChargingTariff_Id>?  Tariffs         = null)
+                                 Boolean?                         Lockable             = null,
+                                 Boolean                          CableAttached        = false,
+                                 Meter?                           CableLength          = null,
+                                 IEnumerable<ChargingTariff_Id>?  Tariffs              = null,
+                                 URL?                             TermsAndConditions   = null)
         {
 
-            this.Id             = Id;
-            this.Plug           = Plug;
-            this.Lockable       = Lockable;
-            this.CableAttached  = CableAttached;
-            this.CableLength    = CableLength;
-            this.Tariffs        = Tariffs ?? [];
+            this.Id                  = Id;
+            this.Plug                = Plug;
+            this.Lockable            = Lockable;
+            this.CableAttached       = CableAttached;
+            this.CableLength         = CableLength;
+            this.Tariffs             = Tariffs ?? [];
+            this.TermsAndConditions  = TermsAndConditions;
 
             unchecked
             {
 
-                hashCode = this.Id.           GetHashCode()       * 11 ^
-                           this.Plug.         GetHashCode()       *  7 ^
-                          (this.Lockable?.    GetHashCode() ?? 0) *  5 ^
-                           this.CableAttached.GetHashCode()       *  3 ^
-                          (this.CableLength?. GetHashCode() ?? 0);
-                           base.              GetHashCode();
+                hashCode = this.Id.                 GetHashCode()       * 19 ^
+                           this.Plug.               GetHashCode()       * 17 ^
+                          (this.Lockable?.          GetHashCode() ?? 0) * 13 ^
+                           this.CableAttached.      GetHashCode()       * 11 ^
+                          (this.CableLength?.       GetHashCode() ?? 0) *  7 ^
+                           this.Tariffs.            CalcHashCode()      *  5 ^
+                          (this.TermsAndConditions?.GetHashCode() ?? 0) *  3 ^
+                           base.                    GetHashCode();
 
             }
 
         }
+
 
         /// <summary>
         /// Create a new charging connector.
@@ -164,33 +178,38 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingConnector(IEVSE?                           ParentEVSE,
                                  ChargingConnector_Id             Id,
                                  ChargingPlugTypes                Plug,
-                                 Boolean?                         Lockable        = null,
-                                 Boolean                          CableAttached   = false,
-                                 Meter?                           CableLength     = null,
-                                 IEnumerable<ChargingTariff_Id>?  Tariffs         = null)
+                                 Boolean?                         Lockable             = null,
+                                 Boolean                          CableAttached        = false,
+                                 Meter?                           CableLength          = null,
+                                 IEnumerable<ChargingTariff_Id>?  Tariffs              = null,
+                                 URL?                             TermsAndConditions   = null)
         {
 
-            this.EVSE           = ParentEVSE;
-            this.Id             = Id;
-            this.Plug           = Plug;
-            this.Lockable       = Lockable;
-            this.CableAttached  = CableAttached;
-            this.CableLength    = CableLength;
-            this.Tariffs        = Tariffs ?? [];
+            this.EVSE                = ParentEVSE;
+            this.Id                  = Id;
+            this.Plug                = Plug;
+            this.Lockable            = Lockable;
+            this.CableAttached       = CableAttached;
+            this.CableLength         = CableLength;
+            this.Tariffs             = Tariffs ?? [];
+            this.TermsAndConditions  = TermsAndConditions;
 
             unchecked
             {
 
-                hashCode = this.Id.           GetHashCode()       * 11 ^
-                           this.Plug.         GetHashCode()       *  7 ^
-                          (this.Lockable?.    GetHashCode() ?? 0) *  5 ^
-                           this.CableAttached.GetHashCode()       *  3 ^
-                          (this.CableLength?. GetHashCode() ?? 0);
-                           base.              GetHashCode();
+                hashCode = this.Id.                 GetHashCode()       * 19 ^
+                           this.Plug.               GetHashCode()       * 17 ^
+                          (this.Lockable?.          GetHashCode() ?? 0) * 13 ^
+                           this.CableAttached.      GetHashCode()       * 11 ^
+                          (this.CableLength?.       GetHashCode() ?? 0) *  7 ^
+                           this.Tariffs.            CalcHashCode()      *  5 ^
+                          (this.TermsAndConditions?.GetHashCode() ?? 0) *  3 ^
+                           base.                    GetHashCode();
 
             }
 
         }
+
 
         /// <summary>
         /// Create a new charging connector.
@@ -200,28 +219,32 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CableAttached">The type of the charging cable.</param>
         /// <param name="CableLength">The length of the charging cable.</param>
         public ChargingConnector(ChargingPlugTypes                Plug,
-                                 Boolean?                         Lockable        = null,
-                                 Boolean                          CableAttached   = false,
-                                 Meter?                           CableLength     = null,
-                                 IEnumerable<ChargingTariff_Id>?  Tariffs         = null)
+                                 Boolean?                         Lockable             = null,
+                                 Boolean                          CableAttached        = false,
+                                 Meter?                           CableLength          = null,
+                                 IEnumerable<ChargingTariff_Id>?  Tariffs              = null,
+                                 URL?                             TermsAndConditions   = null)
         {
 
-            this.Id             = ChargingConnector_Id.Parse(1);
-            this.Plug           = Plug;
-            this.Lockable       = Lockable;
-            this.CableAttached  = CableAttached;
-            this.CableLength    = CableLength;
-            this.Tariffs        = Tariffs ?? [];
+            this.Id                  = ChargingConnector_Id.Parse(1);
+            this.Plug                = Plug;
+            this.Lockable            = Lockable;
+            this.CableAttached       = CableAttached;
+            this.CableLength         = CableLength;
+            this.Tariffs             = Tariffs ?? [];
+            this.TermsAndConditions  = TermsAndConditions;
 
             unchecked
             {
 
-                hashCode = this.Id.           GetHashCode()       * 11 ^
-                           this.Plug.         GetHashCode()       *  7 ^
-                          (this.Lockable?.    GetHashCode() ?? 0) *  5 ^
-                           this.CableAttached.GetHashCode()       *  3 ^
-                          (this.CableLength?. GetHashCode() ?? 0);
-                           base.              GetHashCode();
+                hashCode = this.Id.                 GetHashCode()       * 19 ^
+                           this.Plug.               GetHashCode()       * 17 ^
+                          (this.Lockable?.          GetHashCode() ?? 0) * 13 ^
+                           this.CableAttached.      GetHashCode()       * 11 ^
+                          (this.CableLength?.       GetHashCode() ?? 0) *  7 ^
+                           this.Tariffs.            CalcHashCode()      *  5 ^
+                          (this.TermsAndConditions?.GetHashCode() ?? 0) *  3 ^
+                           base.                    GetHashCode();
 
             }
 
@@ -236,29 +259,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CableLength">The length of the charging cable.</param>
         public ChargingConnector(IEVSE?                           ParentEVSE,
                                  ChargingPlugTypes                Plug,
-                                 Boolean?                         Lockable        = null,
-                                 Boolean                          CableAttached   = false,
-                                 Meter?                           CableLength     = null,
-                                 IEnumerable<ChargingTariff_Id>?  Tariffs         = null)
+                                 Boolean?                         Lockable             = null,
+                                 Boolean                          CableAttached        = false,
+                                 Meter?                           CableLength          = null,
+                                 IEnumerable<ChargingTariff_Id>?  Tariffs              = null,
+                                 URL?                             TermsAndConditions   = null)
         {
 
-            this.EVSE           = ParentEVSE;
-            this.Id             = ChargingConnector_Id.Parse(1);
-            this.Plug           = Plug;
-            this.Lockable       = Lockable;
-            this.CableAttached  = CableAttached;
-            this.CableLength    = CableLength;
-            this.Tariffs        = Tariffs ?? [];
+            this.EVSE                = ParentEVSE;
+            this.Id                  = ChargingConnector_Id.Parse(1);
+            this.Plug                = Plug;
+            this.Lockable            = Lockable;
+            this.CableAttached       = CableAttached;
+            this.CableLength         = CableLength;
+            this.Tariffs             = Tariffs ?? [];
+            this.TermsAndConditions  = TermsAndConditions;
 
             unchecked
             {
 
-                hashCode = this.Id.           GetHashCode()       * 11 ^
-                           this.Plug.         GetHashCode()       *  7 ^
-                          (this.Lockable?.    GetHashCode() ?? 0) *  5 ^
-                           this.CableAttached.GetHashCode()       *  3 ^
-                          (this.CableLength?. GetHashCode() ?? 0);
-                           base.              GetHashCode();
+                hashCode = this.Id.                 GetHashCode()       * 19 ^
+                           this.Plug.               GetHashCode()       * 17 ^
+                          (this.Lockable?.          GetHashCode() ?? 0) * 13 ^
+                           this.CableAttached.      GetHashCode()       * 11 ^
+                          (this.CableLength?.       GetHashCode() ?? 0) *  7 ^
+                           this.Tariffs.            CalcHashCode()      *  5 ^
+                          (this.TermsAndConditions?.GetHashCode() ?? 0) *  3 ^
+                           base.                    GetHashCode();
 
             }
 

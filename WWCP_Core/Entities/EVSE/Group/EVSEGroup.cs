@@ -314,13 +314,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region DataLicense
 
-        private ReactiveSet<OpenDataLicense> _DataLicenses;
+        private ReactiveSet<DataLicense> _DataLicenses;
 
         /// <summary>
         /// The license of the group data.
         /// </summary>
         [Mandatory]
-        public ReactiveSet<OpenDataLicense> DataLicenses
+        public ReactiveSet<DataLicense> DataLicenses
         {
 
             get
@@ -510,7 +510,7 @@ namespace cloud.charging.open.protocols.WWCP
                            Brand                                         Brand                         = null,
                            Priority?                                     Priority                      = null,
                            ChargingTariff                                Tariff                        = null,
-                           IEnumerable<OpenDataLicense>                  DataLicenses                  = null,
+                           IEnumerable<DataLicense>                  DataLicenses                  = null,
 
                            IEnumerable<EVSE>                             Members                       = null,
                            IEnumerable<EVSE_Id>                          MemberIds                     = null,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.Brand                       = Brand;
             this.Priority                    = Priority;
             this.Tariff                      = Tariff;
-            this.DataLicenses                = DataLicenses?.Any() == true ? new ReactiveSet<OpenDataLicense>(DataLicenses) : new ReactiveSet<OpenDataLicense>();
+            this.DataLicenses                = DataLicenses?.Any() == true ? new ReactiveSet<DataLicense>(DataLicenses) : new ReactiveSet<DataLicense>();
 
             this._AllowedMemberIds           = MemberIds != null ? new HashSet<EVSE_Id>(MemberIds) : new HashSet<EVSE_Id>();
             this.AutoIncludeEVSEIds          = AutoIncludeEVSEIds ?? (MemberIds == null ? (Func<EVSE_Id, Boolean>) (evseid => true) : evseid => false);
@@ -712,8 +712,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
                                                   EventTracking_Id                   EventTrackingId,
                                                   EVSE                               EVSE,
-                                                  Timestamped<EVSEAdminStatusTypes>  OldStatus,
-                                                  Timestamped<EVSEAdminStatusTypes>  NewStatus)
+                                                  Timestamped<EVSEAdminStatusType>  OldStatus,
+                                                  Timestamped<EVSEAdminStatusType>  NewStatus)
         {
 
             var onEVSEAdminStatusChanged = OnEVSEAdminStatusChanged;

@@ -91,43 +91,61 @@ namespace cloud.charging.open.protocols.WWCP
         /// The charging station sub operator of this charging station.
         /// </summary>
         [Optional]
-        public IChargingStationOperator?     SubOperator                 { get; }
+        public IChargingStationOperator?             SubOperator                 { get; }
 
         /// <summary>
         /// The charging pool.
         /// </summary>
         [InternalUseOnly]
-        public IChargingPool?                ChargingPool                { get; }
+        public IChargingPool?                        ChargingPool                { get; }
 
         /// <summary>
         /// An optional remote charging station.
         /// </summary>
-        public IRemoteChargingStation?       RemoteChargingStation       { get; }
+        public IRemoteChargingStation?               RemoteChargingStation       { get; }
 
 
 
-        public Boolean                       Published                   { get; }
+        public Boolean                               Published                   { get; }
 
-        public Boolean                       Disabled                    { get; }
+        public Boolean                               Disabled                    { get; }
 
 
         /// <summary>
         /// All brands registered for this charging station.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<Brand>            Brands                      { get; }
+        public ReactiveSet<Brand>                    Brands                      { get; }
 
         /// <summary>
         /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20, available at this charging station.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<RootCAInfo>       MobilityRootCAs             { get; }
+        public IEnumerable<RootCAInfo>               MobilityRootCAs             { get; }
+
+        /// <summary>
+        /// An optional enumeration of EV roaming partners.
+        /// </summary>
+        [Optional, SlowData]
+        public IEnumerable<EVRoamingPartnerInfo>     EVRoamingPartners           { get; }
+
+
+        /// <summary>
+        /// The optional URL where declarations of conformity, certificates and other documents can be found.
+        /// </summary>
+        public URL?                                  CertificationInfo           { get; }
+
+        /// <summary>
+        /// The optional URL where certificates, identifiers and public keys related to the calibration
+        /// of the charging station can be found.
+        /// </summary>
+        public URL?                                  CalibrationInfo             { get; }
 
         /// <summary>
         /// The license of the charging station data.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<OpenDataLicense>  DataLicenses                { get; }
+        public IEnumerable<DataLicense>              DataLicenses                { get; }
 
 
         #region Address
@@ -644,6 +662,11 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+
+        public IEnumerable<Image>                      Images                   { get; }
+
+        public IEnumerable<VehicleType>                VehicleTypes             { get; }
 
 
         #region GridConnection
@@ -1283,6 +1306,8 @@ namespace cloud.charging.open.protocols.WWCP
                                IEnumerable<AuthenticationModes>?              AuthenticationModes            = null,
                                IEnumerable<PaymentOptions>?                   PaymentOptions                 = null,
                                IEnumerable<ChargingStationFeature>?           Features                       = null,
+                               IEnumerable<VehicleType>?                      VehicleTypes                   = null,
+                               IEnumerable<Image>?                            Images                         = null,
 
                                String?                                        ServiceIdentification          = null,
                                String?                                        ModelCode                      = null,
@@ -1292,6 +1317,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                                IEnumerable<Brand>?                            Brands                         = null,
                                IEnumerable<RootCAInfo>?                       MobilityRootCAs                = null,
+                               IEnumerable<EVRoamingPartnerInfo>?             EVRoamingPartners              = null,
+                               URL?                                           CertificationInfo              = null,
+                               URL?                                           CalibrationInfo                = null,
 
                                Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
                                Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
@@ -1299,6 +1327,7 @@ namespace cloud.charging.open.protocols.WWCP
                                UInt16?                                        MaxStatusScheduleSize          = null,
 
                                String?                                        DataSource                     = null,
+                               DateTime?                                      Created                        = null,
                                DateTime?                                      LastChange                     = null,
 
                                JObject?                                       CustomData                     = null,
@@ -1315,6 +1344,7 @@ namespace cloud.charging.open.protocols.WWCP
                    MaxAdminStatusScheduleSize ?? DefaultMaxChargingStationAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxChargingStationStatusScheduleSize,
                    DataSource,
+                   Created,
                    LastChange,
                    CustomData,
                    InternalData)
@@ -1327,7 +1357,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.address                             = Address;
             this.geoLocation                         = GeoLocation;
-            this.openingTimes                        = OpeningTimes ?? OpeningTimes.Open24Hours;
+            this.openingTimes                        = OpeningTimes                  ?? OpeningTimes.Open24Hours;
             this.hotlinePhoneNumber                  = HotlinePhoneNumber;
             this.physicalReference                   = PhysicalReference;
             this.chargingWhenClosed                  = ChargingWhenClosed;
@@ -1335,9 +1365,16 @@ namespace cloud.charging.open.protocols.WWCP
             this.locationLanguage                    = LocationLanguage;
             this.serviceIdentification               = ServiceIdentification;
             this.modelCode                           = ModelCode;
+            this.CertificationInfo                   = CertificationInfo;
+            this.CalibrationInfo                     = CalibrationInfo;
+            this.VehicleTypes                        = VehicleTypes?.     Distinct() ?? [];
+            this.Images                              = Images?.           Distinct() ?? [];
+            this.MobilityRootCAs                     = MobilityRootCAs?.  Distinct() ?? [];
+            this.EVRoamingPartners                   = EVRoamingPartners?.Distinct() ?? [];
+            this.DataLicenses                        = DataLicenses?.     Distinct() ?? [];
 
-            this.Published                           = Published ?? true;
-            this.Disabled                            = Disabled  ?? false;
+            this.Published                           = Published                     ?? true;
+            this.Disabled                            = Disabled                      ?? false;
 
             this.Brands                              = [];
 
@@ -1348,32 +1385,6 @@ namespace cloud.charging.open.protocols.WWCP
             this.Brands.OnSetChanged                += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("Brands",
-                                oldItems,
-                                newItems);
-
-            };
-
-
-            this.MobilityRootCAs = [];
-
-            if (MobilityRootCAs is not null)
-                foreach (var mobilityRootCA in MobilityRootCAs)
-                    this.MobilityRootCAs.Add(mobilityRootCA);
-
-            this.MobilityRootCAs.OnSetChanged       += (timestamp, sender, newItems, oldItems) => {
-
-                PropertyChanged("MobilityRootCAs",
-                                oldItems,
-                                newItems);
-
-            };
-
-
-            this.DataLicenses                        = [];
-            this.DataLicenses.OnSetChanged          += (timestamp, reactiveSet, newItems, oldItems) =>
-            {
-
-                PropertyChanged("DataLicenses",
                                 oldItems,
                                 newItems);
 
@@ -1758,11 +1769,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TimestampFilter">An optional status timestamp filter.</param>
         /// <param name="StatusFilter">An optional status value filter.</param>
         /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>>
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>>
 
             EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs      = null,
                                     Func<DateTime,             Boolean>?  TimestampFilter   = null,
-                                    Func<EVSEAdminStatusTypes, Boolean>?  StatusFilter      = null,
+                                    Func<EVSEAdminStatusType, Boolean>?  StatusFilter      = null,
                                     UInt64?                               Skip              = null,
                                     UInt64?                               Take              = null)
 
@@ -1771,7 +1782,7 @@ namespace cloud.charging.open.protocols.WWCP
             IncludeEVSEs ??= (evse => true);
 
             return EVSEs.Where (evse => IncludeEVSEs(evse)).
-                         Select(evse => new Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>(
+                         Select(evse => new Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>(
                                             evse.Id,
                                             evse.AdminStatusSchedule(TimestampFilter,
                                                                      StatusFilter,
@@ -2570,8 +2581,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateEVSEAdminStatus(DateTime                            Timestamp,
                                                   EventTracking_Id                    EventTrackingId,
                                                   IEVSE                               EVSE,
-                                                  Timestamped<EVSEAdminStatusTypes>   NewAdminStatus,
-                                                  Timestamped<EVSEAdminStatusTypes>?  OldAdminStatus   = null,
+                                                  Timestamped<EVSEAdminStatusType>   NewAdminStatus,
+                                                  Timestamped<EVSEAdminStatusType>?  OldAdminStatus   = null,
                                                   Context?                            DataSource       = null)
         {
 

@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using System.Linq;
 
 #endregion
 
@@ -81,80 +82,59 @@ namespace cloud.charging.open.protocols.WWCP
         /// The roaming network of this charging pool.
         /// </summary>
         [InternalUseOnly]
-        public IRoamingNetwork?              RoamingNetwork
+        public IRoamingNetwork?                      RoamingNetwork
             => Operator?.RoamingNetwork;
 
         /// <summary>
         /// The charging station operator of this charging pool.
         /// </summary>
         [Optional]
-        public IChargingStationOperator?     Operator               { get; }
+        public IChargingStationOperator?             Operator               { get; }
 
         /// <summary>
-        /// The charging station sub operator of this charging pool.
+        /// The charging pool sub operator of this charging pool.
         /// (Better use brands!)
         /// </summary>
         [Optional]
-        public IChargingStationOperator?     SubOperator            { get; }
+        public IChargingStationOperator?             SubOperator            { get; }
+
+        /// <summary>
+        /// The charging owner sub operator of this charging pool.
+        /// (Better use brands!)
+        /// </summary>
+        [Optional]
+        public IChargingStationOperator?             Owner                  { get; }
 
         /// <summary>
         /// All brands registered for this charging pool.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<Brand>            Brands                 { get; }
+        public ReactiveSet<Brand>                    Brands                 { get; }
 
         /// <summary>
-        /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20, available in this charging pool.
+        /// All e-mobility related Root-CAs, e.g. ISO 15118-2/-20 available in this charging pool.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<RootCAInfo>       MobilityRootCAs        { get; }
+        public IEnumerable<RootCAInfo>               MobilityRootCAs        { get; }
+
+        /// <summary>
+        /// An optional enumeration of EV roaming partners available in this charging pool.
+        /// </summary>
+        [Optional, SlowData]
+        public IEnumerable<EVRoamingPartnerInfo>     EVRoamingPartners      { get; }
 
 
         /// <summary>
         /// The remote charging pool.
         /// </summary>
         [Optional]
-        public IRemoteChargingPool?          RemoteChargingPool     { get; }
+        public IRemoteChargingPool?                  RemoteChargingPool     { get; }
 
 
 
         #region Address related
 
-        #region LocationLanguage
-
-        private Languages? locationLanguage;
-
-        /// <summary>
-        /// The official language at this charging pool.
-        /// </summary>
-        [Optional]
-        public Languages? LocationLanguage
-        {
-
-            get
-            {
-                return locationLanguage;
-            }
-
-            set
-            {
-
-                if (locationLanguage != value)
-                {
-
-                    if (value == null)
-                        DeleteProperty(ref locationLanguage);
-
-                    else
-                        SetProperty(ref locationLanguage, value);
-
-                }
-
-            }
-
-        }
-
-        #endregion
+        public IEnumerable<Languages>        LocationLanguages      { get; private set; }
 
         #region Address
 
@@ -506,6 +486,27 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #endregion
+
+
+        /// <summary>
+        /// The optional enumeration of services that are offered around the location
+        /// of the charging pool by the CPO or their affiliated partners.
+        /// </summary>
+        [Optional]
+        public IEnumerable<LocationService>          Services               { get; }
+
+        /// <summary>
+        /// The optional enumeration of additional geographical locations of related
+        /// geo coordinates that might be relevant to the EV driver.
+        /// </summary>
+        [Optional]
+        public IEnumerable<AdditionalGeoLocation>    RelatedLocations       { get; }
+
+        /// <summary>
+        /// The optional enumeration of restrictions that apply to parking within the charging pool.
+        /// </summary>
+        [Optional]
+        public IEnumerable<ParkingRestrictionGroup>  ParkingRestrictions    { get; }
 
 
         #region Accessibility
@@ -1034,11 +1035,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
         /// <summary>
-        /// The license of the charging pool data.
+        /// The data license(s) of the charging pool data.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<OpenDataLicense>             DataLicenses           { get; }
+        public IEnumerable<DataLicense>              DataLicenses           { get; }
 
 
         #region StatusAggregationDelegate
@@ -1079,11 +1081,15 @@ namespace cloud.charging.open.protocols.WWCP
                             Boolean?                                    ChargingWhenClosed               = null,
                             ParkingType?                                ParkingType                      = null,
                             AccessibilityType?                          Accessibility                    = null,
-                            Languages?                                  LocationLanguage                 = null,
+                            IEnumerable<Languages>?                     LocationLanguages                = null,
                             PhoneNumber?                                HotlinePhoneNumber               = null,
+
+                            IEnumerable<LocationService>?               Services                         = null,
+                            IEnumerable<AdditionalGeoLocation>?         RelatedLocations                 = null,
 
                             IEnumerable<Brand>?                         Brands                           = null,
                             IEnumerable<RootCAInfo>?                    MobilityRootCAs                  = null,
+                            IEnumerable<EVRoamingPartnerInfo>?          EVRoamingPartners                = null,
 
                             Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus               = null,
                             Timestamped<ChargingPoolStatusTypes>?       InitialStatus                    = null,
@@ -1091,6 +1097,7 @@ namespace cloud.charging.open.protocols.WWCP
                             UInt16?                                     MaxPoolStatusScheduleSize        = null,
 
                             String?                                     DataSource                       = null,
+                            DateTime?                                   Created                          = null,
                             DateTime?                                   LastChange                       = null,
 
                             JObject?                                    CustomData                       = null,
@@ -1107,6 +1114,7 @@ namespace cloud.charging.open.protocols.WWCP
                    MaxPoolAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
                    MaxPoolStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
                    DataSource,
+                   Created,
                    LastChange,
                    CustomData,
                    InternalData)
@@ -1122,12 +1130,18 @@ namespace cloud.charging.open.protocols.WWCP
             this.ChargingWhenClosed                = ChargingWhenClosed;
             this.parkingType                       = ParkingType;
             this.accessibility                     = Accessibility;
-            this.locationLanguage                  = LocationLanguage;
+            this.LocationLanguages                 = LocationLanguages?.Distinct() ?? [];
             this.hotlinePhoneNumber                = HotlinePhoneNumber;
 
             this.Operator                          = Operator;
 
-            this.Brands                            = new ReactiveSet<Brand>();
+            this.Services                          = Services?.         Distinct() ?? [];
+            this.RelatedLocations                  = RelatedLocations?. Distinct() ?? [];
+            this.MobilityRootCAs                   = MobilityRootCAs?.  Distinct() ?? [];
+            this.EVRoamingPartners                 = EVRoamingPartners?.Distinct() ?? [];
+            this.DataLicenses                      = DataLicenses?.     Distinct() ?? [];
+
+            this.Brands                            = [];
 
             if (Brands is not null)
                 foreach (var brand in Brands)
@@ -1141,31 +1155,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-
-            this.MobilityRootCAs = new ReactiveSet<RootCAInfo>();
-
-            if (MobilityRootCAs is not null)
-                foreach (var mobilityRootCA in MobilityRootCAs)
-                    this.MobilityRootCAs.Add(mobilityRootCA);
-
-            this.MobilityRootCAs.OnSetChanged      += (timestamp, sender, newItems, oldItems) => {
-
-                PropertyChanged("MobilityRootCAs",
-                                oldItems,
-                                newItems);
-
-            };
-
-
-            this.DataLicenses                       = new ReactiveSet<OpenDataLicense>();
-            this.DataLicenses.OnSetChanged         += (timestamp, reactiveSet, newItems, oldItems) =>
-            {
-
-                PropertyChanged("DataLicenses",
-                                oldItems,
-                                newItems);
-
-            };
 
             this.UIFeatures                         = new ReactiveSet<UIFeatures>();
             this.UIFeatures.OnSetChanged           += (timestamp, reactiveSet, newItems, oldItems) =>
@@ -2530,11 +2519,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TimestampFilter">An optional status timestamp filter.</param>
         /// <param name="StatusFilter">An optional status value filter.</param>
         /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>>
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>>
 
             EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs      = null,
                                     Func<DateTime,             Boolean>?  TimestampFilter   = null,
-                                    Func<EVSEAdminStatusTypes, Boolean>?  StatusFilter      = null,
+                                    Func<EVSEAdminStatusType, Boolean>?  StatusFilter      = null,
                                     UInt64?                               Skip              = null,
                                     UInt64?                               Take              = null)
 
@@ -2743,8 +2732,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateEVSEAdminStatus(DateTime                            Timestamp,
                                                   EventTracking_Id                    EventTrackingId,
                                                   IEVSE                               EVSE,
-                                                  Timestamped<EVSEAdminStatusTypes>   NewAdminStatus,
-                                                  Timestamped<EVSEAdminStatusTypes>?  OldAdminStatus   = null,
+                                                  Timestamped<EVSEAdminStatusType>   NewAdminStatus,
+                                                  Timestamped<EVSEAdminStatusType>?  OldAdminStatus   = null,
                                                   Context?                            DataSource       = null)
         {
 
@@ -4487,38 +4476,47 @@ namespace cloud.charging.open.protocols.WWCP
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this charging pool.
         /// </summary>
         public ChargingPool Clone()
 
-            => new (Id,
-                    Operator,
-                    Name,
-                    Description,
+            => new (
 
-                    Address,
-                    GeoLocation,
-                    TimeZone,
-                    OpeningTimes,
-                    ChargingWhenClosed,
-                    ParkingType,
-                    Accessibility,
-                    LocationLanguage,
-                    HotlinePhoneNumber,
+                   Id,
+                   Operator,
+                   Name,
+                   Description,
 
-                    Brands,
-                    MobilityRootCAs,
+                   Address,
+                   GeoLocation,
+                   TimeZone,
+                   OpeningTimes,
+                   ChargingWhenClosed,
+                   ParkingType,
+                   Accessibility,
+                   LocationLanguages,
+                   HotlinePhoneNumber,
 
-                    AdminStatus,
-                    Status,
-                    adminStatusSchedule.MaxStatusHistorySize,
-                    statusSchedule.     MaxStatusHistorySize,
+                   Services,
+                   RelatedLocations,
 
-                    DataSource,
-                    LastChangeDate,
+                   Brands,
+                   MobilityRootCAs.  Select(mobilityRootCA   => mobilityRootCA.  Clone()),
+                   EVRoamingPartners.Select(evRoamingPartner => evRoamingPartner.Clone()),
 
-                    CustomData,
-                    InternalData);
+                   AdminStatus,
+                   Status,
+                   adminStatusSchedule.MaxStatusHistorySize,
+                   statusSchedule.     MaxStatusHistorySize,
+
+                   DataSource,
+                   Created,
+                   LastChangeDate,
+
+                   CustomData,
+                   InternalData
+
+               );
 
         #endregion
 
@@ -4543,7 +4541,7 @@ namespace cloud.charging.open.protocols.WWCP
             Features.           Replace(OtherChargingPool.Features);
             Facilities.         Replace(OtherChargingPool.Facilities);
 
-            LocationLanguage          = OtherChargingPool.LocationLanguage;
+            LocationLanguages         = OtherChargingPool.LocationLanguages;
             Address                   = OtherChargingPool.Address;
             GeoLocation               = OtherChargingPool.GeoLocation;
             TimeZone                  = OtherChargingPool.TimeZone;
