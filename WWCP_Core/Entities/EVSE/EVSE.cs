@@ -833,7 +833,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="PhotoURLs">An optional enumeration of links to photos related to the EVSE.</param>
         /// <param name="Brands">An optional enumeration of brands registered for this EVSE.</param>
-        /// <param name="OpenDataLicenses">An optional enumeration of data license(s) of this EVSE.</param>
+        /// <param name="DataLicenses">An optional enumeration of data license(s) of this EVSE.</param>
         /// <param name="ChargingModes">An optional enumeration of the supported charging modes of this EVSE.</param>
         /// 
         /// <param name="DataSource"></param>
@@ -851,7 +851,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<URL>?                    PhotoURLs                    = null,
                     IEnumerable<Brand>?                  Brands                       = null,
                     IEnumerable<RootCAInfo>?             MobilityRootCAs              = null,
-                    IEnumerable<DataLicense>?            OpenDataLicenses             = null,
+                    IEnumerable<DataLicense>?            DataLicenses                 = null,
                     IEnumerable<ChargingModes>?          ChargingModes                = null,
                     IEnumerable<ChargingTariff>?         ChargingTariffs              = null,
                     CurrentTypes?                        CurrentType                  = null,
@@ -877,7 +877,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     ChargingSession?                     ChargingSession              = null,
 
-                    Timestamped<EVSEAdminStatusType>?   InitialAdminStatus           = null,
+                    Timestamped<EVSEAdminStatusType>?    InitialAdminStatus           = null,
                     Timestamped<EVSEStatusType>?         InitialStatus                = null,
                     UInt16?                              MaxAdminStatusScheduleSize   = null,
                     UInt16?                              MaxStatusScheduleSize        = null,
@@ -949,9 +949,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.DataLicenses                   = OpenDataLicenses is null
+            this.DataLicenses                   = DataLicenses is null
                                                       ? new ReactiveSet<DataLicense>()
-                                                      : new ReactiveSet<DataLicense>(OpenDataLicenses);
+                                                      : new ReactiveSet<DataLicense>(DataLicenses);
             this.DataLicenses.OnSetChanged     += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
