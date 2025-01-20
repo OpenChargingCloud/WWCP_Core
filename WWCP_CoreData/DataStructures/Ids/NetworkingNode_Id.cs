@@ -112,6 +112,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         #endregion
 
+
         #region (static) Parse   (Text)
 
         /// <summary>
@@ -173,6 +174,63 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         }
 
         #endregion
+
+
+        #region (static) Parse   (Number)
+
+        /// <summary>
+        /// Parse the given number as networking node identification.
+        /// </summary>
+        /// <param name="Number">A numerical representation of a networking node identification.</param>
+        public static NetworkingNode_Id Parse(UInt32 Number)
+        {
+
+            if (TryParse(Number, out var networkingNodeId))
+                return networkingNodeId;
+
+            throw new ArgumentException($"Invalid text representation of a networking node identification: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given number as networking node identification.
+        /// </summary>
+        /// <param name="Text">A numerical representation of a networking node identification.</param>
+        public static NetworkingNode_Id? TryParse(UInt32 Number)
+        {
+
+            if (TryParse(Number, out var networkingNodeId))
+                return networkingNodeId;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text, out NetworkingNodeId)
+
+        /// <summary>
+        /// Try to parse the given number as networking node identification.
+        /// </summary>
+        /// <param name="Number">A numerical representation of a networking node identification.</param>
+        /// <param name="NetworkingNodeId">The parsed networking node identification.</param>
+        public static Boolean TryParse(UInt32 Number, out NetworkingNode_Id NetworkingNodeId)
+        {
+
+            NetworkingNodeId = new NetworkingNode_Id(Number.ToString());
+
+            return true;
+
+        }
+
+        #endregion
+
 
         #region Clone()
 

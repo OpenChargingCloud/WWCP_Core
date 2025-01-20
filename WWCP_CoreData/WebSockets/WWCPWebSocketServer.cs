@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public const       String                                                              DefaultHTTPServiceName    = $"GraphDefined WWCP WebSocket Server";
+        public const       String                                                              DefaultHTTPServiceName    = "GraphDefined WWCP WebSocket Server";
 
         public const       String                                                              LogfileName               = "CSMSWSServer.log";
 
