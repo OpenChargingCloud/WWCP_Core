@@ -75,6 +75,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          IEnumerable<RootCAInfo>?                                            MobilityRootCAs                   = null,
                                                                          IEnumerable<EVRoamingPartnerInfo>?                                  EVRoamingPartners                 = null,
 
+                                                                         IEnumerable<IChargingStation>?                                      ChargingStations                  = null,
+                                                                         IEnumerable<IEnergyMeter>?                                          EnergyMeters                      = null,
+
                                                                          Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus                = null,
                                                                          Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                     = null,
                                                                          String                                                              EllipticCurve                     = "P-256",
@@ -124,6 +127,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    Brands,
                    MobilityRootCAs,
                    EVRoamingPartners,
+
+                   ChargingStations,
+                   EnergyMeters,
 
                    InitialAdminStatus ?? ChargingPoolAdminStatusTypes.Operational,
                    InitialStatus      ?? ChargingPoolStatusTypes.Available,

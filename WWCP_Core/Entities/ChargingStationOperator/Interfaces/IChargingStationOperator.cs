@@ -136,6 +136,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   IEnumerable<RootCAInfo>?                                            MobilityRootCAs                = null,
                                                                   IEnumerable<EVRoamingPartnerInfo>?                                  EVRoamingPartners              = null,
 
+                                                                  IEnumerable<IChargingStation>?                                      ChargingStations               = null,
+                                                                  IEnumerable<IEnergyMeter>?                                          EnergyMeters                   = null,
+
                                                                   Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus             = null,
                                                                   Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                  = null,
                                                                   UInt16?                                                             MaxAdminStatusScheduleSize     = null,
@@ -185,6 +188,9 @@ namespace cloud.charging.open.protocols.WWCP
                        Brands,
                        MobilityRootCAs,
                        EVRoamingPartners,
+
+                       ChargingStations,
+                       EnergyMeters,
 
                        InitialAdminStatus,
                        InitialStatus,
@@ -251,6 +257,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                              IEnumerable<RootCAInfo>?                                     MobilityRootCAs                = null,
                                                                              IEnumerable<EVRoamingPartnerInfo>?                           EVRoamingPartners              = null,
 
+                                                                             IEnumerable<IChargingStation>?                               ChargingStations               = null,
+                                                                             IEnumerable<IEnergyMeter>?                                   EnergyMeters                   = null,
+
                                                                              Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                              Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
                                                                              UInt16?                                                      MaxAdminStatusScheduleSize     = null,
@@ -299,6 +308,9 @@ namespace cloud.charging.open.protocols.WWCP
                        Brands,
                        MobilityRootCAs,
                        EVRoamingPartners,
+
+                       ChargingStations,
+                       EnergyMeters,
 
                        InitialAdminStatus,
                        InitialStatus,
@@ -366,6 +378,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                   IEnumerable<RootCAInfo>?                                            MobilityRootCAs                        = null,
                                                                                   IEnumerable<EVRoamingPartnerInfo>?                                  EVRoamingPartners                      = null,
 
+                                                                                  IEnumerable<IChargingStation>?                                      ChargingStations                       = null,
+                                                                                  IEnumerable<IEnergyMeter>?                                          EnergyMeters                           = null,
+
                                                                                   Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus                     = null,
                                                                                   Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                          = null,
                                                                                   UInt16?                                                             MaxAdminStatusScheduleSize             = null,
@@ -416,6 +431,9 @@ namespace cloud.charging.open.protocols.WWCP
                        Brands,
                        MobilityRootCAs,
                        EVRoamingPartners,
+
+                       ChargingStations,
+                       EnergyMeters,
 
                        InitialAdminStatus,
                        InitialStatus,
@@ -484,6 +502,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         IEnumerable<RootCAInfo>?                                            MobilityRootCAs                = null,
                                                                         IEnumerable<EVRoamingPartnerInfo>?                                  EVRoamingPartners              = null,
 
+                                                                        IEnumerable<IChargingStation>?                                      ChargingStations               = null,
+                                                                        IEnumerable<IEnergyMeter>?                                          EnergyMeters                   = null,
+
                                                                         Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus             = null,
                                                                         Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                  = null,
                                                                         UInt16?                                                             MaxAdminStatusScheduleSize     = null,
@@ -533,6 +554,9 @@ namespace cloud.charging.open.protocols.WWCP
                        Brands,
                        MobilityRootCAs,
                        EVRoamingPartners,
+
+                       ChargingStations,
+                       EnergyMeters,
 
                        InitialAdminStatus,
                        InitialStatus,

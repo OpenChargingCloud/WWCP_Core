@@ -1091,6 +1091,9 @@ namespace cloud.charging.open.protocols.WWCP
                             IEnumerable<RootCAInfo>?                    MobilityRootCAs                  = null,
                             IEnumerable<EVRoamingPartnerInfo>?          EVRoamingPartners                = null,
 
+                            IEnumerable<IChargingStation>?              ChargingStations                 = null,
+                            IEnumerable<IEnergyMeter>?                  EnergyMeters                     = null,
+
                             Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus               = null,
                             Timestamped<ChargingPoolStatusTypes>?       InitialStatus                    = null,
                             UInt16?                                     MaxPoolAdminStatusScheduleSize   = null,
@@ -1272,6 +1275,12 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             this.chargingStations            = new EntityHashSet<IChargingPool, ChargingStation_Id, IChargingStation>(this);
+
+            foreach (var chargingStation in ChargingStations ?? [])
+            {
+                this.chargingStations.TryAdd(chargingStation);
+            }
+
             //this.evses.OnSetChanged               += (timestamp, reactiveSet, newItems, oldItems) =>
             //{
 
@@ -4480,43 +4489,74 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public ChargingPool Clone()
 
-            => new (
+        {
 
-                   Id,
-                   Operator,
-                   Name,
-                   Description,
+            var clone = new ChargingPool(
 
-                   Address,
-                   GeoLocation,
-                   TimeZone,
-                   OpeningTimes,
-                   ChargingWhenClosed,
-                   ParkingType,
-                   Accessibility,
-                   LocationLanguages,
-                   HotlinePhoneNumber,
+                            Id.                 Clone(),
+                            Operator,
+                            Name.               Clone(),
+                            Description.        Clone(),
 
-                   Services,
-                   RelatedLocations,
+                            Address?.           Clone(),
+                            GeoLocation?.       Clone(),
+                            TimeZone?.          Clone(),
+                            OpeningTimes,
+                            ChargingWhenClosed,
+                            ParkingType?.       Clone(),
+                            Accessibility?.     Clone(),
+                            LocationLanguages,
+                            HotlinePhoneNumber?.Clone(),
 
-                   Brands,
-                   MobilityRootCAs.  Select(mobilityRootCA   => mobilityRootCA.  Clone()),
-                   EVRoamingPartners.Select(evRoamingPartner => evRoamingPartner.Clone()),
+                            Services.           Select(service          => service.         Clone()),
+                            RelatedLocations.   Select(relatedLocation  => relatedLocation. Clone()),
 
-                   AdminStatus,
-                   Status,
-                   adminStatusSchedule.MaxStatusHistorySize,
-                   statusSchedule.     MaxStatusHistorySize,
+                            Brands,
+                            MobilityRootCAs.    Select(mobilityRootCA   => mobilityRootCA.  Clone()),
+                            EVRoamingPartners.  Select(evRoamingPartner => evRoamingPartner.Clone()),
 
-                   DataSource,
-                   Created,
-                   LastChangeDate,
+                            chargingStations,
+                            energyMeters,
 
-                   CustomData,
-                   InternalData
+                            AdminStatus,
+                            Status,
+                            adminStatusSchedule.MaxStatusHistorySize,
+                            statusSchedule.     MaxStatusHistorySize,
 
-               );
+                            DataSource?.        CloneString(),
+                            Created,
+                            LastChangeDate,
+
+                            CustomData,
+                            InternalData
+
+                        );
+
+            clone.CloneFrom(this);
+
+            foreach (var handler in OnDataChanged?.       GetInvocationList() ?? [])
+            {
+
+                if (handler.Target == Operator)
+                    continue;
+
+                clone.OnDataChanged        += (OnChargingPoolDataChangedDelegate)        handler;
+
+            }
+
+            foreach (var handler in OnStatusChanged?.     GetInvocationList() ?? [])
+            {
+                clone.OnStatusChanged      += (OnChargingPoolStatusChangedDelegate)      handler;
+            }
+
+            foreach (var handler in OnAdminStatusChanged?.GetInvocationList() ?? [])
+            {
+                clone.OnAdminStatusChanged += (OnChargingPoolAdminStatusChangedDelegate) handler;
+            }
+
+            return clone;
+
+        }
 
         #endregion
 

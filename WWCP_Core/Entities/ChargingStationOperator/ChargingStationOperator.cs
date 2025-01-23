@@ -1388,7 +1388,8 @@ namespace cloud.charging.open.protocols.WWCP
             //                          CurrentChargingPoolId);
 
             var newChargingPool = oldChargingPool.Clone();
-            UpdateDelegate(oldChargingPool);
+            Connect(newChargingPool);
+            UpdateDelegate(newChargingPool);
 
             //ChargingPool.CopyAllLinkedDataFrom(OldChargingPool);
             chargingPools.TryAdd(newChargingPool,
@@ -1677,12 +1678,12 @@ namespace cloud.charging.open.protocols.WWCP
             var onChargingPoolDataChanged = OnChargingPoolDataChanged;
             if (onChargingPoolDataChanged is not null)
                 await onChargingPoolDataChanged(Timestamp,
-                                                     EventTrackingId,
-                                                     ChargingPool,
-                                                     PropertyName,
-                                                     NewValue,
-                                                     OldValue,
-                                                     DataSource);
+                                                EventTrackingId,
+                                                ChargingPool,
+                                                PropertyName,
+                                                NewValue,
+                                                OldValue,
+                                                DataSource);
 
         }
 
