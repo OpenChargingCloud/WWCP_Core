@@ -56,8 +56,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                    Id:                  ChargingPool_Id.Parse(DE_GEF.Id, "0001"),
                                    Name:                I18NString.Create(Languages.de, "GraphDefined Charging Pool #1"),
                                    Description:         I18NString.Create(Languages.de, "powered by GraphDefined Charging Pools GmbH"),
-                                   InitialAdminStatus:  ChargingPoolAdminStatusTypes.OutOfService,
-                                   InitialStatus:       ChargingPoolStatusTypes.Offline
+                                   InitialAdminStatus:  ChargingPoolAdminStatusType.OutOfService,
+                                   InitialStatus:       ChargingPoolStatusType.Offline
                                ).Result.ChargingPool;
 
                 ClassicAssert.IsNotNull(DE_GEF_P0001);

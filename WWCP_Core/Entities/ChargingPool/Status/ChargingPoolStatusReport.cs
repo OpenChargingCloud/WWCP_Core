@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A charging pool status report.
     /// </summary>
-    public class ChargingPoolStatusReport : StatusReport<IChargingPool, ChargingPoolStatusTypes>
+    public class ChargingPoolStatusReport : StatusReport<IChargingPool, ChargingPoolStatusType>
     {
 
         /// <summary>

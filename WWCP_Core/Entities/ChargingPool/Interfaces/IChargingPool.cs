@@ -634,8 +634,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// The common interface of all charging pools.
     /// </summary>
     public interface IChargingPool : IEntity<ChargingPool_Id>,
-                                     IAdminStatus<ChargingPoolAdminStatusTypes>,
-                                     IStatus<ChargingPoolStatusTypes>,
+                                     IAdminStatus<ChargingPoolAdminStatusType>,
+                                     IStatus<ChargingPoolStatusType>,
                                      ISendAuthorizeStartStop,
                                      ILocalRemoteStartStop,
                                      ILocalChargingReservations,
@@ -923,7 +923,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// A delegate called to aggregate the dynamic status of all subordinated charging stations.
         /// </summary>
         [Optional]
-        Func<ChargingStationStatusReport, ChargingPoolStatusTypes>? StatusAggregationDelegate { get; set; }
+        Func<ChargingStationStatusReport, ChargingPoolStatusType>? StatusAggregationDelegate { get; set; }
 
         #endregion
 

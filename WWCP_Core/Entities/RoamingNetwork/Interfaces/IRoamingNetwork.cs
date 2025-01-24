@@ -466,17 +466,17 @@ namespace cloud.charging.open.protocols.WWCP
         IEnumerable<ChargingPoolStatus>          ChargingPoolStatus               (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null);
 
 
-        IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>>
+        IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusType>>>>
                                                  ChargingPoolAdminStatusSchedule  (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null,
                                                                                    Func<DateTime,                     Boolean>?  TimestampFilter        = null,
-                                                                                   Func<ChargingPoolAdminStatusTypes, Boolean>?  AdminStatusFilter      = null,
+                                                                                   Func<ChargingPoolAdminStatusType, Boolean>?  AdminStatusFilter      = null,
                                                                                    UInt64?                                       Skip                   = null,
                                                                                    UInt64?                                       Take                   = null);
 
-        IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>>
+        IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusType>>>>
                                                  ChargingPoolStatusSchedule       (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null,
                                                                                    Func<DateTime,                Boolean>?       TimestampFilter        = null,
-                                                                                   Func<ChargingPoolStatusTypes, Boolean>?       AdminStatusFilter      = null,
+                                                                                   Func<ChargingPoolStatusType, Boolean>?       AdminStatusFilter      = null,
                                                                                    UInt64?                                       Skip                   = null,
                                                                                    UInt64?                                       Take                   = null);
 

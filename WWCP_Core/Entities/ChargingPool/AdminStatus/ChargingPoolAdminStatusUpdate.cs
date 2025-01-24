@@ -42,12 +42,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The new timestamped admin status of the charging pool.
         /// </summary>
-        public Timestamped<ChargingPoolAdminStatusTypes>   NewStatus    { get; }
+        public Timestamped<ChargingPoolAdminStatusType>   NewStatus    { get; }
 
         /// <summary>
         /// The optional old timestamped admin status of the charging pool.
         /// </summary>
-        public Timestamped<ChargingPoolAdminStatusTypes>?  OldStatus    { get; }
+        public Timestamped<ChargingPoolAdminStatusType>?  OldStatus    { get; }
 
         /// <summary>
         /// An optional data source or context for this charging pool admin status change.
@@ -66,8 +66,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
         /// <param name="DataSource">An optional data source or context for the charging pool admin status update.</param>
         public ChargingPoolAdminStatusUpdate(ChargingPool_Id                             Id,
-                                             Timestamped<ChargingPoolAdminStatusTypes>   NewStatus,
-                                             Timestamped<ChargingPoolAdminStatusTypes>?  OldStatus    = null,
+                                             Timestamped<ChargingPoolAdminStatusType>   NewStatus,
+                                             Timestamped<ChargingPoolAdminStatusType>?  OldStatus    = null,
                                              Context?                                    DataSource   = null)
 
         {

@@ -42,8 +42,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// with the EVSE Operator backend.
     /// </summary>
     public class ChargingPool : AEMobilityEntity<ChargingPool_Id,
-                                                 ChargingPoolAdminStatusTypes,
-                                                 ChargingPoolStatusTypes>,
+                                                 ChargingPoolAdminStatusType,
+                                                 ChargingPoolStatusType>,
                                 IEquatable<ChargingPool>,
                                 IComparable<ChargingPool>,
                                 IChargingPool
@@ -1048,7 +1048,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A delegate called to aggregate the dynamic status of all subordinated charging stations.
         /// </summary>
-        public Func<ChargingStationStatusReport, ChargingPoolStatusTypes>? StatusAggregationDelegate { get; set; }
+        public Func<ChargingStationStatusReport, ChargingPoolStatusType>? StatusAggregationDelegate { get; set; }
 
         #endregion
 
@@ -1094,8 +1094,8 @@ namespace cloud.charging.open.protocols.WWCP
                             IEnumerable<IChargingStation>?              ChargingStations                 = null,
                             IEnumerable<IEnergyMeter>?                  EnergyMeters                     = null,
 
-                            Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus               = null,
-                            Timestamped<ChargingPoolStatusTypes>?       InitialStatus                    = null,
+                            Timestamped<ChargingPoolAdminStatusType>?  InitialAdminStatus               = null,
+                            Timestamped<ChargingPoolStatusType>?       InitialStatus                    = null,
                             UInt16?                                     MaxPoolAdminStatusScheduleSize   = null,
                             UInt16?                                     MaxPoolStatusScheduleSize        = null,
 
@@ -1112,8 +1112,8 @@ namespace cloud.charging.open.protocols.WWCP
             : base(Id,
                    Name,
                    Description,
-                   InitialAdminStatus             ?? ChargingPoolAdminStatusTypes.Operational,
-                   InitialStatus                  ?? ChargingPoolStatusTypes.Available,
+                   InitialAdminStatus             ?? ChargingPoolAdminStatusType.Operational,
+                   InitialStatus                  ?? ChargingPoolStatusType.Available,
                    MaxPoolAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
                    MaxPoolStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
                    DataSource,
@@ -1398,8 +1398,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DataSource">An optional data source or context for the charging pool admin status update.</param>
         internal async Task UpdateAdminStatus(DateTime                                    Timestamp,
                                               EventTracking_Id                            EventTrackingId,
-                                              Timestamped<ChargingPoolAdminStatusTypes>   NewStatus,
-                                              Timestamped<ChargingPoolAdminStatusTypes>?  OldStatus    = null,
+                                              Timestamped<ChargingPoolAdminStatusType>   NewStatus,
+                                              Timestamped<ChargingPoolAdminStatusType>?  OldStatus    = null,
                                               Context?                                    DataSource   = null)
         {
 
@@ -1428,8 +1428,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DataSource">An optional data source or context for the charging pool admin status update.</param>
         internal async Task UpdateStatus(DateTime                               Timestamp,
                                          EventTracking_Id                       EventTrackingId,
-                                         Timestamped<ChargingPoolStatusTypes>   NewStatus,
-                                         Timestamped<ChargingPoolStatusTypes>?  OldStatus    = null,
+                                         Timestamped<ChargingPoolStatusType>   NewStatus,
+                                         Timestamped<ChargingPoolStatusType>?  OldStatus    = null,
                                          Context?                               DataSource   = null)
         {
 
@@ -3150,8 +3150,8 @@ namespace cloud.charging.open.protocols.WWCP
                 if (ChargingLocation.ChargingPoolId.HasValue && ChargingLocation.ChargingPoolId.Value != Id)
                     result = ReservationResult.UnknownLocation;
 
-                else if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
-                         AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
+                else if (AdminStatus.Value == ChargingPoolAdminStatusType.Operational ||
+                         AdminStatus.Value == ChargingPoolAdminStatusType.InternalUse)
                 {
 
                     if (RemoteChargingPool is not null)
@@ -3324,8 +3324,8 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
-                    AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == ChargingPoolAdminStatusType.Operational ||
+                    AdminStatus.Value == ChargingPoolAdminStatusType.InternalUse)
                 {
 
                     if (RemoteChargingPool is not null)
@@ -4014,8 +4014,8 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
-                    AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == ChargingPoolAdminStatusType.Operational ||
+                    AdminStatus.Value == ChargingPoolAdminStatusType.InternalUse)
                 {
 
                     if ((ChargingLocation.EVSEId.           HasValue && TryGetChargingStationByEVSEId(ChargingLocation.EVSEId.           Value, out var chargingStation) ||
@@ -4185,8 +4185,8 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
-                    AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == ChargingPoolAdminStatusType.Operational ||
+                    AdminStatus.Value == ChargingPoolAdminStatusType.InternalUse)
                 {
 
                     if (TryGetChargingSessionById(SessionId, out var chargingSession) &&

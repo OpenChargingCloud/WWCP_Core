@@ -78,8 +78,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          IEnumerable<IChargingStation>?                                      ChargingStations                  = null,
                                                                          IEnumerable<IEnergyMeter>?                                          EnergyMeters                      = null,
 
-                                                                         Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus                = null,
-                                                                         Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                     = null,
+                                                                         Timestamped<ChargingPoolAdminStatusType>?                          InitialAdminStatus                = null,
+                                                                         Timestamped<ChargingPoolStatusType>?                               InitialStatus                     = null,
                                                                          String                                                              EllipticCurve                     = "P-256",
                                                                          ECPrivateKeyParameters?                                             PrivateKey                        = null,
                                                                          PublicKeyCertificates?                                              PublicKeyCertificates             = null,
@@ -131,8 +131,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    ChargingStations,
                    EnergyMeters,
 
-                   InitialAdminStatus ?? ChargingPoolAdminStatusTypes.Operational,
-                   InitialStatus      ?? ChargingPoolStatusTypes.Available,
+                   InitialAdminStatus ?? ChargingPoolAdminStatusType.Operational,
+                   InitialStatus      ?? ChargingPoolStatusType.Available,
                    MaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize,
 
@@ -151,8 +151,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                              ChargingStationOperator.RoamingNetwork,
                                              newChargingPool.Name,
                                              newChargingPool.Description,
-                                             InitialAdminStatus ?? ChargingPoolAdminStatusTypes.Operational,
-                                             InitialStatus      ?? ChargingPoolStatusTypes.Available,
+                                             InitialAdminStatus ?? ChargingPoolAdminStatusType.Operational,
+                                             InitialStatus      ?? ChargingPoolStatusType.Available,
 
                                              Address,
                                              GeoLocation,
@@ -192,8 +192,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
     /// A virtual charging pool for (internal) tests.
     /// </summary>
     public class VirtualChargingPool : ACryptoEMobilityEntity<ChargingPool_Id,
-                                                              ChargingPoolAdminStatusTypes,
-                                                              ChargingPoolStatusTypes>,
+                                                              ChargingPoolAdminStatusType,
+                                                              ChargingPoolStatusType>,
                                        IEquatable<VirtualChargingPool>, IComparable<VirtualChargingPool>, IComparable,
                                        IRemoteChargingPool
     {
@@ -1161,8 +1161,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                    IRoamingNetwork                             RoamingNetwork,
                                    I18NString?                                 Name                         = null,
                                    I18NString?                                 Description                  = null,
-                                   Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus           = null,
-                                   Timestamped<ChargingPoolStatusTypes>?       InitialStatus                = null,
+                                   Timestamped<ChargingPoolAdminStatusType>?  InitialAdminStatus           = null,
+                                   Timestamped<ChargingPoolStatusType>?       InitialStatus                = null,
 
                                    Address?                                    Address                      = null,
                                    GeoCoordinate?                              GeoLocation                  = null,
@@ -1191,8 +1191,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    EllipticCurve,
                    PrivateKey,
                    PublicKeyCertificates,
-                   InitialAdminStatus         ?? ChargingPoolAdminStatusTypes.Operational,
-                   InitialStatus              ?? ChargingPoolStatusTypes.Available,
+                   InitialAdminStatus         ?? ChargingPoolAdminStatusType.Operational,
+                   InitialStatus              ?? ChargingPoolStatusType.Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
                    DataSource,
@@ -1574,8 +1574,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="NewStatus">The new EVSE admin status.</param>
         internal async Task UpdateAdminStatus(DateTime                                    Timestamp,
                                               EventTracking_Id                            EventTrackingId,
-                                              Timestamped<ChargingPoolAdminStatusTypes>   NewStatus,
-                                              Timestamped<ChargingPoolAdminStatusTypes>?  OldStatus    = null,
+                                              Timestamped<ChargingPoolAdminStatusType>   NewStatus,
+                                              Timestamped<ChargingPoolAdminStatusType>?  OldStatus    = null,
                                               Context?                                    DataSource   = null)
         {
 
@@ -1600,8 +1600,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="NewStatus">The new EVSE status.</param>
         internal async Task UpdateStatus(DateTime                               Timestamp,
                                          EventTracking_Id                       EventTrackingId,
-                                         Timestamped<ChargingPoolStatusTypes>   NewStatus,
-                                         Timestamped<ChargingPoolStatusTypes>?  OldStatus    = null,
+                                         Timestamped<ChargingPoolStatusType>   NewStatus,
+                                         Timestamped<ChargingPoolStatusType>?  OldStatus    = null,
                                          Context?                               DataSource   = null)
         {
 
@@ -1825,8 +1825,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (ChargingLocation.ChargingPoolId.HasValue && ChargingLocation.ChargingPoolId.Value != Id)
                     result = ReservationResult.UnknownLocation;
 
-                else if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
-                         AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
+                else if (AdminStatus.Value == ChargingPoolAdminStatusType.Operational ||
+                         AdminStatus.Value == ChargingPoolAdminStatusType.InternalUse)
                 {
 
                     if (ReservationLevel == ChargingReservationLevel.EVSE                                   &&
@@ -2066,8 +2066,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             try
             {
 
-                if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
-                    AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == ChargingPoolAdminStatusType.Operational ||
+                    AdminStatus.Value == ChargingPoolAdminStatusType.InternalUse)
                 {
 
                     var _Reservation = ChargingReservations.FirstOrDefault(reservation => reservation.Id == ReservationId);
@@ -2816,8 +2816,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     result = RemoteStartResult.UnknownLocation(System_Id.Local);
                 }
 
-                else if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
-                         AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
+                else if (AdminStatus.Value == ChargingPoolAdminStatusType.Operational ||
+                         AdminStatus.Value == ChargingPoolAdminStatusType.InternalUse)
                 {
 
                     if (!ChargingLocation.EVSEId.HasValue)
@@ -2970,8 +2970,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             try
             {
 
-                if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
-                    AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == ChargingPoolAdminStatusType.Operational ||
+                    AdminStatus.Value == ChargingPoolAdminStatusType.InternalUse)
                 {
 
                     if (!TryGetChargingSessionById(SessionId, out var chargingSession))
@@ -3397,7 +3397,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public Partly DynamicInfoAvailable => throw new NotImplementedException();
 
-        public Func<ChargingStationStatusReport, ChargingPoolStatusTypes> StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Func<ChargingStationStatusReport, ChargingPoolStatusType> StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         TimeSpan IChargingReservations.MaxReservationDuration { get; set; }
 
         public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition => throw new NotImplementedException();

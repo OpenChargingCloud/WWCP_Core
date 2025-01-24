@@ -809,11 +809,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdminStatusFilter">An optional admin status value filter.</param>
         /// <param name="Skip">The number of admin status entries per pool to skip.</param>
         /// <param name="Take">The number of admin status entries per pool to return.</param>
-        public IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>>
+        public IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusType>>>>
 
             ChargingPoolAdminStatusSchedule(IncludeChargingPoolDelegate?                  IncludeChargingPools   = null,
                                             Func<DateTime,                     Boolean>?  TimestampFilter        = null,
-                                            Func<ChargingPoolAdminStatusTypes, Boolean>?  AdminStatusFilter      = null,
+                                            Func<ChargingPoolAdminStatusType, Boolean>?  AdminStatusFilter      = null,
                                             UInt64?                                       Skip                   = null,
                                             UInt64?                                       Take                   = null)
 
@@ -823,7 +823,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             return chargingPools.
                          Where (chargingPool => IncludeChargingPools(chargingPool)).
-                         Select(chargingPool => new Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>(
+                         Select(chargingPool => new Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusType>>>(
                                                     chargingPool.Id,
                                                     chargingPool.AdminStatusSchedule(TimestampFilter,
                                                                                      AdminStatusFilter,
@@ -864,11 +864,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="StatusFilter">An optional admin status value filter.</param>
         /// <param name="Skip">The number of status entries per pool to skip.</param>
         /// <param name="Take">The number of status entries per pool to return.</param>
-        public IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>>
+        public IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusType>>>>
 
             ChargingPoolStatusSchedule(IncludeChargingPoolDelegate?             IncludeChargingPools   = null,
                                        Func<DateTime,                Boolean>?  TimestampFilter        = null,
-                                       Func<ChargingPoolStatusTypes, Boolean>?  StatusFilter           = null,
+                                       Func<ChargingPoolStatusType, Boolean>?  StatusFilter           = null,
                                        UInt64?                                  Skip                   = null,
                                        UInt64?                                  Take                   = null)
 
@@ -878,7 +878,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             return chargingPools.
                          Where (chargingPool => IncludeChargingPools(chargingPool)).
-                         Select(chargingPool => new Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>(
+                         Select(chargingPool => new Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusType>>>(
                                                     chargingPool.Id,
                                                     chargingPool.StatusSchedule(TimestampFilter,
                                                                                 StatusFilter,
@@ -1605,7 +1605,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetChargingPoolAdminStatus(ChargingPoolId, NewStatus)
 
         public void SetChargingPoolAdminStatus(ChargingPool_Id                            ChargingPoolId,
-                                               Timestamped<ChargingPoolAdminStatusTypes>  NewStatus,
+                                               Timestamped<ChargingPoolAdminStatusType>  NewStatus,
                                                Boolean                                    SendUpstream = false)
         {
 
@@ -1622,14 +1622,14 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetChargingPoolAdminStatus(ChargingPoolId, NewStatus, Timestamp)
 
         public void SetChargingPoolAdminStatus(ChargingPool_Id               ChargingPoolId,
-                                               ChargingPoolAdminStatusTypes  NewStatus,
+                                               ChargingPoolAdminStatusType  NewStatus,
                                                DateTime                      Timestamp)
         {
 
             if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool) &&
                 chargingPool is not null)
             {
-                chargingPool.AdminStatus = new Timestamped<ChargingPoolAdminStatusTypes>(Timestamp, NewStatus);
+                chargingPool.AdminStatus = new Timestamped<ChargingPoolAdminStatusType>(Timestamp, NewStatus);
             }
 
         }
@@ -1639,7 +1639,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetChargingPoolAdminStatus(ChargingPoolId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
         public void SetChargingPoolAdminStatus(ChargingPool_Id                                         ChargingPoolId,
-                                               IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>  StatusList,
+                                               IEnumerable<Timestamped<ChargingPoolAdminStatusType>>  StatusList,
                                                ChangeMethods                                           ChangeMethod  = ChangeMethods.Replace)
         {
 
@@ -1703,8 +1703,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateChargingPoolAdminStatus(DateTime                                    Timestamp,
                                                           EventTracking_Id                            EventTrackingId,
                                                           IChargingPool                               ChargingPool,
-                                                          Timestamped<ChargingPoolAdminStatusTypes>   NewStatus,
-                                                          Timestamped<ChargingPoolAdminStatusTypes>?  OldStatus    = null,
+                                                          Timestamped<ChargingPoolAdminStatusType>   NewStatus,
+                                                          Timestamped<ChargingPoolAdminStatusType>?  OldStatus    = null,
                                                           Context?                                    DataSource   = null)
         {
 
@@ -1735,8 +1735,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateChargingPoolStatus(DateTime                               Timestamp,
                                                      EventTracking_Id                       EventTrackingId,
                                                      IChargingPool                          ChargingPool,
-                                                     Timestamped<ChargingPoolStatusTypes>   NewStatus,
-                                                     Timestamped<ChargingPoolStatusTypes>?  OldStatus    = null,
+                                                     Timestamped<ChargingPoolStatusType>   NewStatus,
+                                                     Timestamped<ChargingPoolStatusType>?  OldStatus    = null,
                                                      Context?                               DataSource   = null)
         {
 

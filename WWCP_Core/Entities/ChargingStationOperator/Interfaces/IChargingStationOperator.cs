@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.WWCP
     public static class IChargingStationOperatorExtensions
     {
 
-        #region AddChargingPool           (this IChargingStationOperator, Id = null, Name = null, ...)
+        #region AddChargingPool            (this IChargingStationOperator, Id = null, Name = null, ...)
 
         /// <summary>
         /// Add a new charging pool.
@@ -139,8 +139,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   IEnumerable<IChargingStation>?                                      ChargingStations               = null,
                                                                   IEnumerable<IEnergyMeter>?                                          EnergyMeters                   = null,
 
-                                                                  Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus             = null,
-                                                                  Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                  = null,
+                                                                  Timestamped<ChargingPoolAdminStatusType>?                          InitialAdminStatus             = null,
+                                                                  Timestamped<ChargingPoolStatusType>?                               InitialStatus                  = null,
                                                                   UInt16?                                                             MaxAdminStatusScheduleSize     = null,
                                                                   UInt16?                                                             MaxStatusScheduleSize          = null,
 
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddChargingPoolIfNotExists(this IChargingStationOperator, Id = null, Name = null, ...)
+        #region AddChargingPoolIfNotExists (this IChargingStationOperator, Id = null, Name = null, ...)
 
         /// <summary>
         /// Add a new charging pool, but do not fail when this charging pool already exists.
@@ -260,8 +260,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                              IEnumerable<IChargingStation>?                               ChargingStations               = null,
                                                                              IEnumerable<IEnergyMeter>?                                   EnergyMeters                   = null,
 
-                                                                             Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                                             Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
+                                                                             Timestamped<ChargingPoolAdminStatusType>?                   InitialAdminStatus             = null,
+                                                                             Timestamped<ChargingPoolStatusType>?                        InitialStatus                  = null,
                                                                              UInt16?                                                      MaxAdminStatusScheduleSize     = null,
                                                                              UInt16?                                                      MaxStatusScheduleSize          = null,
 
@@ -340,7 +340,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateChargingPool   (this IChargingStationOperator, Id,        Name = null, ...)
+        #region AddOrUpdateChargingPool    (this IChargingStationOperator, Id,        Name = null, ...)
 
         /// <summary>
         /// Add a new or update an existing charging pool.
@@ -381,8 +381,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                   IEnumerable<IChargingStation>?                                      ChargingStations                       = null,
                                                                                   IEnumerable<IEnergyMeter>?                                          EnergyMeters                           = null,
 
-                                                                                  Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus                     = null,
-                                                                                  Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                          = null,
+                                                                                  Timestamped<ChargingPoolAdminStatusType>?                          InitialAdminStatus                     = null,
+                                                                                  Timestamped<ChargingPoolStatusType>?                               InitialStatus                          = null,
                                                                                   UInt16?                                                             MaxAdminStatusScheduleSize             = null,
                                                                                   UInt16?                                                             MaxStatusScheduleSize                  = null,
 
@@ -465,7 +465,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingPool        (this IChargingStationOperator, Id,        Name = null, ...)
+        #region UpdateChargingPool         (this IChargingStationOperator, Id,        Name = null, ...)
 
         /// <summary>
         /// Update the given charging pool.
@@ -505,8 +505,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         IEnumerable<IChargingStation>?                                      ChargingStations               = null,
                                                                         IEnumerable<IEnergyMeter>?                                          EnergyMeters                   = null,
 
-                                                                        Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus             = null,
-                                                                        Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                  = null,
+                                                                        Timestamped<ChargingPoolAdminStatusType>?                          InitialAdminStatus             = null,
+                                                                        Timestamped<ChargingPoolStatusType>?                               InitialStatus                  = null,
                                                                         UInt16?                                                             MaxAdminStatusScheduleSize     = null,
                                                                         UInt16?                                                             MaxStatusScheduleSize          = null,
 
@@ -588,7 +588,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region CreateChargingTariff     (Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
+        #region CreateChargingTariff       (Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging Tariff having the given
@@ -662,7 +662,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region CreateChargingTariff     (IdSuffix, Name, Description = null, ..., OnSuccess = null, OnError = null)
+        #region CreateChargingTariff       (IdSuffix, Name, Description = null, ..., OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging Tariff having the given
@@ -1143,11 +1143,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdminStatusFilter">An optional admin status value filter.</param>
         /// <param name="Skip">The number of admin status entries per pool to skip.</param>
         /// <param name="Take">The number of admin status entries per pool to return.</param>
-        IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>>
+        IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusType>>>>
 
             ChargingPoolAdminStatusSchedule(IncludeChargingPoolDelegate?                  IncludeChargingPools   = null,
                                             Func<DateTime,                     Boolean>?  TimestampFilter        = null,
-                                            Func<ChargingPoolAdminStatusTypes, Boolean>?  AdminStatusFilter      = null,
+                                            Func<ChargingPoolAdminStatusType, Boolean>?  AdminStatusFilter      = null,
                                             UInt64?                                       Skip                   = null,
                                             UInt64?                                       Take                   = null);
 
@@ -1165,11 +1165,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="StatusFilter">An optional admin status value filter.</param>
         /// <param name="Skip">The number of status entries per pool to skip.</param>
         /// <param name="Take">The number of status entries per pool to return.</param>
-        IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>>
+        IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusType>>>>
 
             ChargingPoolStatusSchedule(IncludeChargingPoolDelegate?             IncludeChargingPools   = null,
                                        Func<DateTime,                Boolean>?  TimestampFilter        = null,
-                                       Func<ChargingPoolStatusTypes, Boolean>?  StatusFilter           = null,
+                                       Func<ChargingPoolStatusType, Boolean>?  StatusFilter           = null,
                                        UInt64?                                  Skip                   = null,
                                        UInt64?                                  Take                   = null);
 
@@ -1177,15 +1177,15 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         void SetChargingPoolAdminStatus(ChargingPool_Id                                         ChargingPoolId,
-                                        Timestamped<ChargingPoolAdminStatusTypes>               NewStatus,
+                                        Timestamped<ChargingPoolAdminStatusType>               NewStatus,
                                         Boolean                                                 SendUpstream = false);
 
         void SetChargingPoolAdminStatus(ChargingPool_Id                                         ChargingPoolId,
-                                        ChargingPoolAdminStatusTypes                            NewStatus,
+                                        ChargingPoolAdminStatusType                            NewStatus,
                                         DateTime                                                Timestamp);
 
         void SetChargingPoolAdminStatus(ChargingPool_Id                                         ChargingPoolId,
-                                        IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>  StatusList,
+                                        IEnumerable<Timestamped<ChargingPoolAdminStatusType>>  StatusList,
                                         ChangeMethods                                           ChangeMethod  = ChangeMethods.Replace);
 
 

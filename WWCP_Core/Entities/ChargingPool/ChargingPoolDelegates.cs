@@ -60,8 +60,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnChargingPoolAdminStatusChangedDelegate(DateTime                                    Timestamp,
                                                                   EventTracking_Id                            EventTrackingId,
                                                                   IChargingPool                               ChargingPool,
-                                                                  Timestamped<ChargingPoolAdminStatusTypes>   OldStatus,
-                                                                  Timestamped<ChargingPoolAdminStatusTypes>?  NewStatus    = null,
+                                                                  Timestamped<ChargingPoolAdminStatusType>   OldStatus,
+                                                                  Timestamped<ChargingPoolAdminStatusType>?  NewStatus    = null,
                                                                   Context?                                    DataSource   = null);
 
 
@@ -77,8 +77,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnChargingPoolStatusChangedDelegate(DateTime                               Timestamp,
                                                              EventTracking_Id                       EventTrackingId,
                                                              IChargingPool                          ChargingPool,
-                                                             Timestamped<ChargingPoolStatusTypes>   NewStatus,
-                                                             Timestamped<ChargingPoolStatusTypes>?  OldStatus    = null,
+                                                             Timestamped<ChargingPoolStatusType>   NewStatus,
+                                                             Timestamped<ChargingPoolStatusType>?  OldStatus    = null,
                                                              Context?                               DataSource   = null);
 
 }

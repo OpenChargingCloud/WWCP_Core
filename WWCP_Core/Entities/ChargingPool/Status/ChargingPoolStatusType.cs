@@ -33,16 +33,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Indicates whether this charging pool status types is null or empty.
         /// </summary>
-        /// <param name="ChargingPoolStatusTypes">A charging pool status type.</param>
-        public static Boolean IsNullOrEmpty(this ChargingPoolStatusTypes? ChargingPoolStatusTypes)
-            => !ChargingPoolStatusTypes.HasValue || ChargingPoolStatusTypes.Value.IsNullOrEmpty;
+        /// <param name="ChargingPoolStatusType">A charging pool status type.</param>
+        public static Boolean IsNullOrEmpty(this ChargingPoolStatusType? ChargingPoolStatusType)
+            => !ChargingPoolStatusType.HasValue || ChargingPoolStatusType.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this charging pool status types is null or empty.
         /// </summary>
-        /// <param name="ChargingPoolStatusTypes">A charging pool status type.</param>
-        public static Boolean IsNotNullOrEmpty(this ChargingPoolStatusTypes? ChargingPoolStatusTypes)
-            => ChargingPoolStatusTypes.HasValue && ChargingPoolStatusTypes.Value.IsNotNullOrEmpty;
+        /// <param name="ChargingPoolStatusType">A charging pool status type.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargingPoolStatusType? ChargingPoolStatusType)
+            => ChargingPoolStatusType.HasValue && ChargingPoolStatusType.Value.IsNotNullOrEmpty;
 
     }
 
@@ -50,9 +50,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The status of a charging pool.
     /// </summary>
-    public readonly struct ChargingPoolStatusTypes : IId,
-                                                     IEquatable<ChargingPoolStatusTypes>,
-                                                     IComparable<ChargingPoolStatusTypes>
+    public readonly struct ChargingPoolStatusType : IId,
+                                                    IEquatable<ChargingPoolStatusType>,
+                                                    IComparable<ChargingPoolStatusType>
     {
 
         #region Data
@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new charging pool status type based on the given string.
         /// </summary>
-        private ChargingPoolStatusTypes(String Text)
+        private ChargingPoolStatusType(String Text)
         {
             InternalId = Text;
         }
@@ -105,11 +105,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given string as a charging pool status type.
         /// </summary>
         /// <param name="Text">A text representation of a charging pool status type.</param>
-        public static ChargingPoolStatusTypes Parse(String Text)
+        public static ChargingPoolStatusType Parse(String Text)
         {
 
-            if (TryParse(Text, out ChargingPoolStatusTypes chargingPoolStatusTypes))
-                return chargingPoolStatusTypes;
+            if (TryParse(Text, out ChargingPoolStatusType chargingPoolStatusType))
+                return chargingPoolStatusType;
 
             throw new ArgumentException($"Invalid text representation of a charging pool status type: '" + Text + "'!",
                                         nameof(Text));
@@ -124,11 +124,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Try to parse the given string as a charging pool status type.
         /// </summary>
         /// <param name="Text">A text representation of a charging pool status type.</param>
-        public static ChargingPoolStatusTypes? TryParse(String Text)
+        public static ChargingPoolStatusType? TryParse(String Text)
         {
 
-            if (TryParse(Text, out ChargingPoolStatusTypes chargingPoolStatusTypes))
-                return chargingPoolStatusTypes;
+            if (TryParse(Text, out ChargingPoolStatusType chargingPoolStatusType))
+                return chargingPoolStatusType;
 
             return null;
 
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Text">A text representation of a charging pool status type.</param>
         /// <param name="ChargingPoolStatusType">The parsed charging pool status type.</param>
-        public static Boolean TryParse(String Text, out ChargingPoolStatusTypes ChargingPoolStatusType)
+        public static Boolean TryParse(String Text, out ChargingPoolStatusType ChargingPoolStatusType)
         {
 
             Text = Text.Trim();
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 try
                 {
-                    ChargingPoolStatusType = new ChargingPoolStatusTypes(Text);
+                    ChargingPoolStatusType = new ChargingPoolStatusType(Text);
                     return true;
                 }
                 catch
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Clone this charging pool status type.
         /// </summary>
-        public ChargingPoolStatusTypes Clone()
+        public ChargingPoolStatusType Clone()
 
             => new (
                    InternalId.CloneString()
@@ -185,47 +185,47 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Unknown status of the charging pool.
         /// </summary>
-        public static readonly ChargingPoolStatusTypes Unknown           = new("unknown");
+        public static readonly ChargingPoolStatusType Unknown           = new("unknown");
 
         /// <summary>
         /// Unclear status of the charging pool.
         /// </summary>
-        public static readonly ChargingPoolStatusTypes Unspecified       = new("unspecified");
+        public static readonly ChargingPoolStatusType Unspecified       = new("unspecified");
 
         /// <summary>
         /// The charging pool is currently offline.
         /// </summary>
-        public static readonly ChargingPoolStatusTypes Offline           = new("offline");
+        public static readonly ChargingPoolStatusType Offline           = new("offline");
 
         /// <summary>
         /// The charging pool is not fully operational yet.
         /// </summary>
-        public static readonly ChargingPoolStatusTypes InDeployment      = new("inDeployment");
+        public static readonly ChargingPoolStatusType InDeployment      = new("inDeployment");
 
         /// <summary>
         /// Some ongoing charging sessions or reservations, but still ready to charge.
         /// </summary>
-        public static readonly ChargingPoolStatusTypes PartialAvailable  = new("partialAvailable");
+        public static readonly ChargingPoolStatusType PartialAvailable  = new("partialAvailable");
 
         /// <summary>
         /// The charging pool is available.
         /// </summary>
-        public static readonly ChargingPoolStatusTypes Available         = new("available");
+        public static readonly ChargingPoolStatusType Available         = new("available");
 
         /// <summary>
         /// The entire charging pool was reserved by an ev customer.
         /// </summary>
-        public static readonly ChargingPoolStatusTypes Reserved          = new("reserved");
+        public static readonly ChargingPoolStatusType Reserved          = new("reserved");
 
         /// <summary>
         /// The entire charging pool is charging. Currently no additional charging sessions are possible.
         /// </summary>
-        public static readonly ChargingPoolStatusTypes Charging          = new("charging");
+        public static readonly ChargingPoolStatusType Charging          = new("charging");
 
         /// <summary>
         /// A fatal error has occured within the charging pool.
         /// </summary>
-        public static readonly ChargingPoolStatusTypes Error             = new("error");
+        public static readonly ChargingPoolStatusType Error             = new("error");
 
         #endregion
 
@@ -240,8 +240,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolStatusType1">A charging pool status type.</param>
         /// <param name="ChargingPoolStatusType2">Another charging pool status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ChargingPoolStatusTypes ChargingPoolStatusType1,
-                                           ChargingPoolStatusTypes ChargingPoolStatusType2)
+        public static Boolean operator == (ChargingPoolStatusType ChargingPoolStatusType1,
+                                           ChargingPoolStatusType ChargingPoolStatusType2)
 
             => ChargingPoolStatusType1.Equals(ChargingPoolStatusType2);
 
@@ -255,8 +255,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolStatusType1">A charging pool status type.</param>
         /// <param name="ChargingPoolStatusType2">Another charging pool status type.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ChargingPoolStatusTypes ChargingPoolStatusType1,
-                                           ChargingPoolStatusTypes ChargingPoolStatusType2)
+        public static Boolean operator != (ChargingPoolStatusType ChargingPoolStatusType1,
+                                           ChargingPoolStatusType ChargingPoolStatusType2)
 
             => !ChargingPoolStatusType1.Equals(ChargingPoolStatusType2);
 
@@ -270,8 +270,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolStatusType1">A charging pool status type.</param>
         /// <param name="ChargingPoolStatusType2">Another charging pool status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator < (ChargingPoolStatusTypes ChargingPoolStatusType1,
-                                          ChargingPoolStatusTypes ChargingPoolStatusType2)
+        public static Boolean operator < (ChargingPoolStatusType ChargingPoolStatusType1,
+                                          ChargingPoolStatusType ChargingPoolStatusType2)
 
             => ChargingPoolStatusType1.CompareTo(ChargingPoolStatusType2) < 0;
 
@@ -285,8 +285,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolStatusType1">A charging pool status type.</param>
         /// <param name="ChargingPoolStatusType2">Another charging pool status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator <= (ChargingPoolStatusTypes ChargingPoolStatusType1,
-                                           ChargingPoolStatusTypes ChargingPoolStatusType2)
+        public static Boolean operator <= (ChargingPoolStatusType ChargingPoolStatusType1,
+                                           ChargingPoolStatusType ChargingPoolStatusType2)
 
             => ChargingPoolStatusType1.CompareTo(ChargingPoolStatusType2) <= 0;
 
@@ -300,8 +300,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolStatusType1">A charging pool status type.</param>
         /// <param name="ChargingPoolStatusType2">Another charging pool status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator > (ChargingPoolStatusTypes ChargingPoolStatusType1,
-                                          ChargingPoolStatusTypes ChargingPoolStatusType2)
+        public static Boolean operator > (ChargingPoolStatusType ChargingPoolStatusType1,
+                                          ChargingPoolStatusType ChargingPoolStatusType2)
 
             => ChargingPoolStatusType1.CompareTo(ChargingPoolStatusType2) > 0;
 
@@ -315,8 +315,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolStatusType1">A charging pool status type.</param>
         /// <param name="ChargingPoolStatusType2">Another charging pool status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator >= (ChargingPoolStatusTypes ChargingPoolStatusType1,
-                                           ChargingPoolStatusTypes ChargingPoolStatusType2)
+        public static Boolean operator >= (ChargingPoolStatusType ChargingPoolStatusType1,
+                                           ChargingPoolStatusType ChargingPoolStatusType2)
 
             => ChargingPoolStatusType1.CompareTo(ChargingPoolStatusType2) >= 0;
 
@@ -334,8 +334,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">A charging pool status type to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is ChargingPoolStatusTypes chargingPoolStatusTypes
-                   ? CompareTo(chargingPoolStatusTypes)
+            => Object is ChargingPoolStatusType chargingPoolStatusType
+                   ? CompareTo(chargingPoolStatusType)
                    : throw new ArgumentException("The given object is not a charging pool status type!",
                                                  nameof(Object));
 
@@ -347,7 +347,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging pool status types.
         /// </summary>
         /// <param name="ChargingPoolStatusType">A charging pool status type to compare with.</param>
-        public Int32 CompareTo(ChargingPoolStatusTypes ChargingPoolStatusType)
+        public Int32 CompareTo(ChargingPoolStatusType ChargingPoolStatusType)
 
             => String.Compare(InternalId,
                               ChargingPoolStatusType.InternalId,
@@ -367,8 +367,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">A charging pool status type to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is ChargingPoolStatusTypes chargingPoolStatusTypes &&
-                   Equals(chargingPoolStatusTypes);
+            => Object is ChargingPoolStatusType chargingPoolStatusType &&
+                   Equals(chargingPoolStatusType);
 
         #endregion
 
@@ -378,7 +378,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging pool status types for equality.
         /// </summary>
         /// <param name="ChargingPoolStatusType">A charging pool status type to compare with.</param>
-        public Boolean Equals(ChargingPoolStatusTypes ChargingPoolStatusType)
+        public Boolean Equals(ChargingPoolStatusType ChargingPoolStatusType)
 
             => String.Equals(InternalId,
                              ChargingPoolStatusType.InternalId,

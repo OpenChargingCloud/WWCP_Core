@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-/// <summary>
+    /// <summary>
     /// Extension methods for charging pool admin status types.
     /// </summary>
     public static class ChargingPoolAdminStatusTypesExtensions
@@ -33,16 +33,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Indicates whether this charging pool admin status types is null or empty.
         /// </summary>
-        /// <param name="ChargingPoolAdminStatusTypes">A charging pool admin status type.</param>
-        public static Boolean IsNullOrEmpty(this ChargingPoolAdminStatusTypes? ChargingPoolAdminStatusTypes)
-            => !ChargingPoolAdminStatusTypes.HasValue || ChargingPoolAdminStatusTypes.Value.IsNullOrEmpty;
+        /// <param name="ChargingPoolAdminStatusType">A charging pool admin status type.</param>
+        public static Boolean IsNullOrEmpty(this ChargingPoolAdminStatusType? ChargingPoolAdminStatusType)
+            => !ChargingPoolAdminStatusType.HasValue || ChargingPoolAdminStatusType.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this charging pool admin status types is null or empty.
         /// </summary>
-        /// <param name="ChargingPoolAdminStatusTypes">A charging pool admin status type.</param>
-        public static Boolean IsNotNullOrEmpty(this ChargingPoolAdminStatusTypes? ChargingPoolAdminStatusTypes)
-            => ChargingPoolAdminStatusTypes.HasValue && ChargingPoolAdminStatusTypes.Value.IsNotNullOrEmpty;
+        /// <param name="ChargingPoolAdminStatusType">A charging pool admin status type.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargingPoolAdminStatusType? ChargingPoolAdminStatusType)
+            => ChargingPoolAdminStatusType.HasValue && ChargingPoolAdminStatusType.Value.IsNotNullOrEmpty;
 
     }
 
@@ -50,9 +50,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The admin status of a charging pool.
     /// </summary>
-    public readonly struct ChargingPoolAdminStatusTypes : IId,
-                                                          IEquatable<ChargingPoolAdminStatusTypes>,
-                                                          IComparable<ChargingPoolAdminStatusTypes>
+    public readonly struct ChargingPoolAdminStatusType : IId,
+                                                         IEquatable<ChargingPoolAdminStatusType>,
+                                                         IComparable<ChargingPoolAdminStatusType>
     {
 
         #region Data
@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new charging pool admin status type based on the given string.
         /// </summary>
-        private ChargingPoolAdminStatusTypes(String Text)
+        private ChargingPoolAdminStatusType(String Text)
         {
             InternalId = Text;
         }
@@ -105,11 +105,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given string as a charging pool admin status type.
         /// </summary>
         /// <param name="Text">A text representation of a charging pool admin status type.</param>
-        public static ChargingPoolAdminStatusTypes Parse(String Text)
+        public static ChargingPoolAdminStatusType Parse(String Text)
         {
 
-            if (TryParse(Text, out ChargingPoolAdminStatusTypes chargingPoolAdminStatusTypes))
-                return chargingPoolAdminStatusTypes;
+            if (TryParse(Text, out ChargingPoolAdminStatusType chargingPoolAdminStatusType))
+                return chargingPoolAdminStatusType;
 
             throw new ArgumentException($"Invalid text representation of a charging pool admin status type: '" + Text + "'!",
                                         nameof(Text));
@@ -124,11 +124,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Try to parse the given string as a charging pool admin status type.
         /// </summary>
         /// <param name="Text">A text representation of a charging pool admin status type.</param>
-        public static ChargingPoolAdminStatusTypes? TryParse(String Text)
+        public static ChargingPoolAdminStatusType? TryParse(String Text)
         {
 
-            if (TryParse(Text, out ChargingPoolAdminStatusTypes chargingPoolAdminStatusTypes))
-                return chargingPoolAdminStatusTypes;
+            if (TryParse(Text, out ChargingPoolAdminStatusType chargingPoolAdminStatusType))
+                return chargingPoolAdminStatusType;
 
             return null;
 
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Text">A text representation of a charging pool admin status type.</param>
         /// <param name="ChargingPoolAdminStatusType">The parsed charging pool admin status type.</param>
-        public static Boolean TryParse(String Text, out ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType)
+        public static Boolean TryParse(String Text, out ChargingPoolAdminStatusType ChargingPoolAdminStatusType)
         {
 
             Text = Text.Trim();
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 try
                 {
-                    ChargingPoolAdminStatusType = new ChargingPoolAdminStatusTypes(Text);
+                    ChargingPoolAdminStatusType = new ChargingPoolAdminStatusType(Text);
                     return true;
                 }
                 catch
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Clone this charging pool admin status type.
         /// </summary>
-        public ChargingPoolAdminStatusTypes Clone()
+        public ChargingPoolAdminStatusType Clone()
 
             => new (
                    InternalId.CloneString()
@@ -185,37 +185,37 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Unclear admin status of the charging pool.
         /// </summary>
-        public static readonly ChargingPoolAdminStatusTypes Unspecified   = new("unspecified");
+        public static readonly ChargingPoolAdminStatusType Unspecified   = new("unspecified");
 
         /// <summary>
         /// Unkown admin status of the charging pool.
         /// </summary>
-        public static readonly ChargingPoolAdminStatusTypes Unkown        = new("unkown");
+        public static readonly ChargingPoolAdminStatusType Unkown        = new("unkown");
 
         /// <summary>
         /// The charging pool is planned for the future.
         /// </summary>
-        public static readonly ChargingPoolAdminStatusTypes Planned       = new("planned");
+        public static readonly ChargingPoolAdminStatusType Planned       = new("planned");
 
         /// <summary>
         /// The charging pool is currently in deployment, but not fully operational yet.
         /// </summary>
-        public static readonly ChargingPoolAdminStatusTypes InDeployment  = new("inDeployment");
+        public static readonly ChargingPoolAdminStatusType InDeployment  = new("inDeployment");
 
         /// <summary>
         /// Private or internal use.
         /// </summary>
-        public static readonly ChargingPoolAdminStatusTypes InternalUse   = new("internalUse");
+        public static readonly ChargingPoolAdminStatusType InternalUse   = new("internalUse");
 
         /// <summary>
         /// The charging pool is under maintenance.
         /// </summary>
-        public static readonly ChargingPoolAdminStatusTypes OutOfService  = new("outOfService");
+        public static readonly ChargingPoolAdminStatusType OutOfService  = new("outOfService");
 
         /// <summary>
         /// The charging pool is operational.
         /// </summary>
-        public static readonly ChargingPoolAdminStatusTypes Operational   = new("operational");
+        public static readonly ChargingPoolAdminStatusType Operational   = new("operational");
 
         #endregion
 
@@ -230,8 +230,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolAdminStatusType1">A charging pool admin status type.</param>
         /// <param name="ChargingPoolAdminStatusType2">Another charging pool admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType1,
-                                           ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType2)
+        public static Boolean operator == (ChargingPoolAdminStatusType ChargingPoolAdminStatusType1,
+                                           ChargingPoolAdminStatusType ChargingPoolAdminStatusType2)
 
             => ChargingPoolAdminStatusType1.Equals(ChargingPoolAdminStatusType2);
 
@@ -245,8 +245,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolAdminStatusType1">A charging pool admin status type.</param>
         /// <param name="ChargingPoolAdminStatusType2">Another charging pool admin status type.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType1,
-                                           ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType2)
+        public static Boolean operator != (ChargingPoolAdminStatusType ChargingPoolAdminStatusType1,
+                                           ChargingPoolAdminStatusType ChargingPoolAdminStatusType2)
 
             => !ChargingPoolAdminStatusType1.Equals(ChargingPoolAdminStatusType2);
 
@@ -260,8 +260,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolAdminStatusType1">A charging pool admin status type.</param>
         /// <param name="ChargingPoolAdminStatusType2">Another charging pool admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator < (ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType1,
-                                          ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType2)
+        public static Boolean operator < (ChargingPoolAdminStatusType ChargingPoolAdminStatusType1,
+                                          ChargingPoolAdminStatusType ChargingPoolAdminStatusType2)
 
             => ChargingPoolAdminStatusType1.CompareTo(ChargingPoolAdminStatusType2) < 0;
 
@@ -275,8 +275,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolAdminStatusType1">A charging pool admin status type.</param>
         /// <param name="ChargingPoolAdminStatusType2">Another charging pool admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator <= (ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType1,
-                                           ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType2)
+        public static Boolean operator <= (ChargingPoolAdminStatusType ChargingPoolAdminStatusType1,
+                                           ChargingPoolAdminStatusType ChargingPoolAdminStatusType2)
 
             => ChargingPoolAdminStatusType1.CompareTo(ChargingPoolAdminStatusType2) <= 0;
 
@@ -290,8 +290,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolAdminStatusType1">A charging pool admin status type.</param>
         /// <param name="ChargingPoolAdminStatusType2">Another charging pool admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator > (ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType1,
-                                          ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType2)
+        public static Boolean operator > (ChargingPoolAdminStatusType ChargingPoolAdminStatusType1,
+                                          ChargingPoolAdminStatusType ChargingPoolAdminStatusType2)
 
             => ChargingPoolAdminStatusType1.CompareTo(ChargingPoolAdminStatusType2) > 0;
 
@@ -305,8 +305,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolAdminStatusType1">A charging pool admin status type.</param>
         /// <param name="ChargingPoolAdminStatusType2">Another charging pool admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator >= (ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType1,
-                                           ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType2)
+        public static Boolean operator >= (ChargingPoolAdminStatusType ChargingPoolAdminStatusType1,
+                                           ChargingPoolAdminStatusType ChargingPoolAdminStatusType2)
 
             => ChargingPoolAdminStatusType1.CompareTo(ChargingPoolAdminStatusType2) >= 0;
 
@@ -324,8 +324,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">A charging pool admin status type to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is ChargingPoolAdminStatusTypes chargingPoolAdminStatusTypes
-                   ? CompareTo(chargingPoolAdminStatusTypes)
+            => Object is ChargingPoolAdminStatusType chargingPoolAdminStatusType
+                   ? CompareTo(chargingPoolAdminStatusType)
                    : throw new ArgumentException("The given object is not a charging pool admin status type!",
                                                  nameof(Object));
 
@@ -337,7 +337,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging pool admin status types.
         /// </summary>
         /// <param name="ChargingPoolAdminStatusType">A charging pool admin status type to compare with.</param>
-        public Int32 CompareTo(ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType)
+        public Int32 CompareTo(ChargingPoolAdminStatusType ChargingPoolAdminStatusType)
 
             => String.Compare(InternalId,
                               ChargingPoolAdminStatusType.InternalId,
@@ -357,8 +357,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">A charging pool admin status type to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is ChargingPoolAdminStatusTypes chargingPoolAdminStatusTypes &&
-                   Equals(chargingPoolAdminStatusTypes);
+            => Object is ChargingPoolAdminStatusType chargingPoolAdminStatusType &&
+                   Equals(chargingPoolAdminStatusType);
 
         #endregion
 
@@ -368,7 +368,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging pool admin status types for equality.
         /// </summary>
         /// <param name="ChargingPoolAdminStatusType">A charging pool admin status type to compare with.</param>
-        public Boolean Equals(ChargingPoolAdminStatusTypes ChargingPoolAdminStatusType)
+        public Boolean Equals(ChargingPoolAdminStatusType ChargingPoolAdminStatusType)
 
             => String.Equals(InternalId,
                              ChargingPoolAdminStatusType.InternalId,
