@@ -104,10 +104,34 @@ namespace cloud.charging.open.protocols.WWCP
         public IRemoteEVSE?                             RemoteEVSE                  { get; }
 
 
+        #region PhysicalReference
+
+        private String? physicalReference;
+
         /// <summary>
         /// An optional number/string printed on the outside of the EVSE for visual identification.
         /// </summary>
-        public String?                                  PhysicalReference           { get; }
+        [Optional, SlowData]
+        public String? PhysicalReference
+        {
+
+            get
+            {
+                return physicalReference;
+            }
+
+            set
+            {
+
+                if (physicalReference != value)
+                    SetProperty(ref physicalReference,
+                                value);
+
+            }
+
+        }
+
+        #endregion
 
         /// <summary>
         /// An optional enumeration of links to photos related to the EVSE.
@@ -709,7 +733,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The power socket outlets.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<IChargingConnector>          ChargingConnectors          { get; set; }
+        public ReactiveSet<IChargingConnector>          ChargingConnectors          { get; }
 
         /// <summary>
         /// The timestamp of the last status update.

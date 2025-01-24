@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// An optional number/string printed on the outside of the EVSE for visual identification.
         /// </summary>
         [Optional]
-        String?                                PhysicalReference            { get; }
+        String?                                PhysicalReference            { get; set; }
 
         /// <summary>
         /// An optional enumeration of links to photos related to the EVSE.
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The power socket outlets of this EVSE.
         /// </summary>
         [Mandatory, SlowData]
-        ReactiveSet<IChargingConnector>        ChargingConnectors           { get; set; }
+        ReactiveSet<IChargingConnector>        ChargingConnectors           { get; }
 
         #endregion
 
