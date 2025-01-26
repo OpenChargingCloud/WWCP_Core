@@ -18,8 +18,8 @@
 #region Usings
 
 using System.Collections.Concurrent;
-using System.Security.Authentication;
 using System.Runtime.CompilerServices;
+using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
 using Newtonsoft.Json;
@@ -34,6 +34,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using static System.Net.WebRequestMethods;
 
 #endregion
 
@@ -173,6 +174,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                                    Boolean?                                                        RequireAuthentication        = true,
                                    IEnumerable<String>?                                            SecWebSocketProtocols        = null,
+                                   SubprotocolSelectorDelegate?                                    SubprotocolSelector          = null,
                                    Boolean                                                         DisableWebSocketPings        = false,
                                    TimeSpan?                                                       WebSocketPingEvery           = null,
                                    TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
@@ -201,6 +203,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                    RequireAuthentication,
                    SecWebSocketProtocols,
+                   SubprotocolSelector,
                    DisableWebSocketPings,
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
@@ -524,6 +527,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                                            IWebSocketServer           Server,
                                                            WebSocketServerConnection  Connection,
                                                            IEnumerable<String>        SharedSubprotocols,
+                                                           String?                    SelectedSubprotocol,
                                                            EventTracking_Id           EventTrackingId,
                                                            CancellationToken          CancellationToken)
         {

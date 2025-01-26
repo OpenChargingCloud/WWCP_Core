@@ -424,6 +424,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                             I18NString?                                                     Description                  = null,
 
                                                             Boolean                                                         RequireAuthentication        = true,
+                                                            SubprotocolSelectorDelegate?                                    SubprotocolSelector          = null,
                                                             Boolean                                                         DisableWebSocketPings        = false,
                                                             TimeSpan?                                                       WebSocketPingEvery           = null,
                                                             TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
@@ -456,6 +457,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                           Description,
 
                                           RequireAuthentication,
+                                          SubprotocolSelector,
                                           DisableWebSocketPings,
                                           WebSocketPingEvery,
                                           SlowNetworkSimulationDelay,

@@ -128,6 +128,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                       I18NString?                                                                                                 Description                          = null,
 
                                       Boolean                                                                                                     RequireAuthentication                = true,
+                                      SubprotocolSelectorDelegate?                                                                                SubprotocolSelector                  = null,
                                       Boolean                                                                                                     DisableWebSocketPings                = false,
                                       TimeSpan?                                                                                                   WebSocketPingEvery                   = null,
                                       TimeSpan?                                                                                                   SlowNetworkSimulationDelay           = null,
@@ -157,6 +158,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                    Description,
 
                    RequireAuthentication,
+                   SubprotocolSelector,
                    DisableWebSocketPings,
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
@@ -636,6 +638,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                        I18NString?                                                     Description                  = null,
 
                                        Boolean                                                         RequireAuthentication        = true,
+                                       SubprotocolSelectorDelegate?                                    SubprotocolSelector          = null,
                                        Boolean                                                         DisableWebSocketPings        = false,
                                        TimeSpan?                                                       WebSocketPingEvery           = null,
                                        TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
@@ -667,6 +670,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
                                                                   RequireAuthentication,
                                                                   SupportedEEBusWebSocketSubprotocols,
+                                                                  SubprotocolSelector,
                                                                   DisableWebSocketPings,
                                                                   WebSocketPingEvery,
                                                                   SlowNetworkSimulationDelay,
@@ -880,12 +884,13 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
         #endregion
 
-        #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, SharedSubprotocols, EventTrackingId, CancellationToken)
+        #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, SharedSubprotocols, SelectedSubprotocol, EventTrackingId, CancellationToken)
 
         protected async Task ProcessNewWebSocketConnection(DateTime                   LogTimestamp,
                                                            org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer           Server,
                                                            WebSocketServerConnection  Connection,
                                                            IEnumerable<String>        SharedSubprotocols,
+                                                           String?                    SelectedSubprotocol,
                                                            EventTracking_Id           EventTrackingId,
                                                            CancellationToken          CancellationToken)
         {

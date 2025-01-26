@@ -98,6 +98,34 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
     #endregion
 
 
+    public static class WSExt
+    {
+
+        public static Task BroadcastTextMessage(this WebSocketServer  WebSocketServer,
+                                                String                Message,
+                                                EventTracking_Id?     EventTrackingId     = null,
+                                                CancellationToken     CancellationToken   = default)
+        {
+
+            if (WebSocketServer is null)
+                return Task.CompletedTask;
+
+            var connections = WebSocketServer.WebSocketConnections.ToArray();
+
+            return Task.WhenAll(
+                       connections.
+                           Select(connection => WebSocketServer.SendTextMessage(
+                                                    connection,
+                                                    Message,
+                                                    EventTrackingId,
+                                                    CancellationToken
+                                                ))
+                   );
+
+        }
+
+    }
+
     public abstract class AWWCPNetworkingNode : INetworkingNode
     {
 
@@ -360,15 +388,6 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
             this.Routing                  = new Routing(this);
 
-            //this.OCPP                     = new OCPPAdapter(
-            //                                    this,
-            //                                    DisableSendHeartbeats,
-            //                                    SendHeartbeatsEvery,
-            //                                    DefaultRequestTimeout,
-            //                                    SignaturePolicy,
-            //                                    ForwardingSignaturePolicy
-            //                                );
-
             this.HTTPExtAPI               = HTTPExtAPI;
 
             this.DisableSendHeartbeats    = DisableSendHeartbeats;
@@ -392,7 +411,6 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         }
 
         #endregion
-
 
 
         #region ConnectWebSocketClient(...)
@@ -613,7 +631,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                                    webSocketServer,
                                                    newTCPConnection,
                                                    eventTrackingId,
-                                                   cancellationToken) =>
+                                                   cancellationToken) => Task.WhenAll(
 
                 LogEvent(
                     OnNewWebSocketTCPConnection,
@@ -624,7 +642,15 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                          eventTrackingId,
                          cancellationToken
                     )
-                );
+                ),
+
+                LoggingWebServer.BroadcastTextMessage(
+                    "OnNewTCPConnection",
+                    eventTrackingId,
+                    cancellationToken
+                )
+
+            );
 
             #endregion
 
@@ -809,6 +835,21 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         }
 
         #endregion
+
+
+        public WebSocketServer LoggingWebServer { get; private set; }
+
+        #region AddLoggingWebServer(WebSocketServer)
+
+        public void AddLoggingWebServer(WebSocketServer WebSocketServer)
+        {
+
+            this.LoggingWebServer = WebSocketServer;
+
+        }
+
+        #endregion
+
 
 
         #region Shutdown(Message = null, Wait = true)
