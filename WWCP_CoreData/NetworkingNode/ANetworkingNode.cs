@@ -97,35 +97,6 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
     #endregion
 
-
-    public static class WSExt
-    {
-
-        public static Task BroadcastTextMessage(this WebSocketServer  WebSocketServer,
-                                                String                Message,
-                                                EventTracking_Id?     EventTrackingId     = null,
-                                                CancellationToken     CancellationToken   = default)
-        {
-
-            if (WebSocketServer is null)
-                return Task.CompletedTask;
-
-            var connections = WebSocketServer.WebSocketConnections.ToArray();
-
-            return Task.WhenAll(
-                       connections.
-                           Select(connection => WebSocketServer.SendTextMessage(
-                                                    connection,
-                                                    Message,
-                                                    EventTrackingId,
-                                                    CancellationToken
-                                                ))
-                   );
-
-        }
-
-    }
-
     public abstract class AWWCPNetworkingNode : INetworkingNode
     {
 

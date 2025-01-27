@@ -33,6 +33,13 @@ namespace cloud.charging.open.protocols.WWCP
         [Mandatory]
         DateTime  ResponseTimestamp    { get; }
 
+
+        ///// <summary>
+        ///// The event tracking identification for correlating this request with other events.
+        ///// </summary>
+        //[Mandatory]
+        //EventTracking_Id   EventTrackingId      { get; }
+
         /// <summary>
         /// The runtime of the request.
         /// </summary>
