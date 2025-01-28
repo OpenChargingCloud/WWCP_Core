@@ -148,17 +148,17 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <summary>
         /// The unique identification of this networking node.
         /// </summary>
-        public NetworkingNode_Id           Id                         { get; }
+        public NetworkingNode_Id           Id                          { get; }
 
         /// <summary>
         /// An optional multi-language networking node description.
         /// </summary>
         [Optional]
-        public I18NString?                 Description                { get; }
+        public I18NString?                 Description                 { get; }
 
 
 
-        public CustomData                  CustomData                 { get; }
+        public CustomData                  CustomData                  { get; }
 
 
 
@@ -169,12 +169,12 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <summary>
         /// Disable all heartbeats.
         /// </summary>
-        public Boolean                     DisableSendHeartbeats      { get; set; }
+        public Boolean                     DisableSendHeartbeats       { get; set; }
 
         /// <summary>
         /// The time span between heartbeat requests.
         /// </summary>
-        public TimeSpan                    SendHeartbeatsEvery        { get; set; }
+        public TimeSpan                    SendHeartbeatsEvery         { get; set; }
 
 
 
@@ -184,17 +184,17 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <summary>
         /// Disable all maintenance tasks.
         /// </summary>
-        public Boolean                     DisableMaintenanceTasks    { get; set; } = true;
+        public Boolean                     DisableMaintenanceTasks     { get; set; } = true;
 
         /// <summary>
         /// The maintenance interval.
         /// </summary>
-        public TimeSpan                    MaintenanceEvery           { get; }
+        public TimeSpan                    MaintenanceEvery            { get; }
 
 
-        public DNSClient                   DNSClient                  { get; }
+        public DNSClient                   DNSClient                   { get; }
 
-        public HTTPExtAPI?                 HTTPExtAPI                 { get; }
+        public HTTPExtAPI?                 HTTPExtAPI                  { get; }
 
 
         public String? ClientCloseMessage
@@ -210,7 +210,10 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <summary>
         /// Routing of messages.
         /// </summary>
-        public Routing                      Routing                  { get; }
+        public Routing                      Routing                   { get; }
+
+
+        public WebSocketServer?             ControlWebSocketServer    { get; private set; }
 
         #endregion
 
@@ -274,50 +277,28 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #region Generic JSON Messages
 
         /// <summary>
-        /// An event sent whenever a JSON message request was received.
+        /// An event sent whenever a JSON message was sent.
         /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
+        public event OnWebSocketServerJSONMessageSentDelegate?        OnJSONMessageSent;
 
         /// <summary>
-        /// An event sent whenever the response to a JSON message was sent.
+        /// An event sent whenever a JSON message was received.
         /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
-
-
-        /// <summary>
-        /// An event sent whenever a JSON message request was sent.
-        /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
-
-        /// <summary>
-        /// An event sent whenever the response to a JSON message request was received.
-        /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
+        public event OnWebSocketServerJSONMessageReceivedDelegate?    OnJSONMessageReceived;
 
         #endregion
 
         #region Generic Binary Messages
 
         /// <summary>
-        /// An event sent whenever a binary message request was received.
+        /// An event sent whenever a binary message was sent.
         /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
+        public event WebSockets.OnWebSocketServerBinaryMessageSentDelegate?      OnBinaryMessageSent;
 
         /// <summary>
-        /// An event sent whenever the response to a binary message was sent.
+        /// An event sent whenever a binary message was received.
         /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
-
-
-        /// <summary>
-        /// An event sent whenever a binary message request was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
+        public event WebSockets.OnWebSocketServerBinaryMessageReceivedDelegate?  OnBinaryMessageReceived;
 
         #endregion
 
@@ -337,6 +318,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                    SignaturePolicy?   ForwardingSignaturePolicy   = null,
 
                                    HTTPExtAPI?        HTTPExtAPI                  = null,
+                                   WebSocketServer?   ControlWebSocketServer      = null,
 
                                    Boolean            DisableSendHeartbeats       = false,
                                    TimeSpan?          SendHeartbeatsEvery         = null,
@@ -360,6 +342,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
             this.Routing                  = new Routing(this);
 
             this.HTTPExtAPI               = HTTPExtAPI;
+            this.ControlWebSocketServer   = ControlWebSocketServer;
 
             this.DisableSendHeartbeats    = DisableSendHeartbeats;
             this.SendHeartbeatsEvery      = SendHeartbeatsEvery   ?? DefaultSendHeartbeatsEvery;
@@ -577,6 +560,53 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
             wwcpWebSocketServers.Add(WebSocketServer);
 
 
+            WebSocketServer.OnJSONMessageSent += (timestamp,
+                                                  server,
+                                                  connection,
+                                                  eventTrackingId,
+                                                  messageTimestamp,
+                                                  jsonMessage,
+                                                  sentStatus,
+                                                  cancellationToken) =>
+
+                LogEvent(
+                    OnJSONMessageSent,
+                    loggingDelegate => loggingDelegate.Invoke(
+                         timestamp,
+                         server,
+                         connection,
+                         eventTrackingId,
+                         messageTimestamp,
+                         jsonMessage,
+                         sentStatus,
+                         cancellationToken
+                    )
+                );
+
+            WebSocketServer.OnJSONMessageReceived += (timestamp,
+                                                      server,
+                                                      connection,
+                                                      eventTrackingId,
+                                                      messageTimestamp,
+                                                      sourceNodeId,
+                                                      jsonMessage,
+                                                      cancellationToken) =>
+
+                LogEvent(
+                    OnJSONMessageReceived,
+                    loggingDelegate => loggingDelegate.Invoke(
+                         timestamp,
+                         server,
+                         connection,
+                         eventTrackingId,
+                         messageTimestamp,
+                         sourceNodeId,
+                         jsonMessage,
+                         cancellationToken
+                    )
+                );
+
+
             #region OnWebSocketServerStarted
 
             WebSocketServer.OnServerStarted += (timestamp,
@@ -615,7 +645,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                     )
                 ),
 
-                LoggingWebServer.BroadcastTextMessage(
+                ControlWebSocketServer.BroadcastTextMessage(
                     "OnNewTCPConnection",
                     eventTrackingId,
                     cancellationToken
@@ -808,14 +838,12 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #endregion
 
 
-        public WebSocketServer LoggingWebServer { get; private set; }
+        #region AddControlWebSocketServer(WebSocketServer)
 
-        #region AddLoggingWebServer(WebSocketServer)
-
-        public void AddLoggingWebServer(WebSocketServer WebSocketServer)
+        public void AddControlWebSocketServer(WebSocketServer WebSocketServer)
         {
 
-            this.LoggingWebServer = WebSocketServer;
+            this.ControlWebSocketServer = WebSocketServer;
 
         }
 

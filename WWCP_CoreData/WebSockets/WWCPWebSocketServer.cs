@@ -34,7 +34,6 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
-using static System.Net.WebRequestMethods;
 
 #endregion
 
@@ -136,6 +135,11 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// </summary>
         public event     OnWebSocketServerJSONMessageReceivedDelegate?     OnJSONMessageReceived;
 
+        /// <summary>
+        /// An event sent whenever a JSON message was received.
+        /// </summary>
+        public event     OnWebSocketServerJSONMessageReceivedDelegate?     OnJSONMessageReceived2;
+
 
         /// <summary>
         /// An event sent whenever a binary message was sent.
@@ -146,6 +150,11 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// An event sent whenever a binary message was received.
         /// </summary>
         public new event OnWebSocketServerBinaryMessageReceivedDelegate?   OnBinaryMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a binary message was received.
+        /// </summary>
+        public new event OnWebSocketServerBinaryMessageReceivedDelegate?   OnBinaryMessageReceived2;
 
         #endregion
 
@@ -800,7 +809,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             try
             {
 
-                var sourceNodeId = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId);
+                var sourceNodeId  = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId);
 
                 #region Initial checks
 
@@ -827,16 +836,33 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 #endregion
 
 
-                var jsonMessage = JArray.Parse(TextMessage);
+                var jsonMessage   = JArray.Parse(TextMessage);
+                var timestamp     = Timestamp.Now;
 
+                // Just for logging!
                 await LogEvent(
                           OnJSONMessageReceived,
                           loggingDelegate => loggingDelegate.Invoke(
-                              Timestamp.Now,
+                              timestamp,
                               this,
                               WebSocketConnection,
-                              EventTrackingId,
                               RequestTimestamp,
+                              EventTrackingId,
+                              sourceNodeId ?? NetworkingNode_Id.Zero,
+                              jsonMessage,
+                              CancellationToken
+                          )
+                      );
+
+                // For further processing...
+                await LogEvent(
+                          OnJSONMessageReceived2,
+                          loggingDelegate => loggingDelegate.Invoke(
+                              timestamp,
+                              this,
+                              WebSocketConnection,
+                              RequestTimestamp,
+                              EventTrackingId,
                               sourceNodeId ?? NetworkingNode_Id.Zero,
                               jsonMessage,
                               CancellationToken
@@ -881,7 +907,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             try
             {
 
-                var sourceNodeId = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId);
+                var sourceNodeId  = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId);
 
                 #region Initial checks
 
@@ -904,15 +930,32 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                 #endregion
 
+                var timestamp     = Timestamp.Now;
 
+                // Just for logging!
                 await LogEvent(
                           OnBinaryMessageReceived,
                           loggingDelegate => loggingDelegate.Invoke(
                               Timestamp.Now,
                               this,
                               WebSocketConnection,
-                              EventTrackingId,
                               RequestTimestamp,
+                              EventTrackingId,
+                              sourceNodeId ?? NetworkingNode_Id.Zero,
+                              BinaryMessage,
+                              CancellationToken
+                          )
+                      );
+
+                // For further processing...
+                await LogEvent(
+                          OnBinaryMessageReceived2,
+                          loggingDelegate => loggingDelegate.Invoke(
+                              Timestamp.Now,
+                              this,
+                              WebSocketConnection,
+                              RequestTimestamp,
+                              EventTrackingId,
                               sourceNodeId ?? NetworkingNode_Id.Zero,
                               BinaryMessage,
                               CancellationToken
@@ -969,8 +1012,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                               Timestamp.Now,
                               this,
                               WebSocketConnection,
-                              EventTrackingId,
                               RequestTimestamp,
+                              EventTrackingId,
                               JSONMessage,
                               sentStatus,
                               CancellationToken
@@ -1025,8 +1068,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                               Timestamp.Now,
                               this,
                               WebSocketConnection,
-                              EventTrackingId,
                               RequestTimestamp,
+                              EventTrackingId,
                               BinaryMessage,
                               sentStatus,
                               CancellationToken
@@ -1065,8 +1108,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                        Timestamp,
                        Server,
                        WebSocketConnection,
-                       EventTrackingId,
                        MessageTimestamp,
+                       EventTrackingId,
                        JSONMessage,
                        SentStatus,
                        CancellationToken
@@ -1092,8 +1135,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                        Timestamp,
                        Server,
                        WebSocketConnection,
-                       EventTrackingId,
                        MessageTimestamp,
+                       EventTrackingId,
                        BinaryMessage,
                        SentStatus,
                        CancellationToken

@@ -34,8 +34,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
     public delegate Task OnWebSocketServerJSONMessageSentDelegate       (DateTime                    Timestamp,
                                                                          IWWCPWebSocketServer        Server,
                                                                          WebSocketServerConnection   Connection,
-                                                                         EventTracking_Id            EventTrackingId,
                                                                          DateTime                    MessageTimestamp,
+                                                                         EventTracking_Id            EventTrackingId,
                                                                          JArray                      Message,
                                                                          SentStatus                  SentStatus,
                                                                          CancellationToken           CancellationToken);
@@ -43,8 +43,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
     public delegate Task OnWebSocketServerJSONMessageReceivedDelegate   (DateTime                    Timestamp,
                                                                          IWWCPWebSocketServer        Server,
                                                                          WebSocketServerConnection   Connection,
-                                                                         EventTracking_Id            EventTrackingId,
                                                                          DateTime                    MessageTimestamp,
+                                                                         EventTracking_Id            EventTrackingId,
                                                                          NetworkingNode_Id           SourceNodeId,
                                                                          JArray                      Message,
                                                                          CancellationToken           CancellationToken);
@@ -53,8 +53,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
     public delegate Task OnWebSocketServerBinaryMessageSentDelegate     (DateTime                    Timestamp,
                                                                          IWWCPWebSocketServer        Server,
                                                                          WebSocketServerConnection   Connection,
-                                                                         EventTracking_Id            EventTrackingId,
                                                                          DateTime                    MessageTimestamp,
+                                                                         EventTracking_Id            EventTrackingId,
                                                                          Byte[]                      BinaryMessage,
                                                                          SentStatus                  SentStatus,
                                                                          CancellationToken           CancellationToken);
@@ -62,8 +62,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
     public delegate Task OnWebSocketServerBinaryMessageReceivedDelegate (DateTime                    Timestamp,
                                                                          IWWCPWebSocketServer        Server,
                                                                          WebSocketServerConnection   Connection,
-                                                                         EventTracking_Id            EventTrackingId,
                                                                          DateTime                    MessageTimestamp,
+                                                                         EventTracking_Id            EventTrackingId,
                                                                          NetworkingNode_Id           SourceNodeId,
                                                                          Byte[]                      BinaryMessage,
                                                                          CancellationToken           CancellationToken);
