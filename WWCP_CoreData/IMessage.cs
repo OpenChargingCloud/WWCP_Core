@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The message identification.
         /// </summary>
         [Mandatory]
-        Request_Id         RequestId            { get; }
+        Request_Id         MessageId            { get; }
 
         /// <summary>
         /// The timestamp of the message creation.
