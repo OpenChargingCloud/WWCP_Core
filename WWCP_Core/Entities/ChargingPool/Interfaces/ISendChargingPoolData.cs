@@ -118,13 +118,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingPool        (ChargingPool,  PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
+        #region UpdateChargingPool        (ChargingPool,  PropertyName = null, NewValue = null, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given charging pool.
         /// </summary>
         /// <param name="ChargingPool">A charging pool to update.</param>
-        /// <param name="PropertyName">The name of the charging pool property to update.</param>
+        /// <param name="PropertyName">The name of the charging pool property to update, if any specific.</param>
         /// <param name="NewValue">The new value of the charging pool property to update.</param>
         /// <param name="OldValue">The optional old value of the charging pool property to update.</param>
         /// <param name="DataSource">An optional data source or context for the data change.</param>
@@ -137,8 +137,8 @@ namespace cloud.charging.open.protocols.WWCP
         Task<UpdateChargingPoolResult>
 
             UpdateChargingPool(IChargingPool      ChargingPool,
-                               String             PropertyName,
-                               Object?            NewValue,
+                               String?            PropertyName        = null,
+                               Object?            NewValue            = null,
                                Object?            OldValue            = null,
                                Context?           DataSource          = null,
                                TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,

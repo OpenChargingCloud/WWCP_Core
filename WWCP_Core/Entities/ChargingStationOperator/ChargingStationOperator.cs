@@ -1264,16 +1264,19 @@ namespace cloud.charging.open.protocols.WWCP
                                                                        User_Id?                                                            CurrentUserId                  = null)
         {
 
-            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+            var start            = Timestamp.Now;
+            var eventTrackingId  = EventTrackingId ?? EventTracking_Id.New;
 
             if (!TryGetChargingPoolById(ChargingPool.Id, out var OldChargingPool))
                 return UpdateChargingPoolResult.ArgumentError(
-                           ChargingPool,
-                           $"The given charging pool '{ChargingPool.Id}' does not exists in this API!".ToI18NString(),
-                           eventTrackingId,
-                           Id,
-                           this,
-                           this
+                           ChargingPool:              ChargingPool,
+                           Description:               $"The given charging pool '{ChargingPool.Id}' does not exists in this API!".ToI18NString(),
+                           EventTrackingId:           eventTrackingId,
+                           SenderId:                  Id,
+                           Sender:                    this,
+                           ChargingStationOperator:   this,
+                           Warnings:                  null,
+                           Runtime:                   Timestamp.Now - start
                        );
 
             //if (ChargingPool.API is not null && ChargingPool.API != this)
@@ -1290,19 +1293,53 @@ namespace cloud.charging.open.protocols.WWCP
             //                          eventTrackingId,
             //                          CurrentChargingPoolId);
 
-            chargingPools.TryRemove(OldChargingPool.Id,
-                                    out _,
-                                    EventTrackingId,
-                                    CurrentUserId);
+            //chargingPools.TryRemove(OldChargingPool.Id,
+            //                        out _,
+            //                        EventTrackingId,
+            //                        CurrentUserId);
 
-            //ChargingPool.CopyAllLinkedDataFrom(OldChargingPool);
-            chargingPools.TryAdd(ChargingPool,
-                                 EventTrackingId,
-                                 CurrentUserId);
+            ////ChargingPool.CopyAllLinkedDataFrom(OldChargingPool);
+            //chargingPools.TryAdd(ChargingPool,
+            //                     EventTrackingId,
+            //                     CurrentUserId);
 
-            OnUpdateSuccess?.Invoke(ChargingPool,
-                                    ChargingPool,
-                                    eventTrackingId);
+            if (chargingPools.TryUpdate(OldChargingPool.Id,
+                                        ChargingPool,
+                                        OldChargingPool,
+                                        eventTrackingId,
+                                        CurrentUserId))
+            {
+
+                //ToDo: Persistency
+
+                await UpdateChargingPoolData(
+                          Timestamp:         Timestamp.Now,
+                          EventTrackingId:   eventTrackingId,
+                          ChargingPool:      ChargingPool,
+                          PropertyName:      null,
+                          NewValue:          null,
+                          OldValue:          null,
+                          DataSource:        null
+                      );
+
+                OnUpdateSuccess?.Invoke(
+                    ChargingPool,
+                    ChargingPool,
+                    eventTrackingId
+                );
+
+                return UpdateChargingPoolResult.Success(
+                           ChargingPool:              ChargingPool,
+                           EventTrackingId:           eventTrackingId,
+                           SenderId:                  Id,
+                           Sender:                    this,
+                           ChargingStationOperator:   this,
+                           Description:               null,
+                           Warnings:                  null,
+                           Runtime:                   Timestamp.Now - start
+                       );
+
+            }
 
             //var OnChargingPoolUpdatedLocal = OnChargingPoolUpdated;
             //if (OnChargingPoolUpdatedLocal is not null)
@@ -1319,8 +1356,20 @@ namespace cloud.charging.open.protocols.WWCP
             //                            eventTrackingId,
             //                            CurrentChargingPoolId);
 
-            return UpdateChargingPoolResult.Success(ChargingPool,
-                                                    eventTrackingId);
+            OnError?.Invoke(this,
+                            ChargingPool,
+                            eventTrackingId);
+
+            return UpdateChargingPoolResult.Error(
+                       ChargingPool:              ChargingPool,
+                       Description:               I18NString.Create("Could not be updated!"),
+                       EventTrackingId:           eventTrackingId,
+                       SenderId:                  Id,
+                       Sender:                    this,
+                       ChargingStationOperator:   this,
+                       Warnings:                  null,
+                       Runtime:                   Timestamp.Now - start
+                   );
 
         }
 
@@ -1654,7 +1703,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (internal) UpdateChargingPoolData       (Timestamp, EventTrackingId, ChargingPool, PropertyName, NewValue, OldValue = null, DataSource = null)
+        #region (internal) UpdateChargingPoolData       (Timestamp, EventTrackingId, ChargingPool, PropertyName = null, NewValue = null, OldValue = null, DataSource = null)
 
         /// <summary>
         /// Update the data of an charging pool.
@@ -1662,17 +1711,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingPool">The changed charging pool.</param>
-        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="PropertyName">The name of the changed property, if any specific.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
         /// <param name="OldValue">The optional old value of the changed property.</param>
         /// <param name="DataSource">An optional data source or context for the data change.</param>
         internal async Task UpdateChargingPoolData(DateTime          Timestamp,
                                                    EventTracking_Id  EventTrackingId,
                                                    IChargingPool     ChargingPool,
-                                                   String            PropertyName,
-                                                   Object?           NewValue,
-                                                   Object?           OldValue     = null,
-                                                   Context?          DataSource   = null)
+                                                   String?           PropertyName   = null,
+                                                   Object?           NewValue       = null,
+                                                   Object?           OldValue       = null,
+                                                   Context?          DataSource     = null)
         {
 
             var onChargingPoolDataChanged = OnChargingPoolDataChanged;

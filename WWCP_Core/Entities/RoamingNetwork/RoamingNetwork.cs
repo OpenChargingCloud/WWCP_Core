@@ -3599,14 +3599,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingPool">The changed charging pool.</param>
-        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="PropertyName">The name of the changed property, if any specific.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
         /// <param name="OldValue">The optional old value of the changed property.</param>
         /// <param name="DataSource">An optional data source or context for the charging pool data update.</param>
         internal async Task UpdateChargingPoolData(DateTime          Timestamp,
                                                    EventTracking_Id  EventTrackingId,
                                                    IChargingPool     ChargingPool,
-                                                   String            PropertyName,
+                                                   String?           PropertyName,
                                                    Object?           NewValue,
                                                    Object?           OldValue,
                                                    Context?          DataSource)

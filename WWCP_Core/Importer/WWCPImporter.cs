@@ -742,6 +742,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
                         ImporterRunTimer.Change(ImportEvery, ImportEvery);
 
+                        lastRunId++;
                         IsRunning = true;
 
                     }

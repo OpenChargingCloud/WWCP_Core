@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The common abstract CSO adapter.
+    /// The common abstract WWCP CSO adapter.
+    /// Allows you to override only the methods you need.
     /// </summary>
     public abstract class AWWCPCSOAdapter<TChargeDetailRecords> : ACryptoEMobilityEntity<CSORoamingProvider_Id,
                                                                                          CSORoamingProviderAdminStatusTypes,
@@ -421,14 +422,14 @@ namespace cloud.charging.open.protocols.WWCP
             this.LogfileCreator                                  = LogfileCreator;
 
             if (this.LoggingPath[^1]        != Path.DirectorySeparatorChar)
-                this.LoggingPath        += Path.DirectorySeparatorChar;
+                this.LoggingPath            += Path.DirectorySeparatorChar;
 
             this.ClientsLoggingPath                              = ClientsLoggingPath       ?? this.LoggingPath;
             this.ClientsLoggingContext                           = ClientsLoggingContext;
             this.ClientsLogfileCreator                           = ClientsLogfileCreator;
 
             if (this.ClientsLoggingPath[^1] != Path.DirectorySeparatorChar)
-                this.ClientsLoggingPath += Path.DirectorySeparatorChar;
+                this.ClientsLoggingPath     += Path.DirectorySeparatorChar;
 
             this.DNSClient                                       = DNSClient;
 
@@ -455,7 +456,7 @@ namespace cloud.charging.open.protocols.WWCP
         public IncludeRoamingNetworkDelegate    IncludeRoamingNetworks           { get; }
 
 
-        #region AddRoamingNetwork           (RoamingNetwork, ...)
+        #region AddRoamingNetwork            (RoamingNetwork, ...)
 
         /// <summary>
         /// Add the EVSE data of the given roaming network.
@@ -489,7 +490,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddRoamingNetworkIfNotExists(RoamingNetwork, ...)
+        #region AddRoamingNetworkIfNotExists (RoamingNetwork, ...)
 
         /// <summary>
         /// Add the EVSE data of the given roaming network.
@@ -523,7 +524,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateRoamingNetwork   (RoamingNetwork, ...)
+        #region AddOrUpdateRoamingNetwork    (RoamingNetwork, ...)
 
         /// <summary>
         /// Set the EVSE data of the given roaming network as new static EVSE data.
@@ -557,13 +558,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateRoamingNetwork        (RoamingNetwork, PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
+        #region UpdateRoamingNetwork         (RoamingNetwork, PropertyName = null, NewValue = null, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the EVSE data of the given roaming network within the static EVSE data.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
-        /// <param name="PropertyName">The name of the roaming network property to update.</param>
+        /// <param name="PropertyName">The name of the roaming network property to update, if any specific.</param>
         /// <param name="NewValue">The new value of the roaming network property to update.</param>
         /// <param name="OldValue">The optional old value of the roaming network property to update.</param>
         /// <param name="DataSource">An optional data source or context for the roaming network property update.</param>
@@ -576,9 +577,9 @@ namespace cloud.charging.open.protocols.WWCP
         public virtual Task<UpdateRoamingNetworkResult>
 
             UpdateRoamingNetwork(IRoamingNetwork    RoamingNetwork,
-                                 String?            PropertyName,
-                                 Object?            NewValue,
-                                 Object?            OldValue,
+                                 String?            PropertyName        = null,
+                                 Object?            NewValue            = null,
+                                 Object?            OldValue            = null,
                                  Context?           DataSource          = null,
                                  TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
@@ -599,7 +600,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteRoamingNetwork        (RoamingNetwork, ...)
+        #region DeleteRoamingNetwork         (RoamingNetwork, ...)
 
         /// <summary>
         /// Delete the EVSE data of the given roaming network from the static EVSE data.
@@ -634,7 +635,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region AddRoamingNetworks          (RoamingNetworks, TransmissionType = Enqueue, ...)
+        #region AddRoamingNetworks           (RoamingNetworks, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of roaming networks.
@@ -668,7 +669,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddRoamingNetworksIfNotExist(RoamingNetworks, TransmissionType = Enqueue, ...)
+        #region AddRoamingNetworksIfNotExist (RoamingNetworks, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of roaming networks, if they do not already exist.
@@ -702,7 +703,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateRoamingNetworks  (RoamingNetworks, TransmissionType = Enqueue, ...)
+        #region AddOrUpdateRoamingNetworks   (RoamingNetworks, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add or update the given enumeration of roaming networks.
@@ -736,7 +737,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateRoamingNetworks       (RoamingNetworks, TransmissionType = Enqueue, ...)
+        #region UpdateRoamingNetworks        (RoamingNetworks, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of roaming networks.
@@ -770,7 +771,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteRoamingNetworks       (RoamingNetworks, TransmissionType = Enqueue, ...)
+        #region DeleteRoamingNetworks        (RoamingNetworks, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the given enumeration of roaming networks.
@@ -805,7 +806,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region UpdateRoamingNetworkAdminStatus(RoamingNetworkAdminStatusUpdates, TransmissionType = Enqueue, ...)
+        #region UpdateRoamingNetworkAdminStatus (RoamingNetworkAdminStatusUpdates, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of roaming network admin status updates.
@@ -837,7 +838,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateRoamingNetworkStatus     (RoamingNetworkStatusUpdates,      TransmissionType = Enqueue, ...)
+        #region UpdateRoamingNetworkStatus      (RoamingNetworkStatusUpdates,      TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of roaming network status updates.
@@ -889,7 +890,7 @@ namespace cloud.charging.open.protocols.WWCP
         public IncludeChargingStationOperatorDelegate    IncludeChargingStationOperators           { get; }
 
 
-        #region AddChargingStationOperator           (ChargingStationOperator, ...)
+        #region AddChargingStationOperator            (ChargingStationOperator, ...)
 
         /// <summary>
         /// Add the given charging station.
@@ -923,7 +924,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddChargingStationOperatorIfNotExists(ChargingStationOperator, ...)
+        #region AddChargingStationOperatorIfNotExists (ChargingStationOperator, ...)
 
         /// <summary>
         /// Add the given charging station.
@@ -957,7 +958,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateChargingStationOperator   (ChargingStationOperator, ...)
+        #region AddOrUpdateChargingStationOperator    (ChargingStationOperator, ...)
 
         /// <summary>
         /// Set the EVSE data of the given charging station operator as new static EVSE data.
@@ -991,13 +992,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingStationOperator        (ChargingStationOperator, PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
+        #region UpdateChargingStationOperator         (ChargingStationOperator, PropertyName = null, NewValue = null, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the EVSE data of the given charging station operator within the static EVSE data.
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
-        /// <param name="PropertyName">The name of the charging station operator property to update.</param>
+        /// <param name="PropertyName">The name of the charging station operator property to update, if any specific.</param>
         /// <param name="NewValue">The new value of the charging station operator property to update.</param>
         /// <param name="OldValue">The optional old value of the charging station operator property to update.</param>
         /// <param name="DataSource">An optional data source or context for the charging station operator property update.</param>
@@ -1010,8 +1011,8 @@ namespace cloud.charging.open.protocols.WWCP
         public virtual Task<UpdateChargingStationOperatorResult>
 
             UpdateChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
-                                          String                    PropertyName,
-                                          Object?                   NewValue,
+                                          String?                   PropertyName        = null,
+                                          Object?                   NewValue            = null,
                                           Object?                   OldValue            = null,
                                           Context?                  DataSource          = null,
                                           TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
@@ -1033,7 +1034,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteChargingStationOperator        (ChargingStationOperator, ...)
+        #region DeleteChargingStationOperator         (ChargingStationOperator, ...)
 
         /// <summary>
         /// Delete the EVSE data of the given charging station operator from the static EVSE data.
@@ -1068,7 +1069,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region AddChargingStationOperators          (ChargingStationOperators, ...)
+        #region AddChargingStationOperators           (ChargingStationOperators, ...)
 
         /// <summary>
         /// Add the EVSE data of the given enumeration of charging station operators.
@@ -1102,7 +1103,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddChargingStationOperatorsIfNotExist(ChargingStationOperators, ...)
+        #region AddChargingStationOperatorsIfNotExist (ChargingStationOperators, ...)
 
         /// <summary>
         /// Add the EVSE data of the given enumeration of charging station operators.
@@ -1136,7 +1137,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateChargingStationOperators  (ChargingStationOperators, ...)
+        #region AddOrUpdateChargingStationOperators   (ChargingStationOperators, ...)
 
         /// <summary>
         /// Set the EVSE data of the given enumeration of charging station operators as new static EVSE data.
@@ -1170,7 +1171,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingStationOperators       (ChargingStationOperators, ...)
+        #region UpdateChargingStationOperators        (ChargingStationOperators, ...)
 
         /// <summary>
         /// Update the EVSE data of the given enumeration of charging station operators within the static EVSE data.
@@ -1204,7 +1205,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteChargingStationOperators       (ChargingStationOperators, ...)
+        #region DeleteChargingStationOperators        (ChargingStationOperators, ...)
 
         /// <summary>
         /// Delete the EVSE data of the given enumeration of charging station operators from the static EVSE data.
@@ -1239,7 +1240,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region UpdateChargingStationOperatorAdminStatus(ChargingStationOperatorAdminStatusUpdates, TransmissionType = Enqueue, ...)
+        #region UpdateChargingStationOperatorAdminStatus (ChargingStationOperatorAdminStatusUpdates, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station operator admin status updates.
@@ -1271,7 +1272,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingStationOperatorStatus     (ChargingStationOperatorStatusUpdates,      TransmissionType = Enqueue, ...)
+        #region UpdateChargingStationOperatorStatus      (ChargingStationOperatorStatusUpdates,      TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station operator status updates.
@@ -1323,7 +1324,7 @@ namespace cloud.charging.open.protocols.WWCP
         public IncludeChargingPoolDelegate    IncludeChargingPools           { get; }
 
 
-        #region AddChargingPool           (ChargingPool,  TransmissionType = Enqueue, ...)
+        #region AddChargingPool            (ChargingPool,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given charging pool.
@@ -1357,7 +1358,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddChargingPoolIfNotExists(ChargingPool,  TransmissionType = Enqueue, ...)
+        #region AddChargingPoolIfNotExists (ChargingPool,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given charging pool, if it does not already exist.
@@ -1391,7 +1392,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateChargingPool   (ChargingPool,  TransmissionType = Enqueue, ...)
+        #region AddOrUpdateChargingPool    (ChargingPool,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add or update the given charging pool.
@@ -1425,13 +1426,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingPool        (ChargingPool,  PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
+        #region UpdateChargingPool         (ChargingPool,  PropertyName = null, NewValue = null, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given charging pool.
         /// </summary>
         /// <param name="ChargingPool">A charging pool to update.</param>
-        /// <param name="PropertyName">The name of the charging pool property to update.</param>
+        /// <param name="PropertyName">The name of the charging pool property to update, if any specific.</param>
         /// <param name="NewValue">The new value of the charging pool property to update.</param>
         /// <param name="OldValue">The optional old value of the charging pool property to update.</param>
         /// <param name="DataSource">An optional data source or context for the charging pool property update.</param>
@@ -1444,8 +1445,8 @@ namespace cloud.charging.open.protocols.WWCP
         public virtual Task<UpdateChargingPoolResult>
 
             UpdateChargingPool(IChargingPool      ChargingPool,
-                               String             PropertyName,
-                               Object?            NewValue,
+                               String?            PropertyName        = null,
+                               Object?            NewValue            = null,
                                Object?            OldValue            = null,
                                Context?           DataSource          = null,
                                TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
@@ -1467,7 +1468,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteChargingPool        (ChargingPool,  TransmissionType = Enqueue, ...)
+        #region DeleteChargingPool         (ChargingPool,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the given charging pool.
@@ -1502,7 +1503,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region AddChargingPools          (ChargingPools, TransmissionType = Enqueue, ...)
+        #region AddChargingPools           (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of charging pools.
@@ -1536,7 +1537,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddChargingPoolsIfNotExist(ChargingPools, TransmissionType = Enqueue, ...)
+        #region AddChargingPoolsIfNotExist (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of charging pools, if they do not already exist.
@@ -1570,7 +1571,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateChargingPools  (ChargingPools, TransmissionType = Enqueue, ...)
+        #region AddOrUpdateChargingPools   (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add or update the given enumeration of charging pools.
@@ -1604,7 +1605,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingPools       (ChargingPools, TransmissionType = Enqueue, ...)
+        #region UpdateChargingPools        (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging pools.
@@ -1638,7 +1639,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ReplaceChargingPools      (ChargingPools, TransmissionType = Enqueue, ...)
+        #region ReplaceChargingPools       (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Replace the given enumeration of charging pools.
@@ -1673,7 +1674,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteChargingPools       (ChargingPools, TransmissionType = Enqueue, ...)
+        #region DeleteChargingPools        (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// DDelete the given enumeration of charging pools.
@@ -1708,7 +1709,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region UpdateChargingPoolAdminStatus (ChargingPoolAdminStatusUpdates,  TransmissionType = Enqueue, ...)
+        #region UpdateChargingPoolAdminStatus  (ChargingPoolAdminStatusUpdates,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging pool admin status updates.
@@ -1740,7 +1741,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingPoolStatus      (ChargingPoolStatusUpdates,       TransmissionType = Enqueue, ...)
+        #region UpdateChargingPoolStatus       (ChargingPoolStatusUpdates,       TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging pool status updates.
@@ -1772,7 +1773,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingPoolEnergyStatus(ChargingPoolEnergyStatusUpdates, TransmissionType = Enqueue, ...)
+        #region UpdateChargingPoolEnergyStatus (ChargingPoolEnergyStatusUpdates, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging pool energy status updates.
@@ -1824,7 +1825,7 @@ namespace cloud.charging.open.protocols.WWCP
         public IncludeChargingStationDelegate    IncludeChargingStations           { get; }
 
 
-        #region AddChargingStation           (ChargingStation,  TransmissionType = Enqueue, ...)
+        #region AddChargingStation            (ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given charging station.
@@ -1857,8 +1858,8 @@ namespace cloud.charging.open.protocols.WWCP
                    );
 
         #endregion
-
-        #region AddChargingStationIfNotExists(ChargingStation,  TransmissionType = Enqueue, ...)
+         
+        #region AddChargingStationIfNotExists (ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given charging station, if it does not already exist.
@@ -1892,7 +1893,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateChargingStation   (ChargingStation,  TransmissionType = Enqueue, ...)
+        #region AddOrUpdateChargingStation    (ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add or update the given charging station.
@@ -1926,13 +1927,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingStation        (ChargingStation,  PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
+        #region UpdateChargingStation         (ChargingStation,  PropertyName = null, NewValue = null, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given charging station.
         /// </summary>
         /// <param name="ChargingStation">A charging station to update.</param>
-        /// <param name="PropertyName">The name of the charging station property to update.</param>
+        /// <param name="PropertyName">The name of the charging station property to update, if any specific.</param>
         /// <param name="NewValue">The new value of the charging station property to update.</param>
         /// <param name="OldValue">The optional old value of the charging station property to update.</param>
         /// <param name="DataSource">An optional data source or context for the charging station property update.</param>
@@ -1945,8 +1946,8 @@ namespace cloud.charging.open.protocols.WWCP
         public virtual Task<UpdateChargingStationResult>
 
             UpdateChargingStation(IChargingStation   ChargingStation,
-                                  String             PropertyName,
-                                  Object?            NewValue,
+                                  String?            PropertyName        = null,
+                                  Object?            NewValue            = null,
                                   Object?            OldValue            = null,
                                   Context?           DataSource          = null,
                                   TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
@@ -1968,7 +1969,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteChargingStation        (ChargingStation,  TransmissionType = Enqueue, ...)
+        #region DeleteChargingStation         (ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the given charging station.
@@ -2003,7 +2004,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region AddChargingStations          (ChargingStations, TransmissionType = Enqueue, ...)
+        #region AddChargingStations           (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of charging stations.
@@ -2030,14 +2031,14 @@ namespace cloud.charging.open.protocols.WWCP
                        AddChargingStationsResult.NoOperation(
                            RejectedChargingStations:  ChargingStations,
                            SenderId:                  Id,
-                           Sender:               this,
+                           Sender:                    this,
                            EventTrackingId:           EventTrackingId
                        )
                    );
 
         #endregion
 
-        #region AddChargingStationsIfNotExist(ChargingStations, TransmissionType = Enqueue, ...)
+        #region AddChargingStationsIfNotExist (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of charging stations, if they do not already exist.
@@ -2064,14 +2065,14 @@ namespace cloud.charging.open.protocols.WWCP
                        AddChargingStationsResult.NoOperation(
                            RejectedChargingStations:  ChargingStations,
                            SenderId:                  Id,
-                           Sender:               this,
+                           Sender:                    this,
                            EventTrackingId:           EventTrackingId
                        )
                    );
 
         #endregion
 
-        #region AddOrUpdateChargingStations  (ChargingStations, TransmissionType = Enqueue, ...)
+        #region AddOrUpdateChargingStations   (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add or update the given enumeration of charging stations.
@@ -2098,14 +2099,14 @@ namespace cloud.charging.open.protocols.WWCP
                        AddOrUpdateChargingStationsResult.NoOperation(
                            RejectedChargingStations:  ChargingStations,
                            SenderId:                  Id,
-                           Sender:               this,
+                           Sender:                    this,
                            EventTrackingId:           EventTrackingId
                        )
                    );
 
         #endregion
 
-        #region UpdateChargingStations       (ChargingStations, TransmissionType = Enqueue, ...)
+        #region UpdateChargingStations        (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging stations.
@@ -2132,14 +2133,14 @@ namespace cloud.charging.open.protocols.WWCP
                        UpdateChargingStationsResult.NoOperation(
                            RejectedChargingStations:  ChargingStations,
                            SenderId:                  Id,
-                           Sender:               this,
+                           Sender:                    this,
                            EventTrackingId:           EventTrackingId
                        )
                    );
 
         #endregion
 
-        #region ReplaceChargingStations      (ChargingStations, TransmissionType = Enqueue, ...)
+        #region ReplaceChargingStations       (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Replace the given enumeration of charging stations.
@@ -2167,14 +2168,14 @@ namespace cloud.charging.open.protocols.WWCP
                        ReplaceChargingStationsResult.NoOperation(
                            RejectedChargingStations:  ChargingStations,
                            SenderId:                  Id,
-                           Sender:               this,
+                           Sender:                    this,
                            EventTrackingId:           EventTrackingId
                        )
                    );
 
         #endregion
 
-        #region DeleteChargingStations       (ChargingStations, TransmissionType = Enqueue, ...)
+        #region DeleteChargingStations        (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the given enumeration of charging stations.
@@ -2201,7 +2202,7 @@ namespace cloud.charging.open.protocols.WWCP
                        DeleteChargingStationsResult.NoOperation(
                            RejectedChargingStations:  ChargingStations,
                            SenderId:                  Id,
-                           Sender:               this,
+                           Sender:                    this,
                            EventTrackingId:           EventTrackingId
                        )
                    );
@@ -2209,7 +2210,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region UpdateChargingStationAdminStatus (ChargingStationAdminStatusUpdates,  TransmissionType = Enqueue, ...)
+        #region UpdateChargingStationAdminStatus  (ChargingStationAdminStatusUpdates,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station admin status updates.
@@ -2241,7 +2242,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingStationStatus      (ChargingStationStatusUpdates,       TransmissionType = Enqueue, ...)
+        #region UpdateChargingStationStatus       (ChargingStationStatusUpdates,       TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station status updates.
@@ -2273,7 +2274,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingStationEnergyStatus(ChargingStationEnergyStatusUpdates, TransmissionType = Enqueue, ...)
+        #region UpdateChargingStationEnergyStatus (ChargingStationEnergyStatusUpdates, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station energy status updates.
@@ -2325,7 +2326,7 @@ namespace cloud.charging.open.protocols.WWCP
         public IncludeEVSEDelegate    IncludeEVSEs           { get; }
 
 
-        #region AddEVSE           (EVSE,  TransmissionType = Enqueue, ...)
+        #region AddEVSE            (EVSE,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given EVSE.
@@ -2359,7 +2360,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddEVSEIfNotExists(EVSE,  TransmissionType = Enqueue, ...)
+        #region AddEVSEIfNotExists (EVSE,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given EVSE, if it does not already exist.
@@ -2393,7 +2394,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateEVSE   (EVSE,  TransmissionType = Enqueue, ...)
+        #region AddOrUpdateEVSE    (EVSE,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add or update the given EVSE.
@@ -2427,13 +2428,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateEVSE        (EVSE,  PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
+        #region UpdateEVSE         (EVSE,  PropertyName = null, NewValue = null, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given EVSE.
         /// </summary>
         /// <param name="EVSE">An EVSE to update.</param>
-        /// <param name="PropertyName">The name of the EVSE property to update.</param>
+        /// <param name="PropertyName">The name of the EVSE property to update, if any specific.</param>
         /// <param name="NewValue">The new value of the EVSE property to update.</param>
         /// <param name="OldValue">The optional old value of the EVSE property to update.</param>
         /// <param name="DataSource">An optional data source or context for the EVSE property update.</param>
@@ -2446,8 +2447,8 @@ namespace cloud.charging.open.protocols.WWCP
         public virtual Task<UpdateEVSEResult>
 
             UpdateEVSE(IEVSE              EVSE,
-                       String             PropertyName,
-                       Object?            NewValue,
+                       String?            PropertyName        = null,
+                       Object?            NewValue            = null,
                        Object?            OldValue            = null,
                        Context?           DataSource          = null,
                        TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
@@ -2469,7 +2470,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteEVSE        (EVSE,  TransmissionType = Enqueue, ...)
+        #region DeleteEVSE         (EVSE,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the given EVSE.
@@ -2504,7 +2505,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region AddEVSEs          (EVSEs, TransmissionType = Enqueue, ...)
+        #region AddEVSEs           (EVSEs, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of EVSEs.
@@ -2538,7 +2539,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddEVSEsIfNotExist(EVSEs, TransmissionType = Enqueue, ...)
+        #region AddEVSEsIfNotExist (EVSEs, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of EVSEs, if they do not already exist.
@@ -2572,7 +2573,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateEVSEs  (EVSEs, TransmissionType = Enqueue, ...)
+        #region AddOrUpdateEVSEs   (EVSEs, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add or update the given enumeration of EVSEs.
@@ -2606,7 +2607,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateEVSEs       (EVSEs, TransmissionType = Enqueue, ...)
+        #region UpdateEVSEs        (EVSEs, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of EVSEs.
@@ -2640,7 +2641,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ReplaceEVSEs      (EVSEs, TransmissionType = Enqueue, ...)
+        #region ReplaceEVSEs       (EVSEs, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Replace the given enumeration of EVSEs.
@@ -2675,7 +2676,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteEVSEs       (EVSEs, TransmissionType = Enqueue, ...)
+        #region DeleteEVSEs        (EVSEs, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the given enumeration of EVSEs.
@@ -2710,7 +2711,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region UpdateEVSEAdminStatus (EVSEAdminStatusUpdates,  TransmissionType = Enqueue, ...)
+        #region UpdateEVSEAdminStatus  (EVSEAdminStatusUpdates,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of EVSE admin status updates.
@@ -2742,7 +2743,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateEVSEStatus      (EVSEStatusUpdates,       TransmissionType = Enqueue, ...)
+        #region UpdateEVSEStatus       (EVSEStatusUpdates,       TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of EVSE status updates.
@@ -2774,7 +2775,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateEVSEEnergyStatus(EVSEEnergyStatusUpdates, TransmissionType = Enqueue, ...)
+        #region UpdateEVSEEnergyStatus (EVSEEnergyStatusUpdates, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of EVSE energy status updates.
@@ -2807,109 +2808,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #endregion
-
-
-
-        #region [obsolete] UpdateAdminStatus(Sender, AdminStatusUpdates, ...)
-
-        /// <summary>
-        /// Update the given enumeration of EVSE admin status updates.
-        /// </summary>
-        /// <param name="Sender">The sender of the admin status update.</param>
-        /// <param name="AdminStatusUpdates">An enumeration of EVSE admin status updates.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        protected async Task<PushEVSEAdminStatusResult>
-
-            UpdateStatus(ISendAdminStatus                    Sender,
-                         IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
-
-                         DateTime?                           Timestamp,
-                         CancellationToken                   CancellationToken,
-                         EventTracking_Id                    EventTrackingId,
-                         TimeSpan?                           RequestTimeout)
-
-        {
-
-            #region Initial checks
-
-            if (AdminStatusUpdates == null || !AdminStatusUpdates.Any())
-                return PushEVSEAdminStatusResult.NoOperation(Id,
-                                                             Sender);
-
-            if (DisableSendStatus)
-                return PushEVSEAdminStatusResult.AdminDown(Id,
-                                                           Sender,
-                                                           AdminStatusUpdates);
-
-            #endregion
-
-
-            #region Send OnEnqueueSendCDRRequest event
-
-            //try
-            //{
-
-            //    OnEnqueueSendCDRRequest?.Invoke(StartTime,
-            //                                    Timestamp.Value,
-            //                                    this,
-            //                                    EventTrackingId,
-            //                                    RoamingNetwork.Id,
-            //                                    ChargeDetailRecord,
-            //                                    RequestTimeout);
-
-            //}
-            //catch (Exception e)
-            //{
-            //    DebugX.LogException(e, nameof(WWCPCPOAdapter) + "." + nameof(OnSendCDRRequest));
-            //}
-
-            #endregion
-
-            await DataAndStatusLock.WaitAsync().ConfigureAwait(false);
-
-            try
-            {
-
-                var FilteredUpdates = AdminStatusUpdates.Where(adminstatusupdate => IncludeEVSEIds(adminstatusupdate.Id)).
-                                                         ToArray();
-
-                if (FilteredUpdates.Length > 0)
-                {
-
-                    foreach (var Update in FilteredUpdates)
-                    {
-
-                        // Delay the status update until the EVSE data had been uploaded!
-                        if (!DisablePushData && evsesToAddQueue.Any(evse => evse.Id == Update.Id))
-                            evseAdminStatusChangesDelayedQueue.Add(Update);
-
-                        else
-                            evseAdminStatusChangesFastQueue.Add(Update);
-
-                    }
-
-                    FlushEVSEFastStatusTimer.Change(FlushEVSEFastStatusEvery, TimeSpan.FromMilliseconds(-1));
-
-                    return PushEVSEAdminStatusResult.Enqueued(Id, Sender);
-
-                }
-
-                return PushEVSEAdminStatusResult.NoOperation(Id, Sender);
-
-            }
-            finally
-            {
-                DataAndStatusLock.Release();
-            }
-
-        }
-
-        #endregion
-
 
 
         #region (timer) FlushEVSEDataAndStatus(State)
