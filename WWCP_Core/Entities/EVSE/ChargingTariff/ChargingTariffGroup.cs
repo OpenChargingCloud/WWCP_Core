@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging tariff identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing tariff.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
+        /// <param name="Name">The official (multi-language) name of this charging tariff.</param>
         /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
@@ -481,7 +481,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Get the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
             => Id.GetHashCode();

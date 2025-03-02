@@ -3360,7 +3360,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Get the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
 

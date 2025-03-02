@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
-        /// The length of the tracker identificator.
+        /// The length of the tracker identifier.
         /// </summary>
         public UInt64 Length
             => (UInt64) (InternalId?.Length ?? 0);

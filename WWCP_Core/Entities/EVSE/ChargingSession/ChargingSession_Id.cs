@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.WWCP
             => Suffix.IsNotNullOrEmpty();
 
         /// <summary>
-        /// The length of the charging session identificator.
+        /// The length of the charging session identifier.
         /// </summary>
         public UInt64 Length
             => (OperatorId?.Length ?? ProviderId?.Length ?? 0) + 2 + ((UInt64) (Suffix?.Length ?? 0));

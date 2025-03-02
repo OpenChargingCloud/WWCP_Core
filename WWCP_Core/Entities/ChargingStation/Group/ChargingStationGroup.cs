@@ -534,7 +534,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the charing station group.</param>
         /// <param name="Operator">The charging station operator of this charging station group.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging station group.</param>
+        /// <param name="Name">The official (multi-language) name of this charging station group.</param>
         /// <param name="Description">An optional (multi-language) description of this charging station group.</param>
         /// 
         /// <param name="Members">An enumeration of charging stations member building this charging station group.</param>
@@ -1096,7 +1096,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Get the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
             => Id.GetHashCode();

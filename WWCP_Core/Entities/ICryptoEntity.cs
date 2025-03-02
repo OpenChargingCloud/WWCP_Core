@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// The common generic interface of an entity having one or multiple unique
     /// identification(s) and crypto methods.
     /// </summary>
-    /// <typeparam name="TId">THe type of the unique identificator.</typeparam>
+    /// <typeparam name="TId">THe type of the unique identifier.</typeparam>
     public interface ICryptoEntity<TId> : IEntity<TId>,
                                           ICryptoEntity
 

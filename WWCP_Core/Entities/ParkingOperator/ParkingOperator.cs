@@ -652,7 +652,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// charging station operator identification (CSO Id).
         /// </summary>
         /// <param name="Id">The unique identification of the Charging Station Operator.</param>
-        /// <param name="Name">The offical (multi-language) name of the ParkingSpace Operator.</param>
+        /// <param name="Name">The official (multi-language) name of the ParkingSpace Operator.</param>
         /// <param name="Description">An optional (multi-language) description of the ParkingSpace Operator.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         internal ParkingOperator(ParkingOperator_Id                     Id,
@@ -2376,7 +2376,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Get the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
             => Id.GetHashCode();

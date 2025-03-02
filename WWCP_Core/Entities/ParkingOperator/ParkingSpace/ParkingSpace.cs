@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.WWCP
         private I18NString _Name;
 
         /// <summary>
-        /// The offical (multi-language) name of the parking space.
+        /// The official (multi-language) name of the parking space.
         /// </summary>
         [Mandatory]
         public I18NString Name
@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Get the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
         {

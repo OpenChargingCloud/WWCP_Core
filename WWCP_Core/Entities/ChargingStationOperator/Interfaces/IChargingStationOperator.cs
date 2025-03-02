@@ -595,7 +595,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging Tariff identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing Tariff.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging Tariff.</param>
+        /// <param name="Name">The official (multi-language) name of this charging Tariff.</param>
         /// <param name="Description">An optional (multi-language) description of this charging Tariff.</param>
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging Tariff after its successful creation.</param>
@@ -669,7 +669,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging Tariff identification.
         /// </summary>
         /// <param name="IdSuffix">The suffix of the unique identification of the new charging Tariff.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging Tariff.</param>
+        /// <param name="Name">The official (multi-language) name of this charging Tariff.</param>
         /// <param name="Description">An optional (multi-language) description of this charging Tariff.</param>
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging Tariff after its successful creation.</param>
@@ -1374,7 +1374,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging group identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing station group.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging station group.</param>
+        /// <param name="Name">The official (multi-language) name of this charging station group.</param>
         /// <param name="Description">An optional (multi-language) description of this charging station group.</param>
         /// 
         /// <param name="Members">An enumeration of charging stations member building this charging station group.</param>
@@ -1412,7 +1412,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging group identification.
         /// </summary>
         /// <param name="IdSuffix">The suffix of the unique identification of the new charging group.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging station group.</param>
+        /// <param name="Name">The official (multi-language) name of this charging station group.</param>
         /// <param name="Description">An optional (multi-language) description of this charging station group.</param>
         /// 
         /// <param name="Members">An enumeration of charging stations member building this charging station group.</param>
@@ -1445,7 +1445,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging group identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing station group.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging station group.</param>
+        /// <param name="Name">The official (multi-language) name of this charging station group.</param>
         /// <param name="Description">An optional (multi-language) description of this charging station group.</param>
         /// 
         /// <param name="Members">An enumeration of charging stations member building this charging station group.</param>
@@ -1478,7 +1478,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging group identification.
         /// </summary>
         /// <param name="IdSuffix">The suffix of the unique identification of the new charging group.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging station group.</param>
+        /// <param name="Name">The official (multi-language) name of this charging station group.</param>
         /// <param name="Description">An optional (multi-language) description of this charging station group.</param>
         /// 
         /// <param name="Members">An enumeration of charging stations member building this charging station group.</param>
@@ -1754,7 +1754,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging group identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing station group.</param>
-        /// <param name="Name">The offical (multi-language) name of this EVSE group.</param>
+        /// <param name="Name">The official (multi-language) name of this EVSE group.</param>
         /// <param name="Description">An optional (multi-language) description of this EVSE group.</param>
         /// 
         /// <param name="Members">An enumeration of EVSEs member building this EVSE group.</param>
@@ -1793,7 +1793,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging group identification.
         /// </summary>
         /// <param name="IdSuffix">The suffix of the unique identification of the new charging group.</param>
-        /// <param name="Name">The offical (multi-language) name of this EVSE group.</param>
+        /// <param name="Name">The official (multi-language) name of this EVSE group.</param>
         /// <param name="Description">An optional (multi-language) description of this EVSE group.</param>
         /// 
         /// <param name="Members">An enumeration of EVSEs member building this EVSE group.</param>
@@ -1832,7 +1832,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging group identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing station group.</param>
-        /// <param name="Name">The offical (multi-language) name of this EVSE group.</param>
+        /// <param name="Name">The official (multi-language) name of this EVSE group.</param>
         /// <param name="Description">An optional (multi-language) description of this EVSE group.</param>
         /// 
         /// <param name="Members">An enumeration of EVSEs member building this EVSE group.</param>
@@ -1871,7 +1871,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging group identification.
         /// </summary>
         /// <param name="IdSuffix">The suffix of the unique identification of the new charging group.</param>
-        /// <param name="Name">The offical (multi-language) name of this EVSE group.</param>
+        /// <param name="Name">The official (multi-language) name of this EVSE group.</param>
         /// <param name="Description">An optional (multi-language) description of this EVSE group.</param>
         /// 
         /// <param name="Members">An enumeration of EVSEs member building this EVSE group.</param>
@@ -1979,7 +1979,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging tariff identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing tariff.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
+        /// <param name="Name">The official (multi-language) name of this charging tariff.</param>
         /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
@@ -2012,7 +2012,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging tariff identification.
         /// </summary>
         /// <param name="IdSuffix">The suffix of the unique identification of the new charging tariff.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
+        /// <param name="Name">The official (multi-language) name of this charging tariff.</param>
         /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>

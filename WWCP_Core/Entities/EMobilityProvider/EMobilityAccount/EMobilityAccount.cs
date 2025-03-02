@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.WWCP
         public EMobilityAccount_Id  Id      { get; }
 
         /// <summary>
-        /// The offical (multi-language) name of the e-mobility account.
+        /// The official (multi-language) name of the e-mobility account.
         /// </summary>
         [Mandatory]
         public I18NString           Name    { get; }
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Get the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
 

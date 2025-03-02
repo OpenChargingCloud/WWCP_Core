@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.WWCP
         EMPRoamingProvider_Id  Id                { get; }
 
         /// <summary>
-        /// The offical (multi-language) name of the roaming provider.
+        /// The official (multi-language) name of the roaming provider.
         /// </summary>
         I18NString             Name              { get; }
 

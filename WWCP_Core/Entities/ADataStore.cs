@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// An generic data store.
     /// </summary>
-    /// <typeparam name="TId">The type of the identificators.</typeparam>
+    /// <typeparam name="TId">The type of the identifiers.</typeparam>
     /// <typeparam name="TData">The type of the stored data.</typeparam>
     public abstract class ADataStore<TId, TData> : IEnumerable<TData>
         where TId:   struct, IId

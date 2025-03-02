@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Country            CountryCode   { get; }
 
         /// <summary>
-        /// The identificator suffix.
+        /// The identifier suffix.
         /// </summary>
         public String             Suffix        { get; }
 

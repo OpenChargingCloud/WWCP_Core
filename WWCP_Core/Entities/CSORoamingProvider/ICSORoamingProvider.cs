@@ -50,12 +50,12 @@ namespace cloud.charging.open.protocols.WWCP
         CSORoamingProvider_Id  Id               { get; }
 
         /// <summary>
-        /// The offical (multi-language) name of the roaming provider.
+        /// The official (multi-language) name of the roaming provider.
         /// </summary>
         I18NString             Name             { get; }
 
         /// <summary>
-        /// The offical (multi-language) description of the roaming provider.
+        /// The official (multi-language) description of the roaming provider.
         /// </summary>
         I18NString             Description      { get; }
 

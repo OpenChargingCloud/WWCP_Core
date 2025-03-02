@@ -709,7 +709,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique identification.
         /// </summary>
         /// <param name="Id">The unique smart city identification.</param>
-        /// <param name="Name">The offical (multi-language) name of the smart city.</param>
+        /// <param name="Name">The official (multi-language) name of the smart city.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         internal SmartCityProxy(SmartCity_Id                     Id,
                                 RoamingNetwork                   RoamingNetwork,
@@ -3425,7 +3425,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Get the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
 

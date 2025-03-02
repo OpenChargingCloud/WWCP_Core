@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging station operator identification.
         /// </summary>
         /// <param name="Id">The unique identification of the new charging station operator.</param>
-        /// <param name="Name">The offical (multi-language) name of the charging station operator.</param>
+        /// <param name="Name">The official (multi-language) name of the charging station operator.</param>
         /// <param name="Description">An optional (multi-language) description of the charging station operator.</param>
         /// <param name="Configurator">An optional delegate to configure the new charging station operator before its successful creation.</param>
         /// <param name="OnCreated">An optional delegate to configure the new charging station operator after its successful creation.</param>
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique charging station operator identification.
         /// </summary>
         /// <param name="Id">The unique identification of the new charging station operator.</param>
-        /// <param name="Name">The offical (multi-language) name of the charging station operator.</param>
+        /// <param name="Name">The official (multi-language) name of the charging station operator.</param>
         /// <param name="Description">An optional (multi-language) description of the charging station operator.</param>
         /// <param name="Configurator">An optional delegate to configure the new charging station operator before its successful creation.</param>
         /// <param name="OnCreated">An optional delegate to configure the new charging station operator after its successful creation.</param>
@@ -669,7 +669,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique parking operator identification.
         /// </summary>
         /// <param name="Id">The unique identification of the new parking operator.</param>
-        /// <param name="Name">The offical (multi-language) name of the parking operator.</param>
+        /// <param name="Name">The official (multi-language) name of the parking operator.</param>
         /// <param name="Description">An optional (multi-language) description of the parking operator.</param>
         /// <param name="Configurator">An optional delegate to configure the new parking operator before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new parking operator after its successful creation.</param>
@@ -774,7 +774,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique smart city identification.
         /// </summary>
         /// <param name="GridOperatorId">The unique identification of the new smart city.</param>
-        /// <param name="Name">The offical (multi-language) name of the smart city.</param>
+        /// <param name="Name">The official (multi-language) name of the smart city.</param>
         /// <param name="Description">An optional (multi-language) description of the smart city.</param>
         /// <param name="Configurator">An optional delegate to configure the new smart city before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new smart city after its successful creation.</param>
@@ -847,7 +847,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique smart city identification.
         /// </summary>
         /// <param name="Id">The unique identification of the new smart city.</param>
-        /// <param name="Name">The offical (multi-language) name of the smart city.</param>
+        /// <param name="Name">The official (multi-language) name of the smart city.</param>
         /// <param name="Description">An optional (multi-language) description of the smart city.</param>
         /// <param name="Configurator">An optional delegate to configure the new smart city before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new smart city after its successful creation.</param>
