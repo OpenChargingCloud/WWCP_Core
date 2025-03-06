@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ReservationId">The unique identification for a charging reservation.</param>
-    /// <param name="ChargingProduct">The choosen charging product.</param>
+    /// <param name="ChargingProduct">The chosen charging product.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task OnRemoteStartRequestDelegate(DateTime                  LogTimestamp,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="ChargingProduct">The choosen charging product.</param>
+    /// <param name="ChargingProduct">The chosen charging product.</param>
     /// <param name="ReservationId">The unique identification for a charging reservation.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ReservationId">The unique identification for a charging reservation.</param>
-    /// <param name="ChargingProduct">The choosen charging product.</param>
+    /// <param name="ChargingProduct">The chosen charging product.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote start result.</param>

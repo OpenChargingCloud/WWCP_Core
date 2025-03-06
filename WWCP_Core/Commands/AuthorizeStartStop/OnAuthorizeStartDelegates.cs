@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="LocalAuthentication">An user identification.</param>
     /// <param name="ChargingLocation">The charging location.</param>
-    /// <param name="ChargingProduct">The choosen charging product.</param>
+    /// <param name="ChargingProduct">The chosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ISendAuthorizeStartStops">The ISendAuthorizeStartStops entities to be asked.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="LocalAuthentication">An user identification.</param>
     /// <param name="ChargingLocation">The charging location.</param>
-    /// <param name="ChargingProduct">The choosen charging product.</param>
+    /// <param name="ChargingProduct">The chosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ISendAuthorizeStartStops">The ISendAuthorizeStartStops entities to be asked.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>

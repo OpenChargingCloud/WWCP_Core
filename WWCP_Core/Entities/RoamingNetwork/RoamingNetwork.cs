@@ -7943,7 +7943,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Start a charging session at the given charging location.
         /// </summary>
         /// <param name="ChargingLocation">The charging location.</param>
-        /// <param name="ChargingProduct">The choosen charging product.</param>
+        /// <param name="ChargingProduct">The chosen charging product.</param>
         /// <param name="ReservationId">Use the given optinal unique charging reservation identification for charging.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
@@ -7989,7 +7989,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Start a charging session at the given charging location.
         /// </summary>
         /// <param name="ChargingLocation">The charging location.</param>
-        /// <param name="ChargingProduct">The choosen charging product.</param>
+        /// <param name="ChargingProduct">The chosen charging product.</param>
         /// <param name="ReservationId">Use the given optinal unique charging reservation identification for charging.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>

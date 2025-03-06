@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A list of EVSE identifications which are redirected
     /// from one roaming network to another roaming network.
-    /// This might be usefull whenever some charging stations
+    /// This might be useful whenever some charging stations
     /// shall be conntected to a testing/QA roaming network.
     /// </summary>
     public class RedirectedEVSEs
