@@ -183,9 +183,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Static definitions
 
         /// <summary>
-        /// Unkown admin status of the EVSE.
+        /// Unknown admin status of the EVSE.
         /// </summary>
-        public static readonly EVSEAdminStatusType Unkown        = new("unkown");
+        public static readonly EVSEAdminStatusType Unknown        = new("unknown");
 
         /// <summary>
         /// Unclear admin status of the EVSE.

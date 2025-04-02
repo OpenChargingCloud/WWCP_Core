@@ -808,7 +808,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) NotAuthorized       (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
-        /// The authorize stop was not successful (e.g. ev customer is unkown).
+        /// The authorize stop was not successful (e.g. ev customer is unknown).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
@@ -848,7 +848,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// The authorize stop was not successful (e.g. ev customer is unkown).
+        /// The authorize stop was not successful (e.g. ev customer is unknown).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
@@ -1325,7 +1325,7 @@ namespace cloud.charging.open.protocols.WWCP
         Authorized,
 
         /// <summary>
-        /// The authorize stop was not successful (e.g. ev customer is unkown).
+        /// The authorize stop was not successful (e.g. ev customer is unknown).
         /// </summary>
         NotAuthorized,
 

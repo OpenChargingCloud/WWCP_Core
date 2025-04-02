@@ -518,12 +518,12 @@ namespace cloud.charging.open.protocols.WWCP
     }
 
 
-    //public class Unkown : AuthenticationModes
+    //public class Unknown : AuthenticationModes
     //{
 
-    //    public Unkown()
+    //    public Unknown()
 
-    //        : base("Unkown")
+    //        : base("Unknown")
 
     //    { }
 

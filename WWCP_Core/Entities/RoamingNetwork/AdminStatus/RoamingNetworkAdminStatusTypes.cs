@@ -183,9 +183,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Static members
 
         /// <summary>
-        /// Unkown admin status of the roaming network.
+        /// Unknown admin status of the roaming network.
         /// </summary>
-        public static readonly RoamingNetworkAdminStatusTypes Unkown        = new("unkown");
+        public static readonly RoamingNetworkAdminStatusTypes Unknown        = new("unknown");
 
         /// <summary>
         /// Unclear admin status of the roaming network.

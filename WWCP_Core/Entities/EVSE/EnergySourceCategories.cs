@@ -183,9 +183,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Static members
 
         /// <summary>
-        /// Unkown energy source
+        /// Unknown energy source
         /// </summary>
-        public static readonly EnergySourceCategories  Unkown           = new("unkown");
+        public static readonly EnergySourceCategories  Unknown           = new("unknown");
 
 
         /// <summary>

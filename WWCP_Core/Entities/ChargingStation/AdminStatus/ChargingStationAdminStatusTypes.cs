@@ -188,9 +188,9 @@ namespace cloud.charging.open.protocols.WWCP
         public static readonly ChargingStationAdminStatusTypes Unspecified   = new("unspecified");
 
         /// <summary>
-        /// Unkown admin status of the charging station.
+        /// Unknown admin status of the charging station.
         /// </summary>
-        public static readonly ChargingStationAdminStatusTypes Unkown        = new("unkown");
+        public static readonly ChargingStationAdminStatusTypes Unknown        = new("unknown");
 
         /// <summary>
         /// The charging station is planned for the future.
