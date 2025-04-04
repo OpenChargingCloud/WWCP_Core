@@ -135,11 +135,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse WattHours     [mandatory]
 
-                var valueString = JSON["value"]?.Value<String>() ?? "";
+                var valueDecimal = JSON["value"]?.Value<Decimal>() ?? 0.0M;
 
-                if (!WattHour.TryParse(valueString, out var Value))
+                if (!WattHour.TryParseKWh(valueDecimal, out var Value))
                 {
-                    ErrorResponse = $"Invalid energy metering value '{valueString}'!";
+                    ErrorResponse = $"Invalid energy metering value '{valueDecimal}'!";
                     return false;
                 }
 
