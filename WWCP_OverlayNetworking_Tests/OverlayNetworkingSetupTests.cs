@@ -35,6 +35,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
     /// <summary>
     /// Overlay Networking tests.
     /// </summary>
+    [TestFixture]
     public class OverlayNetworkingSetupTests
     {
 
