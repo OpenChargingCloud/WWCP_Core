@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         Task HandleErrors(String     Module,
                           String     Caller,
-                          Exception  ExceptionOccured);
+                          Exception  ExceptionOccurred);
 
         Task HandleErrors(String     Module,
                           String     Caller,
