@@ -590,7 +590,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this public key.
         /// </summary>
         public PublicKey Clone()
 

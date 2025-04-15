@@ -595,11 +595,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (virtual) HandleErrors(Module, Caller, ExceptionOccured)
+        #region (virtual) HandleErrors(Module, Caller, ExceptionOccurred)
 
         public virtual Task HandleErrors(String     Module,
                                          String     Caller,
-                                         Exception  ExceptionOccured)
+                                         Exception  ExceptionOccurred)
         {
 
             return Task.CompletedTask;

@@ -52,22 +52,22 @@ namespace cloud.charging.open.protocols.WWCP
         public  const           String                                                           Default_LoggingPath                     = "default";
 
         /// <summary>
-        /// The default EVSE data & status intervall.
+        /// The default EVSE data & status interval.
         /// </summary>
         public  readonly static TimeSpan                                                         DefaultFlushEVSEDataAndStatusEvery      = TimeSpan.FromSeconds(31);
 
         /// <summary>
-        /// The default EVSE fast status intervall.
+        /// The default EVSE fast status interval.
         /// </summary>
         public  readonly static TimeSpan                                                         DefaultFlushEVSEFastStatusEvery         = TimeSpan.FromSeconds(3);
 
         /// <summary>
-        /// The default EVSe status refresh intervall.
+        /// The default EVSe status refresh interval.
         /// </summary>
         public  readonly static TimeSpan                                                         DefaultEVSEStatusRefreshEvery           = TimeSpan.FromHours(6);
 
         /// <summary>
-        /// The default CDR check intervall.
+        /// The default CDR check interval.
         /// </summary>
         public  readonly static TimeSpan                                                         DefaultFlushChargeDetailRecordsEvery    = TimeSpan.FromSeconds(15);
 
@@ -179,22 +179,22 @@ namespace cloud.charging.open.protocols.WWCP
         #region Flush...Every
 
         /// <summary>
-        /// The EVSE data updates transmission intervall.
+        /// The EVSE data updates transmission interval.
         /// </summary>
         public TimeSpan                                  FlushEVSEDataAndStatusEvery          { get; set; }
 
         /// <summary>
-        /// The EVSE status updates transmission intervall.
+        /// The EVSE status updates transmission interval.
         /// </summary>
         public TimeSpan                                  FlushEVSEFastStatusEvery             { get; set; }
 
         /// <summary>
-        /// The EVSE status refresh intervall.
+        /// The EVSE status refresh interval.
         /// </summary>
         public TimeSpan                                  EVSEStatusRefreshEvery               { get; set; }
 
         /// <summary>
-        /// The charge detail record transmission intervall.
+        /// The charge detail record transmission interval.
         /// </summary>
         public TimeSpan                                  FlushChargeDetailRecordsEvery        { get; set; }
 
@@ -293,9 +293,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeChargingPools">Only include charging pools matching the given delegate.</param>
         /// <param name="ChargeDetailRecordFilter">A delegate for filtering charge detail records.</param>
         /// 
-        /// <param name="FlushEVSEDataAndStatusEvery">The service check intervall.</param>
-        /// <param name="FlushEVSEFastStatusEvery">The status check intervall.</param>
-        /// <param name="FlushChargeDetailRecordsEvery">The charge detail record intervall.</param>
+        /// <param name="FlushEVSEDataAndStatusEvery">The service check interval.</param>
+        /// <param name="FlushEVSEFastStatusEvery">The status check interval.</param>
+        /// <param name="FlushChargeDetailRecordsEvery">The charge detail record interval.</param>
         /// 
         /// <param name="DisablePushData">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisablePushStatus">This service can be disabled, e.g. for debugging reasons.</param>

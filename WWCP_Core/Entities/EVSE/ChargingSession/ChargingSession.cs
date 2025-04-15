@@ -1553,10 +1553,10 @@ namespace cloud.charging.open.protocols.WWCP
                     {
                         foreach (var receivedCDRInfoJSON in receivedCDRInfosJSON.Cast<JObject>())
                         {
-                            if (ReceivedCDRInfo.TryParse(receivedCDRInfoJSON, out var receivedCDRInfo, out _))
-                            {
+                            if (ReceivedCDRInfo.TryParse(receivedCDRInfoJSON, out var receivedCDRInfo, out var err1))
                                 ChargingSession.receivedCDRInfos.Add(receivedCDRInfo);
-                            }
+                            else
+                                DebugX.Log(nameof(ChargingSession) + ".ReceivedCDRInfo.TryParse(...) failed: " + err1);
                         }
                     }
 
@@ -1564,10 +1564,10 @@ namespace cloud.charging.open.protocols.WWCP
                     {
                         foreach (var sendCDRResultJSON in sendCDRResultsJSON.Cast<JObject>())
                         {
-                            if (SendCDRResult.TryParse(sendCDRResultJSON, out var sendCDRResult, out _))
-                            {
+                            if (SendCDRResult.TryParse(sendCDRResultJSON, out var sendCDRResult, out var err2))
                                 ChargingSession.sendCDRResults.Add(sendCDRResult);
-                            }
+                            else
+                                DebugX.Log(nameof(ChargingSession) + ".ReceivedCDRInfo.TryParse(...) failed: " + err2);
                         }
                     }
 

@@ -1,12 +1,12 @@
 ﻿/*
  * Copyright (c) 2014-2025 GraphDefined GmbH <achim.friedland@graphdefined.com>
- * This file is part of WWCP OverlayNetworking <https://github.com/OpenChargingCloud/WWCP_Core>
+ * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.gnu.org/licenses/agpl.html
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -67,19 +67,19 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// Indicates whether this version identification is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this version identification is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public Boolean IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the version identification.
         /// </summary>
-        public readonly UInt64 Length
+        public UInt64 Length
             => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
@@ -165,12 +165,12 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this version identification.
         /// </summary>
-        public Version_Id Clone
+        public Version_Id Clone()
 
             => new (
                    InternalId.CloneString()
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// </summary>
         /// <param name="VersionId1">A version identification.</param>
         /// <param name="VersionId2">Another version identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (Version_Id VersionId1,
                                            Version_Id VersionId2)
 
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// </summary>
         /// <param name="VersionId1">A version identification.</param>
         /// <param name="VersionId2">Another version identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (Version_Id VersionId1,
                                            Version_Id VersionId2)
 
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// </summary>
         /// <param name="VersionId1">A version identification.</param>
         /// <param name="VersionId2">Another version identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (Version_Id VersionId1,
                                           Version_Id VersionId2)
 
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// </summary>
         /// <param name="VersionId1">A version identification.</param>
         /// <param name="VersionId2">Another version identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator <= (Version_Id VersionId1,
                                            Version_Id VersionId2)
 
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// </summary>
         /// <param name="VersionId1">A version identification.</param>
         /// <param name="VersionId2">Another version identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (Version_Id VersionId1,
                                           Version_Id VersionId2)
 
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// </summary>
         /// <param name="VersionId1">A version identification.</param>
         /// <param name="VersionId2">Another version identification.</param>
-        /// <returns>true|false</returns>
+        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator >= (Version_Id VersionId1,
                                            Version_Id VersionId2)
 
