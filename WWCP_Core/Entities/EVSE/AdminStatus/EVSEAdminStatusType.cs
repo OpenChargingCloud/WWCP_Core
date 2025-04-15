@@ -183,9 +183,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Static definitions
 
         /// <summary>
-        /// Unkown admin status of the EVSE.
+        /// Unknown admin status of the EVSE.
         /// </summary>
-        public static readonly EVSEAdminStatusType Unkown        = new("unkown");
+        public static readonly EVSEAdminStatusType Unknown        = new("unknown");
 
         /// <summary>
         /// Unclear admin status of the EVSE.
@@ -401,7 +401,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
 
             => InternalId?.GetHashCode() ?? 0;

@@ -8,14 +8,16 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Hermod\HermodTests\HermodTests.csproj" />
-    <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj" />
-    <ProjectReference Include="..\..\Styx\StyxTests\StyxTests.csproj" />
-    <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
     <ProjectReference Include="..\WWCP_OverlayNetworking\WWCP_OverlayNetworking.csproj" />
   </ItemGroup>
 
 </Project>
+
+
+

@@ -183,9 +183,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Static members
 
         /// <summary>
-        /// Unkown admin status of the charging station operator.
+        /// Unknown admin status of the charging station operator.
         /// </summary>
-        public static readonly ChargingStationOperatorAdminStatusTypes Unkown        = new("unkown");
+        public static readonly ChargingStationOperatorAdminStatusTypes Unknown        = new("unknown");
 
         /// <summary>
         /// Unclear admin status of the charging station operator.
@@ -373,7 +373,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
 
             => InternalId?.GetHashCode() ?? 0;

@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="DisableMaintenanceTasks">Disable all maintenance tasks.</param>
         /// <param name="MaintenanceInitialDelay">The initial delay of the maintenance tasks.</param>
-        /// <param name="MaintenanceEvery">The maintenance intervall.</param>
+        /// <param name="MaintenanceEvery">The maintenance interval.</param>
         public ADataStore(String                            Name,
                           RoamingNetwork_Id                 RoamingNetworkId,
                           Func<String, TId?>                StringIdParser,

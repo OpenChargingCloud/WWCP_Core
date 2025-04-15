@@ -188,9 +188,9 @@ namespace cloud.charging.open.protocols.WWCP
         public static readonly EnergyMeterAdminStatusTypes Unspecified   = new("unspecified");
 
         /// <summary>
-        /// Unkown admin status of the energy meter.
+        /// Unknown admin status of the energy meter.
         /// </summary>
-        public static readonly EnergyMeterAdminStatusTypes Unkown        = new("unkown");
+        public static readonly EnergyMeterAdminStatusTypes Unknown        = new("unknown");
 
         /// <summary>
         /// The energy meter is planned for the future.
@@ -383,7 +383,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
 
             => InternalId?.GetHashCode() ?? 0;

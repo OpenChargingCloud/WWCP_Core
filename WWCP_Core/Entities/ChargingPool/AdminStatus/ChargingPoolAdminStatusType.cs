@@ -188,9 +188,9 @@ namespace cloud.charging.open.protocols.WWCP
         public static readonly ChargingPoolAdminStatusType Unspecified   = new("unspecified");
 
         /// <summary>
-        /// Unkown admin status of the charging pool.
+        /// Unknown admin status of the charging pool.
         /// </summary>
-        public static readonly ChargingPoolAdminStatusType Unkown        = new("unkown");
+        public static readonly ChargingPoolAdminStatusType Unknown        = new("unknown");
 
         /// <summary>
         /// The charging pool is planned for the future.
@@ -383,7 +383,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
 
             => InternalId?.GetHashCode() ?? 0;
