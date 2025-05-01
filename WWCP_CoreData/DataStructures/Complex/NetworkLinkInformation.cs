@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                     var v = latencyArray[0].Value<Double>();
                     var s = latencyArray[1].Value<Double>();
 
-                    Latency = TimeSpanExtensions.FromMilliseconds(v, s);
+                    Latency = StdDevTimeSpanExtensions.FromMilliseconds(v, s);
 
                 }
 
@@ -676,7 +676,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                     var v = latencyArray[0].Value<Double>();
                     var s = latencyArray[1].Value<Double>();
 
-                    Latency = TimeSpanExtensions.FromMilliseconds(v, s);
+                    Latency = StdDevTimeSpanExtensions.FromMilliseconds(v, s);
 
                 }
 
