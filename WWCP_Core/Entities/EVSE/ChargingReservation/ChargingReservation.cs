@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             return JSONObject.Create(
                        new JProperty("ReservationId",            ChargingReservation.Id.               ToString()),
-                       new JProperty("StartTime",                ChargingReservation.StartTime.        ToIso8601()),
+                       new JProperty("StartTime",                ChargingReservation.StartTime.        ToISO8601()),
                        new JProperty("Duration",        (UInt32) ChargingReservation.Duration.         TotalSeconds),
                        new JProperty("TimeLeft",                 TimeLeft > 0 ? TimeLeft : 0),
                        new JProperty("Level",                    ChargingReservation.ReservationLevel. ToString()),
@@ -381,10 +381,10 @@ namespace cloud.charging.open.protocols.WWCP
             => JSONObject.Create(
 
                    new JProperty("@id",                        Id.                     ToString()),
-                   new JProperty("timestamp",                  Timestamp.              ToIso8601()),
-                   new JProperty("startTime",                  StartTime.              ToIso8601()),
+                   new JProperty("timestamp",                  Timestamp.              ToISO8601()),
+                   new JProperty("startTime",                  StartTime.              ToISO8601()),
                    new JProperty("duration",                   Duration.               TotalMinutes),
-                   new JProperty("endTime",                    EndTime.                ToIso8601()),
+                   new JProperty("endTime",                    EndTime.                ToISO8601()),
 
                    new JProperty("consumedReservationTime",    ConsumedReservationTime.TotalMinutes),
                    new JProperty("reservationLevel",           ReservationLevel.       ToString()),
@@ -394,7 +394,7 @@ namespace cloud.charging.open.protocols.WWCP
                        : null,
 
                    StartAuthentication != null
-                       ? new JProperty("authentication",       EndTime.                ToIso8601())
+                       ? new JProperty("authentication",       EndTime.                ToISO8601())
                        : null,
 
                    RoamingNetworkId.HasValue

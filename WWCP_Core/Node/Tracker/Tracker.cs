@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                                                                                                    new JProperty("URLPrefix",     rni.URLPrefix),
                                                                                                                    new JProperty("contentType",   rni.contentType. ToString()),
                                                                                                                    new JProperty("protocol",      rni.protocolType.ToString()),
-                                                                                                                   new JProperty("expiresAfter",  rni.NotAfter.ToIso8601()),
+                                                                                                                   new JProperty("expiresAfter",  rni.NotAfter.ToISO8601()),
                                                                                                                    new JProperty("publicKeys",    new JArray()),
                                                                                                                    new JProperty("signature",     "...")
                                                                                                                )))),
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                                      Content         = JSONObject.Create(
                                                                            new JProperty("id",               Id.ToString()),
                                                                            new JProperty("description",      Description.ToJSON()),
-                                                                           new JProperty("timestamp",        Now.ToIso8601()),
+                                                                           new JProperty("timestamp",        Now.ToISO8601()),
                                                                            new JProperty("roamingNetworks",  new JArray(JSON)),
                                                                            new JProperty("publicKeys",       new JArray()),
                                                                            new JProperty("signature",        "...")

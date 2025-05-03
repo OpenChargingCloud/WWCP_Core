@@ -375,10 +375,10 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                                                                                                                  CustomCustomDataSerializer
                                                                                                                              )))),
 
-                                 new JProperty("notBefore",     NotBefore.     ToIso8601()),
+                                 new JProperty("notBefore",     NotBefore.     ToISO8601()),
 
                            NotAfter.HasValue
-                               ? new JProperty("notAfter",      NotAfter.Value.ToIso8601())
+                               ? new JProperty("notAfter",      NotAfter.Value.ToISO8601())
                                : null,
 
                            Priority.HasValue

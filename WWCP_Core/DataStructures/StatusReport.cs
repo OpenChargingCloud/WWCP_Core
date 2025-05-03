@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("@context",   JSONContext)
                                : null,
 
-                           new JProperty("timestamp",  Timestamp.ToIso8601()),
+                           new JProperty("timestamp",  Timestamp.ToISO8601()),
                            new JProperty("count",      Count),
                            new JProperty("report",     reportJSON)
 

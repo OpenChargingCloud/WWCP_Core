@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.WWCP
                                ? null
                                : new JProperty("@context",     JSONLDContext),
 
-                                 new JProperty("timestamp",    Timestamp.ToIso8601()),
+                                 new JProperty("timestamp",    Timestamp.ToISO8601()),
                                  new JProperty("value",        WattHours.kWh),
 
                            Type.HasValue

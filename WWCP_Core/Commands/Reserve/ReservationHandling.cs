@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             var json = JSONObject.Create(
                            new JProperty("keepAliveTime",   KeepAliveTime.TotalSeconds),
-                           new JProperty("endTime",         EndTime.ToIso8601())
+                           new JProperty("endTime",         EndTime.ToISO8601())
                        );
 
             return CustomReservationHandlingSerializer is not null
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override String ToString()
 
             => EndTime > Timestamp.Now
-                   ? $"Keep alive: {KeepAliveTime.TotalSeconds.ToString("0")} secs, end time: {EndTime.ToIso8601()}"
+                   ? $"Keep alive: {KeepAliveTime.TotalSeconds.ToString("0")} secs, end time: {EndTime.ToISO8601()}"
                    : "close";
 
         #endregion

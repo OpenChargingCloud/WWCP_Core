@@ -218,10 +218,10 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                  new JProperty("weight",            Weight),
 
 
-                                 new JProperty("timestamp",         Timestamp.                    ToIso8601()),
+                                 new JProperty("timestamp",         Timestamp.                    ToISO8601()),
 
                            Timeout.HasValue
-                               ? new JProperty("timeout",           Timeout.Value.                ToIso8601())
+                               ? new JProperty("timeout",           Timeout.Value.                ToISO8601())
                                : null
 
                        );
