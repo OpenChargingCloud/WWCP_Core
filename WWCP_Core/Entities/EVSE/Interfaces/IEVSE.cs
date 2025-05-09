@@ -19,6 +19,7 @@
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
@@ -148,6 +149,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         [Optional]
         String?                                PhysicalReference            { get; set; }
+
+        /// <summary>
+        /// The geographical location of this EVSE, e.g. when this EVSE is part of a satellite system.
+        /// </summary>
+        GeoCoordinate?                         GeoLocation                  { get; }
 
         /// <summary>
         /// An optional enumeration of links to photos related to the EVSE.

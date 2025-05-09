@@ -24,6 +24,7 @@ using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Parameters;
 
+using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
@@ -64,6 +65,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                          UInt16                                               MaxAdminStatusScheduleSize     = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
                                                          UInt16                                               MaxStatusScheduleSize          = VirtualEVSE.DefaultMaxStatusScheduleSize,
 
+                                                         String?                                              PhysicalReference              = null,
+                                                         GeoCoordinate?                                       GeoLocation                    = null,
                                                          IEnumerable<URL>?                                    PhotoURLs                      = null,
                                                          IEnumerable<Brand>?                                  Brands                         = null,
                                                          IEnumerable<RootCAInfo>?                             MobilityRootCAs                = null,
@@ -124,6 +127,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    Name,
                    Description,
 
+                   PhysicalReference,
+                   GeoLocation,
                    PhotoURLs,
                    Brands,
                    MobilityRootCAs,
@@ -255,6 +260,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                     UInt16                                               MaxAdminStatusScheduleSize     = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
                                                                     UInt16                                               MaxStatusScheduleSize          = VirtualEVSE.DefaultMaxStatusScheduleSize,
 
+                                                                    String?                                              PhysicalReference              = null,
+                                                                    GeoCoordinate?                                       GeoLocation                    = null,
                                                                     IEnumerable<URL>?                                    PhotoURLs                      = null,
                                                                     IEnumerable<Brand>?                                  Brands                         = null,
                                                                     IEnumerable<RootCAInfo>?                             MobilityRootCAs                = null,
@@ -314,6 +321,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                    Name,
                                    Description,
 
+                                   PhysicalReference,
+                                   GeoLocation,
                                    PhotoURLs,
                                    Brands,
                                    MobilityRootCAs,
@@ -447,6 +456,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          UInt16                                               MaxAdminStatusScheduleSize             = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
                                                                          UInt16                                               MaxStatusScheduleSize                  = VirtualEVSE.DefaultMaxStatusScheduleSize,
 
+                                                                         String?                                              PhysicalReference                      = null,
+                                                                         GeoCoordinate?                                       GeoLocation                            = null,
                                                                          IEnumerable<URL>?                                    PhotoURLs                              = null,
                                                                          IEnumerable<Brand>?                                  Brands                                 = null,
                                                                          IEnumerable<RootCAInfo>?                             MobilityRootCAs                        = null,
@@ -513,6 +524,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    MaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize,
 
+                   PhysicalReference,
+                   GeoLocation,
                    PhotoURLs,
                    Brands,
                    MobilityRootCAs,
@@ -723,6 +736,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         [Optional, SlowData]
         public ReactiveSet<URL>                         PhotoURLs                   { get; }
+
+        /// <summary>
+        /// The geographical location of this EVSE, e.g. when this EVSE is part of a satellite system.
+        /// </summary>
+        public GeoCoordinate?                           GeoLocation                 { get; }
 
         /// <summary>
         /// An enumeration of all brands registered for this EVSE.

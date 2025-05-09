@@ -63,6 +63,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                   I18NString?                                          Name                           = null,
                                                   I18NString?                                          Description                    = null,
 
+                                                  String?                                              PhysicalReference              = null,
+                                                  GeoCoordinate?                                       GeoLocation                    = null,
                                                   IEnumerable<URL>?                                    PhotoURLs                      = null,
                                                   IEnumerable<Brand>?                                  Brands                         = null,
                                                   IEnumerable<RootCAInfo>?                             MobilityRootCAs                = null,
@@ -124,6 +126,8 @@ namespace cloud.charging.open.protocols.WWCP
                        Name,
                        Description,
 
+                       PhysicalReference,
+                       GeoLocation,
                        PhotoURLs,
                        Brands,
                        MobilityRootCAs,
@@ -202,6 +206,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                              I18NString?                                          Name                           = null,
                                                              I18NString?                                          Description                    = null,
 
+                                                             String?                                              PhysicalReference              = null,
+                                                             GeoCoordinate?                                       GeoLocation                    = null,
                                                              IEnumerable<URL>?                                    PhotoURLs                      = null,
                                                              IEnumerable<Brand>?                                  Brands                         = null,
                                                              IEnumerable<RootCAInfo>?                             MobilityRootCAs                = null,
@@ -262,6 +268,8 @@ namespace cloud.charging.open.protocols.WWCP
                        Name,
                        Description,
 
+                       PhysicalReference,
+                       GeoLocation,
                        PhotoURLs,
                        Brands,
                        MobilityRootCAs,
@@ -346,6 +354,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   UInt16?                                              MaxAdminStatusScheduleSize             = null,
                                                                   UInt16?                                              MaxStatusScheduleSize                  = null,
 
+                                                                  String?                                              PhysicalReference                      = null,
+                                                                  GeoCoordinate?                                       GeoLocation                            = null,
                                                                   IEnumerable<URL>?                                    PhotoURLs                              = null,
                                                                   IEnumerable<Brand>?                                  Brands                                 = null,
                                                                   IEnumerable<RootCAInfo>?                             MobilityRootCAs                        = null,
@@ -403,6 +413,8 @@ namespace cloud.charging.open.protocols.WWCP
                        Name,
                        Description,
 
+                       PhysicalReference,
+                       GeoLocation,
                        PhotoURLs,
                        Brands,
                        MobilityRootCAs,
@@ -483,6 +495,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                         I18NString?                                          Name                           = null,
                                                         I18NString?                                          Description                    = null,
 
+                                                        String?                                              PhysicalReference              = null,
+                                                        GeoCoordinate?                                       GeoLocation                    = null,
                                                         IEnumerable<URL>?                                    PhotoURLs                      = null,
                                                         IEnumerable<Brand>?                                  Brands                         = null,
                                                         IEnumerable<RootCAInfo>?                             MobilityRootCAs                = null,
@@ -544,6 +558,8 @@ namespace cloud.charging.open.protocols.WWCP
                        Name,
                        Description,
 
+                       PhysicalReference,
+                       GeoLocation,
                        PhotoURLs,
                        Brands,
                        MobilityRootCAs,

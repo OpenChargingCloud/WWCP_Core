@@ -103,7 +103,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IRemoteEVSE?                             RemoteEVSE                  { get; }
 
-
         #region PhysicalReference
 
         private String? physicalReference;
@@ -132,6 +131,11 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+        /// <summary>
+        /// The geographical location of this EVSE, e.g. when this EVSE is part of a satellite system.
+        /// </summary>
+        public GeoCoordinate?                           GeoLocation                 { get; }
 
         /// <summary>
         /// An optional enumeration of links to photos related to the EVSE.
@@ -872,6 +876,8 @@ namespace cloud.charging.open.protocols.WWCP
                     I18NString?                          Name                         = null,
                     I18NString?                          Description                  = null,
 
+                    String?                              PhysicalReference            = null,
+                    GeoCoordinate?                       GeoLocation                  = null,
                     IEnumerable<URL>?                    PhotoURLs                    = null,
                     IEnumerable<Brand>?                  Brands                       = null,
                     IEnumerable<RootCAInfo>?             MobilityRootCAs              = null,
@@ -936,9 +942,14 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.ChargingStation                    = ChargingStation;
 
+            this.physicalReference                  = PhysicalReference;
+            this.GeoLocation                        = GeoLocation;
+            this.PhysicalReference                  = PhysicalReference;
+            this.GeoLocation                        = GeoLocation;
+
             this.PhotoURLs                          = PhotoURLs is null
-                                                          ? new ReactiveSet<URL>()
-                                                          : new ReactiveSet<URL>(PhotoURLs);
+                                                          ? []
+                                                          : [.. PhotoURLs];
             this.PhotoURLs.OnSetChanged            += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("PhotoURLs",
@@ -948,8 +959,8 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
             this.Brands                             = Brands is null
-                                                          ? new ReactiveSet<Brand>()
-                                                          : new ReactiveSet<Brand>(Brands);
+                                                          ? []
+                                                          : [.. Brands];
             this.Brands.OnSetChanged               += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("DataLicenses",
@@ -974,8 +985,8 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
             this.DataLicenses                   = DataLicenses is null
-                                                      ? new ReactiveSet<DataLicense>()
-                                                      : new ReactiveSet<DataLicense>(DataLicenses);
+                                                      ? []
+                                                      : [.. DataLicenses];
             this.DataLicenses.OnSetChanged     += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -986,8 +997,8 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
             this.ChargingModes                      = ChargingModes is null
-                                                          ? new ReactiveSet<ChargingModes>()
-                                                          : new ReactiveSet<ChargingModes>(ChargingModes);
+                                                          ? []
+                                                          : [.. ChargingModes];
             this.ChargingModes.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -1017,8 +1028,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.averageVoltageRealTime             = AverageVoltageRealTime;
 
             this.AverageVoltagePrognoses            = AverageVoltagePrognoses is null
-                                                          ? new ReactiveSet<Timestamped<Volt>>()
-                                                          : new ReactiveSet<Timestamped<Volt>>(AverageVoltagePrognoses);
+                                                          ? []
+                                                          : [.. AverageVoltagePrognoses];
             this.AverageVoltagePrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -1033,8 +1044,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.maxCurrentRealTime                 = MaxCurrentRealTime;
 
             this.MaxCurrentPrognoses                = MaxCurrentPrognoses is null
-                                                          ? new ReactiveSet<Timestamped<Ampere>>()
-                                                          : new ReactiveSet<Timestamped<Ampere>>(MaxCurrentPrognoses);
+                                                          ? []
+                                                          : [.. MaxCurrentPrognoses];
             this.MaxCurrentPrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -1048,8 +1059,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.maxPowerRealTime                   = MaxPowerRealTime;
 
             this.MaxPowerPrognoses                  = MaxPowerPrognoses is null
-                                                          ? new ReactiveSet<Timestamped<Watt>>()
-                                                          : new ReactiveSet<Timestamped<Watt>>(MaxPowerPrognoses);
+                                                          ? []
+                                                          : [.. MaxPowerPrognoses];
             this.MaxPowerPrognoses.OnSetChanged    += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -1063,8 +1074,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.maxCapacityRealTime                = MaxCapacityRealTime;
 
             this.MaxCapacityPrognoses               = MaxCapacityPrognoses is null
-                                                          ? new ReactiveSet<Timestamped<WattHour>>()
-                                                          : new ReactiveSet<Timestamped<WattHour>>(MaxCapacityPrognoses);
+                                                          ? []
+                                                          : [.. MaxCapacityPrognoses];
             this.MaxCapacityPrognoses.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -1084,7 +1095,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.ChargingConnectors                 = ChargingConnectors is null
                                                           ? []
-                                                          : new ReactiveSet<IChargingConnector>(ChargingConnectors);
+                                                          : [.. ChargingConnectors];
             this.ChargingConnectors.OnSetChanged   += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
