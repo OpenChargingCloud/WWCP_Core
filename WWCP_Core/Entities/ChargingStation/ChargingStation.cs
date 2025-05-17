@@ -4195,7 +4195,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                               Select (evseId => evseId.ToString()))),
 
                                          () => new JProperty("EVSEs",
-                                                             new JArray(EVSEs.OrderBy(evse   => evse).
+                                                             new JArray(EVSEs.OrderBy(evse   => evse.Id).
                                                                               ToJSON (Embedded:                           true,
                                                                                       ExpandRoamingNetworkId:             InfoStatus.Hidden,
                                                                                       ExpandChargingStationOperatorId:    InfoStatus.Hidden,
@@ -4204,8 +4204,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                       ExpandBrandIds:                     ExpandBrandIds,
                                                                                       ExpandDataLicenses:                 ExpandDataLicenses,
                                                                                       CustomEVSESerializer:               CustomEVSESerializer,
-                                                                                      CustomChargingConnectorSerializer:  CustomChargingConnectorSerializer).
-                                                                              Where  (evse => evse != null))))
+                                                                                      CustomChargingConnectorSerializer:  CustomChargingConnectorSerializer))))
 
                                    : null,
 
