@@ -32,9 +32,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The e-mobility provider is not only the main contract party of the EV driver,
     /// the e-mobility provider also takes care of the EV driver master data,
-    /// the authentication and autorisation process before charging and for the
+    /// the authentication and authorisation process before charging and for the
     /// billing process after charging.
-    /// The e-mobility provider provides the EV drivere one or multiple methods for
+    /// The e-mobility provider provides the EV driver one or multiple methods for
     /// authentication (e.g. based on RFID cards, login/passwords, client certificates).
     /// The e-mobility provider takes care that none of the provided authentication
     /// methods can be misused by any entity in the ev charging process to track the

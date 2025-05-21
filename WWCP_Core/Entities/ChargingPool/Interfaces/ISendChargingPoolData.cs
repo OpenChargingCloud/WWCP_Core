@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.WWCP
         IncludeChargingPoolDelegate    IncludeChargingPools           { get; }
 
 
-        #region AddChargingPool           (ChargingPool,  TransmissionType = Enqueue, ...)
+        #region AddChargingPool            (ChargingPool,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given charging pool.
@@ -66,11 +66,12 @@ namespace cloud.charging.open.protocols.WWCP
                             DateTime?          Timestamp           = null,
                             EventTracking_Id?  EventTrackingId     = null,
                             TimeSpan?          RequestTimeout      = null,
+                            User_Id?           CurrentUserId       = null,
                             CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region AddChargingPoolIfNotExists(ChargingPool,  TransmissionType = Enqueue, ...)
+        #region AddChargingPoolIfNotExists (ChargingPool,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given charging pool, if it does not already exist.
@@ -90,11 +91,12 @@ namespace cloud.charging.open.protocols.WWCP
                                        DateTime?          Timestamp           = null,
                                        EventTracking_Id?  EventTrackingId     = null,
                                        TimeSpan?          RequestTimeout      = null,
+                                       User_Id?           CurrentUserId       = null,
                                        CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region AddOrUpdateChargingPool   (ChargingPool,  TransmissionType = Enqueue, ...)
+        #region AddOrUpdateChargingPool    (ChargingPool,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add or update the given charging pool.
@@ -114,11 +116,12 @@ namespace cloud.charging.open.protocols.WWCP
                                     DateTime?          Timestamp           = null,
                                     EventTracking_Id?  EventTrackingId     = null,
                                     TimeSpan?          RequestTimeout      = null,
+                                    User_Id?           CurrentUserId       = null,
                                     CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region UpdateChargingPool        (ChargingPool,  PropertyName = null, NewValue = null, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
+        #region UpdateChargingPool         (ChargingPool,  PropertyName = null, NewValue = null, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given charging pool.
@@ -146,11 +149,12 @@ namespace cloud.charging.open.protocols.WWCP
                                DateTime?          Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
+                               User_Id?           CurrentUserId       = null,
                                CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region DeleteChargingPool        (ChargingPool,  TransmissionType = Enqueue, ...)
+        #region DeleteChargingPool         (ChargingPool,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the given charging pool.
@@ -170,12 +174,13 @@ namespace cloud.charging.open.protocols.WWCP
                                DateTime?          Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
+                               User_Id?           CurrentUserId       = null,
                                CancellationToken  CancellationToken   = default);
 
         #endregion
 
 
-        #region AddChargingPools          (ChargingPools, TransmissionType = Enqueue, ...)
+        #region AddChargingPools           (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of charging pools.
@@ -195,11 +200,12 @@ namespace cloud.charging.open.protocols.WWCP
                              DateTime?                   Timestamp           = null,
                              EventTracking_Id?           EventTrackingId     = null,
                              TimeSpan?                   RequestTimeout      = null,
+                             User_Id?                    CurrentUserId       = null,
                              CancellationToken           CancellationToken   = default);
 
         #endregion
 
-        #region AddChargingPoolsIfNotExist(ChargingPools, TransmissionType = Enqueue, ...)
+        #region AddChargingPoolsIfNotExist (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of charging pools, if they do not already exist.
@@ -219,11 +225,12 @@ namespace cloud.charging.open.protocols.WWCP
                                        DateTime?                   Timestamp           = null,
                                        EventTracking_Id?           EventTrackingId     = null,
                                        TimeSpan?                   RequestTimeout      = null,
+                                       User_Id?                    CurrentUserId       = null,
                                        CancellationToken           CancellationToken   = default);
 
         #endregion
 
-        #region AddOrUpdateChargingPools  (ChargingPools, TransmissionType = Enqueue, ...)
+        #region AddOrUpdateChargingPools   (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add or update the given enumeration of charging pools.
@@ -243,11 +250,12 @@ namespace cloud.charging.open.protocols.WWCP
                                      DateTime?                   Timestamp           = null,
                                      EventTracking_Id?           EventTrackingId     = null,
                                      TimeSpan?                   RequestTimeout      = null,
+                                     User_Id?                    CurrentUserId       = null,
                                      CancellationToken           CancellationToken   = default);
 
         #endregion
 
-        #region UpdateChargingPools       (ChargingPools, TransmissionType = Enqueue, ...)
+        #region UpdateChargingPools        (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging pools.
@@ -267,11 +275,12 @@ namespace cloud.charging.open.protocols.WWCP
                                 DateTime?                   Timestamp           = null,
                                 EventTracking_Id?           EventTrackingId     = null,
                                 TimeSpan?                   RequestTimeout      = null,
+                                User_Id?                    CurrentUserId       = null,
                                 CancellationToken           CancellationToken   = default);
 
         #endregion
 
-        #region ReplaceChargingPools      (ChargingPools, TransmissionType = Enqueue, ...)
+        #region ReplaceChargingPools       (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Replace the given enumeration of charging pools.
@@ -292,11 +301,12 @@ namespace cloud.charging.open.protocols.WWCP
                                  DateTime?                   Timestamp           = null,
                                  EventTracking_Id?           EventTrackingId     = null,
                                  TimeSpan?                   RequestTimeout      = null,
+                                 User_Id?                    CurrentUserId       = null,
                                  CancellationToken           CancellationToken   = default);
 
         #endregion
 
-        #region DeleteChargingPools       (ChargingPools, TransmissionType = Enqueue, ...)
+        #region DeleteChargingPools        (ChargingPools, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the given enumeration of charging pools.
@@ -316,6 +326,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 DateTime?                   Timestamp           = null,
                                 EventTracking_Id?           EventTrackingId     = null,
                                 TimeSpan?                   RequestTimeout      = null,
+                                User_Id?                    CurrentUserId       = null,
                                 CancellationToken           CancellationToken   = default);
 
         #endregion

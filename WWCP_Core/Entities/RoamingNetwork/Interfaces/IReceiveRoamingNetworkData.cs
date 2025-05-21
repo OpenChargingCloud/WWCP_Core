@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetwork">A roaming network to update.</param>
         /// <param name="PropertyName">The name of the roaming network property to update.</param>
         /// <param name="NewValue">The new value of the roaming network property to update.</param>
-        /// <param name="OldValue">The optinal old value of the roaming network property to update.</param>
+        /// <param name="OldValue">The optional old value of the roaming network property to update.</param>
         /// <param name="DataSource">An optional data source or context for the data change.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>

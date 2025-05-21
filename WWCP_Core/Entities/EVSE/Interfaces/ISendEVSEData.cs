@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
         IncludeEVSEDelegate    IncludeEVSEs           { get; }
 
 
-        #region AddEVSE           (EVSE,  TransmissionType = Enqueue, ...)
+        #region AddEVSE            (EVSE,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given EVSE.
@@ -67,11 +67,12 @@ namespace cloud.charging.open.protocols.WWCP
                     DateTime?          Timestamp           = null,
                     EventTracking_Id?  EventTrackingId     = null,
                     TimeSpan?          RequestTimeout      = null,
+                    User_Id?           CurrentUserId       = null,
                     CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region AddEVSEIfNotExists(EVSE,  TransmissionType = Enqueue, ...)
+        #region AddEVSEIfNotExists (EVSE,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given EVSE, if it does not already exist.
@@ -91,11 +92,12 @@ namespace cloud.charging.open.protocols.WWCP
                                DateTime?          Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
+                               User_Id?           CurrentUserId       = null,
                                CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region AddOrUpdateEVSE   (EVSE,  TransmissionType = Enqueue, ...)
+        #region AddOrUpdateEVSE    (EVSE,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add or update the given EVSE.
@@ -115,11 +117,12 @@ namespace cloud.charging.open.protocols.WWCP
                             DateTime?          Timestamp           = null,
                             EventTracking_Id?  EventTrackingId     = null,
                             TimeSpan?          RequestTimeout      = null,
+                            User_Id?           CurrentUserId       = null,
                             CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region UpdateEVSE        (EVSE,  PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
+        #region UpdateEVSE         (EVSE,  PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given EVSE.
@@ -148,11 +151,12 @@ namespace cloud.charging.open.protocols.WWCP
                        DateTime?          Timestamp           = null,
                        EventTracking_Id?  EventTrackingId     = null,
                        TimeSpan?          RequestTimeout      = null,
+                       User_Id?           CurrentUserId       = null,
                        CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region DeleteEVSE        (EVSE,  TransmissionType = Enqueue, ...)
+        #region DeleteEVSE         (EVSE,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the given EVSE.
@@ -172,12 +176,13 @@ namespace cloud.charging.open.protocols.WWCP
                        DateTime?          Timestamp           = null,
                        EventTracking_Id?  EventTrackingId     = null,
                        TimeSpan?          RequestTimeout      = null,
+                       User_Id?           CurrentUserId       = null,
                        CancellationToken  CancellationToken   = default);
 
         #endregion
 
 
-        #region AddEVSEs          (EVSEs, TransmissionType = Enqueue, ...)
+        #region AddEVSEs           (EVSEs, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of EVSEs.
@@ -197,11 +202,12 @@ namespace cloud.charging.open.protocols.WWCP
                      DateTime?           Timestamp           = null,
                      EventTracking_Id?   EventTrackingId     = null,
                      TimeSpan?           RequestTimeout      = null,
+                     User_Id?            CurrentUserId       = null,
                      CancellationToken   CancellationToken   = default);
 
         #endregion
 
-        #region AddEVSEsIfNotExist(EVSEs, TransmissionType = Enqueue, ...)
+        #region AddEVSEsIfNotExist (EVSEs, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of EVSEs, if they do not already exist.
@@ -221,11 +227,12 @@ namespace cloud.charging.open.protocols.WWCP
                                DateTime?           Timestamp           = null,
                                EventTracking_Id?   EventTrackingId     = null,
                                TimeSpan?           RequestTimeout      = null,
+                               User_Id?            CurrentUserId       = null,
                                CancellationToken   CancellationToken   = default);
 
         #endregion
 
-        #region AddOrUpdateEVSEs  (EVSEs, TransmissionType = Enqueue, ...)
+        #region AddOrUpdateEVSEs   (EVSEs, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add or update the given enumeration of EVSEs.
@@ -245,11 +252,12 @@ namespace cloud.charging.open.protocols.WWCP
                              DateTime?           Timestamp           = null,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null,
+                             User_Id?            CurrentUserId       = null,
                              CancellationToken   CancellationToken   = default);
 
         #endregion
 
-        #region UpdateEVSEs       (EVSEs, TransmissionType = Enqueue, ...)
+        #region UpdateEVSEs        (EVSEs, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of EVSEs.
@@ -269,11 +277,12 @@ namespace cloud.charging.open.protocols.WWCP
                         DateTime?           Timestamp           = null,
                         EventTracking_Id?   EventTrackingId     = null,
                         TimeSpan?           RequestTimeout      = null,
+                        User_Id?            CurrentUserId       = null,
                         CancellationToken   CancellationToken   = default);
 
         #endregion
 
-        #region ReplaceEVSEs      (EVSEs, TransmissionType = Enqueue, ...)
+        #region ReplaceEVSEs       (EVSEs, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Replace the given enumeration of EVSEs.
@@ -294,11 +303,12 @@ namespace cloud.charging.open.protocols.WWCP
                          DateTime?           Timestamp           = null,
                          EventTracking_Id?   EventTrackingId     = null,
                          TimeSpan?           RequestTimeout      = null,
+                         User_Id?            CurrentUserId       = null,
                          CancellationToken   CancellationToken   = default);
 
         #endregion
 
-        #region DeleteEVSEs       (EVSEs, TransmissionType = Enqueue, ...)
+        #region DeleteEVSEs        (EVSEs, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the given enumeration of EVSEs.
@@ -318,6 +328,7 @@ namespace cloud.charging.open.protocols.WWCP
                         DateTime?           Timestamp           = null,
                         EventTracking_Id?   EventTrackingId     = null,
                         TimeSpan?           RequestTimeout      = null,
+                        User_Id?            CurrentUserId       = null,
                         CancellationToken   CancellationToken   = default);
 
         #endregion

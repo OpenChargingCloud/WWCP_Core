@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
         IncludeChargingStationDelegate    IncludeChargingStations      { get; }
 
 
-        #region AddChargingStation           (ChargingStation,  TransmissionType = Enqueue, ...)
+        #region AddChargingStation            (ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given charging station.
@@ -67,11 +67,12 @@ namespace cloud.charging.open.protocols.WWCP
                                DateTime?          Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
+                               User_Id?           CurrentUserId       = null,
                                CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region AddChargingStationIfNotExists(ChargingStation,  TransmissionType = Enqueue, ...)
+        #region AddChargingStationIfNotExists (ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given charging station, if it does not already exist.
@@ -91,11 +92,12 @@ namespace cloud.charging.open.protocols.WWCP
                                           DateTime?          Timestamp           = null,
                                           EventTracking_Id?  EventTrackingId     = null,
                                           TimeSpan?          RequestTimeout      = null,
+                                          User_Id?           CurrentUserId       = null,
                                           CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region AddOrUpdateChargingStation   (ChargingStation,  TransmissionType = Enqueue, ...)
+        #region AddOrUpdateChargingStation    (ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add or update the given charging station.
@@ -115,11 +117,12 @@ namespace cloud.charging.open.protocols.WWCP
                                        DateTime?          Timestamp           = null,
                                        EventTracking_Id?  EventTrackingId     = null,
                                        TimeSpan?          RequestTimeout      = null,
+                                       User_Id?           CurrentUserId       = null,
                                        CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region UpdateChargingStation        (ChargingStation,  PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
+        #region UpdateChargingStation         (ChargingStation,  PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given charging station.
@@ -147,11 +150,12 @@ namespace cloud.charging.open.protocols.WWCP
                                   DateTime?          Timestamp           = null,
                                   EventTracking_Id?  EventTrackingId     = null,
                                   TimeSpan?          RequestTimeout      = null,
+                                  User_Id?           CurrentUserId       = null,
                                   CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region DeleteChargingStation        (ChargingStation,  TransmissionType = Enqueue, ...)
+        #region DeleteChargingStation         (ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the given charging station.
@@ -171,12 +175,13 @@ namespace cloud.charging.open.protocols.WWCP
                                   DateTime?          Timestamp           = null,
                                   EventTracking_Id?  EventTrackingId     = null,
                                   TimeSpan?          RequestTimeout      = null,
+                                  User_Id?           CurrentUserId       = null,
                                   CancellationToken  CancellationToken   = default);
 
         #endregion
 
 
-        #region AddChargingStations          (ChargingStations, TransmissionType = Enqueue, ...)
+        #region AddChargingStations           (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of charging stations.
@@ -196,11 +201,12 @@ namespace cloud.charging.open.protocols.WWCP
                                 DateTime?                      Timestamp           = null,
                                 EventTracking_Id?              EventTrackingId     = null,
                                 TimeSpan?                      RequestTimeout      = null,
+                                User_Id?                       CurrentUserId       = null,
                                 CancellationToken              CancellationToken   = default);
 
         #endregion
 
-        #region AddChargingStationsIfNotExist(ChargingStations, TransmissionType = Enqueue, ...)
+        #region AddChargingStationsIfNotExist (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of charging stations, if they do not already exist.
@@ -220,11 +226,12 @@ namespace cloud.charging.open.protocols.WWCP
                                           DateTime?                      Timestamp           = null,
                                           EventTracking_Id?              EventTrackingId     = null,
                                           TimeSpan?                      RequestTimeout      = null,
+                                          User_Id?                       CurrentUserId       = null,
                                           CancellationToken              CancellationToken   = default);
 
         #endregion
 
-        #region AddOrUpdateChargingStations  (ChargingStations, TransmissionType = Enqueue, ...)
+        #region AddOrUpdateChargingStations   (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add or update the given enumeration of charging stations.
@@ -244,11 +251,12 @@ namespace cloud.charging.open.protocols.WWCP
                                         DateTime?                      Timestamp           = null,
                                         EventTracking_Id?              EventTrackingId     = null,
                                         TimeSpan?                      RequestTimeout      = null,
+                                        User_Id?                       CurrentUserId       = null,
                                         CancellationToken              CancellationToken   = default);
 
         #endregion
 
-        #region UpdateChargingStations       (ChargingStations, TransmissionType = Enqueue, ...)
+        #region UpdateChargingStations        (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging stations.
@@ -268,11 +276,12 @@ namespace cloud.charging.open.protocols.WWCP
                                    DateTime?                      Timestamp           = null,
                                    EventTracking_Id?              EventTrackingId     = null,
                                    TimeSpan?                      RequestTimeout      = null,
+                                   User_Id?                       CurrentUserId       = null,
                                    CancellationToken              CancellationToken   = default);
 
         #endregion
 
-        #region ReplaceChargingStations      (ChargingStations, TransmissionType = Enqueue, ...)
+        #region ReplaceChargingStations       (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Replace the given enumeration of charging stations.
@@ -293,11 +302,12 @@ namespace cloud.charging.open.protocols.WWCP
                                     DateTime?                      Timestamp           = null,
                                     EventTracking_Id?              EventTrackingId     = null,
                                     TimeSpan?                      RequestTimeout      = null,
+                                    User_Id?                       CurrentUserId       = null,
                                     CancellationToken              CancellationToken   = default);
 
         #endregion
 
-        #region DeleteChargingStations       (ChargingStations, TransmissionType = Enqueue, ...)
+        #region DeleteChargingStations        (ChargingStations, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the given enumeration of charging stations.
@@ -317,6 +327,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    DateTime?                      Timestamp           = null,
                                    EventTracking_Id?              EventTrackingId     = null,
                                    TimeSpan?                      RequestTimeout      = null,
+                                   User_Id?                       CurrentUserId       = null,
                                    CancellationToken              CancellationToken   = default);
 
         #endregion

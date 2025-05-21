@@ -1950,6 +1950,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                    DateTime?                           Timestamp,
                                                    EventTracking_Id?                   EventTrackingId,
                                                    TimeSpan?                           RequestTimeout,
+                                                   User_Id?                            CurrentUserId,
                                                    CancellationToken                   CancellationToken)
 
         {
@@ -2032,6 +2033,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                               DateTime?                                      Timestamp,
                                                               EventTracking_Id?                              EventTrackingId,
                                                               TimeSpan?                                      RequestTimeout,
+                                                              User_Id?                                       CurrentUserId,
                                                               CancellationToken                              CancellationToken)
 
         {
@@ -2114,6 +2116,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                            DateTime?                                   Timestamp,
                                                            EventTracking_Id?                           EventTrackingId,
                                                            TimeSpan?                                   RequestTimeout,
+                                                           User_Id?                                    CurrentUserId,
                                                            CancellationToken                           CancellationToken)
 
         {
@@ -2196,6 +2199,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                       DateTime?                                              Timestamp,
                                                                       EventTracking_Id?                                      EventTrackingId,
                                                                       TimeSpan?                                              RequestTimeout,
+                                                                      User_Id?                                               CurrentUserId,
                                                                       CancellationToken                                      CancellationToken)
 
         {
@@ -2278,6 +2282,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                              DateTime?                                     Timestamp,
                                                              EventTracking_Id?                             EventTrackingId,
                                                              TimeSpan?                                     RequestTimeout,
+                                                             User_Id?                                      CurrentUserId,
                                                              CancellationToken                             CancellationToken)
 
         {
@@ -2363,6 +2368,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          DateTime?                      Timestamp,
                                          EventTracking_Id?              EventTrackingId,
                                          TimeSpan?                      RequestTimeout,
+                                         User_Id?                       CurrentUserId,
                                          CancellationToken              CancellationToken)
 
         {
@@ -2443,6 +2449,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                     DateTime?                                 Timestamp,
                                                     EventTracking_Id?                         EventTrackingId,
                                                     TimeSpan?                                 RequestTimeout,
+                                                    User_Id?                                  CurrentUserId,
                                                     CancellationToken                         CancellationToken)
 
         {
@@ -2523,6 +2530,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                  DateTime?                              Timestamp,
                                                  EventTracking_Id?                      EventTrackingId,
                                                  TimeSpan?                              RequestTimeout,
+                                                 User_Id?                               CurrentUserId,
                                                  CancellationToken                      CancellationToken)
 
         {
@@ -2603,6 +2611,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                             DateTime?                                         Timestamp,
                                                             EventTracking_Id?                                 EventTrackingId,
                                                             TimeSpan?                                         RequestTimeout,
+                                                            User_Id?                                          CurrentUserId,
                                                             CancellationToken                                 CancellationToken)
 
         {
@@ -2683,6 +2692,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                    DateTime?                                Timestamp,
                                                    EventTracking_Id?                        EventTrackingId,
                                                    TimeSpan?                                RequestTimeout,
+                                                   User_Id?                                 CurrentUserId,
                                                    CancellationToken                        CancellationToken)
 
         {

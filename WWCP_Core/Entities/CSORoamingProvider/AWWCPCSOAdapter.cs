@@ -476,6 +476,7 @@ namespace cloud.charging.open.protocols.WWCP
                               DateTime?          Timestamp           = null,
                               EventTracking_Id?  EventTrackingId     = null,
                               TimeSpan?          RequestTimeout      = null,
+                              User_Id?           CurrentUserId       = null,
                               CancellationToken  CancellationToken   = default)
 
 
@@ -510,6 +511,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          DateTime?          Timestamp           = null,
                                          EventTracking_Id?  EventTrackingId     = null,
                                          TimeSpan?          RequestTimeout      = null,
+                                         User_Id?           CurrentUserId       = null,
                                          CancellationToken  CancellationToken   = default)
 
 
@@ -544,6 +546,7 @@ namespace cloud.charging.open.protocols.WWCP
                                       DateTime?          Timestamp           = null,
                                       EventTracking_Id?  EventTrackingId     = null,
                                       TimeSpan?          RequestTimeout      = null,
+                                      User_Id?           CurrentUserId       = null,
                                       CancellationToken  CancellationToken   = default)
 
 
@@ -586,6 +589,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  DateTime?          Timestamp           = null,
                                  EventTracking_Id?  EventTrackingId     = null,
                                  TimeSpan?          RequestTimeout      = null,
+                                 User_Id?           CurrentUserId       = null,
                                  CancellationToken  CancellationToken   = default)
 
 
@@ -620,6 +624,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  DateTime?          Timestamp           = null,
                                  EventTracking_Id?  EventTrackingId     = null,
                                  TimeSpan?          RequestTimeout      = null,
+                                 User_Id?           CurrentUserId       = null,
                                  CancellationToken  CancellationToken   = default)
 
 
@@ -655,6 +660,7 @@ namespace cloud.charging.open.protocols.WWCP
                                DateTime?                     Timestamp           = null,
                                EventTracking_Id?             EventTrackingId     = null,
                                TimeSpan?                     RequestTimeout      = null,
+                               User_Id?                      CurrentUserId       = null,
                                CancellationToken             CancellationToken   = default)
 
 
@@ -689,6 +695,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          DateTime?                     Timestamp           = null,
                                          EventTracking_Id?             EventTrackingId     = null,
                                          TimeSpan?                     RequestTimeout      = null,
+                                         User_Id?                      CurrentUserId       = null,
                                          CancellationToken             CancellationToken   = default)
 
 
@@ -723,6 +730,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        DateTime?                     Timestamp           = null,
                                        EventTracking_Id?             EventTrackingId     = null,
                                        TimeSpan?                     RequestTimeout      = null,
+                                       User_Id?                      CurrentUserId       = null,
                                        CancellationToken             CancellationToken   = default)
 
 
@@ -757,6 +765,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   DateTime?                     Timestamp           = null,
                                   EventTracking_Id?             EventTrackingId     = null,
                                   TimeSpan?                     RequestTimeout      = null,
+                                  User_Id?                      CurrentUserId       = null,
                                   CancellationToken             CancellationToken   = default)
 
 
@@ -791,6 +800,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   DateTime?                     Timestamp           = null,
                                   EventTracking_Id?             EventTrackingId     = null,
                                   TimeSpan?                     RequestTimeout      = null,
+                                  User_Id?                      CurrentUserId       = null,
                                   CancellationToken             CancellationToken   = default)
 
 
@@ -826,6 +836,7 @@ namespace cloud.charging.open.protocols.WWCP
                                             DateTime?                                     Timestamp           = null,
                                             EventTracking_Id?                             EventTrackingId     = null,
                                             TimeSpan?                                     RequestTimeout      = null,
+                                            User_Id?                                      CurrentUserId       = null,
                                             CancellationToken                             CancellationToken   = default)
 
 
@@ -858,6 +869,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        DateTime?                                Timestamp           = null,
                                        EventTracking_Id?                        EventTrackingId     = null,
                                        TimeSpan?                                RequestTimeout      = null,
+                                       User_Id?                                 CurrentUserId       = null,
                                        CancellationToken                        CancellationToken   = default)
 
 
@@ -910,6 +922,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        DateTime?                 Timestamp           = null,
                                        EventTracking_Id?         EventTrackingId     = null,
                                        TimeSpan?                 RequestTimeout      = null,
+                                       User_Id?                  CurrentUserId       = null,
                                        CancellationToken         CancellationToken   = default)
 
 
@@ -918,7 +931,7 @@ namespace cloud.charging.open.protocols.WWCP
                            ChargingStationOperator:  ChargingStationOperator,
                            EventTrackingId:          EventTrackingId,
                            SenderId:                 Id,
-                           Sender:              this
+                           Sender:                   this
                        )
                    );
 
@@ -944,6 +957,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                   DateTime?                 Timestamp           = null,
                                                   EventTracking_Id?         EventTrackingId     = null,
                                                   TimeSpan?                 RequestTimeout      = null,
+                                                  User_Id?                  CurrentUserId       = null,
                                                   CancellationToken         CancellationToken   = default)
 
 
@@ -952,7 +966,7 @@ namespace cloud.charging.open.protocols.WWCP
                            ChargingStationOperator:  ChargingStationOperator,
                            EventTrackingId:          EventTrackingId,
                            SenderId:                 Id,
-                           Sender:              this
+                           Sender:                   this
                        )
                    );
 
@@ -978,6 +992,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                DateTime?                 Timestamp           = null,
                                                EventTracking_Id?         EventTrackingId     = null,
                                                TimeSpan?                 RequestTimeout      = null,
+                                               User_Id?                  CurrentUserId       = null,
                                                CancellationToken         CancellationToken   = default)
 
 
@@ -986,7 +1001,7 @@ namespace cloud.charging.open.protocols.WWCP
                            ChargingStationOperator:  ChargingStationOperator,
                            EventTrackingId:          EventTrackingId,
                            SenderId:                 Id,
-                           Sender:              this
+                           Sender:                   this
                        )
                    );
 
@@ -1020,6 +1035,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           DateTime?                 Timestamp           = null,
                                           EventTracking_Id?         EventTrackingId     = null,
                                           TimeSpan?                 RequestTimeout      = null,
+                                          User_Id?                  CurrentUserId       = null,
                                           CancellationToken         CancellationToken   = default)
 
 
@@ -1028,7 +1044,7 @@ namespace cloud.charging.open.protocols.WWCP
                            ChargingStationOperator:  ChargingStationOperator,
                            EventTrackingId:          EventTrackingId,
                            SenderId:                 Id,
-                           Sender:              this
+                           Sender:                   this
                        )
                    );
 
@@ -1054,6 +1070,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           DateTime?                 Timestamp           = null,
                                           EventTracking_Id?         EventTrackingId     = null,
                                           TimeSpan?                 RequestTimeout      = null,
+                                          User_Id?                  CurrentUserId       = null,
                                           CancellationToken         CancellationToken   = default)
 
 
@@ -1062,7 +1079,7 @@ namespace cloud.charging.open.protocols.WWCP
                            ChargingStationOperator:  ChargingStationOperator,
                            EventTrackingId:          EventTrackingId,
                            SenderId:                 Id,
-                           Sender:              this
+                           Sender:                   this
                        )
                    );
 
@@ -1089,6 +1106,7 @@ namespace cloud.charging.open.protocols.WWCP
                                         DateTime?                              Timestamp           = null,
                                         EventTracking_Id?                      EventTrackingId     = null,
                                         TimeSpan?                              RequestTimeout      = null,
+                                        User_Id?                               CurrentUserId       = null,
                                         CancellationToken                      CancellationToken   = default)
 
 
@@ -1096,7 +1114,7 @@ namespace cloud.charging.open.protocols.WWCP
                        AddChargingStationOperatorsResult.NoOperation(
                            RejectedChargingStationOperators:  ChargingStationOperators,
                            SenderId:                          Id,
-                           Sender:                       this,
+                           Sender:                            this,
                            EventTrackingId:                   EventTrackingId
                        )
                    );
@@ -1123,6 +1141,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                   DateTime?                              Timestamp           = null,
                                                   EventTracking_Id?                      EventTrackingId     = null,
                                                   TimeSpan?                              RequestTimeout      = null,
+                                                  User_Id?                               CurrentUserId       = null,
                                                   CancellationToken                      CancellationToken   = default)
 
 
@@ -1130,7 +1149,7 @@ namespace cloud.charging.open.protocols.WWCP
                        AddChargingStationOperatorsResult.NoOperation(
                            RejectedChargingStationOperators:  ChargingStationOperators,
                            SenderId:                          Id,
-                           Sender:                       this,
+                           Sender:                            this,
                            EventTrackingId:                   EventTrackingId
                        )
                    );
@@ -1157,6 +1176,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                 DateTime?                              Timestamp           = null,
                                                 EventTracking_Id?                      EventTrackingId     = null,
                                                 TimeSpan?                              RequestTimeout      = null,
+                                                User_Id?                               CurrentUserId       = null,
                                                 CancellationToken                      CancellationToken   = default)
 
 
@@ -1164,7 +1184,7 @@ namespace cloud.charging.open.protocols.WWCP
                        AddOrUpdateChargingStationOperatorsResult.NoOperation(
                            RejectedChargingStationOperators:  ChargingStationOperators,
                            SenderId:                          Id,
-                           Sender:                       this,
+                           Sender:                            this,
                            EventTrackingId:                   EventTrackingId
                        )
                    );
@@ -1191,6 +1211,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            DateTime?                              Timestamp           = null,
                                            EventTracking_Id?                      EventTrackingId     = null,
                                            TimeSpan?                              RequestTimeout      = null,
+                                           User_Id?                               CurrentUserId       = null,
                                            CancellationToken                      CancellationToken   = default)
 
 
@@ -1198,7 +1219,7 @@ namespace cloud.charging.open.protocols.WWCP
                        UpdateChargingStationOperatorsResult.NoOperation(
                            RejectedChargingStationOperators:  ChargingStationOperators,
                            SenderId:                          Id,
-                           Sender:                       this,
+                           Sender:                            this,
                            EventTrackingId:                   EventTrackingId
                        )
                    );
@@ -1225,6 +1246,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            DateTime?                              Timestamp           = null,
                                            EventTracking_Id?                      EventTrackingId     = null,
                                            TimeSpan?                              RequestTimeout      = null,
+                                           User_Id?                               CurrentUserId       = null,
                                            CancellationToken                      CancellationToken   = default)
 
 
@@ -1232,7 +1254,7 @@ namespace cloud.charging.open.protocols.WWCP
                        DeleteChargingStationOperatorsResult.NoOperation(
                            RejectedChargingStationOperators:  ChargingStationOperators,
                            SenderId:                          Id,
-                           Sender:                       this,
+                           Sender:                            this,
                            EventTrackingId:                   EventTrackingId
                        )
                    );
@@ -1260,6 +1282,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                      DateTime?                                              Timestamp           = null,
                                                      EventTracking_Id?                                      EventTrackingId     = null,
                                                      TimeSpan?                                              RequestTimeout      = null,
+                                                     User_Id?                                               CurrentUserId       = null,
                                                      CancellationToken                                      CancellationToken   = default)
 
 
@@ -1292,6 +1315,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                 DateTime?                                         Timestamp           = null,
                                                 EventTracking_Id?                                 EventTrackingId     = null,
                                                 TimeSpan?                                         RequestTimeout      = null,
+                                                User_Id?                                          CurrentUserId       = null,
                                                 CancellationToken                                 CancellationToken   = default)
 
 
@@ -1344,6 +1368,7 @@ namespace cloud.charging.open.protocols.WWCP
                             DateTime?          Timestamp           = null,
                             EventTracking_Id?  EventTrackingId     = null,
                             TimeSpan?          RequestTimeout      = null,
+                            User_Id?           CurrentUserId       = null,
                             CancellationToken  CancellationToken   = default)
 
 
@@ -1378,6 +1403,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        DateTime?          Timestamp           = null,
                                        EventTracking_Id?  EventTrackingId     = null,
                                        TimeSpan?          RequestTimeout      = null,
+                                       User_Id?           CurrentUserId       = null,
                                        CancellationToken  CancellationToken   = default)
 
 
@@ -1412,6 +1438,7 @@ namespace cloud.charging.open.protocols.WWCP
                                     DateTime?          Timestamp           = null,
                                     EventTracking_Id?  EventTrackingId     = null,
                                     TimeSpan?          RequestTimeout      = null,
+                                    User_Id?           CurrentUserId       = null,
                                     CancellationToken  CancellationToken   = default)
 
 
@@ -1454,6 +1481,7 @@ namespace cloud.charging.open.protocols.WWCP
                                DateTime?          Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
+                               User_Id?           CurrentUserId       = null,
                                CancellationToken  CancellationToken   = default)
 
 
@@ -1488,6 +1516,7 @@ namespace cloud.charging.open.protocols.WWCP
                                DateTime?          Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
+                               User_Id?           CurrentUserId       = null,
                                CancellationToken  CancellationToken   = default)
 
 
@@ -1523,6 +1552,7 @@ namespace cloud.charging.open.protocols.WWCP
                              DateTime?                   Timestamp           = null,
                              EventTracking_Id?           EventTrackingId     = null,
                              TimeSpan?                   RequestTimeout      = null,
+                             User_Id?                    CurrentUserId       = null,
                              CancellationToken           CancellationToken   = default)
 
 
@@ -1557,6 +1587,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        DateTime?                   Timestamp           = null,
                                        EventTracking_Id?           EventTrackingId     = null,
                                        TimeSpan?                   RequestTimeout      = null,
+                                       User_Id?                    CurrentUserId       = null,
                                        CancellationToken           CancellationToken   = default)
 
 
@@ -1591,6 +1622,7 @@ namespace cloud.charging.open.protocols.WWCP
                                      DateTime?                   Timestamp           = null,
                                      EventTracking_Id?           EventTrackingId     = null,
                                      TimeSpan?                   RequestTimeout      = null,
+                                     User_Id?                    CurrentUserId       = null,
                                      CancellationToken           CancellationToken   = default)
 
 
@@ -1625,6 +1657,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 DateTime?                   Timestamp           = null,
                                 EventTracking_Id?           EventTrackingId     = null,
                                 TimeSpan?                   RequestTimeout      = null,
+                                User_Id?                    CurrentUserId       = null,
                                 CancellationToken           CancellationToken   = default)
 
 
@@ -1660,6 +1693,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  DateTime?                   Timestamp           = null,
                                  EventTracking_Id?           EventTrackingId     = null,
                                  TimeSpan?                   RequestTimeout      = null,
+                                 User_Id?                    CurrentUserId       = null,
                                  CancellationToken           CancellationToken   = default)
 
 
@@ -1694,6 +1728,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 DateTime?                   Timestamp           = null,
                                 EventTracking_Id?           EventTrackingId     = null,
                                 TimeSpan?                   RequestTimeout      = null,
+                                User_Id?                    CurrentUserId       = null,
                                 CancellationToken           CancellationToken   = default)
 
 
@@ -1729,6 +1764,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           DateTime?                                   Timestamp           = null,
                                           EventTracking_Id?                           EventTrackingId     = null,
                                           TimeSpan?                                   RequestTimeout      = null,
+                                          User_Id?                                    CurrentUserId       = null,
                                           CancellationToken                           CancellationToken   = default)
 
 
@@ -1761,6 +1797,7 @@ namespace cloud.charging.open.protocols.WWCP
                                      DateTime?                              Timestamp           = null,
                                      EventTracking_Id?                      EventTrackingId     = null,
                                      TimeSpan?                              RequestTimeout      = null,
+                                     User_Id?                               CurrentUserId       = null,
                                      CancellationToken                      CancellationToken   = default)
 
 
@@ -1793,6 +1830,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            DateTime?                                    Timestamp           = null,
                                            EventTracking_Id?                            EventTrackingId     = null,
                                            TimeSpan?                                    RequestTimeout      = null,
+                                           User_Id?                                     CurrentUserId       = null,
                                            CancellationToken                            CancellationToken   = default)
 
 
@@ -1845,6 +1883,7 @@ namespace cloud.charging.open.protocols.WWCP
                                DateTime?          Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
+                               User_Id?           CurrentUserId       = null,
                                CancellationToken  CancellationToken   = default)
 
 
@@ -1858,7 +1897,7 @@ namespace cloud.charging.open.protocols.WWCP
                    );
 
         #endregion
-         
+
         #region AddChargingStationIfNotExists (ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
@@ -1879,6 +1918,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           DateTime?          Timestamp           = null,
                                           EventTracking_Id?  EventTrackingId     = null,
                                           TimeSpan?          RequestTimeout      = null,
+                                          User_Id?           CurrentUserId       = null,
                                           CancellationToken  CancellationToken   = default)
 
 
@@ -1913,6 +1953,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        DateTime?          Timestamp           = null,
                                        EventTracking_Id?  EventTrackingId     = null,
                                        TimeSpan?          RequestTimeout      = null,
+                                       User_Id?           CurrentUserId       = null,
                                        CancellationToken  CancellationToken   = default)
 
 
@@ -1955,6 +1996,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   DateTime?          Timestamp           = null,
                                   EventTracking_Id?  EventTrackingId     = null,
                                   TimeSpan?          RequestTimeout      = null,
+                                  User_Id?           CurrentUserId       = null,
                                   CancellationToken  CancellationToken   = default)
 
 
@@ -1989,6 +2031,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   DateTime?          Timestamp           = null,
                                   EventTracking_Id?  EventTrackingId     = null,
                                   TimeSpan?          RequestTimeout      = null,
+                                  User_Id?           CurrentUserId       = null,
                                   CancellationToken  CancellationToken   = default)
 
 
@@ -2024,6 +2067,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 DateTime?                      Timestamp           = null,
                                 EventTracking_Id?              EventTrackingId     = null,
                                 TimeSpan?                      RequestTimeout      = null,
+                                User_Id?                       CurrentUserId       = null,
                                 CancellationToken              CancellationToken   = default)
 
 
@@ -2058,6 +2102,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           DateTime?                      Timestamp           = null,
                                           EventTracking_Id?              EventTrackingId     = null,
                                           TimeSpan?                      RequestTimeout      = null,
+                                          User_Id?                       CurrentUserId       = null,
                                           CancellationToken              CancellationToken   = default)
 
 
@@ -2092,6 +2137,7 @@ namespace cloud.charging.open.protocols.WWCP
                                         DateTime?                      Timestamp           = null,
                                         EventTracking_Id?              EventTrackingId     = null,
                                         TimeSpan?                      RequestTimeout      = null,
+                                        User_Id?                       CurrentUserId       = null,
                                         CancellationToken              CancellationToken   = default)
 
 
@@ -2126,6 +2172,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    DateTime?                      Timestamp           = null,
                                    EventTracking_Id?              EventTrackingId     = null,
                                    TimeSpan?                      RequestTimeout      = null,
+                                   User_Id?                       CurrentUserId       = null,
                                    CancellationToken              CancellationToken   = default)
 
 
@@ -2161,6 +2208,7 @@ namespace cloud.charging.open.protocols.WWCP
                                     DateTime?                      Timestamp           = null,
                                     EventTracking_Id?              EventTrackingId     = null,
                                     TimeSpan?                      RequestTimeout      = null,
+                                    User_Id?                       CurrentUserId       = null,
                                     CancellationToken              CancellationToken   = default)
 
 
@@ -2195,6 +2243,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    DateTime?                      Timestamp           = null,
                                    EventTracking_Id?              EventTrackingId     = null,
                                    TimeSpan?                      RequestTimeout      = null,
+                                   User_Id?                       CurrentUserId       = null,
                                    CancellationToken              CancellationToken   = default)
 
 
@@ -2230,6 +2279,7 @@ namespace cloud.charging.open.protocols.WWCP
                                              DateTime?                                      Timestamp           = null,
                                              EventTracking_Id?                              EventTrackingId     = null,
                                              TimeSpan?                                      RequestTimeout      = null,
+                                             User_Id?                                       CurrentUserId       = null,
                                              CancellationToken                              CancellationToken   = default)
 
 
@@ -2262,6 +2312,7 @@ namespace cloud.charging.open.protocols.WWCP
                                         DateTime?                                 Timestamp           = null,
                                         EventTracking_Id?                         EventTrackingId     = null,
                                         TimeSpan?                                 RequestTimeout      = null,
+                                        User_Id?                                  CurrentUserId       = null,
                                         CancellationToken                         CancellationToken   = default)
 
 
@@ -2294,6 +2345,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               DateTime?                                       Timestamp           = null,
                                               EventTracking_Id?                               EventTrackingId     = null,
                                               TimeSpan?                                       RequestTimeout      = null,
+                                              User_Id?                                        CurrentUserId       = null,
                                               CancellationToken                               CancellationToken   = default)
 
 
@@ -2346,6 +2398,7 @@ namespace cloud.charging.open.protocols.WWCP
                     DateTime?          Timestamp           = null,
                     EventTracking_Id?  EventTrackingId     = null,
                     TimeSpan?          RequestTimeout      = null,
+                    User_Id?           CurrentUserId       = null,
                     CancellationToken  CancellationToken   = default)
 
 
@@ -2380,6 +2433,7 @@ namespace cloud.charging.open.protocols.WWCP
                                DateTime?          Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
+                               User_Id?           CurrentUserId       = null,
                                CancellationToken  CancellationToken   = default)
 
 
@@ -2414,6 +2468,7 @@ namespace cloud.charging.open.protocols.WWCP
                             DateTime?          Timestamp           = null,
                             EventTracking_Id?  EventTrackingId     = null,
                             TimeSpan?          RequestTimeout      = null,
+                            User_Id?           CurrentUserId       = null,
                             CancellationToken  CancellationToken   = default)
 
 
@@ -2456,6 +2511,7 @@ namespace cloud.charging.open.protocols.WWCP
                        DateTime?          Timestamp           = null,
                        EventTracking_Id?  EventTrackingId     = null,
                        TimeSpan?          RequestTimeout      = null,
+                       User_Id?           CurrentUserId       = null,
                        CancellationToken  CancellationToken   = default)
 
 
@@ -2490,6 +2546,7 @@ namespace cloud.charging.open.protocols.WWCP
                        DateTime?          Timestamp           = null,
                        EventTracking_Id?  EventTrackingId     = null,
                        TimeSpan?          RequestTimeout      = null,
+                       User_Id?           CurrentUserId       = null,
                        CancellationToken  CancellationToken   = default)
 
 
@@ -2525,6 +2582,7 @@ namespace cloud.charging.open.protocols.WWCP
                      DateTime?           Timestamp           = null,
                      EventTracking_Id?   EventTrackingId     = null,
                      TimeSpan?           RequestTimeout      = null,
+                     User_Id?            CurrentUserId       = null,
                      CancellationToken   CancellationToken   = default)
 
 
@@ -2559,6 +2617,7 @@ namespace cloud.charging.open.protocols.WWCP
                                DateTime?           Timestamp           = null,
                                EventTracking_Id?   EventTrackingId     = null,
                                TimeSpan?           RequestTimeout      = null,
+                               User_Id?            CurrentUserId       = null,
                                CancellationToken   CancellationToken   = default)
 
 
@@ -2593,6 +2652,7 @@ namespace cloud.charging.open.protocols.WWCP
                              DateTime?           Timestamp           = null,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null,
+                             User_Id?            CurrentUserId       = null,
                              CancellationToken   CancellationToken   = default)
 
 
@@ -2627,6 +2687,7 @@ namespace cloud.charging.open.protocols.WWCP
                         DateTime?           Timestamp           = null,
                         EventTracking_Id?   EventTrackingId     = null,
                         TimeSpan?           RequestTimeout      = null,
+                        User_Id?            CurrentUserId       = null,
                         CancellationToken   CancellationToken   = default)
 
 
@@ -2662,6 +2723,7 @@ namespace cloud.charging.open.protocols.WWCP
                          DateTime?           Timestamp           = null,
                          EventTracking_Id?   EventTrackingId     = null,
                          TimeSpan?           RequestTimeout      = null,
+                         User_Id?            CurrentUserId       = null,
                          CancellationToken   CancellationToken   = default)
 
 
@@ -2696,6 +2758,7 @@ namespace cloud.charging.open.protocols.WWCP
                         DateTime?           Timestamp           = null,
                         EventTracking_Id?   EventTrackingId     = null,
                         TimeSpan?           RequestTimeout      = null,
+                        User_Id?            CurrentUserId       = null,
                         CancellationToken   CancellationToken   = default)
 
 
@@ -2731,6 +2794,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   DateTime?                           Timestamp           = null,
                                   EventTracking_Id?                   EventTrackingId     = null,
                                   TimeSpan?                           RequestTimeout      = null,
+                                  User_Id?                            CurrentUserId       = null,
                                   CancellationToken                   CancellationToken   = default)
 
 
@@ -2763,6 +2827,7 @@ namespace cloud.charging.open.protocols.WWCP
                              DateTime?                      Timestamp           = null,
                              EventTracking_Id?              EventTrackingId     = null,
                              TimeSpan?                      RequestTimeout      = null,
+                             User_Id?                       CurrentUserId       = null,
                              CancellationToken              CancellationToken   = default)
 
 
@@ -2795,6 +2860,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    DateTime?                            Timestamp           = null,
                                    EventTracking_Id?                    EventTrackingId     = null,
                                    TimeSpan?                            RequestTimeout      = null,
+                                   User_Id?                             CurrentUserId       = null,
                                    CancellationToken                    CancellationToken   = default)
 
 

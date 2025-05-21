@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region UpdateRoamingNetworkAdminStatus         (RoamingNetworkAdminStatusUpdates,          TransmissionType = Enqueue, ...)
+        #region UpdateRoamingNetworkAdminStatus          (RoamingNetworkAdminStatusUpdates,          TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of roaming network admin status updates.
@@ -68,11 +68,12 @@ namespace cloud.charging.open.protocols.WWCP
                                             DateTime?                                     Timestamp           = null,
                                             EventTracking_Id?                             EventTrackingId     = null,
                                             TimeSpan?                                     RequestTimeout      = null,
+                                            User_Id?                                      CurrentUserId       = null,
                                             CancellationToken                             CancellationToken   = default);
 
         #endregion
 
-        #region UpdateChargingStationOperatorAdminStatus(ChargingStationOperatorAdminStatusUpdates, TransmissionType = Enqueue, ...)
+        #region UpdateChargingStationOperatorAdminStatus (ChargingStationOperatorAdminStatusUpdates, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station operator admin status updates.
@@ -92,11 +93,12 @@ namespace cloud.charging.open.protocols.WWCP
                                                      DateTime?                                              Timestamp           = null,
                                                      EventTracking_Id?                                      EventTrackingId     = null,
                                                      TimeSpan?                                              RequestTimeout      = null,
+                                                     User_Id?                                               CurrentUserId       = null,
                                                      CancellationToken                                      CancellationToken   = default);
 
         #endregion
 
-        #region UpdateChargingPoolAdminStatus           (ChargingPoolAdminStatusUpdates,            TransmissionType = Enqueue, ...)
+        #region UpdateChargingPoolAdminStatus            (ChargingPoolAdminStatusUpdates,            TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging pool admin status updates.
@@ -116,11 +118,12 @@ namespace cloud.charging.open.protocols.WWCP
                                           DateTime?                                   Timestamp           = null,
                                           EventTracking_Id?                           EventTrackingId     = null,
                                           TimeSpan?                                   RequestTimeout      = null,
+                                          User_Id?                                    CurrentUserId       = null,
                                           CancellationToken                           CancellationToken   = default);
 
         #endregion
 
-        #region UpdateChargingStationAdminStatus        (ChargingStationAdminStatusUpdates,         TransmissionType = Enqueue, ...)
+        #region UpdateChargingStationAdminStatus         (ChargingStationAdminStatusUpdates,         TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station admin status updates.
@@ -140,11 +143,12 @@ namespace cloud.charging.open.protocols.WWCP
                                              DateTime?                                      Timestamp           = null,
                                              EventTracking_Id?                              EventTrackingId     = null,
                                              TimeSpan?                                      RequestTimeout      = null,
+                                             User_Id?                                       CurrentUserId       = null,
                                              CancellationToken                              CancellationToken   = default);
 
         #endregion
 
-        #region UpdateEVSEAdminStatus                   (EVSEAdminStatusUpdates,                    TransmissionType = Enqueue, ...)
+        #region UpdateEVSEAdminStatus                    (EVSEAdminStatusUpdates,                    TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of EVSE admin status updates.
@@ -164,6 +168,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   DateTime?                           Timestamp           = null,
                                   EventTracking_Id?                   EventTrackingId     = null,
                                   TimeSpan?                           RequestTimeout      = null,
+                                  User_Id?                            CurrentUserId       = null,
                                   CancellationToken                   CancellationToken   = default);
 
         #endregion

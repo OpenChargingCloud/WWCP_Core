@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
         IncludeChargingStationOperatorDelegate    IncludeChargingStationOperators           { get; }
 
 
-        #region AddChargingStationOperator           (ChargingStationOperator, ...)
+        #region AddChargingStationOperator            (ChargingStationOperator, ...)
 
         /// <summary>
         /// Add the EVSE data of the given charging station operator to the static EVSE data.
@@ -67,11 +67,12 @@ namespace cloud.charging.open.protocols.WWCP
                                        DateTime?                 Timestamp           = null,
                                        EventTracking_Id?         EventTrackingId     = null,
                                        TimeSpan?                 RequestTimeout      = null,
+                                       User_Id?                  CurrentUserId       = null,
                                        CancellationToken         CancellationToken   = default);
 
         #endregion
 
-        #region AddChargingStationOperatorIfNotExists(ChargingStationOperator, ...)
+        #region AddChargingStationOperatorIfNotExists (ChargingStationOperator, ...)
 
         /// <summary>
         /// Add the EVSE data of the given charging station operator to the static EVSE data.
@@ -91,11 +92,12 @@ namespace cloud.charging.open.protocols.WWCP
                                                   DateTime?                 Timestamp           = null,
                                                   EventTracking_Id?         EventTrackingId     = null,
                                                   TimeSpan?                 RequestTimeout      = null,
+                                                  User_Id?                  CurrentUserId       = null,
                                                   CancellationToken         CancellationToken   = default);
 
         #endregion
 
-        #region AddOrUpdateChargingStationOperator   (ChargingStationOperator, ...)
+        #region AddOrUpdateChargingStationOperator    (ChargingStationOperator, ...)
 
         /// <summary>
         /// Set the EVSE data of the given charging station operator as new static EVSE data.
@@ -115,11 +117,12 @@ namespace cloud.charging.open.protocols.WWCP
                                                DateTime?                 Timestamp           = null,
                                                EventTracking_Id?         EventTrackingId     = null,
                                                TimeSpan?                 RequestTimeout      = null,
+                                               User_Id?                  CurrentUserId       = null,
                                                CancellationToken         CancellationToken   = default);
 
         #endregion
 
-        #region UpdateChargingStationOperator        (ChargingStationOperator, PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
+        #region UpdateChargingStationOperator         (ChargingStationOperator, PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the EVSE data of the given charging station operator.
@@ -147,11 +150,12 @@ namespace cloud.charging.open.protocols.WWCP
                                           DateTime?                 Timestamp           = null,
                                           EventTracking_Id?         EventTrackingId     = null,
                                           TimeSpan?                 RequestTimeout      = null,
+                                          User_Id?                  CurrentUserId       = null,
                                           CancellationToken         CancellationToken   = default);
 
         #endregion
 
-        #region DeleteChargingStationOperator        (ChargingStationOperator, ...)
+        #region DeleteChargingStationOperator         (ChargingStationOperator, ...)
 
         /// <summary>
         /// Delete the EVSE data of the given charging station operator from the static EVSE data.
@@ -171,12 +175,13 @@ namespace cloud.charging.open.protocols.WWCP
                                           DateTime?                 Timestamp           = null,
                                           EventTracking_Id?         EventTrackingId     = null,
                                           TimeSpan?                 RequestTimeout      = null,
+                                          User_Id?                  CurrentUserId       = null,
                                           CancellationToken         CancellationToken   = default);
 
         #endregion
 
 
-        #region AddChargingStationOperators          (ChargingStationOperators, ...)
+        #region AddChargingStationOperators           (ChargingStationOperators, ...)
 
         /// <summary>
         /// Add the EVSE data of the given enumeration of charging station operators to the static EVSE data.
@@ -196,11 +201,12 @@ namespace cloud.charging.open.protocols.WWCP
                                         DateTime?                              Timestamp           = null,
                                         EventTracking_Id?                      EventTrackingId     = null,
                                         TimeSpan?                              RequestTimeout      = null,
+                                        User_Id?                               CurrentUserId       = null,
                                         CancellationToken                      CancellationToken   = default);
 
         #endregion
 
-        #region AddChargingStationOperatorsIfNotExist(ChargingStationOperators, ...)
+        #region AddChargingStationOperatorsIfNotExist (ChargingStationOperators, ...)
 
         /// <summary>
         /// Add the EVSE data of the given enumeration of charging station operators to the static EVSE data.
@@ -220,11 +226,12 @@ namespace cloud.charging.open.protocols.WWCP
                                                   DateTime?                              Timestamp           = null,
                                                   EventTracking_Id?                      EventTrackingId     = null,
                                                   TimeSpan?                              RequestTimeout      = null,
+                                                  User_Id?                               CurrentUserId       = null,
                                                   CancellationToken                      CancellationToken   = default);
 
         #endregion
 
-        #region AddOrUpdateChargingStationOperators  (ChargingStationOperators, ...)
+        #region AddOrUpdateChargingStationOperators   (ChargingStationOperators, ...)
 
         /// <summary>
         /// Set the EVSE data of the given enumeration of charging station operators as new static EVSE data.
@@ -244,11 +251,12 @@ namespace cloud.charging.open.protocols.WWCP
                                                 DateTime?                              Timestamp           = null,
                                                 EventTracking_Id?                      EventTrackingId     = null,
                                                 TimeSpan?                              RequestTimeout      = null,
+                                                User_Id?                               CurrentUserId       = null,
                                                 CancellationToken                      CancellationToken   = default);
 
         #endregion
 
-        #region UpdateChargingStationOperators       (ChargingStationOperators, ...)
+        #region UpdateChargingStationOperators        (ChargingStationOperators, ...)
 
         /// <summary>
         /// Update the EVSE data of the given enumeration of charging station operators.
@@ -268,11 +276,12 @@ namespace cloud.charging.open.protocols.WWCP
                                            DateTime?                              Timestamp           = null,
                                            EventTracking_Id?                      EventTrackingId     = null,
                                            TimeSpan?                              RequestTimeout      = null,
+                                           User_Id?                               CurrentUserId       = null,
                                            CancellationToken                      CancellationToken   = default);
 
         #endregion
 
-        #region DeleteChargingStationOperators       (ChargingStationOperators, ...)
+        #region DeleteChargingStationOperators        (ChargingStationOperators, ...)
 
         /// <summary>
         /// Delete the EVSE data of the given enumeration of charging station operators from the static EVSE data.
@@ -292,6 +301,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            DateTime?                              Timestamp           = null,
                                            EventTracking_Id?                      EventTrackingId     = null,
                                            TimeSpan?                              RequestTimeout      = null,
+                                           User_Id?                               CurrentUserId       = null,
                                            CancellationToken                      CancellationToken   = default);
 
         #endregion

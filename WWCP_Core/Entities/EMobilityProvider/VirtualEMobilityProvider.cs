@@ -379,7 +379,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingLocation">The charging location.</param>
         /// <param name="ChargingProduct">The chosen charging product.</param>
-        /// <param name="ReservationId">Use the given optinal unique charging reservation identification for charging.</param>
+        /// <param name="ReservationId">Use the given optional unique charging reservation identification for charging.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 

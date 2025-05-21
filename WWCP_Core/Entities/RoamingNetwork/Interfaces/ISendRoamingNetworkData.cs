@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
         IncludeRoamingNetworkDelegate    IncludeRoamingNetworks           { get; }
 
 
-        #region AddRoamingNetwork           (RoamingNetwork, ...)
+        #region AddRoamingNetwork            (RoamingNetwork, ...)
 
         /// <summary>
         /// Upload the static data of the given roaming network.
@@ -67,11 +67,12 @@ namespace cloud.charging.open.protocols.WWCP
                               DateTime?          Timestamp           = null,
                               EventTracking_Id?  EventTrackingId     = null,
                               TimeSpan?          RequestTimeout      = null,
+                              User_Id?           CurrentUserId       = null,
                               CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region AddRoamingNetworkIfNotExists(RoamingNetwork, ...)
+        #region AddRoamingNetworkIfNotExists (RoamingNetwork, ...)
 
         /// <summary>
         /// Upload the static data of the given roaming network.
@@ -91,11 +92,12 @@ namespace cloud.charging.open.protocols.WWCP
                                          DateTime?          Timestamp           = null,
                                          EventTracking_Id?  EventTrackingId     = null,
                                          TimeSpan?          RequestTimeout      = null,
+                                         User_Id?           CurrentUserId       = null,
                                          CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region AddOrUpdateRoamingNetwork   (RoamingNetwork, ...)
+        #region AddOrUpdateRoamingNetwork    (RoamingNetwork, ...)
 
         /// <summary>
         /// Upload the static data of the given roaming network.
@@ -115,11 +117,12 @@ namespace cloud.charging.open.protocols.WWCP
                                       DateTime?          Timestamp           = null,
                                       EventTracking_Id?  EventTrackingId     = null,
                                       TimeSpan?          RequestTimeout      = null,
+                                      User_Id?           CurrentUserId       = null,
                                       CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region UpdateRoamingNetwork        (RoamingNetwork, PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
+        #region UpdateRoamingNetwork         (RoamingNetwork, PropertyName, NewValue, OldValue = null, DataSource = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Upload the static data of the given roaming network.
@@ -127,7 +130,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetwork">A roaming network.</param>
         /// <param name="PropertyName">The name of the roaming network property to update.</param>
         /// <param name="NewValue">The new value of the roaming network property to update.</param>
-        /// <param name="OldValue">The optinal old value of the roaming network property to update.</param>
+        /// <param name="OldValue">The optional old value of the roaming network property to update.</param>
         /// <param name="DataSource">An optional data source or context for the data change.</param>
         /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
@@ -147,11 +150,12 @@ namespace cloud.charging.open.protocols.WWCP
                                  DateTime?          Timestamp           = null,
                                  EventTracking_Id?  EventTrackingId     = null,
                                  TimeSpan?          RequestTimeout      = null,
+                                 User_Id?           CurrentUserId       = null,
                                  CancellationToken  CancellationToken   = default);
 
         #endregion
 
-        #region DeleteRoamingNetwork        (RoamingNetwork, ...)
+        #region DeleteRoamingNetwork         (RoamingNetwork, ...)
 
         /// <summary>
         /// Upload the static data of the given roaming network.
@@ -171,12 +175,13 @@ namespace cloud.charging.open.protocols.WWCP
                                  DateTime?          Timestamp           = null,
                                  EventTracking_Id?  EventTrackingId     = null,
                                  TimeSpan?          RequestTimeout      = null,
+                                 User_Id?           CurrentUserId       = null,
                                  CancellationToken  CancellationToken   = default);
 
         #endregion
 
 
-        #region AddRoamingNetworks          (RoamingNetworks, TransmissionType = Enqueue, ...)
+        #region AddRoamingNetworks           (RoamingNetworks, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of roaming networks.
@@ -196,11 +201,12 @@ namespace cloud.charging.open.protocols.WWCP
                                DateTime?                     Timestamp           = null,
                                EventTracking_Id?             EventTrackingId     = null,
                                TimeSpan?                     RequestTimeout      = null,
+                               User_Id?                      CurrentUserId       = null,
                                CancellationToken             CancellationToken   = default);
 
         #endregion
 
-        #region AddRoamingNetworksIfNotExist(RoamingNetworks, TransmissionType = Enqueue, ...)
+        #region AddRoamingNetworksIfNotExist (RoamingNetworks, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given enumeration of roaming networks, if they do not already exist.
@@ -220,11 +226,12 @@ namespace cloud.charging.open.protocols.WWCP
                                          DateTime?                     Timestamp           = null,
                                          EventTracking_Id?             EventTrackingId     = null,
                                          TimeSpan?                     RequestTimeout      = null,
+                                         User_Id?                      CurrentUserId       = null,
                                          CancellationToken             CancellationToken   = default);
 
         #endregion
 
-        #region AddOrUpdateRoamingNetworks  (RoamingNetworks, TransmissionType = Enqueue, ...)
+        #region AddOrUpdateRoamingNetworks   (RoamingNetworks, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add or update the given enumeration of roaming networks.
@@ -244,11 +251,12 @@ namespace cloud.charging.open.protocols.WWCP
                                        DateTime?                     Timestamp           = null,
                                        EventTracking_Id?             EventTrackingId     = null,
                                        TimeSpan?                     RequestTimeout      = null,
+                                       User_Id?                      CurrentUserId       = null,
                                        CancellationToken             CancellationToken   = default);
 
         #endregion
 
-        #region UpdateRoamingNetworks       (RoamingNetworks, TransmissionType = Enqueue, ...)
+        #region UpdateRoamingNetworks        (RoamingNetworks, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of roaming networks.
@@ -268,11 +276,12 @@ namespace cloud.charging.open.protocols.WWCP
                                   DateTime?                     Timestamp           = null,
                                   EventTracking_Id?             EventTrackingId     = null,
                                   TimeSpan?                     RequestTimeout      = null,
+                                  User_Id?                      CurrentUserId       = null,
                                   CancellationToken             CancellationToken   = default);
 
         #endregion
 
-        #region DeleteRoamingNetworks       (RoamingNetworks, TransmissionType = Enqueue, ...)
+        #region DeleteRoamingNetworks        (RoamingNetworks, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the given enumeration of roaming networks.
@@ -292,6 +301,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   DateTime?                     Timestamp           = null,
                                   EventTracking_Id?             EventTrackingId     = null,
                                   TimeSpan?                     RequestTimeout      = null,
+                                  User_Id?                      CurrentUserId       = null,
                                   CancellationToken             CancellationToken   = default);
 
         #endregion
