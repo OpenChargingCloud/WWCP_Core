@@ -121,8 +121,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomECCPublicKeyParser">An optional delegate to parse custom ECC public keys.</param>
-        public static PublicKey Parse(JObject                                     JSON,
-                                      CustomJObjectParserDelegate<ECCPublicKey>?  CustomECCPublicKeyParser   = null)
+        public static ECCPublicKey Parse(JObject                                     JSON,
+                                         CustomJObjectParserDelegate<ECCPublicKey>?  CustomECCPublicKeyParser   = null)
         {
 
             if (TryParse(JSON,
@@ -305,21 +305,144 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) ParseXY      (X, Y,                                           Algorithm = secp256r1, Encoding = base64, ...)
+        #region (static) Parse        (PublicKey,                                      Algorithm = secp256r1, Encoding = base64, ...)
 
         /// <summary>
         /// Parse the given text representation of an asymmetric elliptic curve cryptographic public key.
+        /// </summary>
+        /// <param name="PublicKey">The text representation of the public key.</param>
+        /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
+        /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        public static ECCPublicKey Parse(String            PublicKey,
+                                         CryptoAlgorithm?  Algorithm    = null,
+                                         CryptoEncoding?   Encoding     = null,
+                                         CustomData?       CustomData   = null)
+        {
+
+            if (TryParse(PublicKey,
+                         out var eccPublicKey,
+                         out var errorResponse,
+                         Algorithm,
+                         Encoding,
+                         CustomData))
+            {
+                return eccPublicKey;
+            }
+
+            throw new ArgumentException("The given text representation of an ECC public key is invalid: " + errorResponse);
+
+        }
+
+        #endregion
+
+        #region (static) TryParse     (PublicKey, out ECCPublicKey, out ErrorResponse, Algorithm = secp256r1, Encoding = base64, ...)
+
+        /// <summary>
+        /// Try to parse the given text representation of an asymmetric elliptic curve cryptographic public key.
+        /// </summary>
+        /// <param name="PublicKey">The text representation of the public key.</param>
+        /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
+        /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        public static Boolean TryParse(String                                  PublicKey,
+                                       [NotNullWhen(true)]  out ECCPublicKey?  ECCPublicKey,
+                                       [NotNullWhen(false)] out String?        ErrorResponse,
+                                       CryptoAlgorithm?                        Algorithm    = null,
+                                       CryptoEncoding?                         Encoding     = null,
+                                       CustomData?                             CustomData   = null)
+        {
+
+            #region Initial checks
+
+            ECCPublicKey   = null;
+            ErrorResponse  = null;
+
+            if (PublicKey.IsNullOrEmpty())
+            {
+                ErrorResponse = "The given encoded public key must not be null or empty!";
+                return false;
+            }
+
+            #endregion
+
+            try
+            {
+
+                //var encodedPublicKey    = new Byte[1 + X.Length + Y.Length];
+                //encodedPublicKey[0]     = 0x04;
+                //Array.Copy(X, 0, encodedPublicKey, 1,            X.Length);
+                //Array.Copy(Y, 0, encodedPublicKey, 1 + X.Length, Y.Length);
+
+                var publicKey = Array.Empty<Byte>();
+
+                if (!Encoding.HasValue ||
+                     Encoding. ToString() == CryptoEncoding.BASE64.ToString())
+                    publicKey = PublicKey.FromBASE64();
+
+                if ( Encoding?.ToString() == CryptoEncoding.HEX.   ToString())
+                    publicKey = PublicKey.FromHEX();
+
+
+                var ecParameters        = ECNamedCurveTable.GetByName(Algorithm.ToString());
+
+                var ecDomainParameters  = new ECDomainParameters(
+                                              ecParameters.Curve,
+                                              ecParameters.G,
+                                              ecParameters.N,
+                                              ecParameters.H,
+                                              ecParameters.GetSeed()
+                                          );
+
+                var parsedPublicKey     = new ECPublicKeyParameters(
+                                              "ECDSA",
+                                              ecParameters.Curve.DecodePoint(publicKey),
+                                              ecDomainParameters
+                                          );
+
+                ECCPublicKey            = new ECCPublicKey(
+
+                                              publicKey,
+                                              Algorithm,
+                                              CryptoSerialization.ASN1_DER,
+                                              CryptoEncoding.HEX,
+                                              CustomData,
+
+                                              ecParameters,
+                                              ecDomainParameters,
+                                              parsedPublicKey
+
+                                          );
+
+                return true;
+
+            } catch (Exception e)
+            {
+                ErrorResponse  = $"The given text representation '{PublicKey}' of an ECC public key is invalid: " + e.Message;
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region (static) ParseXY      (X, Y,                                           Algorithm = secp256r1, Encoding = base64, ...)
+
+        /// <summary>
+        /// Parse the given X/Y text representation of an asymmetric elliptic curve cryptographic public key.
         /// </summary>
         /// <param name="X">The text representation of the x-coordinate of the public key.</param>
         /// <param name="Y">The text representation of the y-coordinate of the public key.</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
         /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public static PublicKey ParseXY(String            X,
-                                        String            Y,
-                                        CryptoAlgorithm?  Algorithm    = null,
-                                        CryptoEncoding?   Encoding     = null,
-                                        CustomData?       CustomData   = null)
+        public static ECCPublicKey ParseXY(String            X,
+                                           String            Y,
+                                           CryptoAlgorithm?  Algorithm    = null,
+                                           CryptoEncoding?   Encoding     = null,
+                                           CustomData?       CustomData   = null)
         {
 
             if (TryParseXY(X,
@@ -518,11 +641,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given text representation of an asymmetric elliptic curve cryptographic public key.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
-        public static PublicKey ParseASN1(String                Text,
-                                          CryptoAlgorithm?      Algorithm       = null,
-                                          CryptoSerialization?  Serialization   = null,
-                                          CryptoEncoding?       Encoding        = null,
-                                          CustomData?           CustomData      = null)
+        public static ECCPublicKey ParseASN1(String                Text,
+                                             CryptoAlgorithm?      Algorithm       = null,
+                                             CryptoSerialization?  Serialization   = null,
+                                             CryptoEncoding?       Encoding        = null,
+                                             CustomData?           CustomData      = null)
         {
 
             if (TryParseASN1(Text,
