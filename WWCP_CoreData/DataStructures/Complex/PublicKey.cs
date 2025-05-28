@@ -567,7 +567,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                            Serialization == CryptoSerialization.RAW
                                ? null
-                               : new JProperty("serialization",   Serialization),
+                               : new JProperty("serialization",   Serialization.  ToString()),
 
                            Encoding      == CryptoEncoding.     BASE64
                                ? null
