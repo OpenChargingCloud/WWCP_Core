@@ -61,12 +61,12 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<DayOfWeek>           DaysOfWeek                  { get; }
         public Time?                            StartTimeOfDay              { get; }
         public Time?                            EndTimeOfDay                { get; }
-        public OCPPv2_1.EVSEKinds?              EVSEKind                    { get; }
+  //      public OCPPv2_1.EVSEKinds?              EVSEKind                    { get; }
         public WattHour?                        MaxEnergy                   { get; }
         public Ampere?                          MaxCurrent                  { get; }
         public Watt?                            MaxPower                    { get; }
         public TimeSpan?                        MaxTime                     { get; }
-        public OCPPv2_1.PaymentRecognition?     PaymentRecognition          { get; }
+    //    public OCPPv2_1.PaymentRecognition?     PaymentRecognition          { get; }
 
         #endregion
 
@@ -84,12 +84,12 @@ namespace cloud.charging.open.protocols.WWCP
                                           IEnumerable<DayOfWeek>?          DaysOfWeek           = null,
                                           Time?                            StartTimeOfDay       = null,
                                           Time?                            EndTimeOfDay         = null,
-                                          OCPPv2_1.EVSEKinds?              EVSEKind             = null,
+                                      //    OCPPv2_1.EVSEKinds?              EVSEKind             = null,
                                           WattHour?                        MaxEnergy            = null,
                                           Ampere?                          MaxCurrent           = null,
                                           Watt?                            MaxPower             = null,
-                                          TimeSpan?                        MaxTime              = null,
-                                          OCPPv2_1.PaymentRecognition?     PaymentRecognition   = null)
+                                          TimeSpan?                        MaxTime              = null)
+                                      //    OCPPv2_1.PaymentRecognition?     PaymentRecognition   = null)
 
         {
 

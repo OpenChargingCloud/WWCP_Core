@@ -61,12 +61,12 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<DayOfWeek>           DaysOfWeek                  { get; }
         public Time?                            StartTimeOfDay              { get; }
         public Time?                            EndTimeOfDay                { get; }
-        public OCPPv2_1.EVSEKinds?              EVSEKind                    { get; }
+        //public OCPPv2_1.EVSEKinds?              EVSEKind                    { get; }
         public WattHour?                        MaxEnergy                   { get; }
         public Ampere?                          MaxCurrent                  { get; }
         public Watt?                            MaxPower                    { get; }
         public TimeSpan?                        MaxTime                     { get; }
-        public OCPPv2_1.PaymentRecognition?     PaymentRecognition          { get; }
+        //public OCPPv2_1.PaymentRecognition?     PaymentRecognition          { get; }
 
         #endregion
 
