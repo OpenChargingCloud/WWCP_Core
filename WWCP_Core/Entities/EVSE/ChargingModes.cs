@@ -62,22 +62,22 @@ namespace cloud.charging.open.protocols.WWCP
         Unspecified     =  0,
 
         /// <summary>
-        /// IEC 61851-1 Mode 1
+        /// IEC 61851-1 Mode 1: AC charging without communication, just protective earth and RCD protection.
         /// </summary>
         Mode_1          =  1,
 
         /// <summary>
-        /// IEC 61851-1 Mode 2
+        /// IEC 61851-1 Mode 2: AC charging with in-cable control and protection device (IC-CPD), simple communication in cable.
         /// </summary>
         Mode_2          =  2,
 
         /// <summary>
-        /// IEC 61851-1 Mode 3
+        /// IEC 61851-1 Mode 3: AC charging with communication between vehicle and charging point via CP/PP (PWM signaling).
         /// </summary>
         Mode_3          =  4,
 
         /// <summary>
-        /// IEC 61851-1 Mode 4
+        /// IEC 61851-1 Mode 4: DC charging with communication, power electronics are external (DC EVSE), not inside vehicle.
         /// </summary>
         Mode_4          =  8,
 

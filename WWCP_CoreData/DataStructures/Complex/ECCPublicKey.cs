@@ -23,8 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -43,6 +43,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region Data
 
         public const String Context = "https://open.charging.cloud/context/cryptography/ecc/publicKey";
+
+        private readonly static List<(Func<String, (Boolean Success, Byte[]? Bytes, String? Error)> TryParse, CryptoEncoding Encoding)>  parsers1;
+        private readonly static Dictionary<String, Func<String, (Boolean Success, Byte[]? Bytes, String? Error)>>                        parsers2;
+        private readonly static List<String>                                                                                             algorithms;
 
         #endregion
 
@@ -72,6 +76,37 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #region Constructor(s)
+
+        #region (static)   ECCPublicKey()
+
+        static ECCPublicKey()
+        {
+
+            parsers1    = [
+                              (key => (key.TryParseBASE64(out var bytes, out var error), bytes, error), CryptoEncoding.BASE64),
+                              (key => (key.TryParseHEX   (out var bytes, out var error), bytes, error), CryptoEncoding.HEX),
+                              (key => (key.TryParseBASE32(out var bytes, out var error), bytes, error), CryptoEncoding.BASE32)
+                          ];
+
+            parsers2    = new Dictionary<String, Func<String, (Boolean Success, Byte[]? Bytes, String? Error)>> {
+                              { "base64", key => (key.TryParseBASE64(out var bytes, out var error), bytes, error) },
+                              { "base32", key => (key.TryParseBASE32(out var bytes, out var error), bytes, error) },
+                              { "hex",    key => (key.TryParseHEX   (out var bytes, out var error), bytes, error) }
+                          };
+
+            algorithms  = [
+                              CryptoAlgorithm.Secp192r1.ToString(),
+                              CryptoAlgorithm.Secp256r1.ToString(),
+                              CryptoAlgorithm.Secp256k1.ToString(),
+                              CryptoAlgorithm.Secp384r1.ToString(),
+                              CryptoAlgorithm.Secp521r1.ToString()
+                          ];
+
+        }
+
+        #endregion
+
+        #region (internal) ECCPublicKey(Value, Algorithm = secp256r1, Serialization = raw, Encoding = base64, ...)
 
         /// <summary>
         /// Create a new asymmetric elliptic curve cryptographic public key.
@@ -104,6 +139,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.ParsedPublicKey     = ParsedPublicKey;
 
         }
+
+        #endregion
 
         #endregion
 
@@ -313,11 +350,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PublicKey">The text representation of the public key.</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
         /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
+        /// <param name="AutoDetectAlgorithmUsed">Whether to try to automatically detect the algorithm used for the public key, if not specified.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public static ECCPublicKey Parse(String            PublicKey,
-                                         CryptoAlgorithm?  Algorithm    = null,
-                                         CryptoEncoding?   Encoding     = null,
-                                         CustomData?       CustomData   = null)
+                                         CryptoAlgorithm?  Algorithm                 = null,
+                                         CryptoEncoding?   Encoding                  = null,
+                                         Boolean           AutoDetectAlgorithmUsed   = false,
+                                         CustomData?       CustomData                = null)
         {
 
             if (TryParse(PublicKey,
@@ -325,6 +364,7 @@ namespace cloud.charging.open.protocols.WWCP
                          out var errorResponse,
                          Algorithm,
                          Encoding,
+                         AutoDetectAlgorithmUsed,
                          CustomData))
             {
                 return eccPublicKey;
@@ -344,13 +384,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PublicKey">The text representation of the public key.</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
         /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
+        /// <param name="AutoDetectAlgorithmUsed">Whether to try to automatically detect the algorithm used for the public key, if not specified.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public static Boolean TryParse(String                                  PublicKey,
                                        [NotNullWhen(true)]  out ECCPublicKey?  ECCPublicKey,
                                        [NotNullWhen(false)] out String?        ErrorResponse,
-                                       CryptoAlgorithm?                        Algorithm    = null,
-                                       CryptoEncoding?                         Encoding     = null,
-                                       CustomData?                             CustomData   = null)
+                                       CryptoAlgorithm?                        Algorithm                 = null,
+                                       CryptoEncoding?                         Encoding                  = null,
+                                       Boolean                                 AutoDetectAlgorithmUsed   = false,
+                                       CustomData?                             CustomData                = null)
         {
 
             #region Initial checks
@@ -369,59 +411,160 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                //var encodedPublicKey    = new Byte[1 + X.Length + Y.Length];
-                //encodedPublicKey[0]     = 0x04;
-                //Array.Copy(X, 0, encodedPublicKey, 1,            X.Length);
-                //Array.Copy(Y, 0, encodedPublicKey, 1 + X.Length, Y.Length);
-
                 var publicKey = Array.Empty<Byte>();
 
-                if (!Encoding.HasValue ||
-                     Encoding. ToString() == CryptoEncoding.BASE64.ToString())
-                    publicKey = PublicKey.FromBASE64();
+                if (!Encoding.HasValue)
+                {
+                    foreach (var (tryParse, encoding) in parsers1)
+                    {
 
-                if ( Encoding?.ToString() == CryptoEncoding.HEX.   ToString())
-                    publicKey = PublicKey.FromHEX();
+                        var (success, bytes, errorResponse) = tryParse(PublicKey);
+
+                        if (success)
+                        {
+                            Encoding  = encoding;
+                            publicKey = bytes;
+                            break;
+                        }
+
+                    }
+                }
+
+                else
+                {
+
+                    if (!parsers2.TryGetValue(Encoding.Value.ToString().ToLower(), out var parser))
+                    {
+                        ErrorResponse = $"The encoding '{Encoding}' is not supported.";
+                        return false;
+                    }
+
+                    var (success, publicKeyBytes, errorResponse) = parser(PublicKey);
+                    if (!success)
+                    {
+                        ErrorResponse = $"Invalid public key format for '{Encoding.Value}' encoding: {errorResponse}";
+                        return false;
+                    }
+
+                    publicKey = publicKeyBytes;
+
+                }
+
+                if (publicKey is null)
+                {
+                    ErrorResponse = $"The given encoded public key '{PublicKey}' could not be parsed!";
+                    return false;
+                }
 
 
-                var ecParameters        = ECNamedCurveTable.GetByName(Algorithm.ToString());
+                if (Algorithm.HasValue)
+                {
 
-                var ecDomainParameters  = new ECDomainParameters(
-                                              ecParameters.Curve,
-                                              ecParameters.G,
-                                              ecParameters.N,
-                                              ecParameters.H,
-                                              ecParameters.GetSeed()
-                                          );
+                    var ecParameters = ECNamedCurveTable.GetByName(Algorithm.Value.ToString());
 
-                var parsedPublicKey     = new ECPublicKeyParameters(
-                                              "ECDSA",
-                                              ecParameters.Curve.DecodePoint(publicKey),
-                                              ecDomainParameters
-                                          );
+                    if (ecParameters is not null)
+                    {
 
-                ECCPublicKey            = new ECCPublicKey(
+                        var ecDomainParameters  = new ECDomainParameters(
+                                                      ecParameters.Curve,
+                                                      ecParameters.G,
+                                                      ecParameters.N,
+                                                      ecParameters.H,
+                                                      ecParameters.GetSeed()
+                                                  );
 
-                                              publicKey,
-                                              Algorithm,
-                                              CryptoSerialization.ASN1_DER,
-                                              CryptoEncoding.HEX,
-                                              CustomData,
+                        var parsedPublicKey     = new ECPublicKeyParameters(
+                                                      "ECDSA",
+                                                      ecParameters.Curve.DecodePoint(publicKey),
+                                                      ecDomainParameters
+                                                  );
 
-                                              ecParameters,
-                                              ecDomainParameters,
-                                              parsedPublicKey
+                        ECCPublicKey            = new ECCPublicKey(
 
-                                          );
+                                                      publicKey,
+                                                      Algorithm,
+                                                      null, //CryptoSerialization.ASN1_DER,
+                                                      Encoding,
+                                                      CustomData,
+
+                                                      ecParameters,
+                                                      ecDomainParameters,
+                                                      parsedPublicKey
+
+                                                  );
+
+                        return true;
+
+                    }
+
+                }
+
+                else if (AutoDetectAlgorithmUsed)
+                {
+                    foreach (var algorithm in algorithms)
+                    {
+                        try
+                        {
+
+                            var ecParameters = ECNamedCurveTable.GetByName(algorithm);
+
+                            if (ecParameters is not null)
+                            {
+
+                                var ecDomainParameters  = new ECDomainParameters(
+                                                              ecParameters.Curve,
+                                                              ecParameters.G,
+                                                              ecParameters.N,
+                                                              ecParameters.H,
+                                                              ecParameters.GetSeed()
+                                                          );
+
+                                var parsedPublicKey     = new ECPublicKeyParameters(
+                                                              "ECDSA",
+                                                              ecParameters.Curve.DecodePoint(publicKey),
+                                                              ecDomainParameters
+                                                          );
+
+                                ECCPublicKey            = new ECCPublicKey(
+
+                                                              publicKey,
+                                                              Algorithm,
+                                                              null, //CryptoSerialization.ASN1_DER,
+                                                              Encoding,
+                                                              CustomData,
+
+                                                              ecParameters,
+                                                              ecDomainParameters,
+                                                              parsedPublicKey
+
+                                                          );
+
+                                return true;
+
+                            }
+
+                        }
+                        catch
+                        { }
+                    }
+                }
+
+
+                // Just store the byte array...
+                ECCPublicKey = new ECCPublicKey(
+                                   publicKey,
+                                   Algorithm,
+                                   Encoding:    Encoding,
+                                   CustomData:  CustomData
+                               );
 
                 return true;
 
             } catch (Exception e)
             {
                 ErrorResponse  = $"The given text representation '{PublicKey}' of an ECC public key is invalid: " + e.Message;
+                return false;
             }
-
-            return false;
 
         }
 
