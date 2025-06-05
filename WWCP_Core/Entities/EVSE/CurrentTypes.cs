@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 
+#region Usings
+
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection.Metadata;
+
+#endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
