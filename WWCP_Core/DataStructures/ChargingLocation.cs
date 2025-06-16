@@ -17,12 +17,9 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -32,7 +29,7 @@ namespace cloud.charging.open.protocols.WWCP
     public static class ChargingLocationExtensions
     {
 
-        public static Boolean IsNull(this ChargingLocation ChargingLocation)
+        public static Boolean IsNull(this ChargingLocation? ChargingLocation)
 
             => ChargingLocation is null ||
                !(ChargingLocation.EVSEId.                   HasValue ||
@@ -40,7 +37,7 @@ namespace cloud.charging.open.protocols.WWCP
                  ChargingLocation.ChargingPoolId.           HasValue ||
                  ChargingLocation.ChargingStationOperatorId.HasValue);
 
-        public static Boolean IsDefined(this ChargingLocation ChargingLocation)
+        public static Boolean IsDefined(this ChargingLocation? ChargingLocation)
 
             => ChargingLocation is not null &&
               (ChargingLocation.EVSEId.                   HasValue ||
@@ -183,19 +180,19 @@ namespace cloud.charging.open.protocols.WWCP
             => JSONObject.Create(
 
                    EVSEId.HasValue
-                       ? new JProperty("EVSEId",                     EVSEId.           Value.ToString())
+                       ? new JProperty("EVSEId",                      EVSEId.                   Value.ToString())
                        : null,
 
                    ChargingStationId.HasValue
-                       ? new JProperty("chargingStationId",          ChargingStationId.Value.ToString())
+                       ? new JProperty("chargingStationId",           ChargingStationId.        Value.ToString())
                        : null,
 
                    ChargingPoolId.HasValue
-                       ? new JProperty("chargingPoolId",             ChargingPoolId.   Value.ToString())
+                       ? new JProperty("chargingPoolId",              ChargingPoolId.           Value.ToString())
                        : null,
 
                    ChargingStationOperatorId.HasValue
-                       ? new JProperty("chargingStationOperatorId",  ChargingStationId.Value.ToString())
+                       ? new JProperty("chargingStationOperatorId",   ChargingStationOperatorId.Value.ToString())
                        : null
 
                );
@@ -224,7 +221,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingLocation1">A charging location.</param>
         /// <param name="ChargingLocation2">Another charging location.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ChargingLocation ChargingLocation1, ChargingLocation ChargingLocation2)
+        public static Boolean operator == (ChargingLocation ChargingLocation1,
+                                           ChargingLocation ChargingLocation2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -232,7 +230,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargingLocation1 == null) || ((Object) ChargingLocation2 == null))
+            if (ChargingLocation1 is null || ChargingLocation2 is null)
                 return false;
 
             return ChargingLocation1.Equals(ChargingLocation2);
@@ -249,7 +247,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingLocation1">A charging location.</param>
         /// <param name="ChargingLocation2">Another charging location.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ChargingLocation ChargingLocation1, ChargingLocation ChargingLocation2)
+        public static Boolean operator != (ChargingLocation ChargingLocation1,
+                                           ChargingLocation ChargingLocation2)
         {
             return !(ChargingLocation1 == ChargingLocation2);
         }
@@ -264,10 +263,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingLocation1">A charging location.</param>
         /// <param name="ChargingLocation2">Another charging location.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator < (ChargingLocation ChargingLocation1, ChargingLocation ChargingLocation2)
+        public static Boolean operator < (ChargingLocation ChargingLocation1,
+                                          ChargingLocation ChargingLocation2)
         {
 
-            if ((Object) ChargingLocation1 == null)
+            if (ChargingLocation1 is null)
                 throw new ArgumentNullException("The given ChargingLocation1 must not be null!");
 
             return ChargingLocation1.CompareTo(ChargingLocation2) < 0;
@@ -284,7 +284,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingLocation1">A charging location.</param>
         /// <param name="ChargingLocation2">Another charging location.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator <= (ChargingLocation ChargingLocation1, ChargingLocation ChargingLocation2)
+        public static Boolean operator <= (ChargingLocation ChargingLocation1,
+                                           ChargingLocation ChargingLocation2)
         {
             return !(ChargingLocation1 > ChargingLocation2);
         }
@@ -299,10 +300,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingLocation1">A charging location.</param>
         /// <param name="ChargingLocation2">Another charging location.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator > (ChargingLocation ChargingLocation1, ChargingLocation ChargingLocation2)
+        public static Boolean operator > (ChargingLocation ChargingLocation1,
+                                          ChargingLocation ChargingLocation2)
         {
 
-            if ((Object) ChargingLocation1 == null)
+            if (ChargingLocation1 is null)
                 throw new ArgumentNullException("The given ChargingLocation1 must not be null!");
 
             return ChargingLocation1.CompareTo(ChargingLocation2) > 0;
@@ -319,7 +321,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingLocation1">A charging location.</param>
         /// <param name="ChargingLocation2">Another charging location.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator >= (ChargingLocation ChargingLocation1, ChargingLocation ChargingLocation2)
+        public static Boolean operator >= (ChargingLocation ChargingLocation1,
+                                           ChargingLocation ChargingLocation2)
         {
             return !(ChargingLocation1 < ChargingLocation2);
         }
@@ -339,10 +342,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object is null)
-                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
-
-            if (!(Object is ChargingLocation ChargingLocation))
+            if (Object is not ChargingLocation ChargingLocation)
                 throw new ArgumentException("The given object is not a charging location!");
 
             return CompareTo(ChargingLocation);
@@ -357,10 +357,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="ChargingLocation">An object to compare with.</param>
-        public Int32 CompareTo(ChargingLocation ChargingLocation)
+        public Int32 CompareTo(ChargingLocation? ChargingLocation)
         {
 
-            if ((Object) ChargingLocation == null)
+            if (ChargingLocation is null)
                 throw new ArgumentNullException(nameof(ChargingLocation),  "The given charging location must not be null!");
 
             if (EVSEId.HasValue && ChargingLocation.EVSEId.HasValue)
@@ -392,13 +392,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is ChargingLocation ChargingLocation))
+            if (Object is not ChargingLocation ChargingLocation)
                 return false;
 
             return Equals(ChargingLocation);
@@ -414,10 +411,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingLocation">An EVSE identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingLocation ChargingLocation)
+        public Boolean Equals(ChargingLocation? ChargingLocation)
         {
 
-            if ((Object) ChargingLocation == null)
+            if (ChargingLocation is null)
                 return false;
 
             if (EVSEId.HasValue && ChargingLocation.EVSEId.HasValue)
