@@ -4,9 +4,15 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>cloud.charging.open.protocols.WWCP.tests</AssemblyName>
-    <RootNamespace>cloud.charging.open.protocols.WWCP.tests</RootNamespace>
+    <AssemblyName>cloud.charging.open.protocols.WWCP.Core.tests</AssemblyName>
+    <RootNamespace>cloud.charging.open.protocols.WWCP.Core.tests</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Hermod\HermodTests\HermodTests.csproj" />
