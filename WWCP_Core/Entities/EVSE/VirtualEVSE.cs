@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                          IEnumerable<ChargingModes>?                          ChargingModes                  = null,
                                                          IEnumerable<ChargingTariff>?                         ChargingTariffs                = null,
                                                          CurrentTypes?                                        CurrentType                    = null,
-                                                         Volt?                                                AverageVoltage                 = null,
-                                                         Timestamped<Volt>?                                   AverageVoltageRealTime         = null,
-                                                         IEnumerable<Timestamped<Volt>>?                      AverageVoltagePrognoses        = null,
+                                                         Volt?                                                RMSVoltage                 = null,
+                                                         Timestamped<Volt>?                                   RMSVoltageRealTime         = null,
+                                                         IEnumerable<Timestamped<Volt>>?                      RMSVoltagePrognoses        = null,
                                                          Ampere?                                              MaxCurrent                     = null,
                                                          Timestamped<Ampere>?                                 MaxCurrentRealTime             = null,
                                                          IEnumerable<Timestamped<Ampere>>?                    MaxCurrentPrognoses            = null,
@@ -136,9 +136,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    ChargingModes,
                    ChargingTariffs,
                    CurrentType,
-                   AverageVoltage,
-                   AverageVoltageRealTime,
-                   AverageVoltagePrognoses,
+                   RMSVoltage,
+                   RMSVoltageRealTime,
+                   RMSVoltagePrognoses,
                    MaxCurrent,
                    MaxCurrentRealTime,
                    MaxCurrentPrognoses,
@@ -191,9 +191,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                              ChargingModes,
                                              ChargingTariffs,
                                              CurrentType,
-                                             AverageVoltage,
-                                             AverageVoltageRealTime,
-                                             AverageVoltagePrognoses,
+                                             RMSVoltage,
+                                             RMSVoltageRealTime,
+                                             RMSVoltagePrognoses,
                                              MaxCurrent,
                                              MaxCurrentRealTime,
                                              MaxCurrentPrognoses,
@@ -269,9 +269,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                     IEnumerable<ChargingModes>?                          ChargingModes                  = null,
                                                                     IEnumerable<ChargingTariff>?                         ChargingTariffs                = null,
                                                                     CurrentTypes?                                        CurrentType                    = null,
-                                                                    Volt?                                                AverageVoltage                 = null,
-                                                                    Timestamped<Volt>?                                   AverageVoltageRealTime         = null,
-                                                                    IEnumerable<Timestamped<Volt>>?                      AverageVoltagePrognoses        = null,
+                                                                    Volt?                                                RMSVoltage                     = null,
+                                                                    Timestamped<Volt>?                                   RMSVoltageRealTime             = null,
+                                                                    IEnumerable<Timestamped<Volt>>?                      RMSVoltagePrognoses            = null,
                                                                     Ampere?                                              MaxCurrent                     = null,
                                                                     Timestamped<Ampere>?                                 MaxCurrentRealTime             = null,
                                                                     IEnumerable<Timestamped<Ampere>>?                    MaxCurrentPrognoses            = null,
@@ -330,9 +330,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                    ChargingModes,
                                    ChargingTariffs,
                                    CurrentType,
-                                   AverageVoltage,
-                                   AverageVoltageRealTime,
-                                   AverageVoltagePrognoses,
+                                   RMSVoltage,
+                                   RMSVoltageRealTime,
+                                   RMSVoltagePrognoses,
                                    MaxCurrent,
                                    MaxCurrentRealTime,
                                    MaxCurrentPrognoses,
@@ -385,9 +385,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                              ChargingModes,
                                                              ChargingTariffs,
                                                              CurrentType,
-                                                             AverageVoltage,
-                                                             AverageVoltageRealTime,
-                                                             AverageVoltagePrognoses,
+                                                             RMSVoltage,
+                                                             RMSVoltageRealTime,
+                                                             RMSVoltagePrognoses,
                                                              MaxCurrent,
                                                              MaxCurrentRealTime,
                                                              MaxCurrentPrognoses,
@@ -465,9 +465,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          IEnumerable<ChargingModes>?                          ChargingModes                          = null,
                                                                          IEnumerable<ChargingTariff>?                         ChargingTariffs                        = null,
                                                                          CurrentTypes?                                        CurrentType                            = null,
-                                                                         Volt?                                                AverageVoltage                         = null,
-                                                                         Timestamped<Volt>?                                   AverageVoltageRealTime                 = null,
-                                                                         IEnumerable<Timestamped<Volt>>?                      AverageVoltagePrognoses                = null,
+                                                                         Volt?                                                RMSVoltage                         = null,
+                                                                         Timestamped<Volt>?                                   RMSVoltageRealTime                 = null,
+                                                                         IEnumerable<Timestamped<Volt>>?                      RMSVoltagePrognoses                = null,
                                                                          Ampere?                                              MaxCurrent                             = null,
                                                                          Timestamped<Ampere>?                                 MaxCurrentRealTime                     = null,
                                                                          IEnumerable<Timestamped<Ampere>>?                    MaxCurrentPrognoses                    = null,
@@ -533,9 +533,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    ChargingModes,
                    ChargingTariffs,
                    CurrentType,
-                   AverageVoltage,
-                   AverageVoltageRealTime,
-                   AverageVoltagePrognoses,
+                   RMSVoltage,
+                   RMSVoltageRealTime,
+                   RMSVoltagePrognoses,
                    MaxCurrent,
                    MaxCurrentRealTime,
                    MaxCurrentPrognoses,
@@ -583,9 +583,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                              ChargingModes,
                                              ChargingTariffs,
                                              CurrentType,
-                                             AverageVoltage,
-                                             AverageVoltageRealTime,
-                                             AverageVoltagePrognoses,
+                                             RMSVoltage,
+                                             RMSVoltageRealTime,
+                                             RMSVoltagePrognoses,
                                              MaxCurrent,
                                              MaxCurrentRealTime,
                                              MaxCurrentPrognoses,
@@ -803,7 +803,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
-        #region AverageVoltage
+        #region RMSVoltage
 
         private Volt? averageVoltage;
 
@@ -811,7 +811,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// The average voltage.
         /// </summary>
         [Optional, SlowData]
-        public Volt? AverageVoltage
+        public Volt? RMSVoltage
         {
 
             get
@@ -842,7 +842,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
-        #region AverageVoltageRealTime
+        #region RMSVoltageRealTime
 
         private Timestamped<Volt>? averageVoltageRealTime;
 
@@ -850,7 +850,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// The real-time average voltage.
         /// </summary>
         [Optional, FastData]
-        public Timestamped<Volt>? AverageVoltageRealTime
+        public Timestamped<Volt>? RMSVoltageRealTime
         {
 
             get
@@ -882,7 +882,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// Prognoses on future values of the average voltage.
         /// </summary>
         [Optional, FastData]
-        public ReactiveSet<Timestamped<Volt>>           AverageVoltagePrognoses     { get; }
+        public ReactiveSet<Timestamped<Volt>>           RMSVoltagePrognoses     { get; }
 
 
         #region MaxCurrent
@@ -1387,9 +1387,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                              IEnumerable<ChargingModes>?          ChargingModes                = null,
                              IEnumerable<ChargingTariff>?         ChargingTariffs              = null,
                              CurrentTypes?                        CurrentType                  = null,
-                             Volt?                                AverageVoltage               = null,
-                             Timestamped<Volt>?                   AverageVoltageRealTime       = null,
-                             IEnumerable<Timestamped<Volt>>?      AverageVoltagePrognoses      = null,
+                             Volt?                                RMSVoltage               = null,
+                             Timestamped<Volt>?                   RMSVoltageRealTime       = null,
+                             IEnumerable<Timestamped<Volt>>?      RMSVoltagePrognoses      = null,
                              Ampere?                              MaxCurrent                   = null,
                              Timestamped<Ampere>?                 MaxCurrentRealTime           = null,
                              IEnumerable<Timestamped<Ampere>>?    MaxCurrentPrognoses          = null,
@@ -1492,16 +1492,16 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             this.currentType                        = CurrentType ?? CurrentTypes.AC_ThreePhases;
 
-            this.averageVoltage                     = AverageVoltage;
-            this.averageVoltageRealTime             = AverageVoltageRealTime;
+            this.averageVoltage                     = RMSVoltage;
+            this.averageVoltageRealTime             = RMSVoltageRealTime;
 
-            this.AverageVoltagePrognoses            = AverageVoltagePrognoses is null
+            this.RMSVoltagePrognoses            = RMSVoltagePrognoses is null
                                                           ? new ReactiveSet<Timestamped<Volt>>()
-                                                          : new ReactiveSet<Timestamped<Volt>>(AverageVoltagePrognoses);
-            this.AverageVoltagePrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
+                                                          : new ReactiveSet<Timestamped<Volt>>(RMSVoltagePrognoses);
+            this.RMSVoltagePrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
-                PropertyChanged("AverageVoltagePrognoses",
+                PropertyChanged("RMSVoltagePrognoses",
                                 oldItems,
                                 newItems);
 
@@ -1736,14 +1736,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             ChargingModes.          Replace(OtherEVSE.ChargingModes);
             ChargingConnectors.          Replace(OtherEVSE.ChargingConnectors);
             DataLicenses.       Replace(OtherEVSE.DataLicenses);
-            AverageVoltagePrognoses.Replace(OtherEVSE.AverageVoltagePrognoses);
+            RMSVoltagePrognoses.Replace(OtherEVSE.RMSVoltagePrognoses);
             MaxCurrentPrognoses.    Replace(OtherEVSE.MaxCurrentPrognoses);
             MaxPowerPrognoses.      Replace(OtherEVSE.MaxPowerPrognoses);
             MaxCapacityPrognoses.   Replace(OtherEVSE.MaxCapacityPrognoses);
 
             CurrentType                = OtherEVSE.CurrentType;
-            AverageVoltage             = OtherEVSE.AverageVoltage;
-            AverageVoltageRealTime     = OtherEVSE.AverageVoltageRealTime;
+            RMSVoltage             = OtherEVSE.RMSVoltage;
+            RMSVoltageRealTime     = OtherEVSE.RMSVoltageRealTime;
             MaxCurrent                 = OtherEVSE.MaxCurrent;
             MaxCurrentRealTime         = OtherEVSE.MaxCurrentRealTime;
             MaxPower                   = OtherEVSE.MaxPower;
@@ -3763,8 +3763,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                new JProperty("currentType", CurrentType.ToText()),
 
-                               AverageVoltage.HasValue && AverageVoltage.Value.Value > 0
-                                   ? new JProperty("averageVoltage", Math.Round(AverageVoltage.Value.Value, 2))
+                               RMSVoltage.HasValue && RMSVoltage.Value.Value > 0
+                                   ? new JProperty("averageVoltage", Math.Round(RMSVoltage.Value.Value, 2))
                                    : null,
 
                                MaxCurrent.    HasValue && MaxCurrent.    Value.Value > 0

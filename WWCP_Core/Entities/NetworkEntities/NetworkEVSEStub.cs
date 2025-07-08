@@ -131,27 +131,27 @@
 
 //        #endregion
 
-//        #region AverageVoltage
+//        #region RMSVoltage
 
-//        private Double _AverageVoltage;
+//        private Double _RMSVoltage;
 
 //        /// <summary>
 //        /// The average voltage.
 //        /// </summary>
 //        [Mandatory]
-//        public Double AverageVoltage
+//        public Double RMSVoltage
 //        {
 
 //            get
 //            {
-//                return _AverageVoltage;
+//                return _RMSVoltage;
 //            }
 
 //            set
 //            {
 
-//                if (_AverageVoltage != value)
-//                    SetProperty(ref _AverageVoltage, value);
+//                if (_RMSVoltage != value)
+//                    SetProperty(ref _RMSVoltage, value);
 
 //            }
 

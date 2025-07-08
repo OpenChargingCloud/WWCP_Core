@@ -203,19 +203,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// The average voltage of this EVSE.
         /// </summary>
         [Optional, SlowData]
-        Volt?                                  AverageVoltage               { get; set; }
+        Volt?                                  RMSVoltage               { get; set; }
 
         /// <summary>
         /// The real-time average voltage of this EVSE.
         /// </summary>
         [Optional, FastData]
-        Timestamped<Volt>?                     AverageVoltageRealTime       { get; set; }
+        Timestamped<Volt>?                     RMSVoltageRealTime       { get; set; }
 
         /// <summary>
         /// Prognoses on future values of the average voltage of this EVSE.
         /// </summary>
         [Optional, FastData]
-        ReactiveSet<Timestamped<Volt>>         AverageVoltagePrognoses      { get; }
+        ReactiveSet<Timestamped<Volt>>         RMSVoltagePrognoses      { get; }
 
 
         /// <summary>
