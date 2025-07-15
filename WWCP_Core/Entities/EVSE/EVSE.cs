@@ -2715,8 +2715,9 @@ namespace cloud.charging.open.protocols.WWCP
                     AdminStatus.Value == EVSEAdminStatusType.InternalUse)
                 {
 
-                    if (SessionId == ChargingSession?.Id)
-                    {
+                    //ToDo: This leads to an error, as it is NULL in some situations!!!
+                    //if (SessionId == ChargingSession?.Id)
+                    //{
 
                         #region Try remote EVSE
 
@@ -2835,7 +2836,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         #endregion
 
-                    }
+                    //}
 
                     result ??= RemoteStopResult.InvalidSessionId(
                                    SessionId,
