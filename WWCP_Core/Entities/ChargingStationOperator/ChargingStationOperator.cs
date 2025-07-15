@@ -5307,8 +5307,11 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             if (RoamingNetwork is not null &&
-                RoamingNetwork.TryGetChargingSessionById(ChargingSessionId, out var chargingSession) &&
-                chargingSession.ChargingStationOperatorId == Id)
+                RoamingNetwork.TryGetChargingSessionById(ChargingSessionId, out var chargingSession)
+               //ToDo: This leads to an error, as it is ALWAYS NULL!!!
+               //      Check why the CSO/CSOId is not set during AuthStart/RemoteStart!!!
+               // chargingSession.ChargingStationOperatorId == Id
+               )
             {
                 ChargingSession = chargingSession;
                 return true;
