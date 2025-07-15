@@ -490,7 +490,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new EVSE group.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing station group.</param>
+        /// <param name="Id">The unique identification of the charging station group.</param>
         /// <param name="Operator">The charging station operator of this EVSE group.</param>
         /// <param name="Name">The official (multi-language) name of this EVSE group.</param>
         /// <param name="Description">An optional (multi-language) description of this EVSE group.</param>

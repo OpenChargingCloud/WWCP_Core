@@ -263,10 +263,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// A pool of electric vehicle charging stations.
-    /// The geo locations of these charging stations will be close together and the charging session
-    /// might provide a shared network access to aggregate and optimize communication
-    /// with the EVSE Operator backend.
+    /// A charging session.
     /// </summary>
     public class ChargingSession : AInternalData,
                                    IHasId<ChargingSession_Id>,
@@ -308,7 +305,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region RoamingNetwork(Id)
 
         /// <summary>
-        /// The unqiue identification of the roaming network serving this session.
+        /// The unique identification of the roaming network serving this session.
         /// </summary>
         public RoamingNetwork_Id? RoamingNetworkId { get; set; }
 
@@ -341,7 +338,7 @@ namespace cloud.charging.open.protocols.WWCP
         private ChargingStationOperator_Id? chargingStationOperatorId;
 
         /// <summary>
-        /// The unqiue identification of the charging station operator serving this session.
+        /// The unique identification of the charging station operator serving this session.
         /// </summary>
         public ChargingStationOperator_Id? ChargingStationOperatorId
         {
@@ -349,8 +346,8 @@ namespace cloud.charging.open.protocols.WWCP
             get
             {
 
-                if (chargingStationOperator is null && chargingStationOperatorId.HasValue)
-                    chargingStationOperator = RoamingNetwork?.GetChargingStationOperatorById(chargingStationOperatorId.Value);
+                if (!chargingStationOperatorId.HasValue && chargingStationOperator is not null)
+                    chargingStationOperatorId = chargingStationOperator?.Id;
 
                 return chargingStationOperatorId;
 
@@ -360,8 +357,9 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 chargingStationOperatorId  = value;
-                chargingStationOperator    = value.HasValue ? RoamingNetwork?.GetChargingStationOperatorById(value.Value) : null;
-                roamingNetwork           ??= chargingStationOperator?.RoamingNetwork;
+
+                if (chargingStationOperator is null && chargingStationOperatorId.HasValue)
+                    chargingStationOperator = RoamingNetwork?.GetChargingStationOperatorById(chargingStationOperatorId.Value);
 
             }
 
@@ -378,15 +376,20 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
+
+                if (chargingStationOperator is null && chargingStationOperatorId.HasValue)
+                    chargingStationOperator = RoamingNetwork?.GetChargingStationOperatorById(chargingStationOperatorId.Value);
+
                 return chargingStationOperator;
+
             }
 
             set
             {
 
-                chargingStationOperator      = value;
-                chargingStationOperatorId    = value?.Id;
-                RoamingNetwork             ??= value?.RoamingNetwork;
+                chargingStationOperator     = value;
+                chargingStationOperatorId   = value?.Id;
+                RoamingNetwork            ??= value?.RoamingNetwork;
 
             }
 
@@ -399,7 +402,7 @@ namespace cloud.charging.open.protocols.WWCP
         private ChargingPool_Id? chargingPoolId;
 
         /// <summary>
-        /// The unqiue identification of the charging pool serving this session.
+        /// The unique identification of the charging pool serving this session.
         /// </summary>
         public ChargingPool_Id? ChargingPoolId
         {
@@ -453,7 +456,7 @@ namespace cloud.charging.open.protocols.WWCP
         private ChargingStation_Id? chargingStationId;
 
         /// <summary>
-        /// The unqiue identification of the charging station serving this session.
+        /// The unique identification of the charging station serving this session.
         /// </summary>
         public ChargingStation_Id? ChargingStationId
         {
@@ -507,7 +510,7 @@ namespace cloud.charging.open.protocols.WWCP
         private EVSE_Id? evseId;
 
         /// <summary>
-        /// The unqiue identification of the EVSE serving this session.
+        /// The unique identification of the EVSE serving this session.
         /// </summary>
         public EVSE_Id? EVSEId
         {
@@ -566,7 +569,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         [Optional]
         /// <summary>
-        /// The unqiue identification of the EVSE serving this session.
+        /// The unique identification of the EVSE serving this session.
         /// </summary>
         public EnergyMeter_Id? EnergyMeterId
         {
@@ -1079,10 +1082,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new group/pool of charging stations having the given identification.
+        /// Create a new charging session.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing pool.</param>
-        /// <param name="Timestamp">The timestamp of the session creation.</param>
+        /// <param name="Id">The unique identification of the charging session.</param>
+        /// <param name="Timestamp">The timestamp of the charging session creation.</param>
         public ChargingSession(ChargingSession_Id      Id,
                                EventTracking_Id        EventTrackingId,
 

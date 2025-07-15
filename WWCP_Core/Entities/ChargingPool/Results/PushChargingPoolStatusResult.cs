@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
-        /// The unqiue identification of the authenticator.
+        /// The unique identification of the authenticator.
         /// </summary>
         public IId                                    SenderId                                { get; }
 
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushChargingPoolStatus result.
         /// </summary>
-        /// <param name="SenderId">The unqiue identification of the sender.</param>
+        /// <param name="SenderId">The unique identification of the sender.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="RejectedChargingPoolStatusUpdates">An enumeration of rejected charging pool status updates.</param>
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushChargingPoolStatus result.
         /// </summary>
-        /// <param name="SenderId">The unqiue identification of the sender.</param>
+        /// <param name="SenderId">The unique identification of the sender.</param>
         /// <param name="ISendStatus">An object implementing ISendStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushChargingPoolStatus result.
         /// </summary>
-        /// <param name="SenderId">The unqiue identification of the sender.</param>
+        /// <param name="SenderId">The unique identification of the sender.</param>
         /// <param name="IReceiveStatus">An object implementing IReceiveStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>

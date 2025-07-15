@@ -2409,7 +2409,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create and register a new charging group having the given
         /// unique charging group identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing station group.</param>
+        /// <param name="Id">The unique identification of the charging station group.</param>
         /// <param name="Name">The official (multi-language) name of this charging station group.</param>
         /// <param name="Description">An optional (multi-language) description of this charging station group.</param>
         /// 
@@ -2586,7 +2586,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Get or create and register a new charging group having the given
         /// unique charging group identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing station group.</param>
+        /// <param name="Id">The unique identification of the charging station group.</param>
         /// <param name="Name">The official (multi-language) name of this charging station group.</param>
         /// <param name="Description">An optional (multi-language) description of this charging station group.</param>
         /// 
@@ -2722,8 +2722,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Try to return to charging station group for the given charging station group identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing station group.</param>
-        /// <param name="ChargingStationGroup">The charing station group.</param>
+        /// <param name="Id">The unique identification of the charging station group.</param>
+        /// <param name="ChargingStationGroup">The charging station group.</param>
         public Boolean TryGetChargingStationGroup(ChargingStationGroup_Id   Id,
                                                   out ChargingStationGroup  ChargingStationGroup)
 
@@ -3670,7 +3670,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create and register a new charging group having the given
         /// unique charging group identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing station group.</param>
+        /// <param name="Id">The unique identification of the charging station group.</param>
         /// <param name="Name">The official (multi-language) name of this EVSE group.</param>
         /// <param name="Description">An optional (multi-language) description of this EVSE group.</param>
         /// 
@@ -3856,7 +3856,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Get or create and register a new charging group having the given
         /// unique charging group identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing station group.</param>
+        /// <param name="Id">The unique identification of the charging station group.</param>
         /// <param name="Name">The official (multi-language) name of this EVSE group.</param>
         /// <param name="Description">An optional (multi-language) description of this EVSE group.</param>
         /// 
@@ -4011,8 +4011,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Try to return to EVSE group for the given EVSE group identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing station group.</param>
-        /// <param name="EVSEGroup">The charing station group.</param>
+        /// <param name="Id">The unique identification of the charging station group.</param>
+        /// <param name="EVSEGroup">The charging station group.</param>
         public Boolean TryGetEVSEGroup(EVSEGroup_Id    Id,
                                        out EVSEGroup?  EVSEGroup)
 
@@ -4186,7 +4186,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Get or create and register a new charging Tariff having the given
         /// unique charging Tariff identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing Tariff.</param>
+        /// <param name="Id">The unique identification of the charging Tariff.</param>
         /// <param name="Name">The official (multi-language) name of this charging Tariff.</param>
         /// <param name="Description">An optional (multi-language) description of this charging Tariff.</param>
         /// 
@@ -4923,7 +4923,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return to charging Tariff for the given charging Tariff identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing Tariff.</param>
+        /// <param name="Id">The unique identification of the charging Tariff.</param>
         public IChargingTariff? GetChargingTariff(ChargingTariff_Id Id)
         {
 
@@ -4941,8 +4941,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Try to return to charging Tariff for the given charging Tariff identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing Tariff.</param>
-        /// <param name="ChargingTariff">The charing Tariff.</param>
+        /// <param name="Id">The unique identification of the charging Tariff.</param>
+        /// <param name="ChargingTariff">The charging Tariff.</param>
         public Boolean TryGetChargingTariffById(ChargingTariff_Id     Id,
                                                 out IChargingTariff?  ChargingTariff)
 
@@ -5011,7 +5011,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create and register a new charging Tariff group having the given
         /// unique charging Tariff identification.
         /// </summary>
-        /// <param name="IdSuffix">The suffix of the unique identification of the charing Tariff group.</param>
+        /// <param name="IdSuffix">The suffix of the unique identification of the charging Tariff group.</param>
         /// <param name="Description">An optional (multi-language) description of this charging Tariff group.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging Tariff group after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging Tariff group failed.</param>
@@ -5082,7 +5082,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Get or create and register a new charging Tariff having the given
         /// unique charging Tariff identification.
         /// </summary>
-        /// <param name="IdSuffix">The suffix of the unique identification of the charing Tariff group.</param>
+        /// <param name="IdSuffix">The suffix of the unique identification of the charging Tariff group.</param>
         /// <param name="Description">An optional (multi-language) description of this charging Tariff.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging Tariff after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging Tariff failed.</param>
@@ -5116,7 +5116,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return to charging Tariff for the given charging Tariff identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing Tariff.</param>
+        /// <param name="Id">The unique identification of the charging Tariff.</param>
         public ChargingTariffGroup? GetChargingTariffGroup(ChargingTariffGroup_Id Id)
         {
 
@@ -5134,8 +5134,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Try to return to charging Tariff for the given charging Tariff identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing Tariff.</param>
-        /// <param name="ChargingTariffGroup">The charing Tariff.</param>
+        /// <param name="Id">The unique identification of the charging Tariff.</param>
+        /// <param name="ChargingTariffGroup">The charging Tariff.</param>
         public Boolean TryGetChargingTariffGroup(ChargingTariffGroup_Id   Id,
                                                  out ChargingTariffGroup? ChargingTariffGroup)
 

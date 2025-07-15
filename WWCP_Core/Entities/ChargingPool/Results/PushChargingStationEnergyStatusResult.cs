@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
-        /// The unqiue identification of the authenticator.
+        /// The unique identification of the authenticator.
         /// </summary>
         public IId                                             SenderId                                        { get; }
 
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushChargingPoolEnergyStatus result.
         /// </summary>
-        /// <param name="SenderId">The unqiue identification of the sender.</param>
+        /// <param name="SenderId">The unique identification of the sender.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="RejectedChargingPoolEnergyStatusUpdates">An enumeration of rejected ChargingPool status updates.</param>
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushChargingPoolEnergyStatus result.
         /// </summary>
-        /// <param name="SenderId">The unqiue identification of the sender.</param>
+        /// <param name="SenderId">The unique identification of the sender.</param>
         /// <param name="ISendEnergyStatus">An object implementing ISendEnergyStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new PushChargingPoolEnergyStatus result.
         /// </summary>
-        /// <param name="SenderId">The unqiue identification of the sender.</param>
+        /// <param name="SenderId">The unique identification of the sender.</param>
         /// <param name="IReceiveEnergyStatus">An object implementing IReceiveEnergyStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>

@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new charging tariff having the given identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing tariff.</param>
+        /// <param name="Id">The unique identification of the charging tariff.</param>
         /// <param name="Name">The official (multi-language) name of this charging tariff.</param>
         /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
         public ChargingTariff(ChargingTariff_Id                   Id,

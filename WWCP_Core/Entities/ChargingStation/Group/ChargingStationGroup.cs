@@ -364,26 +364,26 @@ namespace cloud.charging.open.protocols.WWCP
         private readonly ConcurrentDictionary<ChargingStation_Id, IChargingStation> _ChargingStations;
 
         /// <summary>
-        /// Return all charging stations registered within this charing station group.
+        /// Return all charging stations registered within this charging station group.
         /// </summary>
         public IEnumerable<IChargingStation> ChargingStations
             => _ChargingStations.Values;
 
 
         /// <summary>
-        /// Return all charging station identifications registered within this charing station group.
+        /// Return all charging station identifications registered within this charging station group.
         /// </summary>
         public IEnumerable<ChargingStation_Id> ChargingStationIds
             => ChargingStations.SafeSelect(station => station.Id);
 
         /// <summary>
-        /// Return all EVSEs registered within this charing station group.
+        /// Return all EVSEs registered within this charging station group.
         /// </summary>
         public IEnumerable<IEVSE> EVSEs
             => ChargingStations.SafeSelectMany(station => station.EVSEs);
 
         /// <summary>
-        /// Return all EVSE identifications registered within this charing station group.
+        /// Return all EVSE identifications registered within this charging station group.
         /// </summary>
         public IEnumerable<EVSE_Id> EVSEIds
             => ChargingStations.
@@ -532,7 +532,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new charging station group.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing station group.</param>
+        /// <param name="Id">The unique identification of the charging station group.</param>
         /// <param name="Operator">The charging station operator of this charging station group.</param>
         /// <param name="Name">The official (multi-language) name of this charging station group.</param>
         /// <param name="Description">An optional (multi-language) description of this charging station group.</param>

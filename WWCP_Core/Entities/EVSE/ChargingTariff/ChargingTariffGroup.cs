@@ -53,14 +53,14 @@ namespace cloud.charging.open.protocols.WWCP
         public I18NString  Description   { get; }
 
         /// <summary>
-        /// Return all charging stations registered within this charing station group.
+        /// Return all charging stations registered within this charging station group.
         /// </summary>
         public IEnumerable<ChargingTariff> ChargingTariffs
             => _ChargingTariffs.Values;
 
 
         /// <summary>
-        /// Return all charging station identifications registered within this charing station group.
+        /// Return all charging station identifications registered within this charging station group.
         /// </summary>
         public IEnumerable<ChargingTariff_Id> ChargingTariffIds
             => ChargingTariffs.SafeSelect(station => station.Id);
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new charging station group.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing station group.</param>
+        /// <param name="Id">The unique identification of the charging station group.</param>
         /// <param name="Operator">The charging station operator of this charging station group.</param>
         /// <param name="Description">An optional (multi-language) description of this charging station group.</param>
         internal ChargingTariffGroup(ChargingTariffGroup_Id   Id,
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create and register a new charging tariff having the given
         /// unique charging tariff identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing tariff.</param>
+        /// <param name="Id">The unique identification of the charging tariff.</param>
         /// <param name="Name">The official (multi-language) name of this charging tariff.</param>
         /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>

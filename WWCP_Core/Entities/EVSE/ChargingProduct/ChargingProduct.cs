@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new charging product.
         /// </summary>
-        /// <param name="Id">The unqiue identification of this charging product.</param>
+        /// <param name="Id">The unique identification of this charging product.</param>
         /// <param name="MinDuration">The electric vehicle wants to charge at least for this amount of time.</param>
         /// <param name="StopChargingAfterTime">Stop charging after this amount of time.</param>
         /// <param name="MinPower">The minimal charging power the electric vehicle accepts.</param>

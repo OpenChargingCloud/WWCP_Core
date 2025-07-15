@@ -950,7 +950,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Charging stations
 
         /// <summary>
-        /// Return all charging stations registered within this charing pool.
+        /// Return all charging stations registered within this charging pool.
         /// </summary>
         IEnumerable<IChargingStation> ChargingStations { get; }
 
@@ -1312,7 +1312,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Energy Meters
 
         /// <summary>
-        /// Return all charging stations registered within this charing pool.
+        /// Return all charging stations registered within this charging pool.
         /// </summary>
         IEnumerable<IEnergyMeter> EnergyMeters { get; }
 

@@ -1059,7 +1059,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new group/pool of charging stations having the given identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing pool.</param>
+        /// <param name="Id">The unique identification of the charging pool.</param>
         /// <param name="Operator">The parent charging station operator.</param>
         /// 
         /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
@@ -1455,7 +1455,7 @@ namespace cloud.charging.open.protocols.WWCP
         private readonly EntityHashSet<IChargingPool, ChargingStation_Id, IChargingStation> chargingStations;
 
         /// <summary>
-        /// Return all charging stations registered within this charing pool.
+        /// Return all charging stations registered within this charging pool.
         /// </summary>
         public IEnumerable<IChargingStation> ChargingStations
         {
@@ -2818,7 +2818,7 @@ namespace cloud.charging.open.protocols.WWCP
         private readonly EntityHashSet<IChargingPool, EnergyMeter_Id, IEnergyMeter> energyMeters;
 
         /// <summary>
-        /// Return all energy meters (outside charging stations and EVSEs) registered within this charing pool.
+        /// Return all energy meters (outside charging stations and EVSEs) registered within this charging pool.
         /// </summary>
         public IEnumerable<IEnergyMeter> EnergyMeters
         {

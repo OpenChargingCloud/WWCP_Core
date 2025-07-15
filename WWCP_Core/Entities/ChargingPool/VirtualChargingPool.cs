@@ -1536,7 +1536,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #region Energy Meters
 
         /// <summary>
-        /// Return all charging stations registered within this charing pool.
+        /// Return all charging stations registered within this charging pool.
         /// </summary>
         public IEnumerable<IEnergyMeter> EnergyMeters { get; }
 
