@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
@@ -61,7 +62,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                                 Byte                   priority,
                                                 Byte                   weight,
                                                 IIPAddress             IPAddress,
-                                                String                 hostname,
+                                                DomainName             hostname,
                                                 IPPort                 port,
                                                 TransportTypes         transport,
                                                 String                 URLPrefix,
@@ -147,7 +148,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 
         public IIPAddress             IPAddress           { get; }
 
-        public String                 hostname            { get; }
+        public DomainName             hostname            { get; }
 
         public IPPort                 port                { get; }
 
@@ -167,23 +168,23 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 
         #region RoamingNetworkInfo(..., RoamingNetworkId, ...)
 
-        public RoamingNetworkInfo(Tracker_Id            TrackerId,
-                                  NetworkServiceNode_Id               NodeId,
-                                  String                IncomingURL,
-                                  DateTime              NotBefore,
-                                  DateTime              NotAfter,
+        public RoamingNetworkInfo(Tracker_Id             TrackerId,
+                                  NetworkServiceNode_Id  NodeId,
+                                  String                 IncomingURL,
+                                  DateTime               NotBefore,
+                                  DateTime               NotAfter,
 
-                                  RoamingNetwork_Id     RoamingNetworkId,
-                                  Byte                  priority,
-                                  Byte                  weight,
-                                  IIPAddress            IPAddress,
-                                  String                hostname,
-                                  IPPort                port,
-                                  TransportTypes        transport,
-                                  String                URLPrefix,
-                                  HTTPContentType       contentType,
-                                  ProtocolTypes         protocolType,
-                                  IEnumerable<String>   PublicKeys)
+                                  RoamingNetwork_Id      RoamingNetworkId,
+                                  Byte                   priority,
+                                  Byte                   weight,
+                                  IIPAddress             IPAddress,
+                                  DomainName             hostname,
+                                  IPPort                 port,
+                                  TransportTypes         transport,
+                                  String                 URLPrefix,
+                                  HTTPContentType        contentType,
+                                  ProtocolTypes          protocolType,
+                                  IEnumerable<String>    PublicKeys)
         {
 
             this.TrackerId         = TrackerId;
@@ -213,23 +214,23 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 
         #region RoamingNetworkInfo(..., RoamingNetwork, ...)
 
-        public RoamingNetworkInfo(Tracker_Id            TrackerId,
-                                  NetworkServiceNode_Id               NodeId,
-                                  String                IncomingURL,
-                                  DateTime              NotBefore,
-                                  DateTime              NotAfter,
+        public RoamingNetworkInfo(Tracker_Id             TrackerId,
+                                  NetworkServiceNode_Id  NodeId,
+                                  String                 IncomingURL,
+                                  DateTime               NotBefore,
+                                  DateTime               NotAfter,
 
-                                  RoamingNetwork        RoamingNetwork,
-                                  Byte                  priority,
-                                  Byte                  weight,
-                                  IIPAddress            IPAddress,
-                                  String                hostname,
-                                  IPPort                port,
-                                  TransportTypes        transport,
-                                  String                URLPrefix,
-                                  HTTPContentType       contentType,
-                                  ProtocolTypes         protocolType,
-                                  IEnumerable<String>   PublicKeys)
+                                  RoamingNetwork         RoamingNetwork,
+                                  Byte                   priority,
+                                  Byte                   weight,
+                                  IIPAddress             IPAddress,
+                                  DomainName             hostname,
+                                  IPPort                 port,
+                                  TransportTypes         transport,
+                                  String                 URLPrefix,
+                                  HTTPContentType        contentType,
+                                  ProtocolTypes          protocolType,
+                                  IEnumerable<String>    PublicKeys)
 
             : this(TrackerId,
                    NodeId,
