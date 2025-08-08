@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddRoamingNetwork(IRoamingNetwork    RoamingNetwork,
 
-                              DateTime?          Timestamp           = null,
+                              DateTimeOffset?    Timestamp           = null,
                               EventTracking_Id?  EventTrackingId     = null,
                               TimeSpan?          RequestTimeout      = null,
                               CancellationToken  CancellationToken   = default);
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddRoamingNetworkIfNotExists(IRoamingNetwork    RoamingNetwork,
 
-                                         DateTime?          Timestamp           = null,
+                                         DateTimeOffset?    Timestamp           = null,
                                          EventTracking_Id?  EventTrackingId     = null,
                                          TimeSpan?          RequestTimeout      = null,
                                          CancellationToken  CancellationToken   = default);
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddOrUpdateRoamingNetwork(IRoamingNetwork    RoamingNetwork,
 
-                                      DateTime?          Timestamp           = null,
+                                      DateTimeOffset?    Timestamp           = null,
                                       EventTracking_Id?  EventTrackingId     = null,
                                       TimeSpan?          RequestTimeout      = null,
                                       CancellationToken  CancellationToken   = default);
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  Object?            OldValue            = null,
                                  Context?           DataSource          = null,
 
-                                 DateTime?          Timestamp           = null,
+                                 DateTimeOffset?    Timestamp           = null,
                                  EventTracking_Id?  EventTrackingId     = null,
                                  TimeSpan?          RequestTimeout      = null,
                                  CancellationToken  CancellationToken   = default);
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteRoamingNetwork(IRoamingNetwork    RoamingNetwork,
 
-                                 DateTime?          Timestamp           = null,
+                                 DateTimeOffset?    Timestamp           = null,
                                  EventTracking_Id?  EventTrackingId     = null,
                                  TimeSpan?          RequestTimeout      = null,
                                  CancellationToken  CancellationToken   = default);
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
 
-                               DateTime?                     Timestamp           = null,
+                               DateTimeOffset?               Timestamp           = null,
                                EventTracking_Id?             EventTrackingId     = null,
                                TimeSpan?                     RequestTimeout      = null,
                                CancellationToken             CancellationToken   = default);
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddRoamingNetworksIfNotExist(IEnumerable<IRoamingNetwork>  RoamingNetworks,
 
-                                         DateTime?                     Timestamp           = null,
+                                         DateTimeOffset?               Timestamp           = null,
                                          EventTracking_Id?             EventTrackingId     = null,
                                          TimeSpan?                     RequestTimeout      = null,
                                          CancellationToken             CancellationToken   = default);
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddOrUpdateRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
 
-                                       DateTime?                     Timestamp           = null,
+                                       DateTimeOffset?               Timestamp           = null,
                                        EventTracking_Id?             EventTrackingId     = null,
                                        TimeSpan?                     RequestTimeout      = null,
                                        CancellationToken             CancellationToken   = default);
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
 
-                                  DateTime?                     Timestamp           = null,
+                                  DateTimeOffset?               Timestamp           = null,
                                   EventTracking_Id?             EventTrackingId     = null,
                                   TimeSpan?                     RequestTimeout      = null,
                                   CancellationToken             CancellationToken   = default);
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
 
-                                  DateTime?                     Timestamp           = null,
+                                  DateTimeOffset?               Timestamp           = null,
                                   EventTracking_Id?             EventTrackingId     = null,
                                   TimeSpan?                     RequestTimeout      = null,
                                   CancellationToken             CancellationToken   = default);

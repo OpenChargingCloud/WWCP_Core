@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingPoolEnergyStatus(IEnumerable<ChargingPoolEnergyStatusUpdate>  ChargingPoolEnergyStatusUpdates,
                                            TransmissionTypes                            TransmissionType    = TransmissionTypes.Enqueue,
 
-                                           DateTime?                                    Timestamp           = null,
+                                           DateTimeOffset?                              Timestamp           = null,
                                            EventTracking_Id?                            EventTrackingId     = null,
                                            TimeSpan?                                    RequestTimeout      = null,
                                            User_Id?                                     CurrentUserId       = null,
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingStationEnergyStatus(IEnumerable<ChargingStationEnergyStatusUpdate>  ChargingStationEnergyStatusUpdates,
                                               TransmissionTypes                               TransmissionType    = TransmissionTypes.Enqueue,
 
-                                              DateTime?                                       Timestamp           = null,
+                                              DateTimeOffset?                                 Timestamp           = null,
                                               EventTracking_Id?                               EventTrackingId     = null,
                                               TimeSpan?                                       RequestTimeout      = null,
                                               User_Id?                                        CurrentUserId       = null,
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateEVSEEnergyStatus(IEnumerable<EVSEEnergyStatusUpdate>  EVSEEnergyStatusUpdates,
                                    TransmissionTypes                    TransmissionType    = TransmissionTypes.Enqueue,
 
-                                   DateTime?                            Timestamp           = null,
+                                   DateTimeOffset?                      Timestamp           = null,
                                    EventTracking_Id?                    EventTrackingId     = null,
                                    TimeSpan?                            RequestTimeout      = null,
                                    User_Id?                             CurrentUserId       = null,

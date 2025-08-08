@@ -35,8 +35,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnSendCDRsRequestDelegate(DateTime                         LogTimestamp,
-                                                   DateTime                         RequestTimestamp,
+    public delegate Task OnSendCDRsRequestDelegate(DateTimeOffset                   LogTimestamp,
+                                                   DateTimeOffset                   RequestTimestamp,
                                                    Object                           Sender,
                                                    String                           SenderId,
                                                    EventTracking_Id                 EventTrackingId,
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<SendCDRsResult> OnChargeDetailRecordDelegate(DateTime                         Timestamp,
+    public delegate Task<SendCDRsResult> OnChargeDetailRecordDelegate(DateTimeOffset                   Timestamp,
                                                                       CancellationToken                CancellationToken,
                                                                       EventTracking_Id                 EventTrackingId,
                                                                       IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -73,8 +73,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnSendCDRsResponseDelegate(DateTime                         LogTimestamp,
-                                                    DateTime                         RequestTimestamp,
+    public delegate Task OnSendCDRsResponseDelegate(DateTimeOffset                   LogTimestamp,
+                                                    DateTimeOffset                   RequestTimestamp,
                                                     Object                           Sender,
                                                     String                           SenderId,
                                                     EventTracking_Id                 EventTrackingId,

@@ -17,12 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Collections.Generic;
 
 #endregion
 
@@ -33,14 +30,14 @@ namespace cloud.charging.open.protocols.WWCP
     {
 
         public ECPublicKeyParameters  PublicKey    { get; }
-        public DateTime               NotBefore    { get; }
-        public DateTime               NotAfter     { get; }
+        public DateTimeOffset         NotBefore    { get; }
+        public DateTimeOffset         NotAfter     { get; }
         public String                 Algorithm    { get; }
         public I18NString             Comment      { get; }
 
         public PublicKeyLifetime(ECPublicKeyParameters  PublicKey,
-                                 DateTime               NotBefore,
-                                 DateTime               NotAfter,
+                                 DateTimeOffset         NotBefore,
+                                 DateTimeOffset         NotAfter,
                                  String                 Algorithm  = "P-256",
                                  I18NString             Comment    = null)
         {

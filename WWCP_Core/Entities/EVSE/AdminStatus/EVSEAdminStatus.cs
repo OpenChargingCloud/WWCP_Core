@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id               Id           { get; }
+        public EVSE_Id              Id           { get; }
 
         /// <summary>
         /// The current admin status of the EVSE.
@@ -131,12 +131,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of the current admin status of the EVSE.
         /// </summary>
-        public DateTime              Timestamp    { get; }
+        public DateTimeOffset       Timestamp    { get; }
 
         /// <summary>
         /// An optional data source or context for this EVSE admin status.
         /// </summary>
-        public Context?              Context      { get; }
+        public Context?             Context      { get; }
 
         /// <summary>
         /// The timestamped admin status of the EVSE.
@@ -156,9 +156,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="Status">The current timestamped admin status of the EVSE.</param>
         /// <param name="Context">An optional data source or context for the EVSE admin status.</param>
-        public EVSEAdminStatus(EVSE_Id                            Id,
+        public EVSEAdminStatus(EVSE_Id                           Id,
                                Timestamped<EVSEAdminStatusType>  Status,
-                               Context?                           Context   = null)
+                               Context?                          Context   = null)
 
             : this(Id,
                    Status.Value,
@@ -178,10 +178,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Status">The current admin status of the EVSE.</param>
         /// <param name="Timestamp">The timestamp of the admin status of the EVSE.</param>
         /// <param name="Context">An optional data source or context for the EVSE admin status.</param>
-        public EVSEAdminStatus(EVSE_Id               Id,
+        public EVSEAdminStatus(EVSE_Id              Id,
                                EVSEAdminStatusType  Status,
-                               DateTime              Timestamp,
-                               Context?              Context   = null)
+                               DateTimeOffset       Timestamp,
+                               Context?             Context   = null)
         {
 
             this.Id         = Id;

@@ -24,9 +24,9 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 namespace cloud.charging.open.protocols.WWCP.Importer
 {
 
-    public delegate Task<T?> GetDataDelegate<T>(DateTime         Timestamp,
+    public delegate Task<T?> GetDataDelegate<T>(DateTimeOffset   Timestamp,
                                                 WWCPImporter<T>  WWCPImporter,
-                                                DateTime         LastRuntimestamp,
+                                                DateTimeOffset   LastRuntimestamp,
                                                 UInt64           LastRunId,
                                                 DNSClient?       DNSClient)
 

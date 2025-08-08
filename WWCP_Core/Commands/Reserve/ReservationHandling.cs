@@ -37,19 +37,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The reservation should not end after the remote stop operation.
         /// </summary>
-        public Boolean   IsKeepAlive
+        public Boolean         IsKeepAlive
             => EndTime > Timestamp.Now;
 
         /// <summary>
         /// The time span in which the reservation can be used
         /// for additional charging sessions.
         /// </summary>
-        public TimeSpan  KeepAliveTime    { get; }
+        public TimeSpan        KeepAliveTime    { get; }
 
         /// <summary>
         /// The timestamp when the reservation will expire.
         /// </summary>
-        public DateTime  EndTime          { get; }
+        public DateTimeOffset  EndTime          { get; }
 
         #endregion
 
@@ -60,8 +60,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="KeepAliveTime">The timespan in which the reservation can be used for additional charging sessions (relative time, higher priority).</param>
         /// <param name="EndTime">The timestamp after which the reservation can no longer be used for additional charging sessions (absolute time).</param>
-        private ReservationHandling(TimeSpan?  KeepAliveTime   = null,
-                                    DateTime?  EndTime         = null)
+        private ReservationHandling(TimeSpan?        KeepAliveTime   = null,
+                                    DateTimeOffset?  EndTime         = null)
         {
 
             var now = Timestamp.Now;

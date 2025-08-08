@@ -619,7 +619,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// A delegate called whenever the aggregated dynamic status of all subordinated ParkingSpaces changed.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnInvalidParkingSpaceIdAddedDelegate(DateTime Timestamp, ParkingOperator ParkingOperator, ParkingSpace_Id ParkingSpaceId);
+        public delegate void OnInvalidParkingSpaceIdAddedDelegate(DateTimeOffset Timestamp, ParkingOperator ParkingOperator, ParkingSpace_Id ParkingSpaceId);
 
         /// <summary>
         /// An event fired whenever the aggregated dynamic status of all subordinated ParkingSpaces changed.
@@ -634,7 +634,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// A delegate called whenever the aggregated dynamic status of all subordinated ParkingSpaces changed.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnInvalidParkingSpaceIdRemovedDelegate(DateTime Timestamp, ParkingOperator ParkingOperator, ParkingSpace_Id ParkingSpaceId);
+        public delegate void OnInvalidParkingSpaceIdRemovedDelegate(DateTimeOffset Timestamp, ParkingOperator ParkingOperator, ParkingSpace_Id ParkingSpaceId);
 
         /// <summary>
         /// An event fired whenever the aggregated dynamic status of all subordinated ParkingSpaces changed.
@@ -667,8 +667,8 @@ namespace cloud.charging.open.protocols.WWCP
                                  UInt16?                                MaxStatusScheduleSize          = DefaultMaxStatusScheduleSize,
 
                                  String?                                DataSource                     = null,
-                                 DateTime?                              Created                        = null,
-                                 DateTime?                              LastChange                     = null,
+                                 DateTimeOffset?                        Created                        = null,
+                                 DateTimeOffset?                        LastChange                     = null,
 
                                  JObject?                               CustomData                     = null,
                                  UserDefinedDictionary?                 InternalData                   = null)
@@ -734,16 +734,16 @@ namespace cloud.charging.open.protocols.WWCP
             #region Init events
 
             // Parking garage events
-            this.ParkingGarageAddition         = new VotingNotificator<DateTime, ParkingOperator, ParkingGarage, Boolean>(() => new VetoVote(), true);
-            this.ParkingGarageRemoval          = new VotingNotificator<DateTime, ParkingOperator, ParkingGarage, Boolean>(() => new VetoVote(), true);
+            this.ParkingGarageAddition         = new VotingNotificator<DateTimeOffset, ParkingOperator, ParkingGarage, Boolean>(() => new VetoVote(), true);
+            this.ParkingGarageRemoval          = new VotingNotificator<DateTimeOffset, ParkingOperator, ParkingGarage, Boolean>(() => new VetoVote(), true);
 
             // Parking space events
-            this.ParkingSpaceAddition          = new VotingNotificator<DateTime, ParkingGarage,   ParkingSpace,  Boolean>(() => new VetoVote(), true);
-            this.ParkingSpaceRemoval           = new VotingNotificator<DateTime, ParkingGarage,   ParkingSpace,  Boolean>(() => new VetoVote(), true);
+            this.ParkingSpaceAddition          = new VotingNotificator<DateTimeOffset, ParkingGarage,   ParkingSpace,  Boolean>(() => new VetoVote(), true);
+            this.ParkingSpaceRemoval           = new VotingNotificator<DateTimeOffset, ParkingGarage,   ParkingSpace,  Boolean>(() => new VetoVote(), true);
 
             // Parking sensor events
-            this.ParkingSensorAddition         = new VotingNotificator<DateTime, ParkingSpace,    ParkingSensor, Boolean>(() => new VetoVote(), true);
-            this.ParkingSensorRemoval          = new VotingNotificator<DateTime, ParkingSpace,    ParkingSensor, Boolean>(() => new VetoVote(), true);
+            this.ParkingSensorAddition         = new VotingNotificator<DateTimeOffset, ParkingSpace,    ParkingSensor, Boolean>(() => new VetoVote(), true);
+            this.ParkingSensorRemoval          = new VotingNotificator<DateTimeOffset, ParkingSpace,    ParkingSensor, Boolean>(() => new VetoVote(), true);
 
             #endregion
 
@@ -885,12 +885,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ParkingGarageAddition
 
-        internal readonly IVotingNotificator<DateTime, ParkingOperator, ParkingGarage, Boolean> ParkingGarageAddition;
+        internal readonly IVotingNotificator<DateTimeOffset, ParkingOperator, ParkingGarage, Boolean> ParkingGarageAddition;
 
         /// <summary>
         /// Called whenever an charging pool will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ParkingOperator, ParkingGarage, Boolean> OnParkingGarageAddition
+        public IVotingSender<DateTimeOffset, ParkingOperator, ParkingGarage, Boolean> OnParkingGarageAddition
 
             => ParkingGarageAddition;
 
@@ -1216,12 +1216,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ParkingGarageRemoval
 
-        internal readonly IVotingNotificator<DateTime, ParkingOperator, ParkingGarage, Boolean> ParkingGarageRemoval;
+        internal readonly IVotingNotificator<DateTimeOffset, ParkingOperator, ParkingGarage, Boolean> ParkingGarageRemoval;
 
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ParkingOperator, ParkingGarage, Boolean> OnParkingGarageRemoval
+        public IVotingSender<DateTimeOffset, ParkingOperator, ParkingGarage, Boolean> OnParkingGarageRemoval
 
             => ParkingGarageRemoval;
 
@@ -1526,12 +1526,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ParkingSpaceAddition
 
-        internal readonly IVotingNotificator<DateTime, ParkingGarage, ParkingSpace, Boolean> ParkingSpaceAddition;
+        internal readonly IVotingNotificator<DateTimeOffset, ParkingGarage, ParkingSpace, Boolean> ParkingSpaceAddition;
 
         /// <summary>
         /// Called whenever an ParkingSpace will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ParkingGarage, ParkingSpace, Boolean> OnParkingSpaceAddition
+        public IVotingSender<DateTimeOffset, ParkingGarage, ParkingSpace, Boolean> OnParkingSpaceAddition
 
             => ParkingSpaceAddition;
 
@@ -1539,12 +1539,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ParkingSpaceRemoval
 
-        internal readonly IVotingNotificator<DateTime, ParkingGarage, ParkingSpace, Boolean> ParkingSpaceRemoval;
+        internal readonly IVotingNotificator<DateTimeOffset, ParkingGarage, ParkingSpace, Boolean> ParkingSpaceRemoval;
 
         /// <summary>
         /// Called whenever an ParkingSpace will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ParkingGarage, ParkingSpace, Boolean> OnParkingSpaceRemoval
+        public IVotingSender<DateTimeOffset, ParkingGarage, ParkingSpace, Boolean> OnParkingSpaceRemoval
 
             => ParkingSpaceRemoval;
 
@@ -2166,12 +2166,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ParkingSensorAddition
 
-        internal readonly IVotingNotificator<DateTime, ParkingSpace, ParkingSensor, Boolean> ParkingSensorAddition;
+        internal readonly IVotingNotificator<DateTimeOffset, ParkingSpace, ParkingSensor, Boolean> ParkingSensorAddition;
 
         /// <summary>
         /// Called whenever a socket outlet will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ParkingSpace, ParkingSensor, Boolean> OnParkingSensorAddition
+        public IVotingSender<DateTimeOffset, ParkingSpace, ParkingSensor, Boolean> OnParkingSensorAddition
 
             => ParkingSensorAddition;
 
@@ -2179,12 +2179,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ParkingSensorRemoval
 
-        internal readonly IVotingNotificator<DateTime, ParkingSpace, ParkingSensor, Boolean> ParkingSensorRemoval;
+        internal readonly IVotingNotificator<DateTimeOffset, ParkingSpace, ParkingSensor, Boolean> ParkingSensorRemoval;
 
         /// <summary>
         /// Called whenever a socket outlet will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ParkingSpace, ParkingSensor, Boolean> OnParkingSensorRemoval
+        public IVotingSender<DateTimeOffset, ParkingSpace, ParkingSensor, Boolean> OnParkingSensorRemoval
         {
             get
             {

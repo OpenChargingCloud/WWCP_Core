@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of the current admin status of the energy meter.
         /// </summary>
-        public DateTime                         Timestamp      { get; }
+        public DateTimeOffset               Timestamp      { get; }
 
         /// <summary>
         /// The timestamped admin status of the energy meter.
@@ -152,9 +152,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdminStatus">The current timestamped adminstatus of the energy meter.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public EnergyMeterAdminStatus(EnergyMeter_Id                            Id,
-                                          Timestamped<EnergyMeterAdminStatusTypes>  AdminStatus,
-                                          JObject?                                      CustomData     = null,
-                                          UserDefinedDictionary?                        InternalData   = null)
+                                      Timestamped<EnergyMeterAdminStatusTypes>  AdminStatus,
+                                      JObject?                                  CustomData     = null,
+                                      UserDefinedDictionary?                    InternalData   = null)
 
             : base(CustomData,
                    InternalData,

@@ -37,32 +37,32 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
         #region Delegates for WWCPImporter<TImportData>
 
-        public delegate Task OnStartedDelegate        (DateTime                    Timestamp,
+        public delegate Task OnStartedDelegate        (DateTimeOffset              Timestamp,
                                                        WWCPImporter<TImportData>   Importer,
                                                        String                      Message);
 
-        public delegate Task OnStartupDelegate        (DateTime                    Timestamp,
+        public delegate Task OnStartupDelegate        (DateTimeOffset              Timestamp,
                                                        WWCPImporter<TImportData>   Importer,
                                                        TImportData                 ImportData);
 
-        public delegate Task OnStartupFinishedDelegate(DateTime                    Timestamp,
+        public delegate Task OnStartupFinishedDelegate(DateTimeOffset              Timestamp,
                                                        WWCPImporter<TImportData>   Importer,
                                                        String                      Message);
 
-        public delegate Task OnEveryRunDelegate       (DateTime                    Timestamp,
+        public delegate Task OnEveryRunDelegate       (DateTimeOffset              Timestamp,
                                                        WWCPImporter<TImportData>   Importer,
                                                        TImportData                 ImportData);
 
-        public delegate Task OnFinishedDelegate       (DateTime                    Timestamp,
+        public delegate Task OnFinishedDelegate       (DateTimeOffset              Timestamp,
                                                        WWCPImporter<TImportData>   Importer,
                                                        String                      Message);
 
-        public delegate Task OnImportFailedDelegate   (DateTime                    Timestamp,
+        public delegate Task OnImportFailedDelegate   (DateTimeOffset              Timestamp,
                                                        WWCPImporter<TImportData>   Importer,
                                                        String                      Category,
                                                        Exception?                  Exception         = null,
                                                        String?                     Description       = null,
-                                                       DateTime?                   ExportTimestamp   = null);
+                                                       DateTimeOffset?             ExportTimestamp   = null);
 
 
         //public delegate Task OnLoadForwardingDataFromFileStartedDelegate(DateTime         Timestamp,
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
         #region LastRunTimestamp
 
-        public DateTime  LastRunTimestamp    { get; private set; }
+        public DateTimeOffset  LastRunTimestamp    { get; private set; }
 
         #endregion
 
@@ -238,11 +238,11 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
         #region (protected) SendImportFailed(Timestamp, Category, Exception, Description = null, ExportTimestamp = null)
 
-        protected void SendImportFailed(DateTime    Timestamp,
-                                        String      Category,
-                                        Exception?  Exception         = null,
-                                        String?     Description       = null,
-                                        DateTime?   ExportTimestamp   = null)
+        protected void SendImportFailed(DateTimeOffset   Timestamp,
+                                        String           Category,
+                                        Exception?       Exception         = null,
+                                        String?          Description       = null,
+                                        DateTimeOffset?  ExportTimestamp   = null)
         {
 
             OnImportFailed?.Invoke(Timestamp,

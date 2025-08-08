@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingStationOperator">The added e-mobility provider.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-    public delegate Task OnEMobilityProviderAddedDelegate(DateTime            Timestamp,
+    public delegate Task OnEMobilityProviderAddedDelegate(DateTimeOffset      Timestamp,
                                                           IEMobilityProvider  ChargingStationOperator,
                                                           EventTracking_Id?   EventTrackingId   = null,
                                                           User_Id?            CurrentUserId     = null);
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="OldChargingStationOperator">The old e-mobility provider.</param>
     /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
     /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-    public delegate Task OnEMobilityProviderUpdatedDelegate(DateTime            Timestamp,
+    public delegate Task OnEMobilityProviderUpdatedDelegate(DateTimeOffset      Timestamp,
                                                             IEMobilityProvider  NewChargingStationOperator,
                                                             IEMobilityProvider  OldChargingStationOperator,
                                                             EventTracking_Id?   EventTrackingId   = null,
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingStationOperator">The e-mobility provider to be removed.</param>
     /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
     /// <param name="CurrentChargingStationOperatorId">An optional user identification initiating this command/request.</param>
-    public delegate Task OnEMobilityProviderRemovedDelegate(DateTime            Timestamp,
+    public delegate Task OnEMobilityProviderRemovedDelegate(DateTimeOffset      Timestamp,
                                                             IEMobilityProvider  ChargingStationOperator,
                                                             EventTracking_Id?   EventTrackingId                    = null,
                                                             User_Id?            CurrentChargingStationOperatorId   = null);
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingStationOperator">The added charging station operator.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-    public delegate Task OnChargingStationOperatorAddedDelegate(DateTime                  Timestamp,
+    public delegate Task OnChargingStationOperatorAddedDelegate(DateTimeOffset            Timestamp,
                                                                 IChargingStationOperator  ChargingStationOperator,
                                                                 EventTracking_Id?         EventTrackingId   = null,
                                                                 User_Id?                  CurrentUserId     = null);
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="OldChargingStationOperator">The old charging station operator.</param>
     /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
     /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-    public delegate Task OnChargingStationOperatorUpdatedDelegate(DateTime                  Timestamp,
+    public delegate Task OnChargingStationOperatorUpdatedDelegate(DateTimeOffset            Timestamp,
                                                                   IChargingStationOperator  NewChargingStationOperator,
                                                                   IChargingStationOperator  OldChargingStationOperator,
                                                                   EventTracking_Id?         EventTrackingId   = null,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingStationOperator">The charging station operator to be removed.</param>
     /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
     /// <param name="CurrentChargingStationOperatorId">An optional user identification initiating this command/request.</param>
-    public delegate Task OnChargingStationOperatorRemovedDelegate(DateTime                  Timestamp,
+    public delegate Task OnChargingStationOperatorRemovedDelegate(DateTimeOffset            Timestamp,
                                                                   IChargingStationOperator  ChargingStationOperator,
                                                                   EventTracking_Id?         EventTrackingId                    = null,
                                                                   User_Id?                  CurrentChargingStationOperatorId   = null);
@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         new RoamingNetwork_Id         Id                          { get; }
 
-        ReactiveSet<DataLicense>  DataLicenses                { get; }
+        ReactiveSet<DataLicense>      DataLicenses                { get; }
 
 
 
@@ -467,18 +467,18 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusType>>>>
-                                                 ChargingPoolAdminStatusSchedule  (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null,
-                                                                                   Func<DateTime,                     Boolean>?  TimestampFilter        = null,
+                                                 ChargingPoolAdminStatusSchedule  (IncludeChargingPoolDelegate?                 IncludeChargingPools   = null,
+                                                                                   Func<DateTimeOffset,              Boolean>?  TimestampFilter        = null,
                                                                                    Func<ChargingPoolAdminStatusType, Boolean>?  AdminStatusFilter      = null,
-                                                                                   UInt64?                                       Skip                   = null,
-                                                                                   UInt64?                                       Take                   = null);
+                                                                                   UInt64?                                      Skip                   = null,
+                                                                                   UInt64?                                      Take                   = null);
 
         IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusType>>>>
-                                                 ChargingPoolStatusSchedule       (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null,
-                                                                                   Func<DateTime,                Boolean>?       TimestampFilter        = null,
+                                                 ChargingPoolStatusSchedule       (IncludeChargingPoolDelegate?                 IncludeChargingPools   = null,
+                                                                                   Func<DateTimeOffset,         Boolean>?       TimestampFilter        = null,
                                                                                    Func<ChargingPoolStatusType, Boolean>?       AdminStatusFilter      = null,
-                                                                                   UInt64?                                       Skip                   = null,
-                                                                                   UInt64?                                       Take                   = null);
+                                                                                   UInt64?                                      Skip                   = null,
+                                                                                   UInt64?                                      Take                   = null);
 
         #endregion
 
@@ -499,14 +499,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>>
                                                  ChargingStationAdminStatusSchedule(IncludeChargingStationDelegate?                  IncludeChargingStations   = null,
-                                                                                    Func<DateTime,                        Boolean>?  TimestampFilter           = null,
+                                                                                    Func<DateTimeOffset,                  Boolean>?  TimestampFilter           = null,
                                                                                     Func<ChargingStationAdminStatusTypes, Boolean>?  AdminStatusFilter         = null,
                                                                                     UInt64?                                          Skip                      = null,
                                                                                     UInt64?                                          Take                      = null);
 
         IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>>
                                                  ChargingStationStatusSchedule     (IncludeChargingStationDelegate?                  IncludeChargingStations   = null,
-                                                                                    Func<DateTime,                   Boolean>?       TimestampFilter           = null,
+                                                                                    Func<DateTimeOffset,             Boolean>?       TimestampFilter           = null,
                                                                                     Func<ChargingStationStatusTypes, Boolean>?       StatusFilter              = null,
                                                                                     UInt64?                                          Skip                      = null,
                                                                                     UInt64?                                          Take                      = null);
@@ -552,51 +552,51 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>>
-                                                 EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs        = null,
-                                                                         Func<DateTime,             Boolean>?  TimestampFilter     = null,
+                                                 EVSEAdminStatusSchedule(IncludeEVSEDelegate?                 IncludeEVSEs        = null,
+                                                                         Func<DateTimeOffset,      Boolean>?  TimestampFilter     = null,
                                                                          Func<EVSEAdminStatusType, Boolean>?  AdminStatusFilter   = null,
-                                                                         UInt64?                               Skip                = null,
-                                                                         UInt64?                               Take                = null);
+                                                                         UInt64?                              Skip                = null,
+                                                                         UInt64?                              Take                = null);
 
         IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>>
-                                                 EVSEStatusSchedule     (IncludeEVSEDelegate?                  IncludeEVSEs        = null,
-                                                                         Func<DateTime,        Boolean>?       TimestampFilter     = null,
+                                                 EVSEStatusSchedule     (IncludeEVSEDelegate?                 IncludeEVSEs        = null,
+                                                                         Func<DateTimeOffset, Boolean>?       TimestampFilter     = null,
                                                                          Func<EVSEStatusType, Boolean>?       StatusFilter        = null,
-                                                                         UInt64?                               Skip                = null,
-                                                                         UInt64?                               Take                = null);
+                                                                         UInt64?                              Skip                = null,
+                                                                         UInt64?                              Take                = null);
 
 
         #region SetEVSEAdminStatus
 
-        void SetEVSEAdminStatus(IEnumerable<EVSEAdminStatus> EVSEAdminStatusList);
+        void SetEVSEAdminStatus(IEnumerable<EVSEAdminStatus>  EVSEAdminStatusList);
 
-        void SetEVSEAdminStatus(EVSE_Id                            EVSEId,
+        void SetEVSEAdminStatus(EVSE_Id                           EVSEId,
                                 Timestamped<EVSEAdminStatusType>  NewAdminStatus);
 
-        void SetEVSEAdminStatus(EVSE_Id               EVSEId,
-                                DateTime              Timestamp,
+        void SetEVSEAdminStatus(EVSE_Id              EVSEId,
+                                DateTimeOffset       Timestamp,
                                 EVSEAdminStatusType  NewAdminStatus);
 
-        void SetEVSEAdminStatus(EVSE_Id                                         EVSEId,
+        void SetEVSEAdminStatus(EVSE_Id                                        EVSEId,
                                 IEnumerable<Timestamped<EVSEAdminStatusType>>  AdminStatusList,
-                                ChangeMethods                                   ChangeMethod  = ChangeMethods.Replace);
+                                ChangeMethods                                  ChangeMethod  = ChangeMethods.Replace);
 
         #endregion
 
         #region SetEVSEStatus
 
-        void SetEVSEStatus(IEnumerable<EVSEStatus> EVSEStatusList);
+        void SetEVSEStatus(IEnumerable<EVSEStatus>  EVSEStatusList);
 
-        void SetEVSEStatus(EVSE_Id                       EVSEId,
+        void SetEVSEStatus(EVSE_Id                      EVSEId,
                            Timestamped<EVSEStatusType>  NewStatus);
 
-        void SetEVSEStatus(EVSE_Id          EVSEId,
-                           DateTime         Timestamp,
+        void SetEVSEStatus(EVSE_Id         EVSEId,
+                           DateTimeOffset  Timestamp,
                            EVSEStatusType  NewStatus);
 
-        void SetEVSEStatus(EVSE_Id                                    EVSEId,
+        void SetEVSEStatus(EVSE_Id                                   EVSEId,
                            IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
-                           ChangeMethods                              ChangeMethod  = ChangeMethods.Replace);
+                           ChangeMethods                             ChangeMethod  = ChangeMethods.Replace);
 
         #endregion
 
@@ -626,11 +626,11 @@ namespace cloud.charging.open.protocols.WWCP
         Task ReceiveSendChargeDetailRecordResults(IEnumerable<SendCDRResult> SendCDRResults);
 
 
-        Task<Boolean> RegisterExternalChargingSession(DateTime         Timestamp,
+        Task<Boolean> RegisterExternalChargingSession(DateTimeOffset   Timestamp,
                                                       Object           Sender,
                                                       String           Command,
                                                       ChargingSession  ChargingSession,
-                                                      DateTime?        NoAutoDeletionBefore   = null);
+                                                      DateTimeOffset?  NoAutoDeletionBefore   = null);
 
         #endregion
 
@@ -645,12 +645,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever a parking operator will be or was added.
         /// </summary>
-        IVotingSender<DateTime, User_Id, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorAddition { get; }
+        IVotingSender<DateTimeOffset, User_Id, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorAddition { get; }
 
         /// <summary>
         /// Called whenever a parking operator will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, User_Id, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorRemoval  { get; }
+        IVotingSender<DateTimeOffset, User_Id, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorRemoval  { get; }
 
 
         /// <summary>
@@ -750,12 +750,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was added.
         /// </summary>
-        IVotingSender<DateTime, User_Id, RoamingNetwork, IGridOperator, Boolean> OnGridOperatorAddition { get; }
+        IVotingSender<DateTimeOffset, User_Id, RoamingNetwork, IGridOperator, Boolean> OnGridOperatorAddition { get; }
 
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, User_Id, RoamingNetwork, IGridOperator, Boolean> OnGridOperatorRemoval  { get; }
+        IVotingSender<DateTimeOffset, User_Id, RoamingNetwork, IGridOperator, Boolean> OnGridOperatorRemoval  { get; }
 
         /// <summary>
         /// Return the admin status of all smart cities registered within this roaming network.
@@ -833,12 +833,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was added.
         /// </summary>
-        IVotingSender<DateTime, User_Id, RoamingNetwork, SmartCityProxy, Boolean> OnSmartCityAddition { get; }
+        IVotingSender<DateTimeOffset, User_Id, RoamingNetwork, SmartCityProxy, Boolean> OnSmartCityAddition { get; }
 
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, User_Id, RoamingNetwork, SmartCityProxy, Boolean> OnSmartCityRemoval  { get; }
+        IVotingSender<DateTimeOffset, User_Id, RoamingNetwork, SmartCityProxy, Boolean> OnSmartCityRemoval  { get; }
 
 
 

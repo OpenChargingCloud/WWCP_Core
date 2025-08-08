@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Reserve(ChargingLocation                   ChargingLocation,
                     ChargingReservationLevel           ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                          StartTime              = null,
+                    DateTimeOffset?                    StartTime              = null,
                     TimeSpan?                          Duration               = null,
                     ChargingReservation_Id?            ReservationId          = null,
                     ChargingReservation_Id?            LinkedReservationId    = null,
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime?                          Timestamp              = null,
+                    DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null,
                     CancellationToken                  CancellationToken      = default);
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.WWCP
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
 
-                              DateTime?                              Timestamp           = null,
+                              DateTimeOffset?                        Timestamp           = null,
                               EventTracking_Id?                      EventTrackingId     = null,
                               TimeSpan?                              RequestTimeout      = null,
                               CancellationToken                      CancellationToken   = default);
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.WWCP
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                Timestamp                = null,
+                        DateTimeOffset?          Timestamp                = null,
                         EventTracking_Id?        EventTrackingId          = null,
                         TimeSpan?                RequestTimeout           = null,
                         CancellationToken        CancellationToken        = default);
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.WWCP
                        RemoteAuthentication?  RemoteAuthentication   = null,
                        Auth_Path?             AuthenticationPath     = null,
 
-                       DateTime?              Timestamp              = null,
+                       DateTimeOffset?        Timestamp              = null,
                        EventTracking_Id?      EventTrackingId        = null,
                        TimeSpan?              RequestTimeout         = null,
                        CancellationToken      CancellationToken      = default);
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         Task<ReservationResult>
 
-            Reserve(DateTime?                          StartTime              = null,
+            Reserve(DateTimeOffset?                    StartTime              = null,
                     TimeSpan?                          Duration               = null,
                     ChargingReservation_Id?            ReservationId          = null,
                     ChargingReservation_Id?            LinkedReservationId    = null,
@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime?                          Timestamp              = null,
+                    DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null,
                     CancellationToken                  CancellationToken      = default);
@@ -359,7 +359,7 @@ namespace cloud.charging.open.protocols.WWCP
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                Timestamp                = null,
+                        DateTimeOffset?          Timestamp                = null,
                         EventTracking_Id?        EventTrackingId          = null,
                         TimeSpan?                RequestTimeout           = null,
                         CancellationToken        CancellationToken        = default);

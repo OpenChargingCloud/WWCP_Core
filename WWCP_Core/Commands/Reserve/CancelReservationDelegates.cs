@@ -17,10 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -37,8 +33,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
     /// <param name="Reason">The reason for the cancellation.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnCancelReservationRequestDelegate(DateTime                               LogTimestamp,
-                                                            DateTime                               RequestTimestamp,
+    public delegate Task OnCancelReservationRequestDelegate(DateTimeOffset                         LogTimestamp,
+                                                            DateTimeOffset                         RequestTimestamp,
                                                             Object                                 Sender,
                                                             EventTracking_Id                       EventTrackingId,
                                                             RoamingNetwork_Id                      RoamingNetworkId,
@@ -56,7 +52,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
     /// <param name="Reason">The reason for the cancellation.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<CancelReservationResult> OnCancelReservationDelegate(DateTime                               Timestamp,
+    public delegate Task<CancelReservationResult> OnCancelReservationDelegate(DateTimeOffset                         Timestamp,
                                                                               CancellationToken                      CancellationToken,
                                                                               EventTracking_Id                       EventTrackingId,
                                                                               ChargingReservation_Id                 ReservationId,
@@ -71,7 +67,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="Sender">The sender of the event.</param>
     /// <param name="Reservation">The new charging reservation.</param>
     /// <param name="Reason">The reason for the cancellation.</param>
-    public delegate void OnReservationCanceledDelegate(DateTime                               Timestamp,
+    public delegate void OnReservationCanceledDelegate(DateTimeOffset                         Timestamp,
                                                        Object                                 Sender,
                                                        ChargingReservation                    Reservation,
                                                        ChargingReservationCancellationReason  Reason);
@@ -89,8 +85,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="Result">The result of the reservation cancellation.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnCancelReservationResponseDelegate(DateTime                               LogTimestamp,
-                                                             DateTime                               RequestTimestamp,
+    public delegate Task OnCancelReservationResponseDelegate(DateTimeOffset                         LogTimestamp,
+                                                             DateTimeOffset                         RequestTimestamp,
                                                              Object                                 Sender,
                                                              EventTracking_Id                       EventTrackingId,
                                                              RoamingNetwork_Id                      RoamingNetworkId,

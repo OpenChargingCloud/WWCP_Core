@@ -33,16 +33,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         Task<StatusPull<EVSEStatus>>
 
-            PullEVSEStatus(DateTime?              LastCall            = null,
+            PullEVSEStatus(DateTimeOffset?        LastCall            = null,
                            GeoCoordinate?         SearchCenter        = null,
                            Single                 DistanceKM          = 0f,
-                           EVSEStatusType?       EVSEStatusFilter    = null,
+                           EVSEStatusType?        EVSEStatusFilter    = null,
                            EMobilityProvider_Id?  ProviderId          = null,
 
-                           DateTime?              Timestamp           = null,
-                           CancellationToken      CancellationToken   = default,
+                           DateTimeOffset?        Timestamp           = null,
                            EventTracking_Id?      EventTrackingId     = null,
-                           TimeSpan?              RequestTimeout      = null);
+                           TimeSpan?              RequestTimeout      = null,
+                           CancellationToken      CancellationToken   = default);
 
     }
 

@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         public RemoteStopResponse(RemoteStopRequest        Request,
                                   RemoteStopResultTypes    Result,
                                   EventTracking_Id         EventTrackingId,
-                                  DateTime                 ResponseTimestamp,
+                                  DateTimeOffset           ResponseTimestamp,
 
                                   ChargingSession_Id       ChargingSessionId,
                                   ChargingSession?         ChargingSession       = null,
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="CustomRemoteStopResponseParser">An optional delegate to parse custom RemoteStop response JSON objects.</param>
         public static Boolean TryParse(RemoteStopRequest                                 Request,
                                        JObject                                           JSON,
-                                       DateTime                                          ResponseTimestamp,
+                                       DateTimeOffset                                    ResponseTimestamp,
                                        TimeSpan                                          Runtime,
                                        out RemoteStopResponse?                           RemoteStopResponse,
                                        out String?                                       ErrorResponse,
@@ -680,7 +680,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
             public Builder(RemoteStopRequest?       Request               = null,
                            RemoteStopResultTypes?   Result                = null,
                            EventTracking_Id?        EventTrackingId       = null,
-                           DateTime?                ResponseTimestamp     = null,
+                           DateTimeOffset?          ResponseTimestamp     = null,
 
                            ChargingSession_Id?      ChargingSessionId     = null,
                            ChargingSession?         ChargingSession       = null,

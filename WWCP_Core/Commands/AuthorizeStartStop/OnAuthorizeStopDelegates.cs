@@ -36,8 +36,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="LocalAuthentication">An user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnAuthorizeStopRequestDelegate(DateTime                      LogTimestamp,
-                                                        DateTime                      RequestTimestamp,
+    public delegate Task OnAuthorizeStopRequestDelegate(DateTimeOffset                LogTimestamp,
+                                                        DateTimeOffset                RequestTimestamp,
                                                         Object                        Sender,
                                                         String                        SenderId,
                                                         EventTracking_Id              EventTrackingId,
@@ -64,8 +64,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="LocalAuthentication">An user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
-    public delegate Task OnAuthorizeStopResponseDelegate(DateTime                      LogTimestamp,
-                                                         DateTime                      RequestTimestamp,
+    public delegate Task OnAuthorizeStopResponseDelegate(DateTimeOffset                LogTimestamp,
+                                                         DateTimeOffset                RequestTimestamp,
                                                          Object                        Sender,
                                                          String                        SenderId,
                                                          EventTracking_Id              EventTrackingId,

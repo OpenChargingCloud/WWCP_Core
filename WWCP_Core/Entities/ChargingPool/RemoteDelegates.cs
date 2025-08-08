@@ -31,10 +31,10 @@ namespace cloud.charging.open.protocols.WWCP
 
     public delegate void CPDisconnectedDelegate(IRemoteChargingPool ChargingPool);
 
-    public delegate void CPStateChangedDelegate(IRemoteChargingPool       ChargingPool,
+    public delegate void CPStateChangedDelegate(IRemoteChargingPool      ChargingPool,
                                                 ChargingPoolStatusType   NewStatus,
                                                 ChargingPoolStatusType?  OldStatus    = null,
-                                                Context?                  DataSource   = null);
+                                                Context?                 DataSource   = null);
 
 
 
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate void OnRemoteChargingPoolDataChangedDelegate(DateTime             Timestamp,
+    public delegate void OnRemoteChargingPoolDataChangedDelegate(DateTimeOffset       Timestamp,
                                                                  IRemoteChargingPool  ChargingPool,
                                                                  String               PropertyName,
                                                                  Object?              NewValue,
@@ -62,12 +62,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingPool">The charging station.</param>
     /// <param name="OldEVSEStatus">The old timestamped status of the charging station.</param>
     /// <param name="NewEVSEStatus">The new timestamped status of the charging station.</param>
-    public delegate void OnRemoteChargingPoolAdminStatusChangedDelegate(DateTime                                    Timestamp,
-                                                                        EventTracking_Id                            EventTrackingId,
-                                                                        IRemoteChargingPool                         RemoteChargingPool,
+    public delegate void OnRemoteChargingPoolAdminStatusChangedDelegate(DateTimeOffset                             Timestamp,
+                                                                        EventTracking_Id                           EventTrackingId,
+                                                                        IRemoteChargingPool                        RemoteChargingPool,
                                                                         Timestamped<ChargingPoolAdminStatusType>   NewStatus,
                                                                         Timestamped<ChargingPoolAdminStatusType>?  OldStatus    = null,
-                                                                        Context?                                    DataSource   = null);
+                                                                        Context?                                   DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of the charging station changed.
@@ -76,11 +76,11 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingPool">The charging station.</param>
     /// <param name="OldEVSEStatus">The old timestamped status of the charging station.</param>
     /// <param name="NewEVSEStatus">The new timestamped status of the charging station.</param>
-    public delegate void OnRemoteChargingPoolStatusChangedDelegate(DateTime                               Timestamp,
-                                                                   EventTracking_Id                       EventTrackingId,
-                                                                   IRemoteChargingPool                    RemoteChargingPool,
+    public delegate void OnRemoteChargingPoolStatusChangedDelegate(DateTimeOffset                        Timestamp,
+                                                                   EventTracking_Id                      EventTrackingId,
+                                                                   IRemoteChargingPool                   RemoteChargingPool,
                                                                    Timestamped<ChargingPoolStatusType>   NewStatus,
                                                                    Timestamped<ChargingPoolStatusType>?  OldStatus    = null,
-                                                                   Context?                               DataSource   = null);
+                                                                   Context?                              DataSource   = null);
 
 }

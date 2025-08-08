@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateRoamingNetworkStatus(IEnumerable<RoamingNetworkStatusUpdate>  RoamingNetworkStatusUpdates,
                                        TransmissionTypes                        TransmissionType    = TransmissionTypes.Enqueue,
 
-                                       DateTime?                                Timestamp           = null,
+                                       DateTimeOffset?                          Timestamp           = null,
                                        EventTracking_Id?                        EventTrackingId     = null,
                                        TimeSpan?                                RequestTimeout      = null,
                                        User_Id?                                 CurrentUserId       = null,
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingStationOperatorStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  ChargingStationOperatorStatusUpdates,
                                                 TransmissionTypes                                 TransmissionType    = TransmissionTypes.Enqueue,
 
-                                                DateTime?                                         Timestamp           = null,
+                                                DateTimeOffset?                                   Timestamp           = null,
                                                 EventTracking_Id?                                 EventTrackingId     = null,
                                                 TimeSpan?                                         RequestTimeout      = null,
                                                 User_Id?                                          CurrentUserId       = null,
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingPoolStatus(IEnumerable<ChargingPoolStatusUpdate>  ChargingPoolStatusUpdates,
                                      TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
-                                     DateTime?                              Timestamp           = null,
+                                     DateTimeOffset?                        Timestamp           = null,
                                      EventTracking_Id?                      EventTrackingId     = null,
                                      TimeSpan?                              RequestTimeout      = null,
                                      User_Id?                               CurrentUserId       = null,
@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingStationStatus(IEnumerable<ChargingStationStatusUpdate>  ChargingStationStatusUpdates,
                                         TransmissionTypes                         TransmissionType    = TransmissionTypes.Enqueue,
 
-                                        DateTime?                                 Timestamp           = null,
+                                        DateTimeOffset?                           Timestamp           = null,
                                         EventTracking_Id?                         EventTrackingId     = null,
                                         TimeSpan?                                 RequestTimeout      = null,
                                         User_Id?                                  CurrentUserId       = null,
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateEVSEStatus(IEnumerable<EVSEStatusUpdate>  EVSEStatusUpdates,
                              TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?                      Timestamp           = null,
+                             DateTimeOffset?                Timestamp           = null,
                              EventTracking_Id?              EventTrackingId     = null,
                              TimeSpan?                      RequestTimeout      = null,
                              User_Id?                       CurrentUserId       = null,

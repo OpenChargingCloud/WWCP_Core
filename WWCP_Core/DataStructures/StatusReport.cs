@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of the status report generation.
         /// </summary>
-        public DateTime              Timestamp      { get; }
+        public DateTimeOffset        Timestamp      { get; }
 
         /// <summary>
         /// All aggregated entities.

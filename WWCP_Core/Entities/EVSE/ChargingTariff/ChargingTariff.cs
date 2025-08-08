@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
                               EnergyMix?                          EnergyMix      = null,
 
                               String?                             DataSource     = null,
-                              DateTime?                           LastChange     = null,
+                              DateTimeOffset?                     LastChange     = null,
 
                               JObject?                            CustomData     = null,
                               UserDefinedDictionary?              InternalData   = null)

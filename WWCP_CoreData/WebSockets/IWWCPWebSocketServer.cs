@@ -31,38 +31,38 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 namespace cloud.charging.open.protocols.WWCP.WebSockets
 {
 
-    public delegate Task OnWebSocketServerJSONMessageSentDelegate       (DateTime                    Timestamp,
+    public delegate Task OnWebSocketServerJSONMessageSentDelegate       (DateTimeOffset              Timestamp,
                                                                          IWWCPWebSocketServer        Server,
                                                                          WebSocketServerConnection   Connection,
-                                                                         DateTime                    MessageTimestamp,
+                                                                         DateTimeOffset              MessageTimestamp,
                                                                          EventTracking_Id            EventTrackingId,
                                                                          JArray                      Message,
                                                                          SentStatus                  SentStatus,
                                                                          CancellationToken           CancellationToken);
 
-    public delegate Task OnWebSocketServerJSONMessageReceivedDelegate   (DateTime                    Timestamp,
+    public delegate Task OnWebSocketServerJSONMessageReceivedDelegate   (DateTimeOffset              Timestamp,
                                                                          IWWCPWebSocketServer        Server,
                                                                          WebSocketServerConnection   Connection,
-                                                                         DateTime                    MessageTimestamp,
+                                                                         DateTimeOffset              MessageTimestamp,
                                                                          EventTracking_Id            EventTrackingId,
                                                                          NetworkingNode_Id           SourceNodeId,
                                                                          JArray                      Message,
                                                                          CancellationToken           CancellationToken);
 
 
-    public delegate Task OnWebSocketServerBinaryMessageSentDelegate     (DateTime                    Timestamp,
+    public delegate Task OnWebSocketServerBinaryMessageSentDelegate     (DateTimeOffset              Timestamp,
                                                                          IWWCPWebSocketServer        Server,
                                                                          WebSocketServerConnection   Connection,
-                                                                         DateTime                    MessageTimestamp,
+                                                                         DateTimeOffset              MessageTimestamp,
                                                                          EventTracking_Id            EventTrackingId,
                                                                          Byte[]                      BinaryMessage,
                                                                          SentStatus                  SentStatus,
                                                                          CancellationToken           CancellationToken);
 
-    public delegate Task OnWebSocketServerBinaryMessageReceivedDelegate (DateTime                    Timestamp,
+    public delegate Task OnWebSocketServerBinaryMessageReceivedDelegate (DateTimeOffset              Timestamp,
                                                                          IWWCPWebSocketServer        Server,
                                                                          WebSocketServerConnection   Connection,
-                                                                         DateTime                    MessageTimestamp,
+                                                                         DateTimeOffset              MessageTimestamp,
                                                                          EventTracking_Id            EventTrackingId,
                                                                          NetworkingNode_Id           SourceNodeId,
                                                                          Byte[]                      BinaryMessage,

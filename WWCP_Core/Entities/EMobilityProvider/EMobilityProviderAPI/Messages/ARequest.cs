@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <summary>
         /// The optional timestamp of the request.
         /// </summary>
-        public DateTime                  Timestamp                  { get; }
+        public DateTimeOffset            Timestamp                  { get; }
 
         /// <summary>
         /// An optional event tracking identification for correlating this request with other events.
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="RequestTimeout">The timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ARequest(JObject?           CustomData          = null,
-                        DateTime?          Timestamp           = null,
+                        DateTimeOffset?    Timestamp           = null,
                         EventTracking_Id?  EventTrackingId     = null,
                         TimeSpan?          RequestTimeout      = null,
                         CancellationToken  CancellationToken   = default)

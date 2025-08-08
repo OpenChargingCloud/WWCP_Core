@@ -702,8 +702,8 @@ namespace cloud.charging.open.protocols.WWCP
                                    UInt16?                                  MaxStatusScheduleSize            = null,
 
                                    String?                                  DataSource                       = null,
-                                   DateTime?                                Created                          = null,
-                                   DateTime?                                LastChange                       = null,
+                                   DateTimeOffset?                          Created                          = null,
+                                   DateTimeOffset?                          LastChange                       = null,
 
                                    JObject?                                 CustomData                       = null,
                                    UserDefinedDictionary?                   InternalData                     = null)
@@ -755,12 +755,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eMobilityStationAddition
 
-        internal readonly IVotingNotificator<DateTime, EMobilityProvider, eMobilityStation, Boolean> eMobilityStationAddition;
+        internal readonly IVotingNotificator<DateTimeOffset, EMobilityProvider, eMobilityStation, Boolean> eMobilityStationAddition;
 
         /// <summary>
         /// Called whenever an e-mobility station will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, EMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationAddition
+        public IVotingSender<DateTimeOffset, EMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationAddition
 
             => eMobilityStationAddition;
 
@@ -768,12 +768,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eMobilityStationRemoval
 
-        internal readonly IVotingNotificator<DateTime, EMobilityProvider, eMobilityStation, Boolean> eMobilityStationRemoval;
+        internal readonly IVotingNotificator<DateTimeOffset, EMobilityProvider, eMobilityStation, Boolean> eMobilityStationRemoval;
 
         /// <summary>
         /// Called whenever an e-mobility station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, EMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationRemoval
+        public IVotingSender<DateTimeOffset, EMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationRemoval
 
             => eMobilityStationRemoval;
 
@@ -1002,7 +1002,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId,
                                                    eMobilityStationAdminStatusTypes NewStatus,
-                                                   DateTime Timestamp)
+                                                   DateTimeOffset Timestamp)
         {
 
             if (TryGeteMobilityStationById(eMobilityStationId, out var eMobilityStation) &&
@@ -1079,7 +1079,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateeMobilityStationData(DateTime          Timestamp,
+        internal async Task UpdateeMobilityStationData(DateTimeOffset    Timestamp,
                                                        EventTracking_Id  EventTrackingId,
                                                        eMobilityStation  eMobilityStation,
                                                        String            PropertyName,
@@ -1112,7 +1112,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eMobilityStation">The updated eMobilityStation.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateeMobilityStationAdminStatus(DateTime                                        Timestamp,
+        internal async Task UpdateeMobilityStationAdminStatus(DateTimeOffset                                  Timestamp,
                                                               EventTracking_Id                                EventTrackingId,
                                                               eMobilityStation                                eMobilityStation,
                                                               Timestamped<eMobilityStationAdminStatusTypes>   NewStatus,
@@ -1139,12 +1139,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eVehicleAddition
 
-        internal readonly IVotingNotificator<DateTime, EMobilityProvider, EVehicle, Boolean> eVehicleAddition;
+        internal readonly IVotingNotificator<DateTimeOffset, EMobilityProvider, EVehicle, Boolean> eVehicleAddition;
 
         /// <summary>
         /// Called whenever an electric vehicle will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, EMobilityProvider, EVehicle, Boolean> OnEVehicleAddition
+        public IVotingSender<DateTimeOffset, EMobilityProvider, EVehicle, Boolean> OnEVehicleAddition
 
             => eVehicleAddition;
 
@@ -1152,12 +1152,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eVehicleRemoval
 
-        internal readonly IVotingNotificator<DateTime, EMobilityProvider, EVehicle, Boolean> eVehicleRemoval;
+        internal readonly IVotingNotificator<DateTimeOffset, EMobilityProvider, EVehicle, Boolean> eVehicleRemoval;
 
         /// <summary>
         /// Called whenever an electric vehicle will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, EMobilityProvider, EVehicle, Boolean> OnEVehicleRemoval
+        public IVotingSender<DateTimeOffset, EMobilityProvider, EVehicle, Boolean> OnEVehicleRemoval
 
             => eVehicleRemoval;
 
@@ -1395,9 +1395,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEVehicleAdminStatus(eVehicleId, NewStatus, Timestamp)
 
-        public void SetEVehicleAdminStatus(EVehicle_Id eVehicleId,
-                                           eVehicleAdminStatusTypes NewStatus,
-                                           DateTime Timestamp)
+        public void SetEVehicleAdminStatus(EVehicle_Id               eVehicleId,
+                                           eVehicleAdminStatusTypes  NewStatus,
+                                           DateTimeOffset            Timestamp)
         {
 
             if (TryGetEVehicleById(eVehicleId, out var eVehicle) &&
@@ -1482,7 +1482,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateEVehicleData(DateTime Timestamp,
+        internal async Task UpdateEVehicleData(DateTimeOffset Timestamp,
                                                EventTracking_Id? EventTrackingId,
                                                EVehicle eVehicle,
                                                String PropertyName,
@@ -1508,7 +1508,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateEVehicleAdminStatus(DateTime Timestamp,
+        internal async Task UpdateEVehicleAdminStatus(DateTimeOffset Timestamp,
                                                       EventTracking_Id? EventTrackingId,
                                                       EVehicle eVehicle,
                                                       Timestamped<eVehicleAdminStatusTypes>   NewStatus,
@@ -1533,7 +1533,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateEVehicleStatus(DateTime Timestamp,
+        internal async Task UpdateEVehicleStatus(DateTimeOffset Timestamp,
                                                  EventTracking_Id? EventTrackingId,
                                                  EVehicle eVehicle,
                                                  Timestamped<eVehicleStatusTypes>   NewStatus,
@@ -1558,7 +1558,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldGeoCoordinate">The old aggreagted charging station status.</param>
         /// <param name="NewGeoCoordinate">The new aggreagted charging station status.</param>
-        internal async Task UpdateEVehicleGeoLocation(DateTime Timestamp,
+        internal async Task UpdateEVehicleGeoLocation(DateTimeOffset Timestamp,
                                                       EventTracking_Id? EventTrackingId,
                                                       EVehicle eVehicle,
                                                       Timestamped<GeoCoordinate>   NewGeoCoordinate,
@@ -1947,7 +1947,7 @@ namespace cloud.charging.open.protocols.WWCP
             ISendAdminStatus.UpdateEVSEAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  EVSEAdminStatusUpdates,
                                                    TransmissionTypes                   TransmissionType,
 
-                                                   DateTime?                           Timestamp,
+                                                   DateTimeOffset?                     Timestamp,
                                                    EventTracking_Id?                   EventTrackingId,
                                                    TimeSpan?                           RequestTimeout,
                                                    User_Id?                            CurrentUserId,
@@ -2030,7 +2030,7 @@ namespace cloud.charging.open.protocols.WWCP
             ISendAdminStatus.UpdateChargingStationAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  ChargingStationAdminStatusUpdates,
                                                               TransmissionTypes                              TransmissionType,
 
-                                                              DateTime?                                      Timestamp,
+                                                              DateTimeOffset?                                Timestamp,
                                                               EventTracking_Id?                              EventTrackingId,
                                                               TimeSpan?                                      RequestTimeout,
                                                               User_Id?                                       CurrentUserId,
@@ -2113,7 +2113,7 @@ namespace cloud.charging.open.protocols.WWCP
             ISendAdminStatus.UpdateChargingPoolAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  ChargingPoolAdminStatusUpdates,
                                                            TransmissionTypes                           TransmissionType,
 
-                                                           DateTime?                                   Timestamp,
+                                                           DateTimeOffset?                             Timestamp,
                                                            EventTracking_Id?                           EventTrackingId,
                                                            TimeSpan?                                   RequestTimeout,
                                                            User_Id?                                    CurrentUserId,
@@ -2196,7 +2196,7 @@ namespace cloud.charging.open.protocols.WWCP
             ISendAdminStatus.UpdateChargingStationOperatorAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  ChargingStationOperatorAdminStatusUpdates,
                                                                       TransmissionTypes                                      TransmissionType,
 
-                                                                      DateTime?                                              Timestamp,
+                                                                      DateTimeOffset?                                        Timestamp,
                                                                       EventTracking_Id?                                      EventTrackingId,
                                                                       TimeSpan?                                              RequestTimeout,
                                                                       User_Id?                                               CurrentUserId,
@@ -2279,7 +2279,7 @@ namespace cloud.charging.open.protocols.WWCP
             ISendAdminStatus.UpdateRoamingNetworkAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  RoamingNetworkAdminStatusUpdates,
                                                              TransmissionTypes                             TransmissionType,
 
-                                                             DateTime?                                     Timestamp,
+                                                             DateTimeOffset?                               Timestamp,
                                                              EventTracking_Id?                             EventTrackingId,
                                                              TimeSpan?                                     RequestTimeout,
                                                              User_Id?                                      CurrentUserId,
@@ -2365,7 +2365,7 @@ namespace cloud.charging.open.protocols.WWCP
             ISendStatus.UpdateEVSEStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
                                          TransmissionTypes              TransmissionType,
 
-                                         DateTime?                      Timestamp,
+                                         DateTimeOffset?                Timestamp,
                                          EventTracking_Id?              EventTrackingId,
                                          TimeSpan?                      RequestTimeout,
                                          User_Id?                       CurrentUserId,
@@ -2446,7 +2446,7 @@ namespace cloud.charging.open.protocols.WWCP
             ISendStatus.UpdateChargingStationStatus(IEnumerable<ChargingStationStatusUpdate>  ChargingStationStatusUpdates,
                                                     TransmissionTypes                         TransmissionType,
 
-                                                    DateTime?                                 Timestamp,
+                                                    DateTimeOffset?                           Timestamp,
                                                     EventTracking_Id?                         EventTrackingId,
                                                     TimeSpan?                                 RequestTimeout,
                                                     User_Id?                                  CurrentUserId,
@@ -2527,7 +2527,7 @@ namespace cloud.charging.open.protocols.WWCP
             ISendStatus.UpdateChargingPoolStatus(IEnumerable<ChargingPoolStatusUpdate>  ChargingPoolStatusUpdates,
                                                  TransmissionTypes                      TransmissionType,
 
-                                                 DateTime?                              Timestamp,
+                                                 DateTimeOffset?                        Timestamp,
                                                  EventTracking_Id?                      EventTrackingId,
                                                  TimeSpan?                              RequestTimeout,
                                                  User_Id?                               CurrentUserId,
@@ -2608,7 +2608,7 @@ namespace cloud.charging.open.protocols.WWCP
             ISendStatus.UpdateChargingStationOperatorStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  ChargingStationOperatorStatus,
                                                             TransmissionTypes                                 TransmissionType,
 
-                                                            DateTime?                                         Timestamp,
+                                                            DateTimeOffset?                                   Timestamp,
                                                             EventTracking_Id?                                 EventTrackingId,
                                                             TimeSpan?                                         RequestTimeout,
                                                             User_Id?                                          CurrentUserId,
@@ -2689,7 +2689,7 @@ namespace cloud.charging.open.protocols.WWCP
             ISendStatus.UpdateRoamingNetworkStatus(IEnumerable<RoamingNetworkStatusUpdate>  RoamingNetworkStatus,
                                                    TransmissionTypes                        TransmissionType,
 
-                                                   DateTime?                                Timestamp,
+                                                   DateTimeOffset?                          Timestamp,
                                                    EventTracking_Id?                        EventTrackingId,
                                                    TimeSpan?                                RequestTimeout,
                                                    User_Id?                                 CurrentUserId,
@@ -2797,7 +2797,7 @@ namespace cloud.charging.open.protocols.WWCP
                            ChargingSession_Id?          CPOPartnerSessionId   = null,
                            ChargingStationOperator_Id?  OperatorId            = null,
 
-                           DateTime?                    RequestTimestamp      = null,
+                           DateTimeOffset?              RequestTimestamp      = null,
                            EventTracking_Id?            EventTrackingId       = null,
                            TimeSpan?                    RequestTimeout        = null,
                            CancellationToken            CancellationToken     = default)
@@ -2931,7 +2931,7 @@ namespace cloud.charging.open.protocols.WWCP
                           ChargingSession_Id?          CPOPartnerSessionId   = null,
                           ChargingStationOperator_Id?  OperatorId            = null,
 
-                          DateTime?                    Timestamp             = null,
+                          DateTimeOffset?              Timestamp             = null,
                           EventTracking_Id?            EventTrackingId       = null,
                           TimeSpan?                    RequestTimeout        = null,
                           CancellationToken            CancellationToken     = default)
@@ -3056,7 +3056,7 @@ namespace cloud.charging.open.protocols.WWCP
             SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
                                    TransmissionTypes   TransmissionType,
 
-                                   DateTime?           Timestamp           = null,
+                                   DateTimeOffset?     Timestamp           = null,
                                    EventTracking_Id?   EventTrackingId     = null,
                                    TimeSpan?           RequestTimeout      = null,
                                    CancellationToken   CancellationToken   = default)
@@ -3099,7 +3099,7 @@ namespace cloud.charging.open.protocols.WWCP
             SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                                     TransmissionTypes                TransmissionType,
 
-                                    DateTime?                        Timestamp           = null,
+                                    DateTimeOffset?                  Timestamp           = null,
                                     EventTracking_Id?                EventTrackingId     = null,
                                     TimeSpan?                        RequestTimeout      = null,
                                     CancellationToken                CancellationToken   = default)
@@ -3219,7 +3219,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Reserve(ChargingLocation                   ChargingLocation,
                     ChargingReservationLevel           ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                          ReservationStartTime   = null,
+                    DateTimeOffset?                    ReservationStartTime   = null,
                     TimeSpan?                          Duration               = null,
                     ChargingReservation_Id?            ReservationId          = null,
                     ChargingReservation_Id?            LinkedReservationId    = null,
@@ -3231,7 +3231,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime?                          Timestamp              = null,
+                    DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null,
                     CancellationToken                  CancellationToken      = default)
@@ -3373,7 +3373,7 @@ namespace cloud.charging.open.protocols.WWCP
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
 
-                              DateTime?                              Timestamp           = null,
+                              DateTimeOffset?                        Timestamp           = null,
                               EventTracking_Id?                      EventTrackingId     = null,
                               TimeSpan?                              RequestTimeout      = null,
                               CancellationToken                      CancellationToken   = default)
@@ -3507,9 +3507,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (internal) SendNewReservation     (Timestamp, Sender, Reservation)
 
-        internal void SendNewReservation(DateTime Timestamp,
-                                         Object Sender,
-                                         ChargingReservation Reservation)
+        internal void SendNewReservation(DateTimeOffset       Timestamp,
+                                         Object               Sender,
+                                         ChargingReservation  Reservation)
         {
 
             OnNewReservation?.Invoke(Timestamp, Sender, Reservation);
@@ -3520,10 +3520,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (internal) SendReservationCanceled(Timestamp, Sender, Reservation, Reason)
 
-        internal void SendReservationCanceled(DateTime Timestamp,
-                                              Object Sender,
-                                              ChargingReservation Reservation,
-                                              ChargingReservationCancellationReason Reason)
+        internal void SendReservationCanceled(DateTimeOffset                         Timestamp,
+                                              Object                                 Sender,
+                                              ChargingReservation                    Reservation,
+                                              ChargingReservationCancellationReason  Reason)
         {
 
             OnReservationCanceled?.Invoke(Timestamp, Sender, Reservation, Reason);
@@ -3618,7 +3618,7 @@ namespace cloud.charging.open.protocols.WWCP
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                RequestTimestamp         = null,
+                        DateTimeOffset?          RequestTimestamp         = null,
                         EventTracking_Id?        EventTrackingId          = null,
                         TimeSpan?                RequestTimeout           = null,
                         CancellationToken        CancellationToken        = default)
@@ -3742,7 +3742,7 @@ namespace cloud.charging.open.protocols.WWCP
                        RemoteAuthentication?  RemoteAuthentication   = null,
                        Auth_Path?             AuthenticationPath     = null,
 
-                       DateTime?              Timestamp              = null,
+                       DateTimeOffset?        Timestamp              = null,
                        EventTracking_Id?      EventTrackingId        = null,
                        TimeSpan?              RequestTimeout         = null,
                        CancellationToken      CancellationToken      = default)

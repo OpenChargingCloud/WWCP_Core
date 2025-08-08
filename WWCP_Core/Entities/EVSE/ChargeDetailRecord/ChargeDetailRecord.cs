@@ -101,11 +101,11 @@ namespace cloud.charging.open.protocols.WWCP
         [Mandatory]
         public ChargeDetailRecord_Id    Id              { get; }
 
-        /// <summary>
-        /// The creation timestamp of the charge detail record.
-        /// </summary>
-        [Mandatory]
-        public DateTime                 Created         { get; }
+        ///// <summary>
+        ///// The creation timestamp of the charge detail record.
+        ///// </summary>
+        //[Mandatory]
+        //public DateTimeOffset           Created         { get; }
 
 
         #region Session

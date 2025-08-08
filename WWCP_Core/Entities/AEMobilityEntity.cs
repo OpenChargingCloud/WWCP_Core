@@ -116,10 +116,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdminStatusFilter">An optional admin status value filter.</param>
         /// <param name="Skip">The number of admin status entries to skip.</param>
         /// <param name="Take">The number of admin status entries to return.</param>
-        public IEnumerable<Timestamped<TAdminStatus>> AdminStatusSchedule(Func<DateTime,     Boolean>?  TimestampFilter     = null,
-                                                                          Func<TAdminStatus, Boolean>?  AdminStatusFilter   = null,
-                                                                          UInt64?                       Skip                = null,
-                                                                          UInt64?                       Take                = null)
+        public IEnumerable<Timestamped<TAdminStatus>> AdminStatusSchedule(Func<DateTimeOffset, Boolean>?  TimestampFilter     = null,
+                                                                          Func<TAdminStatus,   Boolean>?  AdminStatusFilter   = null,
+                                                                          UInt64?                         Skip                = null,
+                                                                          UInt64?                         Take                = null)
         {
 
             TimestampFilter   ??= timestamp => true;
@@ -174,10 +174,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="StatusFilter">An optional status value filter.</param>
         /// <param name="Skip">The number of status entries to skip.</param>
         /// <param name="Take">The number of status entries to return.</param>
-        public IEnumerable<Timestamped<TStatus>> StatusSchedule(Func<DateTime, Boolean>?  TimestampFilter   = null,
-                                                                Func<TStatus,  Boolean>?  StatusFilter      = null,
-                                                                UInt64?                   Skip              = null,
-                                                                UInt64?                   Take              = null)
+        public IEnumerable<Timestamped<TStatus>> StatusSchedule(Func<DateTimeOffset, Boolean>?  TimestampFilter   = null,
+                                                                Func<TStatus,        Boolean>?  StatusFilter      = null,
+                                                                UInt64?                         Skip              = null,
+                                                                UInt64?                         Take              = null)
         {
 
              TimestampFilter ??= timestamp => true;
@@ -288,8 +288,8 @@ namespace cloud.charging.open.protocols.WWCP
                                 UInt16                      MaxStatusScheduleSize        = DefaultMaxStatusScheduleSize,
 
                                 String?                     DataSource                   = null,
-                                DateTime?                   Created                      = null,
-                                DateTime?                   LastChange                   = null,
+                                DateTimeOffset?             Created                      = null,
+                                DateTimeOffset?             LastChange                   = null,
 
                                 JObject?                    CustomData                   = null,
                                 UserDefinedDictionary?      InternalData                 = null)
@@ -434,9 +434,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="NewAdminStatus">A new admin status.</param>
         /// <param name="DataSource">An optional data source or context for the status update.</param>
-        public void SetAdminStatus(TAdminStatus  NewAdminStatus,
-                                   DateTime      Timestamp,
-                                   Context?      DataSource   = null)
+        public void SetAdminStatus(TAdminStatus    NewAdminStatus,
+                                   DateTimeOffset  Timestamp,
+                                   Context?        DataSource   = null)
         {
 
             adminStatusSchedule.Insert(NewAdminStatus,
@@ -513,9 +513,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">A new status.</param>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="DataSource">An optional data source or context for the status update.</param>
-        public void SetStatus(TStatus   NewStatus,
-                              DateTime  Timestamp,
-                              Context?  DataSource   = null)
+        public void SetStatus(TStatus         NewStatus,
+                              DateTimeOffset  Timestamp,
+                              Context?        DataSource   = null)
         {
 
             statusSchedule.Insert(NewStatus,

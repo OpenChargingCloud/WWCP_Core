@@ -216,13 +216,13 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="TextMessage">The received text message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public async Task ProcessWebSocketTextFrame(DateTime                   RequestTimestamp,
+        public async Task ProcessWebSocketTextFrame(DateTimeOffset                                                         RequestTimestamp,
                                                     org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketClient            Client,
                                                     org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketClientConnection  Connection,
                                                     org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketFrame             Frame,
-                                                    EventTracking_Id           EventTrackingId,
-                                                    String                     TextMessage,
-                                                    CancellationToken          CancellationToken)
+                                                    EventTracking_Id                                                       EventTrackingId,
+                                                    String                                                                 TextMessage,
+                                                    CancellationToken                                                      CancellationToken)
         {
 
             try
@@ -295,13 +295,13 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="BinaryMessage">The received binary message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public async Task ProcessWebSocketBinaryFrame(DateTime                   RequestTimestamp,
+        public async Task ProcessWebSocketBinaryFrame(DateTimeOffset                                                         RequestTimestamp,
                                                       org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketClient            Client,
                                                       org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketClientConnection  Connection,
                                                       org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketFrame             Frame,
-                                                      EventTracking_Id           EventTrackingId,
-                                                      Byte[]                     BinaryMessage,
-                                                      CancellationToken          CancellationToken)
+                                                      EventTracking_Id                                                       EventTrackingId,
+                                                      Byte[]                                                                 BinaryMessage,
+                                                      CancellationToken                                                      CancellationToken)
         {
 
             try

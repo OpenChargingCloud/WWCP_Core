@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <summary>
         /// The optional timestamp of the request.
         /// </summary>
-        DateTime           Timestamp           { get; }
+        DateTimeOffset     Timestamp           { get; }
 
         /// <summary>
         /// An optional token to cancel this request.

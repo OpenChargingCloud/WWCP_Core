@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
-        public DateTime                      Created                 { get; }
+        public DateTimeOffset                Created                 { get; }
 
         /// <summary>
         /// An optional list of authorize stop tokens.

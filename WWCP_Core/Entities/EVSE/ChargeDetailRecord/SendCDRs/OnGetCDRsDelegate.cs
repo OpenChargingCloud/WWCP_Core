@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.WWCP
  //   /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
  //
  //   /// <param name="RequestTimeout">An optional timeout for this request.</param>
- //   public delegate Task<SendCDRsResult> OnGetChargeDetailRecordDelegate(DateTime                         Timestamp,
+ //   public delegate Task<SendCDRsResult> OnGetChargeDetailRecordDelegate(DateTimeOffset                   Timestamp,
  //                                                                        CancellationToken                CancellationToken,
  //                                                                        EventTracking_Id                 EventTrackingId,
  //                                                                        IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -48,14 +48,14 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ChargeDetailRecord">An enumeration of charge detail records.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnGetCDRsRequestDelegate (DateTime                         LogTimestamp,
-                                                   DateTime                         RequestTimestamp,
+    public delegate Task OnGetCDRsRequestDelegate (DateTimeOffset                   LogTimestamp,
+                                                   DateTimeOffset                   RequestTimestamp,
                                                    Object                           Sender,
                                                    String                           SenderId,
                                                    EventTracking_Id                 EventTrackingId,
                                                    RoamingNetwork_Id                RoamingNetworkId,
-                                                   DateTime                         From,
-                                                   DateTime?                        To,
+                                                   DateTimeOffset                   From,
+                                                   DateTimeOffset?                  To,
                                                    EMobilityProvider_Id?            ProviderId,
                                                    TimeSpan?                        RequestTimeout);
 
@@ -70,14 +70,14 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
     /// <param name="Result">The authorize stop result.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnGetCDRsResponseDelegate(DateTime                         LogTimestamp,
-                                                   DateTime                         RequestTimestamp,
+    public delegate Task OnGetCDRsResponseDelegate(DateTimeOffset                   LogTimestamp,
+                                                   DateTimeOffset                   RequestTimestamp,
                                                    Object                           Sender,
                                                    String                           SenderId,
                                                    EventTracking_Id                 EventTrackingId,
                                                    RoamingNetwork_Id                RoamingNetworkId,
-                                                   DateTime                         From,
-                                                   DateTime?                        To,
+                                                   DateTimeOffset                   From,
+                                                   DateTimeOffset?                  To,
                                                    EMobilityProvider_Id?            ProviderId,
                                                    TimeSpan?                        RequestTimeout,
                                                    IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,

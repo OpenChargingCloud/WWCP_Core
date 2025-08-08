@@ -1327,8 +1327,8 @@ namespace cloud.charging.open.protocols.WWCP
                                UInt16?                                        MaxStatusScheduleSize          = null,
 
                                String?                                        DataSource                     = null,
-                               DateTime?                                      Created                        = null,
-                               DateTime?                                      LastChange                     = null,
+                               DateTimeOffset?                                Created                        = null,
+                               DateTimeOffset?                                LastChange                     = null,
 
                                JObject?                                       CustomData                     = null,
                                UserDefinedDictionary?                         InternalData                   = null,
@@ -1580,7 +1580,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewValue">The new value of the changed property.</param>
         /// <param name="OldValue">The optional old value of the changed property.</param>
         /// <param name="DataSource">An optional data source or context for the charging station data update.</param>
-        internal async Task UpdateData(DateTime          Timestamp,
+        internal async Task UpdateData(DateTimeOffset    Timestamp,
                                        EventTracking_Id  EventTrackingId,
                                        Object            Sender,
                                        String            PropertyName,
@@ -1613,7 +1613,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new charging station admin status.</param>
         /// <param name="OldStatus">The optional old charging station admin status.</param>
         /// <param name="DataSource">An optional data source or context for the charging station admin status update.</param>
-        internal async Task UpdateAdminStatus(DateTime                                       Timestamp,
+        internal async Task UpdateAdminStatus(DateTimeOffset                                 Timestamp,
                                               EventTracking_Id                               EventTrackingId,
                                               Timestamped<ChargingStationAdminStatusTypes>   NewStatus,
                                               Timestamped<ChargingStationAdminStatusTypes>?  OldStatus    = null,
@@ -1643,7 +1643,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new charging station status.</param>
         /// <param name="OldStatus">The optional old charging station status.</param>
         /// <param name="DataSource">An optional data source or context for the charging station status update.</param>
-        internal async Task UpdateStatus(DateTime                                  Timestamp,
+        internal async Task UpdateStatus(DateTimeOffset                            Timestamp,
                                          EventTracking_Id                          EventTrackingId,
                                          Timestamped<ChargingStationStatusTypes>   NewStatus,
                                          Timestamped<ChargingStationStatusTypes>?  OldStatus    = null,
@@ -1672,7 +1672,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition
 
             => evses.OnAddition;
 
@@ -1683,7 +1683,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVSE will be or was updated.
         /// </summary>
-        public IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate
+        public IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate
 
             => evses.OnUpdate;
 
@@ -1694,7 +1694,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval
+        public IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval
 
             => evses.OnRemoval;
 
@@ -1771,11 +1771,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HistorySize">The size of the history.</param>
         public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>>
 
-            EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs      = null,
-                                    Func<DateTime,             Boolean>?  TimestampFilter   = null,
+            EVSEAdminStatusSchedule(IncludeEVSEDelegate?                 IncludeEVSEs      = null,
+                                    Func<DateTimeOffset,      Boolean>?  TimestampFilter   = null,
                                     Func<EVSEAdminStatusType, Boolean>?  StatusFilter      = null,
-                                    UInt64?                               Skip              = null,
-                                    UInt64?                               Take              = null)
+                                    UInt64?                              Skip              = null,
+                                    UInt64?                              Take              = null)
 
         {
 
@@ -1823,11 +1823,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HistorySize">The size of the history.</param>
         public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>>
 
-            EVSEStatusSchedule(IncludeEVSEDelegate?             IncludeEVSEs      = null,
-                               Func<DateTime,        Boolean>?  TimestampFilter   = null,
+            EVSEStatusSchedule(IncludeEVSEDelegate?            IncludeEVSEs      = null,
+                               Func<DateTimeOffset, Boolean>?  TimestampFilter   = null,
                                Func<EVSEStatusType, Boolean>?  StatusFilter      = null,
-                               UInt64?                          Skip              = null,
-                               UInt64?                          Take              = null)
+                               UInt64?                         Skip              = null,
+                               UInt64?                         Take              = null)
 
         {
 
@@ -2535,7 +2535,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewValue">The new value of the changed property.</param>
         /// <param name="OldValue">The optional old value of the changed property.</param>
         /// <param name="DataSource">An optional data source or context for the EVSE data update.</param>
-        internal async Task UpdateEVSEData(DateTime          Timestamp,
+        internal async Task UpdateEVSEData(DateTimeOffset    Timestamp,
                                            EventTracking_Id  EventTrackingId,
                                            IEVSE             EVSE,
                                            String            PropertyName,
@@ -2578,12 +2578,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewAdminStatus">The new EVSE admin status.</param>
         /// <param name="OldAdminStatus">The optional old EVSE admin status.</param>
         /// <param name="DataSource">An optional data source or context for the EVSE admin status update.</param>
-        internal async Task UpdateEVSEAdminStatus(DateTime                            Timestamp,
-                                                  EventTracking_Id                    EventTrackingId,
-                                                  IEVSE                               EVSE,
+        internal async Task UpdateEVSEAdminStatus(DateTimeOffset                     Timestamp,
+                                                  EventTracking_Id                   EventTrackingId,
+                                                  IEVSE                              EVSE,
                                                   Timestamped<EVSEAdminStatusType>   NewAdminStatus,
                                                   Timestamped<EVSEAdminStatusType>?  OldAdminStatus   = null,
-                                                  Context?                            DataSource       = null)
+                                                  Context?                           DataSource       = null)
         {
 
             try
@@ -2619,12 +2619,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new EVSE status.</param>
         /// <param name="OldStatus">The optional old EVSE status.</param>
         /// <param name="DataSource">An optional data source or context for the EVSE status update.</param>
-        internal async Task UpdateEVSEStatus(DateTime                       Timestamp,
-                                             EventTracking_Id               EventTrackingId,
-                                             IEVSE                          EVSE,
+        internal async Task UpdateEVSEStatus(DateTimeOffset                Timestamp,
+                                             EventTracking_Id              EventTrackingId,
+                                             IEVSE                         EVSE,
                                              Timestamped<EVSEStatusType>   NewStatus,
                                              Timestamped<EVSEStatusType>?  OldStatus    = null,
-                                             Context?                       DataSource   = null)
+                                             Context?                      DataSource   = null)
         {
 
             try
@@ -2736,7 +2736,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (internal) SendNewChargingSession   (Timestamp, Sender, Session)
 
-        internal void SendNewChargingSession(DateTime         Timestamp,
+        internal void SendNewChargingSession(DateTimeOffset   Timestamp,
                                              Object           Sender,
                                              ChargingSession  Session)
         {
@@ -2835,7 +2835,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public Task<ReservationResult>
 
-            Reserve(DateTime?                          StartTime              = null,
+            Reserve(DateTimeOffset?                    StartTime              = null,
                     TimeSpan?                          Duration               = null,
                     ChargingReservation_Id?            ReservationId          = null,
                     ChargingReservation_Id?            LinkedReservationId    = null,
@@ -2847,7 +2847,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime?                          Timestamp              = null,
+                    DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null,
                     CancellationToken                  CancellationToken      = default)
@@ -2900,7 +2900,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Reserve(ChargingLocation                   ChargingLocation,
                     ChargingReservationLevel           ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                          ReservationStartTime   = null,
+                    DateTimeOffset?                    ReservationStartTime   = null,
                     TimeSpan?                          Duration               = null,
                     ChargingReservation_Id?            ReservationId          = null,
                     ChargingReservation_Id?            LinkedReservationId    = null,
@@ -2912,7 +2912,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime?                          Timestamp              = null,
+                    DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null,
                     CancellationToken                  CancellationToken      = default)
@@ -3086,7 +3086,7 @@ namespace cloud.charging.open.protocols.WWCP
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
 
-                              DateTime?                              Timestamp           = null,
+                              DateTimeOffset?                        Timestamp           = null,
                               EventTracking_Id?                      EventTrackingId     = null,
                               TimeSpan?                              RequestTimeout      = null,
                               CancellationToken                      CancellationToken   = default)
@@ -3300,7 +3300,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (internal) SendNewReservation     (Timestamp, Sender, Reservation)
 
-        internal void SendNewReservation(DateTime             Timestamp,
+        internal void SendNewReservation(DateTimeOffset       Timestamp,
                                          Object               Sender,
                                          ChargingReservation  Reservation)
         {
@@ -3313,7 +3313,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (internal) SendReservationCanceled(Timestamp, Sender, Reservation, Reason)
 
-        internal void SendReservationCanceled(DateTime                               Timestamp,
+        internal void SendReservationCanceled(DateTimeOffset                         Timestamp,
                                               Object                                 Sender,
                                               ChargingReservation                    Reservation,
                                               ChargingReservationCancellationReason  Reason)
@@ -3391,7 +3391,7 @@ namespace cloud.charging.open.protocols.WWCP
                            ChargingSession_Id?          CPOPartnerSessionId   = null,
                            ChargingStationOperator_Id?  OperatorId            = null,
 
-                           DateTime?                    RequestTimestamp      = null,
+                           DateTimeOffset?              RequestTimestamp      = null,
                            EventTracking_Id?            EventTrackingId       = null,
                            TimeSpan?                    RequestTimeout        = null,
                            CancellationToken            CancellationToken     = default)
@@ -3537,7 +3537,7 @@ namespace cloud.charging.open.protocols.WWCP
                           ChargingSession_Id?          CPOPartnerSessionId   = null,
                           ChargingStationOperator_Id?  OperatorId            = null,
 
-                          DateTime?                    RequestTimestamp      = null,
+                          DateTimeOffset?              RequestTimestamp      = null,
                           EventTracking_Id?            EventTrackingId       = null,
                           TimeSpan?                    RequestTimeout        = null,
                           CancellationToken            CancellationToken     = default)
@@ -3719,7 +3719,7 @@ namespace cloud.charging.open.protocols.WWCP
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                RequestTimestamp         = null,
+                        DateTimeOffset?          RequestTimestamp         = null,
                         EventTracking_Id?        EventTrackingId          = null,
                         TimeSpan?                RequestTimeout           = null,
                         CancellationToken        CancellationToken        = default)
@@ -3768,7 +3768,7 @@ namespace cloud.charging.open.protocols.WWCP
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                RequestTimestamp         = null,
+                        DateTimeOffset?          RequestTimestamp         = null,
                         EventTracking_Id?        EventTrackingId          = null,
                         TimeSpan?                RequestTimeout           = null,
                         CancellationToken        CancellationToken        = default)
@@ -3941,7 +3941,7 @@ namespace cloud.charging.open.protocols.WWCP
                        RemoteAuthentication?  RemoteAuthentication   = null,
                        Auth_Path?             AuthenticationPath     = null,
 
-                       DateTime?              RequestTimestamp       = null,
+                       DateTimeOffset?        RequestTimestamp       = null,
                        EventTracking_Id?      EventTrackingId        = null,
                        TimeSpan?              RequestTimeout         = null,
                        CancellationToken      CancellationToken      = default)
@@ -4078,7 +4078,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
 
-        internal void SendNewChargeDetailRecord(DateTime            Timestamp,
+        internal void SendNewChargeDetailRecord(DateTimeOffset      Timestamp,
                                                 Object              Sender,
                                                 ChargeDetailRecord  ChargeDetailRecord)
         {

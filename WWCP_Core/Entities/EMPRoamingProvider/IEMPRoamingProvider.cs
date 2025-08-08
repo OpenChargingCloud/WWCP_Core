@@ -135,11 +135,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         Task<IEnumerable<ChargeDetailRecord>>
 
-            GetChargeDetailRecords(DateTime               From,
-                                   DateTime?              To                  = null,
+            GetChargeDetailRecords(DateTimeOffset         From,
+                                   DateTimeOffset?        To                  = null,
                                    EMobilityProvider_Id?  ProviderId          = null,
 
-                                   DateTime?              Timestamp           = null,
+                                   DateTimeOffset?        Timestamp           = null,
                                    EventTracking_Id?      EventTrackingId     = null,
                                    TimeSpan?              RequestTimeout      = null,
                                    CancellationToken      CancellationToken   = default);

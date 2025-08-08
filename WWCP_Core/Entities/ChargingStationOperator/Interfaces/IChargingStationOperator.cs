@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate Task OnChargingStationOperatorDataChangedDelegate(DateTime                  Timestamp,
+    public delegate Task OnChargingStationOperatorDataChangedDelegate(DateTimeOffset            Timestamp,
                                                                       EventTracking_Id          EventTrackingId,
                                                                       IChargingStationOperator  ChargingStationOperator,
                                                                       String                    PropertyName,
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingStationOperator">The updated charging station operator.</param>
     /// <param name="OldStatus">The old timestamped status of the charging station operator.</param>
     /// <param name="NewStatus">The new timestamped status of the charging station operator.</param>
-    public delegate Task OnChargingStationOperatorAdminStatusChangedDelegate(DateTime                                              Timestamp,
+    public delegate Task OnChargingStationOperatorAdminStatusChangedDelegate(DateTimeOffset                                        Timestamp,
                                                                              EventTracking_Id                                      EventTrackingId,
                                                                              IChargingStationOperator                              ChargingStationOperator,
                                                                              Timestamped<ChargingStationOperatorAdminStatusTypes>  OldStatus,
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingStationOperator">The updated charging station operator.</param>
     /// <param name="OldStatus">The old timestamped status of the charging station operator.</param>
     /// <param name="NewStatus">The new timestamped status of the charging station operator.</param>
-    public delegate Task OnChargingStationOperatorStatusChangedDelegate(DateTime                                         Timestamp,
+    public delegate Task OnChargingStationOperatorStatusChangedDelegate(DateTimeOffset                                   Timestamp,
                                                                         EventTracking_Id                                 EventTrackingId,
                                                                         IChargingStationOperator                         ChargingStationOperator,
                                                                         Timestamped<ChargingStationOperatorStatusTypes>  OldStatus,
@@ -139,14 +139,14 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   IEnumerable<IChargingStation>?                                      ChargingStations               = null,
                                                                   IEnumerable<IEnergyMeter>?                                          EnergyMeters                   = null,
 
-                                                                  Timestamped<ChargingPoolAdminStatusType>?                          InitialAdminStatus             = null,
-                                                                  Timestamped<ChargingPoolStatusType>?                               InitialStatus                  = null,
+                                                                  Timestamped<ChargingPoolAdminStatusType>?                           InitialAdminStatus             = null,
+                                                                  Timestamped<ChargingPoolStatusType>?                                InitialStatus                  = null,
                                                                   UInt16?                                                             MaxAdminStatusScheduleSize     = null,
                                                                   UInt16?                                                             MaxStatusScheduleSize          = null,
 
                                                                   String?                                                             DataSource                     = null,
-                                                                  DateTime?                                                           Created                        = null,
-                                                                  DateTime?                                                           LastChange                     = null,
+                                                                  DateTimeOffset?                                                     Created                        = null,
+                                                                  DateTimeOffset?                                                     LastChange                     = null,
 
                                                                   JObject?                                                            CustomData                     = null,
                                                                   UserDefinedDictionary?                                              InternalData                   = null,
@@ -266,8 +266,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                              UInt16?                                                      MaxStatusScheduleSize          = null,
 
                                                                              String?                                                      DataSource                     = null,
-                                                                             DateTime?                                                    Created                        = null,
-                                                                             DateTime?                                                    LastChange                     = null,
+                                                                             DateTimeOffset?                                              Created                        = null,
+                                                                             DateTimeOffset?                                              LastChange                     = null,
 
                                                                              JObject?                                                     CustomData                     = null,
                                                                              UserDefinedDictionary?                                       InternalData                   = null,
@@ -387,8 +387,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                   UInt16?                                                             MaxStatusScheduleSize                  = null,
 
                                                                                   String?                                                             DataSource                             = null,
-                                                                                  DateTime?                                                           Created                                = null,
-                                                                                  DateTime?                                                           LastChange                             = null,
+                                                                                  DateTimeOffset?                                                     Created                                = null,
+                                                                                  DateTimeOffset?                                                     LastChange                             = null,
 
                                                                                   JObject?                                                            CustomData                             = null,
                                                                                   UserDefinedDictionary?                                              InternalData                           = null,
@@ -511,8 +511,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         UInt16?                                                             MaxStatusScheduleSize          = null,
 
                                                                         String?                                                             DataSource                     = null,
-                                                                        DateTime?                                                           Created                        = null,
-                                                                        DateTime?                                                           LastChange                     = null,
+                                                                        DateTimeOffset?                                                     Created                        = null,
+                                                                        DateTimeOffset?                                                     LastChange                     = null,
 
                                                                         JObject?                                                            CustomData                     = null,
                                                                         UserDefinedDictionary?                                              InternalData                   = null,
@@ -614,7 +614,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  EnergyMix                                                             EnergyMix,
 
                                  String?                                                               DataSource                     = null,
-                                 DateTime?                                                             LastChange                     = null,
+                                 DateTimeOffset?                                                       LastChange                     = null,
 
                                  JObject?                                                              CustomData                     = null,
                                  UserDefinedDictionary?                                                InternalData                   = null,
@@ -688,7 +688,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  EnergyMix                                                             EnergyMix,
 
                                  String?                                                               DataSource                     = null,
-                                 DateTime?                                                             LastChange                     = null,
+                                 DateTimeOffset?                                                       LastChange                     = null,
 
                                  JObject?                                                              CustomData                     = null,
                                  UserDefinedDictionary?                                                InternalData                   = null,
@@ -941,17 +941,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an charging pool will be or was added.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingStationOperator, IChargingPool, Boolean>                 OnChargingPoolAddition    { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingStationOperator, IChargingPool, Boolean>                 OnChargingPoolAddition    { get; }
 
         /// <summary>
         /// Called whenever a charging pool will be or was updated.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingStationOperator, IChargingPool, IChargingPool, Boolean>  OnChargingPoolUpdate      { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingStationOperator, IChargingPool, IChargingPool, Boolean>  OnChargingPoolUpdate      { get; }
 
         /// <summary>
         /// Called whenever an charging pool will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingStationOperator, IChargingPool, Boolean>                 OnChargingPoolRemoval     { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingStationOperator, IChargingPool, Boolean>                 OnChargingPoolRemoval     { get; }
 
 
 
@@ -1145,11 +1145,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Take">The number of admin status entries per pool to return.</param>
         IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusType>>>>
 
-            ChargingPoolAdminStatusSchedule(IncludeChargingPoolDelegate?                  IncludeChargingPools   = null,
-                                            Func<DateTime,                     Boolean>?  TimestampFilter        = null,
+            ChargingPoolAdminStatusSchedule(IncludeChargingPoolDelegate?                 IncludeChargingPools   = null,
+                                            Func<DateTimeOffset,              Boolean>?  TimestampFilter        = null,
                                             Func<ChargingPoolAdminStatusType, Boolean>?  AdminStatusFilter      = null,
-                                            UInt64?                                       Skip                   = null,
-                                            UInt64?                                       Take                   = null);
+                                            UInt64?                                      Skip                   = null,
+                                            UInt64?                                      Take                   = null);
 
         /// <summary>
         /// Return an enumeration of all charging pool status.
@@ -1167,26 +1167,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Take">The number of status entries per pool to return.</param>
         IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusType>>>>
 
-            ChargingPoolStatusSchedule(IncludeChargingPoolDelegate?             IncludeChargingPools   = null,
-                                       Func<DateTime,                Boolean>?  TimestampFilter        = null,
+            ChargingPoolStatusSchedule(IncludeChargingPoolDelegate?            IncludeChargingPools   = null,
+                                       Func<DateTimeOffset,         Boolean>?  TimestampFilter        = null,
                                        Func<ChargingPoolStatusType, Boolean>?  StatusFilter           = null,
-                                       UInt64?                                  Skip                   = null,
-                                       UInt64?                                  Take                   = null);
+                                       UInt64?                                 Skip                   = null,
+                                       UInt64?                                 Take                   = null);
 
 
 
 
-        void SetChargingPoolAdminStatus(ChargingPool_Id                                         ChargingPoolId,
+        void SetChargingPoolAdminStatus(ChargingPool_Id                                        ChargingPoolId,
                                         Timestamped<ChargingPoolAdminStatusType>               NewStatus,
-                                        Boolean                                                 SendUpstream = false);
+                                        Boolean                                                SendUpstream = false);
 
-        void SetChargingPoolAdminStatus(ChargingPool_Id                                         ChargingPoolId,
+        void SetChargingPoolAdminStatus(ChargingPool_Id                                        ChargingPoolId,
                                         ChargingPoolAdminStatusType                            NewStatus,
-                                        DateTime                                                Timestamp);
+                                        DateTime                                               Timestamp);
 
-        void SetChargingPoolAdminStatus(ChargingPool_Id                                         ChargingPoolId,
+        void SetChargingPoolAdminStatus(ChargingPool_Id                                        ChargingPoolId,
                                         IEnumerable<Timestamped<ChargingPoolAdminStatusType>>  StatusList,
-                                        ChangeMethods                                           ChangeMethod  = ChangeMethods.Replace);
+                                        ChangeMethods                                          ChangeMethod  = ChangeMethods.Replace);
 
 
         #region OnChargingPoolData/(Admin)StatusChanged
@@ -1242,7 +1242,7 @@ namespace cloud.charging.open.protocols.WWCP
         IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>>
 
             ChargingStationAdminStatusSchedule(IncludeChargingStationDelegate?                  IncludeChargingStations   = null,
-                                               Func<DateTime,                        Boolean>?  TimestampFilter           = null,
+                                               Func<DateTimeOffset,                  Boolean>?  TimestampFilter           = null,
                                                Func<ChargingStationAdminStatusTypes, Boolean>?  AdminStatusFilter         = null,
                                                UInt64?                                          Skip                      = null,
                                                UInt64?                                          Take                      = null);
@@ -1264,7 +1264,7 @@ namespace cloud.charging.open.protocols.WWCP
         IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>>
 
             ChargingStationStatusSchedule(IncludeChargingStationDelegate?             IncludeChargingStations   = null,
-                                          Func<DateTime,                   Boolean>?  TimestampFilter           = null,
+                                          Func<DateTimeOffset,             Boolean>?  TimestampFilter           = null,
                                           Func<ChargingStationStatusTypes, Boolean>?  StatusFilter              = null,
                                           UInt64?                                     Skip                      = null,
                                           UInt64?                                     Take                      = null);
@@ -1272,17 +1272,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition { get; }
 
         /// <summary>
         /// Called whenever a charging station will be or was updated.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> OnChargingStationUpdate { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> OnChargingStationUpdate { get; }
 
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval { get; }
 
 
         /// <summary>
@@ -1361,7 +1361,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever a charging station group will be or was added.
         /// </summary>
-        IVotingSender<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> OnChargingStationGroupAddition { get; }
+        IVotingSender<DateTimeOffset, ChargingStationOperator, ChargingStationGroup, Boolean> OnChargingStationGroupAddition { get; }
 
         /// <summary>
         /// All charging station groups registered within this charging station operator.
@@ -1517,7 +1517,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever a charging station group will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> OnChargingStationGroupRemoval { get; }
+        IVotingSender<DateTimeOffset, ChargingStationOperator, ChargingStationGroup, Boolean> OnChargingStationGroupRemoval { get; }
 
 
         /// <summary>
@@ -1544,30 +1544,30 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEs
 
-        IVotingNotificator<DateTime, User_Id, IChargingStation, IEVSE, Boolean> EVSEAddition { get; }
+        IVotingNotificator<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean> EVSEAddition { get; }
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition { get; }
 
 
 
-        IVotingNotificator<DateTime, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> EVSEUpdate { get; }
+        IVotingNotificator<DateTimeOffset, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> EVSEUpdate { get; }
 
         /// <summary>
         /// Called whenever an EVSE will be or was updated.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate { get; }
 
 
 
-        IVotingNotificator<DateTime, User_Id, IChargingStation, IEVSE, Boolean> EVSERemoval { get; }
+        IVotingNotificator<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean> EVSERemoval { get; }
 
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval { get; }
 
 
 
@@ -1596,11 +1596,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>>
 
-            EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs      = null,
-                                    Func<DateTime,             Boolean>?  TimestampFilter   = null,
+            EVSEAdminStatusSchedule(IncludeEVSEDelegate?                 IncludeEVSEs      = null,
+                                    Func<DateTimeOffset,      Boolean>?  TimestampFilter   = null,
                                     Func<EVSEAdminStatusType, Boolean>?  StatusFilter      = null,
-                                    UInt64?                               Skip              = null,
-                                    UInt64?                               Take              = null);
+                                    UInt64?                              Skip              = null,
+                                    UInt64?                              Take              = null);
 
         /// <summary>
         /// Return the admin status of all EVSEs registered within this roaming network.
@@ -1614,11 +1614,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>>
 
-            EVSEStatusSchedule(IncludeEVSEDelegate?             IncludeEVSEs      = null,
-                               Func<DateTime,        Boolean>?  TimestampFilter   = null,
+            EVSEStatusSchedule(IncludeEVSEDelegate?            IncludeEVSEs      = null,
+                               Func<DateTimeOffset, Boolean>?  TimestampFilter   = null,
                                Func<EVSEStatusType, Boolean>?  StatusFilter      = null,
-                               UInt64?                          Skip              = null,
-                               UInt64?                          Take              = null);
+                               UInt64?                         Skip              = null,
+                               UInt64?                         Take              = null);
 
 
 
@@ -1741,7 +1741,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVSE group will be or was added.
         /// </summary>
-        IVotingSender<DateTime, ChargingStationOperator, EVSEGroup, Boolean> OnEVSEGroupAddition { get; }
+        IVotingSender<DateTimeOffset, ChargingStationOperator, EVSEGroup, Boolean> OnEVSEGroupAddition { get; }
 
         /// <summary>
         /// All EVSE groups registered within this charging station operator.
@@ -1919,7 +1919,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVSE group will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, ChargingStationOperator, EVSEGroup, Boolean> OnEVSEGroupRemoval { get; }
+        IVotingSender<DateTimeOffset, ChargingStationOperator, EVSEGroup, Boolean> OnEVSEGroupRemoval { get; }
 
 
 
@@ -1956,22 +1956,22 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        IVotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingTariff, Boolean> ChargingTariffAddition { get; }
+        IVotingNotificator<DateTimeOffset, User_Id, IChargingStationOperator, IChargingTariff, Boolean> ChargingTariffAddition { get; }
 
         /// <summary>
         /// Called whenever a charging tariff will be or was added.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingStationOperator, IChargingTariff, Boolean> OnChargingTariffAddition { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingStationOperator, IChargingTariff, Boolean> OnChargingTariffAddition { get; }
 
 
 
 
-        IVotingNotificator<DateTime, User_Id, IChargingStationOperator, IChargingTariff, Boolean> ChargingTariffRemoval { get; }
+        IVotingNotificator<DateTimeOffset, User_Id, IChargingStationOperator, IChargingTariff, Boolean> ChargingTariffRemoval { get; }
 
         /// <summary>
         /// Called whenever a charging tariff will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingStationOperator, IChargingTariff, Boolean> OnChargingTariffRemoval { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingStationOperator, IChargingTariff, Boolean> OnChargingTariffRemoval { get; }
 
 
         /// <summary>
@@ -1994,7 +1994,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                 EnergyMix                                                             EnergyMix,
 
                                                                 String?                                                               DataSource                     = null,
-                                                                DateTime?                                                             LastChange                     = null,
+                                                                DateTimeOffset?                                                       LastChange                     = null,
 
                                                                 JObject?                                                              CustomData                     = null,
                                                                 UserDefinedDictionary?                                                InternalData                   = null,
@@ -2027,7 +2027,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                 EnergyMix                                                             EnergyMix,
 
                                                                 String?                                                               DataSource                     = null,
-                                                                DateTime?                                                             LastChange                     = null,
+                                                                DateTimeOffset?                                                       LastChange                     = null,
 
                                                                 JObject?                                                              CustomData                     = null,
                                                                 UserDefinedDictionary?                                                InternalData                   = null,
@@ -2210,12 +2210,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingTariffGroups
 
-        IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> ChargingTariffGroupAddition { get; }
+        IVotingNotificator<DateTimeOffset, ChargingStationOperator, ChargingTariffGroup, Boolean> ChargingTariffGroupAddition { get; }
 
         /// <summary>
         /// Called whenever a charging tariff will be or was added.
         /// </summary>
-        IVotingSender<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> OnChargingTariffGroupAddition { get; }
+        IVotingSender<DateTimeOffset, ChargingStationOperator, ChargingTariffGroup, Boolean> OnChargingTariffGroupAddition { get; }
 
         /// <summary>
         /// All charging tariff groups registered within this charging station operator.
@@ -2262,12 +2262,12 @@ namespace cloud.charging.open.protocols.WWCP
         Boolean TryGetChargingTariffGroup(ChargingTariffGroup_Id    Id,
                                           out ChargingTariffGroup?  ChargingTariffGroup);
 
-        IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> ChargingTariffGroupRemoval { get; }
+        IVotingNotificator<DateTimeOffset, ChargingStationOperator, ChargingTariffGroup, Boolean> ChargingTariffGroupRemoval { get; }
 
         /// <summary>
         /// Called whenever a charging tariff group will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> OnChargingTariffGroupRemoval { get; }
+        IVotingSender<DateTimeOffset, ChargingStationOperator, ChargingTariffGroup, Boolean> OnChargingTariffGroupRemoval { get; }
 
 
         /// <summary>

@@ -17,12 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Aegir;
 
@@ -77,17 +71,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<POIDataPull<EVSE>>
 
-            PullEVSEData(DateTime?                                 LastCall            = null,
+            PullEVSEData(DateTimeOffset?                           LastCall            = null,
                          GeoCoordinate?                            SearchCenter        = null,
                          Single                                    DistanceKM          = 0f,
                          EMobilityProvider_Id?                     ProviderId          = null,
                          IEnumerable<ChargingStationOperator_Id>?  OperatorIdFilter    = null,
                          IEnumerable<Country>?                     CountryCodeFilter   = null,
 
-                         DateTime?                                 Timestamp           = null,
-                         CancellationToken                         CancellationToken   = default,
+                         DateTimeOffset?                           Timestamp           = null,
                          EventTracking_Id?                         EventTrackingId     = null,
-                         TimeSpan?                                 RequestTimeout      = null);
+                         TimeSpan?                                 RequestTimeout      = null,
+                         CancellationToken                         CancellationToken   = default);
 
         #endregion
 

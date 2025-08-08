@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     }
 
-    public class ReceivedCDRInfo(DateTime            Timestamp,
+    public class ReceivedCDRInfo(DateTimeOffset      Timestamp,
                                  System_Id           SystemId,
                                  EventTracking_Id    EventTrackingId,
                                  ChargeDetailRecord  ChargeDetailRecord)
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
-        public DateTime            Timestamp             { get; } = Timestamp;
+        public DateTimeOffset      Timestamp             { get; } = Timestamp;
         public System_Id           SystemId              { get; } = SystemId;
         public EventTracking_Id    EventTrackingId       { get; } = EventTrackingId;
         public ChargeDetailRecord  ChargeDetailRecord    { get; } = ChargeDetailRecord;
@@ -1020,7 +1020,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        //public DateTime?                      CDRReceivedTimestamp          { get; set; }
+        //public DateTimeOffset?                CDRReceivedTimestamp          { get; set; }
         //public ChargeDetailRecord?            CDR                           { get; set; }
 
 
@@ -1051,7 +1051,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        public DateTime?                      NoAutoDeletionBefore          { get; set; }
+        public DateTimeOffset?                NoAutoDeletionBefore          { get; set; }
         public Boolean                        RemoveMe                      { get; set; }
 
 
@@ -1093,7 +1093,7 @@ namespace cloud.charging.open.protocols.WWCP
                                ICSORoamingProvider?    CSORoamingProviderStart   = null,
                                IEMPRoamingProvider?    EMPRoamingProviderStart   = null,
 
-                               DateTime?               Timestamp                 = null,
+                               DateTimeOffset?         Timestamp                 = null,
                                JObject?                CustomData                = null,
                                UserDefinedDictionary?  InternalData              = null)
 

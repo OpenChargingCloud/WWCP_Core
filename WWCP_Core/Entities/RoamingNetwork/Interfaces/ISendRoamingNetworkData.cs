@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddRoamingNetwork(IRoamingNetwork    RoamingNetwork,
                               TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                              DateTime?          Timestamp           = null,
+                              DateTimeOffset?    Timestamp           = null,
                               EventTracking_Id?  EventTrackingId     = null,
                               TimeSpan?          RequestTimeout      = null,
                               User_Id?           CurrentUserId       = null,
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddRoamingNetworkIfNotExists(IRoamingNetwork    RoamingNetwork,
                                          TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                         DateTime?          Timestamp           = null,
+                                         DateTimeOffset?    Timestamp           = null,
                                          EventTracking_Id?  EventTrackingId     = null,
                                          TimeSpan?          RequestTimeout      = null,
                                          User_Id?           CurrentUserId       = null,
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateRoamingNetwork(IRoamingNetwork    RoamingNetwork,
                                       TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                      DateTime?          Timestamp           = null,
+                                      DateTimeOffset?    Timestamp           = null,
                                       EventTracking_Id?  EventTrackingId     = null,
                                       TimeSpan?          RequestTimeout      = null,
                                       User_Id?           CurrentUserId       = null,
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  Context?           DataSource          = null,
                                  TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                 DateTime?          Timestamp           = null,
+                                 DateTimeOffset?    Timestamp           = null,
                                  EventTracking_Id?  EventTrackingId     = null,
                                  TimeSpan?          RequestTimeout      = null,
                                  User_Id?           CurrentUserId       = null,
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteRoamingNetwork(IRoamingNetwork    RoamingNetwork,
                                  TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                 DateTime?          Timestamp           = null,
+                                 DateTimeOffset?    Timestamp           = null,
                                  EventTracking_Id?  EventTrackingId     = null,
                                  TimeSpan?          RequestTimeout      = null,
                                  User_Id?           CurrentUserId       = null,
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
                                TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
 
-                               DateTime?                     Timestamp           = null,
+                               DateTimeOffset?               Timestamp           = null,
                                EventTracking_Id?             EventTrackingId     = null,
                                TimeSpan?                     RequestTimeout      = null,
                                User_Id?                      CurrentUserId       = null,
@@ -223,7 +223,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddRoamingNetworksIfNotExist(IEnumerable<IRoamingNetwork>  RoamingNetworks,
                                          TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
 
-                                         DateTime?                     Timestamp           = null,
+                                         DateTimeOffset?               Timestamp           = null,
                                          EventTracking_Id?             EventTrackingId     = null,
                                          TimeSpan?                     RequestTimeout      = null,
                                          User_Id?                      CurrentUserId       = null,
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
                                        TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
 
-                                       DateTime?                     Timestamp           = null,
+                                       DateTimeOffset?               Timestamp           = null,
                                        EventTracking_Id?             EventTrackingId     = null,
                                        TimeSpan?                     RequestTimeout      = null,
                                        User_Id?                      CurrentUserId       = null,
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
                                   TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
 
-                                  DateTime?                     Timestamp           = null,
+                                  DateTimeOffset?               Timestamp           = null,
                                   EventTracking_Id?             EventTrackingId     = null,
                                   TimeSpan?                     RequestTimeout      = null,
                                   User_Id?                      CurrentUserId       = null,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
                                   TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
 
-                                  DateTime?                     Timestamp           = null,
+                                  DateTimeOffset?               Timestamp           = null,
                                   EventTracking_Id?             EventTrackingId     = null,
                                   TimeSpan?                     RequestTimeout      = null,
                                   User_Id?                      CurrentUserId       = null,

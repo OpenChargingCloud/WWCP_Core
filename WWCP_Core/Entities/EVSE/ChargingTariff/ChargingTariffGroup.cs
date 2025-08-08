@@ -88,12 +88,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingTariffAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingTariffGroup, ChargingTariff, Boolean> ChargingTariffAddition;
+        internal readonly IVotingNotificator<DateTimeOffset, ChargingTariffGroup, ChargingTariff, Boolean> ChargingTariffAddition;
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ChargingTariffGroup, ChargingTariff, Boolean> OnChargingTariffAddition
+        public IVotingSender<DateTimeOffset, ChargingTariffGroup, ChargingTariff, Boolean> OnChargingTariffAddition
         {
             get
             {
@@ -105,12 +105,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingTariffRemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingTariffGroup, ChargingTariff, Boolean> ChargingTariffRemoval;
+        internal readonly IVotingNotificator<DateTimeOffset, ChargingTariffGroup, ChargingTariff, Boolean> ChargingTariffRemoval;
 
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingTariffGroup, ChargingTariff, Boolean> OnChargingTariffRemoval
+        public IVotingSender<DateTimeOffset, ChargingTariffGroup, ChargingTariff, Boolean> OnChargingTariffRemoval
         {
             get
             {
@@ -144,8 +144,8 @@ namespace cloud.charging.open.protocols.WWCP
             this._ChargingTariffs        = new Dictionary<ChargingTariff_Id, ChargingTariff>();
 
 
-            this.ChargingTariffAddition  = new VotingNotificator<DateTime, ChargingTariffGroup, ChargingTariff, Boolean>(() => new VetoVote(), true);
-            this.ChargingTariffRemoval   = new VotingNotificator<DateTime, ChargingTariffGroup, ChargingTariff, Boolean>(() => new VetoVote(), true);
+            this.ChargingTariffAddition  = new VotingNotificator<DateTimeOffset, ChargingTariffGroup, ChargingTariff, Boolean>(() => new VetoVote(), true);
+            this.ChargingTariffRemoval   = new VotingNotificator<DateTimeOffset, ChargingTariffGroup, ChargingTariff, Boolean>(() => new VetoVote(), true);
 
         }
 

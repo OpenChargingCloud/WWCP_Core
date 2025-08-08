@@ -35,17 +35,17 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <summary>
         /// The timestamp of the response.
         /// </summary>
-        DateTime  ResponseTimestamp    { get; }
+        DateTimeOffset  ResponseTimestamp    { get; }
 
         /// <summary>
         /// The runtime of the request leading to this response.
         /// </summary>
-        TimeSpan  Runtime              { get; }
+        TimeSpan        Runtime              { get; }
 
         /// <summary>
         /// Optional custom data, e.g. in combination with custom parsers and serializers.
         /// </summary>
-        JObject?  CustomData           { get; set; }
+        JObject?        CustomData           { get; set; }
 
 
         //JObject ToJSON();

@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id          Id           { get; }
+        public EVSE_Id         Id           { get; }
 
         /// <summary>
         /// The current status of the EVSE.
@@ -131,12 +131,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of the current status of the EVSE.
         /// </summary>
-        public DateTime         Timestamp    { get; }
+        public DateTimeOffset  Timestamp    { get; }
 
         /// <summary>
         /// An optional data source or context for this EVSE status.
         /// </summary>
-        public Context?         Context      { get; }
+        public Context?        Context      { get; }
 
         /// <summary>
         /// The timestamped status of the EVSE.
@@ -178,10 +178,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Status">The current status of the EVSE.</param>
         /// <param name="Timestamp">The timestamp of the status change of the EVSE.</param>
         /// <param name="Context">An optional data source or context for the EVSE status.</param>
-        public EVSEStatus(EVSE_Id          Id,
+        public EVSEStatus(EVSE_Id         Id,
                           EVSEStatusType  Status,
-                          DateTime         Timestamp,
-                          Context?         Context   = null)
+                          DateTimeOffset  Timestamp,
+                          Context?        Context   = null)
         {
 
             this.Id         = Id;

@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of this energy mix prognosis.
         /// </summary>
-        public DateTime                                                        Timestamp               { get; }
+        public DateTimeOffset                                                  Timestamp               { get; }
 
         /// <summary>
         /// The timestamped energy sources.

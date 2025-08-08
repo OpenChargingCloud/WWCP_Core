@@ -47,20 +47,20 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
     /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnReserveRequestDelegate(DateTime                           LogTimestamp,
-                                                  DateTime                           RequestTimestamp,
+    public delegate Task OnReserveRequestDelegate(DateTimeOffset                     LogTimestamp,
+                                                  DateTimeOffset                     RequestTimestamp,
                                                   Object                             Sender,
                                                   EventTracking_Id                   EventTrackingId,
                                                   RoamingNetwork_Id                  RoamingNetworkId,
                                                   ChargingReservation_Id?            ReservationId,
                                                   ChargingReservation_Id?            LinkedReservationId,
                                                   ChargingLocation                   ChargingLocation,
-                                                  DateTime?                          StartTime,
+                                                  DateTimeOffset?                    StartTime,
                                                   TimeSpan?                          Duration,
                                                   EMobilityProvider_Id?              ProviderId,
                                                   RemoteAuthentication?              RemoteAuthentication,
                                                   ChargingProduct?                   ChargingProduct,
-                                                  IEnumerable<AuthenticationToken>?           AuthTokens,
+                                                  IEnumerable<AuthenticationToken>?  AuthTokens,
                                                   IEnumerable<EMobilityAccount_Id>?  eMAIds,
                                                   IEnumerable<UInt32>?               PINs,
                                                   TimeSpan?                          RequestTimeout);
@@ -87,16 +87,16 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task<ReservationResult> OnReserveDelegate(ChargingReservation_Id?            ReservationId,
                                                               ChargingReservation_Id?            LinkedReservationId,
                                                               ChargingLocation                   ChargingLocation,
-                                                              DateTime?                          StartTime,
+                                                              DateTimeOffset?                    StartTime,
                                                               TimeSpan?                          Duration,
                                                               EMobilityProvider_Id?              ProviderId,
                                                               RemoteAuthentication               RemoteAuthentication,
                                                               ChargingProduct?                   ChargingProduct,
-                                                              IEnumerable<AuthenticationToken>?           AuthTokens,
+                                                              IEnumerable<AuthenticationToken>?  AuthTokens,
                                                               IEnumerable<EMobilityAccount_Id>?  eMAIds,
                                                               IEnumerable<UInt32>?               PINs,
 
-                                                              DateTime?                          Timestamp           = null,
+                                                              DateTimeOffset?                    Timestamp           = null,
                                                               CancellationToken?                 CancellationToken   = null,
                                                               EventTracking_Id?                  EventTrackingId     = null,
                                                               TimeSpan?                          RequestTimeout      = null);
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
     /// <param name="Sender">The sender of the event.</param>
     /// <param name="Reservation">The new charging reservation.</param>
-    public delegate void OnNewReservationDelegate(DateTime             Timestamp,
+    public delegate void OnNewReservationDelegate(DateTimeOffset       Timestamp,
                                                   Object               Sender,
                                                   ChargingReservation  Reservation);
 
@@ -133,20 +133,20 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="Result">The result of the reservation.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnReserveResponseDelegate(DateTime                           LogTimestamp,
-                                                   DateTime                           RequestTimestamp,
+    public delegate Task OnReserveResponseDelegate(DateTimeOffset                     LogTimestamp,
+                                                   DateTimeOffset                     RequestTimestamp,
                                                    Object                             Sender,
                                                    EventTracking_Id                   EventTrackingId,
                                                    RoamingNetwork_Id                  RoamingNetworkId,
                                                    ChargingReservation_Id?            ReservationId,
                                                    ChargingReservation_Id?            LinkedReservationId,
                                                    ChargingLocation                   ChargingLocation,
-                                                   DateTime?                          StartTime,
+                                                   DateTimeOffset?                    StartTime,
                                                    TimeSpan?                          Duration,
                                                    EMobilityProvider_Id?              ProviderId,
                                                    RemoteAuthentication?              RemoteAuthentication,
                                                    ChargingProduct?                   ChargingProduct,
-                                                   IEnumerable<AuthenticationToken>?           AuthTokens,
+                                                   IEnumerable<AuthenticationToken>?  AuthTokens,
                                                    IEnumerable<EMobilityAccount_Id>?  eMAIds,
                                                    IEnumerable<UInt32>?               PINs,
                                                    ReservationResult                  Result,

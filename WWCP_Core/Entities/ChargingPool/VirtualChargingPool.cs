@@ -1157,32 +1157,32 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <summary>
         /// Create a new virtual charging pool.
         /// </summary>
-        public VirtualChargingPool(ChargingPool_Id                             Id,
-                                   IRoamingNetwork                             RoamingNetwork,
-                                   I18NString?                                 Name                         = null,
-                                   I18NString?                                 Description                  = null,
+        public VirtualChargingPool(ChargingPool_Id                            Id,
+                                   IRoamingNetwork                            RoamingNetwork,
+                                   I18NString?                                Name                         = null,
+                                   I18NString?                                Description                  = null,
                                    Timestamped<ChargingPoolAdminStatusType>?  InitialAdminStatus           = null,
                                    Timestamped<ChargingPoolStatusType>?       InitialStatus                = null,
 
-                                   Address?                                    Address                      = null,
-                                   GeoCoordinate?                              GeoLocation                  = null,
-                                   Time_Zone?                                  TimeZone                     = null,
-                                   OpeningTimes?                               OpeningTimes                 = null,
-                                   Boolean?                                    ChargingWhenClosed           = null,
+                                   Address?                                   Address                      = null,
+                                   GeoCoordinate?                             GeoLocation                  = null,
+                                   Time_Zone?                                 TimeZone                     = null,
+                                   OpeningTimes?                              OpeningTimes                 = null,
+                                   Boolean?                                   ChargingWhenClosed           = null,
 
-                                   String                                      EllipticCurve                = "P-256",
-                                   ECPrivateKeyParameters?                     PrivateKey                   = null,
-                                   PublicKeyCertificates?                      PublicKeyCertificates        = null,
-                                   TimeSpan?                                   SelfCheckTimeSpan            = null,
-                                   UInt16?                                     MaxAdminStatusScheduleSize   = null,
-                                   UInt16?                                     MaxStatusScheduleSize        = null,
+                                   String                                     EllipticCurve                = "P-256",
+                                   ECPrivateKeyParameters?                    PrivateKey                   = null,
+                                   PublicKeyCertificates?                     PublicKeyCertificates        = null,
+                                   TimeSpan?                                  SelfCheckTimeSpan            = null,
+                                   UInt16?                                    MaxAdminStatusScheduleSize   = null,
+                                   UInt16?                                    MaxStatusScheduleSize        = null,
 
-                                   String?                                     DataSource                   = null,
-                                   DateTime?                                   Created                      = null,
-                                   DateTime?                                   LastChange                   = null,
+                                   String?                                    DataSource                   = null,
+                                   DateTimeOffset?                            Created                      = null,
+                                   DateTimeOffset?                            LastChange                   = null,
 
-                                   JObject?                                    CustomData                   = null,
-                                   UserDefinedDictionary?                      InternalData                 = null)
+                                   JObject?                                   CustomData                   = null,
+                                   UserDefinedDictionary?                     InternalData                 = null)
 
             : base(Id,
                    RoamingNetwork,
@@ -1572,11 +1572,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old EVSE admin status.</param>
         /// <param name="NewStatus">The new EVSE admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                    Timestamp,
-                                              EventTracking_Id                            EventTrackingId,
+        internal async Task UpdateAdminStatus(DateTimeOffset                             Timestamp,
+                                              EventTracking_Id                           EventTrackingId,
                                               Timestamped<ChargingPoolAdminStatusType>   NewStatus,
                                               Timestamped<ChargingPoolAdminStatusType>?  OldStatus    = null,
-                                              Context?                                    DataSource   = null)
+                                              Context?                                   DataSource   = null)
         {
 
             OnAdminStatusChanged?.Invoke(Timestamp,
@@ -1598,11 +1598,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                               Timestamp,
-                                         EventTracking_Id                       EventTrackingId,
+        internal async Task UpdateStatus(DateTimeOffset                        Timestamp,
+                                         EventTracking_Id                      EventTrackingId,
                                          Timestamped<ChargingPoolStatusType>   NewStatus,
                                          Timestamped<ChargingPoolStatusType>?  OldStatus    = null,
-                                         Context?                               DataSource   = null)
+                                         Context?                              DataSource   = null)
         {
 
             OnStatusChanged?.Invoke(Timestamp,
@@ -1691,7 +1691,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public Task<ReservationResult>
 
-            Reserve(DateTime?                          StartTime              = null,
+            Reserve(DateTimeOffset?                    StartTime              = null,
                     TimeSpan?                          Duration               = null,
                     ChargingReservation_Id?            ReservationId          = null,
                     ChargingReservation_Id?            LinkedReservationId    = null,
@@ -1703,7 +1703,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime?                          Timestamp              = null,
+                    DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null,
                     CancellationToken                  CancellationToken      = default)
@@ -1756,7 +1756,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             Reserve(ChargingLocation                   ChargingLocation,
                     ChargingReservationLevel           ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                          ReservationStartTime   = null,
+                    DateTimeOffset?                    ReservationStartTime   = null,
                     TimeSpan?                          Duration               = null,
                     ChargingReservation_Id?            ReservationId          = null,
                     ChargingReservation_Id?            LinkedReservationId    = null,
@@ -1768,7 +1768,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime?                          Timestamp              = null,
+                    DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null,
                     CancellationToken                  CancellationToken      = default)
@@ -1901,7 +1901,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                      Timestamp:               Timestamp.Value,
                                                                      StartTime:               ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                      Duration:                Duration  ?? MaxReservationDuration,
-                                                                     EndTime:                 (ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
+                                                                  //   EndTime:                 (ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
                                                                      ConsumedReservationTime: TimeSpan.FromSeconds(0),
                                                                      ReservationLevel:        ReservationLevel,
                                                                      ProviderId:              ProviderId,
@@ -2020,7 +2020,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
 
-                              DateTime?                              Timestamp           = null,
+                              DateTimeOffset?                        Timestamp           = null,
                               EventTracking_Id?                      EventTrackingId     = null,
                               TimeSpan?                              RequestTimeout      = null,
                               CancellationToken                      CancellationToken   = default)
@@ -2237,7 +2237,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region (internal) SendNewReservation     (Timestamp, Sender, Reservation)
 
-        internal void SendNewReservation(DateTime             Timestamp,
+        internal void SendNewReservation(DateTimeOffset       Timestamp,
                                          Object               Sender,
                                          ChargingReservation  Reservation)
         {
@@ -2250,7 +2250,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region (internal) SendReservationCanceled(Timestamp, Sender, Reservation, Reason)
 
-        internal void SendReservationCanceled(DateTime                               Timestamp,
+        internal void SendReservationCanceled(DateTimeOffset                         Timestamp,
                                               Object                                 Sender,
                                               ChargingReservation                    Reservation,
                                               ChargingReservationCancellationReason  Reason)
@@ -2328,7 +2328,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                            ChargingSession_Id?          CPOPartnerSessionId   = null,
                            ChargingStationOperator_Id?  OperatorId            = null,
 
-                           DateTime?                    RequestTimestamp      = null,
+                           DateTimeOffset?              RequestTimestamp      = null,
                            EventTracking_Id?            EventTrackingId       = null,
                            TimeSpan?                    RequestTimeout        = null,
                            CancellationToken            CancellationToken     = default)
@@ -2474,7 +2474,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                           ChargingSession_Id?          CPOPartnerSessionId   = null,
                           ChargingStationOperator_Id?  OperatorId            = null,
 
-                          DateTime?                    RequestTimestamp      = null,
+                          DateTimeOffset?              RequestTimestamp      = null,
                           EventTracking_Id?            EventTrackingId       = null,
                           TimeSpan?                    RequestTimeout        = null,
                           CancellationToken            CancellationToken     = default)
@@ -2715,7 +2715,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                Timestamp                = null,
+                        DateTimeOffset?          Timestamp                = null,
                         EventTracking_Id?        EventTrackingId          = null,
                         TimeSpan?                RequestTimeout           = null,
                         CancellationToken        CancellationToken        = default)
@@ -2764,7 +2764,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                RequestTimestamp         = null,
+                        DateTimeOffset?          RequestTimestamp         = null,
                         EventTracking_Id?        EventTrackingId          = null,
                         TimeSpan?                RequestTimeout           = null,
                         CancellationToken        CancellationToken        = default)
@@ -2922,7 +2922,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                        RemoteAuthentication?  RemoteAuthentication   = null,
                        Auth_Path?             AuthenticationPath     = null,
 
-                       DateTime?              Timestamp              = null,
+                       DateTimeOffset?        Timestamp              = null,
                        EventTracking_Id?      EventTrackingId        = null,
                        TimeSpan?              RequestTimeout         = null,
                        CancellationToken      CancellationToken      = default)
@@ -3105,7 +3105,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region (internal) SendNewChargingSession   (Timestamp, Sender, Session)
 
-        internal void SendNewChargingSession(DateTime         Timestamp,
+        internal void SendNewChargingSession(DateTimeOffset   Timestamp,
                                              Object           Sender,
                                              ChargingSession  Session)
         {
@@ -3126,7 +3126,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
 
-        internal void SendNewChargeDetailRecord(DateTime            Timestamp,
+        internal void SendNewChargeDetailRecord(DateTimeOffset      Timestamp,
                                                 Object              Sender,
                                                 ChargeDetailRecord  ChargeDetailRecord)
         {
@@ -3387,11 +3387,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public IEnumerable<IEVSE> EVSEs => throw new NotImplementedException();
 
-        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, User_Id,  IChargingPool, IChargingStation, Boolean> OnChargingStationAddition => throw new NotImplementedException();
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTimeOffset, User_Id,  IChargingPool, IChargingStation, Boolean> OnChargingStationAddition => throw new NotImplementedException();
 
-        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval => throw new NotImplementedException();
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTimeOffset, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval => throw new NotImplementedException();
 
-        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval => throw new NotImplementedException();
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTimeOffset, IChargingStation, IEVSE, Boolean> OnEVSERemoval => throw new NotImplementedException();
 
         public Partly IsHubjectCompatible => throw new NotImplementedException();
 
@@ -3400,15 +3400,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public Func<ChargingStationStatusReport, ChargingPoolStatusType> StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         TimeSpan IChargingReservations.MaxReservationDuration { get; set; }
 
-        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition => throw new NotImplementedException();
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition => throw new NotImplementedException();
 
-        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> OnChargingStationUpdate => throw new NotImplementedException();
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTimeOffset, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> OnChargingStationUpdate => throw new NotImplementedException();
 
-        org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, User_Id, IChargingPool, IChargingStation, Boolean> IChargingPool.OnChargingStationRemoval => throw new NotImplementedException();
+        org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTimeOffset, User_Id, IChargingPool, IChargingStation, Boolean> IChargingPool.OnChargingStationRemoval => throw new NotImplementedException();
 
-        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate => throw new NotImplementedException();
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate => throw new NotImplementedException();
 
-        org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> IChargingPool.OnEVSERemoval => throw new NotImplementedException();
+        org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean> IChargingPool.OnEVSERemoval => throw new NotImplementedException();
 
         public Boolean Equals(IChargingPool? other)
         {
@@ -3510,12 +3510,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, Boolean>? TimestampFilter = null, Func<EVSEAdminStatusType, Boolean>? StatusFilter = null, UInt64? Skip = null, UInt64? Take = null)
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTimeOffset, Boolean>? TimestampFilter = null, Func<EVSEAdminStatusType, Boolean>? StatusFilter = null, UInt64? Skip = null, UInt64? Take = null)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, Boolean>? TimestampFilter = null, Func<EVSEStatusType, Boolean>? StatusFilter = null, UInt64? Skip = null, UInt64? Take = null)
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTimeOffset, Boolean>? TimestampFilter = null, Func<EVSEStatusType, Boolean>? StatusFilter = null, UInt64? Skip = null, UInt64? Take = null)
         {
             throw new NotImplementedException();
         }

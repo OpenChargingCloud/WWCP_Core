@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate Task OnEVehicleDataChangedDelegate(DateTime          Timestamp,
+    public delegate Task OnEVehicleDataChangedDelegate(DateTimeOffset    Timestamp,
                                                        EventTracking_Id  EventTrackingId,
                                                        EVehicle          eVehicle,
                                                        String            PropertyName,
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="eVehicle">The updated electric vehicle.</param>
     /// <param name="OldStatus">The old timestamped status of the electric vehicle.</param>
     /// <param name="NewStatus">The new timestamped status of the electric vehicle.</param>
-    public delegate Task OnEVehicleAdminStatusChangedDelegate(DateTime                                Timestamp,
+    public delegate Task OnEVehicleAdminStatusChangedDelegate(DateTimeOffset                          Timestamp,
                                                               EventTracking_Id                        EventTrackingId,
                                                               EVehicle                                eVehicle,
                                                               Timestamped<eVehicleAdminStatusTypes>   NewStatus,
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="eVehicle">The updated electric vehicle.</param>
     /// <param name="OldStatus">The old timestamped status of the electric vehicle.</param>
     /// <param name="NewStatus">The new timestamped status of the electric vehicle.</param>
-    public delegate Task OnEVehicleStatusChangedDelegate(DateTime                           Timestamp,
+    public delegate Task OnEVehicleStatusChangedDelegate(DateTimeOffset                     Timestamp,
                                                          EventTracking_Id                   EventTrackingId,
                                                          EVehicle                           eVehicle,
                                                          Timestamped<eVehicleStatusTypes>   NewStatus,
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="eVehicle">The updated electric vehicle.</param>
     /// <param name="OldGeoCoordinate">The old timestamped geo coordinate of the electric vehicle.</param>
     /// <param name="NewGeoCoordinate">The new timestamped geo coordinate of the electric vehicle.</param>
-    public delegate Task OnEVehicleGeoLocationChangedDelegate(DateTime                     Timestamp,
+    public delegate Task OnEVehicleGeoLocationChangedDelegate(DateTimeOffset               Timestamp,
                                                               EventTracking_Id             EventTrackingId,
                                                               EVehicle                     eVehicle,
                                                               Timestamped<GeoCoordinate>   NewGeoCoordinate,

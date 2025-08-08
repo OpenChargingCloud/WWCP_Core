@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
                            ChargingSession_Id?          CPOPartnerSessionId   = null,
                            ChargingStationOperator_Id?  OperatorId            = null,
 
-                           DateTime?                    Timestamp             = null,
+                           DateTimeOffset?              Timestamp             = null,
                            EventTracking_Id?            EventTrackingId       = null,
                            TimeSpan?                    RequestTimeout        = null,
                            CancellationToken            CancellationToken     = default);
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.WWCP
                           ChargingSession_Id?          CPOPartnerSessionId   = null,
                           ChargingStationOperator_Id?  OperatorId            = null,
 
-                          DateTime?                    Timestamp             = null,
+                          DateTimeOffset?              Timestamp             = null,
                           EventTracking_Id?            EventTrackingId       = null,
                           TimeSpan?                    RequestTimeout        = null,
                           CancellationToken            CancellationToken     = default);

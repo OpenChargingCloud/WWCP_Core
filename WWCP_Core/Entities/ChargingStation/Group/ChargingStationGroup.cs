@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingStationGroup">The updated charging pool.</param>
     /// <param name="OldStatus">The old timestamped admin status of the charging pool.</param>
     /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
-    public delegate Task OnAdminStatusChangedDelegate(DateTime                                            Timestamp,
+    public delegate Task OnAdminStatusChangedDelegate(DateTimeOffset                                      Timestamp,
                                                       EventTracking_Id                                    EventTrackingId,
                                                       ChargingStationGroup                                ChargingStationGroup,
                                                       Timestamped<ChargingStationGroupAdminStatusTypes>   NewStatus,
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingStationGroup">The updated charging pool.</param>
     /// <param name="OldStatus">The old timestamped admin status of the charging pool.</param>
     /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
-    public delegate Task OnStatusChangedDelegate(DateTime                                       Timestamp,
+    public delegate Task OnStatusChangedDelegate(DateTimeOffset                                 Timestamp,
                                                  EventTracking_Id                               EventTrackingId,
                                                  ChargingStationGroup                           ChargingStationGroup,
                                                  Timestamped<ChargingStationGroupStatusTypes>   NewStatus,
@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.WWCP
         public AutoIncludeMemberIds(IEnumerable<ChargingStation_Id> AllowedMemberIds)
         {
 
-            this.allowedMemberIds = new List<ChargingStation_Id>(AllowedMemberIds);
+            this.allowedMemberIds = [.. AllowedMemberIds];
 
         }
 
@@ -670,7 +670,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                            Timestamp,
+        internal async Task UpdateAdminStatus(DateTimeOffset                                      Timestamp,
                                               EventTracking_Id                                    EventTrackingId,
                                               Timestamped<ChargingStationGroupAdminStatusTypes>   NewStatus,
                                               Timestamped<ChargingStationGroupAdminStatusTypes>?  OldStatus    = null,

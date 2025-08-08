@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.WWCP
 {
 
@@ -36,7 +30,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of a e-mobility station.
         /// </summary>
-        public eMobilityStation_Id              Id          { get; }
+        public eMobilityStation_Id               Id          { get; }
 
         /// <summary>
         /// The current status of a e-mobility station.
@@ -46,7 +40,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of the current status of the e-mobility station.
         /// </summary>
-        public DateTime                         Timestamp   { get; }
+        public DateTimeOffset                    Timestamp   { get; }
 
         #endregion
 
@@ -58,9 +52,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of a e-mobility station.</param>
         /// <param name="Status">The current status of a e-mobility station.</param>
         /// <param name="Timestamp">The timestamp of the current status of the e-mobility station.</param>
-        public eMobilityStationAdminStatus(eMobilityStation_Id              Id,
+        public eMobilityStationAdminStatus(eMobilityStation_Id               Id,
                                            eMobilityStationAdminStatusTypes  Status,
-                                           DateTime                         Timestamp)
+                                           DateTimeOffset                    Timestamp)
 
         {
 

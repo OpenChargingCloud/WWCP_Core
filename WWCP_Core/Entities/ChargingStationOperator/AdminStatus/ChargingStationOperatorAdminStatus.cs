@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of the current admin status of the charging station operator.
         /// </summary>
-        public DateTime                                 Timestamp      { get; }
+        public DateTimeOffset                           Timestamp      { get; }
 
         /// <summary>
         /// The timestamped admin status of the charging station operator.

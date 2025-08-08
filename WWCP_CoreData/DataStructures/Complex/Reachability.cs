@@ -75,9 +75,9 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         public Byte                           Weight                 { get; }
 
 
-        public DateTime                       Timestamp              { get; }
+        public DateTimeOffset                 Timestamp              { get; }
 
-        public DateTime?                      Timeout                { get; }
+        public DateTimeOffset?                Timeout                { get; }
 
         #endregion
 
@@ -92,8 +92,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                              Byte?                           Priority              = 0,
                              Byte?                           Weight                = 1,
-                             DateTime?                       Timestamp             = null,
-                             DateTime?                       Timeout               = null)
+                             DateTimeOffset?                 Timestamp             = null,
+                             DateTimeOffset?                 Timeout               = null)
         {
 
             this.DestinationId        = DestinationId;
@@ -121,8 +121,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                                        VirtualNetworkLinkInformation?  Downlink     = null,
                                                        Byte?                           Priority     = 0,
                                                        Byte?                           Weight       = 1,
-                                                       DateTime?                       Timestamp    = null,
-                                                       DateTime?                       Timeout      = null)
+                                                       DateTimeOffset?                 Timestamp    = null,
+                                                       DateTimeOffset?                 Timeout      = null)
 
             => new (DestinationId,
                     WebSocketClient,
@@ -146,8 +146,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                                        VirtualNetworkLinkInformation?  Downlink     = null,
                                                        Byte?                           Priority     = 0,
                                                        Byte?                           Weight       = 1,
-                                                       DateTime?                       Timestamp    = null,
-                                                       DateTime?                       Timeout      = null)
+                                                       DateTimeOffset?                 Timestamp    = null,
+                                                       DateTimeOffset?                 Timeout      = null)
 
             => new (DestinationId,
                     null,
@@ -171,8 +171,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                                      VirtualNetworkLinkInformation?  Downlink     = null,
                                                      Byte?                           Priority     = 0,
                                                      Byte?                           Weight       = 1,
-                                                     DateTime?                       Timestamp    = null,
-                                                     DateTime?                       Timeout      = null)
+                                                     DateTimeOffset?                 Timestamp    = null,
+                                                     DateTimeOffset?                 Timeout      = null)
 
             => new (DestinationId,
                     null,

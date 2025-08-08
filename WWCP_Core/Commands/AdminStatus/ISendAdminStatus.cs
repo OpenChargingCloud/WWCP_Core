@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateRoamingNetworkAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  RoamingNetworkAdminStatusUpdates,
                                             TransmissionTypes                             TransmissionType    = TransmissionTypes.Enqueue,
 
-                                            DateTime?                                     Timestamp           = null,
+                                            DateTimeOffset?                               Timestamp           = null,
                                             EventTracking_Id?                             EventTrackingId     = null,
                                             TimeSpan?                                     RequestTimeout      = null,
                                             User_Id?                                      CurrentUserId       = null,
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingStationOperatorAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  ChargingStationOperatorAdminStatusUpdates,
                                                      TransmissionTypes                                      TransmissionType    = TransmissionTypes.Enqueue,
 
-                                                     DateTime?                                              Timestamp           = null,
+                                                     DateTimeOffset?                                        Timestamp           = null,
                                                      EventTracking_Id?                                      EventTrackingId     = null,
                                                      TimeSpan?                                              RequestTimeout      = null,
                                                      User_Id?                                               CurrentUserId       = null,
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingPoolAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  ChargingPoolAdminStatusUpdates,
                                           TransmissionTypes                           TransmissionType    = TransmissionTypes.Enqueue,
 
-                                          DateTime?                                   Timestamp           = null,
+                                          DateTimeOffset?                             Timestamp           = null,
                                           EventTracking_Id?                           EventTrackingId     = null,
                                           TimeSpan?                                   RequestTimeout      = null,
                                           User_Id?                                    CurrentUserId       = null,
@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingStationAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  ChargingStationAdminStatusUpdates,
                                              TransmissionTypes                              TransmissionType    = TransmissionTypes.Enqueue,
 
-                                             DateTime?                                      Timestamp           = null,
+                                             DateTimeOffset?                                Timestamp           = null,
                                              EventTracking_Id?                              EventTrackingId     = null,
                                              TimeSpan?                                      RequestTimeout      = null,
                                              User_Id?                                       CurrentUserId       = null,
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateEVSEAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  EVSEAdminStatusUpdates,
                                   TransmissionTypes                   TransmissionType    = TransmissionTypes.Enqueue,
 
-                                  DateTime?                           Timestamp           = null,
+                                  DateTimeOffset?                     Timestamp           = null,
                                   EventTracking_Id?                   EventTrackingId     = null,
                                   TimeSpan?                           RequestTimeout      = null,
                                   User_Id?                            CurrentUserId       = null,

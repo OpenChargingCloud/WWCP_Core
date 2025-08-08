@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of the current status of the e-mobility provider.
         /// </summary>
-        public DateTime                      Timestamp    { get; }
+        public DateTimeOffset                Timestamp    { get; }
 
         /// <summary>
         /// The timestamped status of the e-mobility provider.

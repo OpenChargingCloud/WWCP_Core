@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddEVSE(IEVSE              EVSE,
 
-                    DateTime?          Timestamp           = null,
+                    DateTimeOffset?    Timestamp           = null,
                     EventTracking_Id?  EventTrackingId     = null,
                     TimeSpan?          RequestTimeout      = null,
                     CancellationToken  CancellationToken   = default);
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddEVSEIfNotExists(IEVSE              EVSE,
 
-                               DateTime?          Timestamp           = null,
+                               DateTimeOffset?    Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
                                CancellationToken  CancellationToken   = default);
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddOrUpdateEVSE(IEVSE              EVSE,
 
-                            DateTime?          Timestamp           = null,
+                            DateTimeOffset?    Timestamp           = null,
                             EventTracking_Id?  EventTrackingId     = null,
                             TimeSpan?          RequestTimeout      = null,
                             CancellationToken  CancellationToken   = default);
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.WWCP
                        Object?            OldValue            = null,
                        Context?           DataSource          = null,
 
-                       DateTime?          Timestamp           = null,
+                       DateTimeOffset?    Timestamp           = null,
                        EventTracking_Id?  EventTrackingId     = null,
                        TimeSpan?          RequestTimeout      = null,
                        CancellationToken  CancellationToken   = default);
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteEVSE(IEVSE              EVSE,
 
-                       DateTime?          Timestamp           = null,
+                       DateTimeOffset?    Timestamp           = null,
                        EventTracking_Id?  EventTrackingId     = null,
                        TimeSpan?          RequestTimeout      = null,
                        CancellationToken  CancellationToken   = default);
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddEVSEs(IEnumerable<IEVSE>  EVSEs,
 
-                     DateTime?           Timestamp           = null,
+                     DateTimeOffset?     Timestamp           = null,
                      EventTracking_Id?   EventTrackingId     = null,
                      TimeSpan?           RequestTimeout      = null,
                      CancellationToken   CancellationToken   = default);
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddEVSEsIfNotExist(IEnumerable<IEVSE>  EVSEs,
 
-                               DateTime?           Timestamp           = null,
+                               DateTimeOffset?     Timestamp           = null,
                                EventTracking_Id?   EventTrackingId     = null,
                                TimeSpan?           RequestTimeout      = null,
                                CancellationToken   CancellationToken   = default);
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddOrUpdateEVSEs(IEnumerable<IEVSE>  EVSEs,
 
-                             DateTime?           Timestamp           = null,
+                             DateTimeOffset?     Timestamp           = null,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null,
                              CancellationToken   CancellationToken   = default);
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateEVSEs(IEnumerable<IEVSE>  EVSEs,
 
-                        DateTime?           Timestamp           = null,
+                        DateTimeOffset?     Timestamp           = null,
                         EventTracking_Id?   EventTrackingId     = null,
                         TimeSpan?           RequestTimeout      = null,
                         CancellationToken   CancellationToken   = default);
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteEVSEs(IEnumerable<IEVSE>  EVSEs,
 
-                        DateTime?           Timestamp           = null,
+                        DateTimeOffset?     Timestamp           = null,
                         EventTracking_Id?   EventTrackingId     = null,
                         TimeSpan?           RequestTimeout      = null,
                         CancellationToken   CancellationToken   = default);

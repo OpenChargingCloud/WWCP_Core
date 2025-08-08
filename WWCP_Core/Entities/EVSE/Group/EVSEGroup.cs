@@ -39,12 +39,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="EVSEGroup">The updated charging pool.</param>
     /// <param name="OldStatus">The old timestamped admin status of the charging pool.</param>
     /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
-    public delegate Task OnAdminStatus2ChangedDelegate(DateTime Timestamp,
-                                                      EventTracking_Id? EventTrackingId,
-                                                      EVSEGroup EVSEGroup,
-                                                      Timestamped<EVSEGroupAdminStatusTypes> NewStatus,
-                                                      Timestamped<EVSEGroupAdminStatusTypes>? OldStatus = null,
-                                                      Context? DataSource = null);
+    public delegate Task OnAdminStatus2ChangedDelegate(DateTimeOffset Timestamp,
+                                                       EventTracking_Id? EventTrackingId,
+                                                       EVSEGroup EVSEGroup,
+                                                       Timestamped<EVSEGroupAdminStatusTypes> NewStatus,
+                                                       Timestamped<EVSEGroupAdminStatusTypes>? OldStatus = null,
+                                                       Context? DataSource = null);
 
     /// <summary>
     /// A delegate called whenever the status changed.
@@ -53,12 +53,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="EVSEGroup">The updated charging pool.</param>
     /// <param name="OldStatus">The old timestamped admin status of the charging pool.</param>
     /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
-    public delegate Task OnStatus2ChangedDelegate(DateTime Timestamp,
-                                                 EventTracking_Id? EventTrackingId,
-                                                 EVSEGroup EVSEGroup,
-                                                 Timestamped<EVSEGroupStatusTypes>   NewStatus,
-                                                 Timestamped<EVSEGroupStatusTypes>?  OldStatus    = null,
-                                                 Context?                            DataSource   = null);
+    public delegate Task OnStatus2ChangedDelegate(DateTimeOffset Timestamp,
+                                                  EventTracking_Id? EventTrackingId,
+                                                  EVSEGroup EVSEGroup,
+                                                  Timestamped<EVSEGroupStatusTypes>   NewStatus,
+                                                  Timestamped<EVSEGroupStatusTypes>?  OldStatus    = null,
+                                                  Context?                            DataSource   = null);
 
 
     //public class AutoIncludeMemberIds
@@ -649,7 +649,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                 Timestamp,
+        internal async Task UpdateAdminStatus(DateTimeOffset                           Timestamp,
                                               EventTracking_Id                         EventTrackingId,
                                               Timestamped<EVSEGroupAdminStatusTypes>   NewStatus,
                                               Timestamped<EVSEGroupAdminStatusTypes>?  OldStatus    = null,

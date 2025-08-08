@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// </summary>
         /// <param name="LogTimestamp">The timestamp of the request.</param>
         /// <param name="Sender">The sender of the request.</param>
-        public delegate Task OnRemoteStartRequestDelegate(DateTime            LogTimestamp,
+        public delegate Task OnRemoteStartRequestDelegate(DateTimeOffset      LogTimestamp,
                                                           Object              Sender,
                                                           RemoteStartRequest  Request);
 
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// </summary>
         /// <param name="LogTimestamp">The timestamp of the request.</param>
         /// <param name="Sender">The sender of the request.</param>
-        public delegate Task OnRemoteStartResponseDelegate(DateTime             LogTimestamp,
+        public delegate Task OnRemoteStartResponseDelegate(DateTimeOffset       LogTimestamp,
                                                            Object               Sender,
                                                            RemoteStartRequest   Request,
                                                            RemoteStartResponse  Response,
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// </summary>
         /// <param name="LogTimestamp">The timestamp of the request.</param>
         /// <param name="Sender">The sender of the request.</param>
-        public delegate Task OnRemoteStopRequestDelegate(DateTime           LogTimestamp,
+        public delegate Task OnRemoteStopRequestDelegate(DateTimeOffset     LogTimestamp,
                                                          Object             Sender,
                                                          RemoteStopRequest  Request);
 
@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// </summary>
         /// <param name="LogTimestamp">The timestamp of the request.</param>
         /// <param name="Sender">The sender of the request.</param>
-        public delegate Task OnRemoteStopResponseDelegate(DateTime            LogTimestamp,
+        public delegate Task OnRemoteStopResponseDelegate(DateTimeOffset      LogTimestamp,
                                                           Object              Sender,
                                                           RemoteStopRequest   Request,
                                                           RemoteStopResponse  Response,

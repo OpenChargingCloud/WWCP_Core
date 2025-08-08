@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingStation(IChargingStation   ChargingStation,
                                TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                               DateTime?          Timestamp           = null,
+                               DateTimeOffset?    Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
                                User_Id?           CurrentUserId       = null,
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingStationIfNotExists(IChargingStation   ChargingStation,
                                           TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                          DateTime?          Timestamp           = null,
+                                          DateTimeOffset?    Timestamp           = null,
                                           EventTracking_Id?  EventTrackingId     = null,
                                           TimeSpan?          RequestTimeout      = null,
                                           User_Id?           CurrentUserId       = null,
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateChargingStation(IChargingStation   ChargingStation,
                                        TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                       DateTime?          Timestamp           = null,
+                                       DateTimeOffset?    Timestamp           = null,
                                        EventTracking_Id?  EventTrackingId     = null,
                                        TimeSpan?          RequestTimeout      = null,
                                        User_Id?           CurrentUserId       = null,
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   Context?           DataSource          = null,
                                   TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                  DateTime?          Timestamp           = null,
+                                  DateTimeOffset?    Timestamp           = null,
                                   EventTracking_Id?  EventTrackingId     = null,
                                   TimeSpan?          RequestTimeout      = null,
                                   User_Id?           CurrentUserId       = null,
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteChargingStation(IChargingStation   ChargingStation,
                                   TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                  DateTime?          Timestamp           = null,
+                                  DateTimeOffset?    Timestamp           = null,
                                   EventTracking_Id?  EventTrackingId     = null,
                                   TimeSpan?          RequestTimeout      = null,
                                   User_Id?           CurrentUserId       = null,
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingStations(IEnumerable<IChargingStation>  ChargingStations,
                                 TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
-                                DateTime?                      Timestamp           = null,
+                                DateTimeOffset?                Timestamp           = null,
                                 EventTracking_Id?              EventTrackingId     = null,
                                 TimeSpan?                      RequestTimeout      = null,
                                 User_Id?                       CurrentUserId       = null,
@@ -223,7 +223,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingStationsIfNotExist(IEnumerable<IChargingStation>  ChargingStations,
                                           TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
-                                          DateTime?                      Timestamp           = null,
+                                          DateTimeOffset?                Timestamp           = null,
                                           EventTracking_Id?              EventTrackingId     = null,
                                           TimeSpan?                      RequestTimeout      = null,
                                           User_Id?                       CurrentUserId       = null,
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateChargingStations(IEnumerable<IChargingStation>  ChargingStations,
                                         TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
-                                        DateTime?                      Timestamp           = null,
+                                        DateTimeOffset?                Timestamp           = null,
                                         EventTracking_Id?              EventTrackingId     = null,
                                         TimeSpan?                      RequestTimeout      = null,
                                         User_Id?                       CurrentUserId       = null,
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingStations(IEnumerable<IChargingStation>  ChargingStations,
                                    TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
-                                   DateTime?                      Timestamp           = null,
+                                   DateTimeOffset?                Timestamp           = null,
                                    EventTracking_Id?              EventTrackingId     = null,
                                    TimeSpan?                      RequestTimeout      = null,
                                    User_Id?                       CurrentUserId       = null,
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.WWCP
             ReplaceChargingStations(IEnumerable<IChargingStation>  ChargingStations,
                                     TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
-                                    DateTime?                      Timestamp           = null,
+                                    DateTimeOffset?                Timestamp           = null,
                                     EventTracking_Id?              EventTrackingId     = null,
                                     TimeSpan?                      RequestTimeout      = null,
                                     User_Id?                       CurrentUserId       = null,
@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteChargingStations(IEnumerable<IChargingStation>  ChargingStations,
                                    TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
-                                   DateTime?                      Timestamp           = null,
+                                   DateTimeOffset?                Timestamp           = null,
                                    EventTracking_Id?              EventTrackingId     = null,
                                    TimeSpan?                      RequestTimeout      = null,
                                    User_Id?                       CurrentUserId       = null,

@@ -66,12 +66,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The response timestamp.
         /// </summary>
-        public DateTime                          ResponseTimestamp                { get; }
+        public DateTimeOffset                    ResponseTimestamp                { get; }
 
         /// <summary>
         /// An optional timestamp until the result may be cached.
         /// </summary>
-        public DateTime?                         CachedResultEndOfLifeTime        { get; set; }
+        public DateTimeOffset?                   CachedResultEndOfLifeTime        { get; set; }
 
         /// <summary>
         /// The optional remaining life time of a cached result.
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp when this authorization expires.
         /// </summary>
-        public DateTime?                         ExpiryDate                       { get; }
+        public DateTimeOffset?                   ExpiryDate                       { get; }
 
         /// <summary>
         /// The optional maximum allowed charging current.
@@ -197,8 +197,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         private AuthStartResult(IId                                AuthorizatorId,
                                 AuthStartResultTypes               Result,
-                                DateTime?                          ResponseTimestamp            = null,
-                                DateTime?                          CachedResultEndOfLifeTime    = null,
+                                DateTimeOffset?                    ResponseTimestamp            = null,
+                                DateTimeOffset?                    CachedResultEndOfLifeTime    = null,
                                 ISendAuthorizeStartStop?           ISendAuthorizeStartStop      = null,
                                 IReceiveAuthorizeStartStop?        IReceiveAuthorizeStartStop   = null,
 
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 ChargingSession_Id?                EMPPartnerSessionId          = null,
                                 String?                            ContractId                   = null,
                                 String?                            PrintedNumber                = null,
-                                DateTime?                          ExpiryDate                   = null,
+                                DateTimeOffset?                    ExpiryDate                   = null,
                                 Single?                            MaxkW                        = null,
                                 Single?                            MaxkWh                       = null,
                                 TimeSpan?                          MaxDuration                  = null,
@@ -281,13 +281,13 @@ namespace cloud.charging.open.protocols.WWCP
         public AuthStartResult(IId                                AuthorizatorId,
                                ISendAuthorizeStartStop            ISendAuthorizeStartStop,
                                AuthStartResultTypes               Result,
-                               DateTime?                          CachedResultEndOfLifeTime   = null,
+                               DateTimeOffset?                    CachedResultEndOfLifeTime   = null,
 
                                ChargingSession_Id?                SessionId                   = null,
                                ChargingSession_Id?                EMPPartnerSessionId         = null,
                                String?                            ContractId                  = null,
                                String?                            PrintedNumber               = null,
-                               DateTime?                          ExpiryDate                  = null,
+                               DateTimeOffset?                    ExpiryDate                  = null,
                                Single?                            MaxkW                       = null,
                                Single?                            MaxkWh                      = null,
                                TimeSpan?                          MaxDuration                 = null,
@@ -360,13 +360,13 @@ namespace cloud.charging.open.protocols.WWCP
         public AuthStartResult(IId                                AuthorizatorId,
                                IReceiveAuthorizeStartStop         IReceiveAuthorizeStartStop,
                                AuthStartResultTypes               Result,
-                               DateTime?                          CachedResultEndOfLifeTime   = null,
+                               DateTimeOffset?                    CachedResultEndOfLifeTime   = null,
 
                                ChargingSession_Id?                SessionId                   = null,
                                ChargingSession_Id?                EMPPartnerSessionId         = null,
                                String?                            ContractId                  = null,
                                String?                            PrintedNumber               = null,
-                               DateTime?                          ExpiryDate                  = null,
+                               DateTimeOffset?                    ExpiryDate                  = null,
                                Single?                            MaxkW                       = null,
                                Single?                            MaxkWh                      = null,
                                TimeSpan?                          MaxDuration                 = null,
@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Unspecified(IId                      AuthorizatorId,
                         ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                        DateTime?                CachedResultEndOfLifeTime   = null,
+                        DateTimeOffset?          CachedResultEndOfLifeTime   = null,
 
                         ChargingSession_Id?      SessionId                   = null,
                         I18NString?              Description                 = null,
@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Unspecified(IId                         AuthorizatorId,
                         IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                        DateTime?                   CachedResultEndOfLifeTime   = null,
+                        DateTimeOffset?             CachedResultEndOfLifeTime   = null,
 
                         ChargingSession_Id?         SessionId                   = null,
                         I18NString?                 Description                 = null,
@@ -498,7 +498,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AdminDown(IId                      AuthorizatorId,
                       ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                      DateTime?                CachedResultEndOfLifeTime   = null,
+                      DateTimeOffset?          CachedResultEndOfLifeTime   = null,
 
                       ChargingSession_Id?      SessionId                   = null,
                       I18NString?              Description                 = null,
@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AdminDown(IId                         AuthorizatorId,
                       IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                      DateTime?                   CachedResultEndOfLifeTime   = null,
+                      DateTimeOffset?             CachedResultEndOfLifeTime   = null,
 
                       ChargingSession_Id?         SessionId                   = null,
                       I18NString?                 Description                 = null,
@@ -564,7 +564,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UnknownLocation(IId                      AuthorizatorId,
                             ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                            DateTime?                CachedResultEndOfLifeTime   = null,
+                            DateTimeOffset?          CachedResultEndOfLifeTime   = null,
 
                             ChargingSession_Id?      SessionId                   = null,
                             I18NString?              Description                 = null,
@@ -596,7 +596,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UnknownLocation(IId                         AuthorizatorId,
                             IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                            DateTime?                   CachedResultEndOfLifeTime   = null,
+                            DateTimeOffset?             CachedResultEndOfLifeTime   = null,
 
                             ChargingSession_Id?         SessionId                   = null,
                             I18NString?                 Description                 = null,
@@ -630,7 +630,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             InvalidToken(IId                      AuthorizatorId,
                          ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                         DateTime?                CachedResultEndOfLifeTime   = null,
+                         DateTimeOffset?          CachedResultEndOfLifeTime   = null,
 
                          ChargingSession_Id?      SessionId                   = null,
                          I18NString?              Description                 = null,
@@ -662,7 +662,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             InvalidToken(IId                         AuthorizatorId,
                          IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                         DateTime?                   CachedResultEndOfLifeTime   = null,
+                         DateTimeOffset?             CachedResultEndOfLifeTime   = null,
 
                          ChargingSession_Id?         SessionId                   = null,
                          I18NString?                 Description                 = null,
@@ -696,7 +696,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             InvalidSessionId(IId                      AuthorizatorId,
                              ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                             DateTime?                CachedResultEndOfLifeTime   = null,
+                             DateTimeOffset?          CachedResultEndOfLifeTime   = null,
 
                              ChargingSession_Id?      SessionId                   = null,
                              I18NString?              Description                 = null,
@@ -728,7 +728,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             InvalidSessionId(IId                         AuthorizatorId,
                              IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                             DateTime?                   CachedResultEndOfLifeTime   = null,
+                             DateTimeOffset?             CachedResultEndOfLifeTime   = null,
 
                              ChargingSession_Id?         SessionId                   = null,
                              I18NString?                 Description                 = null,
@@ -762,7 +762,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Reserved(IId                      AuthorizatorId,
                      ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                     DateTime?                CachedResultEndOfLifeTime   = null,
+                     DateTimeOffset?          CachedResultEndOfLifeTime   = null,
 
                      ChargingSession_Id?      SessionId                   = null,
                      I18NString?              Description                 = null,
@@ -794,7 +794,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Reserved(IId                         AuthorizatorId,
                      IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                     DateTime?                   CachedResultEndOfLifeTime   = null,
+                     DateTimeOffset?             CachedResultEndOfLifeTime   = null,
 
                      ChargingSession_Id?         SessionId                   = null,
                      I18NString?                 Description                 = null,
@@ -828,7 +828,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             OutOfService(IId                      AuthorizatorId,
                          ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                         DateTime?                CachedResultEndOfLifeTime   = null,
+                         DateTimeOffset?          CachedResultEndOfLifeTime   = null,
 
                          ChargingSession_Id?      SessionId                   = null,
                          I18NString?              Description                 = null,
@@ -860,7 +860,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             OutOfService(IId                         AuthorizatorId,
                          IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                         DateTime?                   CachedResultEndOfLifeTime   = null,
+                         DateTimeOffset?             CachedResultEndOfLifeTime   = null,
 
                          ChargingSession_Id?         SessionId                   = null,
                          I18NString?                 Description                 = null,
@@ -907,13 +907,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             Authorized(IId                                AuthorizatorId,
                        ISendAuthorizeStartStop            ISendAuthorizeStartStop,
-                       DateTime?                          CachedResultEndOfLifeTime   = null,
+                       DateTimeOffset?                    CachedResultEndOfLifeTime   = null,
 
                        ChargingSession_Id?                SessionId                   = null,
                        ChargingSession_Id?                EMPPartnerSessionId         = null,
                        String?                            ContractId                  = null,
                        String?                            PrintedNumber               = null,
-                       DateTime?                          ExpiryDate                  = null,
+                       DateTimeOffset?                    ExpiryDate                  = null,
                        Single?                            MaxkW                       = null,
                        Single?                            MaxkWh                      = null,
                        TimeSpan?                          MaxDuration                 = null,
@@ -980,13 +980,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             Authorized(IId                                AuthorizatorId,
                        IReceiveAuthorizeStartStop         IReceiveAuthorizeStartStop,
-                       DateTime?                          CachedResultEndOfLifeTime   = null,
+                       DateTimeOffset?                    CachedResultEndOfLifeTime   = null,
 
                        ChargingSession_Id?                SessionId                   = null,
                        ChargingSession_Id?                EMPPartnerSessionId         = null,
                        String?                            ContractId                  = null,
                        String?                            PrintedNumber               = null,
-                       DateTime?                          ExpiryDate                  = null,
+                       DateTimeOffset?                    ExpiryDate                  = null,
                        Single?                            MaxkW                       = null,
                        Single?                            MaxkWh                      = null,
                        TimeSpan?                          MaxDuration                 = null,
@@ -1045,7 +1045,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             NotAuthorized(IId                      AuthorizatorId,
                           ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                          DateTime?                CachedResultEndOfLifeTime   = null,
+                          DateTimeOffset?          CachedResultEndOfLifeTime   = null,
 
                           ChargingSession_Id?      SessionId                   = null,
                           EMobilityProvider_Id?    ProviderId                  = null,
@@ -1086,7 +1086,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             NotAuthorized(IId                         AuthorizatorId,
                           IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                          DateTime?                   CachedResultEndOfLifeTime   = null,
+                          DateTimeOffset?             CachedResultEndOfLifeTime   = null,
 
                           ChargingSession_Id?         SessionId                   = null,
                           EMobilityProvider_Id?       ProviderId                  = null,
@@ -1129,7 +1129,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Blocked(IId                      AuthorizatorId,
                     ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                    DateTime?                CachedResultEndOfLifeTime   = null,
+                    DateTimeOffset?          CachedResultEndOfLifeTime   = null,
 
                     ChargingSession_Id?      SessionId                   = null,
                     EMobilityProvider_Id?    ProviderId                  = null,
@@ -1170,7 +1170,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Blocked(IId                         AuthorizatorId,
                     IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                    DateTime?                   CachedResultEndOfLifeTime   = null,
+                    DateTimeOffset?             CachedResultEndOfLifeTime   = null,
 
                     ChargingSession_Id?         SessionId                   = null,
                     EMobilityProvider_Id?       ProviderId                  = null,
@@ -1213,7 +1213,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Expired(IId                      AuthorizatorId,
                     ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                    DateTime?                CachedResultEndOfLifeTime   = null,
+                    DateTimeOffset?          CachedResultEndOfLifeTime   = null,
 
                     ChargingSession_Id?      SessionId                   = null,
                     EMobilityProvider_Id?    ProviderId                  = null,
@@ -1254,7 +1254,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Expired(IId                         AuthorizatorId,
                     IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                    DateTime?                   CachedResultEndOfLifeTime   = null,
+                    DateTimeOffset?             CachedResultEndOfLifeTime   = null,
 
                     ChargingSession_Id?         SessionId                   = null,
                     EMobilityProvider_Id?       ProviderId                  = null,
@@ -1297,7 +1297,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             NoCredit(IId                      AuthorizatorId,
                      ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                     DateTime?                CachedResultEndOfLifeTime   = null,
+                     DateTimeOffset?          CachedResultEndOfLifeTime   = null,
 
                      ChargingSession_Id?      SessionId                   = null,
                      EMobilityProvider_Id?    ProviderId                  = null,
@@ -1338,7 +1338,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             NoCredit(IId                         AuthorizatorId,
                      IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                     DateTime?                   CachedResultEndOfLifeTime   = null,
+                     DateTimeOffset?             CachedResultEndOfLifeTime   = null,
 
                      ChargingSession_Id?         SessionId                   = null,
                      EMobilityProvider_Id?       ProviderId                  = null,

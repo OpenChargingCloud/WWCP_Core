@@ -224,9 +224,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region OnWWCPCPOAdapterException
 
-        public delegate Task OnWWCPCPOAdapterExceptionDelegate(DateTime             Timestamp,
-                                                               AWWCPCSOAdapter<TChargeDetailRecords>      Sender,
-                                                               Exception            Exception);
+        public delegate Task OnWWCPCPOAdapterExceptionDelegate(DateTimeOffset                         Timestamp,
+                                                               AWWCPCSOAdapter<TChargeDetailRecords>  Sender,
+                                                               Exception                              Exception);
 
         public event OnWWCPCPOAdapterExceptionDelegate OnWWCPCPOAdapterException;
 
@@ -235,11 +235,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region FlushEVSEDataAndStatusQueues
 
-        public delegate void FlushEVSEDataAndStatusQueuesStartedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushEVSEDataAndStatusQueuesStartedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTimeOffset StartTime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEDataAndStatusQueuesStartedDelegate? FlushEVSEDataAndStatusQueuesStartedEvent;
 
-        public delegate void FlushEVSEDataAndStatusQueuesFinishedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushEVSEDataAndStatusQueuesFinishedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTimeOffset StartTime, DateTimeOffset EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEDataAndStatusQueuesFinishedDelegate? FlushEVSEDataAndStatusQueuesFinishedEvent;
 
@@ -247,11 +247,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region FlushEVSEFastStatusQueues
 
-        public delegate void FlushEVSEFastStatusQueuesStartedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushEVSEFastStatusQueuesStartedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTimeOffset StartTime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEFastStatusQueuesStartedDelegate? FlushEVSEFastStatusQueuesStartedEvent;
 
-        public delegate void FlushEVSEFastStatusQueuesFinishedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushEVSEFastStatusQueuesFinishedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTimeOffset StartTime, DateTimeOffset EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEFastStatusQueuesFinishedDelegate? FlushEVSEFastStatusQueuesFinishedEvent;
 
@@ -259,17 +259,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region FlushChargeDetailRecordsQueues
 
-        public delegate void FlushChargeDetailRecordsQueuesStartedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushChargeDetailRecordsQueuesStartedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTimeOffset StartTime, TimeSpan Every, UInt64 RunId);
 
         public event FlushChargeDetailRecordsQueuesStartedDelegate? FlushChargeDetailRecordsQueuesStartedEvent;
 
-        public delegate void FlushChargeDetailRecordsQueuesFinishedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushChargeDetailRecordsQueuesFinishedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTimeOffset StartTime, DateTimeOffset EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
         public event FlushChargeDetailRecordsQueuesFinishedDelegate? FlushChargeDetailRecordsQueuesFinishedEvent;
 
         #endregion
 
-        public delegate Task OnWarningsDelegate(DateTime Timestamp, String Class, String Method, IEnumerable<Warning> Warnings);
+        public delegate Task OnWarningsDelegate(DateTimeOffset Timestamp, String Class, String Method, IEnumerable<Warning> Warnings);
 
         public event OnWarningsDelegate? OnWarnings;
 
@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddRoamingNetwork(IRoamingNetwork    RoamingNetwork,
                               TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                              DateTime?          Timestamp           = null,
+                              DateTimeOffset?    Timestamp           = null,
                               EventTracking_Id?  EventTrackingId     = null,
                               TimeSpan?          RequestTimeout      = null,
                               User_Id?           CurrentUserId       = null,
@@ -508,7 +508,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddRoamingNetworkIfNotExists(IRoamingNetwork    RoamingNetwork,
                                          TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                         DateTime?          Timestamp           = null,
+                                         DateTimeOffset?    Timestamp           = null,
                                          EventTracking_Id?  EventTrackingId     = null,
                                          TimeSpan?          RequestTimeout      = null,
                                          User_Id?           CurrentUserId       = null,
@@ -543,7 +543,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateRoamingNetwork(IRoamingNetwork    RoamingNetwork,
                                       TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                      DateTime?          Timestamp           = null,
+                                      DateTimeOffset?    Timestamp           = null,
                                       EventTracking_Id?  EventTrackingId     = null,
                                       TimeSpan?          RequestTimeout      = null,
                                       User_Id?           CurrentUserId       = null,
@@ -586,7 +586,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  Context?           DataSource          = null,
                                  TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                 DateTime?          Timestamp           = null,
+                                 DateTimeOffset?    Timestamp           = null,
                                  EventTracking_Id?  EventTrackingId     = null,
                                  TimeSpan?          RequestTimeout      = null,
                                  User_Id?           CurrentUserId       = null,
@@ -621,7 +621,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteRoamingNetwork(IRoamingNetwork    RoamingNetwork,
                                  TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                 DateTime?          Timestamp           = null,
+                                 DateTimeOffset?    Timestamp           = null,
                                  EventTracking_Id?  EventTrackingId     = null,
                                  TimeSpan?          RequestTimeout      = null,
                                  User_Id?           CurrentUserId       = null,
@@ -657,7 +657,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
                                TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
 
-                               DateTime?                     Timestamp           = null,
+                               DateTimeOffset?               Timestamp           = null,
                                EventTracking_Id?             EventTrackingId     = null,
                                TimeSpan?                     RequestTimeout      = null,
                                User_Id?                      CurrentUserId       = null,
@@ -692,7 +692,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddRoamingNetworksIfNotExist(IEnumerable<IRoamingNetwork>  RoamingNetworks,
                                          TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
 
-                                         DateTime?                     Timestamp           = null,
+                                         DateTimeOffset?               Timestamp           = null,
                                          EventTracking_Id?             EventTrackingId     = null,
                                          TimeSpan?                     RequestTimeout      = null,
                                          User_Id?                      CurrentUserId       = null,
@@ -727,7 +727,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
                                        TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
 
-                                       DateTime?                     Timestamp           = null,
+                                       DateTimeOffset?               Timestamp           = null,
                                        EventTracking_Id?             EventTrackingId     = null,
                                        TimeSpan?                     RequestTimeout      = null,
                                        User_Id?                      CurrentUserId       = null,
@@ -762,7 +762,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
                                   TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
 
-                                  DateTime?                     Timestamp           = null,
+                                  DateTimeOffset?               Timestamp           = null,
                                   EventTracking_Id?             EventTrackingId     = null,
                                   TimeSpan?                     RequestTimeout      = null,
                                   User_Id?                      CurrentUserId       = null,
@@ -797,7 +797,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
                                   TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueue,
 
-                                  DateTime?                     Timestamp           = null,
+                                  DateTimeOffset?               Timestamp           = null,
                                   EventTracking_Id?             EventTrackingId     = null,
                                   TimeSpan?                     RequestTimeout      = null,
                                   User_Id?                      CurrentUserId       = null,
@@ -833,7 +833,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateRoamingNetworkAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  RoamingNetworkAdminStatusUpdates,
                                             TransmissionTypes                             TransmissionType    = TransmissionTypes.Enqueue,
 
-                                            DateTime?                                     Timestamp           = null,
+                                            DateTimeOffset?                               Timestamp           = null,
                                             EventTracking_Id?                             EventTrackingId     = null,
                                             TimeSpan?                                     RequestTimeout      = null,
                                             User_Id?                                      CurrentUserId       = null,
@@ -866,7 +866,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateRoamingNetworkStatus(IEnumerable<RoamingNetworkStatusUpdate>  RoamingNetworkStatusUpdates,
                                        TransmissionTypes                        TransmissionType    = TransmissionTypes.Enqueue,
 
-                                       DateTime?                                Timestamp           = null,
+                                       DateTimeOffset?                          Timestamp           = null,
                                        EventTracking_Id?                        EventTrackingId     = null,
                                        TimeSpan?                                RequestTimeout      = null,
                                        User_Id?                                 CurrentUserId       = null,
@@ -919,7 +919,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
                                        TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
 
-                                       DateTime?                 Timestamp           = null,
+                                       DateTimeOffset?           Timestamp           = null,
                                        EventTracking_Id?         EventTrackingId     = null,
                                        TimeSpan?                 RequestTimeout      = null,
                                        User_Id?                  CurrentUserId       = null,
@@ -954,7 +954,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingStationOperatorIfNotExists(IChargingStationOperator  ChargingStationOperator,
                                                   TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
 
-                                                  DateTime?                 Timestamp           = null,
+                                                  DateTimeOffset?           Timestamp           = null,
                                                   EventTracking_Id?         EventTrackingId     = null,
                                                   TimeSpan?                 RequestTimeout      = null,
                                                   User_Id?                  CurrentUserId       = null,
@@ -989,7 +989,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
                                                TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
 
-                                               DateTime?                 Timestamp           = null,
+                                               DateTimeOffset?           Timestamp           = null,
                                                EventTracking_Id?         EventTrackingId     = null,
                                                TimeSpan?                 RequestTimeout      = null,
                                                User_Id?                  CurrentUserId       = null,
@@ -1032,7 +1032,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           Context?                  DataSource          = null,
                                           TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
 
-                                          DateTime?                 Timestamp           = null,
+                                          DateTimeOffset?           Timestamp           = null,
                                           EventTracking_Id?         EventTrackingId     = null,
                                           TimeSpan?                 RequestTimeout      = null,
                                           User_Id?                  CurrentUserId       = null,
@@ -1067,7 +1067,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
                                           TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
 
-                                          DateTime?                 Timestamp           = null,
+                                          DateTimeOffset?           Timestamp           = null,
                                           EventTracking_Id?         EventTrackingId     = null,
                                           TimeSpan?                 RequestTimeout      = null,
                                           User_Id?                  CurrentUserId       = null,
@@ -1103,7 +1103,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
                                         TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
-                                        DateTime?                              Timestamp           = null,
+                                        DateTimeOffset?                        Timestamp           = null,
                                         EventTracking_Id?                      EventTrackingId     = null,
                                         TimeSpan?                              RequestTimeout      = null,
                                         User_Id?                               CurrentUserId       = null,
@@ -1138,7 +1138,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingStationOperatorsIfNotExist(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
                                                   TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
-                                                  DateTime?                              Timestamp           = null,
+                                                  DateTimeOffset?                        Timestamp           = null,
                                                   EventTracking_Id?                      EventTrackingId     = null,
                                                   TimeSpan?                              RequestTimeout      = null,
                                                   User_Id?                               CurrentUserId       = null,
@@ -1173,7 +1173,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
                                                 TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
-                                                DateTime?                              Timestamp           = null,
+                                                DateTimeOffset?                        Timestamp           = null,
                                                 EventTracking_Id?                      EventTrackingId     = null,
                                                 TimeSpan?                              RequestTimeout      = null,
                                                 User_Id?                               CurrentUserId       = null,
@@ -1208,7 +1208,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
                                            TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
-                                           DateTime?                              Timestamp           = null,
+                                           DateTimeOffset?                        Timestamp           = null,
                                            EventTracking_Id?                      EventTrackingId     = null,
                                            TimeSpan?                              RequestTimeout      = null,
                                            User_Id?                               CurrentUserId       = null,
@@ -1243,7 +1243,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
                                            TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
-                                           DateTime?                              Timestamp           = null,
+                                           DateTimeOffset?                        Timestamp           = null,
                                            EventTracking_Id?                      EventTrackingId     = null,
                                            TimeSpan?                              RequestTimeout      = null,
                                            User_Id?                               CurrentUserId       = null,
@@ -1279,7 +1279,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingStationOperatorAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  ChargingStationOperatorAdminStatusUpdates,
                                                      TransmissionTypes                                      TransmissionType    = TransmissionTypes.Enqueue,
 
-                                                     DateTime?                                              Timestamp           = null,
+                                                     DateTimeOffset?                                        Timestamp           = null,
                                                      EventTracking_Id?                                      EventTrackingId     = null,
                                                      TimeSpan?                                              RequestTimeout      = null,
                                                      User_Id?                                               CurrentUserId       = null,
@@ -1312,7 +1312,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingStationOperatorStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  ChargingStationOperatorStatusUpdates,
                                                 TransmissionTypes                                 TransmissionType    = TransmissionTypes.Enqueue,
 
-                                                DateTime?                                         Timestamp           = null,
+                                                DateTimeOffset?                                   Timestamp           = null,
                                                 EventTracking_Id?                                 EventTrackingId     = null,
                                                 TimeSpan?                                         RequestTimeout      = null,
                                                 User_Id?                                          CurrentUserId       = null,
@@ -1365,7 +1365,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingPool(IChargingPool      ChargingPool,
                             TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                            DateTime?          Timestamp           = null,
+                            DateTimeOffset?    Timestamp           = null,
                             EventTracking_Id?  EventTrackingId     = null,
                             TimeSpan?          RequestTimeout      = null,
                             User_Id?           CurrentUserId       = null,
@@ -1400,7 +1400,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingPoolIfNotExists(IChargingPool      ChargingPool,
                                        TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                       DateTime?          Timestamp           = null,
+                                       DateTimeOffset?    Timestamp           = null,
                                        EventTracking_Id?  EventTrackingId     = null,
                                        TimeSpan?          RequestTimeout      = null,
                                        User_Id?           CurrentUserId       = null,
@@ -1435,7 +1435,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateChargingPool(IChargingPool      ChargingPool,
                                     TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                    DateTime?          Timestamp           = null,
+                                    DateTimeOffset?    Timestamp           = null,
                                     EventTracking_Id?  EventTrackingId     = null,
                                     TimeSpan?          RequestTimeout      = null,
                                     User_Id?           CurrentUserId       = null,
@@ -1478,7 +1478,7 @@ namespace cloud.charging.open.protocols.WWCP
                                Context?           DataSource          = null,
                                TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                               DateTime?          Timestamp           = null,
+                               DateTimeOffset?    Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
                                User_Id?           CurrentUserId       = null,
@@ -1513,7 +1513,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteChargingPool(IChargingPool      ChargingPool,
                                TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                               DateTime?          Timestamp           = null,
+                               DateTimeOffset?    Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
                                User_Id?           CurrentUserId       = null,
@@ -1549,7 +1549,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingPools(IEnumerable<IChargingPool>  ChargingPools,
                              TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?                   Timestamp           = null,
+                             DateTimeOffset?             Timestamp           = null,
                              EventTracking_Id?           EventTrackingId     = null,
                              TimeSpan?                   RequestTimeout      = null,
                              User_Id?                    CurrentUserId       = null,
@@ -1584,7 +1584,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingPoolsIfNotExist(IEnumerable<IChargingPool>  ChargingPools,
                                        TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,
 
-                                       DateTime?                   Timestamp           = null,
+                                       DateTimeOffset?             Timestamp           = null,
                                        EventTracking_Id?           EventTrackingId     = null,
                                        TimeSpan?                   RequestTimeout      = null,
                                        User_Id?                    CurrentUserId       = null,
@@ -1619,7 +1619,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateChargingPools(IEnumerable<IChargingPool>  ChargingPools,
                                      TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,
 
-                                     DateTime?                   Timestamp           = null,
+                                     DateTimeOffset?             Timestamp           = null,
                                      EventTracking_Id?           EventTrackingId     = null,
                                      TimeSpan?                   RequestTimeout      = null,
                                      User_Id?                    CurrentUserId       = null,
@@ -1654,7 +1654,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingPools(IEnumerable<IChargingPool>  ChargingPools,
                                 TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,
 
-                                DateTime?                   Timestamp           = null,
+                                DateTimeOffset?             Timestamp           = null,
                                 EventTracking_Id?           EventTrackingId     = null,
                                 TimeSpan?                   RequestTimeout      = null,
                                 User_Id?                    CurrentUserId       = null,
@@ -1690,7 +1690,7 @@ namespace cloud.charging.open.protocols.WWCP
             ReplaceChargingPools(IEnumerable<IChargingPool>  ChargingPools,
                                  TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,
 
-                                 DateTime?                   Timestamp           = null,
+                                 DateTimeOffset?             Timestamp           = null,
                                  EventTracking_Id?           EventTrackingId     = null,
                                  TimeSpan?                   RequestTimeout      = null,
                                  User_Id?                    CurrentUserId       = null,
@@ -1725,7 +1725,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteChargingPools(IEnumerable<IChargingPool>  ChargingPools,
                                 TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,
 
-                                DateTime?                   Timestamp           = null,
+                                DateTimeOffset?             Timestamp           = null,
                                 EventTracking_Id?           EventTrackingId     = null,
                                 TimeSpan?                   RequestTimeout      = null,
                                 User_Id?                    CurrentUserId       = null,
@@ -1761,7 +1761,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingPoolAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  ChargingPoolAdminStatusUpdates,
                                           TransmissionTypes                           TransmissionType    = TransmissionTypes.Enqueue,
 
-                                          DateTime?                                   Timestamp           = null,
+                                          DateTimeOffset?                             Timestamp           = null,
                                           EventTracking_Id?                           EventTrackingId     = null,
                                           TimeSpan?                                   RequestTimeout      = null,
                                           User_Id?                                    CurrentUserId       = null,
@@ -1794,7 +1794,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingPoolStatus(IEnumerable<ChargingPoolStatusUpdate>  ChargingPoolStatusUpdates,
                                      TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
-                                     DateTime?                              Timestamp           = null,
+                                     DateTimeOffset?                        Timestamp           = null,
                                      EventTracking_Id?                      EventTrackingId     = null,
                                      TimeSpan?                              RequestTimeout      = null,
                                      User_Id?                               CurrentUserId       = null,
@@ -1827,7 +1827,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingPoolEnergyStatus(IEnumerable<ChargingPoolEnergyStatusUpdate>  ChargingPoolEnergyStatusUpdates,
                                            TransmissionTypes                            TransmissionType    = TransmissionTypes.Enqueue,
 
-                                           DateTime?                                    Timestamp           = null,
+                                           DateTimeOffset?                              Timestamp           = null,
                                            EventTracking_Id?                            EventTrackingId     = null,
                                            TimeSpan?                                    RequestTimeout      = null,
                                            User_Id?                                     CurrentUserId       = null,
@@ -1880,7 +1880,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingStation(IChargingStation   ChargingStation,
                                TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                               DateTime?          Timestamp           = null,
+                               DateTimeOffset?    Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
                                User_Id?           CurrentUserId       = null,
@@ -1915,7 +1915,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingStationIfNotExists(IChargingStation   ChargingStation,
                                           TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                          DateTime?          Timestamp           = null,
+                                          DateTimeOffset?    Timestamp           = null,
                                           EventTracking_Id?  EventTrackingId     = null,
                                           TimeSpan?          RequestTimeout      = null,
                                           User_Id?           CurrentUserId       = null,
@@ -1950,7 +1950,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateChargingStation(IChargingStation   ChargingStation,
                                        TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                       DateTime?          Timestamp           = null,
+                                       DateTimeOffset?    Timestamp           = null,
                                        EventTracking_Id?  EventTrackingId     = null,
                                        TimeSpan?          RequestTimeout      = null,
                                        User_Id?           CurrentUserId       = null,
@@ -1993,7 +1993,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   Context?           DataSource          = null,
                                   TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                  DateTime?          Timestamp           = null,
+                                  DateTimeOffset?    Timestamp           = null,
                                   EventTracking_Id?  EventTrackingId     = null,
                                   TimeSpan?          RequestTimeout      = null,
                                   User_Id?           CurrentUserId       = null,
@@ -2028,7 +2028,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteChargingStation(IChargingStation   ChargingStation,
                                   TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                                  DateTime?          Timestamp           = null,
+                                  DateTimeOffset?    Timestamp           = null,
                                   EventTracking_Id?  EventTrackingId     = null,
                                   TimeSpan?          RequestTimeout      = null,
                                   User_Id?           CurrentUserId       = null,
@@ -2064,7 +2064,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingStations(IEnumerable<IChargingStation>  ChargingStations,
                                 TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
-                                DateTime?                      Timestamp           = null,
+                                DateTimeOffset?                Timestamp           = null,
                                 EventTracking_Id?              EventTrackingId     = null,
                                 TimeSpan?                      RequestTimeout      = null,
                                 User_Id?                       CurrentUserId       = null,
@@ -2099,7 +2099,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddChargingStationsIfNotExist(IEnumerable<IChargingStation>  ChargingStations,
                                           TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
-                                          DateTime?                      Timestamp           = null,
+                                          DateTimeOffset?                Timestamp           = null,
                                           EventTracking_Id?              EventTrackingId     = null,
                                           TimeSpan?                      RequestTimeout      = null,
                                           User_Id?                       CurrentUserId       = null,
@@ -2134,7 +2134,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateChargingStations(IEnumerable<IChargingStation>  ChargingStations,
                                         TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
-                                        DateTime?                      Timestamp           = null,
+                                        DateTimeOffset?                Timestamp           = null,
                                         EventTracking_Id?              EventTrackingId     = null,
                                         TimeSpan?                      RequestTimeout      = null,
                                         User_Id?                       CurrentUserId       = null,
@@ -2169,7 +2169,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingStations(IEnumerable<IChargingStation>  ChargingStations,
                                    TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
-                                   DateTime?                      Timestamp           = null,
+                                   DateTimeOffset?                Timestamp           = null,
                                    EventTracking_Id?              EventTrackingId     = null,
                                    TimeSpan?                      RequestTimeout      = null,
                                    User_Id?                       CurrentUserId       = null,
@@ -2205,7 +2205,7 @@ namespace cloud.charging.open.protocols.WWCP
             ReplaceChargingStations(IEnumerable<IChargingStation>  ChargingStations,
                                     TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
-                                    DateTime?                      Timestamp           = null,
+                                    DateTimeOffset?                Timestamp           = null,
                                     EventTracking_Id?              EventTrackingId     = null,
                                     TimeSpan?                      RequestTimeout      = null,
                                     User_Id?                       CurrentUserId       = null,
@@ -2240,7 +2240,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteChargingStations(IEnumerable<IChargingStation>  ChargingStations,
                                    TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
-                                   DateTime?                      Timestamp           = null,
+                                   DateTimeOffset?                Timestamp           = null,
                                    EventTracking_Id?              EventTrackingId     = null,
                                    TimeSpan?                      RequestTimeout      = null,
                                    User_Id?                       CurrentUserId       = null,
@@ -2276,7 +2276,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingStationAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  ChargingStationAdminStatusUpdates,
                                              TransmissionTypes                              TransmissionType    = TransmissionTypes.Enqueue,
 
-                                             DateTime?                                      Timestamp           = null,
+                                             DateTimeOffset?                                Timestamp           = null,
                                              EventTracking_Id?                              EventTrackingId     = null,
                                              TimeSpan?                                      RequestTimeout      = null,
                                              User_Id?                                       CurrentUserId       = null,
@@ -2309,7 +2309,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingStationStatus(IEnumerable<ChargingStationStatusUpdate>  ChargingStationStatusUpdates,
                                         TransmissionTypes                         TransmissionType    = TransmissionTypes.Enqueue,
 
-                                        DateTime?                                 Timestamp           = null,
+                                        DateTimeOffset?                           Timestamp           = null,
                                         EventTracking_Id?                         EventTrackingId     = null,
                                         TimeSpan?                                 RequestTimeout      = null,
                                         User_Id?                                  CurrentUserId       = null,
@@ -2342,7 +2342,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateChargingStationEnergyStatus(IEnumerable<ChargingStationEnergyStatusUpdate>  ChargingStationEnergyStatusUpdates,
                                               TransmissionTypes                               TransmissionType    = TransmissionTypes.Enqueue,
 
-                                              DateTime?                                       Timestamp           = null,
+                                              DateTimeOffset?                                 Timestamp           = null,
                                               EventTracking_Id?                               EventTrackingId     = null,
                                               TimeSpan?                                       RequestTimeout      = null,
                                               User_Id?                                        CurrentUserId       = null,
@@ -2395,7 +2395,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddEVSE(IEVSE              EVSE,
                     TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                    DateTime?          Timestamp           = null,
+                    DateTimeOffset?    Timestamp           = null,
                     EventTracking_Id?  EventTrackingId     = null,
                     TimeSpan?          RequestTimeout      = null,
                     User_Id?           CurrentUserId       = null,
@@ -2430,7 +2430,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddEVSEIfNotExists(IEVSE              EVSE,
                                TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                               DateTime?          Timestamp           = null,
+                               DateTimeOffset?    Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
                                User_Id?           CurrentUserId       = null,
@@ -2465,7 +2465,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateEVSE(IEVSE              EVSE,
                             TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                            DateTime?          Timestamp           = null,
+                            DateTimeOffset?    Timestamp           = null,
                             EventTracking_Id?  EventTrackingId     = null,
                             TimeSpan?          RequestTimeout      = null,
                             User_Id?           CurrentUserId       = null,
@@ -2508,7 +2508,7 @@ namespace cloud.charging.open.protocols.WWCP
                        Context?           DataSource          = null,
                        TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                       DateTime?          Timestamp           = null,
+                       DateTimeOffset?    Timestamp           = null,
                        EventTracking_Id?  EventTrackingId     = null,
                        TimeSpan?          RequestTimeout      = null,
                        User_Id?           CurrentUserId       = null,
@@ -2543,7 +2543,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteEVSE(IEVSE              EVSE,
                        TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                       DateTime?          Timestamp           = null,
+                       DateTimeOffset?    Timestamp           = null,
                        EventTracking_Id?  EventTrackingId     = null,
                        TimeSpan?          RequestTimeout      = null,
                        User_Id?           CurrentUserId       = null,
@@ -2579,7 +2579,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddEVSEs(IEnumerable<IEVSE>  EVSEs,
                      TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
-                     DateTime?           Timestamp           = null,
+                     DateTimeOffset?     Timestamp           = null,
                      EventTracking_Id?   EventTrackingId     = null,
                      TimeSpan?           RequestTimeout      = null,
                      User_Id?            CurrentUserId       = null,
@@ -2614,7 +2614,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddEVSEsIfNotExist(IEnumerable<IEVSE>  EVSEs,
                                TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
-                               DateTime?           Timestamp           = null,
+                               DateTimeOffset?     Timestamp           = null,
                                EventTracking_Id?   EventTrackingId     = null,
                                TimeSpan?           RequestTimeout      = null,
                                User_Id?            CurrentUserId       = null,
@@ -2649,7 +2649,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateEVSEs(IEnumerable<IEVSE>  EVSEs,
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?           Timestamp           = null,
+                             DateTimeOffset?     Timestamp           = null,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null,
                              User_Id?            CurrentUserId       = null,
@@ -2684,7 +2684,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateEVSEs(IEnumerable<IEVSE>  EVSEs,
                         TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
-                        DateTime?           Timestamp           = null,
+                        DateTimeOffset?     Timestamp           = null,
                         EventTracking_Id?   EventTrackingId     = null,
                         TimeSpan?           RequestTimeout      = null,
                         User_Id?            CurrentUserId       = null,
@@ -2720,7 +2720,7 @@ namespace cloud.charging.open.protocols.WWCP
             ReplaceEVSEs(IEnumerable<IEVSE>  EVSEs,
                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
-                         DateTime?           Timestamp           = null,
+                         DateTimeOffset?     Timestamp           = null,
                          EventTracking_Id?   EventTrackingId     = null,
                          TimeSpan?           RequestTimeout      = null,
                          User_Id?            CurrentUserId       = null,
@@ -2755,7 +2755,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteEVSEs(IEnumerable<IEVSE>  EVSEs,
                         TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
-                        DateTime?           Timestamp           = null,
+                        DateTimeOffset?     Timestamp           = null,
                         EventTracking_Id?   EventTrackingId     = null,
                         TimeSpan?           RequestTimeout      = null,
                         User_Id?            CurrentUserId       = null,
@@ -2791,7 +2791,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateEVSEAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  EVSEAdminStatusUpdates,
                                   TransmissionTypes                   TransmissionType    = TransmissionTypes.Enqueue,
 
-                                  DateTime?                           Timestamp           = null,
+                                  DateTimeOffset?                     Timestamp           = null,
                                   EventTracking_Id?                   EventTrackingId     = null,
                                   TimeSpan?                           RequestTimeout      = null,
                                   User_Id?                            CurrentUserId       = null,
@@ -2824,7 +2824,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateEVSEStatus(IEnumerable<EVSEStatusUpdate>  EVSEStatusUpdates,
                              TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?                      Timestamp           = null,
+                             DateTimeOffset?                Timestamp           = null,
                              EventTracking_Id?              EventTrackingId     = null,
                              TimeSpan?                      RequestTimeout      = null,
                              User_Id?                       CurrentUserId       = null,
@@ -2857,7 +2857,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateEVSEEnergyStatus(IEnumerable<EVSEEnergyStatusUpdate>  EVSEEnergyStatusUpdates,
                                    TransmissionTypes                    TransmissionType    = TransmissionTypes.Enqueue,
 
-                                   DateTime?                            Timestamp           = null,
+                                   DateTimeOffset?                      Timestamp           = null,
                                    EventTracking_Id?                    EventTrackingId     = null,
                                    TimeSpan?                            RequestTimeout      = null,
                                    User_Id?                             CurrentUserId       = null,
@@ -3154,7 +3154,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        protected void SendOnWarnings(DateTime              Timestamp,
+        protected void SendOnWarnings(DateTimeOffset        Timestamp,
                                       String                Class,
                                       String                Method,
                                       IEnumerable<Warning>  Warnings)

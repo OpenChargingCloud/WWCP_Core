@@ -39,8 +39,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingProduct">The chosen charging product.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnRemoteStartRequestDelegate(DateTime                  LogTimestamp,
-                                                      DateTime                  RequestTimestamp,
+    public delegate Task OnRemoteStartRequestDelegate(DateTimeOffset            LogTimestamp,
+                                                      DateTimeOffset            RequestTimestamp,
                                                       Object                    Sender,
                                                       EventTracking_Id          EventTrackingId,
                                                       RoamingNetwork_Id         RoamingNetworkId,
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<RemoteStartResult> OnRemoteStartDelegate(DateTime                  Timestamp,
+    public delegate Task<RemoteStartResult> OnRemoteStartDelegate(DateTimeOffset            Timestamp,
                                                                   CancellationToken         CancellationToken,
                                                                   EventTracking_Id          EventTrackingId,
                                                                   ChargingProduct           ChargingProduct,
@@ -98,8 +98,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote start result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnRemoteStartResponseDelegate(DateTime                  LogTimestamp,
-                                                       DateTime                  RequestTimestamp,
+    public delegate Task OnRemoteStartResponseDelegate(DateTimeOffset            LogTimestamp,
+                                                       DateTimeOffset            RequestTimestamp,
                                                        Object                    Sender,
                                                        EventTracking_Id          EventTrackingId,
                                                        RoamingNetwork_Id         RoamingNetworkId,

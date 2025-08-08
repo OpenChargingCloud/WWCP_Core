@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                   ChargingSession_Id?      ChargingSessionId        = null,
                                   JObject?                 CustomData               = null,
 
-                                  DateTime?                Timestamp                = null,
+                                  DateTimeOffset?          Timestamp                = null,
                                   EventTracking_Id?        EventTrackingId          = null,
                                   TimeSpan?                RequestTimeout           = null,
                                   CancellationToken        CancellationToken        = default)
@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                        [NotNullWhen(false)] out String?                  ErrorResponse,
                                        CustomJObjectParserDelegate<RemoteStartRequest>?  CustomRemoteStartRequestParser   = null,
 
-                                       DateTime?                                         Timestamp                        = null,
+                                       DateTimeOffset?                                   Timestamp                        = null,
                                        EventTracking_Id?                                 EventTrackingId                  = null,
                                        TimeSpan?                                         RequestTimeout                   = null,
                                        CancellationToken                                 CancellationToken                = default)

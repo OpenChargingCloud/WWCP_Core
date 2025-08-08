@@ -17,11 +17,12 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -48,7 +49,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of the charge detail record result.
         /// </summary>
-        public DateTime              Timestamp             { get; }
+        public DateTimeOffset        Timestamp             { get; }
 
         /// <summary>
         /// The identification of the charge detail record sending or receiving entity.
@@ -100,7 +101,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Location">An optional URL for locating the charge detail record as defined e.g. in OCPI.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private SendCDRResult(DateTime               Timestamp,
+        private SendCDRResult(DateTimeOffset         Timestamp,
                               IId                    AuthorizatorId,
                               SendCDRResultTypes     Result,
                               ChargeDetailRecord?    ChargeDetailRecord   = null,
@@ -139,7 +140,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Unspecified(DateTime               Timestamp,
+            Unspecified(DateTimeOffset         Timestamp,
                         IId                    AuthorizatorId,
                         ChargeDetailRecord?    ChargeDetailRecord   = null,
                         I18NString?            Description          = null,
@@ -170,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            NoOperation(DateTime               Timestamp,
+            NoOperation(DateTimeOffset         Timestamp,
                         IId                    AuthorizatorId,
                         ChargeDetailRecord?    ChargeDetailRecord   = null,
                         I18NString?            Description          = null,
@@ -201,7 +202,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            AdminDown(DateTime               Timestamp,
+            AdminDown(DateTimeOffset         Timestamp,
                       IId                    AuthorizatorId,
                       ChargeDetailRecord?    ChargeDetailRecord   = null,
                       I18NString?            Description          = null,
@@ -232,7 +233,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            OutOfService(DateTime               Timestamp,
+            OutOfService(DateTimeOffset         Timestamp,
                          IId                    AuthorizatorId,
                          ChargeDetailRecord?    ChargeDetailRecord   = null,
                          I18NString?            Description          = null,
@@ -263,7 +264,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Filtered(DateTime               Timestamp,
+            Filtered(DateTimeOffset         Timestamp,
                      IId                    AuthorizatorId,
                      ChargeDetailRecord?    ChargeDetailRecord   = null,
                      I18NString?            Description          = null,
@@ -294,7 +295,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            InvalidSessionId(DateTime               Timestamp,
+            InvalidSessionId(DateTimeOffset         Timestamp,
                              IId                    AuthorizatorId,
                              ChargeDetailRecord?    ChargeDetailRecord   = null,
                              I18NString?            Description          = null,
@@ -325,7 +326,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            UnknownSessionId(DateTime               Timestamp,
+            UnknownSessionId(DateTimeOffset         Timestamp,
                              IId                    AuthorizatorId,
                              ChargeDetailRecord?    ChargeDetailRecord   = null,
                              I18NString?            Description          = null,
@@ -356,7 +357,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            UnknownProviderIdStart(DateTime               Timestamp,
+            UnknownProviderIdStart(DateTimeOffset         Timestamp,
                                    IId                    AuthorizatorId,
                                    ChargeDetailRecord?    ChargeDetailRecord   = null,
                                    I18NString?            Description          = null,
@@ -387,7 +388,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            UnknownProviderIdStop(DateTime               Timestamp,
+            UnknownProviderIdStop(DateTimeOffset         Timestamp,
                                   IId                    AuthorizatorId,
                                   ChargeDetailRecord?    ChargeDetailRecord   = null,
                                   I18NString?            Description          = null,
@@ -418,7 +419,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            UnknownLocation(DateTime               Timestamp,
+            UnknownLocation(DateTimeOffset         Timestamp,
                             IId                    AuthorizatorId,
                             ChargeDetailRecord?    ChargeDetailRecord   = null,
                             I18NString?            Description          = null,
@@ -449,7 +450,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            InvalidToken(DateTime               Timestamp,
+            InvalidToken(DateTimeOffset         Timestamp,
                          IId                    AuthorizatorId,
                          ChargeDetailRecord?    ChargeDetailRecord   = null,
                          I18NString?            Description          = null,
@@ -480,7 +481,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            CouldNotConvertCDRFormat(DateTime               Timestamp,
+            CouldNotConvertCDRFormat(DateTimeOffset         Timestamp,
                                      IId                    AuthorizatorId,
                                      ChargeDetailRecord?    ChargeDetailRecord   = null,
                                      I18NString?            Description          = null,
@@ -511,7 +512,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Error(DateTime               Timestamp,
+            Error(DateTimeOffset         Timestamp,
                   IId                    AuthorizatorId,
                   ChargeDetailRecord     ChargeDetailRecord,
                   I18NString?            Description   = null,
@@ -542,7 +543,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Timeout(DateTime               Timestamp,
+            Timeout(DateTimeOffset         Timestamp,
                     IId                    AuthorizatorId,
                     ChargeDetailRecord?    ChargeDetailRecord   = null,
                     I18NString?            Description          = null,
@@ -575,7 +576,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Enqueued(DateTime               Timestamp,
+            Enqueued(DateTimeOffset         Timestamp,
                      IId                    AuthorizatorId,
                      ChargeDetailRecord     ChargeDetailRecord,
                      I18NString?            Description   = null,
@@ -608,7 +609,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Success(DateTime               Timestamp,
+            Success(DateTimeOffset         Timestamp,
                     IId                    AuthorizatorId,
                     ChargeDetailRecord     ChargeDetailRecord,
                     I18NString?            Description   = null,

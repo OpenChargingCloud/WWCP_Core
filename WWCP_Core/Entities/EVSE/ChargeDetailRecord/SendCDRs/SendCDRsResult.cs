@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of the charge detail record result.
         /// </summary>
-        public DateTime                      Timestamp                      { get; }
+        public DateTimeOffset                Timestamp                      { get; }
 
         /// <summary>
         /// The identification of the charge detail record sending or receiving entity.
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal SendCDRsResult(DateTime                     Timestamp,
+        internal SendCDRsResult(DateTimeOffset               Timestamp,
                                 IId                          AuthorizatorId,
                                 ISendChargeDetailRecords     ISendChargeDetailRecords,
                                 SendCDRsResultTypes          Result,
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal SendCDRsResult(DateTime                      Timestamp,
+        internal SendCDRsResult(DateTimeOffset                Timestamp,
                                 IId                           AuthorizatorId,
                                 IReceiveChargeDetailRecords   IReceiveChargeDetailRecords,
                                 SendCDRsResultTypes           Result,
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Unspecified(DateTime                         Timestamp,
+            Unspecified(DateTimeOffset                   Timestamp,
                         IId                              AuthorizatorId,
                         ISendChargeDetailRecords         ISendChargeDetailRecords,
                         IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -338,7 +338,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Unspecified(DateTime                         Timestamp,
+            Unspecified(DateTimeOffset                   Timestamp,
                         IId                              AuthorizatorId,
                         IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                         IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -372,7 +372,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            NoOperation(DateTime                         Timestamp,
+            NoOperation(DateTimeOffset                   Timestamp,
                         IId                              AuthorizatorId,
                         ISendChargeDetailRecords         ISendChargeDetailRecords,
                         IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -404,7 +404,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            NoOperation(DateTime                         Timestamp,
+            NoOperation(DateTimeOffset                   Timestamp,
                         IId                              AuthorizatorId,
                         IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                         IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -438,7 +438,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            AdminDown(DateTime                         Timestamp,
+            AdminDown(DateTimeOffset                   Timestamp,
                       IId                              AuthorizatorId,
                       ISendChargeDetailRecords         ISendChargeDetailRecords,
                       IEnumerable<ChargeDetailRecord>  ResultMap,
@@ -468,7 +468,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            AdminDown(DateTime                         Timestamp,
+            AdminDown(DateTimeOffset                   Timestamp,
                       IId                              AuthorizatorId,
                       IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                       IEnumerable<ChargeDetailRecord>  ResultMap,
@@ -502,7 +502,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            OutOfService(DateTime                         Timestamp,
+            OutOfService(DateTimeOffset                   Timestamp,
                          IId                              AuthorizatorId,
                          ISendChargeDetailRecords         ISendChargeDetailRecords,
                          IEnumerable<ChargeDetailRecord>  ResultMap,
@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            OutOfService(DateTime                         Timestamp,
+            OutOfService(DateTimeOffset                   Timestamp,
                          IId                              AuthorizatorId,
                          IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                          IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords,
@@ -567,7 +567,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Enqueued(DateTime                  Timestamp,
+            Enqueued(DateTimeOffset            Timestamp,
                      IId                       AuthorizatorId,
                      ISendChargeDetailRecords  ISendChargeDetailRecords,
                      ChargeDetailRecord        ChargeDetailRecord,
@@ -598,7 +598,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Enqueued(DateTime                         Timestamp,
+            Enqueued(DateTimeOffset                   Timestamp,
                      IId                              AuthorizatorId,
                      ISendChargeDetailRecords         ISendChargeDetailRecords,
                      IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -630,7 +630,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Enqueued(DateTime                     Timestamp,
+            Enqueued(DateTimeOffset               Timestamp,
                      IId                          AuthorizatorId,
                      IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                      ChargeDetailRecord           ChargeDetailRecord,
@@ -661,7 +661,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Enqueued(DateTime                         Timestamp,
+            Enqueued(DateTimeOffset                   Timestamp,
                      IId                              AuthorizatorId,
                      IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                      IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -695,7 +695,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Timeout(DateTime                         Timestamp,
+            Timeout(DateTimeOffset                   Timestamp,
                     IId                              AuthorizatorId,
                     ISendChargeDetailRecords         ISendChargeDetailRecords,
                     IEnumerable<ChargeDetailRecord>  ResultMap,
@@ -729,7 +729,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Success(DateTime                  Timestamp,
+            Success(DateTimeOffset            Timestamp,
                     IId                       AuthorizatorId,
                     ISendChargeDetailRecords  ISendChargeDetailRecords,
                     ChargeDetailRecord        ChargeDetailRecord,
@@ -760,7 +760,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Success(DateTime                         Timestamp,
+            Success(DateTimeOffset                   Timestamp,
                     IId                              AuthorizatorId,
                     ISendChargeDetailRecords         ISendChargeDetailRecords,
                     IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -791,7 +791,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Success(DateTime                     Timestamp,
+            Success(DateTimeOffset               Timestamp,
                     IId                          AuthorizatorId,
                     IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                     ChargeDetailRecord           ChargeDetailRecord,
@@ -822,7 +822,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Success(DateTime                         Timestamp,
+            Success(DateTimeOffset                   Timestamp,
                     IId                              AuthorizatorId,
                     IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                     IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -856,7 +856,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Error(DateTime                  Timestamp,
+            Error(DateTimeOffset            Timestamp,
                   IId                       AuthorizatorId,
                   ISendChargeDetailRecords  ISendChargeDetailRecords,
                   ChargeDetailRecord?       ChargeDetailRecord   = null,
@@ -889,7 +889,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Error(DateTime                         Timestamp,
+            Error(DateTimeOffset                   Timestamp,
                   IId                              AuthorizatorId,
                   ISendChargeDetailRecords         ISendChargeDetailRecords,
                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -919,7 +919,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Error(DateTime                         Timestamp,
+            Error(DateTimeOffset                   Timestamp,
                   IId                              AuthorizatorId,
                   ISendChargeDetailRecords         ISendChargeDetailRecords,
                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -950,7 +950,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Error(DateTime                     Timestamp,
+            Error(DateTimeOffset               Timestamp,
                   IId                          AuthorizatorId,
                   IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                   ChargeDetailRecord?          ChargeDetailRecord   = null,
@@ -983,7 +983,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Error(DateTime                         Timestamp,
+            Error(DateTimeOffset                   Timestamp,
                   IId                              AuthorizatorId,
                   IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -1017,7 +1017,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            InvalidSessionId(DateTime                         Timestamp,
+            InvalidSessionId(DateTimeOffset                   Timestamp,
                              IId                              AuthorizatorId,
                              IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                              IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -1051,7 +1051,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            UnknownSessionId(DateTime                         Timestamp,
+            UnknownSessionId(DateTimeOffset                   Timestamp,
                              IId                              AuthorizatorId,
                              IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                              IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -1085,7 +1085,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            UnknownProviderIdStart(DateTime                         Timestamp,
+            UnknownProviderIdStart(DateTimeOffset                   Timestamp,
                                    IId                              AuthorizatorId,
                                    IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                                    IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -1119,7 +1119,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            InvalidToken(DateTime                         Timestamp,
+            InvalidToken(DateTimeOffset                   Timestamp,
                          IId                              AuthorizatorId,
                          IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                          IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -1153,7 +1153,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            CouldNotConvertCDRFormat(DateTime                         Timestamp,
+            CouldNotConvertCDRFormat(DateTimeOffset                   Timestamp,
                                      IId                              AuthorizatorId,
                                      IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                                      IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
@@ -1187,7 +1187,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Mixed(DateTime                  Timestamp,
+            Mixed(DateTimeOffset            Timestamp,
                   IId                       AuthorizatorId,
                   ISendChargeDetailRecords  ISendChargeDetailRecords,
                   SendCDRResult             Result,
@@ -1218,7 +1218,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Mixed(DateTime                    Timestamp,
+            Mixed(DateTimeOffset              Timestamp,
                   IId                         AuthorizatorId,
                   ISendChargeDetailRecords    ISendChargeDetailRecords,
                   IEnumerable<SendCDRResult>  ResultMap,
@@ -1250,7 +1250,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Mixed(DateTime                     Timestamp,
+            Mixed(DateTimeOffset               Timestamp,
                   IId                          AuthorizatorId,
                   IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                   SendCDRResult                Result,
@@ -1281,7 +1281,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Mixed(DateTime                     Timestamp,
+            Mixed(DateTimeOffset               Timestamp,
                   IId                          AuthorizatorId,
                   IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                   IEnumerable<SendCDRResult>   ResultMap,

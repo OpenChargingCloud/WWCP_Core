@@ -96,10 +96,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                                          ChargingSession?                                     ChargingSession                = null,
 
-                                                         DateTime?                                            LastStatusUpdate               = null,
+                                                         DateTimeOffset?                                      LastStatusUpdate               = null,
                                                          String?                                              DataSource                     = null,
-                                                         DateTime?                                            Created                        = null,
-                                                         DateTime?                                            LastChange                     = null,
+                                                         DateTimeOffset?                                      Created                        = null,
+                                                         DateTimeOffset?                                      LastChange                     = null,
 
                                                          Action<IEVSE>?                                       Configurator                   = null,
                                                          Action<VirtualEVSE>?                                 VirtualEVSEConfigurator        = null,
@@ -291,10 +291,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                                                     ChargingSession?                                     ChargingSession                = null,
 
-                                                                    DateTime?                                            LastStatusUpdate               = null,
+                                                                    DateTimeOffset?                                      LastStatusUpdate               = null,
                                                                     String?                                              DataSource                     = null,
-                                                                    DateTime?                                            Created                        = null,
-                                                                    DateTime?                                            LastChange                     = null,
+                                                                    DateTimeOffset?                                      Created                        = null,
+                                                                    DateTimeOffset?                                      LastChange                     = null,
 
                                                                     Action<IEVSE>?                                       Configurator                   = null,
                                                                     Action<VirtualEVSE>?                                 VirtualEVSEConfigurator        = null,
@@ -487,10 +487,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                                                          ChargingSession?                                     ChargingSession                        = null,
 
-                                                                         DateTime?                                            LastStatusUpdate                       = null,
+                                                                         DateTimeOffset?                                      LastStatusUpdate                       = null,
                                                                          String?                                              DataSource                             = null,
-                                                                         DateTime?                                            Created                                = null,
-                                                                         DateTime?                                            LastChange                             = null,
+                                                                         DateTimeOffset?                                      Created                                = null,
+                                                                         DateTimeOffset?                                      LastChange                             = null,
 
                                                                          Action<IEVSE>?                                       Configurator                           = null,
                                                                          Action<VirtualEVSE>?                                 VirtualEVSEConfigurator                = null,
@@ -1348,7 +1348,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
-        public DateTime?               LastStatusUpdate         { get; set; }
+        public DateTimeOffset?         LastStatusUpdate         { get; set; }
 
 
         /// <summary>
@@ -1843,11 +1843,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old EVSE admin status.</param>
         /// <param name="NewStatus">The new EVSE admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                            Timestamp,
-                                              EventTracking_Id                    EventTrackingId,
+        internal async Task UpdateAdminStatus(DateTimeOffset                     Timestamp,
+                                              EventTracking_Id                   EventTrackingId,
                                               Timestamped<EVSEAdminStatusType>   NewStatus,
                                               Timestamped<EVSEAdminStatusType>?  OldStatus    = null,
-                                              Context?                            DataSource   = null)
+                                              Context?                           DataSource   = null)
         {
 
             var onAdminStatusChanged = OnAdminStatusChanged;
@@ -1872,11 +1872,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                       Timestamp,
-                                         EventTracking_Id               EventTrackingId,
+        internal async Task UpdateStatus(DateTimeOffset                Timestamp,
+                                         EventTracking_Id              EventTrackingId,
                                          Timestamped<EVSEStatusType>   NewStatus,
                                          Timestamped<EVSEStatusType>?  OldStatus    = null,
-                                         Context?                       DataSource   = null)
+                                         Context?                      DataSource   = null)
         {
 
             var onStatusChanged = OnStatusChanged;
@@ -1966,7 +1966,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public Task<ReservationResult>
 
-            Reserve(DateTime?                          StartTime              = null,
+            Reserve(DateTimeOffset?                    StartTime              = null,
                     TimeSpan?                          Duration               = null,
                     ChargingReservation_Id?            ReservationId          = null,
                     ChargingReservation_Id?            LinkedReservationId    = null,
@@ -1978,7 +1978,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime?                          Timestamp              = null,
+                    DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null,
                     CancellationToken                  CancellationToken      = default)
@@ -2031,7 +2031,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             Reserve(ChargingLocation                   ChargingLocation,
                     ChargingReservationLevel           ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                          ReservationStartTime   = null,
+                    DateTimeOffset?                    ReservationStartTime   = null,
                     TimeSpan?                          Duration               = null,
                     ChargingReservation_Id?            ReservationId          = null,
                     ChargingReservation_Id?            LinkedReservationId    = null,
@@ -2043,7 +2043,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime?                          Timestamp              = null,
+                    DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null,
                     CancellationToken                  CancellationToken      = default)
@@ -2121,7 +2121,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                                   Timestamp.Value,
                                                                                   oldReservation.LastOrDefault().StartTime,
                                                                                   Duration ?? MaxReservationDuration,
-                                                                                  (ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
+                                                                                  //(ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
                                                                                   oldReservation.LastOrDefault().ConsumedReservationTime + oldReservation.LastOrDefault().Duration - oldReservation.LastOrDefault().TimeLeft,
                                                                                   ReservationLevel,
                                                                                   ProviderId,
@@ -2163,7 +2163,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                       Timestamp:               Timestamp.Value,
                                                       StartTime:               ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                       Duration:                Duration  ?? MaxReservationDuration,
-                                                      EndTime:                 (ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
+                                                      //EndTime:                 (ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
                                                       ConsumedReservationTime: TimeSpan.FromSeconds(0),
                                                       ReservationLevel:        ReservationLevel,
                                                       ProviderId:              ProviderId,
@@ -2279,7 +2279,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
 
-                              DateTime?                              Timestamp           = null,
+                              DateTimeOffset?                        Timestamp           = null,
                               EventTracking_Id?                      EventTrackingId     = null,
                               TimeSpan?                              RequestTimeout      = null,
                               CancellationToken                      CancellationToken   = default)
@@ -2622,7 +2622,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                            ChargingSession_Id?          CPOPartnerSessionId   = null,
                            ChargingStationOperator_Id?  OperatorId            = null,
 
-                           DateTime?                    RequestTimestamp      = null,
+                           DateTimeOffset?              RequestTimestamp      = null,
                            EventTracking_Id?            EventTrackingId       = null,
                            TimeSpan?                    RequestTimeout        = null,
                            CancellationToken            CancellationToken     = default)
@@ -2768,7 +2768,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                           ChargingSession_Id?          CPOPartnerSessionId   = null,
                           ChargingStationOperator_Id?  OperatorId            = null,
 
-                          DateTime?                    RequestTimestamp      = null,
+                          DateTimeOffset?              RequestTimestamp      = null,
                           EventTracking_Id?            EventTrackingId       = null,
                           TimeSpan?                    RequestTimeout        = null,
                           CancellationToken            CancellationToken     = default)
@@ -3054,7 +3054,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                Timestamp                = null,
+                        DateTimeOffset?          Timestamp                = null,
                         EventTracking_Id?        EventTrackingId          = null,
                         TimeSpan?                RequestTimeout           = null,
                         CancellationToken        CancellationToken        = default)
@@ -3105,7 +3105,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
 
-                        DateTime?                RequestTimestamp         = null,
+                        DateTimeOffset?          RequestTimestamp         = null,
                         EventTracking_Id?        EventTrackingId          = null,
                         TimeSpan?                RequestTimeout           = null,
                         CancellationToken        CancellationToken        = default)
@@ -3376,7 +3376,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                        RemoteAuthentication?  RemoteAuthentication   = null,
                        Auth_Path?             AuthenticationPath     = null,
 
-                       DateTime?              Timestamp              = null,
+                       DateTimeOffset?        Timestamp              = null,
                        EventTracking_Id?      EventTrackingId        = null,
                        TimeSpan?              RequestTimeout         = null,
                        CancellationToken      CancellationToken      = default)

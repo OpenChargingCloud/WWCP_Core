@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #region (protected) ValidateTCPConnection         (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
-        private Task<ConnectionFilterResponse> ValidateTCPConnection(DateTime                      LogTimestamp,
+        private Task<ConnectionFilterResponse> ValidateTCPConnection(DateTimeOffset                LogTimestamp,
                                                                      IWebSocketServer              Server,
                                                                      System.Net.Sockets.TcpClient  Connection,
                                                                      EventTracking_Id              EventTrackingId,
@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #region (protected) ValidateWebSocketConnection   (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
-        private Task<HTTPResponse?> ValidateWebSocketConnection(DateTime                   LogTimestamp,
+        private Task<HTTPResponse?> ValidateWebSocketConnection(DateTimeOffset             LogTimestamp,
                                                                 IWebSocketServer           Server,
                                                                 WebSocketServerConnection  Connection,
                                                                 EventTracking_Id           EventTrackingId,
@@ -532,7 +532,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #region (protected) ProcessNewWebSocketConnection (LogTimestamp, Server, Connection, SharedSubprotocols, EventTrackingId, CancellationToken)
 
-        protected async Task ProcessNewWebSocketConnection(DateTime                   LogTimestamp,
+        protected async Task ProcessNewWebSocketConnection(DateTimeOffset             LogTimestamp,
                                                            IWebSocketServer           Server,
                                                            WebSocketServerConnection  Connection,
                                                            IEnumerable<String>        SharedSubprotocols,
@@ -720,7 +720,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #region (protected) ProcessCloseMessage           (LogTimestamp, Server, Connection, Frame, EventTrackingId, StatusCode, Reason, CancellationToken)
 
-        protected async Task ProcessCloseMessage(DateTime                          LogTimestamp,
+        protected async Task ProcessCloseMessage(DateTimeOffset                    LogTimestamp,
                                                  IWebSocketServer                  Server,
                                                  WebSocketServerConnection         Connection,
                                                  WebSocketFrame                    Frame,
@@ -797,7 +797,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="TextMessage">The received text message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public async Task ProcessTextMessage(DateTime                   RequestTimestamp,
+        public async Task ProcessTextMessage(DateTimeOffset             RequestTimestamp,
                                              IWebSocketServer           Server,
                                              WebSocketServerConnection  WebSocketConnection,
                                              WebSocketFrame             Frame,
@@ -895,7 +895,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="BinaryMessage">The received binary message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public async Task ProcessBinaryMessage(DateTime                   RequestTimestamp,
+        public async Task ProcessBinaryMessage(DateTimeOffset             RequestTimestamp,
                                                IWebSocketServer           Server,
                                                WebSocketServerConnection  WebSocketConnection,
                                                WebSocketFrame             Frame,

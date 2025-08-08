@@ -40,8 +40,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnRemoteStopRequestDelegate(DateTime                LogTimestamp,
-                                                     DateTime                RequestTimestamp,
+    public delegate Task OnRemoteStopRequestDelegate(DateTimeOffset          LogTimestamp,
+                                                     DateTimeOffset          RequestTimestamp,
                                                      Object                  Sender,
                                                      EventTracking_Id        EventTrackingId,
                                                      RoamingNetwork_Id       RoamingNetworkId,
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<RemoteStopResult> OnRemoteStopDelegate(DateTime                Timestamp,
+    public delegate Task<RemoteStopResult> OnRemoteStopDelegate(DateTimeOffset          Timestamp,
                                                                 CancellationToken       CancellationToken,
                                                                 EventTracking_Id        EventTrackingId,
                                                                 ReservationHandling?    ReservationHandling,
@@ -91,8 +91,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote stop result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnRemoteStopResponseDelegate(DateTime                LogTimestamp,
-                                                      DateTime                RequestTimestamp,
+    public delegate Task OnRemoteStopResponseDelegate(DateTimeOffset          LogTimestamp,
+                                                      DateTimeOffset          RequestTimestamp,
                                                       Object                  Sender,
                                                       EventTracking_Id        EventTrackingId,
                                                       RoamingNetwork_Id       RoamingNetworkId,

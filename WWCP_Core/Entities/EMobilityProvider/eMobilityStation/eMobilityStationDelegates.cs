@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate Task OnEMobilityStationDataChangedDelegate(DateTime          Timestamp,
+    public delegate Task OnEMobilityStationDataChangedDelegate(DateTimeOffset    Timestamp,
                                                                EventTracking_Id  EventTrackingId,
                                                                eMobilityStation  eMobilityStation,
                                                                String            PropertyName,
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="eMobilityStation">The updated charging station.</param>
     /// <param name="OldStatus">The old timestamped status of the charging station.</param>
     /// <param name="NewStatus">The new timestamped status of the charging station.</param>
-    public delegate Task OnEMobilityStationAdminStatusChangedDelegate(DateTime                                        Timestamp,
+    public delegate Task OnEMobilityStationAdminStatusChangedDelegate(DateTimeOffset                                  Timestamp,
                                                                       EventTracking_Id                                EventTrackingId,
                                                                       eMobilityStation                                eMobilityStation,
                                                                       Timestamped<eMobilityStationAdminStatusTypes>   NewStatus,
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="eMobilityStation">The updated charging station.</param>
     /// <param name="OldStatus">The old timestamped status of the charging station.</param>
     /// <param name="NewStatus">The new timestamped status of the charging station.</param>
-    public delegate Task OnEMobilityStationStatusChangedDelegate(DateTime                                   Timestamp,
+    public delegate Task OnEMobilityStationStatusChangedDelegate(DateTimeOffset                             Timestamp,
                                                                  EventTracking_Id                           EventTrackingId,
                                                                  eMobilityStation                           eMobilityStation,
                                                                  Timestamped<eMobilityStationStatusTypes>   NewStatus,

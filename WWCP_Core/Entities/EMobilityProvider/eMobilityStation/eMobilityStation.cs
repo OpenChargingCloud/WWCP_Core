@@ -689,7 +689,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateData(DateTime          Timestamp,
+        internal async Task UpdateData(DateTimeOffset    Timestamp,
                                        EventTracking_Id  EventTrackingId,
                                        Object            Sender,
                                        String            PropertyName,
@@ -721,7 +721,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old e-mobility station admin status.</param>
         /// <param name="NewStatus">The new e-mobility station admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                        Timestamp,
+        internal async Task UpdateAdminStatus(DateTimeOffset                                  Timestamp,
                                               EventTracking_Id                                EventTrackingId,
                                               Timestamped<eMobilityStationAdminStatusTypes>   NewStatus,
                                               Timestamped<eMobilityStationAdminStatusTypes>?  OldStatus    = null,
@@ -745,12 +745,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eVehicleAddition
 
-        internal readonly IVotingNotificator<DateTime, eMobilityStation, EVehicle, Boolean> eVehicleAddition;
+        internal readonly IVotingNotificator<DateTimeOffset, eMobilityStation, EVehicle, Boolean> eVehicleAddition;
 
         /// <summary>
         /// Called whenever an electric vehicle will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, eMobilityStation, EVehicle, Boolean> OnEVehicleAddition
+        public IVotingSender<DateTimeOffset, eMobilityStation, EVehicle, Boolean> OnEVehicleAddition
 
             => eVehicleAddition;
 
@@ -758,12 +758,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eVehicleRemoval
 
-        internal readonly IVotingNotificator<DateTime, eMobilityStation, EVehicle, Boolean> eVehicleRemoval;
+        internal readonly IVotingNotificator<DateTimeOffset, eMobilityStation, EVehicle, Boolean> eVehicleRemoval;
 
         /// <summary>
         /// Called whenever an electric vehicle will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, eMobilityStation, EVehicle, Boolean> OnEVehicleRemoval
+        public IVotingSender<DateTimeOffset, eMobilityStation, EVehicle, Boolean> OnEVehicleRemoval
 
             => eVehicleRemoval;
 
@@ -1007,7 +1007,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public void SetEVehicleAdminStatus(EVehicle_Id               eVehicleId,
                                            eVehicleAdminStatusTypes  NewStatus,
-                                           DateTime                  Timestamp)
+                                           DateTimeOffset            Timestamp)
         {
 
             if (TryGetEVehicleById(eVehicleId, out var eVehicle) &&
@@ -1091,7 +1091,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateEVehicleData(DateTime          Timestamp,
+        internal async Task UpdateEVehicleData(DateTimeOffset    Timestamp,
                                                EventTracking_Id  EventTrackingId,
                                                EVehicle          eVehicle,
                                                String            PropertyName,
@@ -1124,7 +1124,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateEVehicleAdminStatus(DateTime                                Timestamp,
+        internal async Task UpdateEVehicleAdminStatus(DateTimeOffset                          Timestamp,
                                                       EventTracking_Id                        EventTrackingId,
                                                       EVehicle                                eVehicle,
                                                       Timestamped<eVehicleAdminStatusTypes>   NewStatus,
@@ -1155,7 +1155,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateEVehicleStatus(DateTime                           Timestamp,
+        internal async Task UpdateEVehicleStatus(DateTimeOffset                     Timestamp,
                                                  EventTracking_Id                   EventTrackingId,
                                                  EVehicle                           eVehicle,
                                                  Timestamped<eVehicleStatusTypes>   NewStatus,
@@ -1186,7 +1186,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldGeoCoordinate">The old aggreagted charging station status.</param>
         /// <param name="NewGeoCoordinate">The new aggreagted charging station status.</param>
-        internal async Task UpdateEVehicleGeoLocation(DateTime                     Timestamp,
+        internal async Task UpdateEVehicleGeoLocation(DateTimeOffset               Timestamp,
                                                       EventTracking_Id             EventTrackingId,
                                                       EVehicle                     eVehicle,
                                                       Timestamped<GeoCoordinate>   NewGeoCoordinate,

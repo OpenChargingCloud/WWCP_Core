@@ -96,8 +96,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         UInt16?                                                         MaxStatusScheduleSize          = null,
 
                                                                         String?                                                         DataSource                     = null,
-                                                                        DateTime?                                                       Created                        = null,
-                                                                        DateTime?                                                       LastChange                     = null,
+                                                                        DateTimeOffset?                                                 Created                        = null,
+                                                                        DateTimeOffset?                                                 LastChange                     = null,
 
                                                                         JObject?                                                        CustomData                     = null,
                                                                         UserDefinedDictionary?                                          InternalData                   = null,
@@ -229,8 +229,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                    UInt16?                                                         MaxStatusScheduleSize          = null,
 
                                                                                    String?                                                         DataSource                     = null,
-                                                                                   DateTime?                                                       Created                        = null,
-                                                                                   DateTime?                                                       LastChange                     = null,
+                                                                                   DateTimeOffset?                                                 Created                        = null,
+                                                                                   DateTimeOffset?                                                 LastChange                     = null,
 
                                                                                    JObject?                                                        CustomData                     = null,
                                                                                    UserDefinedDictionary?                                          InternalData                   = null,
@@ -362,8 +362,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                         UInt16?                                                         MaxStatusScheduleSize                  = null,
 
                                                                                         String?                                                         DataSource                             = null,
-                                                                                        DateTime?                                                       Created                                = null,
-                                                                                        DateTime?                                                       LastChange                             = null,
+                                                                                        DateTimeOffset?                                                 Created                                = null,
+                                                                                        DateTimeOffset?                                                 LastChange                             = null,
 
                                                                                         JObject?                                                        CustomData                             = null,
                                                                                         UserDefinedDictionary?                                          InternalData                           = null,
@@ -497,8 +497,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                               UInt16?                                                         MaxStatusScheduleSize          = null,
 
                                                                               String?                                                         DataSource                     = null,
-                                                                              DateTime?                                                       Created                        = null,
-                                                                              DateTime?                                                       LastChange                     = null,
+                                                                              DateTimeOffset?                                                 Created                        = null,
+                                                                              DateTimeOffset?                                                 LastChange                     = null,
 
                                                                               JObject?                                                        CustomData                     = null,
                                                                               UserDefinedDictionary?                                          InternalData                   = null,
@@ -975,17 +975,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingPool, IChargingStation, Boolean>                    OnChargingStationAddition    { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingPool, IChargingStation, Boolean>                    OnChargingStationAddition    { get; }
 
         /// <summary>
         /// Called whenever a charging station will be or was updated.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean>  OnChargingStationUpdate      { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean>  OnChargingStationUpdate      { get; }
 
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingPool, IChargingStation, Boolean>                    OnChargingStationRemoval     { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingPool, IChargingStation, Boolean>                    OnChargingStationRemoval     { get; }
 
 
         /// <summary>
@@ -1174,17 +1174,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition { get; }
 
         /// <summary>
         /// Called whenever an EVSE will be or was updated.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate { get; }
 
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval { get; }
+        IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval { get; }
 
 
 
@@ -1216,11 +1216,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HistorySize">The size of the history.</param>
         IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>>
 
-            EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs      = null,
-                                    Func<DateTime,             Boolean>?  TimestampFilter   = null,
+            EVSEAdminStatusSchedule(IncludeEVSEDelegate?                 IncludeEVSEs      = null,
+                                    Func<DateTimeOffset,      Boolean>?  TimestampFilter   = null,
                                     Func<EVSEAdminStatusType, Boolean>?  StatusFilter      = null,
-                                    UInt64?                               Skip              = null,
-                                    UInt64?                               Take              = null);
+                                    UInt64?                              Skip              = null,
+                                    UInt64?                              Take              = null);
 
         /// <summary>
         /// Return the admin status of all EVSEs registered within this roaming network.
@@ -1237,11 +1237,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HistorySize">The size of the history.</param>
         IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>>
 
-            EVSEStatusSchedule(IncludeEVSEDelegate?             IncludeEVSEs      = null,
-                               Func<DateTime,        Boolean>?  TimestampFilter   = null,
+            EVSEStatusSchedule(IncludeEVSEDelegate?            IncludeEVSEs      = null,
+                               Func<DateTimeOffset, Boolean>?  TimestampFilter   = null,
                                Func<EVSEStatusType, Boolean>?  StatusFilter      = null,
-                               UInt64?                          Skip              = null,
-                               UInt64?                          Take              = null);
+                               UInt64?                         Skip              = null,
+                               UInt64?                         Take              = null);
 
 
 

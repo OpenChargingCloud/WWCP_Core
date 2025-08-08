@@ -38,8 +38,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ISendAuthorizeStartStops">The ISendAuthorizeStartStops entities to be asked.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnAuthorizeStartRequestDelegate (DateTime                               LogTimestamp,
-                                                          DateTime                               RequestTimestamp,
+    public delegate Task OnAuthorizeStartRequestDelegate (DateTimeOffset                         LogTimestamp,
+                                                          DateTimeOffset                         RequestTimestamp,
                                                           Object                                 Sender,
                                                           String                                 SenderId,
                                                           EventTracking_Id                       EventTrackingId,
@@ -72,8 +72,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize start result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnAuthorizeStartResponseDelegate(DateTime                               LogTimestamp,
-                                                          DateTime                               RequestTimestamp,
+    public delegate Task OnAuthorizeStartResponseDelegate(DateTimeOffset                         LogTimestamp,
+                                                          DateTimeOffset                         RequestTimestamp,
                                                           Object                                 Sender,
                                                           String                                 SenderId,
                                                           EventTracking_Id                       EventTrackingId,

@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of the current admin status of the grid operator.
         /// </summary>
-        public DateTime                                 Timestamp      { get; }
+        public DateTimeOffset                Timestamp      { get; }
 
         /// <summary>
         /// The timestamped admin status of the grid operator.
@@ -152,9 +152,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdminStatus">The current timestamped adminstatus of the grid operator.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public GridOperatorAdminStatus(GridOperator_Id                            Id,
-                                                  Timestamped<GridOperatorAdminStatusTypes>  AdminStatus,
-                                                  JObject?                                              CustomData     = null,
-                                                  UserDefinedDictionary?                                InternalData   = null)
+                                       Timestamped<GridOperatorAdminStatusTypes>  AdminStatus,
+                                       JObject?                                   CustomData     = null,
+                                       UserDefinedDictionary?                     InternalData   = null)
 
             : base(CustomData,
                    InternalData,
@@ -180,10 +180,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp of the status change of the grid operator.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public GridOperatorAdminStatus(GridOperator_Id               Id,
-                                                  GridOperatorAdminStatusTypes  AdminStatus,
-                                                  DateTime                                 Timestamp,
-                                                  JObject?                                 CustomData     = null,
-                                                  UserDefinedDictionary?                   InternalData   = null)
+                                       GridOperatorAdminStatusTypes  AdminStatus,
+                                       DateTime                      Timestamp,
+                                       JObject?                      CustomData     = null,
+                                       UserDefinedDictionary?        InternalData   = null)
 
             : base(CustomData,
                    InternalData,

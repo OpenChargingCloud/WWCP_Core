@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of the current admin status of the e-mobility provider.
         /// </summary>
-        public DateTime                           Timestamp      { get; }
+        public DateTimeOffset                     Timestamp      { get; }
 
         /// <summary>
         /// The timestamped admin status of the e-mobility provider.
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public EMobilityProviderAdminStatus(EMobilityProvider_Id               Id,
                                             EMobilityProviderAdminStatusTypes  AdminStatus,
-                                            DateTime                           Timestamp,
+                                            DateTimeOffset                     Timestamp,
                                             JObject?                           CustomData     = null,
                                             UserDefinedDictionary?             InternalData   = null)
 

@@ -150,9 +150,9 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="API">The EMSP API.</param>
         /// <param name="Request">An HTTP request.</param>
-        protected internal Task GetLocationsRequest(DateTime     Timestamp,
-                                                    HTTPAPI      API,
-                                                    HTTPRequest  Request)
+        protected internal Task GetLocationsRequest(DateTimeOffset  Timestamp,
+                                                    HTTPAPI         API,
+                                                    HTTPRequest     Request)
 
             => OnGetLocationsRequest.WhenAll(Timestamp,
                                              API ?? this,
@@ -174,10 +174,10 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="API">The EMSP API.</param>
         /// <param name="Request">An HTTP request.</param>
         /// <param name="Response">An HTTP response.</param>
-        protected internal Task GetLocationsResponse(DateTime      Timestamp,
-                                                     HTTPAPI       API,
-                                                     HTTPRequest   Request,
-                                                     HTTPResponse  Response)
+        protected internal Task GetLocationsResponse(DateTimeOffset  Timestamp,
+                                                     HTTPAPI         API,
+                                                     HTTPRequest     Request,
+                                                     HTTPResponse    Response)
 
             => OnGetLocationsResponse.WhenAll(Timestamp,
                                               API ?? this,

@@ -171,10 +171,10 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingReservation_Id    Id                         { get; }
 
         [Mandatory]
-        public DateTime                  Timestamp                  { get; }
+        public DateTimeOffset            Timestamp                  { get; }
 
         [Mandatory]
-        public DateTime                  StartTime                  { get; }
+        public DateTimeOffset            StartTime                  { get; }
 
         [Mandatory]
         public TimeSpan                  Duration                   { get; }
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         [Mandatory]
-        public DateTime                  EndTime                    { get; set; }
+        public DateTimeOffset            EndTime                    { get; set; }
 
         [Mandatory]
         public TimeSpan                  ConsumedReservationTime    { get; private set; }
@@ -286,37 +286,37 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a charging reservation.
         /// </summary>
-        public ChargingReservation(ChargingReservation_Id            Id,
-                                   DateTime                          Timestamp,
-                                   DateTime                          StartTime,
-                                   TimeSpan                          Duration,
-                                   DateTime                          EndTime,
-                                   TimeSpan                          ConsumedReservationTime,
-                                   ChargingReservationLevel          ReservationLevel,
+        public ChargingReservation(ChargingReservation_Id             Id,
+                                   DateTimeOffset                     Timestamp,
+                                   DateTimeOffset                     StartTime,
+                                   TimeSpan                           Duration,
+                                  // DateTimeOffset                     EndTime,
+                                   TimeSpan                           ConsumedReservationTime,
+                                   ChargingReservationLevel           ReservationLevel,
 
-                                   EMobilityProvider_Id?             ProviderId                  = null,
-                                   RemoteAuthentication              StartAuthentication         = null,
+                                   EMobilityProvider_Id?              ProviderId                  = null,
+                                   RemoteAuthentication?              StartAuthentication         = null,
 
-                                   RoamingNetwork_Id?                RoamingNetworkId            = null,
-                                   ChargingStationOperator_Id?       ChargingStationOperatorId   = null,
-                                   ChargingPool_Id?                  ChargingPoolId              = null,
-                                   ChargingStation_Id?               ChargingStationId           = null,
-                                   EVSE_Id?                          EVSEId                      = null,
-                                   ChargingProduct                   ChargingProduct             = null,
+                                   RoamingNetwork_Id?                 RoamingNetworkId            = null,
+                                   ChargingStationOperator_Id?        ChargingStationOperatorId   = null,
+                                   ChargingPool_Id?                   ChargingPoolId              = null,
+                                   ChargingStation_Id?                ChargingStationId           = null,
+                                   EVSE_Id?                           EVSEId                      = null,
+                                   ChargingProduct?                   ChargingProduct             = null,
 
-                                   IEnumerable<AuthenticationToken>           AuthTokens                  = null,
-                                   IEnumerable<EMobilityAccount_Id>  eMAIds                      = null,
-                                   IEnumerable<UInt32>               PINs                        = null,
+                                   IEnumerable<AuthenticationToken>?  AuthTokens                  = null,
+                                   IEnumerable<EMobilityAccount_Id>?  eMAIds                      = null,
+                                   IEnumerable<UInt32>?               PINs                        = null,
 
-                                   IEnumerable<ChargingReservation>  SubReservations             = null)
+                                   IEnumerable<ChargingReservation>?  SubReservations             = null)
 
         {
 
             this.Id                         = Id;
-            this.Timestamp                  = Timestamp.ToUniversalTime();
-            this.StartTime                  = StartTime.ToUniversalTime();
+            this.Timestamp                  = Timestamp;
+            this.StartTime                  = StartTime;
             this.Duration                   = Duration;
-            this.EndTime                    = StartTime.ToUniversalTime() + Duration;
+            this.EndTime                    = StartTime + Duration;
             this.ConsumedReservationTime    = ConsumedReservationTime;
             this.ReservationLevel           = ReservationLevel;
 
@@ -330,11 +330,11 @@ namespace cloud.charging.open.protocols.WWCP
             this.EVSEId                     = EVSEId;
             this.ChargingProduct            = ChargingProduct;
 
-            this._AuthTokens                = AuthTokens      != null ? new HashSet<AuthenticationToken>         (AuthTokens)      : new HashSet<AuthenticationToken>();
-            this._eMAIds                    = eMAIds          != null ? new HashSet<EMobilityAccount_Id>(eMAIds)          : new HashSet<EMobilityAccount_Id>();
-            this._PINs                      = PINs            != null ? new HashSet<UInt32>             (PINs)            : new HashSet<UInt32>();
+            this._AuthTokens                = AuthTokens      != null ? [.. AuthTokens]      : [];
+            this._eMAIds                    = eMAIds          != null ? [.. eMAIds]          : [];
+            this._PINs                      = PINs            != null ? [.. PINs]            : [];
 
-            this._SubReservations           = SubReservations != null ? new HashSet<ChargingReservation>(SubReservations) : new HashSet<ChargingReservation>();
+            this._SubReservations           = SubReservations != null ? [.. SubReservations] : [];
 
         }
 

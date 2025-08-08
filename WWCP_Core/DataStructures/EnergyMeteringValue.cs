@@ -28,7 +28,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class EnergyMeteringValue(DateTime                   Timestamp,
+    public class EnergyMeteringValue(DateTimeOffset             Timestamp,
                                      WattHour                   WattHours,
                                      EnergyMeteringValueTypes?  Type,
                                      String?                    SignedData   = null,
@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
-        public DateTime                   Timestamp     { get; } = Timestamp;
+        public DateTimeOffset             Timestamp     { get; } = Timestamp;
         public WattHour                   WattHours     { get; } = WattHours;
         public EnergyMeteringValueTypes?  Type          { get; } = Type;
         public String?                    SignedData    { get; } = SignedData;

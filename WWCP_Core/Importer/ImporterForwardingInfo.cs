@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
         #region Data
 
-        private Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id?, RoamingNetwork_Id?> _OnForwardingChanged;
+        private Action<DateTimeOffset, ImporterForwardingInfo, RoamingNetwork_Id?, RoamingNetwork_Id?> _OnForwardingChanged;
 
         #endregion
 
@@ -158,29 +158,29 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
         #endregion
 
-        public DateTime Created { get; }
+        public DateTimeOffset Created { get; }
 
         public Boolean OutOfService { get; set; }
 
-        public DateTime LastTimeSeen { private set; get; }
+        public DateTimeOffset LastTimeSeen { private set; get; }
 
         #endregion
 
         #region Constructor(s)
 
-        public ImporterForwardingInfo(Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id?, RoamingNetwork_Id?>  OnChangedCallback,
-                                      IEnumerable<ChargingStationOperator>                                              ChargingStationOperators,
-                                      ChargingStation_Id?                                                               StationId                 = null,
-                                      String                                                                            StationName               = "",
-                                      String                                                                            StationServiceTag         = "",
-                                      Address?                                                                          StationAddress            = null,
-                                      GeoCoordinate?                                                                    StationGeoCoordinate      = null,
-                                      IEnumerable<EVSE_Id>?                                                             EVSEIds                   = null,
-                                      String?                                                                           PhoneNumber               = null,
-                                      Timestamped<ChargingStationAdminStatusTypes>?                                     AdminStatus               = null,
-                                      DateTime?                                                                         Created                   = null,
-                                      Boolean                                                                           OutOfService              = false,
-                                      ChargingStationOperator?                                                          ForwardedToOperator       = null)
+        public ImporterForwardingInfo(Action<DateTimeOffset, ImporterForwardingInfo, RoamingNetwork_Id?, RoamingNetwork_Id?>  OnChangedCallback,
+                                      IEnumerable<ChargingStationOperator>                                                    ChargingStationOperators,
+                                      ChargingStation_Id?                                                                     StationId                 = null,
+                                      String                                                                                  StationName               = "",
+                                      String                                                                                  StationServiceTag         = "",
+                                      Address?                                                                                StationAddress            = null,
+                                      GeoCoordinate?                                                                          StationGeoCoordinate      = null,
+                                      IEnumerable<EVSE_Id>?                                                                   EVSEIds                   = null,
+                                      String?                                                                                 PhoneNumber               = null,
+                                      Timestamped<ChargingStationAdminStatusTypes>?                                           AdminStatus               = null,
+                                      DateTime?                                                                               Created                   = null,
+                                      Boolean                                                                                 OutOfService              = false,
+                                      ChargingStationOperator?                                                                ForwardedToOperator       = null)
         {
 
             this._OnForwardingChanged                 = OnChangedCallback;

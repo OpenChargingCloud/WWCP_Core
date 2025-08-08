@@ -600,7 +600,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateData(DateTime          Timestamp,
+        internal async Task UpdateData(DateTimeOffset    Timestamp,
                                        EventTracking_Id  EventTrackingId,
                                        Object            Sender,
                                        String            PropertyName,
@@ -632,7 +632,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                Timestamp,
+        internal async Task UpdateAdminStatus(DateTimeOffset                          Timestamp,
                                               EventTracking_Id                        EventTrackingId,
                                               Timestamped<eVehicleAdminStatusTypes>   NewStatus,
                                               Timestamped<eVehicleAdminStatusTypes>?  OldStatus    = null,
@@ -659,7 +659,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                           Timestamp,
+        internal async Task UpdateStatus(DateTimeOffset                     Timestamp,
                                          EventTracking_Id                   EventTrackingId,
                                          Timestamped<eVehicleStatusTypes>   NewStatus,
                                          Timestamped<eVehicleStatusTypes>?  OldStatus    = null,

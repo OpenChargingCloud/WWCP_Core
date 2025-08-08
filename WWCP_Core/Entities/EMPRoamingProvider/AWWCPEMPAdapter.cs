@@ -61,8 +61,8 @@ namespace cloud.charging.open.protocols.WWCP
                                   UInt16                                            MaxStatusScheduleSize        = DefaultMaxStatusScheduleSize,
 
                                   String?                                           DataSource                   = null,
-                                  DateTime?                                         Created                      = null,
-                                  DateTime?                                         LastChange                   = null,
+                                  DateTimeOffset?                                   Created                      = null,
+                                  DateTimeOffset?                                   LastChange                   = null,
 
                                   JObject?                                          CustomData                   = null,
                                   UserDefinedDictionary?                            InternalData                 = null)
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddRoamingNetwork(IRoamingNetwork     RoamingNetwork,
 
-                              DateTime?           Timestamp,
+                              DateTimeOffset?     Timestamp,
                               EventTracking_Id?   EventTrackingId,
                               TimeSpan?           RequestTimeout,
                               CancellationToken   CancellationToken)
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddRoamingNetworkIfNotExists(IRoamingNetwork     RoamingNetwork,
 
-                                         DateTime?           Timestamp,
+                                         DateTimeOffset?     Timestamp,
                                          EventTracking_Id?   EventTrackingId,
                                          TimeSpan?           RequestTimeout,
                                          CancellationToken   CancellationToken)
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddOrUpdateRoamingNetwork(IRoamingNetwork     RoamingNetwork,
 
-                                      DateTime?           Timestamp,
+                                      DateTimeOffset?     Timestamp,
                                       EventTracking_Id?   EventTrackingId,
                                       TimeSpan?           RequestTimeout,
                                       CancellationToken   CancellationToken)
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  Object?             OldValue,
                                  Context?            DataSource,
 
-                                 DateTime?           Timestamp,
+                                 DateTimeOffset?     Timestamp,
                                  EventTracking_Id?   EventTrackingId,
                                  TimeSpan?           RequestTimeout,
                                  CancellationToken   CancellationToken)
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteRoamingNetwork(IRoamingNetwork     RoamingNetwork,
 
-                                 DateTime?           Timestamp,
+                                 DateTimeOffset?     Timestamp,
                                  EventTracking_Id?   EventTrackingId,
                                  TimeSpan?           RequestTimeout,
                                  CancellationToken   CancellationToken)
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
 
-                               DateTime?                     Timestamp,
+                               DateTimeOffset?               Timestamp,
                                EventTracking_Id?             EventTrackingId,
                                TimeSpan?                     RequestTimeout,
                                CancellationToken             CancellationToken)
@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddRoamingNetworksIfNotExist(IEnumerable<IRoamingNetwork>  RoamingNetworks,
 
-                                         DateTime?                     Timestamp,
+                                         DateTimeOffset?               Timestamp,
                                          EventTracking_Id?             EventTrackingId,
                                          TimeSpan?                     RequestTimeout,
                                          CancellationToken             CancellationToken)
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddOrUpdateRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
 
-                                       DateTime?                     Timestamp,
+                                       DateTimeOffset?               Timestamp,
                                        EventTracking_Id?             EventTrackingId,
                                        TimeSpan?                     RequestTimeout,
                                        CancellationToken             CancellationToken)
@@ -363,7 +363,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
 
-                                  DateTime?                     Timestamp,
+                                  DateTimeOffset?               Timestamp,
                                   EventTracking_Id?             EventTrackingId,
                                   TimeSpan?                     RequestTimeout,
                                   CancellationToken             CancellationToken)
@@ -394,7 +394,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
 
-                                  DateTime?                     Timestamp,
+                                  DateTimeOffset?               Timestamp,
                                   EventTracking_Id?             EventTrackingId,
                                   TimeSpan?                     RequestTimeout,
                                   CancellationToken             CancellationToken)
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateRoamingNetworkAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
 
-                                            DateTime?                                     Timestamp,
+                                            DateTimeOffset?                               Timestamp,
                                             EventTracking_Id?                             EventTrackingId,
                                             TimeSpan?                                     RequestTimeout,
                                             CancellationToken                             CancellationToken)
@@ -455,7 +455,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateRoamingNetworkStatus(IEnumerable<RoamingNetworkStatusUpdate>  StatusUpdates,
 
-                                       DateTime?                                Timestamp,
+                                       DateTimeOffset?                          Timestamp,
                                        EventTracking_Id?                        EventTrackingId,
                                        TimeSpan?                                RequestTimeout,
                                        CancellationToken                        CancellationToken)
@@ -488,7 +488,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
 
-                                       DateTime?                 Timestamp,
+                                       DateTimeOffset?           Timestamp,
                                        EventTracking_Id?         EventTrackingId,
                                        TimeSpan?                 RequestTimeout,
                                        CancellationToken         CancellationToken)
@@ -519,7 +519,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddChargingStationOperatorIfNotExists(IChargingStationOperator  ChargingStationOperator,
 
-                                                  DateTime?                 Timestamp,
+                                                  DateTimeOffset?           Timestamp,
                                                   EventTracking_Id?         EventTrackingId,
                                                   TimeSpan?                 RequestTimeout,
                                                   CancellationToken         CancellationToken)
@@ -550,7 +550,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddOrUpdateChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
 
-                                               DateTime?                 Timestamp,
+                                               DateTimeOffset?           Timestamp,
                                                EventTracking_Id?         EventTrackingId,
                                                TimeSpan?                 RequestTimeout,
                                                CancellationToken         CancellationToken)
@@ -590,7 +590,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           Object?                   OldValue,
                                           Context?                  DataSource,
 
-                                          DateTime?                 Timestamp,
+                                          DateTimeOffset?           Timestamp,
                                           EventTracking_Id?         EventTrackingId,
                                           TimeSpan?                 RequestTimeout,
                                           CancellationToken         CancellationToken)
@@ -621,7 +621,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
 
-                                          DateTime?                 Timestamp,
+                                          DateTimeOffset?           Timestamp,
                                           EventTracking_Id?         EventTrackingId,
                                           TimeSpan?                 RequestTimeout,
                                           CancellationToken         CancellationToken)
@@ -653,7 +653,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
 
-                                        DateTime?                              Timestamp,
+                                        DateTimeOffset?                        Timestamp,
                                         EventTracking_Id?                      EventTrackingId,
                                         TimeSpan?                              RequestTimeout,
                                         CancellationToken                      CancellationToken)
@@ -684,7 +684,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddChargingStationOperatorsIfNotExist(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
 
-                                                  DateTime?                              Timestamp,
+                                                  DateTimeOffset?                        Timestamp,
                                                   EventTracking_Id?                      EventTrackingId,
                                                   TimeSpan?                              RequestTimeout,
                                                   CancellationToken                      CancellationToken)
@@ -715,7 +715,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddOrUpdateChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
 
-                                                DateTime?                              Timestamp,
+                                                DateTimeOffset?                        Timestamp,
                                                 EventTracking_Id?                      EventTrackingId,
                                                 TimeSpan?                              RequestTimeout,
                                                 CancellationToken                      CancellationToken)
@@ -746,7 +746,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
 
-                                           DateTime?                              Timestamp,
+                                           DateTimeOffset?                        Timestamp,
                                            EventTracking_Id?                      EventTrackingId,
                                            TimeSpan?                              RequestTimeout,
                                            CancellationToken                      CancellationToken)
@@ -777,7 +777,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
 
-                                           DateTime?                              Timestamp,
+                                           DateTimeOffset?                        Timestamp,
                                            EventTracking_Id?                      EventTrackingId,
                                            TimeSpan?                              RequestTimeout,
                                            CancellationToken                      CancellationToken)
@@ -810,7 +810,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateChargingStationOperatorAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
 
-                                                     DateTime?                                              Timestamp,
+                                                     DateTimeOffset?                                        Timestamp,
                                                      EventTracking_Id?                                      EventTrackingId,
                                                      TimeSpan?                                              RequestTimeout,
                                                      CancellationToken                                      CancellationToken)
@@ -841,7 +841,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateChargingStationOperatorStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  StatusUpdates,
 
-                                                DateTime?                                         Timestamp,
+                                                DateTimeOffset?                                   Timestamp,
                                                 EventTracking_Id?                                 EventTrackingId,
                                                 TimeSpan?                                         RequestTimeout,
                                                 CancellationToken                                 CancellationToken)
@@ -874,7 +874,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddChargingPool(IChargingPool       ChargingPool,
 
-                            DateTime?           Timestamp,
+                            DateTimeOffset?     Timestamp,
                             EventTracking_Id?   EventTrackingId,
                             TimeSpan?           RequestTimeout,
                             CancellationToken   CancellationToken)
@@ -905,7 +905,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddChargingPoolIfNotExists(IChargingPool       ChargingPool,
 
-                                       DateTime?           Timestamp,
+                                       DateTimeOffset?     Timestamp,
                                        EventTracking_Id?   EventTrackingId,
                                        TimeSpan?           RequestTimeout,
                                        CancellationToken   CancellationToken)
@@ -936,7 +936,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddOrUpdateChargingPool(IChargingPool       ChargingPool,
 
-                                    DateTime?           Timestamp,
+                                    DateTimeOffset?     Timestamp,
                                     EventTracking_Id?   EventTrackingId,
                                     TimeSpan?           RequestTimeout,
                                     CancellationToken   CancellationToken)
@@ -976,7 +976,7 @@ namespace cloud.charging.open.protocols.WWCP
                                Object?             OldValue,
                                Context?            DataSource,
 
-                               DateTime?           Timestamp,
+                               DateTimeOffset?     Timestamp,
                                EventTracking_Id?   EventTrackingId,
                                TimeSpan?           RequestTimeout,
                                CancellationToken   CancellationToken)
@@ -1007,7 +1007,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteChargingPool(IChargingPool       ChargingPool,
 
-                               DateTime?           Timestamp,
+                               DateTimeOffset?     Timestamp,
                                EventTracking_Id?   EventTrackingId,
                                TimeSpan?           RequestTimeout,
                                CancellationToken   CancellationToken)
@@ -1039,7 +1039,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddChargingPools(IEnumerable<IChargingPool>  ChargingPools,
 
-                             DateTime?                   Timestamp,
+                             DateTimeOffset?             Timestamp,
                              EventTracking_Id?           EventTrackingId,
                              TimeSpan?                   RequestTimeout,
                              CancellationToken           CancellationToken)
@@ -1070,7 +1070,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddChargingPoolsIfNotExist(IEnumerable<IChargingPool>  ChargingPools,
 
-                                       DateTime?                   Timestamp,
+                                       DateTimeOffset?             Timestamp,
                                        EventTracking_Id?           EventTrackingId,
                                        TimeSpan?                   RequestTimeout,
                                        CancellationToken           CancellationToken)
@@ -1101,7 +1101,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddOrUpdateChargingPools(IEnumerable<IChargingPool>  ChargingPools,
 
-                                     DateTime?                   Timestamp,
+                                     DateTimeOffset?             Timestamp,
                                      EventTracking_Id?           EventTrackingId,
                                      TimeSpan?                   RequestTimeout,
                                      CancellationToken           CancellationToken)
@@ -1132,7 +1132,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateChargingPools(IEnumerable<IChargingPool>  ChargingPools,
 
-                                DateTime?                   Timestamp,
+                                DateTimeOffset?             Timestamp,
                                 EventTracking_Id?           EventTrackingId,
                                 TimeSpan?                   RequestTimeout,
                                 CancellationToken           CancellationToken)
@@ -1163,7 +1163,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteChargingPools(IEnumerable<IChargingPool>  ChargingPools,
 
-                                DateTime?                   Timestamp,
+                                DateTimeOffset?             Timestamp,
                                 EventTracking_Id?           EventTrackingId,
                                 TimeSpan?                   RequestTimeout,
                                 CancellationToken           CancellationToken)
@@ -1195,7 +1195,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateChargingPoolAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
 
-                                          DateTime?                                   Timestamp,
+                                          DateTimeOffset?                             Timestamp,
                                           EventTracking_Id?                           EventTrackingId,
                                           TimeSpan?                                   RequestTimeout,
                                           CancellationToken                           CancellationToken)
@@ -1225,7 +1225,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateChargingPoolStatus(IEnumerable<ChargingPoolStatusUpdate>  StatusUpdates,
 
-                                     DateTime?                              Timestamp,
+                                     DateTimeOffset?                        Timestamp,
                                      EventTracking_Id?                      EventTrackingId,
                                      TimeSpan?                              RequestTimeout,
                                      CancellationToken                      CancellationToken)
@@ -1254,7 +1254,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateChargingPoolEnergyStatus(IEnumerable<ChargingPoolEnergyStatusUpdate>  ChargingPoolEnergyStatusUpdates,
 
-                                           DateTime?                                    Timestamp,
+                                           DateTimeOffset?                              Timestamp,
                                            EventTracking_Id?                            EventTrackingId,
                                            TimeSpan?                                    RequestTimeout,
                                            CancellationToken                            CancellationToken)
@@ -1288,7 +1288,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddChargingStation(IChargingStation   ChargingStation,
 
-                               DateTime?          Timestamp,
+                               DateTimeOffset?    Timestamp,
                                EventTracking_Id?  EventTrackingId,
                                TimeSpan?          RequestTimeout,
                                CancellationToken  CancellationToken)
@@ -1319,7 +1319,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddChargingStationIfNotExists(IChargingStation   ChargingStation,
 
-                                          DateTime?          Timestamp,
+                                          DateTimeOffset?    Timestamp,
                                           EventTracking_Id?  EventTrackingId,
                                           TimeSpan?          RequestTimeout,
                                           CancellationToken  CancellationToken)
@@ -1350,7 +1350,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddOrUpdateChargingStation(IChargingStation   ChargingStation,
 
-                                       DateTime?          Timestamp,
+                                       DateTimeOffset?    Timestamp,
                                        EventTracking_Id?  EventTrackingId,
                                        TimeSpan?          RequestTimeout,
                                        CancellationToken  CancellationToken)
@@ -1390,7 +1390,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   Object?            NewValue,
                                   Context?           DataSource,
 
-                                  DateTime?          Timestamp,
+                                  DateTimeOffset?    Timestamp,
                                   EventTracking_Id?  EventTrackingId,
                                   TimeSpan?          RequestTimeout,
                                   CancellationToken  CancellationToken)
@@ -1421,7 +1421,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteChargingStation(IChargingStation    ChargingStation,
 
-                                  DateTime?           Timestamp,
+                                  DateTimeOffset?     Timestamp,
                                   EventTracking_Id?   EventTrackingId,
                                   TimeSpan?           RequestTimeout,
                                   CancellationToken   CancellationToken)
@@ -1453,7 +1453,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddChargingStations(IEnumerable<IChargingStation>  ChargingStations,
 
-                                DateTime?                      Timestamp,
+                                DateTimeOffset?                Timestamp,
                                 EventTracking_Id?              EventTrackingId,
                                 TimeSpan?                      RequestTimeout,
                                 CancellationToken              CancellationToken)
@@ -1484,7 +1484,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddChargingStationsIfNotExist(IEnumerable<IChargingStation>  ChargingStations,
 
-                                          DateTime?                      Timestamp,
+                                          DateTimeOffset?                Timestamp,
                                           EventTracking_Id?              EventTrackingId,
                                           TimeSpan?                      RequestTimeout,
                                           CancellationToken              CancellationToken)
@@ -1515,7 +1515,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddOrUpdateChargingStations(IEnumerable<IChargingStation>  ChargingStations,
 
-                                        DateTime?                      Timestamp,
+                                        DateTimeOffset?                Timestamp,
                                         EventTracking_Id?              EventTrackingId,
                                         TimeSpan?                      RequestTimeout,
                                         CancellationToken              CancellationToken)
@@ -1546,7 +1546,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateChargingStations(IEnumerable<IChargingStation>  ChargingStations,
 
-                                   DateTime?                      Timestamp,
+                                   DateTimeOffset?                Timestamp,
                                    EventTracking_Id?              EventTrackingId,
                                    TimeSpan?                      RequestTimeout,
                                    CancellationToken              CancellationToken)
@@ -1577,7 +1577,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteChargingStations(IEnumerable<IChargingStation>  ChargingStations,
 
-                                   DateTime?                      Timestamp,
+                                   DateTimeOffset?                Timestamp,
                                    EventTracking_Id?              EventTrackingId,
                                    TimeSpan?                      RequestTimeout,
                                    CancellationToken              CancellationToken)
@@ -1609,7 +1609,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateChargingStationAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
 
-                                             DateTime?                                      Timestamp,
+                                             DateTimeOffset?                                Timestamp,
                                              EventTracking_Id?                              EventTrackingId,
                                              TimeSpan?                                      RequestTimeout,
                                              CancellationToken                              CancellationToken)
@@ -1639,7 +1639,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateChargingStationStatus(IEnumerable<ChargingStationStatusUpdate>  StatusUpdates,
 
-                                        DateTime?                                 Timestamp,
+                                        DateTimeOffset?                           Timestamp,
                                         EventTracking_Id?                         EventTrackingId,
                                         TimeSpan?                                 RequestTimeout,
                                         CancellationToken                         CancellationToken)
@@ -1669,7 +1669,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateChargingStationEnergyStatus(IEnumerable<ChargingStationEnergyStatusUpdate>  ChargingStationEnergyStatusUpdates,
 
-                                              DateTime?                                       Timestamp,
+                                              DateTimeOffset?                                 Timestamp,
                                               EventTracking_Id?                               EventTrackingId,
                                               TimeSpan?                                       RequestTimeout,
                                               CancellationToken                               CancellationToken)
@@ -1703,7 +1703,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddEVSE(IEVSE              EVSE,
 
-                    DateTime?          Timestamp,
+                    DateTimeOffset?    Timestamp,
                     EventTracking_Id?  EventTrackingId,
                     TimeSpan?          RequestTimeout,
                     CancellationToken  CancellationToken)
@@ -1734,7 +1734,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddEVSEIfNotExists(IEVSE              EVSE,
 
-                               DateTime?          Timestamp,
+                               DateTimeOffset?    Timestamp,
                                EventTracking_Id?  EventTrackingId,
                                TimeSpan?          RequestTimeout,
                                CancellationToken  CancellationToken)
@@ -1765,7 +1765,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddOrUpdateEVSE(IEVSE              EVSE,
 
-                            DateTime?          Timestamp,
+                            DateTimeOffset?    Timestamp,
                             EventTracking_Id?  EventTrackingId,
                             TimeSpan?          RequestTimeout,
                             CancellationToken  CancellationToken)
@@ -1805,7 +1805,7 @@ namespace cloud.charging.open.protocols.WWCP
                        Object?             NewValue,
                        Context?            DataSource,
 
-                       DateTime?           Timestamp,
+                       DateTimeOffset?     Timestamp,
                        EventTracking_Id?   EventTrackingId,
                        TimeSpan?           RequestTimeout,
                        CancellationToken   CancellationToken)
@@ -1836,7 +1836,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteEVSE(IEVSE              EVSE,
 
-                       DateTime?          Timestamp,
+                       DateTimeOffset?    Timestamp,
                        EventTracking_Id?  EventTrackingId,
                        TimeSpan?          RequestTimeout,
                        CancellationToken  CancellationToken)
@@ -1868,7 +1868,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddEVSEs(IEnumerable<IEVSE>  EVSEs,
 
-                     DateTime?           Timestamp,
+                     DateTimeOffset?     Timestamp,
                      EventTracking_Id?   EventTrackingId,
                      TimeSpan?           RequestTimeout,
                      CancellationToken   CancellationToken)
@@ -1899,7 +1899,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddEVSEsIfNotExist(IEnumerable<IEVSE>  EVSEs,
 
-                               DateTime?           Timestamp,
+                               DateTimeOffset?     Timestamp,
                                EventTracking_Id?   EventTrackingId,
                                TimeSpan?           RequestTimeout,
                                CancellationToken   CancellationToken)
@@ -1930,7 +1930,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddOrUpdateEVSEs(IEnumerable<IEVSE>  EVSEs,
 
-                             DateTime?           Timestamp,
+                             DateTimeOffset?     Timestamp,
                              EventTracking_Id?   EventTrackingId,
                              TimeSpan?           RequestTimeout,
                              CancellationToken   CancellationToken)
@@ -1961,7 +1961,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateEVSEs(IEnumerable<IEVSE>  EVSEs,
 
-                        DateTime?           Timestamp,
+                        DateTimeOffset?     Timestamp,
                         EventTracking_Id?   EventTrackingId,
                         TimeSpan?           RequestTimeout,
                         CancellationToken   CancellationToken)
@@ -1992,7 +1992,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteEVSEs(IEnumerable<IEVSE>  EVSEs,
 
-                        DateTime?           Timestamp,
+                        DateTimeOffset?     Timestamp,
                         EventTracking_Id?   EventTrackingId,
                         TimeSpan?           RequestTimeout,
                         CancellationToken   CancellationToken)
@@ -2024,7 +2024,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateEVSEAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
 
-                                  DateTime?                           Timestamp,
+                                  DateTimeOffset?                     Timestamp,
                                   EventTracking_Id?                   EventTrackingId,
                                   TimeSpan?                           RequestTimeout,
                                   CancellationToken                   CancellationToken)
@@ -2054,7 +2054,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateEVSEStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
 
-                             DateTime?                      Timestamp,
+                             DateTimeOffset?                Timestamp,
                              EventTracking_Id?              EventTrackingId,
                              TimeSpan?                      RequestTimeout,
                              CancellationToken              CancellationToken)
@@ -2084,7 +2084,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateEVSEEnergyStatus(IEnumerable<EVSEEnergyStatusUpdate>  EVSEEnergyStatusUpdates,
 
-                                   DateTime?                            Timestamp,
+                                   DateTimeOffset?                      Timestamp,
                                    EventTracking_Id?                    EventTrackingId,
                                    TimeSpan?                            RequestTimeout,
                                    CancellationToken                    CancellationToken)

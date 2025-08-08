@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddEVSE(IEVSE              EVSE,
                     TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                    DateTime?          Timestamp           = null,
+                    DateTimeOffset?    Timestamp           = null,
                     EventTracking_Id?  EventTrackingId     = null,
                     TimeSpan?          RequestTimeout      = null,
                     User_Id?           CurrentUserId       = null,
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddEVSEIfNotExists(IEVSE              EVSE,
                                TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                               DateTime?          Timestamp           = null,
+                               DateTimeOffset?    Timestamp           = null,
                                EventTracking_Id?  EventTrackingId     = null,
                                TimeSpan?          RequestTimeout      = null,
                                User_Id?           CurrentUserId       = null,
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateEVSE(IEVSE              EVSE,
                             TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                            DateTime?          Timestamp           = null,
+                            DateTimeOffset?    Timestamp           = null,
                             EventTracking_Id?  EventTrackingId     = null,
                             TimeSpan?          RequestTimeout      = null,
                             User_Id?           CurrentUserId       = null,
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.WWCP
                        Context?           DataSource          = null,
                        TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                       DateTime?          Timestamp           = null,
+                       DateTimeOffset?    Timestamp           = null,
                        EventTracking_Id?  EventTrackingId     = null,
                        TimeSpan?          RequestTimeout      = null,
                        User_Id?           CurrentUserId       = null,
@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteEVSE(IEVSE              EVSE,
                        TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                       DateTime?          Timestamp           = null,
+                       DateTimeOffset?    Timestamp           = null,
                        EventTracking_Id?  EventTrackingId     = null,
                        TimeSpan?          RequestTimeout      = null,
                        User_Id?           CurrentUserId       = null,
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddEVSEs(IEnumerable<IEVSE>  EVSEs,
                      TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
-                     DateTime?           Timestamp           = null,
+                     DateTimeOffset?     Timestamp           = null,
                      EventTracking_Id?   EventTrackingId     = null,
                      TimeSpan?           RequestTimeout      = null,
                      User_Id?            CurrentUserId       = null,
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddEVSEsIfNotExist(IEnumerable<IEVSE>  EVSEs,
                                TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
-                               DateTime?           Timestamp           = null,
+                               DateTimeOffset?     Timestamp           = null,
                                EventTracking_Id?   EventTrackingId     = null,
                                TimeSpan?           RequestTimeout      = null,
                                User_Id?            CurrentUserId       = null,
@@ -249,7 +249,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddOrUpdateEVSEs(IEnumerable<IEVSE>  EVSEs,
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?           Timestamp           = null,
+                             DateTimeOffset?     Timestamp           = null,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null,
                              User_Id?            CurrentUserId       = null,
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateEVSEs(IEnumerable<IEVSE>  EVSEs,
                         TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
-                        DateTime?           Timestamp           = null,
+                        DateTimeOffset?     Timestamp           = null,
                         EventTracking_Id?   EventTrackingId     = null,
                         TimeSpan?           RequestTimeout      = null,
                         User_Id?            CurrentUserId       = null,
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.WWCP
             ReplaceEVSEs(IEnumerable<IEVSE>  EVSEs,
                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
-                         DateTime?           Timestamp           = null,
+                         DateTimeOffset?     Timestamp           = null,
                          EventTracking_Id?   EventTrackingId     = null,
                          TimeSpan?           RequestTimeout      = null,
                          User_Id?            CurrentUserId       = null,
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteEVSEs(IEnumerable<IEVSE>  EVSEs,
                         TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
-                        DateTime?           Timestamp           = null,
+                        DateTimeOffset?     Timestamp           = null,
                         EventTracking_Id?   EventTrackingId     = null,
                         TimeSpan?           RequestTimeout      = null,
                         User_Id?            CurrentUserId       = null,

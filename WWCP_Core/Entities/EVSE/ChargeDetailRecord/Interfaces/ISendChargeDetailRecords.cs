@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.WWCP
             SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecords,
                                    TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
-                                   DateTime?           Timestamp           = null,
+                                   DateTimeOffset?     Timestamp           = null,
                                    EventTracking_Id?   EventTrackingId     = null,
                                    TimeSpan?           RequestTimeout      = null,
                                    CancellationToken   CancellationToken   = default);
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.WWCP
             SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                                     TransmissionTypes                TransmissionType    = TransmissionTypes.Enqueue,
 
-                                    DateTime?                        Timestamp           = null,
+                                    DateTimeOffset?                  Timestamp           = null,
                                     EventTracking_Id?                EventTrackingId     = null,
                                     TimeSpan?                        RequestTimeout      = null,
                                     CancellationToken                CancellationToken   = default);

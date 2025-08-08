@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// when the status was imported from a third party.
         /// </summary>
         [Optional]
-        DateTime?                              LastStatusUpdate             { get; set; }
+        DateTimeOffset?                        LastStatusUpdate             { get; set; }
 
 
         /// <summary>

@@ -92,22 +92,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id     Id            { get; }
+        public EVSE_Id         Id            { get; }
 
         /// <summary>
         /// The current energy status of the EVSE.
         /// </summary>
-        public EnergyInfo  EnergyInfo    { get; }
+        public EnergyInfo      EnergyInfo    { get; }
 
         /// <summary>
         /// The timestamp of the current energy status of the EVSE.
         /// </summary>
-        public DateTime    Timestamp     { get; }
+        public DateTimeOffset  Timestamp     { get; }
 
         /// <summary>
         /// An optional data source or context for this EVSE energy status.
         /// </summary>
-        public Context?    Context       { get; }
+        public Context?        Context       { get; }
 
         /// <summary>
         /// The timestamped energy status of the EVSE.
@@ -149,10 +149,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EnergyInfo">The current energy information of the EVSE.</param>
         /// <param name="Timestamp">The timestamp of the energy information of the EVSE.</param>
         /// <param name="Context">An optional data source or context for the EVSE energy status.</param>
-        public EVSEEnergyStatus(EVSE_Id     Id,
-                                EnergyInfo  EnergyInfo,
-                                DateTime    Timestamp,
-                                Context?    Context   = null)
+        public EVSEEnergyStatus(EVSE_Id         Id,
+                                EnergyInfo      EnergyInfo,
+                                DateTimeOffset  Timestamp,
+                                Context?        Context   = null)
         {
 
             this.Id          = Id;

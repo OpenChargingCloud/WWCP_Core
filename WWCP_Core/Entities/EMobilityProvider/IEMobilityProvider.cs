@@ -70,10 +70,10 @@ namespace cloud.charging.open.protocols.WWCP
         URL? Homepage { get; set; }
         PhoneNumber? HotlinePhoneNumber { get; set; }
         String Logo { get; set; }
-        IVotingSender<DateTime, EMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationAddition { get; }
-        IVotingSender<DateTime, EMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationRemoval { get; }
-        IVotingSender<DateTime, EMobilityProvider, EVehicle, Boolean> OnEVehicleAddition { get; }
-        IVotingSender<DateTime, EMobilityProvider, EVehicle, Boolean> OnEVehicleRemoval { get; }
+        IVotingSender<DateTimeOffset, EMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationAddition { get; }
+        IVotingSender<DateTimeOffset, EMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationRemoval { get; }
+        IVotingSender<DateTimeOffset, EMobilityProvider, EVehicle, Boolean> OnEVehicleAddition { get; }
+        IVotingSender<DateTimeOffset, EMobilityProvider, EVehicle, Boolean> OnEVehicleRemoval { get; }
         EMobilityProviderPriority Priority { get; set; }
         IRemoteEMobilityProvider RemoteEMobilityProvider { get; }
         TimeSpan? RequestTimeout { get; }
@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId, eMobilityStationAdminStatusTypes NewStatus, DateTime Timestamp);
+        void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId, eMobilityStationAdminStatusTypes NewStatus, DateTimeOffset Timestamp);
         void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId, IEnumerable<Timestamped<eMobilityStationAdminStatusTypes>> StatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
         void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId, Timestamped<eMobilityStationAdminStatusTypes> NewStatus, Boolean SendUpstream = false);
         eMobilityStation CreateNeweMobilityStation(eMobilityStation_Id eMobilityStationId = null, Action<eMobilityStation> Configurator = null, RemoteEMobilityStationCreatorDelegate RemoteeMobilityStationCreator = null, eMobilityStationAdminStatusTypes AdminStatus = eMobilityStationAdminStatusTypes.Operational, Action<eMobilityStation> OnSuccess = null, Action<EMobilityProvider, eMobilityStation_Id> OnError = null);
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.WWCP
         eMobilityStation GeteMobilityStationById(eMobilityStation_Id eMobilityStationId);
 
 
-        void SetEVehicleAdminStatus(EVehicle_Id eVehicleId, eVehicleAdminStatusTypes NewStatus, DateTime Timestamp);
+        void SetEVehicleAdminStatus(EVehicle_Id eVehicleId, eVehicleAdminStatusTypes NewStatus, DateTimeOffset Timestamp);
         void SetEVehicleAdminStatus(EVehicle_Id eVehicleId, IEnumerable<Timestamped<eVehicleAdminStatusTypes>> StatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
         void SeteVehicleAdminStatus(EVehicle_Id eVehicleId, Timestamped<eVehicleAdminStatusTypes> NewStatus, Boolean SendUpstream = false);
         EVehicle CreateNeweVehicle(EVehicle_Id eVehicleId = null, Action<EVehicle> Configurator = null, RemoteEVehicleCreatorDelegate RemoteeVehicleCreator = null, eVehicleAdminStatusTypes AdminStatus = eVehicleAdminStatusTypes.Operational, eVehicleStatusTypes Status = eVehicleStatusTypes.Available, Action<EVehicle> OnSuccess = null, Action<EMobilityProvider, EVehicle_Id> OnError = null);

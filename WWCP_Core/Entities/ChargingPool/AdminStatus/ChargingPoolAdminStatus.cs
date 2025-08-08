@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of the current admin status of the charging pool.
         /// </summary>
-        public DateTime                      Timestamp      { get; }
+        public DateTimeOffset               Timestamp      { get; }
 
         /// <summary>
         /// The timestamped admin status of the charging pool.
@@ -151,10 +151,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the charging pool.</param>
         /// <param name="AdminStatus">The current timestamped adminstatus of the charging pool.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public ChargingPoolAdminStatus(ChargingPool_Id                            Id,
+        public ChargingPoolAdminStatus(ChargingPool_Id                           Id,
                                        Timestamped<ChargingPoolAdminStatusType>  AdminStatus,
-                                       JObject?                                   CustomData     = null,
-                                       UserDefinedDictionary?                     InternalData   = null)
+                                       JObject?                                  CustomData     = null,
+                                       UserDefinedDictionary?                    InternalData   = null)
 
             : base(CustomData,
                    InternalData,

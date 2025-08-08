@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Threading.Tasks;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -40,7 +37,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate Task OnParkingOperatorDataChangedDelegate(DateTime         Timestamp,
+    public delegate Task OnParkingOperatorDataChangedDelegate(DateTimeOffset   Timestamp,
                                                               ParkingOperator  ParkingOperator,
                                                               String           PropertyName,
                                                               Object           OldValue,
@@ -53,8 +50,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ParkingOperator">The updated Charging Station Operator.</param>
     /// <param name="OldStatus">The old timestamped status of the Charging Station Operator.</param>
     /// <param name="NewStatus">The new timestamped status of the Charging Station Operator.</param>
-    public delegate Task OnParkingOperatorAdminStatusChangedDelegate(DateTime                                     Timestamp,
-                                                                     ParkingOperator                              ParkingOperator,
+    public delegate Task OnParkingOperatorAdminStatusChangedDelegate(DateTimeOffset                                Timestamp,
+                                                                     ParkingOperator                               ParkingOperator,
                                                                      Timestamped<ParkingOperatorAdminStatusTypes>  OldStatus,
                                                                      Timestamped<ParkingOperatorAdminStatusTypes>  NewStatus);
 
@@ -66,8 +63,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ParkingOperator">The updated Charging Station Operator.</param>
     /// <param name="OldStatus">The old timestamped status of the Charging Station Operator.</param>
     /// <param name="NewStatus">The new timestamped status of the Charging Station Operator.</param>
-    public delegate Task OnParkingOperatorStatusChangedDelegate(DateTime                                Timestamp,
-                                                                ParkingOperator                         ParkingOperator,
+    public delegate Task OnParkingOperatorStatusChangedDelegate(DateTimeOffset                           Timestamp,
+                                                                ParkingOperator                          ParkingOperator,
                                                                 Timestamped<ParkingOperatorStatusTypes>  OldStatus,
                                                                 Timestamped<ParkingOperatorStatusTypes>  NewStatus);
 

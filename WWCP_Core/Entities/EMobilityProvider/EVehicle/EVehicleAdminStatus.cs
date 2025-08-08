@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of a e-mobility station.
         /// </summary>
-        public EVehicle_Id              Id          { get; }
+        public EVehicle_Id               Id          { get; }
 
         /// <summary>
         /// The current status of a e-mobility station.
@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of the current status of the e-mobility station.
         /// </summary>
-        public DateTime                         Timestamp   { get; }
+        public DateTimeOffset            Timestamp   { get; }
 
         #endregion
 
@@ -58,9 +58,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of a e-mobility station.</param>
         /// <param name="Status">The current status of a e-mobility station.</param>
         /// <param name="Timestamp">The timestamp of the current status of the e-mobility station.</param>
-        public EVehicleAdminStatus(EVehicle_Id              Id,
-                                           eVehicleAdminStatusTypes  Status,
-                                           DateTime                         Timestamp)
+        public EVehicleAdminStatus(EVehicle_Id               Id,
+                                   eVehicleAdminStatusTypes  Status,
+                                   DateTimeOffset            Timestamp)
 
         {
 
@@ -89,9 +89,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static EVehicleAdminStatus Snapshot(EVehicle eVehicle)
 
-            => new EVehicleAdminStatus(eVehicle.Id,
-                                               eVehicle.AdminStatus.Value,
-                                               eVehicle.AdminStatus.Timestamp);
+            => new (eVehicle.Id,
+                    eVehicle.AdminStatus.Value,
+                    eVehicle.AdminStatus.Timestamp);
 
         #endregion
 

@@ -90,8 +90,8 @@ namespace cloud.charging.open.protocols.WWCP
                                          UInt16                      MaxStatusScheduleSize        = DefaultMaxStatusScheduleSize,
 
                                          String?                     DataSource                   = null,
-                                         DateTime?                   Created                      = null,
-                                         DateTime?                   LastChange                   = null,
+                                         DateTimeOffset?             Created                      = null,
+                                         DateTimeOffset?             LastChange                   = null,
 
                                          JObject?                    CustomData                   = null,
                                          UserDefinedDictionary?      InternalData                 = null)

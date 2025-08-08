@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// The timestamp of the response creation.
         /// </summary>
         [Mandatory]
-        public DateTime              ResponseTimestamp    { get; }
+        public DateTimeOffset        ResponseTimestamp    { get; }
 
         /// <summary>
         /// An optional event tracking identification for correlating this response with other events.
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="HTTPResponse">The optional HTTP response.</param>
         protected AResponse(TRequest?              Request,
                             EventTracking_Id       EventTrackingId,
-                            DateTime?              ResponseTimestamp,
+                            DateTimeOffset?        ResponseTimestamp,
                             TimeSpan?              Runtime,
 
                             IEnumerable<Warning>?  Warnings       = null,
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
             /// The timestamp of the response message creation.
             /// </summary>
             [Mandatory]
-            public DateTime?          ResponseTimestamp    { get; set; }
+            public DateTimeOffset?    ResponseTimestamp    { get; set; }
 
             /// <summary>
             /// An optional event tracking identification for correlating this response with other events.
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
             /// <param name="HTTPResponse">The optional HTTP response.</param>
             protected Builder(TRequest?              Request             = null,
                               EventTracking_Id?      EventTrackingId     = null,
-                              DateTime?              ResponseTimestamp   = null,
+                              DateTimeOffset?        ResponseTimestamp   = null,
                               TimeSpan?              Runtime             = null,
                               IEnumerable<Warning>?  Warnings            = null,
                               JObject?               CustomData          = null,

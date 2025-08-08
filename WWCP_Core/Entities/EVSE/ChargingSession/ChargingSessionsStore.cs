@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.WWCP
     public class SessionStopRequest
     {
 
-        public DateTime                Timestamp               { get; }
+        public DateTimeOffset          Timestamp               { get; }
         public System_Id               SystemId                { get; }
         public EMPRoamingProvider_Id?  CSORoamingProviderId    { get; }
         public CSORoamingProvider_Id?  EMPRoamingProviderId    { get; }
@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.WWCP
         public RemoteStopResult        RemoteStopResult        { get; }
 
 
-        public SessionStopRequest(DateTime                Timestamp,
+        public SessionStopRequest(DateTimeOffset          Timestamp,
                                   System_Id               SystemId,
                                   EMPRoamingProvider_Id?  CSORoamingProviderId,
                                   CSORoamingProvider_Id?  EMPRoamingProviderId,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static SessionStopRequest Parse(JObject JSON)
         {
 
-            return new SessionStopRequest(JSON["timestamp"].Value<DateTime>(),
+            return new SessionStopRequest(JSON["timestamp"].Value<DateTimeOffset>(),
                                           System_Id.Parse(JSON["systemId"]?.Value<String>()),
                                           JSON["CSORoamingProviderId"] != null                        ? EMPRoamingProvider_Id.Parse(JSON["CSORoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?(),
                                           JSON["EMPRoamingProviderId"] != null                        ? CSORoamingProvider_Id.Parse(JSON["EMPRoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?(),
@@ -486,7 +486,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public async Task<Boolean> AddSession(String           Command,
                                               ChargingSession  ChargingSession,
-                                              DateTime?        NoAutoDeletionBefore   = null)
+                                              DateTimeOffset?  NoAutoDeletionBefore   = null)
         {
 
             if (NoAutoDeletionBefore.HasValue)
@@ -1026,7 +1026,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                     var json       = JObject.Parse(line);
 
-                                    var timestamp  =                json["timestamp"]?.Value<DateTime>();
+                                    var timestamp  =                json["timestamp"]?.Value<DateTimeOffset>();
                                     var id         = StringIdParser(json["id"]?.       Value<String>() ?? "");
                                     var command    =                json["command"]?.  Value<String>();
 

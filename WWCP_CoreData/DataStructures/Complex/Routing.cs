@@ -199,8 +199,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                      IWWCPWebSocketClient  WebSocketClient,
                                      Byte?                 Priority    = 0,
                                      Byte?                 Weight      = 1,
-                                     DateTime?             Timestamp   = null,
-                                     DateTime?             Timeout     = null)
+                                     DateTimeOffset?       Timestamp   = null,
+                                     DateTimeOffset?       Timeout     = null)
 
 
             => reachableNetworkingNodes.AddOrUpdate(
@@ -258,8 +258,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                              IWWCPWebSocketClient            WebSocketClient,
                                              Byte?                           Priority    = 0,
                                              Byte?                           Weight      = 1,
-                                             DateTime?                       Timestamp   = null,
-                                             DateTime?                       Timeout     = null)
+                                             DateTimeOffset?                 Timestamp   = null,
+                                             DateTimeOffset?                 Timeout     = null)
         {
 
             foreach (var destinationId in DestinationIds)
@@ -285,8 +285,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                      IWWCPWebSocketServer  WebSocketServer,
                                      Byte?                 Priority    = 0,
                                      Byte?                 Weight      = 1,
-                                     DateTime?             Timestamp   = null,
-                                     DateTime?             Timeout     = null)
+                                     DateTimeOffset?       Timestamp   = null,
+                                     DateTimeOffset?       Timeout     = null)
 
 
             => reachableNetworkingNodes.AddOrUpdate(
@@ -344,8 +344,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                              IWWCPWebSocketServer            WebSocketServer,
                                              Byte?                           Priority    = 0,
                                              Byte?                           Weight      = 1,
-                                             DateTime?                       Timestamp   = null,
-                                             DateTime?                       Timeout     = null)
+                                             DateTimeOffset?                 Timestamp   = null,
+                                             DateTimeOffset?                 Timeout     = null)
         {
 
             foreach (var destinationId in DestinationIds)
@@ -371,8 +371,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                      NetworkingNode_Id  NetworkingHubId,
                                      Byte?              Priority    = 0,
                                      Byte?              Weight      = 1,
-                                     DateTime?          Timestamp   = null,
-                                     DateTime?          Timeout     = null)
+                                     DateTimeOffset?    Timestamp   = null,
+                                     DateTimeOffset?    Timeout     = null)
 
 
             => reachableNetworkingNodes.AddOrUpdate(
@@ -444,8 +444,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                              NetworkingNode_Id               NetworkingHubId,
                                              Byte?                           Priority    = 0,
                                              Byte?                           Weight      = 1,
-                                             DateTime?                       Timestamp   = null,
-                                             DateTime?                       Timeout     = null)
+                                             DateTimeOffset?                 Timestamp   = null,
+                                             DateTimeOffset?                 Timeout     = null)
         {
 
             foreach (var destinationId in DestinationIds)

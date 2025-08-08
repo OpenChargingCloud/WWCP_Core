@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
     /// <param name="SharedSubprotocols">An enumeration of shared HTTP WebSockets subprotocols.</param>
     /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="CancellationToken">A token to cancel the processing.</param>
-    public delegate Task OnNetworkingNodeNewWebSocketConnectionDelegate (DateTime                           Timestamp,
+    public delegate Task OnNetworkingNodeNewWebSocketConnectionDelegate (DateTimeOffset                     Timestamp,
                                                                          IWWCPWebSocketServer               WWCPWebSocketServer,
                                                                          WebSocketServerConnection          NewConnection,
                                                                          NetworkingNode_Id                  NetworkingNodeId,
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
     /// <param name="StatusCode">The HTTP WebSocket Closing Status Code.</param>
     /// <param name="Reason">An optional HTTP WebSocket closing reason.</param>
     /// <param name="CancellationToken">A token to cancel the processing.</param>
-    public delegate Task OnNetworkingNodeCloseMessageReceivedDelegate   (DateTime                           Timestamp,
+    public delegate Task OnNetworkingNodeCloseMessageReceivedDelegate   (DateTimeOffset                     Timestamp,
                                                                          IWWCPWebSocketServer               WWCPWebSocketServer,
                                                                          WebSocketServerConnection          Connection,
                                                                          NetworkingNode_Id                  NetworkingNodeId,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
     /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="Reason">An optional closing reason.</param>
     /// <param name="CancellationToken">A token to cancel the processing.</param>
-    public delegate Task OnNetworkingNodeTCPConnectionClosedDelegate    (DateTime                           Timestamp,
+    public delegate Task OnNetworkingNodeTCPConnectionClosedDelegate    (DateTimeOffset                     Timestamp,
                                                                          IWWCPWebSocketServer               WWCPWebSocketServer,
                                                                          WebSocketServerConnection          Connection,
                                                                          NetworkingNode_Id                  NetworkingNodeId,
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         public List<UserRole>                                                               UserRoles                    = [];
 
-        private DateTime lastRoutesBroadcast = Timestamp.Now;
+        private DateTimeOffset lastRoutesBroadcast = Timestamp.Now;
 
         #endregion
 
