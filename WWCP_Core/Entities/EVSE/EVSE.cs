@@ -1301,9 +1301,8 @@ namespace cloud.charging.open.protocols.WWCP
             catch (Exception e)
             {
 
-                DebugX.Log(e,
-                           $"EVSE '{Id}'.UpdateEVSEData of property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'" +
-                           DataSource is not null ? $" ({DataSource})" : "");
+                DebugX.LogException(e, $"EVSE '{Id}'.UpdateEVSEData of property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'" +
+                                       DataSource is not null ? $" ({DataSource})" : "");
 
             }
 
@@ -1344,9 +1343,8 @@ namespace cloud.charging.open.protocols.WWCP
             catch (Exception e)
             {
 
-                DebugX.Log(e,
-                           $"EVSE '{Id}'.UpdateEVSEAdminStatus from '{OldAdminStatus?.ToString() ?? "-"}' to '{NewAdminStatus}'" +
-                           DataSource is not null ? $" ({DataSource})" : "");
+                DebugX.LogException(e, $"EVSE '{Id}'.UpdateEVSEAdminStatus from '{OldAdminStatus?.ToString() ?? "-"}' to '{NewAdminStatus}'" +
+                                       DataSource is not null ? $" ({DataSource})" : "");
 
             }
 
@@ -1387,9 +1385,8 @@ namespace cloud.charging.open.protocols.WWCP
             catch (Exception e)
             {
 
-                DebugX.Log(e,
-                           $"EVSE '{Id}'.UpdateEVSEStatus from '{OldStatus}' to '{NewStatus}'" +
-                           DataSource is not null ? $" ({DataSource})" : "");
+                DebugX.LogException(e, $"EVSE '{Id}'.UpdateEVSEStatus from '{OldStatus}' to '{NewStatus}'" +
+                                       DataSource is not null ? $" ({DataSource})" : "");
 
             }
 

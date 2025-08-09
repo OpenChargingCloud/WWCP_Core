@@ -829,7 +829,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.SendEMobilityProviderAdded of charging station operator '{EMobilityProvider.Id}' to roaming network '{RoamingNetwork.Id}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.SendEMobilityProviderAdded of charging station operator '{EMobilityProvider.Id}' to roaming network '{RoamingNetwork.Id}'");
             }
 
         }
@@ -872,7 +872,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEMobilityProviderData of charging station operator '{EMobilityProvider.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateEMobilityProviderData of charging station operator '{EMobilityProvider.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
             }
 
 
@@ -910,7 +910,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.SendEMobilityProviderRemoved of charging station operator '{EMobilityProvider.Id}' from roaming network '{RoamingNetwork.Id}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.SendEMobilityProviderRemoved of charging station operator '{EMobilityProvider.Id}' from roaming network '{RoamingNetwork.Id}'");
             }
 
         }
@@ -1659,7 +1659,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.SendChargingStationOperatorAdded of charging station operator '{ChargingStationOperator.Id}' to roaming network '{RoamingNetwork.Id}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.SendChargingStationOperatorAdded of charging station operator '{ChargingStationOperator.Id}' to roaming network '{RoamingNetwork.Id}'");
             }
 
         }
@@ -1702,7 +1702,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingStationOperatorData of charging station operator '{ChargingStationOperator.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateChargingStationOperatorData of charging station operator '{ChargingStationOperator.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
             }
 
 
@@ -1742,7 +1742,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.SendChargingStationOperatorRemoved of charging station operator '{ChargingStationOperator.Id}' from roaming network '{RoamingNetwork.Id}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.SendChargingStationOperatorRemoved of charging station operator '{ChargingStationOperator.Id}' from roaming network '{RoamingNetwork.Id}'");
             }
 
         }
@@ -3404,7 +3404,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of charging station operator '{ChargingStationOperator.Id}' from '{OldAdminStatus}' to '{NewAdminStatus}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of charging station operator '{ChargingStationOperator.Id}' from '{OldAdminStatus}' to '{NewAdminStatus}'");
             }
 
 
@@ -3499,7 +3499,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingStationOperatorStatus of charging station operator '{ChargingStationOperator.Id}' from '{OldStatus}' to '{NewStatus}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateChargingStationOperatorStatus of charging station operator '{ChargingStationOperator.Id}' from '{OldStatus}' to '{NewStatus}'");
             }
 
 
@@ -3578,7 +3578,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.SendChargingPoolAdded of charging pool '{ChargingPool.Id}' to charging station operator '{ChargingStationOperator.Id}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.SendChargingPoolAdded of charging pool '{ChargingPool.Id}' to charging station operator '{ChargingStationOperator.Id}'");
             }
 
         }
@@ -3634,7 +3634,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingPoolData of charging pool '{ChargingPool.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateChargingPoolData of charging pool '{ChargingPool.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
             }
 
         }
@@ -3673,7 +3673,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.SendChargingPoolRemoved of charging pool '{ChargingPool.Id}' from charging station operator '{ChargingStationOperator.Id}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.SendChargingPoolRemoved of charging pool '{ChargingPool.Id}' from charging station operator '{ChargingStationOperator.Id}'");
             }
 
         }
@@ -3909,7 +3909,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of charging pool '{ChargingPool.Id}' from '{OldAdminStatus}' to '{NewAdminStatus}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of charging pool '{ChargingPool.Id}' from '{OldAdminStatus}' to '{NewAdminStatus}'");
             }
 
 
@@ -4007,7 +4007,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingPoolStatus of charging pool '{ChargingPool.Id}' from '{OldStatus}' to '{NewStatus}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateChargingPoolStatus of charging pool '{ChargingPool.Id}' from '{OldStatus}' to '{NewStatus}'");
             }
 
 
@@ -4088,7 +4088,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.SendChargingStationAdded of charging station '{ChargingStation.Id}' to charging pool '{ChargingPool.Id}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.SendChargingStationAdded of charging station '{ChargingStation.Id}' to charging pool '{ChargingPool.Id}'");
             }
 
         }
@@ -4143,7 +4143,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingStationData of charging station '{ChargingStation.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateChargingStationData of charging station '{ChargingStation.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
             }
 
         }
@@ -4183,7 +4183,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.SendChargingStationRemoved of charging station '{ChargingStation.Id}' from charging pool '{ChargingPool.Id}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.SendChargingStationRemoved of charging station '{ChargingStation.Id}' from charging pool '{ChargingPool.Id}'");
             }
 
         }
@@ -4451,7 +4451,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of charging station '{ChargingStation.Id}' from '{OldAdminStatus}' to '{NewAdminStatus}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of charging station '{ChargingStation.Id}' from '{OldAdminStatus}' to '{NewAdminStatus}'");
             }
 
 
@@ -4568,7 +4568,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingStationStatus of charging station '{ChargingStation.Id}' from '{OldStatus}' to '{NewStatus}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateChargingStationStatus of charging station '{ChargingStation.Id}' from '{OldStatus}' to '{NewStatus}'");
             }
 
 
@@ -4647,7 +4647,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.SendEVSEAdded of EVSE '{EVSE.Id}' to charging station '{ChargingStation.Id}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.SendEVSEAdded of EVSE '{EVSE.Id}' to charging station '{ChargingStation.Id}'");
             }
 
         }
@@ -4704,7 +4704,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEData of EVSE '{EVSE.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateEVSEData of EVSE '{EVSE.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
             }
 
         }
@@ -4743,7 +4743,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.SendEVSERemoved of EVSE '{EVSE.Id}' from charging station '{ChargingStation.Id}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.SendEVSERemoved of EVSE '{EVSE.Id}' from charging station '{ChargingStation.Id}'");
             }
 
         }
@@ -4989,7 +4989,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of EVSE '{EVSE.Id}' from '{OldAdminStatus?.ToString() ?? "-"}' to '{NewAdminStatus}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of EVSE '{EVSE.Id}' from '{OldAdminStatus?.ToString() ?? "-"}' to '{NewAdminStatus}'");
             }
 
         }
@@ -5208,7 +5208,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEStatus of EVSE '{EVSE.Id}' from '{OldStatus}' to '{NewStatus}'");
+                DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateEVSEStatus of EVSE '{EVSE.Id}' from '{OldStatus}' to '{NewStatus}'");
             }
 
         }

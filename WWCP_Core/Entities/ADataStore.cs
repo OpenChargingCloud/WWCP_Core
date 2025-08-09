@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.WWCP
                 }
                 catch (Exception e)
                 {
-                    DebugX.Log(e, "RoamingNetworkInfo TCP server");
+                    DebugX.LogException(e, "RoamingNetworkInfo TCP server");
                 }
 
             }
