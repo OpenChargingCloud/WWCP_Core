@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static SessionStopRequest Parse(JObject JSON)
         {
 
-            return new SessionStopRequest(JSON["timestamp"].Value<DateTimeOffset>(),
+            return new SessionStopRequest(new DateTimeOffset(JSON["timestamp"].Value<DateTime>()),
                                           System_Id.Parse(JSON["systemId"]?.Value<String>()),
                                           JSON["CSORoamingProviderId"] != null                        ? EMPRoamingProvider_Id.Parse(JSON["CSORoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?(),
                                           JSON["EMPRoamingProviderId"] != null                        ? CSORoamingProvider_Id.Parse(JSON["EMPRoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?(),
@@ -1026,7 +1026,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                     var json       = JObject.Parse(line);
 
-                                    var timestamp  =                json["timestamp"]?.Value<DateTimeOffset>();
+                                    var timestamp  =                json["timestamp"]?.c();
                                     var id         = StringIdParser(json["id"]?.       Value<String>() ?? "");
                                     var command    =                json["command"]?.  Value<String>();
 
