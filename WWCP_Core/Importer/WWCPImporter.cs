@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
         public Func<ChargingStation_Id, IEnumerable<IChargingStationOperator>>  GetChargingStationOperators          { get; }
 
-        public Func<ChargingStation_Id, IChargingStationOperator>               GetDefaultChargingStationOperator    { get; }
+        public Func<ChargingStation_Id, IChargingStationOperator?>              GetDefaultChargingStationOperator    { get; }
 
         public Func<ChargingStation_Id, IEnumerable<RoamingNetwork_Id>>         RoamingNetworkIds
             => operators => GetChargingStationOperators(operators).Select(cso => cso.RoamingNetwork.Id);
@@ -222,8 +222,8 @@ namespace cloud.charging.open.protocols.WWCP.Importer
             this.OnShutdown                         = OnShutdown;
 
             this.AllChargingStationOperators        = AllChargingStationOperators;
-            this.GetChargingStationOperators        = GetChargingStationOperators;
-            this.GetDefaultChargingStationOperator  = GetDefaultChargingStationOperator;
+            this.GetChargingStationOperators        = GetChargingStationOperators       ?? (chargingStationId => []);
+            this.GetDefaultChargingStationOperator  = GetDefaultChargingStationOperator ?? (chargingStationId => null);
             this.importedData                       = [];
 
             this.IsRunning                          = false;
