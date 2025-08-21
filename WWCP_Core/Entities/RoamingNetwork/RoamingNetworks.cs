@@ -24,6 +24,7 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using cloud.charging.open.protocols.WWCP.Networking;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -243,6 +244,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region Contains(RoamingNetworkId)
+
+        /// <summary>
+        /// Return the roaming network identified by the given unique roaming network identification.
+        /// </summary>
+        /// <param name="RoamingNetworkId">The unique identification of a roaming network.</param>
+        public Boolean Contains(RoamingNetwork_Id RoamingNetworkId)
+
+            => roamingNetworks.ContainsKey(RoamingNetworkId);
+
+        #endregion
+
         #region GetRoamingNetwork(RoamingNetworkId)
 
         /// <summary>
@@ -269,7 +282,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkId">The unique identification of a roaming network.</param>
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <returns>True, when the roaming network was found; false else.</returns>
-        public Boolean TryGetRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, out RoamingNetwork? RoamingNetwork)
+        public Boolean TryGetRoamingNetwork(RoamingNetwork_Id                        RoamingNetworkId,
+                                            [NotNullWhen(true)] out RoamingNetwork?  RoamingNetwork)
 
             => roamingNetworks.TryGetValue(RoamingNetworkId, out RoamingNetwork);
 
