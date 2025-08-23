@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
         /// </summary>
         public UInt32                                                           MaxNumberOfCachedDataImports         { get; }
 
-        public DNSClient?                                                       DNSClient                            { get; }
+        public IDNSClient?                                                      DNSClient                            { get; }
 
         #endregion
 
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
                             Action<WWCPImporter<TImportData>, TImportData>?                   OnShutdown                          = null,
                             UInt32                                                            MaxNumberOfCachedDataImports        = DefaultMaxNumberOfCachedImports,
 
-                            DNSClient?                                                        DNSClient                           = null)
+                            IDNSClient?                                                       DNSClient                           = null)
 
         {
 

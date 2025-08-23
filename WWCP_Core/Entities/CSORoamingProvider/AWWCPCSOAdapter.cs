@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        public DNSClient?  DNSClient    { get; }
+        public IDNSClient?  DNSClient    { get; }
 
         #endregion
 
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   String?                                    ClientsLoggingPath                  = null,
                                   String?                                    ClientsLoggingContext               = null,
                                   LogfileCreatorDelegate?                    ClientsLogfileCreator               = null,
-                                  DNSClient?                                 DNSClient                           = null)
+                                  IDNSClient?                                DNSClient                           = null)
 
             : base(Id,
                    RoamingNetwork,
