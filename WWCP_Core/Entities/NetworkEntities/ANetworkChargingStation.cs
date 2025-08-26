@@ -191,7 +191,7 @@
 //            set
 //            {
 
-//                if (value == null)
+//                if (value is null)
 //                    return;
 
 //                if (_StatusSchedule.CurrentValue != value.Value)
@@ -238,7 +238,7 @@
 //            set
 //            {
 
-//                if (value == null)
+//                if (value is null)
 //                    return;
 
 //                if (_AdminStatusSchedule.CurrentValue != value.Value)
@@ -432,7 +432,7 @@
 //            this.PrivateKey             = PrivateKey;
 //            this.PublicKeyCertificates  = PublicKeyCertificates;
 
-//            if (PrivateKey == null && PublicKeyCertificates == null)
+//            if (PrivateKey is null && PublicKeyCertificates is null)
 //            {
 
 //                var generator = GeneratorUtilities.GetKeyPairGenerator("ECDH");
@@ -539,7 +539,7 @@
 //            this.URLPrefix                   = URLPrefix      ?? DefaultURLPrefix;
 //            this.RequestTimeout              = RequestTimeout ?? DefaultRequestTimeout;
 
-//            this._SelfCheckTimeSpan           = SelfCheckTimeSpan != null && SelfCheckTimeSpan.HasValue ? SelfCheckTimeSpan.Value : DefaultSelfCheckTimeSpan;
+//            this._SelfCheckTimeSpan           = SelfCheckTimeSpan is not null && SelfCheckTimeSpan.HasValue ? SelfCheckTimeSpan.Value : DefaultSelfCheckTimeSpan;
 //            this._SelfCheckTimer              = new Timer(SelfCheck, null, _SelfCheckTimeSpan, _SelfCheckTimeSpan);
 
 //            this.MapOutgoing                  = new Dictionary<EVSE_Id, EVSE_Id>();
@@ -798,7 +798,7 @@
 
 //            EVSE = GetEVSEById(EVSEId);
 
-//            return EVSE != null;
+//            return EVSE is not null;
 
 //        }
 
@@ -869,12 +869,12 @@
 
 //            #region Initial checks
 
-//            if (EVSEId == null)
+//            if (EVSEId is null)
 //                throw new ArgumentNullException(nameof(EVSEId), "The given EVSE identification must not be null!");
 
 //            //if (_EVSEs.Any(evse => evse.Id == EVSEId))
 //            //{
-//            //    if (OnError == null)
+//            //    if (OnError is null)
 //            //        throw new EVSEAlreadyExistsInStation(this.ChargingStation, EVSEId);
 //            //    else
 //            //        OnError?.Invoke(this, EVSEId);
@@ -931,7 +931,7 @@
 //            if (_EVSEs.Any(evse => evse.Id == RemoteEVSE.Id))
 //            {
 //                throw new Exception("EVSEAlreadyExistsInStation");
-//                // if (OnError == null)
+//                // if (OnError is null)
 //                //     throw new EVSEAlreadyExistsInStation(this.ChargingStation, EVSEId);
 //                // else
 //                //     OnError?.Invoke(this, EVSEId);
@@ -972,7 +972,7 @@
 //        {
 
 //            var onEVSEDataChanged = OnEVSEDataChanged;
-//            if (onEVSEDataChanged != null)
+//            if (onEVSEDataChanged is not null)
 //                onEVSEDataChanged(Timestamp, RemoteEVSE, PropertyName, OldValue, NewValue);
 
 //        }
@@ -997,7 +997,7 @@
 //        {
 
 //            var onEVSEAdminStatusChanged = OnEVSEAdminStatusChanged;
-//            if (onEVSEAdminStatusChanged != null)
+//            if (onEVSEAdminStatusChanged is not null)
 //                await onEVSEAdminStatusChanged(Timestamp,
 //                                                    EventTrackingId,
 //                                                    RemoteEVSE,
@@ -1026,7 +1026,7 @@
 //        {
 
 //            var onEVSEStatusChanged = OnEVSEStatusChanged;
-//            if (onEVSEStatusChanged != null)
+//            if (onEVSEStatusChanged is not null)
 //                await onEVSEStatusChanged(Timestamp,
 //                                               EventTrackingId,
 //                                               RemoteEVSE,
@@ -1468,10 +1468,10 @@
 //                                             ChargingSession  Session)
 //        {
 
-//            if (Session != null)
+//            if (Session is not null)
 //            {
 
-//                if (Session.ChargingStation == null)
+//                if (Session.ChargingStation is null)
 //                    Session.ChargingStationId  = Id;
 
 //                OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
@@ -1489,7 +1489,7 @@
 //                                                ChargeDetailRecord  ChargeDetailRecord)
 //        {
 
-//            if (ChargeDetailRecord != null)
+//            if (ChargeDetailRecord is not null)
 //                OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
 
 //        }

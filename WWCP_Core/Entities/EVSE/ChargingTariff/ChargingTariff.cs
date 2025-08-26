@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.WWCP
                              ? new JProperty("description",     Description.ToJSON())
                              : null,
 
-                         Brand != null
+                         Brand is not null
                              ? ExpandBrandIds.Switch(
                                    () => new JProperty("brandId", Brand.Id.ToString()),
                                    () => new JProperty("brand", Brand.ToJSON()))

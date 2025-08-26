@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (address != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref address);
 
                     else
@@ -337,7 +337,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (geoLocation != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref geoLocation);
 
                     else
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (parkingType != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref parkingType);
 
                     else
@@ -441,7 +441,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (entranceAddress != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref entranceAddress);
 
                     else
@@ -481,7 +481,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (entranceLocation != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref entranceLocation);
 
                     else
@@ -599,7 +599,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (accessibility != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref accessibility);
 
                     else
@@ -670,7 +670,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (_HotlinePhoneNumber != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref _HotlinePhoneNumber);
 
                     else
@@ -987,7 +987,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (value != energyMix)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref energyMix);
 
                     else
@@ -1055,7 +1055,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (value != energyMixPrognoses)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref energyMixPrognoses);
 
                     else
@@ -1093,7 +1093,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (exitAddress != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref exitAddress);
 
                     else
@@ -1133,7 +1133,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (exitLocation != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref exitLocation);
 
                     else
@@ -1372,7 +1372,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             if (chargingStations.Any(station => station.Id == ChargingStationId))
             {
                 throw new Exception("StationAlreadyExistsInPool");
-                //if (OnError == null)
+                //if (OnError is null)
                 //    throw new ChargingStationAlreadyExistsInStation(this.ChargingStation, ChargingStation.Id);
                 //else
                 //    OnError?.Invoke(this, ChargingStation.Id);
@@ -1941,7 +1941,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
 
                 if (result.Result == ReservationResultType.Success &&
-                    newReservation != null)
+                    newReservation is not null)
                 {
 
                     chargingReservations.Add(newReservation.Id, new ChargingReservationCollection(newReservation));
@@ -2072,7 +2072,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     var _Reservation = ChargingReservations.FirstOrDefault(reservation => reservation.Id == ReservationId);
 
-                    if (_Reservation != null &&
+                    if (_Reservation is not null &&
                         _Reservation.ChargingStationId.HasValue)
                     {
 
@@ -3110,10 +3110,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                              ChargingSession  Session)
         {
 
-            if (Session != null)
+            if (Session is not null)
             {
 
-                if (Session.ChargingPool == null)
+                if (Session.ChargingPool is null)
                     Session.ChargingPoolId  = Id;
 
                 OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
@@ -3131,7 +3131,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                 ChargeDetailRecord  ChargeDetailRecord)
         {
 
-            if (ChargeDetailRecord != null)
+            if (ChargeDetailRecord is not null)
                 OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
 
         }

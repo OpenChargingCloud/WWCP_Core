@@ -1153,7 +1153,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (value != energyMix && value != ChargingStation?.EnergyMix)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref energyMix);
 
                     else
@@ -1221,7 +1221,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (value != energyMixPrognoses && value != ChargingStation?.EnergyMixPrognoses)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref energyMixPrognoses);
 
                     else
@@ -1587,7 +1587,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Setup crypto
 
-            if (PrivateKey == null && PublicKeyCertificates == null)
+            if (PrivateKey is null && PublicKeyCertificates is null)
             {
 
                 var generator = GeneratorUtilities.GetKeyPairGenerator("ECDH");
@@ -2203,7 +2203,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
 
                 if (result.Result  == ReservationResultType.Success &&
-                    newReservation != null)
+                    newReservation is not null)
                 {
 
                     Status = EVSEStatusType.Reserved;
@@ -3214,10 +3214,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                         #region Not matching reservation identifications...
 
-                        if (firstReservation != null && !ReservationId.HasValue)
+                        if (firstReservation is not null && !ReservationId.HasValue)
                             result = RemoteStartResult.Reserved(System_Id.Local, I18NString.Create("Missing reservation identification!"));
 
-                        else if (firstReservation != null && ReservationId.HasValue && firstReservation.Id != ReservationId.Value)
+                        else if (firstReservation is not null && ReservationId.HasValue && firstReservation.Id != ReservationId.Value)
                             result = RemoteStartResult.Reserved(System_Id.Local, I18NString.Create("Invalid reservation identification!"));
 
                         #endregion

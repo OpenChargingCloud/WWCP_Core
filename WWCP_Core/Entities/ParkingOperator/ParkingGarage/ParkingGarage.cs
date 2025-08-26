@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (Id == null)
+            if (Id is null)
                 throw new ArgumentNullException(nameof(Id), "The unique identification of the parking space must not be null!");
 
             #endregion
@@ -231,12 +231,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a service plan.
             var ServicePlan = Object as ParkingGarage;
-            if ((Object) ServicePlan == null)
+            if ((Object) ServicePlan is null)
                 throw new ArgumentException("The given object is not a service plan!");
 
             return CompareTo(ServicePlan);
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ParkingGarage ParkingBuilding)
         {
 
-            if ((Object) ParkingBuilding == null)
+            if ((Object) ParkingBuilding is null)
                 throw new ArgumentNullException("The given service plan must not be null!");
 
             return Id.CompareTo(ParkingBuilding.Id);
@@ -277,12 +277,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is a service plan.
             var ParkingBuilding = Object as ParkingGarage;
-            if ((Object) ParkingBuilding == null)
+            if ((Object) ParkingBuilding is null)
                 return false;
 
             return this.Equals(ParkingBuilding);
@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ParkingGarage ParkingBuilding)
         {
 
-            if ((Object) ParkingBuilding == null)
+            if ((Object) ParkingBuilding is null)
                 return false;
 
             return Id.Equals(ParkingBuilding.Id);

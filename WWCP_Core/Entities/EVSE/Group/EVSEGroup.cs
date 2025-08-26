@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.WWCP
                              ? new JProperty("description", EVSEGroup.Description.ToJSON())
                              : null,
 
-                         EVSEGroup.Brand != null
+                         EVSEGroup.Brand is not null
                              ? ExpandBrandIds.Switch(
                                    () => new JProperty("brandId",  EVSEGroup.Brand.Id.ToString()),
                                    () => new JProperty("brand",    EVSEGroup.Brand.   ToJSON()))
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.WWCP
             => EVSEGroups is not null && EVSEGroups.Any()
 
                    ? new JArray(EVSEGroups.
-                                    Where     (stationgroup => stationgroup != null).
+                                    Where     (stationgroup => stationgroup is not null).
                                     OrderBy   (stationgroup => stationgroup.Id).
                                     SkipTakeFilter(Skip, Take).
                                     SafeSelect(stationgroup => stationgroup.ToJSON(Embedded,
@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.WWCP
             get
             {
 
-                return _DataLicenses != null && _DataLicenses.Any()
+                return _DataLicenses is not null && _DataLicenses.Any()
                            ? _DataLicenses
                            : Operator?.DataLicenses;
 
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.WWCP
                     else
                     {
 
-                        if (_DataLicenses == null)
+                        if (_DataLicenses is null)
                             SetProperty(ref _DataLicenses, value);
 
                         else
@@ -527,7 +527,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (Operator == null)
+            if (Operator is null)
                 throw new ArgumentNullException(nameof(Operator),  "The charging station operator must not be null!");
 
             if (IEnumerableExtensions.IsNullOrEmpty(Name))
@@ -546,9 +546,9 @@ namespace cloud.charging.open.protocols.WWCP
             this.Tariff                      = Tariff;
             this.DataLicenses                = DataLicenses?.Any() == true ? new ReactiveSet<DataLicense>(DataLicenses) : new ReactiveSet<DataLicense>();
 
-            this._AllowedMemberIds           = MemberIds != null ? new HashSet<EVSE_Id>(MemberIds) : new HashSet<EVSE_Id>();
-            this.AutoIncludeEVSEIds          = AutoIncludeEVSEIds ?? (MemberIds == null ? (Func<EVSE_Id, Boolean>) (evseid => true) : evseid => false);
-            this.AutoIncludeEVSEs            = AutoIncludeEVSEs   ?? (MemberIds == null ? (Func<IEVSE,   Boolean>) (evse   => true) : evse   => false);
+            this._AllowedMemberIds           = MemberIds is not null ? new HashSet<EVSE_Id>(MemberIds) : new HashSet<EVSE_Id>();
+            this.AutoIncludeEVSEIds          = AutoIncludeEVSEIds ?? (MemberIds is null ? (Func<EVSE_Id, Boolean>) (evseid => true) : evseid => false);
+            this.AutoIncludeEVSEs            = AutoIncludeEVSEs   ?? (MemberIds is null ? (Func<IEVSE,   Boolean>) (evse   => true) : evse   => false);
             this._EVSEs                      = new ConcurrentDictionary<EVSE_Id, EVSE>();
 
             this.StatusAggregationDelegate   = StatusAggregationDelegate;
@@ -687,7 +687,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var onEVSEDataChanged = OnEVSEDataChanged;
-            if (onEVSEDataChanged != null)
+            if (onEVSEDataChanged is not null)
                 onEVSEDataChanged(Timestamp,
                                        EventTrackingId,
                                        EVSE,
@@ -717,7 +717,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var onEVSEAdminStatusChanged = OnEVSEAdminStatusChanged;
-            if (onEVSEAdminStatusChanged != null)
+            if (onEVSEAdminStatusChanged is not null)
                 await onEVSEAdminStatusChanged(Timestamp,
                                                     EventTrackingId,
                                                     EVSE,
@@ -746,7 +746,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var onEVSEStatusChanged = OnEVSEStatusChanged;
-            if (onEVSEStatusChanged != null)
+            if (onEVSEStatusChanged is not null)
                 await onEVSEStatusChanged(Timestamp,
                                                EventTrackingId,
                                                EVSE,
@@ -791,7 +791,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVSEGroup1 == null) || ((Object) EVSEGroup2 == null))
+            if (((Object) EVSEGroup1 is null) || ((Object) EVSEGroup2 is null))
                 return false;
 
             return EVSEGroup1.Equals(EVSEGroup2);
@@ -824,7 +824,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (EVSEGroup EVSEGroup1, EVSEGroup EVSEGroup2)
         {
 
-            if ((Object) EVSEGroup1 == null)
+            if ((Object) EVSEGroup1 is null)
                 throw new ArgumentNullException(nameof(EVSEGroup1), "The given EVSEGroup1 must not be null!");
 
             return EVSEGroup1.CompareTo(EVSEGroup2) < 0;
@@ -857,7 +857,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (EVSEGroup EVSEGroup1, EVSEGroup EVSEGroup2)
         {
 
-            if ((Object) EVSEGroup1 == null)
+            if ((Object) EVSEGroup1 is null)
                 throw new ArgumentNullException(nameof(EVSEGroup1), "The given EVSEGroup1 must not be null!");
 
             return EVSEGroup1.CompareTo(EVSEGroup2) > 0;
@@ -892,11 +892,11 @@ namespace cloud.charging.open.protocols.WWCP
         public override Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             var EVSEGroup = Object as EVSEGroup;
-            if ((Object) EVSEGroup == null)
+            if ((Object) EVSEGroup is null)
                 throw new ArgumentException("The given object is not a charging pool!", nameof(Object));
 
             return CompareTo(EVSEGroup);
@@ -914,7 +914,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(EVSEGroup EVSEGroup)
         {
 
-            if ((Object) EVSEGroup == null)
+            if ((Object) EVSEGroup is null)
                 throw new ArgumentNullException(nameof(EVSEGroup), "The given EVSE group must not be null!");
 
             return Id.CompareTo(EVSEGroup.Id);
@@ -937,11 +937,11 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             var EVSEGroup = Object as EVSEGroup;
-            if ((Object) EVSEGroup == null)
+            if ((Object) EVSEGroup is null)
                 return false;
 
             return Equals(EVSEGroup);
@@ -960,7 +960,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(EVSEGroup EVSEGroup)
         {
 
-            if ((Object) EVSEGroup == null)
+            if ((Object) EVSEGroup is null)
                 return false;
 
             return Id.Equals(EVSEGroup.Id);

@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (_ChargingTariffs.ContainsKey(Id))
                 {
 
-                    //if (OnError != null)
+                    //if (OnError is not null)
                     //    OnError?.Invoke(this, Id);
 
                     throw new ArgumentException("Invalid tariff!");
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargingTariffGroup1 == null) || ((Object) ChargingTariffGroup2 == null))
+            if (((Object) ChargingTariffGroup1 is null) || ((Object) ChargingTariffGroup2 is null))
                 return false;
 
             return ChargingTariffGroup1.Equals(ChargingTariffGroup2);
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (ChargingTariffGroup ChargingTariffGroup1, ChargingTariffGroup ChargingTariffGroup2)
         {
 
-            if ((Object) ChargingTariffGroup1 == null)
+            if ((Object) ChargingTariffGroup1 is null)
                 throw new ArgumentNullException(nameof(ChargingTariffGroup1), "The given ChargingTariffGroup1 must not be null!");
 
             return ChargingTariffGroup1.CompareTo(ChargingTariffGroup2) < 0;
@@ -364,7 +364,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (ChargingTariffGroup ChargingTariffGroup1, ChargingTariffGroup ChargingTariffGroup2)
         {
 
-            if ((Object) ChargingTariffGroup1 == null)
+            if ((Object) ChargingTariffGroup1 is null)
                 throw new ArgumentNullException(nameof(ChargingTariffGroup1), "The given ChargingTariffGroup1 must not be null!");
 
             return ChargingTariffGroup1.CompareTo(ChargingTariffGroup2) > 0;
@@ -399,11 +399,11 @@ namespace cloud.charging.open.protocols.WWCP
         public override Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             var ChargingTariffGroup = Object as ChargingTariffGroup;
-            if ((Object) ChargingTariffGroup == null)
+            if ((Object) ChargingTariffGroup is null)
                 throw new ArgumentException("The given object is not a charging pool!", nameof(Object));
 
             return CompareTo(ChargingTariffGroup);
@@ -421,7 +421,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ChargingTariffGroup ChargingTariffGroup)
         {
 
-            if ((Object) ChargingTariffGroup == null)
+            if ((Object) ChargingTariffGroup is null)
                 throw new ArgumentNullException(nameof(ChargingTariffGroup), "The given charging station group must not be null!");
 
             return Id.CompareTo(ChargingTariffGroup.Id);
@@ -444,11 +444,11 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             var ChargingTariffGroup = Object as ChargingTariffGroup;
-            if ((Object) ChargingTariffGroup == null)
+            if ((Object) ChargingTariffGroup is null)
                 return false;
 
             return Equals(ChargingTariffGroup);
@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ChargingTariffGroup ChargingTariffGroup)
         {
 
-            if ((Object) ChargingTariffGroup == null)
+            if ((Object) ChargingTariffGroup is null)
                 return false;
 
             return Id.Equals(ChargingTariffGroup.Id);

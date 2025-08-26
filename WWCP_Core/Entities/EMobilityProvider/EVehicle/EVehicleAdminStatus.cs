@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (Id == null)
+            if (Id is null)
                 throw new ArgumentNullException(nameof(Id), "The given unique identification of a e-mobility station must not be null!");
 
             #endregion
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) eVehicleAdminStatus1 == null) || ((Object) eVehicleAdminStatus2 == null))
+            if (((Object) eVehicleAdminStatus1 is null) || ((Object) eVehicleAdminStatus2 is null))
                 return false;
 
             return eVehicleAdminStatus1.Equals(eVehicleAdminStatus2);
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (EVehicleAdminStatus eVehicleAdminStatus1, EVehicleAdminStatus eVehicleAdminStatus2)
         {
 
-            if ((Object) eVehicleAdminStatus1 == null)
+            if ((Object) eVehicleAdminStatus1 is null)
                 throw new ArgumentNullException("The given eVehicleAdminStatus1 must not be null!");
 
             return eVehicleAdminStatus1.CompareTo(eVehicleAdminStatus2) < 0;
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (EVehicleAdminStatus eVehicleAdminStatus1, EVehicleAdminStatus eVehicleAdminStatus2)
         {
 
-            if ((Object) eVehicleAdminStatus1 == null)
+            if ((Object) eVehicleAdminStatus1 is null)
                 throw new ArgumentNullException("The given eVehicleAdminStatus1 must not be null!");
 
             return eVehicleAdminStatus1.CompareTo(eVehicleAdminStatus2) > 0;
@@ -221,12 +221,12 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an eVehicleAdminStatus.
             var eVehicleAdminStatus = Object as EVehicleAdminStatus;
-            if ((Object) eVehicleAdminStatus == null)
+            if ((Object) eVehicleAdminStatus is null)
                 throw new ArgumentException("The given object is not a eVehicleAdminStatus!");
 
             return CompareTo(eVehicleAdminStatus);
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(EVehicleAdminStatus eVehicleAdminStatus)
         {
 
-            if ((Object) eVehicleAdminStatus == null)
+            if ((Object) eVehicleAdminStatus is null)
                 throw new ArgumentNullException("The given eVehicleAdminStatus must not be null!");
 
             // Compare eVehicle Ids
@@ -274,12 +274,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an eVehicleAdminStatus.
             var eVehicleAdminStatus = Object as EVehicleAdminStatus;
-            if ((Object) eVehicleAdminStatus == null)
+            if ((Object) eVehicleAdminStatus is null)
                 return false;
 
             return this.Equals(eVehicleAdminStatus);
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(EVehicleAdminStatus eVehicleAdminStatus)
         {
 
-            if ((Object) eVehicleAdminStatus == null)
+            if ((Object) eVehicleAdminStatus is null)
                 return false;
 
             return Id.    Equals(eVehicleAdminStatus.Id) &&

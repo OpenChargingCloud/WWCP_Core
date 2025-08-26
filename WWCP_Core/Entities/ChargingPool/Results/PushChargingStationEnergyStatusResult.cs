@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (PushChargingPoolEnergyStatusResults == null || !PushChargingPoolEnergyStatusResults.Any())
+            if (PushChargingPoolEnergyStatusResults is null || !PushChargingPoolEnergyStatusResults.Any())
                 return new PushChargingPoolEnergyStatusResult(SenderId,
                                                 ISendEnergyStatus,
                                                 PushChargingPoolEnergyStatusResultTypes.Error,
@@ -480,14 +480,14 @@ namespace cloud.charging.open.protocols.WWCP
                                                  ToDictionary(_ => _.Key,
                                                               _ => new List<PushChargingPoolEnergyStatusResult>(_));
 
-            var Descriptions               = All.Where       (_ => _ != null).
+            var Descriptions               = All.Where       (_ => _ is not null).
                                                  SafeSelect  (_ => _.Description).
                                                  AggregateWith(Environment.NewLine);
 
-            var RejectedChargingPoolEnergyStatusUpdates  = All.Where       (_ => _ != null).
+            var RejectedChargingPoolEnergyStatusUpdates  = All.Where       (_ => _ is not null).
                                                  SelectMany  (_ => _.RejectedChargingPoolEnergyStatusUpdates);
 
-            var Warnings                   = All.Where       (_ => _ != null).
+            var Warnings                   = All.Where       (_ => _ is not null).
                                                  SelectMany  (_ => _.Warnings);
 
 

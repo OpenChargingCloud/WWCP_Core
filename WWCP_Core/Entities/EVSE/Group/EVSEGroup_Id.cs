@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVSEGroupId1 == null) || ((Object) EVSEGroupId2 == null))
+            if (((Object) EVSEGroupId1 is null) || ((Object) EVSEGroupId2 is null))
                 return false;
 
             return EVSEGroupId1.Equals(EVSEGroupId2);
@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (EVSEGroup_Id EVSEGroupId1, EVSEGroup_Id EVSEGroupId2)
         {
 
-            if ((Object) EVSEGroupId1 == null)
+            if ((Object) EVSEGroupId1 is null)
                 throw new ArgumentNullException(nameof(EVSEGroupId1), "The given EVSEGroupId1 must not be null!");
 
             return EVSEGroupId1.CompareTo(EVSEGroupId2) < 0;
@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (EVSEGroup_Id EVSEGroupId1, EVSEGroup_Id EVSEGroupId2)
         {
 
-            if ((Object) EVSEGroupId1 == null)
+            if ((Object) EVSEGroupId1 is null)
                 throw new ArgumentNullException(nameof(EVSEGroupId1), "The given EVSEGroupId1 must not be null!");
 
             return EVSEGroupId1.CompareTo(EVSEGroupId2) > 0;
@@ -371,7 +371,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             if (!(Object is EVSEGroup_Id))
@@ -392,7 +392,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(EVSEGroup_Id EVSEGroupId)
         {
 
-            if ((Object) EVSEGroupId == null)
+            if ((Object) EVSEGroupId is null)
                 throw new ArgumentNullException(nameof(EVSEGroupId),  "The given EVSE group identification must not be null!");
 
             // Compare the length of the identifications
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             if (!(Object is EVSEGroup_Id))
@@ -448,7 +448,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(EVSEGroup_Id EVSEGroupId)
         {
 
-            if ((Object) EVSEGroupId == null)
+            if ((Object) EVSEGroupId is null)
                 return false;
 
             return OperatorId.Equals(EVSEGroupId.OperatorId) &&

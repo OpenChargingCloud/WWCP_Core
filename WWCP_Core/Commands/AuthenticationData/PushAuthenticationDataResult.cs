@@ -42,8 +42,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.ChargeDetailRecord  = ChargeDetailRecord;
             this.Result              = Result;
-            this.Warnings            = Warnings != null
-                                           ? Warnings.Where     (warning => warning != null).
+            this.Warnings            = Warnings is not null
+                                           ? Warnings.Where     (warning => warning is not null).
                                                       SafeSelect(warning => warning.Trim()).
                                                       Where     (warning => warning.IsNotNullOrEmpty())
                                            : new String[0];
@@ -109,8 +109,8 @@ namespace cloud.charging.open.protocols.WWCP
                                     ? Description.Trim()
                                     : null;
 
-            this.Warnings     = Warnings != null
-                                    ? Warnings.Where     (warning => warning != null).
+            this.Warnings     = Warnings is not null
+                                    ? Warnings.Where     (warning => warning is not null).
                                                SafeSelect(warning => warning.Trim()).
                                                Where     (warning => warning.IsNotNullOrEmpty())
                                     : new String[0];
@@ -145,8 +145,8 @@ namespace cloud.charging.open.protocols.WWCP
                                     ? Description.Trim()
                                     : null;
 
-            this.Warnings     = Warnings != null
-                                    ? Warnings.Where     (warning => warning != null).
+            this.Warnings     = Warnings is not null
+                                    ? Warnings.Where     (warning => warning is not null).
                                                SafeSelect(warning => warning.Trim()).
                                                Where     (warning => warning.IsNotNullOrEmpty())
                                     : new String[0];

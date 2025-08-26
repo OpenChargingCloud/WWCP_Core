@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (Address != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref _Address);
 
                     else
@@ -283,10 +283,10 @@ namespace cloud.charging.open.protocols.WWCP
                 if (GeoLocation != value)
                 {
 
-                    if (value == null)
-                        DeleteProperty(ref _GeoLocation);
+                    //if (value is null)
+                    //    DeleteProperty(ref _GeoLocation);
 
-                    else
+                    //else
                         SetProperty(ref _GeoLocation, value);
 
                 }
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (OpeningTimes != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref _OpeningTimes);
 
                     else
@@ -364,10 +364,10 @@ namespace cloud.charging.open.protocols.WWCP
                 if (AuthenticationModes != value)
                 {
 
-                    if (_AuthenticationModes == null)
+                    if (_AuthenticationModes is null)
                         _AuthenticationModes = new ReactiveSet<AuthenticationModes>();
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref _AuthenticationModes);
 
                     else
@@ -400,10 +400,10 @@ namespace cloud.charging.open.protocols.WWCP
                 if (PaymentOptions != value)
                 {
 
-                    if (_PaymentOptions == null)
+                    if (_PaymentOptions is null)
                         _PaymentOptions = new ReactiveSet<PaymentOptions>();
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref _PaymentOptions);
 
                     else
@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (HotlinePhoneNumber != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref _HotlinePhoneNumber);
 
                     else
@@ -602,7 +602,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (Provider == null)
+            if (Provider is null)
                 throw new ArgumentNullException(nameof(Provider),  "The e-mobility provider must not be null!");
 
             #endregion
@@ -823,13 +823,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (eVehicleId == null)
+            if (eVehicleId is null)
                 eVehicleId = EVehicle_Id.Random(Provider.Id);
 
             // Do not throw an exception when an OnError delegate was given!
             if (_eVehicles.Any(pool => pool.Id == eVehicleId))
             {
-                if (OnError == null)
+                if (OnError is null)
                     throw new eVehicleAlreadyExistsInStation(this, eVehicleId);
                 else
                     OnError?.Invoke(this, eVehicleId);
@@ -1230,12 +1230,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a e-mobility station.
             var eMobilityStation = Object as eMobilityStation;
-            if ((Object) eMobilityStation == null)
+            if ((Object) eMobilityStation is null)
                 throw new ArgumentException("The given object is not a e-mobility station!");
 
             return CompareTo(eMobilityStation);
@@ -1253,7 +1253,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(eMobilityStation eMobilityStation)
         {
 
-            if ((Object) eMobilityStation == null)
+            if ((Object) eMobilityStation is null)
                 throw new ArgumentNullException("The given e-mobility station must not be null!");
 
             return Id.CompareTo(eMobilityStation.Id);
@@ -1276,12 +1276,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is a e-mobility station.
             var eMobilityStation = Object as eMobilityStation;
-            if ((Object) eMobilityStation == null)
+            if ((Object) eMobilityStation is null)
                 return false;
 
             return this.Equals(eMobilityStation);
@@ -1300,7 +1300,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(eMobilityStation eMobilityStation)
         {
 
-            if ((Object) eMobilityStation == null)
+            if ((Object) eMobilityStation is null)
                 return false;
 
             return Id.Equals(eMobilityStation.Id);

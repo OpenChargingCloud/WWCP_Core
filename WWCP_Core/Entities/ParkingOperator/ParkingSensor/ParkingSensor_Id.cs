@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVPS_Id1 == null) || ((Object) EVPS_Id2 == null))
+            if (((Object) EVPS_Id1 is null) || ((Object) EVPS_Id2 is null))
                 return false;
 
             return EVPS_Id1.Equals(EVPS_Id2);
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (ParkingSensor_Id EVPS_Id1, ParkingSensor_Id EVPS_Id2)
         {
 
-            if ((Object) EVPS_Id1 == null)
+            if ((Object) EVPS_Id1 is null)
                 throw new ArgumentNullException("The given EVPS_Id1 must not be null!");
 
             return EVPS_Id1.CompareTo(EVPS_Id2) < 0;
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (ParkingSensor_Id EVPS_Id1, ParkingSensor_Id EVPS_Id2)
         {
 
-            if ((Object) EVPS_Id1 == null)
+            if ((Object) EVPS_Id1 is null)
                 throw new ArgumentNullException("The given EVPS_Id1 must not be null!");
 
             return EVPS_Id1.CompareTo(EVPS_Id2) > 0;
@@ -267,12 +267,12 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an EVPS_Id.
             var EVPS_Id = Object as ParkingSensor_Id;
-            if ((Object) EVPS_Id == null)
+            if ((Object) EVPS_Id is null)
                 throw new ArgumentException("The given object is not a EVPS_Id!");
 
             return CompareTo(EVPS_Id);
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ParkingSensor_Id EVPS_Id)
         {
 
-            if ((Object) EVPS_Id == null)
+            if ((Object) EVPS_Id is null)
                 throw new ArgumentNullException("The given EVPS_Id must not be null!");
 
             // Compare the length of the EVP_Ids
@@ -320,12 +320,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an EVPS_Id.
             var EVPS_Id = Object as ParkingSensor_Id;
-            if ((Object) EVPS_Id == null)
+            if ((Object) EVPS_Id is null)
                 return false;
 
             return this.Equals(EVPS_Id);
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ParkingSensor_Id EVPS_Id)
         {
 
-            if ((Object) EVPS_Id == null)
+            if ((Object) EVPS_Id is null)
                 return false;
 
             return InternalId.Equals(EVPS_Id.InternalId);

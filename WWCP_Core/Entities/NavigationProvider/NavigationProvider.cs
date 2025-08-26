@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (value == null)
+                if (value is null)
                     value = new I18NString();
 
                 if (_Name != value)
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (value == null)
+                if (value is null)
                     value = new I18NString();
 
                 if (_Description != value)
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (value == null)
+                if (value is null)
                     _Address = value;
 
                 if (_Address != value)
@@ -208,9 +208,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             set
             {
-
-                if (value == null)
-                    value = new GeoCoordinate(Latitude.Parse(0), Longitude.Parse(0));
 
                 if (_GeoLocation != value)
                     SetProperty(ref _GeoLocation, value);
@@ -416,7 +413,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (RoamingNetwork == null)
+            if (RoamingNetwork is null)
                 throw new ArgumentNullException(nameof(NavigationProvider),  "The roaming network must not be null!");
 
             #endregion
@@ -460,12 +457,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an EVSE_Operator.
             var EVSE_Operator = Object as NavigationProvider;
-            if ((Object) EVSE_Operator == null)
+            if ((Object) EVSE_Operator is null)
                 throw new ArgumentException("The given object is not an EVSE_Operator!");
 
             return CompareTo(EVSE_Operator);
@@ -483,7 +480,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(NavigationProvider EVSE_Operator)
         {
 
-            if ((Object) EVSE_Operator == null)
+            if ((Object) EVSE_Operator is null)
                 throw new ArgumentNullException("The given EVSE_Operator must not be null!");
 
             return Id.CompareTo(EVSE_Operator.Id);
@@ -506,12 +503,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an EVSE_Operator.
             var EVSE_Operator = Object as NavigationProvider;
-            if ((Object) EVSE_Operator == null)
+            if ((Object) EVSE_Operator is null)
                 return false;
 
             return this.Equals(EVSE_Operator);
@@ -530,7 +527,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(NavigationProvider EVSE_Operator)
         {
 
-            if ((Object) EVSE_Operator == null)
+            if ((Object) EVSE_Operator is null)
                 return false;
 
             return Id.Equals(EVSE_Operator.Id);

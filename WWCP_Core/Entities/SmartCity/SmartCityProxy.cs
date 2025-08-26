@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.WWCP
                                      Boolean                       ExpandChargingStationIds        = false,
                                      Boolean                       ExpandEVSEIds                   = false)
 
-            => SmartCity != null
+            => SmartCity is not null
                    ? JSONObject.Create(
 
                          new JProperty("id",                        SmartCity.Id.ToString()),
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static JProperty ToJSON(this SmartCityProxy SmartCity, String JPropertyKey)
 
-            => SmartCity != null
+            => SmartCity is not null
                    ? new JProperty(JPropertyKey, SmartCity.ToJSON())
                    : null;
 
@@ -130,13 +130,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (SmartCities == null)
+            if (SmartCities is null)
                 return new JArray();
 
             #endregion
 
             return new JArray(SmartCities.
-                                  Where     (cso => cso != null).
+                                  Where     (cso => cso is not null).
                                   OrderBy   (cso => cso.Id).
                                   SkipTakeFilter(Skip, Take).
                                   SafeSelect(cso => cso.ToJSON(Embedded,
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return SmartCities != null
+            return SmartCities is not null
                        ? new JProperty(JPropertyKey, SmartCities.ToJSON())
                        : null;
 
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            if (SmartCityAdminStatus == null)
+            if (SmartCityAdminStatus is null)
                 return new JObject();
 
             try
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            if (SmartCityAdminStatus == null)
+            if (SmartCityAdminStatus is null)
                 return new JObject();
 
             try
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            if (SmartCityStatus == null)
+            if (SmartCityStatus is null)
                 return new JObject();
 
             try
@@ -296,7 +296,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            if (SmartCityStatus == null)
+            if (SmartCityStatus is null)
                 return new JObject();
 
             try
@@ -403,7 +403,7 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (value == null)
+                if (value is null)
                     _Address = value;
 
                 if (_Address != value)
@@ -434,8 +434,8 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (value == null)
-                    value = new GeoCoordinate(Latitude.Parse(0), Longitude.Parse(0));
+                //if (value is null)
+                //    value = new GeoCoordinate(Latitude.Parse(0), Longitude.Parse(0));
 
                 if (_GeoLocation != value)
                     SetProperty(ref _GeoLocation, value);
@@ -571,7 +571,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> AllTokens
 
-        //    => RemoteSmartCity != null
+        //    => RemoteSmartCity is not null
         //           ? RemoteSmartCity.AllTokens
         //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
@@ -581,7 +581,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> AuthorizedTokens
 
-        //    => RemoteSmartCity != null
+        //    => RemoteSmartCity is not null
         //           ? RemoteSmartCity.AuthorizedTokens
         //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
@@ -591,7 +591,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> NotAuthorizedTokens
 
-        //    => RemoteSmartCity != null
+        //    => RemoteSmartCity is not null
         //           ? RemoteSmartCity.NotAuthorizedTokens
         //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
@@ -601,7 +601,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> BlockedTokens
 
-        //    => RemoteSmartCity != null
+        //    => RemoteSmartCity is not null
         //           ? RemoteSmartCity.BlockedTokens
         //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
@@ -3243,7 +3243,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (ChargingPool == null)
+        //    if (ChargingPool is null)
         //        throw new ArgumentNullException(nameof(ChargingPool), "The given charging station must not be null!");
 
         //    #endregion
@@ -3271,7 +3271,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (ChargingStation == null)
+        //    if (ChargingStation is null)
         //        throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
 
         //    #endregion
@@ -3304,7 +3304,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) SmartCity1 == null) || ((Object) SmartCity2 == null))
+            if (((Object) SmartCity1 is null) || ((Object) SmartCity2 is null))
                 return false;
 
             return SmartCity1.Equals(SmartCity2);
@@ -3339,7 +3339,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           SmartCityProxy  SmartCity2)
         {
 
-            if ((Object) SmartCity1 == null)
+            if ((Object) SmartCity1 is null)
                 throw new ArgumentNullException(nameof(SmartCity1),  "The given smart city must not be null!");
 
             return SmartCity1.CompareTo(SmartCity2) < 0;
@@ -3375,7 +3375,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           SmartCityProxy SmartCity2)
         {
 
-            if ((Object) SmartCity1 == null)
+            if ((Object) SmartCity1 is null)
                 throw new ArgumentNullException(nameof(SmartCity1),  "The given smart city must not be null!");
 
             return SmartCity1.CompareTo(SmartCity2) > 0;
@@ -3412,11 +3412,11 @@ namespace cloud.charging.open.protocols.WWCP
         public override Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             var SmartCityStub = Object as SmartCityProxy;
-            if ((Object) SmartCityStub == null)
+            if ((Object) SmartCityStub is null)
                 throw new ArgumentException("The given object is not an SmartCityStub!", nameof(Object));
 
             return CompareTo(SmartCityStub);
@@ -3434,7 +3434,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(SmartCityProxy SmartCityStub)
         {
 
-            if ((Object) SmartCityStub == null)
+            if ((Object) SmartCityStub is null)
                 throw new ArgumentNullException(nameof(SmartCityStub), "The given SmartCityStub must not be null!");
 
             return Id.CompareTo(SmartCityStub.Id);
@@ -3457,11 +3457,11 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             var SmartCityStub = Object as SmartCityProxy;
-            if ((Object) SmartCityStub == null)
+            if ((Object) SmartCityStub is null)
                 return false;
 
             return this.Equals(SmartCityStub);
@@ -3480,7 +3480,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(SmartCityProxy SmartCityStub)
         {
 
-            if ((Object) SmartCityStub == null)
+            if ((Object) SmartCityStub is null)
                 return false;
 
             return Id.Equals(SmartCityStub.Id);

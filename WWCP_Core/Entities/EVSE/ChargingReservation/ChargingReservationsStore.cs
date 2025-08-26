@@ -222,12 +222,12 @@ namespace cloud.charging.open.protocols.WWCP
                 {
 
                     var reservation = reservationCollection.LastOrDefault();
-                    if (reservation != null)
+                    if (reservation is not null)
                     {
 
                         reservation.EndTime                 = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
-                        if (StopAuthentication != null)
+                        if (StopAuthentication is not null)
                             reservation.StopAuthentication  = StopAuthentication;
 
                         LogIt("stop",

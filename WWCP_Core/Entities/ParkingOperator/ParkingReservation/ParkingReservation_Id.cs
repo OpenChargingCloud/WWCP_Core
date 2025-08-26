@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ReservationId1 == null) || ((Object) ReservationId2 == null))
+            if (((Object) ReservationId1 is null) || ((Object) ReservationId2 is null))
                 return false;
 
             return ReservationId1.Equals(ReservationId2);
@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (ParkingReservation_Id ReservationId1, ParkingReservation_Id ReservationId2)
         {
 
-            if ((Object) ReservationId1 == null)
+            if ((Object) ReservationId1 is null)
                 throw new ArgumentNullException(nameof(ReservationId1), "The given parking ReservationId1 must not be null!");
 
             return ReservationId1.CompareTo(ReservationId2) < 0;
@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (ParkingReservation_Id ReservationId1, ParkingReservation_Id ReservationId2)
         {
 
-            if ((Object) ReservationId1 == null)
+            if ((Object) ReservationId1 is null)
                 throw new ArgumentNullException(nameof(ReservationId1), "The given parking ReservationId1 must not be null!");
 
             return ReservationId1.CompareTo(ReservationId2) > 0;
@@ -362,7 +362,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             if (!(Object is ParkingReservation_Id))
@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ParkingReservation_Id ReservationId)
         {
 
-            if ((Object) ReservationId == null)
+            if ((Object) ReservationId is null)
                 throw new ArgumentNullException(nameof(ReservationId),  "The given parking reservation identification must not be null!");
 
             // If equal: Compare parking operator identifications
@@ -414,7 +414,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             if (!(Object is ParkingReservation_Id))
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ParkingReservation_Id ReservationId)
         {
 
-            if ((Object) ReservationId == null)
+            if ((Object) ReservationId is null)
                 return false;
 
             return OperatorId.Equals(ReservationId.OperatorId) &&

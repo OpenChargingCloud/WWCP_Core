@@ -88,11 +88,11 @@ namespace cloud.charging.open.protocols.WWCP
             #region Initial checks
 
             if (!Time.   HasValue &&
-                 Date    != null &&
+                 Date    is not null &&
                 !kWh.    HasValue &&
                 Power.   HasValue &&
                 Duration.HasValue &&
-                DayOfWeek == null)
+                DayOfWeek is null)
             {
                 throw new ArgumentNullException("All given parameter equals null is invalid!");
             }
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.kWh        = kWh;
             this.Power      = Power;
             this.Duration   = Duration;
-            this.DayOfWeek  = DayOfWeek != null ? DayOfWeek.Distinct() : new DayOfWeek[0];
+            this.DayOfWeek  = DayOfWeek is not null ? DayOfWeek.Distinct() : new DayOfWeek[0];
 
         }
 

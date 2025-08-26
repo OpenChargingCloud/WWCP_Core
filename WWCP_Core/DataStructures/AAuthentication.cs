@@ -695,7 +695,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             return new(
                        authToken                   is not null ? AuthenticationToken.Parse(authToken) : null,
-                       null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
+                       null, //JSON["QRCodeIdentification"]        is not null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
                        plugAndChargeIdentification is not null ? EMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
                        remoteIdentification        is not null ? EMobilityAccount_Id.Parse(remoteIdentification)        : null,
                        pin                         is not null ? WWCP.PIN.           Parse(pin)                         : null,
@@ -939,7 +939,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             return new(
                        authToken                   is not null ? AuthenticationToken.Parse(authToken) : null,
-                       null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
+                       null, //JSON["QRCodeIdentification"]        is not null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
                        plugAndChargeIdentification is not null ? EMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
                        remoteIdentification        is not null ? EMobilityAccount_Id.Parse(remoteIdentification)        : null,
                        pin                         is not null ? WWCP.PIN.           Parse(pin)                         : null,
@@ -972,7 +972,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             RemoteAuthentication = new(
                        authToken                   is not null ? AuthenticationToken.Parse(authToken) : null,
-                       null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
+                       null, //JSON["QRCodeIdentification"]        is not null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
                        plugAndChargeIdentification is not null ? EMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
                        remoteIdentification        is not null ? EMobilityAccount_Id.Parse(remoteIdentification)        : null,
                        pin                         is not null ? WWCP.PIN.           Parse(pin)                         : null,

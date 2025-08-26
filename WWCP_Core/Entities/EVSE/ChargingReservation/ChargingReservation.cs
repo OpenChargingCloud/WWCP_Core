@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (ChargingReservation == null)
+            if (ChargingReservation is null)
                 throw new ArgumentNullException(nameof(ChargingReservation), "The given charging reservation must not be null!");
 
             #endregion
@@ -53,13 +53,13 @@ namespace cloud.charging.open.protocols.WWCP
                        new JProperty("Duration",        (UInt32) ChargingReservation.Duration.         TotalSeconds),
                        new JProperty("TimeLeft",                 TimeLeft > 0 ? TimeLeft : 0),
                        new JProperty("Level",                    ChargingReservation.ReservationLevel. ToString()),
-                       ChargingReservation.ChargingPoolId    != null
+                       ChargingReservation.ChargingPoolId    is not null
                            ? new JProperty("ChargingPoolId",     ChargingReservation.ChargingPoolId.   ToString())
                            : null,
-                       ChargingReservation.ChargingStationId != null
+                       ChargingReservation.ChargingStationId is not null
                            ? new JProperty("ChargingStationId",  ChargingReservation.ChargingStationId.ToString())
                            : null,
-                       ChargingReservation.EVSEId            != null
+                       ChargingReservation.EVSEId            is not null
                            ? new JProperty("EVSEId",             ChargingReservation.EVSEId.           ToString())
                            : null,
 
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (ChargingReservation == null)
+            if (ChargingReservation is null)
                 throw new ArgumentNullException(nameof(ChargingReservation),  "The given charging reservation must not be null!");
 
             if (JPropertyKey.IsNullOrEmpty())
@@ -118,12 +118,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (ChargingReservations == null)
+            if (ChargingReservations is null)
                 return new JArray();
 
             #endregion
 
-            return ChargingReservations != null && ChargingReservations.Any()
+            return ChargingReservations is not null && ChargingReservations.Any()
                        ? new JArray(ChargingReservations.SafeSelect(reservation => reservation.ToJSON()))
                        : new JArray();
 
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return ChargingReservations != null
+            return ChargingReservations is not null
                        ? new JProperty(JPropertyKey, ChargingReservations.ToJSON())
                        : new JProperty(JPropertyKey, new JArray());
 
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 var _TimeLeft = EndTime - org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;// _StartTime + _Duration - Timestamp.Now;
 
-                return ChargingSession == null
+                return ChargingSession is null
                            ? _TimeLeft.TotalSeconds > 0 ? _TimeLeft : TimeSpan.FromSeconds(0)
                            : TimeSpan.FromSeconds(0);
 
@@ -330,11 +330,11 @@ namespace cloud.charging.open.protocols.WWCP
             this.EVSEId                     = EVSEId;
             this.ChargingProduct            = ChargingProduct;
 
-            this._AuthTokens                = AuthTokens      != null ? [.. AuthTokens]      : [];
-            this._eMAIds                    = eMAIds          != null ? [.. eMAIds]          : [];
-            this._PINs                      = PINs            != null ? [.. PINs]            : [];
+            this._AuthTokens                = AuthTokens      is not null ? [.. AuthTokens]      : [];
+            this._eMAIds                    = eMAIds          is not null ? [.. eMAIds]          : [];
+            this._PINs                      = PINs            is not null ? [.. PINs]            : [];
 
-            this._SubReservations           = SubReservations != null ? [.. SubReservations] : [];
+            this._SubReservations           = SubReservations is not null ? [.. SubReservations] : [];
 
         }
 
@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Boolean IsExpired()
 
-            => ChargingSession == null
+            => ChargingSession is null
                    ? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now > EndTime
                    : false;
 
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.WWCP
                        ? new JProperty("providerId",           ProviderId.             ToString())
                        : null,
 
-                   StartAuthentication != null
+                   StartAuthentication is not null
                        ? new JProperty("authentication",       EndTime.                ToISO8601())
                        : null,
 
@@ -413,11 +413,11 @@ namespace cloud.charging.open.protocols.WWCP
                        ? new JProperty("EVSEId",               EVSEId.                 ToString())
                        : null,
 
-                   ChargingProduct != null
+                   ChargingProduct is not null
                        ? new JProperty("chargingProduct",      ChargingProduct.        ToJSON())
                        : null,
 
-                   ChargingSession != null
+                   ChargingSession is not null
                        ? new JProperty("chargingSessionId",    ChargingSession.Id.     ToString())
                        : null
 
@@ -436,12 +436,12 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a charging reservation.
             var ChargingReservation = Object as ChargingReservation;
-            if ((Object) ChargingReservation == null)
+            if ((Object) ChargingReservation is null)
                 throw new ArgumentException("The given object is not a charging reservation!");
 
             return CompareTo(ChargingReservation);
@@ -459,7 +459,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ChargingReservation ChargingReservation)
         {
 
-            if ((Object) ChargingReservation == null)
+            if ((Object) ChargingReservation is null)
                 throw new ArgumentNullException("The given charging reservation must not be null!");
 
             return Id.CompareTo(ChargingReservation.Id);
@@ -482,12 +482,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is a charging reservation.
             var ChargingReservation = Object as ChargingReservation;
-            if ((Object) ChargingReservation == null)
+            if ((Object) ChargingReservation is null)
                 return false;
 
             return this.Equals(ChargingReservation);
@@ -506,7 +506,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ChargingReservation ChargingReservation)
         {
 
-            if ((Object) ChargingReservation == null)
+            if ((Object) ChargingReservation is null)
                 return false;
 
             return Id.Equals(ChargingReservation.Id);

@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (ChargingStationOperatorAdminStatus == null || !ChargingStationOperatorAdminStatus.Any())
+            if (ChargingStationOperatorAdminStatus is null || !ChargingStationOperatorAdminStatus.Any())
                 return new JObject();
 
             var _ChargingStationOperatorAdminStatus = new Dictionary<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>();
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (ChargingStationOperatorStatus == null || !ChargingStationOperatorStatus.Any())
+            if (ChargingStationOperatorStatus is null || !ChargingStationOperatorStatus.Any())
                 return new JObject();
 
             var _ChargingStationOperatorStatus = new Dictionary<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>();
@@ -2453,7 +2453,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (chargingStationGroups.ContainsId(Id))
                 {
 
-                    if (OnError != null)
+                    if (OnError is not null)
                         OnError?.Invoke(this, Id);
 
                     throw new ChargingStationGroupAlreadyExists(this, Id);
@@ -3372,7 +3372,7 @@ namespace cloud.charging.open.protocols.WWCP
         //                                         Func<EVSE, Boolean>                  IncludeEVSE  = null)
         //{
 
-        //    if (EVSEStatus == null || EVSEStatus.Count == 0)
+        //    if (EVSEStatus is null || EVSEStatus.Count == 0)
         //        return new EVSEStatusDiff(Timestamp.Now, Id, Name);
 
         //    #region Get data...
@@ -3435,7 +3435,7 @@ namespace cloud.charging.open.protocols.WWCP
         //    catch (Exception e)
         //    {
 
-        //        while (e.InnerException != null)
+        //        while (e.InnerException is not null)
         //            e = e.InnerException;
 
         //        DebugX.Log("GetEVSEStatusDiff led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
@@ -3715,7 +3715,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (evseGroups.ContainsId(Id))
                 {
 
-                    if (OnError != null)
+                    if (OnError is not null)
                         OnError?.Invoke(this, Id);
 
                     throw new EVSEGroupAlreadyExists(this, Id);
@@ -5032,7 +5032,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (chargingTariffGroups.ContainsId(newGroupId))
                 {
 
-                    if (OnError != null)
+                    if (OnError is not null)
                         OnError?.Invoke(this, newGroupId);
 
                     throw new ChargingTariffGroupAlreadyExists(this, newGroupId);
@@ -5560,7 +5560,7 @@ namespace cloud.charging.open.protocols.WWCP
                          AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.InternalUse)
                 {
 
-                    if (RemoteChargingStationOperator != null)
+                    if (RemoteChargingStationOperator is not null)
                     {
 
                         result = await RemoteChargingStationOperator.
@@ -6555,7 +6555,7 @@ namespace cloud.charging.open.protocols.WWCP
                     {
 
                         //// The CDR could also be sent separately!
-                        //if (result.ChargeDetailRecord != null)
+                        //if (result.ChargeDetailRecord is not null)
                         //{
                         //    OnNewChargeDetailRecord?.Invoke(Timestamp.Now,
                         //                                    this,

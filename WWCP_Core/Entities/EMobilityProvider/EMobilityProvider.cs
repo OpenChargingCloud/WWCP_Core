@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.WWCP
                                       InfoStatus               ExpandDataLicenses       = InfoStatus.ShowIdOnly)
 
 
-            => eMobilityProvider == null
+            => eMobilityProvider is null
 
                    ? null
 
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.WWCP
                    ? new JArray()
 
                    : new JArray(eMobilityProviders.
-                                    Where     (emp => emp != null).
+                                    Where     (emp => emp is not null).
                                     OrderBy   (emp => emp.Id).
                                     SkipTakeFilter(Skip, Take).
                                     SafeSelect(emp => emp.ToJSON(Embedded,
@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (eMobilityProviderAdminStatus == null || !eMobilityProviderAdminStatus.Any())
+            if (eMobilityProviderAdminStatus is null || !eMobilityProviderAdminStatus.Any())
                 return new JObject();
 
             var _eMobilityProviderAdminStatus = new Dictionary<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderAdminStatusTypes>>>();
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (eMobilityProviderStatus == null || !eMobilityProviderStatus.Any())
+            if (eMobilityProviderStatus is null || !eMobilityProviderStatus.Any())
                 return new JObject();
 
             var _eMobilityProviderStatus = new Dictionary<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderStatusTypes>>>();
@@ -343,7 +343,7 @@ namespace cloud.charging.open.protocols.WWCP
             get
             {
 
-                return _DataLicenses != null && _DataLicenses.Any()
+                return _DataLicenses is not null && _DataLicenses.Any()
                            ? _DataLicenses
                            : RoamingNetwork?.DataLicenses;
 
@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.WWCP
                     else
                     {
 
-                        if (_DataLicenses == null)
+                        if (_DataLicenses is null)
                             SetProperty(ref _DataLicenses, value);
 
                         else
@@ -396,7 +396,7 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (value == null)
+                if (value is null)
                     _Address = value;
 
                 if (_Address != value)
@@ -427,8 +427,8 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (value == null)
-                    value = new GeoCoordinate(Latitude.Parse(0), Longitude.Parse(0));
+                //if (value is null)
+                //    value = new GeoCoordinate(Latitude.Parse(0), Longitude.Parse(0));
 
                 if (_GeoLocation != value)
                     SetProperty(ref _GeoLocation, value);
@@ -561,7 +561,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> AllTokens
 
-        //    => RemoteEMobilityProvider != null
+        //    => RemoteEMobilityProvider is not null
         //           ? RemoteEMobilityProvider.AllTokens
         //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
@@ -571,7 +571,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> AuthorizedTokens
 
-        //    => RemoteEMobilityProvider != null
+        //    => RemoteEMobilityProvider is not null
         //           ? RemoteEMobilityProvider.AuthorizedTokens
         //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
@@ -581,7 +581,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> NotAuthorizedTokens
 
-        //    => RemoteEMobilityProvider != null
+        //    => RemoteEMobilityProvider is not null
         //           ? RemoteEMobilityProvider.NotAuthorizedTokens
         //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
@@ -591,7 +591,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> BlockedTokens
 
-        //    => RemoteEMobilityProvider != null
+        //    => RemoteEMobilityProvider is not null
         //           ? RemoteEMobilityProvider.BlockedTokens
         //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
@@ -822,13 +822,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (eMobilityStationId == null)
+            if (eMobilityStationId is null)
                 eMobilityStationId = eMobilityStation_Id.Random(this.Id);
 
             // Do not throw an exception when an OnError delegate was given!
             if (eMobilityStations.Any(pool => pool.Id == eMobilityStationId))
             {
-                if (OnError == null)
+                if (OnError is null)
                     throw new eMobilityStationAlreadyExists(this, eMobilityStationId);
                 else
                     OnError?.Invoke(this, eMobilityStationId);
@@ -1217,13 +1217,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (eVehicleId == null)
+            if (eVehicleId is null)
                 eVehicleId = EVehicle_Id.Random(this.Id);
 
             // Do not throw an exception when an OnError delegate was given!
             if (eVehicles.Any(pool => pool.Id == eVehicleId))
             {
-                if (OnError == null)
+                if (OnError is null)
                     throw new eVehicleAlreadyExists(this, eVehicleId);
                 else
                     OnError?.Invoke(this, eVehicleId);
@@ -1607,7 +1607,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (EVSE == null)
+        //    if (EVSE is null)
         //        throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
 
         //    #endregion
@@ -1644,7 +1644,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (EVSEs == null)
+        //    if (EVSEs is null)
         //        throw new ArgumentNullException(nameof(EVSEs), "The given enumeration of EVSEs must not be null!");
 
         //    #endregion
@@ -1681,7 +1681,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (ChargingStation == null)
+        //    if (ChargingStation is null)
         //        throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
 
         //    #endregion
@@ -1718,7 +1718,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (ChargingStations == null)
+        //    if (ChargingStations is null)
         //        throw new ArgumentNullException(nameof(ChargingStations), "The given enumeration of charging stations must not be null!");
 
         //    #endregion
@@ -1755,7 +1755,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (ChargingPool == null)
+        //    if (ChargingPool is null)
         //        throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
 
         //    #endregion
@@ -1792,7 +1792,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (ChargingPools == null)
+        //    if (ChargingPools is null)
         //        throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
 
         //    #endregion
@@ -1829,7 +1829,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (ChargingStationOperator == null)
+        //    if (ChargingStationOperator is null)
         //        throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
 
         //    #endregion
@@ -1866,7 +1866,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (ChargingStationOperators == null)
+        //    if (ChargingStationOperators is null)
         //        throw new ArgumentNullException(nameof(ChargingStationOperators),  "The given enumeration of charging station operators must not be null!");
 
         //    #endregion
@@ -1903,7 +1903,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (RoamingNetwork == null)
+        //    if (RoamingNetwork is null)
         //        throw new ArgumentNullException(nameof(SmartCityStub), "The given roaming network must not be null!");
 
         //    #endregion
@@ -1979,7 +1979,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+            if (!DisableSendStatus && RemoteEMobilityProvider is not null)
                 result = await RemoteEMobilityProvider.UpdateEVSEAdminStatus(EVSEAdminStatusUpdates,
 
                                                                              Timestamp,
@@ -2062,7 +2062,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+            if (!DisableSendStatus && RemoteEMobilityProvider is not null)
                 result = await RemoteEMobilityProvider.UpdateChargingStationAdminStatus(ChargingStationAdminStatusUpdates,
 
                                                                                         Timestamp,
@@ -2145,7 +2145,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+            if (!DisableSendStatus && RemoteEMobilityProvider is not null)
                 result = await RemoteEMobilityProvider.UpdateChargingPoolAdminStatus(ChargingPoolAdminStatusUpdates,
 
                                                                                      Timestamp,
@@ -2228,7 +2228,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+            if (!DisableSendStatus && RemoteEMobilityProvider is not null)
                 result = await RemoteEMobilityProvider.UpdateChargingStationOperatorAdminStatus(ChargingStationOperatorAdminStatusUpdates,
 
                                                                                                 Timestamp,
@@ -2311,7 +2311,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+            if (!DisableSendStatus && RemoteEMobilityProvider is not null)
                 result = await RemoteEMobilityProvider.UpdateRoamingNetworkAdminStatus(RoamingNetworkAdminStatusUpdates,
 
                                                                                        Timestamp,
@@ -2397,7 +2397,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+            if (!DisableSendStatus && RemoteEMobilityProvider is not null)
                 result = await RemoteEMobilityProvider.UpdateEVSEStatus(StatusUpdates,
 
                                                                         Timestamp,
@@ -2478,7 +2478,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+            if (!DisableSendStatus && RemoteEMobilityProvider is not null)
                 result = await RemoteEMobilityProvider.UpdateChargingStationStatus(ChargingStationStatusUpdates,
 
                                                                                    Timestamp,
@@ -2559,7 +2559,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+            if (!DisableSendStatus && RemoteEMobilityProvider is not null)
                 result = await RemoteEMobilityProvider.UpdateChargingPoolStatus(ChargingPoolStatusUpdates,
 
                                                                                 Timestamp,
@@ -2640,7 +2640,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+            if (!DisableSendStatus && RemoteEMobilityProvider is not null)
                 result = await RemoteEMobilityProvider.UpdateChargingStationOperatorStatus(ChargingStationOperatorStatus,
 
                                                                                            Timestamp,
@@ -2721,7 +2721,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisableSendStatus && RemoteEMobilityProvider != null)
+            if (!DisableSendStatus && RemoteEMobilityProvider is not null)
                 result = await RemoteEMobilityProvider.UpdateRoamingNetworkStatus(RoamingNetworkStatus,
 
                                                                                   Timestamp,
@@ -3430,7 +3430,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 //var OnCancelReservationResponseLocal = OnCancelReservationResponse;
-                //if (OnCancelReservationResponseLocal != null)
+                //if (OnCancelReservationResponseLocal is not null)
                 //    OnCancelReservationResponseLocal(Timestamp.Now,
                 //                                this,
                 //                                EventTracking_Id.New,

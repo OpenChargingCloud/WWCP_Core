@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (CountryCode == null)
+            if (CountryCode is null)
                 throw new ArgumentNullException(nameof(CountryCode),  "The given country must not be null!");
 
             if (Suffix.IsNullOrEmpty())
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (CountryCode == null || Suffix.IsNullOrEmpty())
+            if (CountryCode is null || Suffix.IsNullOrEmpty())
             {
                 ProviderId = default(NavigationProvider_Id);
                 return false;
@@ -402,7 +402,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ProviderId1 == null) || ((Object) ProviderId2 == null))
+            if (((Object) ProviderId1 is null) || ((Object) ProviderId2 is null))
                 return false;
 
             return ProviderId1.Equals(ProviderId2);
@@ -435,7 +435,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (NavigationProvider_Id ProviderId1, NavigationProvider_Id ProviderId2)
         {
 
-            if ((Object) ProviderId1 == null)
+            if ((Object) ProviderId1 is null)
                 throw new ArgumentNullException(nameof(ProviderId1), "The given ProviderId1 must not be null!");
 
             return ProviderId1.CompareTo(ProviderId2) < 0;
@@ -468,7 +468,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (NavigationProvider_Id ProviderId1, NavigationProvider_Id ProviderId2)
         {
 
-            if ((Object) ProviderId1 == null)
+            if ((Object) ProviderId1 is null)
                 throw new ArgumentNullException(nameof(ProviderId1), "The given ProviderId1 must not be null!");
 
             return ProviderId1.CompareTo(ProviderId2) > 0;
@@ -503,7 +503,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             if (!(Object is NavigationProvider_Id))
@@ -524,7 +524,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(NavigationProvider_Id ProviderId)
         {
 
-            if ((Object) ProviderId == null)
+            if ((Object) ProviderId is null)
                 throw new ArgumentNullException(nameof(ProviderId), "The given e-mobility provider identification must not be null!");
 
             // Compare the length of the ProviderIds
@@ -558,7 +558,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             if (!(Object is NavigationProvider_Id))
@@ -580,7 +580,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(NavigationProvider_Id ProviderId)
         {
 
-            if ((Object) ProviderId == null)
+            if ((Object) ProviderId is null)
                 return false;
 
             return CountryCode.Equals(ProviderId.CountryCode) &&

@@ -218,13 +218,6 @@ namespace cloud.charging.open.protocols.WWCP
             : base(Id)
         {
 
-            #region Initial checks
-
-            if (Id == null)
-                throw new ArgumentNullException(nameof(Id), "The unique identification of the parking space must not be null!");
-
-            #endregion
-
             #region Init data and properties
 
             this._Name              = new I18NString(Languages.en, Id.ToString());
@@ -252,12 +245,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a service plan.
             var ServicePlan = Object as ParkingSpace;
-            if ((Object) ServicePlan == null)
+            if ((Object) ServicePlan is null)
                 throw new ArgumentException("The given object is not a service plan!");
 
             return CompareTo(ServicePlan);
@@ -275,7 +268,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ParkingSpace ParkingSpace)
         {
 
-            if ((Object) ParkingSpace == null)
+            if ((Object) ParkingSpace is null)
                 throw new ArgumentNullException("The given service plan must not be null!");
 
             return Id.CompareTo(ParkingSpace.Id);
@@ -298,12 +291,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is a service plan.
             var ParkingSpace = Object as ParkingSpace;
-            if ((Object) ParkingSpace == null)
+            if ((Object) ParkingSpace is null)
                 return false;
 
             return this.Equals(ParkingSpace);
@@ -322,7 +315,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ParkingSpace ParkingSpace)
         {
 
-            if ((Object) ParkingSpace == null)
+            if ((Object) ParkingSpace is null)
                 return false;
 
             return Id.Equals(ParkingSpace.Id);

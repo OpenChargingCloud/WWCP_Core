@@ -521,7 +521,7 @@
 
 //            #region Initial checks
 
-//            if (ChargingStation == null)
+//            if (ChargingStation is null)
 //                throw new ArgumentNullException("ChargingStation", "The charging station must not be null!");
 
 //            #endregion
@@ -581,7 +581,7 @@
 
 //            //    if (OldStatus.Value == EVSEStatusType.Reserved &&
 //            //        NewStatus.Value != EVSEStatusType.Reserved &&
-//            //        _Reservation != null)
+//            //        _Reservation is not null)
 //            //    {
 
 //            //        CancelReservation(_Reservation.Id,
@@ -748,7 +748,7 @@
 //        {
 
 //            var onAdminStatusChanged = OnAdminStatusChanged;
-//            if (onAdminStatusChanged != null)
+//            if (onAdminStatusChanged is not null)
 //                await onAdminStatusChanged(Timestamp,
 //                                                EventTrackingId,
 //                                                this,
@@ -775,7 +775,7 @@
 //        {
 
 //            var onStatusChanged = OnStatusChanged;
-//            if (onStatusChanged != null)
+//            if (onStatusChanged is not null)
 //                await onStatusChanged(Timestamp,
 //                                           EventTrackingId,
 //                                           this,
@@ -947,7 +947,7 @@
 
 //        {
 
-//            if (_ANetworkChargingStation == null)
+//            if (_ANetworkChargingStation is null)
 //                return ReservationResult.OutOfService;
 
 //            return await _ANetworkChargingStation.
@@ -997,7 +997,7 @@
 
 //        {
 
-//            if (_ANetworkChargingStation == null)
+//            if (_ANetworkChargingStation is null)
 //                return CancelReservationResult.OutOfService(ReservationId,
 //                                                            Reason);
 
@@ -1024,7 +1024,7 @@
 
 
 //        public IEnumerable<ChargingSession> ChargingSessions
-//            => _ChargingSession != null
+//            => _ChargingSession is not null
 //                   ? new ChargingSession[] { _ChargingSession }
 //                   : new ChargingSession[0];
 
@@ -1072,7 +1072,7 @@
 
 //                    _ChargingSession = value;
 
-//                    if (_ChargingSession != null)
+//                    if (_ChargingSession is not null)
 //                    {
 
 //                        SetStatus(EVSEStatusType.Charging);
@@ -1201,7 +1201,7 @@
 //                        TimeSpan?                RequestTimeout         = null)
 //        {
 
-//            if (_ANetworkChargingStation == null)
+//            if (_ANetworkChargingStation is null)
 //                return RemoteStartResult.OutOfService();
 
 //            return await _ANetworkChargingStation.
@@ -1249,7 +1249,7 @@
 
 //        {
 
-//            if (_ANetworkChargingStation == null)
+//            if (_ANetworkChargingStation is null)
 //                return RemoteStopResult.OutOfService(SessionId);
 
 //            return await _ANetworkChargingStation.
@@ -1314,12 +1314,12 @@
 //        public override Int32 CompareTo(Object Object)
 //        {
 
-//            if (Object == null)
+//            if (Object is null)
 //                throw new ArgumentNullException("The given object must not be null!");
 
 //            // Check if the given object is a virtual EVSE.
 //            var RemoteEVSE = Object as NetworkEVSEStub;
-//            if ((Object) RemoteEVSE == null)
+//            if ((Object) RemoteEVSE is null)
 //                throw new ArgumentException("The given object is not a virtual EVSE!");
 
 //            return CompareTo(RemoteEVSE);
@@ -1337,7 +1337,7 @@
 //        public Int32 CompareTo(NetworkEVSEStub RemoteEVSE)
 //        {
 
-//            if ((Object) RemoteEVSE == null)
+//            if ((Object) RemoteEVSE is null)
 //                throw new ArgumentNullException(nameof(RemoteEVSE),  "The given virtual EVSE must not be null!");
 
 //            return Id.CompareTo(RemoteEVSE.Id);
@@ -1360,12 +1360,12 @@
 //        public override Boolean Equals(Object Object)
 //        {
 
-//            if (Object == null)
+//            if (Object is null)
 //                return false;
 
 //            // Check if the given object is a virtual EVSE.
 //            var RemoteEVSE = Object as NetworkEVSEStub;
-//            if ((Object) RemoteEVSE == null)
+//            if ((Object) RemoteEVSE is null)
 //                return false;
 
 //            return this.Equals(RemoteEVSE);
@@ -1384,7 +1384,7 @@
 //        public Boolean Equals(NetworkEVSEStub RemoteEVSE)
 //        {
 
-//            if ((Object) RemoteEVSE == null)
+//            if ((Object) RemoteEVSE is null)
 //                return false;
 
 //            return Id.Equals(RemoteEVSE.Id);

@@ -39,8 +39,8 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             this.POIData   = POIData;
-            this.Warnings  = Warnings != null
-                                 ? Warnings.Where(warning => warning != null)
+            this.Warnings  = Warnings is not null
+                                 ? Warnings.Where(warning => warning is not null)
                                  : new Warning[0];
 
         }

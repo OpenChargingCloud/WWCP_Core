@@ -320,12 +320,12 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
         //                    //var CurrentEVSEOperator      = ChargingStationOperators.FirstOrDefault(evseoperator => evseoperator.RoamingNetwork.Id == CurrentRoamingNetworkId);
 
-        //                    //if (CurrentEVSEOperator == null)
+        //                    //if (CurrentEVSEOperator is null)
         //                    //    throw new ApplicationException("Could not find any charging station operator for roaming network '" + CurrentRoamingNetworkId + "'!");
 
         //                    var CurrentRoamingNetworkJObject = CurrentRoamingNetwork.Value as JObject;
 
-        //                    if (CurrentRoamingNetworkJObject != null)
+        //                    if (CurrentRoamingNetworkJObject is not null)
         //                    {
         //                        foreach (var ChargingStationGroups in CurrentRoamingNetworkJObject)
         //                        {
@@ -349,10 +349,10 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
 
         //                                                var CurrentEVSEOperator = GetChargingStationOperators(ChargingStationId)?.
-        //                                                                                FirstOrDefault(cso => cso                   != null &&
+        //                                                                                FirstOrDefault(cso => cso                   is not null &&
         //                                                                                                    cso.RoamingNetwork.Id == CurrentRoamingNetworkId);
 
-        //                                                if (CurrentEVSEOperator != null)
+        //                                                if (CurrentEVSEOperator is not null)
         //                                                {
 
         //                                                    JToken JSONToken2;
@@ -387,13 +387,13 @@ namespace cloud.charging.open.protocols.WWCP.Importer
         //                                                        var JV = JSONToken2 as JValue;
         //                                                        var JA = JSONToken2 as JArray;
 
-        //                                                        var GroupList = JV != null
+        //                                                        var GroupList = JV is not null
         //                                                                            ? new String[] { JV.Value<String>() }
-        //                                                                            : JA != null
+        //                                                                            : JA is not null
         //                                                                                ? JA.AsEnumerable().Select(v => v.Value<String>())
         //                                                                                : null;
 
-        //                                                        if (GroupList != null)
+        //                                                        if (GroupList is not null)
         //                                                        {
         //                                                            foreach (var GroupId in GroupList)
         //                                                            {

@@ -116,7 +116,7 @@
 //                if (_CurrentValue.ToString() != OldValue.ToString())
 //                    return SetPropertyResult.Conflict;
 
-//                if (NewValue != null)
+//                if (NewValue is not null)
 //                {
 
 //                    _Dictionary[Key] = NewValue;

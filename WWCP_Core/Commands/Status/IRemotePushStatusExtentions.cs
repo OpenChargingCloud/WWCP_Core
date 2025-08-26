@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (EVSE == null)
+    //        if (EVSE is null)
     //            throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
 
     //        #endregion
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (EVSEs == null)
+    //        if (EVSEs is null)
     //            throw new ArgumentNullException(nameof(EVSEs), "The given enumeration of EVSEs must not be null!");
 
     //        #endregion
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStation == null)
+    //        if (ChargingStation is null)
     //            throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
 
     //        #endregion
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStations == null)
+    //        if (ChargingStations is null)
     //            throw new ArgumentNullException(nameof(ChargingStations), "The given enumeration of charging stations must not be null!");
 
     //        #endregion
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingPool == null)
+    //        if (ChargingPool is null)
     //            throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
 
     //        #endregion
@@ -337,7 +337,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingPools == null)
+    //        if (ChargingPools is null)
     //            throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
 
     //        #endregion
@@ -386,7 +386,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperator == null)
+    //        if (ChargingStationOperator is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
 
     //        #endregion
@@ -433,7 +433,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperators == null)
+    //        if (ChargingStationOperators is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
 
     //        #endregion
@@ -482,7 +482,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (RoamingNetwork == null)
+    //        if (RoamingNetwork is null)
     //            throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
     //        #endregion
@@ -567,7 +567,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (EVSE == null)
+    //        if (EVSE is null)
     //            throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
 
     //        #endregion
@@ -614,7 +614,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (EVSEs == null)
+    //        if (EVSEs is null)
     //            throw new ArgumentNullException(nameof(EVSEs), "The given enumeration of EVSEs must not be null!");
 
     //        #endregion
@@ -661,7 +661,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStation == null)
+    //        if (ChargingStation is null)
     //            throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
 
     //        #endregion
@@ -708,7 +708,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStations == null)
+    //        if (ChargingStations is null)
     //            throw new ArgumentNullException(nameof(ChargingStations), "The given enumeration of charging stations must not be null!");
 
     //        #endregion
@@ -757,7 +757,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingPool == null)
+    //        if (ChargingPool is null)
     //            throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
 
     //        #endregion
@@ -804,7 +804,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingPools == null)
+    //        if (ChargingPools is null)
     //            throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
 
     //        #endregion
@@ -853,7 +853,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperator == null)
+    //        if (ChargingStationOperator is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
 
     //        #endregion
@@ -900,7 +900,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperators == null)
+    //        if (ChargingStationOperators is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
 
     //        #endregion
@@ -949,7 +949,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (RoamingNetwork == null)
+    //        if (RoamingNetwork is null)
     //            throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
     //        #endregion
@@ -1035,7 +1035,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStation == null)
+    //        if (ChargingStation is null)
     //            throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
 
     //        #endregion
@@ -1082,7 +1082,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStations == null)
+    //        if (ChargingStations is null)
     //            throw new ArgumentNullException(nameof(ChargingStations), "The given enumeration of charging stations must not be null!");
 
     //        #endregion
@@ -1129,7 +1129,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingPool == null)
+    //        if (ChargingPool is null)
     //            throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
 
     //        #endregion
@@ -1176,7 +1176,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingPools == null)
+    //        if (ChargingPools is null)
     //            throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
 
     //        #endregion
@@ -1225,7 +1225,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperator == null)
+    //        if (ChargingStationOperator is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
 
     //        #endregion
@@ -1272,7 +1272,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperators == null)
+    //        if (ChargingStationOperators is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
 
     //        #endregion
@@ -1321,7 +1321,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (RoamingNetwork == null)
+    //        if (RoamingNetwork is null)
     //            throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
     //        #endregion
@@ -1406,7 +1406,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStation == null)
+    //        if (ChargingStation is null)
     //            throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
 
     //        #endregion
@@ -1453,7 +1453,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStations == null)
+    //        if (ChargingStations is null)
     //            throw new ArgumentNullException(nameof(ChargingStations), "The given enumeration of charging stations must not be null!");
 
     //        #endregion
@@ -1500,7 +1500,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingPool == null)
+    //        if (ChargingPool is null)
     //            throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
 
     //        #endregion
@@ -1547,7 +1547,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingPools == null)
+    //        if (ChargingPools is null)
     //            throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
 
     //        #endregion
@@ -1596,7 +1596,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperator == null)
+    //        if (ChargingStationOperator is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
 
     //        #endregion
@@ -1643,7 +1643,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperators == null)
+    //        if (ChargingStationOperators is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
 
     //        #endregion
@@ -1692,7 +1692,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (RoamingNetwork == null)
+    //        if (RoamingNetwork is null)
     //            throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
     //        #endregion
@@ -1778,7 +1778,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingPool == null)
+    //        if (ChargingPool is null)
     //            throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
 
     //        #endregion
@@ -1825,7 +1825,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingPools == null)
+    //        if (ChargingPools is null)
     //            throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
 
     //        #endregion
@@ -1872,7 +1872,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperator == null)
+    //        if (ChargingStationOperator is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
 
     //        #endregion
@@ -1919,7 +1919,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperators == null)
+    //        if (ChargingStationOperators is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
 
     //        #endregion
@@ -1968,7 +1968,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (RoamingNetwork == null)
+    //        if (RoamingNetwork is null)
     //            throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
     //        #endregion
@@ -2053,7 +2053,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingPool == null)
+    //        if (ChargingPool is null)
     //            throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
 
     //        #endregion
@@ -2100,7 +2100,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingPools == null)
+    //        if (ChargingPools is null)
     //            throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
 
     //        #endregion
@@ -2147,7 +2147,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperator == null)
+    //        if (ChargingStationOperator is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
 
     //        #endregion
@@ -2194,7 +2194,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperators == null)
+    //        if (ChargingStationOperators is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
 
     //        #endregion
@@ -2243,7 +2243,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (RoamingNetwork == null)
+    //        if (RoamingNetwork is null)
     //            throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
     //        #endregion
@@ -2329,7 +2329,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperator == null)
+    //        if (ChargingStationOperator is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
 
     //        #endregion
@@ -2376,7 +2376,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperators == null)
+    //        if (ChargingStationOperators is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
 
     //        #endregion
@@ -2423,7 +2423,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (RoamingNetwork == null)
+    //        if (RoamingNetwork is null)
     //            throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
     //        #endregion
@@ -2508,7 +2508,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperator == null)
+    //        if (ChargingStationOperator is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
 
     //        #endregion
@@ -2555,7 +2555,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (ChargingStationOperators == null)
+    //        if (ChargingStationOperators is null)
     //            throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
 
     //        #endregion
@@ -2602,7 +2602,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (RoamingNetwork == null)
+    //        if (RoamingNetwork is null)
     //            throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
     //        #endregion
@@ -2688,7 +2688,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (RoamingNetwork == null)
+    //        if (RoamingNetwork is null)
     //            throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
     //        #endregion
@@ -2773,7 +2773,7 @@ namespace cloud.charging.open.protocols.WWCP
 
     //        #region Initial checks
 
-    //        if (RoamingNetwork == null)
+    //        if (RoamingNetwork is null)
     //            throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
     //        #endregion

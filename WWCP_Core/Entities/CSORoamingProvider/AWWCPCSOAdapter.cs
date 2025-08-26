@@ -2938,7 +2938,7 @@ namespace cloud.charging.open.protocols.WWCP
             catch (Exception e)
             {
 
-                while (e.InnerException != null)
+                while (e.InnerException is not null)
                     e = e.InnerException;
 
                 DebugX.LogT(GetType().Name + ".FlushEVSEDataAndStatus '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
@@ -3029,7 +3029,7 @@ namespace cloud.charging.open.protocols.WWCP
             catch (Exception e)
             {
 
-                while (e.InnerException != null)
+                while (e.InnerException is not null)
                     e = e.InnerException;
 
                 DebugX.LogT(GetType().Name + ".FlushEVSEFastStatus '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
@@ -3123,7 +3123,7 @@ namespace cloud.charging.open.protocols.WWCP
             catch (Exception e)
             {
 
-                while (e.InnerException != null)
+                while (e.InnerException is not null)
                     e = e.InnerException;
 
                 DebugX.LogT(GetType().Name + ".FlushChargeDetailRecords '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);

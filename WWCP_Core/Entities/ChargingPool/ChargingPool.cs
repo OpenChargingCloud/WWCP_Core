@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (address != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref address);
 
                     else
@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (geoLocation != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref geoLocation);
 
                     else
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (parkingType != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref parkingType);
 
                     else
@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (entranceAddress != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref entranceAddress);
 
                     else
@@ -388,7 +388,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (entranceLocation != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref entranceLocation);
 
                     else
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (exitAddress != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref exitAddress);
 
                     else
@@ -468,7 +468,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (exitLocation != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref exitLocation);
 
                     else
@@ -531,7 +531,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (accessibility != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref accessibility);
 
                     else
@@ -632,7 +632,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (hotlinePhoneNumber != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref hotlinePhoneNumber);
 
                     else
@@ -951,7 +951,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (value != energyMix)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref energyMix);
 
                     else
@@ -1019,7 +1019,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (value != energyMixPrognoses)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref energyMixPrognoses);
 
                     else
@@ -2493,7 +2493,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         public IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate? IncludeEVSEs = null)
 
-            => IncludeEVSEs == null
+            => IncludeEVSEs is null
 
                    ? chargingStations.
                          SelectMany(station => station.EVSEs).

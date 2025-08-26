@@ -57,13 +57,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (eMAId == null)
-                throw new ArgumentNullException(nameof(eMAId), "The given unique identification of an eMAId must not be null!");
-
-            #endregion
-
             this.Id      = eMAId;
             this.Status  = Status;
 
@@ -90,7 +83,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object)eMAIdStatus1 == null) || ((Object)eMAIdStatus2 == null))
+            if (((Object)eMAIdStatus1 is null) || ((Object)eMAIdStatus2 is null))
                 return false;
 
             return eMAIdStatus1.Equals(eMAIdStatus2);
@@ -125,7 +118,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator <(eMAIdStatus eMAIdStatus1, eMAIdStatus eMAIdStatus2)
         {
 
-            if ((Object)eMAIdStatus1 == null)
+            if ((Object)eMAIdStatus1 is null)
                 throw new ArgumentNullException("The given eMAIdStatus1 must not be null!");
 
             return eMAIdStatus1.CompareTo(eMAIdStatus2) < 0;
@@ -160,7 +153,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator >(eMAIdStatus eMAIdStatus1, eMAIdStatus eMAIdStatus2)
         {
 
-            if ((Object)eMAIdStatus1 == null)
+            if ((Object)eMAIdStatus1 is null)
                 throw new ArgumentNullException("The given eMAIdStatus1 must not be null!");
 
             return eMAIdStatus1.CompareTo(eMAIdStatus2) > 0;
@@ -197,12 +190,12 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an eMAIdStatus.
             var eMAIdStatus = Object as eMAIdStatus;
-            if ((Object)eMAIdStatus == null)
+            if ((Object)eMAIdStatus is null)
                 throw new ArgumentException("The given object is not a eMAIdStatus!");
 
             return CompareTo(eMAIdStatus);
@@ -220,7 +213,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(eMAIdStatus eMAIdStatus)
         {
 
-            if ((Object)eMAIdStatus == null)
+            if ((Object)eMAIdStatus is null)
                 throw new ArgumentNullException("The given eMAIdStatus must not be null!");
 
             // Compare EVSE Ids
@@ -250,12 +243,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an eMAIdStatus.
             var eMAIdStatus = Object as eMAIdStatus;
-            if ((Object)eMAIdStatus == null)
+            if ((Object)eMAIdStatus is null)
                 return false;
 
             return this.Equals(eMAIdStatus);
@@ -274,7 +267,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(eMAIdStatus eMAIdStatus)
         {
 
-            if ((Object)eMAIdStatus == null)
+            if ((Object)eMAIdStatus is null)
                 return false;
 
             return Id.Equals(eMAIdStatus.Id) &&

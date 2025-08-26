@@ -645,7 +645,7 @@
 //                                                   ? Description.Trim()
 //                                                   : null;
 
-//            this.Warnings                    = Warnings != null
+//            this.Warnings                    = Warnings is not null
 //                                                   ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
 //                                                   : Array.Empty<Warning>();
 
@@ -1052,7 +1052,7 @@
 //                                                ? Description.Trim()
 //                                                : null;
 
-//            this.Warnings                 = Warnings != null
+//            this.Warnings                 = Warnings is not null
 //                                                ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
 //                                                : Array.Empty<Warning>();
 

@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -109,7 +106,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 var _TimeLeft = _EndTime - org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;// _StartTime + _Duration - Timestamp.Now;
 
-                return _ParkingSession == null
+                return _ParkingSession is null
                            ? _TimeLeft.TotalSeconds > 0 ? _TimeLeft : TimeSpan.FromSeconds(0)
                            : TimeSpan.FromSeconds(0);
 
@@ -268,35 +265,28 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a parking reservation.
         /// </summary>
-        public ParkingReservation(ParkingReservation_Id             ReservationId,
-                                  DateTime                          Timestamp,
-                                  DateTime                          StartTime,
-                                  TimeSpan                          Duration,
-                                  DateTime                          EndTime,
-                                  TimeSpan                          ConsumedReservationTime,
-                                  ParkingReservationLevel           ReservationLevel,
+        public ParkingReservation(ParkingReservation_Id              ReservationId,
+                                  DateTime                           Timestamp,
+                                  DateTime                           StartTime,
+                                  TimeSpan                           Duration,
+                                  DateTime                           EndTime,
+                                  TimeSpan                           ConsumedReservationTime,
+                                  ParkingReservationLevel            ReservationLevel,
 
-                                  EMobilityProvider_Id?             ProviderId          = null,
-                                  EMobilityAccount_Id?              eMAId               = null,
+                                  EMobilityProvider_Id?              ProviderId         = null,
+                                  EMobilityAccount_Id?               eMAId              = null,
 
-                                  RoamingNetwork                    RoamingNetwork      = null,
-                                  ChargingPool_Id?                  ParkingPoolId      = null,
-                                  ChargingStation_Id?               ParkingStationId   = null,
-                                  EVSE_Id?                          EVSEId              = null,
-                                  ParkingProduct_Id?                ParkingProductId   = null,
+                                  RoamingNetwork?                    RoamingNetwork     = null,
+                                  ChargingPool_Id?                   ParkingPoolId      = null,
+                                  ChargingStation_Id?                ParkingStationId   = null,
+                                  EVSE_Id?                           EVSEId             = null,
+                                  ParkingProduct_Id?                 ParkingProductId   = null,
 
-                                  IEnumerable<AuthenticationToken>           AuthTokens          = null,
-                                  IEnumerable<EMobilityAccount_Id>  eMAIds              = null,
-                                  IEnumerable<UInt32>               PINs                = null)
+                                  IEnumerable<AuthenticationToken>?  AuthTokens         = null,
+                                  IEnumerable<EMobilityAccount_Id>?  eMAIds             = null,
+                                  IEnumerable<UInt32>?               PINs               = null)
 
         {
-
-            #region Initial checks
-
-            if (ReservationId == null)
-                throw new ArgumentNullException(nameof(ReservationId), "The given parking reservation identification must not be null!");
-
-            #endregion
 
             this._ReservationId            = ReservationId;
             this._Timestamp                = Timestamp.ToUniversalTime();
@@ -310,14 +300,14 @@ namespace cloud.charging.open.protocols.WWCP
             this.eMAId                     = eMAId;
 
             this.RoamingNetwork            = RoamingNetwork;
-            this.ParkingPoolId            = ParkingPoolId;
-            this.ParkingStationId         = ParkingStationId;
+            this.ParkingPoolId             = ParkingPoolId;
+            this.ParkingStationId          = ParkingStationId;
             this.EVSEId                    = EVSEId;
-            this.ParkingProductId         = ParkingProductId;
+            this.ParkingProductId          = ParkingProductId;
 
-            this._AuthTokens               = AuthTokens != null ? new HashSet<AuthenticationToken>(AuthTokens) : new HashSet<AuthenticationToken>();
-            this._eMAIds                   = eMAIds     != null ? new HashSet<EMobilityAccount_Id>    (eMAIds)     : new HashSet<EMobilityAccount_Id>();
-            this._PINs                     = PINs       != null ? new HashSet<UInt32>    (PINs)       : new HashSet<UInt32>();
+            this._AuthTokens               = AuthTokens is not null ? [.. AuthTokens] : [];
+            this._eMAIds                   = eMAIds     is not null ? [.. eMAIds]     : [];
+            this._PINs                     = PINs       is not null ? [.. PINs]       : [];
 
         }
 
@@ -332,7 +322,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean IsExpired()
         {
 
-            return _ParkingSession == null
+            return _ParkingSession is null
                        ? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now > _EndTime
                        : false;
 
@@ -374,12 +364,12 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a parking reservation.
             var ParkingReservation = Object as ParkingReservation;
-            if ((Object) ParkingReservation == null)
+            if ((Object) ParkingReservation is null)
                 throw new ArgumentException("The given object is not a parking reservation!");
 
             return CompareTo(ParkingReservation);
@@ -397,7 +387,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ParkingReservation ParkingReservation)
         {
 
-            if ((Object) ParkingReservation == null)
+            if ((Object) ParkingReservation is null)
                 throw new ArgumentNullException("The given parking reservation must not be null!");
 
             return _ReservationId.CompareTo(ParkingReservation._ReservationId);
@@ -420,12 +410,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is a parking reservation.
             var ParkingReservation = Object as ParkingReservation;
-            if ((Object) ParkingReservation == null)
+            if ((Object) ParkingReservation is null)
                 return false;
 
             return this.Equals(ParkingReservation);
@@ -444,7 +434,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ParkingReservation ParkingReservation)
         {
 
-            if ((Object) ParkingReservation == null)
+            if ((Object) ParkingReservation is null)
                 return false;
 
             return _ReservationId.Equals(ParkingReservation._ReservationId);

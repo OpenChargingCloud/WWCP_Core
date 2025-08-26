@@ -576,10 +576,10 @@ namespace cloud.charging.open.protocols.WWCP
                        JSON["description"] is JObject descriptionJSON ? I18NString.Parse(descriptionJSON) : null,
                        JSON["additionalInfo"]?.Value<String>(),
                        null,
-                       JSON["reservationId"] != null ? ChargingReservation_Id.Parse(JSON["reservationId"]?.Value<String>()) : new ChargingReservation_Id?(),
+                       JSON["reservationId"] is not null ? ChargingReservation_Id.Parse(JSON["reservationId"]?.Value<String>()) : new ChargingReservation_Id?(),
                        null,
-                       null, //JSON["chargeDetailRecord"] != null ? ChargeDetailRecord.Parse(JSON["chargeDetailRecord"]) : null,
-                       JSON["runtime"] != null ? TimeSpan.FromMilliseconds(JSON["runtime"].Value<Double>()) : new TimeSpan?()
+                       null, //JSON["chargeDetailRecord"] is not null ? ChargeDetailRecord.Parse(JSON["chargeDetailRecord"]) : null,
+                       JSON["runtime"] is not null ? TimeSpan.FromMilliseconds(JSON["runtime"].Value<Double>()) : new TimeSpan?()
                    );
 
         }

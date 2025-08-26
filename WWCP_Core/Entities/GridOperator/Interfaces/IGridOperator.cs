@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return GridOperators != null
+            return GridOperators is not null
                        ? new JProperty(JPropertyKey, GridOperators.ToJSON())
                        : null;
 
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            if (GridOperatorAdminStatus == null)
+            if (GridOperatorAdminStatus is null)
                 return new JObject();
 
             try
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            if (GridOperatorAdminStatus == null)
+            if (GridOperatorAdminStatus is null)
                 return new JObject();
 
             try
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            if (GridOperatorStatus == null)
+            if (GridOperatorStatus is null)
                 return new JObject();
 
             try
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            if (GridOperatorStatus == null)
+            if (GridOperatorStatus is null)
                 return new JObject();
 
             try

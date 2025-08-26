@@ -503,10 +503,10 @@ namespace cloud.charging.open.protocols.WWCP.Networking
     //                                         ChargingSession  Session)
     //    {
 
-    //        if (Session != null)
+    //        if (Session is not null)
     //        {
 
-    //            //if (Session.ChargingStationOperator == null)
+    //            //if (Session.ChargingStationOperator is null)
     //            //    Session.ChargingStationOperator = Id;
 
     //            OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
@@ -524,7 +524,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
     //                                            ChargeDetailRecord  ChargeDetailRecord)
     //    {
 
-    //        if (ChargeDetailRecord != null)
+    //        if (ChargeDetailRecord is not null)
     //            OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
 
     //    }

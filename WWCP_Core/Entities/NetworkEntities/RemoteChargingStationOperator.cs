@@ -157,7 +157,7 @@
 
 
 //            var OnReserveEVSELocal = OnReserve;
-//            if (OnReserveEVSELocal == null)
+//            if (OnReserveEVSELocal is null)
 //                return ReservationResult.OutOfService;
 
 //            var results = await Task.WhenAll(OnReserveEVSELocal.
@@ -181,7 +181,7 @@
 
 //            var result = results.FirstOrDefault(_result => _result.Result != ReservationResultType.Unspecified);
 
-//            if (result        != null &&
+//            if (result        is not null &&
 //                result.Result == ReservationResultType.Success)
 //            {
 
@@ -308,7 +308,7 @@
 
 
 //            var OnCancelEVSEReservationLocal = OnCancelReservation;
-//            if (OnCancelEVSEReservationLocal == null)
+//            if (OnCancelEVSEReservationLocal is null)
 //                return CancelReservationResult.OutOfService(ReservationId, Reason);
 
 //            var results = await Task.WhenAll(OnCancelEVSEReservationLocal.
@@ -326,7 +326,7 @@
 
 //            var result = results.FirstOrDefault(_result => _result.Result != CancelReservationResults.Unspecified);
 
-//            if (result        != null &&
+//            if (result        is not null &&
 //                result.Result == CancelReservationResults.Success)
 //            {
 
@@ -375,7 +375,7 @@
 
 
 //            var OnRemoteStartLocal = OnRemoteStart;
-//            if (OnRemoteStartLocal == null)
+//            if (OnRemoteStartLocal is null)
 //                return RemoteStartResult.OutOfService;
 
 //            var results = await Task.WhenAll(OnRemoteStartLocal.
@@ -393,7 +393,7 @@
 
 //            var result = results.FirstOrDefault(_result => _result.Result != RemoteStartResultType.Unspecified);
 
-//            if (result        != null &&
+//            if (result        is not null &&
 //                result.Result == RemoteStartResultType.Success)
 //            {
 
@@ -436,7 +436,7 @@
 //        {
 
 //            var OnRemoteStopLocal = OnRemoteStop;
-//            if (OnRemoteStopLocal == null)
+//            if (OnRemoteStopLocal is null)
 //                return RemoteStopResult.Error(SessionId);
 
 //            var results = await Task.WhenAll(OnRemoteStopLocal.
@@ -454,7 +454,7 @@
 //            var result = results.
 //                             FirstOrDefault(_result => _result.Result != RemoteStopResultType.Unspecified);
 
-//            if (result        != null &&
+//            if (result        is not null &&
 //                result.Result == RemoteStopResultType.Success)
 //            {
 

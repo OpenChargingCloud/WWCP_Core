@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
                                      Boolean               ExpandChargingStationIds        = false,
                                      Boolean               ExpandEVSEIds                   = false)
 
-            => ParkingOperator != null
+            => ParkingOperator is not null
                    ? JSONObject.Create(
 
                          new JProperty("id",                        ParkingOperator.Id.ToString()),
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static JProperty ToJSON(this ParkingOperator ParkingOperator, String JPropertyKey)
 
-            => ParkingOperator != null
+            => ParkingOperator is not null
                    ? new JProperty(JPropertyKey, ParkingOperator.ToJSON())
                    : null;
 
@@ -134,13 +134,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (ParkingOperators == null)
+            if (ParkingOperators is null)
                 return new JArray();
 
             #endregion
 
             return new JArray(ParkingOperators.
-                                  Where     (cso => cso != null).
+                                  Where     (cso => cso is not null).
                                   OrderBy   (cso => cso.Id).
                                   SkipTakeFilter(Skip, Take).
                                   SafeSelect(cso => cso.ToJSON(Embedded,
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return ParkingOperators != null
+            return ParkingOperators is not null
                        ? new JProperty(JPropertyKey, ParkingOperators.ToJSON())
                        : null;
 
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            if (ParkingOperatorAdminStatus == null)
+            if (ParkingOperatorAdminStatus is null)
                 return new JObject();
 
             try
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            if (ParkingOperatorAdminStatus == null)
+            if (ParkingOperatorAdminStatus is null)
                 return new JObject();
 
             try
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            if (ParkingOperatorStatus == null)
+            if (ParkingOperatorStatus is null)
                 return new JObject();
 
             try
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            if (ParkingOperatorStatus == null)
+            if (ParkingOperatorStatus is null)
                 return new JObject();
 
             try
@@ -381,7 +381,7 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (value == null)
+                if (value is null)
                     value = new I18NString();
 
                 if (_Description != value)
@@ -438,7 +438,7 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (value == null)
+                if (value is null)
                     _Address = value;
 
                 if (_Address != value)
@@ -469,8 +469,8 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (value == null)
-                    value = new GeoCoordinate(Latitude.Parse(0), Longitude.Parse(0));
+                //if (value is null)
+                //    value = new GeoCoordinate(Latitude.Parse(0), Longitude.Parse(0));
 
                 if (_GeoLocation != value)
                     SetProperty(ref _GeoLocation, value);
@@ -694,7 +694,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (RoamingNetwork == null)
+            if (RoamingNetwork is null)
                 throw new ArgumentNullException(nameof(RoamingNetwork),  "The roaming network must not be null!");
 
             #endregion
@@ -711,14 +711,14 @@ namespace cloud.charging.open.protocols.WWCP
             InvalidParkingSpaceIds.OnItemAdded += (Timestamp, Set, ParkingSpaceId) =>
             {
                 var OnInvalidParkingSpaceIdAddedLocal = OnInvalidParkingSpaceIdAdded;
-                if (OnInvalidParkingSpaceIdAddedLocal != null)
+                if (OnInvalidParkingSpaceIdAddedLocal is not null)
                     OnInvalidParkingSpaceIdAddedLocal(Timestamp, this, ParkingSpaceId);
             };
 
             InvalidParkingSpaceIds.OnItemRemoved += (Timestamp, Set, ParkingSpaceId) =>
             {
                 var OnInvalidParkingSpaceIdRemovedLocal = OnInvalidParkingSpaceIdRemoved;
-                if (OnInvalidParkingSpaceIdRemovedLocal != null)
+                if (OnInvalidParkingSpaceIdRemovedLocal is not null)
                     OnInvalidParkingSpaceIdRemovedLocal(Timestamp, this, ParkingSpaceId);
             };
 
@@ -830,7 +830,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var onDataChanged = OnDataChanged;
-            if (onDataChanged != null)
+            if (onDataChanged is not null)
                 await onDataChanged(Timestamp, Sender as ParkingOperator, PropertyName, OldValue, NewValue);
 
         }
@@ -851,7 +851,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var onStatusChanged = OnStatusChanged;
-            if (onStatusChanged != null)
+            if (onStatusChanged is not null)
                 await onStatusChanged(Timestamp, this, OldStatus, NewStatus);
 
         }
@@ -872,7 +872,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var onAdminStatusChanged = OnAdminStatusChanged;
-            if (onAdminStatusChanged != null)
+            if (onAdminStatusChanged is not null)
                 await onAdminStatusChanged(Timestamp, this, OldStatus, NewStatus);
 
         }
@@ -925,7 +925,7 @@ namespace cloud.charging.open.protocols.WWCP
         //public IEnumerable<KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>> ParkingGarageAdminStatus(Func<ParkingGarage, Boolean> IncludePool = null)
 
         //    => _ParkingGarages.
-        //           Where  (pool => IncludePool == null || IncludePool(pool)).
+        //           Where  (pool => IncludePool is null || IncludePool(pool)).
         //           OrderBy(pool => pool.Id).
         //           Select (pool => new KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>(pool.Id, pool.AdminStatus.Value));
 
@@ -954,13 +954,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (ParkingGarageId == null)
+        //    if (ParkingGarageId is null)
         //        ParkingGarageId = ParkingGarage_Id.Random(this.Id);
 
         //    // Do not throw an exception when an OnError delegate was given!
         //    if (_ParkingGarages.Any(pool => pool.Id == ParkingGarageId))
         //    {
-        //        if (OnError == null)
+        //        if (OnError is null)
         //            throw new ParkingGarageAlreadyExists(ParkingGarageId, this.Id);
         //        else
         //            OnError?.Invoke(this, ParkingGarageId);
@@ -1246,7 +1246,7 @@ namespace cloud.charging.open.protocols.WWCP
         //{
 
         //    var OnParkingGarageDataChangedLocal = OnParkingGarageDataChanged;
-        //    if (OnParkingGarageDataChangedLocal != null)
+        //    if (OnParkingGarageDataChangedLocal is not null)
         //        await OnParkingGarageDataChangedLocal(Timestamp, ParkingGarage, PropertyName, OldValue, NewValue);
 
         //}
@@ -1269,10 +1269,10 @@ namespace cloud.charging.open.protocols.WWCP
         //{
 
         //    var OnParkingGarageStatusChangedLocal = OnParkingGarageStatusChanged;
-        //    if (OnParkingGarageStatusChangedLocal != null)
+        //    if (OnParkingGarageStatusChangedLocal is not null)
         //        await OnParkingGarageStatusChangedLocal(Timestamp, ParkingGarage, OldStatus, NewStatus);
 
-        //    //if (StatusAggregationDelegate != null)
+        //    //if (StatusAggregationDelegate is not null)
         //    //    _StatusSchedule.Insert(StatusAggregationDelegate(new ParkingGarageStatusReport(_ParkingGarages.Values)),
         //    //                           Timestamp);
 
@@ -1296,7 +1296,7 @@ namespace cloud.charging.open.protocols.WWCP
         //{
 
         //    var OnParkingGarageAdminStatusChangedLocal = OnParkingGarageAdminStatusChanged;
-        //    if (OnParkingGarageAdminStatusChangedLocal != null)
+        //    if (OnParkingGarageAdminStatusChangedLocal is not null)
         //        await OnParkingGarageAdminStatusChangedLocal(Timestamp, ParkingGarage, OldStatus, NewStatus);
 
         //}
@@ -1345,7 +1345,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    => _ParkingGarages.
         //           SelectMany(pool    => pool.ParkingGarages).
-        //           Where     (station => IncludeStation == null || IncludeStation(station)).
+        //           Where     (station => IncludeStation is null || IncludeStation(station)).
         //           OrderBy   (station => station.Id).
         //           Select    (station => new KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusTypes>(station.Id, station.AdminStatus.Value));
 
@@ -1395,7 +1395,7 @@ namespace cloud.charging.open.protocols.WWCP
         //                          SelectMany    (pool    => pool.ParkingGarages).
         //                          FirstOrDefault(station => station.Id == ParkingGarageId);
 
-        //    return ParkingGarage != null;
+        //    return ParkingGarage is not null;
 
         //}
 
@@ -1569,7 +1569,7 @@ namespace cloud.charging.open.protocols.WWCP
         //{
 
         //    var OnParkingGarageDataChangedLocal = OnParkingGarageDataChanged;
-        //    if (OnParkingGarageDataChangedLocal != null)
+        //    if (OnParkingGarageDataChangedLocal is not null)
         //        await OnParkingGarageDataChangedLocal(Timestamp, ParkingGarage, PropertyName, OldValue, NewValue);
 
         //}
@@ -1592,7 +1592,7 @@ namespace cloud.charging.open.protocols.WWCP
         //{
 
         //    var OnParkingGarageStatusChangedLocal = OnParkingGarageStatusChanged;
-        //    if (OnParkingGarageStatusChangedLocal != null)
+        //    if (OnParkingGarageStatusChangedLocal is not null)
         //        await OnParkingGarageStatusChangedLocal(Timestamp, ParkingGarage, OldStatus, NewStatus);
 
         //}
@@ -1615,7 +1615,7 @@ namespace cloud.charging.open.protocols.WWCP
         //{
 
         //    var OnParkingGarageAdminStatusChangedLocal = OnParkingGarageAdminStatusChanged;
-        //    if (OnParkingGarageAdminStatusChangedLocal != null)
+        //    if (OnParkingGarageAdminStatusChangedLocal is not null)
         //        await OnParkingGarageAdminStatusChangedLocal(Timestamp, ParkingGarage, OldStatus, NewStatus);
 
         //}
@@ -1684,13 +1684,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (ParkingGarageGroupId == null)
+        //    if (ParkingGarageGroupId is null)
         //        ParkingGarageGroupId = ParkingGarageGroup_Id.Random(this.Id);
 
         //    // Do not throw an exception when an OnError delegate was given!
         //    if (_ParkingGarageGroups.Contains(ParkingGarageGroupId))
         //    {
-        //        if (OnError == null)
+        //        if (OnError is null)
         //            throw new ParkingGarageGroupAlreadyExists(ParkingGarageGroupId, this.Id);
         //        else
         //            OnError?.Invoke(this, ParkingGarageGroupId);
@@ -1700,7 +1700,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    var _ParkingGarageGroup = new ParkingGarageGroup(ParkingGarageGroupId, this);
 
-        //    if (Configurator != null)
+        //    if (Configurator is not null)
         //        Configurator(_ParkingGarageGroup);
 
         //    if (ParkingGarageGroupAddition.SendVoting(Timestamp.Now, this, _ParkingGarageGroup))
@@ -1795,7 +1795,7 @@ namespace cloud.charging.open.protocols.WWCP
         //    => _ParkingGarages.
         //           SelectMany(pool    => pool.ParkingGarages).
         //           SelectMany(station => station.ParkingSpaces).
-        //           Where     (evse    => IncludeParkingSpace == null || IncludeParkingSpace(evse)).
+        //           Where     (evse    => IncludeParkingSpace is null || IncludeParkingSpace(evse)).
         //           OrderBy   (evse    => evse.Id).
         //           Select    (evse    => new KeyValuePair<ParkingSpace_Id, ParkingSpaceStatusType>(evse.Id, evse.Status.Value));
 
@@ -1847,7 +1847,7 @@ namespace cloud.charging.open.protocols.WWCP
         //               SelectMany    (station => station.ParkingSpaces).
         //               FirstOrDefault(evse    => evse.Id == ParkingSpaceId);
 
-        //    return ParkingSpace != null;
+        //    return ParkingSpace is not null;
 
         //}
 
@@ -1957,7 +1957,7 @@ namespace cloud.charging.open.protocols.WWCP
         //                                         Func<ParkingSpace, Boolean>                  IncludeParkingSpace  = null)
         //{
 
-        //    if (ParkingSpaceStatus == null || ParkingSpaceStatus.Count == 0)
+        //    if (ParkingSpaceStatus is null || ParkingSpaceStatus.Count == 0)
         //        return new ParkingSpaceStatusDiff(Timestamp.Now, Id, Name);
 
         //    #region Get data...
@@ -2020,7 +2020,7 @@ namespace cloud.charging.open.protocols.WWCP
         //    catch (Exception e)
         //    {
 
-        //        while (e.InnerException != null)
+        //        while (e.InnerException is not null)
         //            e = e.InnerException;
 
         //        DebugX.Log("GetParkingSpaceStatusDiff led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
@@ -2041,7 +2041,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (ParkingSpaceStatusDiff == null)
+        //    if (ParkingSpaceStatusDiff is null)
         //        throw new ArgumentNullException(nameof(ParkingSpaceStatusDiff),  "The given ParkingSpace status diff must not be null!");
 
         //    #endregion
@@ -2127,7 +2127,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    #region Initial checks
 
-        //    if (ParkingSpaceAdminStatusDiff == null)
+        //    if (ParkingSpaceAdminStatusDiff is null)
         //        throw new ArgumentNullException(nameof(ParkingSpaceAdminStatusDiff),  "The given ParkingSpace admin status diff must not be null!");
 
         //    #endregion
@@ -2213,7 +2213,7 @@ namespace cloud.charging.open.protocols.WWCP
         //{
 
         //    var OnParkingSpaceDataChangedLocal = OnParkingSpaceDataChanged;
-        //    if (OnParkingSpaceDataChangedLocal != null)
+        //    if (OnParkingSpaceDataChangedLocal is not null)
         //        await OnParkingSpaceDataChangedLocal(Timestamp, ParkingSpace, PropertyName, OldValue, NewValue);
 
         //}
@@ -2238,7 +2238,7 @@ namespace cloud.charging.open.protocols.WWCP
         //{
 
         //    var OnParkingSpaceAdminStatusChangedLocal = OnParkingSpaceAdminStatusChanged;
-        //    if (OnParkingSpaceAdminStatusChangedLocal != null)
+        //    if (OnParkingSpaceAdminStatusChangedLocal is not null)
         //        await OnParkingSpaceAdminStatusChangedLocal(Timestamp,
         //                                            EventTrackingId,
         //                                            ParkingSpace,
@@ -2267,7 +2267,7 @@ namespace cloud.charging.open.protocols.WWCP
         //{
 
         //    var OnParkingSpaceStatusChangedLocal = OnParkingSpaceStatusChanged;
-        //    if (OnParkingSpaceStatusChangedLocal != null)
+        //    if (OnParkingSpaceStatusChangedLocal is not null)
         //        await OnParkingSpaceStatusChangedLocal(Timestamp,
         //                                       EventTrackingId,
         //                                       ParkingSpace,
@@ -2292,12 +2292,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an ParkingSpace_Operator.
             var ParkingSpace_Operator = Object as ParkingOperator;
-            if ((Object) ParkingSpace_Operator == null)
+            if ((Object) ParkingSpace_Operator is null)
                 throw new ArgumentException("The given object is not an ParkingSpace_Operator!");
 
             return CompareTo(ParkingSpace_Operator);
@@ -2315,7 +2315,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ParkingOperator Operator)
         {
 
-            if ((Object) Operator == null)
+            if ((Object) Operator is null)
                 throw new ArgumentNullException("The given Charging Station Operator must not be null!");
 
             return Id.CompareTo(Operator.Id);
@@ -2338,12 +2338,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an ParkingOperator.
             var ParkingSpace_Operator = Object as ParkingOperator;
-            if ((Object) ParkingSpace_Operator == null)
+            if ((Object) ParkingSpace_Operator is null)
                 return false;
 
             return this.Equals(ParkingSpace_Operator);
@@ -2362,7 +2362,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ParkingOperator Operator)
         {
 
-            if ((Object) Operator == null)
+            if ((Object) Operator is null)
                 return false;
 
             return Id.Equals(Operator.Id);

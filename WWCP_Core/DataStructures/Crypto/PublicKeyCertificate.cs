@@ -171,9 +171,9 @@ namespace cloud.charging.open.protocols.WWCP
         public PublicKeyCertificate AddCertificateSignature(CertificateSignature Signature)
         {
 
-            if (Signature                 != null &&
-                Signature.SignerPublicKey != null &&
-                Signature.SignerPublicKey != null)
+            if (Signature                 is not null &&
+                Signature.SignerPublicKey is not null &&
+                Signature.SignerPublicKey is not null)
             {
                 _CertificateSignatures.Add(Signature);
             }

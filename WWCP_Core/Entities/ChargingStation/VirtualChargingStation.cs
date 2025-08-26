@@ -721,7 +721,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             this.WhiteLists            = new Dictionary<String, HashSet<LocalAuthentication>>();
             WhiteLists.Add("default", new HashSet<LocalAuthentication>());
 
-            this.SelfCheckTimeSpan     = SelfCheckTimeSpan != null && SelfCheckTimeSpan.HasValue ? SelfCheckTimeSpan.Value : DefaultSelfCheckTimeSpan;
+            this.SelfCheckTimeSpan     = SelfCheckTimeSpan is not null && SelfCheckTimeSpan.HasValue ? SelfCheckTimeSpan.Value : DefaultSelfCheckTimeSpan;
 
             ReservationExpiredLock     = new Object();
             ReservationExpiredTimer    = new Timer(CheckIfReservationIsExpired, null, this.SelfCheckTimeSpan, this.SelfCheckTimeSpan);
@@ -905,7 +905,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             EVSE = GetEVSEById(EVSEId);
 
-            return EVSE != null;
+            return EVSE is not null;
 
         }
 
@@ -1017,7 +1017,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             if (_EVSEs.Any(evse => evse.Id == EVSEId))
             {
                 throw new Exception("EVSEAlreadyExistsInStation");
-               // if (OnError == null)
+               // if (OnError is null)
                //     throw new EVSEAlreadyExistsInStation(this.ChargingStation, EVSEId);
                // else
                //     OnError?.Invoke(this, EVSEId);
@@ -1097,7 +1097,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             if (_EVSEs.Any(evse => evse.Id == RemoteEVSE.Id))
             {
                 throw new Exception("EVSEAlreadyExistsInStation");
-                // if (OnError == null)
+                // if (OnError is null)
                 //     throw new EVSEAlreadyExistsInStation(this.ChargingStation, EVSEId);
                 // else
                 //     OnError?.Invoke(this, EVSEId);
@@ -1604,7 +1604,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
 
                 if (result.Result == ReservationResultType.Success &&
-                    newReservation != null)
+                    newReservation is not null)
                 {
 
                     chargingReservations.Add(newReservation.Id, new ChargingReservationCollection(newReservation));
@@ -2760,7 +2760,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     }
 
-                    else if (chargingSession.EVSE != null)
+                    else if (chargingSession.EVSE is not null)
                     {
 
                         result = await chargingSession.EVSE.RemoteEVSE.
@@ -3241,7 +3241,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             if (!(Object is VirtualChargingStation VirtualChargingStation))

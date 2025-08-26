@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (PushEVSEStatusResults == null || !PushEVSEStatusResults.Any())
+            if (PushEVSEStatusResults is null || !PushEVSEStatusResults.Any())
                 return new PushEVSEStatusResult(SenderId,
                                                 ISendStatus,
                                                 PushEVSEStatusResultTypes.Error,
@@ -480,14 +480,14 @@ namespace cloud.charging.open.protocols.WWCP
                                                  ToDictionary(_ => _.Key,
                                                               _ => new List<PushEVSEStatusResult>(_));
 
-            var Descriptions               = All.Where       (_ => _ != null).
+            var Descriptions               = All.Where       (_ => _ is not null).
                                                  SafeSelect  (_ => _.Description).
                                                  AggregateWith(Environment.NewLine);
 
-            var RejectedEVSEStatusUpdates  = All.Where       (_ => _ != null).
+            var RejectedEVSEStatusUpdates  = All.Where       (_ => _ is not null).
                                                  SelectMany  (_ => _.RejectedEVSEStatusUpdates);
 
-            var Warnings                   = All.Where       (_ => _ != null).
+            var Warnings                   = All.Where       (_ => _ is not null).
                                                  SelectMany  (_ => _.Warnings);
 
 

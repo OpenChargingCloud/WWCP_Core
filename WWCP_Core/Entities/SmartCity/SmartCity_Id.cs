@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (CountryCode == null)
+            if (CountryCode is null)
                 throw new ArgumentNullException(nameof(CountryCode),  "The country code must not be null!");
 
             if (Text.IsNullOrEmpty())
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (CountryCode == null || Text.IsNullOrEmpty())
+            if (CountryCode is null || Text.IsNullOrEmpty())
             {
                 SmartCityId = null;
                 return false;
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) SmartCityId1 == null) || ((Object) SmartCityId2 == null))
+            if (((Object) SmartCityId1 is null) || ((Object) SmartCityId2 is null))
                 return false;
 
             return SmartCityId1.Equals(SmartCityId2);
@@ -352,7 +352,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           SmartCity_Id  SmartCityId2)
         {
 
-            if ((Object) SmartCityId1 == null)
+            if ((Object) SmartCityId1 is null)
                 throw new ArgumentNullException(nameof(SmartCityId1),  "The given smart city identification must not be null!");
 
             return SmartCityId1.CompareTo(SmartCityId2) < 0;
@@ -388,7 +388,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           SmartCity_Id  SmartCityId2)
         {
 
-            if ((Object) SmartCityId1 == null)
+            if ((Object) SmartCityId1 is null)
                 throw new ArgumentNullException(nameof(SmartCityId1),  "The given smart city identification must not be null!");
 
             return SmartCityId1.CompareTo(SmartCityId2) > 0;
@@ -425,12 +425,12 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
             // Check if the given object is an smart city.
             var SmartCityId = Object as SmartCity_Id;
-            if ((Object) SmartCityId == null)
+            if ((Object) SmartCityId is null)
                 throw new ArgumentException("The given object is not a smart city identification!");
 
             return CompareTo(SmartCityId);
@@ -448,7 +448,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(SmartCity_Id SmartCityId)
         {
 
-            if ((Object) SmartCityId == null)
+            if ((Object) SmartCityId is null)
                 throw new ArgumentNullException(nameof(SmartCityId),  "The given smart city identification must not be null!");
 
             // Compare the length of the smart city identifications
@@ -481,12 +481,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an smart city.
             var SmartCityId = Object as SmartCity_Id;
-            if ((Object) SmartCityId == null)
+            if ((Object) SmartCityId is null)
                 return false;
 
             return this.Equals(SmartCityId);
@@ -505,7 +505,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(SmartCity_Id SmartCityId)
         {
 
-            if ((Object) SmartCityId == null)
+            if ((Object) SmartCityId is null)
                 return false;
 
             if (!CountryCode.Equals(SmartCityId.CountryCode))

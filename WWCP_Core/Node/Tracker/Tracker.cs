@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 
                                              #region Check HTTP Basic Authentication
 
-                                             //if (Request.Authorization          == null               ||
+                                             //if (Request.Authorization          is null               ||
                                              //    !_Logins.ContainsKey(Request.Authorization.Username) ||
                                              //     _Logins[Request.Authorization.Username] != Request.Authorization.Password)
                                              //{
@@ -314,7 +314,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                              //var Task = SendEVSEDoorNotClosedNotification(Request.Timestamp,
                                              //                                             Request.CancellationToken,
                                              //                                             Request.EventTrackingId,
-                                             //                                             MapIncomingEVSEIds != null ? MapIncomingEVSEIds(EVSEId) : EVSEId,
+                                             //                                             MapIncomingEVSEIds is not null ? MapIncomingEVSEIds(EVSEId) : EVSEId,
                                              //                                             EventId,
                                              //                                             EventTimestamp);
 

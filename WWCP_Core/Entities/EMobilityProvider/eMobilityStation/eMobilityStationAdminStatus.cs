@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (Id == null)
+            if (Id is null)
                 throw new ArgumentNullException(nameof(Id), "The given unique identification of a e-mobility station must not be null!");
 
             #endregion
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) eMobilityStationAdminStatus1 == null) || ((Object) eMobilityStationAdminStatus2 == null))
+            if (((Object) eMobilityStationAdminStatus1 is null) || ((Object) eMobilityStationAdminStatus2 is null))
                 return false;
 
             return eMobilityStationAdminStatus1.Equals(eMobilityStationAdminStatus2);
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (eMobilityStationAdminStatus eMobilityStationAdminStatus1, eMobilityStationAdminStatus eMobilityStationAdminStatus2)
         {
 
-            if ((Object) eMobilityStationAdminStatus1 == null)
+            if ((Object) eMobilityStationAdminStatus1 is null)
                 throw new ArgumentNullException("The given eMobilityStationAdminStatus1 must not be null!");
 
             return eMobilityStationAdminStatus1.CompareTo(eMobilityStationAdminStatus2) < 0;
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (eMobilityStationAdminStatus eMobilityStationAdminStatus1, eMobilityStationAdminStatus eMobilityStationAdminStatus2)
         {
 
-            if ((Object) eMobilityStationAdminStatus1 == null)
+            if ((Object) eMobilityStationAdminStatus1 is null)
                 throw new ArgumentNullException("The given eMobilityStationAdminStatus1 must not be null!");
 
             return eMobilityStationAdminStatus1.CompareTo(eMobilityStationAdminStatus2) > 0;
@@ -215,12 +215,12 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an eMobilityStationAdminStatus.
             var eMobilityStationAdminStatus = Object as eMobilityStationAdminStatus;
-            if ((Object) eMobilityStationAdminStatus == null)
+            if ((Object) eMobilityStationAdminStatus is null)
                 throw new ArgumentException("The given object is not a eMobilityStationAdminStatus!");
 
             return CompareTo(eMobilityStationAdminStatus);
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(eMobilityStationAdminStatus eMobilityStationAdminStatus)
         {
 
-            if ((Object) eMobilityStationAdminStatus == null)
+            if ((Object) eMobilityStationAdminStatus is null)
                 throw new ArgumentNullException("The given eMobilityStationAdminStatus must not be null!");
 
             // Compare eMobilityStation Ids
@@ -268,12 +268,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an eMobilityStationAdminStatus.
             var eMobilityStationAdminStatus = Object as eMobilityStationAdminStatus;
-            if ((Object) eMobilityStationAdminStatus == null)
+            if ((Object) eMobilityStationAdminStatus is null)
                 return false;
 
             return this.Equals(eMobilityStationAdminStatus);
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(eMobilityStationAdminStatus eMobilityStationAdminStatus)
         {
 
-            if ((Object) eMobilityStationAdminStatus == null)
+            if ((Object) eMobilityStationAdminStatus is null)
                 return false;
 
             return Id.    Equals(eMobilityStationAdminStatus.Id) &&

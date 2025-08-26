@@ -5817,7 +5817,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             // Calculate new aggregated roaming network status and send upstream
-            //if (AdminStatusAggregationDelegate != null)
+            //if (AdminStatusAggregationDelegate is not null)
             //{
 
             //    var NewAggregatedStatus = new Timestamped<RoamingNetworkAdminStatusType>(AdminStatusAggregationDelegate(new csoAdminStatusReport(_ParkingOperators.Values)));
@@ -5830,7 +5830,7 @@ namespace cloud.charging.open.protocols.WWCP
             //        _AdminStatusHistory.Push(NewAggregatedStatus);
 
             //        var OnAggregatedAdminStatusChangedLocal = OnAggregatedAdminStatusChanged;
-            //        if (OnAggregatedAdminStatusChangedLocal != null)
+            //        if (OnAggregatedAdminStatusChangedLocal is not null)
             //            OnAggregatedAdminStatusChangedLocal(Timestamp, this, OldAggregatedStatus, NewAggregatedStatus);
 
             //    }
@@ -5864,7 +5864,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                           NewStatus);
 
             // Calculate new aggregated roaming network status and send upstream
-            //if (StatusAggregationDelegate != null)
+            //if (StatusAggregationDelegate is not null)
             //{
 
             //    var NewAggregatedStatus = new Timestamped<RoamingNetworkStatusType>(StatusAggregationDelegate(new csoStatusReport(_ParkingOperators.Values)));
@@ -6007,7 +6007,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (Id == null)
+            if (Id is null)
                 throw new ArgumentNullException(nameof(Id),  "The given smart city identification must not be null!");
 
             #endregion
@@ -6232,7 +6232,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (NavigationProviderId == null)
+            if (NavigationProviderId is null)
                 throw new ArgumentNullException(nameof(NavigationProviderId),  "The given navigation provider identification must not be null!");
 
             #endregion
@@ -6943,7 +6943,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region ...or fail!
 
-                    if (result == null)
+                    if (result is null)
                     {
 
                         result = CancelReservationResult.UnknownReservationId(ReservationId,
@@ -8805,7 +8805,7 @@ namespace cloud.charging.open.protocols.WWCP
                 #region Some charge detail records should perhaps be filtered...
 
                 var OnFilterCDRRecordsLocal = OnFilterCDRRecords;
-                if (OnFilterCDRRecordsLocal != null)
+                if (OnFilterCDRRecordsLocal is not null)
                 {
 
                     foreach (var chargeDetailRecord in ChargeDetailRecords)
@@ -8932,10 +8932,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                         // Might occur when the software had been restarted
                         //   while charging sessions still had been active!
-                        //if (chargingSession.AuthService == null && chargingSession.AuthorizatorId != null)
+                        //if (chargingSession.AuthService is null && chargingSession.AuthorizatorId is not null)
                         //    chargingSession.AuthService = _IRemoteSendChargeDetailRecord.FirstOrDefault(rm => rm.Id.ToString() == chargingSession.AuthorizatorId.ToString()) as ISendAuthorizeStartStop;
 
-                        //if (chargingSession.AuthService != null && chargingSession.AuthService is ISendChargeDetailRecords sendCDR)
+                        //if (chargingSession.AuthService is not null && chargingSession.AuthService is ISendChargeDetailRecords sendCDR)
                         //{
                         //    _ISendChargeDetailRecords[sendCDR].Add(cdr);
                         //    ChargeDetailRecordsToProcess.Remove(cdr);
@@ -9030,7 +9030,7 @@ namespace cloud.charging.open.protocols.WWCP
                             else if (chargeDetailRecord.AuthenticationStart is RemoteAuthentication)
                                 LL = (chargeDetailRecord.AuthenticationStart as RemoteAuthentication).ToLocal;
 
-                            if (LL != null)
+                            if (LL is not null)
                             {
 
                                 var authStartResult = await eMob.AuthorizeStart(LL);
@@ -9262,7 +9262,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (start) public key
 
-                    else if (chargeDetailRecord.AuthenticationStart?.PublicKey != null)
+                    else if (chargeDetailRecord.AuthenticationStart?.PublicKey is not null)
                     {
 
                         // Use a lookup...
@@ -9289,7 +9289,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (stop)  public key
 
-                    else if (chargeDetailRecord.AuthenticationStop?.PublicKey != null)
+                    else if (chargeDetailRecord.AuthenticationStop?.PublicKey is not null)
                     {
 
                         // Use a lookup...

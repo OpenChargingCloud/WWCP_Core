@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ParkingSpaceId1 == null) || ((Object) ParkingSpaceId2 == null))
+            if (((Object) ParkingSpaceId1 is null) || ((Object) ParkingSpaceId2 is null))
                 return false;
 
             return ParkingSpaceId1.Equals(ParkingSpaceId2);
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (ParkingSpace_Id ParkingSpaceId1, ParkingSpace_Id ParkingSpaceId2)
         {
 
-            if ((Object) ParkingSpaceId1 == null)
+            if ((Object) ParkingSpaceId1 is null)
                 throw new ArgumentNullException(nameof(ParkingSpaceId1), "The given ParkingSpaceId1 must not be null!");
 
             return ParkingSpaceId1.CompareTo(ParkingSpaceId2) < 0;
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (ParkingSpace_Id ParkingSpaceId1, ParkingSpace_Id ParkingSpaceId2)
         {
 
-            if ((Object) ParkingSpaceId1 == null)
+            if ((Object) ParkingSpaceId1 is null)
                 throw new ArgumentNullException(nameof(ParkingSpaceId1), "The given ParkingSpaceId1 must not be null!");
 
             return ParkingSpaceId1.CompareTo(ParkingSpaceId2) > 0;
@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             if (!(Object is ParkingSpace_Id))
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ParkingSpace_Id ParkingSpaceId)
         {
 
-            if ((Object) ParkingSpaceId == null)
+            if ((Object) ParkingSpaceId is null)
                 throw new ArgumentNullException(nameof(ParkingSpaceId),  "The given parking space identification must not be null!");
 
             // Compare the length of the ParkingSpaceIds
@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             if (!(Object is ParkingSpace_Id))
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ParkingSpace_Id ParkingSpaceId)
         {
 
-            if ((Object) ParkingSpaceId == null)
+            if ((Object) ParkingSpaceId is null)
                 return false;
 
             return InternalId.Equals(ParkingSpaceId.InternalId);

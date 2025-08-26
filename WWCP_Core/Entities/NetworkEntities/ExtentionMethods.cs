@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 
         //    #region Initial checks
 
-        //    if (ChargingPool == null)
+        //    if (ChargingPool is null)
         //        throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
 
         //    #endregion

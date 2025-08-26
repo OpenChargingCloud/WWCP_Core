@@ -422,7 +422,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (value != accessibility && value != ChargingPool?.Accessibility)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref accessibility);
 
                     else
@@ -534,7 +534,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (hotlinePhoneNumber != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref hotlinePhoneNumber);
 
                     else
@@ -570,7 +570,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (chargingWhenClosed != value)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref chargingWhenClosed);
 
                     else
@@ -608,7 +608,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (value != exitAddress && value != ChargingPool?.ExitAddress)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref exitAddress);
 
                     else
@@ -649,7 +649,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (value != exitLocation && value != ChargingPool?.ExitLocation)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref exitLocation);
 
                     else
@@ -970,7 +970,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (value != energyMix && value != ChargingPool?.EnergyMix)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref energyMix);
 
                     else
@@ -1038,7 +1038,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (value != energyMixPrognoses && value != ChargingPool?.EnergyMixPrognoses)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref energyMixPrognoses);
 
                     else
@@ -2976,7 +2976,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     //if ()
 
-                    if (RemoteChargingStation != null)
+                    if (RemoteChargingStation is not null)
                     {
 
                         result = await RemoteChargingStation.

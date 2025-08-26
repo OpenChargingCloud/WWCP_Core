@@ -563,7 +563,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (value != energyMix && value != ChargingStation?.EnergyMix)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref energyMix);
 
                     else
@@ -631,7 +631,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (value != energyMixPrognoses && value != ChargingStation?.EnergyMixPrognoses)
                 {
 
-                    if (value == null)
+                    if (value is null)
                         DeleteProperty(ref energyMixPrognoses);
 
                     else
@@ -1667,7 +1667,7 @@ namespace cloud.charging.open.protocols.WWCP
                          AdminStatus.Value == EVSEAdminStatusType.InternalUse)
                 {
 
-                    if (RemoteEVSE != null)
+                    if (RemoteEVSE is not null)
                     {
 
                         result = await RemoteEVSE.
@@ -1834,7 +1834,7 @@ namespace cloud.charging.open.protocols.WWCP
                     AdminStatus.Value == EVSEAdminStatusType.InternalUse)
                 {
 
-                    if (RemoteEVSE != null)
+                    if (RemoteEVSE is not null)
                     {
 
                         result = await RemoteEVSE.

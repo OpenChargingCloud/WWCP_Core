@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ParkingProductId1 == null) || ((Object) ParkingProductId2 == null))
+            if (((Object) ParkingProductId1 is null) || ((Object) ParkingProductId2 is null))
                 return false;
 
             return ParkingProductId1.Equals(ParkingProductId2);
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (ParkingProduct_Id ParkingProductId1, ParkingProduct_Id ParkingProductId2)
         {
 
-            if ((Object) ParkingProductId1 == null)
+            if ((Object) ParkingProductId1 is null)
                 throw new ArgumentNullException(nameof(ParkingProductId1), "The given ParkingProductId1 must not be null!");
 
             return ParkingProductId1.CompareTo(ParkingProductId2) < 0;
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (ParkingProduct_Id ParkingProductId1, ParkingProduct_Id ParkingProductId2)
         {
 
-            if ((Object) ParkingProductId1 == null)
+            if ((Object) ParkingProductId1 is null)
                 throw new ArgumentNullException(nameof(ParkingProductId1), "The given ParkingProductId1 must not be null!");
 
             return ParkingProductId1.CompareTo(ParkingProductId2) > 0;
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             if (!(Object is ParkingProduct_Id))
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ParkingProduct_Id ParkingProductId)
         {
 
-            if ((Object) ParkingProductId == null)
+            if ((Object) ParkingProductId is null)
                 throw new ArgumentNullException(nameof(ParkingProductId),  "The given parking product identification must not be null!");
 
             // Compare the length of the ParkingProductIds
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             if (!(Object is ParkingProduct_Id))
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ParkingProduct_Id ParkingProductId)
         {
 
-            if ((Object) ParkingProductId == null)
+            if ((Object) ParkingProductId is null)
                 return false;
 
             return InternalId.Equals(ParkingProductId.InternalId);

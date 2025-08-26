@@ -101,12 +101,12 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a service plan.
             var ServicePlan = Object as ChargingServicePlan;
-            if ((Object) ServicePlan == null)
+            if ((Object) ServicePlan is null)
                 throw new ArgumentException("The given object is not a service plan!");
 
             return CompareTo(ServicePlan);
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ChargingServicePlan ChargingServicePlan)
         {
 
-            if ((Object) ChargingServicePlan == null)
+            if ((Object) ChargingServicePlan is null)
                 throw new ArgumentNullException("The given service plan must not be null!");
 
             return Id.CompareTo(ChargingServicePlan.Id);
@@ -147,12 +147,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is a service plan.
             var ChargingServicePlan = Object as ChargingServicePlan;
-            if ((Object) ChargingServicePlan == null)
+            if ((Object) ChargingServicePlan is null)
                 return false;
 
             return this.Equals(ChargingServicePlan);
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ChargingServicePlan ChargingServicePlan)
         {
 
-            if ((Object) ChargingServicePlan == null)
+            if ((Object) ChargingServicePlan is null)
                 return false;
 
             return Id.Equals(ChargingServicePlan.Id);

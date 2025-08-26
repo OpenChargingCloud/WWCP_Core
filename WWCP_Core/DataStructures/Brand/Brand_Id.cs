@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Brand_Id Parse(String Text)
         {
 
-            if (Text == null || Text.Trim().IsNullOrEmpty())
+            if (Text is null || Text.Trim().IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Text), "The given brand identification must not be null or empty!");
 
             return new Brand_Id(Text);
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Brand_Id? TryParse(String Text)
         {
 
-            if (Text != null &&
+            if (Text is not null &&
                 Text.Trim().IsNotNullOrEmpty())
             {
 
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean TryParse(String Text, out Brand_Id BrandId)
         {
 
-            if (Text != null &&
+            if (Text is not null &&
                 Text.Trim().IsNotNullOrEmpty())
             {
 
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) BrandId1 == null) || ((Object) BrandId2 == null))
+            if (((Object) BrandId1 is null) || ((Object) BrandId2 is null))
                 return false;
 
             return BrandId1.Equals(BrandId2);
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (Brand_Id BrandId1, Brand_Id BrandId2)
         {
 
-            if ((Object) BrandId1 == null)
+            if ((Object) BrandId1 is null)
                 throw new ArgumentNullException(nameof(BrandId1), "The given BrandId1 must not be null!");
 
             return BrandId1.CompareTo(BrandId2) < 0;
@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (Brand_Id BrandId1, Brand_Id BrandId2)
         {
 
-            if ((Object) BrandId1 == null)
+            if ((Object) BrandId1 is null)
                 throw new ArgumentNullException(nameof(BrandId1), "The given BrandId1 must not be null!");
 
             return BrandId1.CompareTo(BrandId2) > 0;
@@ -307,7 +307,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             if (!(Object is Brand_Id))
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Brand_Id BrandId)
         {
 
-            if ((Object) BrandId == null)
+            if ((Object) BrandId is null)
                 throw new ArgumentNullException(nameof(BrandId),  "The given brand identification must not be null!");
 
             // Compare the length of the BrandIds
@@ -358,7 +358,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             if (!(Object is Brand_Id))
@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(Brand_Id BrandId)
         {
 
-            if ((Object) BrandId == null)
+            if ((Object) BrandId is null)
                 return false;
 
             return InternalId.Equals(BrandId.InternalId);

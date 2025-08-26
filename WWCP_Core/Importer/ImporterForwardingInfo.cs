@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
         public RoamingNetwork_Id ForwardedToRoamingNetworkId
 
-            => _ForwardedToChargingStationOperator != null
+            => _ForwardedToChargingStationOperator is not null
                 ? _ForwardedToChargingStationOperator.RoamingNetwork.Id
                 : Defaults.UnknownRoamingNetwork;
 
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
             {
 
                 // Remove ChargingStation from old ChargingPool/EVSEOperator
-                if (_ForwardedToChargingStationOperator != null)
+                if (_ForwardedToChargingStationOperator is not null)
                 {
 
                     // Do not fail if the charging station is not yet available/existing!
@@ -117,8 +117,8 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
                 this._OnForwardingChanged(Timestamp.Now,
                                           this,
-                                          Old_ForwardedToChargingStationOperator != null ? Old_ForwardedToChargingStationOperator.RoamingNetwork.Id : new RoamingNetwork_Id?(),
-                                          value                                  != null ? value.RoamingNetwork.Id                                  : new RoamingNetwork_Id?());
+                                          Old_ForwardedToChargingStationOperator is not null ? Old_ForwardedToChargingStationOperator.RoamingNetwork.Id : new RoamingNetwork_Id?(),
+                                          value                                  is not null ? value.RoamingNetwork.Id                                  : new RoamingNetwork_Id?());
 
             }
 
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
         public ChargingStationOperator_Id? ForwardedToChargingStationOperatorId
 
-            => _ForwardedToChargingStationOperator != null
+            => _ForwardedToChargingStationOperator is not null
                 ? _ForwardedToChargingStationOperator.Id
                 : new ChargingStationOperator_Id?();
 
@@ -185,15 +185,15 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
             this._OnForwardingChanged                 = OnChangedCallback;
             this.ChargingStationOperators             = ChargingStationOperators;
-            this._EVSEIds                             = EVSEIds               != null ? new HashSet<EVSE_Id>(EVSEIds) : new HashSet<EVSE_Id>();
+            this._EVSEIds                             = EVSEIds               is not null ? new HashSet<EVSE_Id>(EVSEIds) : new HashSet<EVSE_Id>();
             this.StationId                            = StationId.HasValue            ? StationId.Value               : ChargingStation_Id.TryCreate(EVSEIds).Value;
             this.StationName                          = StationName;
             this.StationServiceTag                    = StationServiceTag;
             this.StationAddress                       = StationAddress;
             this.StationGeoCoordinate                 = StationGeoCoordinate;
-            this._AdminStatus                         = AdminStatus           != null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
+            this._AdminStatus                         = AdminStatus           is not null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
             this.PhoneNumber                          = PhoneNumber;
-            this.Created                              = Created               != null ? Created.Value                 : Timestamp.Now;
+            this.Created                              = Created               is not null ? Created.Value                 : Timestamp.Now;
             this.OutOfService                         = OutOfService;
             this.LastTimeSeen                         = this.Created;
             this._ForwardedToChargingStationOperator  = ForwardedToOperator;

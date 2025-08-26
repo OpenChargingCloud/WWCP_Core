@@ -94,9 +94,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (ProviderId == null)
-                throw new ArgumentNullException(nameof(ProviderId),  "The unique provider identification must not be null!");
-
             if (Suffix.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Suffix),      "The suffix must not be null or empty!");
 
@@ -362,7 +359,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) eVehicleId1 == null) || ((Object) eVehicleId2 == null))
+            if (((Object) eVehicleId1 is null) || ((Object) eVehicleId2 is null))
                 return false;
 
             return eVehicleId1.Equals(eVehicleId2);
@@ -398,7 +395,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           EVehicle_Id  eVehicleId2)
         {
 
-            if ((Object) eVehicleId1 == null)
+            if ((Object) eVehicleId1 is null)
                 throw new ArgumentNullException(nameof(eVehicleId1),  "The given electric vehicle identification must not be null!");
 
             return eVehicleId1.CompareTo(eVehicleId2) < 0;
@@ -434,7 +431,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           EVehicle_Id  eVehicleId2)
         {
 
-            if ((Object) eVehicleId1 == null)
+            if ((Object) eVehicleId1 is null)
                 throw new ArgumentNullException(nameof(eVehicleId1),  "The given electric vehicle identification must not be null!");
 
             return eVehicleId1.CompareTo(eVehicleId2) > 0;
@@ -471,12 +468,12 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an eVehicleId.
             var eVehicleId = Object as EVehicle_Id;
-            if ((Object) eVehicleId == null)
+            if ((Object) eVehicleId is null)
                 throw new ArgumentException("The given object is not a eVehicleId!");
 
             return CompareTo(eVehicleId);
@@ -494,7 +491,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(EVehicle_Id eVehicleId)
         {
 
-            if ((Object) eVehicleId == null)
+            if ((Object) eVehicleId is null)
                 throw new ArgumentNullException(nameof(eVehicleId),  "The given electric vehicle identification must not be null!");
 
             // Compare the length of the eVehicleIds
@@ -528,12 +525,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an eVehicleId.
             var eVehicleId = Object as EVehicle_Id;
-            if ((Object) eVehicleId == null)
+            if ((Object) eVehicleId is null)
                 return false;
 
             return this.Equals(eVehicleId);
@@ -552,7 +549,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(EVehicle_Id eVehicleId)
         {
 
-            if ((Object) eVehicleId == null)
+            if ((Object) eVehicleId is null)
                 return false;
 
             if (!ProviderId.Equals(eVehicleId.ProviderId))

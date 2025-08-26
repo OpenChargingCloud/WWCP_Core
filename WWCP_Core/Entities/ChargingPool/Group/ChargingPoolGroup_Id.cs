@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargingPoolGroupId1 == null) || ((Object) ChargingPoolGroupId2 == null))
+            if (((Object) ChargingPoolGroupId1 is null) || ((Object) ChargingPoolGroupId2 is null))
                 return false;
 
             return ChargingPoolGroupId1.Equals(ChargingPoolGroupId2);
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (ChargingPoolGroup_Id ChargingPoolGroupId1, ChargingPoolGroup_Id ChargingPoolGroupId2)
         {
 
-            if ((Object) ChargingPoolGroupId1 == null)
+            if ((Object) ChargingPoolGroupId1 is null)
                 throw new ArgumentNullException(nameof(ChargingPoolGroupId1), "The given ChargingPoolGroupId1 must not be null!");
 
             return ChargingPoolGroupId1.CompareTo(ChargingPoolGroupId2) < 0;
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (ChargingPoolGroup_Id ChargingPoolGroupId1, ChargingPoolGroup_Id ChargingPoolGroupId2)
         {
 
-            if ((Object) ChargingPoolGroupId1 == null)
+            if ((Object) ChargingPoolGroupId1 is null)
                 throw new ArgumentNullException(nameof(ChargingPoolGroupId1), "The given ChargingPoolGroupId1 must not be null!");
 
             return ChargingPoolGroupId1.CompareTo(ChargingPoolGroupId2) > 0;
@@ -358,7 +358,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             if (!(Object is ChargingPoolGroup_Id))
@@ -379,7 +379,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ChargingPoolGroup_Id ChargingStationId)
         {
 
-            if ((Object) ChargingStationId == null)
+            if ((Object) ChargingStationId is null)
                 throw new ArgumentNullException(nameof(ChargingStationId), "The given charging pool group identification must not be null!");
 
             // Compare the length of the identifications
@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             if (!(Object is ChargingPoolGroup_Id))
@@ -435,7 +435,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ChargingPoolGroup_Id ChargingStationId)
         {
 
-            if ((Object) ChargingStationId == null)
+            if ((Object) ChargingStationId is null)
                 return false;
 
             return OperatorId.Equals(ChargingStationId.OperatorId) &&

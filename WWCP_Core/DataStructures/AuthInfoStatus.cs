@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object)AuthInfoStatus1 == null) || ((Object)AuthInfoStatus2 == null))
+            if (((Object)AuthInfoStatus1 is null) || ((Object)AuthInfoStatus2 is null))
                 return false;
 
             return AuthInfoStatus1.Equals(AuthInfoStatus2);
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator <(AuthInfoStatus AuthInfoStatus1, AuthInfoStatus AuthInfoStatus2)
         {
 
-            if ((Object)AuthInfoStatus1 == null)
+            if ((Object)AuthInfoStatus1 is null)
                 throw new ArgumentNullException("The given AuthInfoStatus1 must not be null!");
 
             return AuthInfoStatus1.CompareTo(AuthInfoStatus2) < 0;
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator >(AuthInfoStatus AuthInfoStatus1, AuthInfoStatus AuthInfoStatus2)
         {
 
-            if ((Object)AuthInfoStatus1 == null)
+            if ((Object)AuthInfoStatus1 is null)
                 throw new ArgumentNullException("The given AuthInfoStatus1 must not be null!");
 
             return AuthInfoStatus1.CompareTo(AuthInfoStatus2) > 0;
@@ -184,12 +184,12 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an AuthInfoStatus.
             var AuthInfoStatus = Object as AuthInfoStatus;
-            if ((Object)AuthInfoStatus == null)
+            if ((Object)AuthInfoStatus is null)
                 throw new ArgumentException("The given object is not a AuthInfoStatus!");
 
             return CompareTo(AuthInfoStatus);
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(AuthInfoStatus AuthInfoStatus)
         {
 
-            if ((Object)AuthInfoStatus == null)
+            if ((Object)AuthInfoStatus is null)
                 throw new ArgumentNullException("The given AuthInfoStatus must not be null!");
 
             // Compare EVSE Ids
@@ -237,12 +237,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an AuthInfoStatus.
             var AuthInfoStatus = Object as AuthInfoStatus;
-            if ((Object)AuthInfoStatus == null)
+            if ((Object)AuthInfoStatus is null)
                 return false;
 
             return this.Equals(AuthInfoStatus);
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(AuthInfoStatus AuthInfoStatus)
         {
 
-            if ((Object)AuthInfoStatus == null)
+            if ((Object)AuthInfoStatus is null)
                 return false;
 
             return Id.Equals(AuthInfoStatus.Id) &&

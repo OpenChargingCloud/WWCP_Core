@@ -97,9 +97,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (ProviderId == null)
-                throw new ArgumentNullException(nameof(ProviderId),  "The unique provider identification must not be null!");
-
             if (Suffix.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Suffix),      "The suffix must not be null or empty!");
 
@@ -370,7 +367,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) eMobilityStationId1 == null) || ((Object) eMobilityStationId2 == null))
+            if (((Object) eMobilityStationId1 is null) || ((Object) eMobilityStationId2 is null))
                 return false;
 
             return eMobilityStationId1.Equals(eMobilityStationId2);
@@ -405,7 +402,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (eMobilityStation_Id eMobilityStationId1, eMobilityStation_Id eMobilityStationId2)
         {
 
-            if ((Object) eMobilityStationId1 == null)
+            if ((Object) eMobilityStationId1 is null)
                 throw new ArgumentNullException("The given eMobilityStationId1 must not be null!");
 
             return eMobilityStationId1.CompareTo(eMobilityStationId2) < 0;
@@ -440,7 +437,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (eMobilityStation_Id eMobilityStationId1, eMobilityStation_Id eMobilityStationId2)
         {
 
-            if ((Object) eMobilityStationId1 == null)
+            if ((Object) eMobilityStationId1 is null)
                 throw new ArgumentNullException("The given eMobilityStationId1 must not be null!");
 
             return eMobilityStationId1.CompareTo(eMobilityStationId2) > 0;
@@ -477,12 +474,12 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an eMobilityStationId.
             var eMobilityStationId = Object as eMobilityStation_Id;
-            if ((Object) eMobilityStationId == null)
+            if ((Object) eMobilityStationId is null)
                 throw new ArgumentException("The given object is not a eMobilityStationId!");
 
             return CompareTo(eMobilityStationId);
@@ -500,7 +497,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(eMobilityStation_Id eMobilityStationId)
         {
 
-            if ((Object) eMobilityStationId == null)
+            if ((Object) eMobilityStationId is null)
                 throw new ArgumentNullException("The given eMobilityStationId must not be null!");
 
             // Compare the length of the eMobilityStationIds
@@ -534,12 +531,12 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an eMobilityStationId.
             var eMobilityStationId = Object as eMobilityStation_Id;
-            if ((Object) eMobilityStationId == null)
+            if ((Object) eMobilityStationId is null)
                 return false;
 
             return this.Equals(eMobilityStationId);
@@ -558,7 +555,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(eMobilityStation_Id eMobilityStationId)
         {
 
-            if ((Object) eMobilityStationId == null)
+            if ((Object) eMobilityStationId is null)
                 return false;
 
             return ProviderId.Equals(eMobilityStationId.ProviderId) &&

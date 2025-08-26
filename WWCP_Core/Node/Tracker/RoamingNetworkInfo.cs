@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) RemoteRoamingNetworkInfo1 == null) || ((Object) RemoteRoamingNetworkInfo2 == null))
+            if (((Object) RemoteRoamingNetworkInfo1 is null) || ((Object) RemoteRoamingNetworkInfo2 is null))
                 return false;
 
             return RemoteRoamingNetworkInfo1.Equals(RemoteRoamingNetworkInfo2);
@@ -315,7 +315,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public static Boolean operator < (RoamingNetworkInfo RemoteRoamingNetworkInfo1, RoamingNetworkInfo RemoteRoamingNetworkInfo2)
         {
 
-            if ((Object) RemoteRoamingNetworkInfo1 == null)
+            if ((Object) RemoteRoamingNetworkInfo1 is null)
                 throw new ArgumentNullException("The given RemoteRoamingNetworkInfo1 must not be null!");
 
             return RemoteRoamingNetworkInfo1.CompareTo(RemoteRoamingNetworkInfo2) < 0;
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public static Boolean operator > (RoamingNetworkInfo RemoteRoamingNetworkInfo1, RoamingNetworkInfo RemoteRoamingNetworkInfo2)
         {
 
-            if ((Object) RemoteRoamingNetworkInfo1 == null)
+            if ((Object) RemoteRoamingNetworkInfo1 is null)
                 throw new ArgumentNullException("The given RemoteRoamingNetworkInfo1 must not be null!");
 
             return RemoteRoamingNetworkInfo1.CompareTo(RemoteRoamingNetworkInfo2) > 0;
@@ -387,12 +387,12 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             // Check if the given object is an RemoteRoamingNetworkInfo.
             var RemoteRoamingNetworkInfo = Object as RoamingNetworkInfo;
-            if ((Object) RemoteRoamingNetworkInfo == null)
+            if ((Object) RemoteRoamingNetworkInfo is null)
                 throw new ArgumentException("The given object is not a RemoteRoamingNetworkInfo!");
 
             return CompareTo(RemoteRoamingNetworkInfo);
@@ -410,7 +410,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public Int32 CompareTo(RoamingNetworkInfo RemoteRoamingNetworkInfo)
         {
 
-            if ((Object) RemoteRoamingNetworkInfo == null)
+            if ((Object) RemoteRoamingNetworkInfo is null)
                 throw new ArgumentNullException(nameof(RemoteRoamingNetworkInfo), "The given RemoteRoamingNetworkInfo must not be null!");
 
             var result = RoamingNetworkId.CompareTo(RemoteRoamingNetworkInfo.RoamingNetworkId);
@@ -438,12 +438,12 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an RemoteRoamingNetworkInfo.
             var RemoteRoamingNetworkInfo = Object as RoamingNetworkInfo;
-            if ((Object) RemoteRoamingNetworkInfo == null)
+            if ((Object) RemoteRoamingNetworkInfo is null)
                 return false;
 
             return this.Equals(RemoteRoamingNetworkInfo);
@@ -462,7 +462,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public Boolean Equals(RoamingNetworkInfo RemoteRoamingNetworkInfo)
         {
 
-            if ((Object) RemoteRoamingNetworkInfo == null)
+            if ((Object) RemoteRoamingNetworkInfo is null)
                 return false;
 
             if (!RoamingNetworkId.Equals(RemoteRoamingNetworkInfo.RoamingNetworkId))

@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (CountryCode == null)
+            if (CountryCode is null)
                 throw new ArgumentNullException(nameof(CountryCode),  "The given country must not be null!");
 
             if (Suffix.IsNullOrEmpty())
@@ -349,7 +349,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargingStationOperatorId1 == null) || ((Object) ChargingStationOperatorId2 == null))
+            if (((Object) ChargingStationOperatorId1 is null) || ((Object) ChargingStationOperatorId2 is null))
                 return false;
 
             return ChargingStationOperatorId1.Equals(ChargingStationOperatorId2);
@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (GridOperator_Id ChargingStationOperatorId1, GridOperator_Id ChargingStationOperatorId2)
         {
 
-            if ((Object) ChargingStationOperatorId1 == null)
+            if ((Object) ChargingStationOperatorId1 is null)
                 throw new ArgumentNullException("The given ChargingStationOperatorId1 must not be null!");
 
             return ChargingStationOperatorId1.CompareTo(ChargingStationOperatorId2) < 0;
@@ -419,7 +419,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (GridOperator_Id ChargingStationOperatorId1, GridOperator_Id ChargingStationOperatorId2)
         {
 
-            if ((Object) ChargingStationOperatorId1 == null)
+            if ((Object) ChargingStationOperatorId1 is null)
                 throw new ArgumentNullException("The given ChargingStationOperatorId1 must not be null!");
 
             return ChargingStationOperatorId1.CompareTo(ChargingStationOperatorId2) > 0;
@@ -456,7 +456,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             if (!(Object is GridOperator_Id))
@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(GridOperator_Id ChargingStationOperatorId)
         {
 
-            if ((Object) ChargingStationOperatorId == null)
+            if ((Object) ChargingStationOperatorId is null)
                 throw new ArgumentNullException(nameof(ChargingStationOperatorId), "The given charging station operator identification must not be null!");
 
             // Compare the length of the ChargingStationOperatorIds
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             if (!(Object is GridOperator_Id))
@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(GridOperator_Id ChargingStationOperatorId)
         {
 
-            if ((Object) ChargingStationOperatorId == null)
+            if ((Object) ChargingStationOperatorId is null)
                 return false;
 
             return CountryCode.Equals(ChargingStationOperatorId.CountryCode) &&

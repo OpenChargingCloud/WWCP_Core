@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                        ? RejectedEVSEAdminStatusUpdates
                                                        : Array.Empty<EVSEAdminStatusUpdate>();
 
-            this.Warnings                        = Warnings != null
+            this.Warnings                        = Warnings is not null
                                                        ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
                                                        : Array.Empty<Warning>();
 
@@ -586,7 +586,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (PushEVSEAdminStatusResults == null || !PushEVSEAdminStatusResults.Any())
+            if (PushEVSEAdminStatusResults is null || !PushEVSEAdminStatusResults.Any())
                 return new PushEVSEAdminStatusResult(SenderId,
                                                      ISendAdminStatus,
                                                      PushEVSEAdminStatusResultTypes.Error,
@@ -603,14 +603,14 @@ namespace cloud.charging.open.protocols.WWCP
                                                      ToDictionary(_ => _.Key,
                                                                   _ => new List<PushEVSEAdminStatusResult>(_));
 
-            var Descriptions                   = All.Where       (_ => _ != null).
+            var Descriptions                   = All.Where       (_ => _ is not null).
                                                      SafeSelect  (_ => _.Description).
                                                      AggregateWith(Environment.NewLine);
 
-            var RejectedEVSEAdminStatusUpdates = All.Where       (_ => _ != null).
+            var RejectedEVSEAdminStatusUpdates = All.Where       (_ => _ is not null).
                                                      SelectMany  (_ => _.RejectedEVSEAdminStatusUpdates);
 
-            var Warnings                       = All.Where       (_ => _ != null).
+            var Warnings                       = All.Where       (_ => _ is not null).
                                                      SelectMany  (_ => _.Warnings);
 
 

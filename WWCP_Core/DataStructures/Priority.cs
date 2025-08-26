@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Priority1 == null) || ((Object) Priority2 == null))
+            if (((Object) Priority1 is null) || ((Object) Priority2 is null))
                 return false;
 
             return Priority1.Equals(Priority2);
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator < (Priority Priority1, Priority Priority2)
         {
 
-            if ((Object) Priority1 == null)
+            if ((Object) Priority1 is null)
                 throw new ArgumentNullException(nameof(Priority1), "The given Priority1 must not be null!");
 
             return Priority1.CompareTo(Priority2) < 0;
@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator > (Priority Priority1, Priority Priority2)
         {
 
-            if ((Object) Priority1 == null)
+            if ((Object) Priority1 is null)
                 throw new ArgumentNullException(nameof(Priority1), "The given Priority1 must not be null!");
 
             return Priority1.CompareTo(Priority2) > 0;
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             if (!(Object is Priority))
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(Priority Priority)
         {
 
-            if ((Object) Priority == null)
+            if ((Object) Priority is null)
                 throw new ArgumentNullException(nameof(Priority),  "The given brand identification must not be null!");
 
             return InternalId.CompareTo(Priority.InternalId);
@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             if (!(Object is Priority))
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(Priority Priority)
         {
 
-            if ((Object) Priority == null)
+            if ((Object) Priority is null)
                 return false;
 
             return InternalId.Equals(Priority.InternalId);
