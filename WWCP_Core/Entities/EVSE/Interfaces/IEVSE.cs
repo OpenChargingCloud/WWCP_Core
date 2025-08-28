@@ -200,22 +200,22 @@ namespace cloud.charging.open.protocols.WWCP
         CurrentTypes                           CurrentType                  { get; set; }
 
         /// <summary>
-        /// The average voltage of this EVSE.
+        /// The maximum voltage of this EVSE.
         /// </summary>
         [Optional, SlowData]
-        Volt?                                  RMSVoltage               { get; set; }
+        Volt?                                  MaxVoltage               { get; set; }
 
         /// <summary>
-        /// The real-time average voltage of this EVSE.
+        /// The real-time maximum voltage of this EVSE.
         /// </summary>
         [Optional, FastData]
-        Timestamped<Volt>?                     RMSVoltageRealTime       { get; set; }
+        Timestamped<Volt>?                     MaxVoltageRealTime       { get; set; }
 
         /// <summary>
-        /// Prognoses on future values of the average voltage of this EVSE.
+        /// Prognoses on future values of the maximum voltage of this EVSE.
         /// </summary>
         [Optional, FastData]
-        ReactiveSet<Timestamped<Volt>>         RMSVoltagePrognoses      { get; }
+        ReactiveSet<Timestamped<Volt>>         MaxVoltagePrognoses      { get; }
 
 
         /// <summary>

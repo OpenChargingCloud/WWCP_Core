@@ -213,15 +213,15 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region RMSVoltage
+        #region MaxVoltage
 
         private Volt? averageVoltage;
 
         /// <summary>
-        /// The average voltage.
+        /// The maximum voltage.
         /// </summary>
         [Optional, SlowData]
-        public Volt? RMSVoltage
+        public Volt? MaxVoltage
         {
 
             get
@@ -252,15 +252,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region RMSVoltageRealTime
+        #region MaxVoltageRealTime
 
         private Timestamped<Volt>? averageVoltageRealTime;
 
         /// <summary>
-        /// The real-time average voltage.
+        /// The real-time maximum voltage.
         /// </summary>
         [Optional, FastData]
-        public Timestamped<Volt>? RMSVoltageRealTime
+        public Timestamped<Volt>? MaxVoltageRealTime
         {
 
             get
@@ -289,10 +289,10 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         /// <summary>
-        /// Prognoses on future values of the average voltage.
+        /// Prognoses on future values of the maximum voltage.
         /// </summary>
         [Optional, FastData]
-        public ReactiveSet<Timestamped<Volt>>           RMSVoltagePrognoses     { get; }
+        public ReactiveSet<Timestamped<Volt>>           MaxVoltagePrognoses     { get; }
 
 
         #region MaxCurrent
@@ -885,9 +885,9 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<ChargingModes>?          ChargingModes                = null,
                     IEnumerable<ChargingTariff>?         ChargingTariffs              = null,
                     CurrentTypes?                        CurrentType                  = null,
-                    Volt?                                RMSVoltage                   = null,
-                    Timestamped<Volt>?                   RMSVoltageRealTime           = null,
-                    IEnumerable<Timestamped<Volt>>?      RMSVoltagePrognoses          = null,
+                    Volt?                                MaxVoltage                   = null,
+                    Timestamped<Volt>?                   MaxVoltageRealTime           = null,
+                    IEnumerable<Timestamped<Volt>>?      MaxVoltagePrognoses          = null,
                     Ampere?                              MaxCurrent                   = null,
                     Timestamped<Ampere>?                 MaxCurrentRealTime           = null,
                     IEnumerable<Timestamped<Ampere>>?    MaxCurrentPrognoses          = null,
@@ -1024,16 +1024,16 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.currentType                        = CurrentType ?? CurrentTypes.AC_ThreePhases;
 
-            this.averageVoltage                     = RMSVoltage;
-            this.averageVoltageRealTime             = RMSVoltageRealTime;
+            this.averageVoltage                     = MaxVoltage;
+            this.averageVoltageRealTime             = MaxVoltageRealTime;
 
-            this.RMSVoltagePrognoses            = RMSVoltagePrognoses is null
+            this.MaxVoltagePrognoses            = MaxVoltagePrognoses is null
                                                           ? []
-                                                          : [.. RMSVoltagePrognoses];
-            this.RMSVoltagePrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
+                                                          : [.. MaxVoltagePrognoses];
+            this.MaxVoltagePrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
-                PropertyChanged("RMSVoltagePrognoses",
+                PropertyChanged("MaxVoltagePrognoses",
                                 oldItems,
                                 newItems);
 
@@ -1186,14 +1186,14 @@ namespace cloud.charging.open.protocols.WWCP
             ChargingModes.          Replace(OtherEVSE.ChargingModes);
             ChargingConnectors.     Replace(OtherEVSE.ChargingConnectors);
             DataLicenses.           Replace(OtherEVSE.DataLicenses);
-            RMSVoltagePrognoses.Replace(OtherEVSE.RMSVoltagePrognoses);
+            MaxVoltagePrognoses.Replace(OtherEVSE.MaxVoltagePrognoses);
             MaxCurrentPrognoses.    Replace(OtherEVSE.MaxCurrentPrognoses);
             MaxPowerPrognoses.      Replace(OtherEVSE.MaxPowerPrognoses);
             MaxCapacityPrognoses.   Replace(OtherEVSE.MaxCapacityPrognoses);
 
             CurrentType                = OtherEVSE.CurrentType;
-            RMSVoltage             = OtherEVSE.RMSVoltage;
-            RMSVoltageRealTime     = OtherEVSE.RMSVoltageRealTime;
+            MaxVoltage             = OtherEVSE.MaxVoltage;
+            MaxVoltageRealTime     = OtherEVSE.MaxVoltageRealTime;
             MaxCurrent                 = OtherEVSE.MaxCurrent;
             MaxCurrentRealTime         = OtherEVSE.MaxCurrentRealTime;
             MaxPower                   = OtherEVSE.MaxPower;
@@ -3044,8 +3044,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                        new JProperty("currentType", CurrentType.ToText()),
 
-                                       RMSVoltage.HasValue && RMSVoltage.Value.Value > 0
-                                           ? new JProperty("averageVoltage",        Math.Round(RMSVoltage.Value.Value, 2))
+                                       MaxVoltage.HasValue && MaxVoltage.Value.Value > 0
+                                           ? new JProperty("averageVoltage",        Math.Round(MaxVoltage.Value.Value, 2))
                                            : null,
 
                                        MaxCurrent.    HasValue && MaxCurrent.    Value.Value > 0

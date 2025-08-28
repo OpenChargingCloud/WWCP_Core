@@ -131,27 +131,27 @@
 
 //        #endregion
 
-//        #region RMSVoltage
+//        #region MaxVoltage
 
-//        private Double _RMSVoltage;
+//        private Double _MaxVoltage;
 
 //        /// <summary>
-//        /// The average voltage.
+//        /// The maximum voltage.
 //        /// </summary>
 //        [Mandatory]
-//        public Double RMSVoltage
+//        public Double MaxVoltage
 //        {
 
 //            get
 //            {
-//                return _RMSVoltage;
+//                return _MaxVoltage;
 //            }
 
 //            set
 //            {
 
-//                if (_RMSVoltage != value)
-//                    SetProperty(ref _RMSVoltage, value);
+//                if (_MaxVoltage != value)
+//                    SetProperty(ref _MaxVoltage, value);
 
 //            }
 
