@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Text;
 
 #endregion
 
