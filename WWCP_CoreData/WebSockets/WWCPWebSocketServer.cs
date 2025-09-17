@@ -991,7 +991,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <param name="CancellationToken">A cancellation token.</param>
         public async Task<SentMessageResult> SendJSONMessage(WebSocketServerConnection  WebSocketConnection,
                                                              JArray                     JSONMessage,
-                                                             DateTime                   RequestTimestamp,
+                                                             DateTimeOffset             RequestTimestamp,
                                                              EventTracking_Id           EventTrackingId,
                                                              CancellationToken          CancellationToken = default)
         {
@@ -1047,7 +1047,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <param name="CancellationToken">A cancellation token.</param>
         public async Task<SentMessageResult> SendBinaryMessage(WebSocketServerConnection  WebSocketConnection,
                                                                Byte[]                     BinaryMessage,
-                                                               DateTime                   RequestTimestamp,
+                                                               DateTimeOffset             RequestTimestamp,
                                                                EventTracking_Id           EventTrackingId,
                                                                CancellationToken          CancellationToken = default)
         {
@@ -1093,11 +1093,11 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #region (protected) SendOnJSONMessageSent   (...)
 
-        protected Task SendOnJSONMessageSent(DateTime                    Timestamp,
+        protected Task SendOnJSONMessageSent(DateTimeOffset            Timestamp,
                                              IWWCPWebSocketServer        Server,
                                              WebSocketServerConnection   WebSocketConnection,
                                              EventTracking_Id            EventTrackingId,
-                                             DateTime                    MessageTimestamp,
+                                             DateTimeOffset            MessageTimestamp,
                                              JArray                      JSONMessage,
                                              SentStatus                  SentStatus,
                                              CancellationToken           CancellationToken)
@@ -1120,11 +1120,11 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #region (protected) SendOnBinaryMessageSent (...)
 
-        protected Task SendOnBinaryMessageSent(DateTime                    Timestamp,
+        protected Task SendOnBinaryMessageSent(DateTimeOffset            Timestamp,
                                                IWWCPWebSocketServer        Server,
                                                WebSocketServerConnection   WebSocketConnection,
                                                EventTracking_Id            EventTrackingId,
-                                               DateTime                    MessageTimestamp,
+                                               DateTimeOffset            MessageTimestamp,
                                                Byte[]                      BinaryMessage,
                                                SentStatus                  SentStatus,
                                                CancellationToken           CancellationToken)

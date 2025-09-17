@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.WWCP
             => DefaultJSONLDContext;
 
         public RegisterEMobilityAccountData_Id  Id                          { get; }
-        public DateTime                         CreationTimestamp           { get; }
+        public DateTimeOffset                   CreationTimestamp           { get; }
         public String                           Username                    { get; }
         public String                           Password                    { get; }
         public SimpleEMailAddress               EMailAddress                { get; }
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.WWCP
                                             IEnumerable<SimpleEMailAddress>?  AdditionalEMailAddresses   = null,
                                             PhoneNumber?                      PhoneNumber                = null,
                                             RegisterEMobilityAccountData_Id?  Id                         = null,
-                                            DateTime?                         CreationTimestamp          = null)
+                                            DateTimeOffset?                   CreationTimestamp          = null)
         {
 
             this.Id                        = Id                                   ?? RegisterEMobilityAccountData_Id.Random();

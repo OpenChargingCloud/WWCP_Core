@@ -509,11 +509,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region AddSigningRule (...)
 
-        public SignaturePolicy AddSigningRule(JSONLDContext                        Context,
-                                              KeyPair                              KeyPair,
-                                              Func<ISignableMessage, String>?      UserIdGenerator        = null,
-                                              Func<ISignableMessage, I18NString>?  DescriptionGenerator   = null,
-                                              Func<ISignableMessage, DateTime>?    TimestampGenerator     = null)
+        public SignaturePolicy AddSigningRule(JSONLDContext                            Context,
+                                              KeyPair                                  KeyPair,
+                                              Func<ISignableMessage, String>?          UserIdGenerator        = null,
+                                              Func<ISignableMessage, I18NString>?      DescriptionGenerator   = null,
+                                              Func<ISignableMessage, DateTimeOffset>?  TimestampGenerator     = null)
         {
 
             lock (signingRules)
@@ -541,12 +541,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region AddSigningRule (Priority, ...)
 
-        public SignaturePolicy AddSigningRule(UInt32                               Priority,
-                                              JSONLDContext                        Context,
-                                              KeyPair                              KeyPair,
-                                              Func<ISignableMessage, String>?      UserIdGenerator        = null,
-                                              Func<ISignableMessage, I18NString>?  DescriptionGenerator   = null,
-                                              Func<ISignableMessage, DateTime>?    TimestampGenerator     = null)
+        public SignaturePolicy AddSigningRule(UInt32                                   Priority,
+                                              JSONLDContext                            Context,
+                                              KeyPair                                  KeyPair,
+                                              Func<ISignableMessage, String>?          UserIdGenerator        = null,
+                                              Func<ISignableMessage, I18NString>?      DescriptionGenerator   = null,
+                                              Func<ISignableMessage, DateTimeOffset>?  TimestampGenerator     = null)
         {
 
             lock (signingRules)

@@ -32,19 +32,19 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
         #region Properties
 
-        public NetworkingNode_Id      NetworkingNodeId       { get; }
+        public NetworkingNode_Id   NetworkingNodeId        { get; }
 
-        public IWebSocketClient?  EEBusWebSocketClient    { get; }
+        public IWebSocketClient?   EEBusWebSocketClient    { get; }
 
-        public IWebSocketServer?  EEBusWebSocketServer    { get; }
+        public IWebSocketServer?   EEBusWebSocketServer    { get; }
 
-        public NetworkingNode_Id?     NetworkingHub          { get; }
+        public NetworkingNode_Id?  NetworkingHub           { get; }
 
-        public Byte                   Priority               { get; }
+        public Byte                Priority                { get; }
 
-        public DateTime               Timestamp              { get; }
+        public DateTimeOffset      Timestamp               { get; }
 
-        public DateTime?              Timeout                { get; }
+        public DateTimeOffset?     Timeout                 { get; }
 
         #endregion
 
@@ -52,18 +52,18 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
         #region Reachability(NetworkingNodeId, EEBusWebSocketClient, Priority = 0, Timestamp = null, Timeout = null)
 
-        public Reachability(NetworkingNode_Id     NetworkingNodeId,
-                            IWebSocketClient  EEBusWebSocketClient,
-                            Byte?                 Priority    = 0,
-                            DateTime?             Timestamp   = null,
-                            DateTime?             Timeout     = null)
+        public Reachability(NetworkingNode_Id  NetworkingNodeId,
+                            IWebSocketClient   EEBusWebSocketClient,
+                            Byte?              Priority    = 0,
+                            DateTimeOffset?    Timestamp   = null,
+                            DateTimeOffset?    Timeout     = null)
         {
 
-            this.NetworkingNodeId     = NetworkingNodeId;
+            this.NetworkingNodeId      = NetworkingNodeId;
             this.EEBusWebSocketClient  = EEBusWebSocketClient;
-            this.Priority             = Priority  ?? 0;
-            this.Timestamp            = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            this.Timeout              = Timeout;
+            this.Priority              = Priority  ?? 0;
+            this.Timestamp             = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            this.Timeout               = Timeout;
 
         }
 
@@ -71,18 +71,18 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
         #region Reachability(NetworkingNodeId, EEBusWebSocketServer, Priority = 0, Timestamp = null, Timeout = null)
 
-        public Reachability(NetworkingNode_Id     NetworkingNodeId,
-                            IWebSocketServer  EEBusWebSocketServer,
-                            Byte?                 Priority    = 0,
-                            DateTime?             Timestamp   = null,
-                            DateTime?             Timeout     = null)
+        public Reachability(NetworkingNode_Id  NetworkingNodeId,
+                            IWebSocketServer   EEBusWebSocketServer,
+                            Byte?              Priority    = 0,
+                            DateTimeOffset?    Timestamp   = null,
+                            DateTimeOffset?    Timeout     = null)
         {
 
-            this.NetworkingNodeId     = NetworkingNodeId;
+            this.NetworkingNodeId      = NetworkingNodeId;
             this.EEBusWebSocketServer  = EEBusWebSocketServer;
-            this.Priority             = Priority  ?? 0;
-            this.Timestamp            = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            this.Timeout              = Timeout;
+            this.Priority              = Priority  ?? 0;
+            this.Timestamp             = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            this.Timeout               = Timeout;
 
         }
 
@@ -93,8 +93,8 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         public Reachability(NetworkingNode_Id  NetworkingNodeId,
                             NetworkingNode_Id  NetworkingHub,
                             Byte?              Priority    = 0,
-                            DateTime?          Timestamp   = null,
-                            DateTime?          Timeout     = null)
+                            DateTimeOffset?    Timestamp   = null,
+                            DateTimeOffset?    Timeout     = null)
         {
 
             this.NetworkingNodeId     = NetworkingNodeId;

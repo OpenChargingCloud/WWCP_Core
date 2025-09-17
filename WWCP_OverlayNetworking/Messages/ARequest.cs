@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// The timestamp of the request message creation.
         /// </summary>
         [Mandatory]
-        public DateTime           RequestTimestamp     { get; }
+        public DateTimeOffset     RequestTimestamp     { get; }
 
         /// <summary>
         /// The timeout of this request.

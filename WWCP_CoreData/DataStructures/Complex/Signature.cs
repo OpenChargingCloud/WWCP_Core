@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The optional timestamp of the message signature.
         /// </summary>
         [Optional]
-        public DateTime?            Timestamp         { get; }
+        public DateTimeOffset?      Timestamp         { get; }
 
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.WWCP
                          CryptoEncoding?       Encoding        = null,
                          String?               Name            = null,
                          I18NString?           Description     = null,
-                         DateTime?             Timestamp       = null,
+                         DateTimeOffset?       Timestamp       = null,
                          CustomData?           CustomData      = null)
 
             : base(CustomData)

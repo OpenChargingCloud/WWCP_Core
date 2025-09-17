@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Payload">The binary response message payload.</param>
     /// <param name="CancellationToken">The cancellation token.</param>
-    public class BinaryResponseMessage(DateTime           ResponseTimestamp,
+    public class BinaryResponseMessage(DateTimeOffset     ResponseTimestamp,
                                        EventTracking_Id   EventTrackingId,
                                        NetworkingMode     NetworkingMode,
                                        NetworkingNode_Id  DestinationId,
@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
         /// <summary>
         /// The response time stamp.
         /// </summary>
-        public DateTime           ResponseTimestamp    { get; }      = ResponseTimestamp;
+        public DateTimeOffset     ResponseTimestamp    { get; }      = ResponseTimestamp;
 
         /// <summary>
         /// The event tracking identification.

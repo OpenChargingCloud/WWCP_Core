@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The timestamp of the message creation.
         /// </summary>
         [Mandatory]
-        DateTime           MessageTimestamp     { get; }
+        DateTimeOffset     MessageTimestamp     { get; }
 
         /// <summary>
         /// The event tracking identification for correlating this message with other events.

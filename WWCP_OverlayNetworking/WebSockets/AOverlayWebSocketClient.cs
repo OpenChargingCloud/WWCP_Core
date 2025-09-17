@@ -40,22 +40,22 @@ using cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets;
 namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 {
 
-    public delegate Task  OnWebSocketClientJSONMessageResponseDelegate  (DateTime           Timestamp,
+    public delegate Task  OnWebSocketClientJSONMessageResponseDelegate  (DateTimeOffset     Timestamp,
                                                                          IEventSender       Client,
                                                                          EventTracking_Id   EventTrackingId,
-                                                                         DateTime           RequestTimestamp,
+                                                                         DateTimeOffset     RequestTimestamp,
                                                                          JArray?            JSONRequestMessage,
                                                                          Byte[]?            BinaryRequestMessage,
-                                                                         DateTime           ResponseTimestamp,
+                                                                         DateTimeOffset     ResponseTimestamp,
                                                                          JArray             ResponseMessage);
 
-    public delegate Task  OnWebSocketClientBinaryMessageResponseDelegate(DateTime           Timestamp,
+    public delegate Task  OnWebSocketClientBinaryMessageResponseDelegate(DateTimeOffset     Timestamp,
                                                                          IEventSender       Client,
                                                                          EventTracking_Id   EventTrackingId,
-                                                                         DateTime           RequestTimestamp,
+                                                                         DateTimeOffset     RequestTimestamp,
                                                                          JArray?            JSONRequestMessage,
                                                                          Byte[]?            BinaryRequestMessage,
-                                                                         DateTime           ResponseTimestamp,
+                                                                         DateTimeOffset     ResponseTimestamp,
                                                                          Byte[]             ResponseMessage);
 
 
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="TextMessage">The received text message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public async Task ProcessWebSocketTextFrame(DateTime                   RequestTimestamp,
+        public async Task ProcessWebSocketTextFrame(DateTimeOffset             RequestTimestamp,
                                                     WebSocketClient            Client,
                                                     WebSocketClientConnection  Connection,
                                                     WebSocketFrame             Frame,
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(AOverlayWebSocketClient) + "." + nameof(OnJSONMessageResponseSent));
+                                DebugX.LogException(e, nameof(AOverlayWebSocketClient) + "." + nameof(OnJSONMessageResponseSent));
                             }
 
                             #endregion
@@ -482,7 +482,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(AOverlayWebSocketClient) + "." + nameof(OnBinaryMessageResponseSent));
+                                DebugX.LogException(e, nameof(AOverlayWebSocketClient) + "." + nameof(OnBinaryMessageResponseSent));
                             }
 
                             #endregion
@@ -525,7 +525,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(e, nameof(AOverlayWebSocketClient) + "." + nameof(OnJSONMessageResponseReceived));
+                            DebugX.LogException(e, nameof(AOverlayWebSocketClient) + "." + nameof(OnJSONMessageResponseReceived));
                         }
 
                         #endregion
@@ -563,7 +563,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(e, nameof(AOverlayWebSocketClient) + "." + nameof(OnJSONMessageResponseReceived));
+                            DebugX.LogException(e, nameof(AOverlayWebSocketClient) + "." + nameof(OnJSONMessageResponseReceived));
                         }
 
                         #endregion
@@ -620,7 +620,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="BinaryMessage">The received binary message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public async Task ProcessWebSocketBinaryFrame(DateTime                   RequestTimestamp,
+        public async Task ProcessWebSocketBinaryFrame(DateTimeOffset             RequestTimestamp,
                                                       WebSocketClient            Client,
                                                       WebSocketClientConnection  Connection,
                                                       WebSocketFrame             Frame,
@@ -643,9 +643,9 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                      if (BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequest,  out var requestParsingError, RequestTimestamp, EventTrackingId, null, CancellationToken)  && binaryRequest  is not null)
                 {
 
-                    JSONResponseMessage?    EEBusJSONResponse     = null;
-                    BinaryResponseMessage?  EEBusBinaryResponse   = null;
-                    JSONRequestErrorMessage?       EEBusErrorResponse    = null;
+                    JSONResponseMessage?     EEBusJSONResponse     = null;
+                    BinaryResponseMessage?   EEBusBinaryResponse   = null;
+                    JSONRequestErrorMessage? EEBusErrorResponse    = null;
 
                     // Try to call the matching 'incoming message processor'
                     if (incomingMessageProcessorsLookup.TryGetValue(binaryRequest.Action, out var methodInfo) && methodInfo is not null)
@@ -708,7 +708,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(AOverlayWebSocketClient) + "." + nameof(OnJSONMessageResponseSent));
+                                DebugX.LogException(e, nameof(AOverlayWebSocketClient) + "." + nameof(OnJSONMessageResponseSent));
                             }
 
                             #endregion
@@ -758,7 +758,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(AOverlayWebSocketClient) + "." + nameof(OnBinaryMessageResponseSent));
+                                DebugX.LogException(e, nameof(AOverlayWebSocketClient) + "." + nameof(OnBinaryMessageResponseSent));
                             }
 
                             #endregion
@@ -800,7 +800,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(e, nameof(AOverlayWebSocketClient) + "." + nameof(OnBinaryMessageResponseReceived));
+                            DebugX.LogException(e, nameof(AOverlayWebSocketClient) + "." + nameof(OnBinaryMessageResponseReceived));
                         }
 
                         #endregion

@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
     /// <param name="RequestTimeout">The request time out.</param>
     /// <param name="ErrorMessage">An optional error message, e.g. during sending of the message.</param>
     /// <param name="CancellationToken">The cancellation token.</param>
-    public class BinaryRequestMessage(DateTime           RequestTimestamp,
+    public class BinaryRequestMessage(DateTimeOffset     RequestTimestamp,
                                       EventTracking_Id   EventTrackingId,
                                       NetworkingMode     NetworkingMode,
                                       NetworkingNode_Id  DestinationId,
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
                                       Request_Id         RequestId,
                                       String             Action,
                                       Byte[]             Payload,
-                                      DateTime?          RequestTimeout      = null,
+                                      DateTimeOffset?    RequestTimeout      = null,
                                       String?            ErrorMessage        = null,
                                       CancellationToken  CancellationToken   = default)
     {
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
         /// <summary>
         /// The request time stamp.
         /// </summary>
-        public DateTime           RequestTimestamp     { get; }      = RequestTimestamp;
+        public DateTimeOffset     RequestTimestamp     { get; }      = RequestTimestamp;
 
         /// <summary>
         /// The event tracking identification.
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
         /// </summary>
         public Byte[]             Payload              { get; }      = Payload;
 
-        public DateTime           RequestTimeout       { get; set; } = RequestTimeout ?? (RequestTimestamp + DefaultTimeout);
+        public DateTimeOffset     RequestTimeout       { get; set; } = RequestTimeout ?? (RequestTimestamp + DefaultTimeout);
 
         /// <summary>
         /// The optional error message, e.g. during sending of the message.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
         /// <param name="Request">A request message.</param>
         /// <param name="SerializedRequest">The serialized request message.</param>
         public static BinaryRequestMessage FromRequest(IRequest  Request,
-                                                            Byte[]    SerializedRequest)
+                                                       Byte[]    SerializedRequest)
 
             => new (Timestamp.Now,
                     Request.EventTrackingId,
@@ -163,13 +163,13 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
         /// <param name="BinaryRequestMessage">The parsed EEBus WebSocket request message.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP WebSockets connection.</param>
-        public static Boolean TryParse(Byte[]                          Binary,
+        public static Boolean TryParse(Byte[]                     Binary,
                                        out BinaryRequestMessage?  BinaryRequestMessage,
-                                       out String?                     ErrorResponse,
-                                       DateTime?                       RequestTimestamp       = null,
-                                       EventTracking_Id?               EventTrackingId        = null,
-                                       NetworkingNode_Id?              ImplicitSourceNodeId   = null,
-                                       CancellationToken               CancellationToken      = default)
+                                       out String?                ErrorResponse,
+                                       DateTimeOffset?            RequestTimestamp       = null,
+                                       EventTracking_Id?          EventTrackingId        = null,
+                                       NetworkingNode_Id?         ImplicitSourceNodeId   = null,
+                                       CancellationToken          CancellationToken      = default)
         {
 
             BinaryRequestMessage  = null;

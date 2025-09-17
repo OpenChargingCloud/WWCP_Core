@@ -44,15 +44,15 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
     /// 
     /// <param name="JSONRequestErrorMessage">An optional JSON request error message.</param>
     /// <param name="JSONResponseErrorMessage">An optional JSON response error message.</param>
-    public class SendRequestState(DateTime                   RequestTimestamp,
+    public class SendRequestState(DateTimeOffset             RequestTimestamp,
                                   NetworkingNode_Id          DestinationNodeId,
                                   NetworkPath                NetworkPath,
-                                  DateTime                   Timeout,
+                                  DateTimeOffset             Timeout,
 
                                   JSONRequestMessage?        JSONRequest                = null,
                                   BinaryRequestMessage?      BinaryRequest              = null,
 
-                                  DateTime?                  ResponseTimestamp          = null,
+                                  DateTimeOffset?            ResponseTimestamp          = null,
                                   JSONResponseMessage?       JSONResponse               = null,
                                   BinaryResponseMessage?     BinaryResponse             = null,
 
@@ -65,23 +65,23 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// The time stamp of the request.
         /// </summary>
-        public DateTime                        RequestTimestamp            { get; }      = RequestTimestamp;
+        public DateTimeOffset             RequestTimestamp            { get; }      = RequestTimestamp;
 
         /// <summary>
         /// The destination network node identification of the request
         /// and thus the expected source of the response.
         /// </summary>
-        public NetworkingNode_Id               DestinationNodeId           { get; }      = DestinationNodeId;
+        public NetworkingNode_Id          DestinationNodeId           { get; }      = DestinationNodeId;
 
         /// <summary>
         /// The network (source) path of the response.
         /// </summary>
-        public NetworkPath                     NetworkPath                 { get; set; } = NetworkPath;
+        public NetworkPath                NetworkPath                 { get; set; } = NetworkPath;
 
         /// <summary>
         /// The timeout of the request.
         /// </summary>
-        public DateTime                        Timeout                     { get; }      = Timeout;
+        public DateTimeOffset             Timeout                     { get; }      = Timeout;
 
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// The time stamp of the response.
         /// </summary>
-        public DateTime?                       ResponseTimestamp           { get; set; } = ResponseTimestamp;
+        public DateTimeOffset?            ResponseTimestamp           { get; set; } = ResponseTimestamp;
 
         /// <summary>
         /// The JSON response message.
@@ -123,14 +123,14 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// No Errors.
         /// </summary>
-        public Boolean                         NoErrors
+        public Boolean                    NoErrors
              => JSONRequestErrorMessage  is null &&
                 JSONResponseErrorMessage is null;
 
         /// <summary>
         /// Errors occurred.
         /// </summary>
-        public Boolean                         HasErrors
+        public Boolean                    HasErrors
              => JSONRequestErrorMessage  is not null ||
                 JSONResponseErrorMessage is not null;
 
@@ -173,17 +173,17 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
 
         #region (static) FromJSONRequest  (...)
-        public static SendRequestState FromJSONRequest(DateTime                     RequestTimestamp,
-                                                       NetworkingNode_Id            DestinationNodeId,
-                                                       DateTime                     Timeout,
+        public static SendRequestState FromJSONRequest(DateTimeOffset            RequestTimestamp,
+                                                       NetworkingNode_Id         DestinationNodeId,
+                                                       DateTimeOffset            Timeout,
 
-                                                       JSONRequestMessage?     JSONRequest         = null,
+                                                       JSONRequestMessage?       JSONRequest               = null,
 
-                                                       DateTime?                    ResponseTimestamp   = null,
-                                                       JSONResponseMessage?    JSONResponse        = null,
-                                                       BinaryResponseMessage?  BinaryResponse      = null,
+                                                       DateTimeOffset?           ResponseTimestamp         = null,
+                                                       JSONResponseMessage?      JSONResponse              = null,
+                                                       BinaryResponseMessage?    BinaryResponse            = null,
 
-                                                       JSONRequestErrorMessage?  JSONRequestErrorMessage = null)
+                                                       JSONRequestErrorMessage?  JSONRequestErrorMessage   = null)
 
             => new (RequestTimestamp,
                     DestinationNodeId,
@@ -203,17 +203,17 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
         #region (static) FromBinaryRequest(...)
 
-        public static SendRequestState FromBinaryRequest(DateTime                     RequestTimestamp,
-                                                         NetworkingNode_Id            NetworkingNodeId,
-                                                         DateTime                     Timeout,
+        public static SendRequestState FromBinaryRequest(DateTimeOffset            RequestTimestamp,
+                                                         NetworkingNode_Id         NetworkingNodeId,
+                                                         DateTimeOffset            Timeout,
 
-                                                         BinaryRequestMessage?   BinaryRequest       = null,
+                                                         BinaryRequestMessage?     BinaryRequest             = null,
 
-                                                         DateTime?                    ResponseTimestamp   = null,
-                                                         JSONResponseMessage?    JSONResponse        = null,
-                                                         BinaryResponseMessage?  BinaryResponse      = null,
+                                                         DateTimeOffset?           ResponseTimestamp         = null,
+                                                         JSONResponseMessage?      JSONResponse              = null,
+                                                         BinaryResponseMessage?    BinaryResponse            = null,
 
-                                                         JSONRequestErrorMessage?  JSONRequestErrorMessage = null)
+                                                         JSONRequestErrorMessage?  JSONRequestErrorMessage   = null)
 
             => new (RequestTimestamp,
                     NetworkingNodeId,

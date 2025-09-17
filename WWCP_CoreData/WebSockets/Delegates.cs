@@ -29,51 +29,51 @@ using WWCPNN = cloud.charging.open.protocols.WWCP.NetworkingNode;
 namespace cloud.charging.open.protocols.WWCP.WebSockets
 {
 
-    public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,
+    public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTimeOffset            Timestamp,
                                                                   WWCPNN.INetworkingNode      Server,
                                                                   IWebSocketConnection        Connection,
                                                                   WWCPNN.NetworkingNode_Id    DestinationId,
                                                                   WWCPNN.NetworkPath          NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
+                                                                  DateTimeOffset            RequestTimestamp,
                                                                   JArray                      RequestMessage,
                                                                   CancellationToken           CancellationToken);
 
-    public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTime                    Timestamp,
+    public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTimeOffset            Timestamp,
                                                                   WWCPNN.INetworkingNode      Server,
                                                                   IWebSocketConnection        Connection,
                                                                   WWCPNN.NetworkingNode_Id    DestinationId,
                                                                   WWCPNN.NetworkPath          NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
+                                                                  DateTimeOffset            RequestTimestamp,
                                                                   JArray                      JSONRequestMessage,
                                                                   Byte[]                      BinaryRequestMessage,
-                                                                  DateTime                    ResponseTimestamp,
+                                                                  DateTimeOffset            ResponseTimestamp,
                                                                   JArray                      ResponseMessage,
                                                                   CancellationToken           CancellationToken);
 
 
 
-    public delegate Task OnWebSocketBinaryMessageRequestDelegate (DateTime                    Timestamp,
+    public delegate Task OnWebSocketBinaryMessageRequestDelegate (DateTimeOffset            Timestamp,
                                                                   WWCPNN.INetworkingNode      Server,
                                                                   IWebSocketConnection        Connection,
                                                                   WWCPNN.NetworkingNode_Id    DestinationId,
                                                                   WWCPNN.NetworkPath          NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
+                                                                  DateTimeOffset            RequestTimestamp,
                                                                   Byte[]                      RequestMessage,
                                                                   CancellationToken           CancellationToken);
 
-    public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTime                    Timestamp,
+    public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTimeOffset            Timestamp,
                                                                   WWCPNN.INetworkingNode      Server,
                                                                   IWebSocketConnection        Connection,
                                                                   WWCPNN.NetworkingNode_Id    DestinationId,
                                                                   WWCPNN.NetworkPath          NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
+                                                                  DateTimeOffset            RequestTimestamp,
                                                                   JArray                      JSONRequestMessage,
                                                                   Byte[]                      BinaryRequestMessage,
-                                                                  DateTime                    ResponseTimestamp,
+                                                                  DateTimeOffset            ResponseTimestamp,
                                                                   Byte[]?                     ResponseMessage,
                                                                   CancellationToken           CancellationToken);
 

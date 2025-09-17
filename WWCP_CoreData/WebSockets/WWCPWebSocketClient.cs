@@ -367,7 +367,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// </summary>
         /// <param name="JSONMessage">A JSON OCPP request message.</param>
         public async Task<SentMessageResult> SendJSONMessage(JArray             JSONMessage,
-                                                             DateTime           MessageTimestamp,
+                                                             DateTimeOffset     MessageTimestamp,
                                                              EventTracking_Id   EventTrackingId,
                                                              CancellationToken  CancellationToken   = default)
         {
@@ -418,7 +418,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// </summary>
         /// <param name="BinaryRequestMessage">A binary OCPP request message.</param>
         public async Task<SentMessageResult> SendBinaryMessage(Byte[]             BinaryMessage,
-                                                               DateTime           MessageTimestamp,
+                                                               DateTimeOffset     MessageTimestamp,
                                                                EventTracking_Id   EventTrackingId,
                                                                CancellationToken  CancellationToken   = default)
         {

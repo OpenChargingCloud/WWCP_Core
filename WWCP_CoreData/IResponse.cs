@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The timestamp of the response.
         /// </summary>
         [Mandatory]
-        DateTime  ResponseTimestamp    { get; }
+        DateTimeOffset  ResponseTimestamp    { get; }
 
 
         ///// <summary>
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The runtime of the request.
         /// </summary>
         [Mandatory]
-        TimeSpan  Runtime              { get; }
+        TimeSpan        Runtime              { get; }
 
     }
 

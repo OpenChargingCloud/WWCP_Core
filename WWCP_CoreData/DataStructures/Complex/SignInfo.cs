@@ -17,11 +17,11 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-//using org.GraphDefined.Vanaheimr.Hermod;
-//using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// Extension methods for signature informations.
+    /// Extension methods for signature information.
     /// </summary>
     public static class SignInfoExtensions
     {
@@ -43,10 +43,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Name">An optional name of a person or process signing the message.</param>
         /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
         /// <param name="Timestamp">An optional timestamp of the message signature.</param>
-        public static SignInfo ToSignInfo1(this KeyPair  KeyPair,
-                                           String?       Name          = null,
-                                           I18NString?   Description   = null,
-                                           DateTime?     Timestamp     = null)
+        public static SignInfo ToSignInfo1(this KeyPair     KeyPair,
+                                           String?          Name          = null,
+                                           I18NString?      Description   = null,
+                                           DateTimeOffset?  Timestamp     = null)
 
             => new (KeyPair.PrivateKeyBytes,
                     KeyPair.PublicKeyBytes,
@@ -69,10 +69,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NameGenerator">An optional name of a person or process signing the message.</param>
         /// <param name="DescriptionGenerator">An optional multi-language description or explanation for signing the message.</param>
         /// <param name="TimestampGenerator">An optional timestamp of the message signature.</param>
-        public static SignInfo ToSignInfo2(this KeyPair                         KeyPair,
-                                           Func<ISignableMessage, String>?      NameGenerator          = null,
-                                           Func<ISignableMessage, I18NString>?  DescriptionGenerator   = null,
-                                           Func<ISignableMessage, DateTime>?    TimestampGenerator     = null)
+        public static SignInfo ToSignInfo2(this KeyPair                             KeyPair,
+                                           Func<ISignableMessage, String>?          NameGenerator          = null,
+                                           Func<ISignableMessage, I18NString>?      DescriptionGenerator   = null,
+                                           Func<ISignableMessage, DateTimeOffset>?  TimestampGenerator     = null)
 
             => new (KeyPair.PrivateKeyBytes,
                     KeyPair.PublicKeyBytes,
@@ -134,19 +134,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// The optional name of a person or process signing the message.
         /// </summary>
         [Optional]
-        public Func<ISignableMessage, String>?      SignerName     { get; }
+        public Func<ISignableMessage, String>?          SignerName     { get; }
 
         /// <summary>
         /// The optional multi-language description or explanation for signing the message.
         /// </summary>
         [Optional]
-        public Func<ISignableMessage, I18NString>?  Description    { get; }
+        public Func<ISignableMessage, I18NString>?      Description    { get; }
 
         /// <summary>
         /// The optional timestamp of the message signature.
         /// </summary>
         [Optional]
-        public Func<ISignableMessage, DateTime>?    Timestamp      { get; }
+        public Func<ISignableMessage, DateTimeOffset>?  Timestamp      { get; }
 
         #endregion
 
@@ -164,15 +164,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
         /// <param name="Timestamp">An optional timestamp of the message signature.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public SignInfo(Byte[]                               Private,
-                        Byte[]                               Public,
-                        CryptoAlgorithm?                     Algorithm       = null,
-                        CryptoSerialization?                 Serialization   = null,
-                        CryptoEncoding?                      Encoding        = null,
-                        Func<ISignableMessage, String>?      SignerName      = null,
-                        Func<ISignableMessage, I18NString>?  Description     = null,
-                        Func<ISignableMessage, DateTime>?    Timestamp       = null,
-                        CustomData?                          CustomData      = null)
+        public SignInfo(Byte[]                                   Private,
+                        Byte[]                                   Public,
+                        CryptoAlgorithm?                         Algorithm       = null,
+                        CryptoSerialization?                     Serialization   = null,
+                        CryptoEncoding?                          Encoding        = null,
+                        Func<ISignableMessage, String>?          SignerName      = null,
+                        Func<ISignableMessage, I18NString>?      Description     = null,
+                        Func<ISignableMessage, DateTimeOffset>?  Timestamp       = null,
+                        CustomData?                              CustomData      = null)
 
             : base(Public,
                    Private,
@@ -210,10 +210,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) GenerateKeys(Algorithm = Secp256r1)
 
-        public static SignInfo? GenerateKeys(CryptoAlgorithm?                     Algorithm     = null,
-                                             Func<ISignableMessage, String>?      Name          = null,
-                                             Func<ISignableMessage, I18NString>?  Description   = null,
-                                             Func<ISignableMessage, DateTime>?    Timestamp     = null)
+        public static SignInfo? GenerateKeys(CryptoAlgorithm?                         Algorithm     = null,
+                                             Func<ISignableMessage, String>?          Name          = null,
+                                             Func<ISignableMessage, I18NString>?      Description   = null,
+                                             Func<ISignableMessage, DateTimeOffset>?  Timestamp     = null)
 
             => ECCKeyPair.GenerateKeys(Algorithm ?? CryptoAlgorithm.Secp256r1)?.
                           ToSignInfo2 (Name,
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given JSON representation of a cryptographic signature information.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSignInfoParser">An optional delegate to parse custom cryptographic signature informations.</param>
+        /// <param name="CustomSignInfoParser">An optional delegate to parse custom cryptographic signature information.</param>
         public static SignInfo Parse(JObject                                 JSON,
                                      CustomJObjectParserDelegate<SignInfo>?  CustomSignInfoParser   = null)
         {
@@ -236,8 +236,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(JSON,
                          out var signInfo,
                          out var errorResponse,
-                         CustomSignInfoParser) &&
-                signInfo is not null)
+                         CustomSignInfoParser))
             {
                 return signInfo;
             }
@@ -259,9 +258,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SignInfo">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject        JSON,
-                                       out SignInfo?  SignInfo,
-                                       out String?    ErrorResponse)
+        public static Boolean TryParse(JObject                             JSON,
+                                       [NotNullWhen(true)]  out SignInfo?  SignInfo,
+                                       [NotNullWhen(false)] out String?    ErrorResponse)
 
             => TryParse(JSON,
                         out SignInfo,
@@ -275,10 +274,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SignInfo">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSignInfoParser">An optional delegate to parse custom signature informations.</param>
+        /// <param name="CustomSignInfoParser">An optional delegate to parse custom signature information.</param>
         public static Boolean TryParse(JObject                                 JSON,
-                                       out SignInfo?                           SignInfo,
-                                       out String?                             ErrorResponse,
+                                       [NotNullWhen(true)]  out SignInfo?      SignInfo,
+                                       [NotNullWhen(false)] out String?        ErrorResponse,
                                        CustomJObjectParserDelegate<SignInfo>?  CustomSignInfoParser   = null)
         {
 
@@ -440,7 +439,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="SignableMessage">An optional signable message.</param>
-        /// <param name="CustomSignInfoSerializer">A delegate to serialize cryptographic signature informations.</param>
+        /// <param name="CustomSignInfoSerializer">A delegate to serialize cryptographic signature information.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(ISignableMessage?                             SignableMessage              = null,
                               CustomJObjectSerializerDelegate<SignInfo>?    CustomSignInfoSerializer     = null,
@@ -541,7 +540,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two signature informations for equality.
+        /// Compares two signature information for equality.
         /// </summary>
         /// <param name="Object">A signature information to compare with.</param>
         public override Boolean Equals(Object? Object)
@@ -554,7 +553,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(SignInfo)
 
         /// <summary>
-        /// Compares two signature informations for equality.
+        /// Compares two signature information for equality.
         /// </summary>
         /// <param name="SignInfo">A signature information to compare with.</param>
         public Boolean Equals(SignInfo? SignInfo)

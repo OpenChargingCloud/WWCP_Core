@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public RevokeChargingTicketsData(ChargingTicket_Id       ChargingTicketId,
                                          IEnumerable<Signature>  Signatures,
-                                         DateTime?               RevocateForTimeStamp = null)
+                                         DateTimeOffset?         RevocateForTimeStamp = null)
 
         {
 

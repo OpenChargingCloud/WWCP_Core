@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Payload">A JSON response message payload.</param>
     /// <param name="CancellationToken">The cancellation token.</param>
-    public class JSONResponseMessage(DateTime           ResponseTimestamp,
+    public class JSONResponseMessage(DateTimeOffset     ResponseTimestamp,
                                      EventTracking_Id   EventTrackingId,
                                      NetworkingMode     NetworkingMode,
                                      NetworkingNode_Id  DestinationId,
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
         /// <summary>
         /// The response time stamp.
         /// </summary>
-        public DateTime           ResponseTimestamp    { get; }      = ResponseTimestamp;
+        public DateTimeOffset     ResponseTimestamp    { get; }      = ResponseTimestamp;
 
         /// <summary>
         /// The event tracking identification.
@@ -319,9 +319,9 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
 
 
         public static JSONResponseMessage From(NetworkingNode_Id  DestinationNodeId,
-                                                    NetworkPath        NetworkPath,
-                                                    Request_Id         RequestId,
-                                                    JObject            Payload)
+                                               NetworkPath        NetworkPath,
+                                               Request_Id         RequestId,
+                                               JObject            Payload)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
@@ -332,10 +332,10 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
                     Payload);
 
         public static JSONResponseMessage From(NetworkingMode     NetworkingMode,
-                                                    NetworkingNode_Id  DestinationNodeId,
-                                                    NetworkPath        NetworkPath,
-                                                    Request_Id         RequestId,
-                                                    JObject            Payload)
+                                               NetworkingNode_Id  DestinationNodeId,
+                                               NetworkPath        NetworkPath,
+                                               Request_Id         RequestId,
+                                               JObject            Payload)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,

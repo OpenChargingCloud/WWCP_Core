@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.WWCP
         private readonly List<RoamingNetworkInfo> roamingNetworkInfos;
 
         /// <summary>
-        /// Roaming network informations.
+        /// Roaming network information.
         /// </summary>
         public IEnumerable<RoamingNetworkInfo>   RoamingNetworkInfos
             => roamingNetworkInfos;

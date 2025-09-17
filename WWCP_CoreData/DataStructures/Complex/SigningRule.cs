@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -47,37 +49,37 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The context of the cryptographic signature signing rule.
         /// </summary>
-        public JSONLDContext                        Context                 { get; }
+        public JSONLDContext                            Context                 { get; }
 
         /// <summary>
         /// The priority of the cryptographic signature signing rule.
         /// </summary>
-        public UInt32                               Priority                { get; }
+        public UInt32                                   Priority                { get; }
 
         /// <summary>
         /// The context of the cryptographic signature action.
         /// </summary>
-        public SigningRuleActions                    Action                  { get; }
+        public SigningRuleActions                       Action                  { get; }
 
         /// <summary>
         /// An optional cryptographic key pair for signing.
         /// </summary>
-        public KeyPair?                             KeyPair                 { get; }
+        public KeyPair?                                 KeyPair                 { get; }
 
         /// <summary>
         /// An optional user identification generator for signing.
         /// </summary>
-        public Func<ISignableMessage, String>?      UserIdGenerator         { get; }
+        public Func<ISignableMessage, String>?          UserIdGenerator         { get; }
 
         /// <summary>
         /// An optional multi-language description generator for signing.
         /// </summary>
-        public Func<ISignableMessage, I18NString>?  DescriptionGenerator    { get; }
+        public Func<ISignableMessage, I18NString>?      DescriptionGenerator    { get; }
 
         /// <summary>
         /// An optional timestamp generator for signing.
         /// </summary>
-        public Func<ISignableMessage, DateTime>?    TimestampGenerator      { get; }
+        public Func<ISignableMessage, DateTimeOffset>?  TimestampGenerator      { get; }
 
         #endregion
 
@@ -94,14 +96,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DescriptionGenerator">An optional multi-language description generator for signing.</param>
         /// <param name="TimestampGenerator">An optional timestamp generator for signing.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public SigningRule(JSONLDContext                        Context,
-                           UInt32                               Priority,
-                           SigningRuleActions                   Action,
-                           KeyPair?                             KeyPair                = null,
-                           Func<ISignableMessage, String>?      UserIdGenerator        = null,
-                           Func<ISignableMessage, I18NString>?  DescriptionGenerator   = null,
-                           Func<ISignableMessage, DateTime>?    TimestampGenerator     = null,
-                           CustomData?                          CustomData             = null)
+        public SigningRule(JSONLDContext                            Context,
+                           UInt32                                   Priority,
+                           SigningRuleActions                       Action,
+                           KeyPair?                                 KeyPair                = null,
+                           Func<ISignableMessage, String>?          UserIdGenerator        = null,
+                           Func<ISignableMessage, I18NString>?      DescriptionGenerator   = null,
+                           Func<ISignableMessage, DateTimeOffset>?  TimestampGenerator     = null,
+                           CustomData?                              CustomData             = null)
 
             : base(CustomData)
 
@@ -154,8 +156,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(JSON,
                          out var signature,
                          out var errorResponse,
-                         CustomSigningRuleParser) &&
-                signature is not null)
+                         CustomSigningRuleParser))
             {
                 return signature;
             }
@@ -177,9 +178,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SigningRule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject           JSON,
-                                       out SigningRule?  SigningRule,
-                                       out String?       ErrorResponse)
+        public static Boolean TryParse(JObject                                JSON,
+                                       [NotNullWhen(true)]  out SigningRule?  SigningRule,
+                                       [NotNullWhen(false)] out String?       ErrorResponse)
 
             => TryParse(JSON,
                         out SigningRule,
@@ -195,8 +196,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSigningRuleParser">An optional delegate to parse custom signatures.</param>
         public static Boolean TryParse(JObject                                    JSON,
-                                       out SigningRule?                           SigningRule,
-                                       out String?                                ErrorResponse,
+                                       [NotNullWhen(true)]  out SigningRule?      SigningRule,
+                                       [NotNullWhen(false)] out String?           ErrorResponse,
                                        CustomJObjectParserDelegate<SigningRule>?  CustomSigningRuleParser   = null)
         {
 

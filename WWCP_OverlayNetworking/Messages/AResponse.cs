@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public AResponse(TRequest                 Request,
                          Result                   Result,
-                         DateTime                 ResponseTimestamp,
+                         DateTimeOffset           ResponseTimestamp,
 
                          IEnumerable<KeyPair>?    SignKeys     = null,
                          IEnumerable<SignInfo>?   SignInfos    = null,
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public AResponse(TRequest                 Request,
                          Result                   Result,
-                         DateTime?                ResponseTimestamp   = null,
+                         DateTimeOffset?          ResponseTimestamp   = null,
 
                          NetworkingNode_Id?       DestinationNodeId   = null,
                          NetworkPath?             NetworkPath         = null,
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public AResponse(TRequest                 Request,
                          Result                   Result,
-                         DateTime                 ResponseTimestamp,
+                         DateTimeOffset           ResponseTimestamp,
 
                          NetworkingNode_Id?       DestinationNodeId   = null,
                          NetworkPath?             NetworkPath         = null,
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// The timestamp of the response message creation.
         /// </summary>
         [Mandatory]
-        public DateTime           ResponseTimestamp    { get; }
+        public DateTimeOffset     ResponseTimestamp    { get; }
 
         /// <summary>
         /// The runtime of the request.
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public AResponse(Result                   Result,
-                         DateTime                 ResponseTimestamp,
+                         DateTimeOffset           ResponseTimestamp,
                          TimeSpan                 Runtime,
 
                          NetworkingNode_Id        DestinationNodeId,

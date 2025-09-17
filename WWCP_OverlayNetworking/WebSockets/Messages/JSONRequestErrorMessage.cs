@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
     /// <param name="ErrorDescription">An optional error description.</param>
     /// <param name="ErrorDetails">Optional error details.</param>
     /// <param name="CancellationToken">The cancellation token.</param>
-    public class JSONRequestErrorMessage(DateTime           ResponseTimestamp,
+    public class JSONRequestErrorMessage(DateTimeOffset     ResponseTimestamp,
                                          EventTracking_Id   EventTrackingId,
                                          NetworkingMode     NetworkingMode,
                                          NetworkingNode_Id  DestinationNodeId,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets
         /// <summary>
         /// The response time stamp.
         /// </summary>
-        public DateTime           ResponseTimestamp    { get; }      = ResponseTimestamp;
+        public DateTimeOffset     ResponseTimestamp    { get; }      = ResponseTimestamp;
 
         /// <summary>
         /// The event tracking identification.

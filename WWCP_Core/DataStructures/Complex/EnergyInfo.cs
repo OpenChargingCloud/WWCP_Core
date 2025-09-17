@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(EnergyInfo)
 
         /// <summary>
-        /// Compares two energy informations for equality.
+        /// Compares two energy information for equality.
         /// </summary>
         /// <param name="EnergyInfo">An energy information to compare with.</param>
         public Boolean Equals(EnergyInfo EnergyInfo)

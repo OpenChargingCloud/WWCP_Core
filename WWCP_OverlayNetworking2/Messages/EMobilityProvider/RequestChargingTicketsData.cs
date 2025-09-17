@@ -55,8 +55,8 @@ namespace cloud.charging.open.protocols.WWCP
         public PublicKey                        PublicKey                   { get; }
         public IEnumerable<Signature>           Signatures                  { get; }
 
-        public DateTime                         NotBefore                   { get; }
-        public DateTime?                        NotAfter                    { get; }
+        public DateTimeOffset                   NotBefore                   { get; }
+        public DateTimeOffset?                  NotAfter                    { get; }
         public TimeSpan?                        Lifetime                    { get; }
         public IEnumerable<DayOfWeek>           DaysOfWeek                  { get; }
         public Time?                            StartTimeOfDay              { get; }
@@ -78,8 +78,8 @@ namespace cloud.charging.open.protocols.WWCP
         public RequestChargingTicketsData(PublicKey                        PublicKey,
                                           IEnumerable<Signature>           Signatures,
 
-                                          DateTime?                        NotBefore            = null,
-                                          DateTime?                        NotAfter             = null,
+                                          DateTimeOffset?                  NotBefore            = null,
+                                          DateTimeOffset?                  NotAfter             = null,
                                           TimeSpan?                        Lifetime             = null,
                                           IEnumerable<DayOfWeek>?          DaysOfWeek           = null,
                                           Time?                            StartTimeOfDay       = null,

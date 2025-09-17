@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 {
 
     /// <summary>
-    /// Extension methods for signature informations.
+    /// Extension methods for signature information.
     /// </summary>
     public static class SignInfoExtensions
     {
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// Parse the given JSON representation of a cryptographic signature information.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSignInfoParser">An optional delegate to parse custom cryptographic signature informations.</param>
+        /// <param name="CustomSignInfoParser">An optional delegate to parse custom cryptographic signature information.</param>
         public static SignInfo Parse(JObject                                 JSON,
                                      CustomJObjectParserDelegate<SignInfo>?  CustomSignInfoParser   = null)
         {
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SignInfo">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSignInfoParser">An optional delegate to parse custom signature informations.</param>
+        /// <param name="CustomSignInfoParser">An optional delegate to parse custom signature information.</param>
         public static Boolean TryParse(JObject                                 JSON,
                                        out SignInfo?                           SignInfo,
                                        out String?                             ErrorResponse,
@@ -439,7 +439,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="SignableMessage">An optional signable message.</param>
-        /// <param name="CustomSignInfoSerializer">A delegate to serialize cryptographic signature informations.</param>
+        /// <param name="CustomSignInfoSerializer">A delegate to serialize cryptographic signature information.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(ISignableMessage?                             SignableMessage              = null,
                               CustomJObjectSerializerDelegate<SignInfo>?    CustomSignInfoSerializer     = null,
@@ -540,7 +540,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two signature informations for equality.
+        /// Compares two signature information for equality.
         /// </summary>
         /// <param name="Object">A signature information to compare with.</param>
         public override Boolean Equals(Object? Object)
@@ -553,7 +553,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region Equals(SignInfo)
 
         /// <summary>
-        /// Compares two signature informations for equality.
+        /// Compares two signature information for equality.
         /// </summary>
         /// <param name="SignInfo">A signature information to compare with.</param>
         public Boolean Equals(SignInfo? SignInfo)

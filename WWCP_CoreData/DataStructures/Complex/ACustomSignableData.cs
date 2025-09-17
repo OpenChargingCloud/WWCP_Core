@@ -158,13 +158,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SignerName">An optional name of the signer.</param>
         /// <param name="Description">An optional description of the signature.</param>
         /// <param name="Timestamp">An optional timestamp of the signature.</param>
-        public Boolean Sign(JObject        JSONData,
-                            JSONLDContext  Context,
-                            ECCKeyPair     KeyPair,
-                            out String?    ErrorResponse,
-                            String?        SignerName    = null,
-                            I18NString?    Description   = null,
-                            DateTime?      Timestamp     = null)
+        public Boolean Sign(JObject          JSONData,
+                            JSONLDContext    Context,
+                            ECCKeyPair       KeyPair,
+                            out String?      ErrorResponse,
+                            String?          SignerName    = null,
+                            I18NString?      Description   = null,
+                            DateTimeOffset?  Timestamp     = null)
         {
 
             try
@@ -264,13 +264,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SignerName">An optional name of the signer.</param>
         /// <param name="Description">An optional description of the signature.</param>
         /// <param name="Timestamp">An optional timestamp of the signature.</param>
-        public Boolean Sign(Byte[]         BinaryData,
-                            //JSONLDContext  Context,
-                            ECCKeyPair     KeyPair,
-                            out String?    ErrorResponse,
-                            String?        SignerName    = null,
-                            I18NString?    Description   = null,
-                            DateTime?      Timestamp     = null)
+        public Boolean Sign(Byte[]           BinaryData,
+                            //JSONLDContext    Context,
+                            ECCKeyPair       KeyPair,
+                            out String?      ErrorResponse,
+                            String?          SignerName    = null,
+                            I18NString?      Description   = null,
+                            DateTimeOffset?  Timestamp     = null)
         {
 
             try

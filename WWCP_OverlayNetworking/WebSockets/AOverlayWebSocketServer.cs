@@ -41,62 +41,62 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
     #region Delegates
 
-    public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,
+    public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTimeOffset              Timestamp,
                                                                   IEventSender                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   NetworkingNode_Id           DestinationNodeId,
                                                                   NetworkPath                 NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
+                                                                  DateTimeOffset              RequestTimestamp,
                                                                   JArray                      RequestMessage,
                                                                   CancellationToken           CancellationToken);
 
-    public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTime                    Timestamp,
+    public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTimeOffset              Timestamp,
                                                                   IEventSender                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   NetworkingNode_Id           DestinationNodeId,
                                                                   NetworkPath                 NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
+                                                                  DateTimeOffset              RequestTimestamp,
                                                                   JArray                      JSONRequestMessage,
                                                                   Byte[]                      BinaryRequestMessage,
-                                                                  DateTime                    ResponseTimestamp,
+                                                                  DateTimeOffset              ResponseTimestamp,
                                                                   JArray                      ResponseMessage,
                                                                   CancellationToken           CancellationToken);
 
-    public delegate Task OnWebSocketTextErrorResponseDelegate    (DateTime                    Timestamp,
+    public delegate Task OnWebSocketTextErrorResponseDelegate    (DateTimeOffset              Timestamp,
                                                                   IEventSender                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
+                                                                  DateTimeOffset              RequestTimestamp,
                                                                   String                      TextRequestMessage,
                                                                   Byte[]                      BinaryRequestMessage,
-                                                                  DateTime                    ResponseTimestamp,
+                                                                  DateTimeOffset              ResponseTimestamp,
                                                                   String                      TextResponseMessage,
                                                                   CancellationToken           CancellationToken);
 
 
 
-    public delegate Task OnWebSocketBinaryMessageRequestDelegate (DateTime                    Timestamp,
+    public delegate Task OnWebSocketBinaryMessageRequestDelegate (DateTimeOffset              Timestamp,
                                                                   IEventSender                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   NetworkingNode_Id           DestinationNodeId,
                                                                   NetworkPath                 NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
+                                                                  DateTimeOffset              RequestTimestamp,
                                                                   Byte[]                      RequestMessage,
                                                                   CancellationToken           CancellationToken);
 
-    public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTime                    Timestamp,
+    public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTimeOffset              Timestamp,
                                                                   IEventSender                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   NetworkingNode_Id           DestinationNodeId,
                                                                   NetworkPath                 NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
+                                                                  DateTimeOffset              RequestTimestamp,
                                                                   JArray                      JSONRequestMessage,
                                                                   Byte[]                      BinaryRequestMessage,
-                                                                  DateTime                    ResponseTimestamp,
+                                                                  DateTimeOffset              ResponseTimestamp,
                                                                   Byte[]                      ResponseMessage,
                                                                   CancellationToken           CancellationToken);
 
@@ -204,31 +204,31 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public const            String                                                                                DefaultHTTPServiceName            = $"GraphDefined EEBus {Version.String} HTTP/WebSocket/JSON CSMS API";
+        public const            String                                                                                     DefaultHTTPServiceName            = $"GraphDefined EEBus {Version.String} HTTP/WebSocket/JSON CSMS API";
 
         /// <summary>
         /// The default HTTP server TCP port.
         /// </summary>
-        public static readonly  IPPort                                                                                DefaultHTTPServerPort             = IPPort.Parse(2010);
+        public static readonly  IPPort                                                                                     DefaultHTTPServerPort             = IPPort.Parse(2010);
 
         /// <summary>
         /// The default HTTP server URI prefix.
         /// </summary>
-        public static readonly  HTTPPath                                                                              DefaultURLPrefix                  = HTTPPath.Parse("/" + Version.String);
+        public static readonly  HTTPPath                                                                                   DefaultURLPrefix                  = HTTPPath.Parse("/" + Version.String);
 
         /// <summary>
         /// The default request timeout.
         /// </summary>
-        public static readonly  TimeSpan                                                                              DefaultRequestTimeout             = TimeSpan.FromSeconds(30);
+        public static readonly  TimeSpan                                                                                   DefaultRequestTimeout             = TimeSpan.FromSeconds(30);
 
-        protected readonly      Dictionary<String, MethodInfo>                                                        incomingMessageProcessorsLookup   = [];
-        protected readonly      ConcurrentDictionary<NetworkingNode_Id, Tuple<WebSocketServerConnection, DateTime>>   connectedNetworkingNodes          = [];
-        protected readonly      ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>                            reachableViaNetworkingHubs        = [];
-        protected readonly      ConcurrentDictionary<Request_Id, SendRequestState>                                    requests                          = [];
+        protected readonly      Dictionary<String, MethodInfo>                                                             incomingMessageProcessorsLookup   = [];
+        protected readonly      ConcurrentDictionary<NetworkingNode_Id, Tuple<WebSocketServerConnection, DateTimeOffset>>  connectedNetworkingNodes          = [];
+        protected readonly      ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>                                 reachableViaNetworkingHubs        = [];
+        protected readonly      ConcurrentDictionary<Request_Id, SendRequestState>                                         requests                          = [];
 
-        public    const         String                                                                                networkingNodeId_WebSocketKey     = "networkingNodeId";
-        public    const         String                                                                                networkingMode_WebSocketKey       = "networkingMode";
-        public    const         String                                                                                LogfileName                       = "CSMSWSServer.log";
+        public    const         String                                                                                     networkingNodeId_WebSocketKey     = "networkingNodeId";
+        public    const         String                                                                                     networkingMode_WebSocketKey       = "networkingMode";
+        public    const         String                                                                                     LogfileName                       = "CSMSWSServer.log";
 
         #endregion
 
@@ -775,11 +775,11 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
         #region (protected) ValidateTCPConnection        (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
-        private Task<ConnectionFilterResponse> ValidateTCPConnection(DateTime                      LogTimestamp,
-                                                                     org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer              Server,
-                                                                     System.Net.Sockets.TcpClient  Connection,
-                                                                     EventTracking_Id              EventTrackingId,
-                                                                     CancellationToken             CancellationToken)
+        private Task<ConnectionFilterResponse> ValidateTCPConnection(DateTimeOffset                                                LogTimestamp,
+                                                                     org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer  Server,
+                                                                     System.Net.Sockets.TcpClient                                  Connection,
+                                                                     EventTracking_Id                                              EventTrackingId,
+                                                                     CancellationToken                                             CancellationToken)
         {
 
             return Task.FromResult(ConnectionFilterResponse.Accepted());
@@ -790,11 +790,11 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
         #region (protected) ValidateWebSocketConnection  (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
-        private Task<HTTPResponse?> ValidateWebSocketConnection(DateTime                   LogTimestamp,
-                                                                org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer           Server,
-                                                                WebSocketServerConnection  Connection,
-                                                                EventTracking_Id           EventTrackingId,
-                                                                CancellationToken          CancellationToken)
+        private Task<HTTPResponse?> ValidateWebSocketConnection(DateTimeOffset                                                LogTimestamp,
+                                                                org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer  Server,
+                                                                WebSocketServerConnection                                     Connection,
+                                                                EventTracking_Id                                              EventTrackingId,
+                                                                CancellationToken                                             CancellationToken)
         {
 
             #region Verify 'Sec-WebSocket-Protocol'...
@@ -886,13 +886,13 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
         #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, SharedSubprotocols, SelectedSubprotocol, EventTrackingId, CancellationToken)
 
-        protected async Task ProcessNewWebSocketConnection(DateTime                   LogTimestamp,
-                                                           org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer           Server,
-                                                           WebSocketServerConnection  Connection,
-                                                           IEnumerable<String>        SharedSubprotocols,
-                                                           String?                    SelectedSubprotocol,
-                                                           EventTracking_Id           EventTrackingId,
-                                                           CancellationToken          CancellationToken)
+        protected async Task ProcessNewWebSocketConnection(DateTimeOffset                                                LogTimestamp,
+                                                           org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer  Server,
+                                                           WebSocketServerConnection                                     Connection,
+                                                           IEnumerable<String>                                           SharedSubprotocols,
+                                                           String?                                                       SelectedSubprotocol,
+                                                           EventTracking_Id                                              EventTrackingId,
+                                                           CancellationToken                                             CancellationToken)
         {
 
             if (Connection.HTTPRequest is null)
@@ -963,7 +963,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                 #region Register new Networking Node
 
                 if (!connectedNetworkingNodes.TryAdd(networkingNodeId.Value,
-                                                     new Tuple<WebSocketServerConnection, DateTime>(
+                                                     new Tuple<WebSocketServerConnection, DateTimeOffset>(
                                                          Connection,
                                                          Timestamp.Now
                                                      )))
@@ -988,7 +988,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                     }
 
                     connectedNetworkingNodes.TryAdd(networkingNodeId.Value,
-                                                    new Tuple<WebSocketServerConnection, DateTime>(
+                                                    new Tuple<WebSocketServerConnection, DateTimeOffset>(
                                                         Connection,
                                                         Timestamp.Now
                                                     ));
@@ -1065,14 +1065,14 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
         #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, Frame, EventTrackingId, StatusCode, Reason, CancellationToken)
 
-        protected async Task ProcessCloseMessage(DateTime                          LogTimestamp,
-                                                 org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer                  Server,
-                                                 WebSocketServerConnection         Connection,
-                                                 WebSocketFrame                    Frame,
-                                                 EventTracking_Id                  EventTrackingId,
-                                                 WebSocketFrame.ClosingStatusCode  StatusCode,
-                                                 String?                           Reason,
-                                                 CancellationToken                 CancellationToken)
+        protected async Task ProcessCloseMessage(DateTimeOffset                                                LogTimestamp,
+                                                 org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer  Server,
+                                                 WebSocketServerConnection                                     Connection,
+                                                 WebSocketFrame                                                Frame,
+                                                 EventTracking_Id                                              EventTrackingId,
+                                                 WebSocketFrame.ClosingStatusCode                              StatusCode,
+                                                 String?                                                       Reason,
+                                                 CancellationToken                                             CancellationToken)
         {
 
             if (Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey, out var networkingNodeId))
@@ -1134,7 +1134,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="TextMessage">The received text message.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public async Task<WebSocketTextMessageResponse> ProcessTextMessage(DateTime                   RequestTimestamp,
+        public async Task<WebSocketTextMessageResponse> ProcessTextMessage(DateTimeOffset             RequestTimestamp,
                                                                            WebSocketServerConnection  Connection,
                                                                            String                     TextMessage,
                                                                            EventTracking_Id           EventTrackingId,
@@ -1179,7 +1179,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONMessageRequestReceived));
+                            DebugX.LogException(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONMessageRequestReceived));
                         }
                     }
 
@@ -1285,7 +1285,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONMessageResponseSent));
+                                DebugX.LogException(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONMessageResponseSent));
                             }
                         }
 
@@ -1325,7 +1325,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONErrorResponseSent));
+                                DebugX.LogException(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONErrorResponseSent));
                             }
                         }
 
@@ -1385,7 +1385,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONMessageResponseReceived));
+                                DebugX.LogException(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONMessageResponseReceived));
                             }
                         }
 
@@ -1455,7 +1455,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONErrorResponseReceived));
+                                DebugX.LogException(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONErrorResponseReceived));
                             }
                         }
 
@@ -1516,7 +1516,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                     }
                     catch (Exception e2)
                     {
-                        DebugX.Log(e2, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONErrorResponseSent));
+                        DebugX.LogException(e2, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONErrorResponseSent));
                     }
                 }
 
@@ -1548,7 +1548,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="BinaryMessage">The received binary message.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public async Task<WebSocketBinaryMessageResponse> ProcessBinaryMessage(DateTime                   RequestTimestamp,
+        public async Task<WebSocketBinaryMessageResponse> ProcessBinaryMessage(DateTimeOffset             RequestTimestamp,
                                                                                WebSocketServerConnection  Connection,
                                                                                Byte[]                     BinaryMessage,
                                                                                EventTracking_Id           EventTrackingId,
@@ -1592,7 +1592,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnBinaryMessageRequestReceived));
+                            DebugX.LogException(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnBinaryMessageRequestReceived));
                         }
                     }
 
@@ -1687,7 +1687,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnBinaryMessageResponseSent));
+                                DebugX.LogException(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnBinaryMessageResponseSent));
                             }
                         }
 
@@ -1727,7 +1727,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONErrorResponseSent));
+                                DebugX.LogException(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONErrorResponseSent));
                             }
                         }
 
@@ -1811,7 +1811,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnBinaryMessageResponseReceived));
+                                DebugX.LogException(e, nameof(AOverlayWebSocketServer) + "." + nameof(OnBinaryMessageResponseReceived));
                             }
                         }
 
@@ -1873,7 +1873,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                     }
                     catch (Exception e2)
                     {
-                        DebugX.Log(e2, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONErrorResponseSent));
+                        DebugX.LogException(e2, nameof(AOverlayWebSocketServer) + "." + nameof(OnJSONErrorResponseSent));
                     }
                 }
 
@@ -1960,13 +1960,13 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="JSONData">The JSON payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
         public async Task<SendWebSocketMessageResult> SendJSONData(EventTracking_Id   EventTrackingId,
-                                                               NetworkingNode_Id  DestinationNodeId,
-                                                               NetworkPath        NetworkPath,
-                                                               Request_Id         RequestId,
-                                                               String             Action,
-                                                               JObject            JSONData,
-                                                               DateTime           RequestTimeout,
-                                                               CancellationToken  CancellationToken   = default)
+                                                                   NetworkingNode_Id  DestinationNodeId,
+                                                                   NetworkPath        NetworkPath,
+                                                                   Request_Id         RequestId,
+                                                                   String             Action,
+                                                                   JObject            JSONData,
+                                                                   DateTimeOffset     RequestTimeout,
+                                                                   CancellationToken  CancellationToken   = default)
         {
 
             try
@@ -2081,13 +2081,13 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// <param name="BinaryData">The binary payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
         public async Task<SendWebSocketMessageResult> SendBinaryData(EventTracking_Id   EventTrackingId,
-                                                                 NetworkingNode_Id  DestinationNodeId,
-                                                                 NetworkPath        NetworkPath,
-                                                                 Request_Id         RequestId,
-                                                                 String             Action,
-                                                                 Byte[]             BinaryData,
-                                                                 DateTime           RequestTimeout,
-                                                                 CancellationToken  CancellationToken   = default)
+                                                                     NetworkingNode_Id  DestinationNodeId,
+                                                                     NetworkPath        NetworkPath,
+                                                                     Request_Id         RequestId,
+                                                                     String             Action,
+                                                                     Byte[]             BinaryData,
+                                                                     DateTimeOffset     RequestTimeout,
+                                                                     CancellationToken  CancellationToken   = default)
         {
 
             try
