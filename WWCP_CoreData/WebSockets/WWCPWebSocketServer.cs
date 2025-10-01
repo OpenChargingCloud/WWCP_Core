@@ -576,7 +576,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
             //ToDo: This might be a DOS attack vector!
 
-            #region ...try to get the NetworkingNodeId from the HTTP request path suffix
+            #region ...try to get the NetworkingNodeId from the HTTP request path suffix...
 
             else
             {
@@ -589,6 +589,18 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                     networkingNodeId = networkingNodeId3;
                 }
 
+            }
+
+            #endregion
+
+            #region ...try to get the NetworkingNodeId from the HTTP query string (?u=CS001&p=xxx)...
+
+            if (!networkingNodeId.HasValue && Connection.HTTPRequest.QueryString.Count() > 0 &&
+                Connection.HTTPRequest.QueryString.TryGetString("u", out var u) &&
+                u.IsNotNullOrEmpty() &&
+                NetworkingNode_Id.TryParse(u, out var _networkingNodeId))
+            {
+                networkingNodeId = _networkingNodeId;
             }
 
             #endregion
