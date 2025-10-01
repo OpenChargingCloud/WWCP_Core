@@ -55,20 +55,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Indicates whether this authentication token is null or empty.
         /// </summary>
-        public Boolean IsNullOrEmpty
+        public Boolean  IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this authentication token is NOT null or empty.
         /// </summary>
-        public Boolean IsNotNullOrEmpty
+        public Boolean  IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the authentication token.
         /// </summary>
-        public UInt64 Length
-            => (UInt64)(InternalId?.Length ?? 0);
+        public UInt64   Length
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
