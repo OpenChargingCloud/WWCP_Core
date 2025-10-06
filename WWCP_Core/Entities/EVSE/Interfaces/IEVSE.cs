@@ -55,6 +55,7 @@ namespace cloud.charging.open.protocols.WWCP
                                     UInt64?                                              Skip                                = null,
                                     UInt64?                                              Take                                = null,
                                     Boolean                                              Embedded                            = false,
+                                    Boolean                                              IncludeRemovedEVSEs                 = false,
                                     InfoStatus                                           ExpandRoamingNetworkId              = InfoStatus.ShowIdOnly,
                                     InfoStatus                                           ExpandChargingStationOperatorId     = InfoStatus.ShowIdOnly,
                                     InfoStatus                                           ExpandChargingPoolId                = InfoStatus.ShowIdOnly,
@@ -69,6 +70,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                    ? new JArray(EVSEs.Where         (evse => evse is not null).
                                       OrderBy       (evse => evse.Id).
+                                      Where         (evse => IncludeRemovedEVSEs || evse.Status != EVSEStatusType.Removed).
                                       SkipTakeFilter(Skip, Take).
                                       SafeSelect    (evse => evse.ToJSON(Embedded,
                                                                          ExpandRoamingNetworkId,
@@ -81,7 +83,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                          CustomChargingConnectorSerializer)).
                                       Where         (json => json is not null))
 
-                   : new JArray();
+                   : [];
 
         #endregion
 

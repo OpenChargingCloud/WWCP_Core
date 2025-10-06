@@ -77,19 +77,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Indicates whether this roaming network identification is null or empty.
         /// </summary>
-        public Boolean IsNullOrEmpty
+        public Boolean  IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this roaming network identification is NOT null or empty.
         /// </summary>
-        public Boolean IsNotNullOrEmpty
+        public Boolean  IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the roaming network identification.
         /// </summary>
-        public UInt64 Length
+        public UInt64   Length
             => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
@@ -349,7 +349,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override Int32 GetHashCode()
 
-            => InternalId?.GetHashCode() ?? 0;
+            => InternalId?.ToLower().GetHashCode() ?? 0;
 
         #endregion
 
