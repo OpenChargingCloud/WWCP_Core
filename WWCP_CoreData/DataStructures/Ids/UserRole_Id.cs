@@ -109,8 +109,8 @@ namespace cloud.charging.open.protocols.WWCP
         public static UserRole_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out var userRole))
-                return userRole;
+            if (TryParse(Text, out var userRoleId))
+                return userRoleId;
 
             throw new ArgumentException($"Invalid text representation of an user role identification: '{Text}'!",
                                         nameof(Text));
@@ -128,8 +128,8 @@ namespace cloud.charging.open.protocols.WWCP
         public static UserRole_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var userRole))
-                return userRole;
+            if (TryParse(Text, out var userRoleId))
+                return userRoleId;
 
             return null;
 
@@ -305,8 +305,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">An user role identification to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is UserRole_Id userRole
-                   ? CompareTo(userRole)
+            => Object is UserRole_Id userRoleId
+                   ? CompareTo(userRoleId)
                    : throw new ArgumentException("The given object is not an user role identification!",
                                                  nameof(Object));
 
@@ -322,7 +322,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => String.Compare(InternalId,
                               UserRoleId.InternalId,
-                              StringComparison.Ordinal);
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -338,8 +338,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">An user role identification to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is UserRole_Id userRole &&
-                   Equals(userRole);
+            => Object is UserRole_Id userRoleId &&
+                   Equals(userRoleId);
 
         #endregion
 
@@ -353,7 +353,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => String.Equals(InternalId,
                              UserRoleId.InternalId,
-                             StringComparison.Ordinal);
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override Int32 GetHashCode()
 
-            => InternalId?.GetHashCode() ?? 0;
+            => InternalId?.ToLower().GetHashCode() ?? 0;
 
         #endregion
 
