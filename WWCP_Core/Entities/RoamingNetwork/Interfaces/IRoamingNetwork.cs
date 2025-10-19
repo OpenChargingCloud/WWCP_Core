@@ -150,27 +150,31 @@ namespace cloud.charging.open.protocols.WWCP
                                     CustomJObjectSerializerDelegate<IEVSE>?                     CustomEVSESerializer                      = null)
 
 
-        => RoamingNetworks is null || !RoamingNetworks.Any()
+        => RoamingNetworks is not null && RoamingNetworks.Any()
 
-               ? new JArray()
+               ? new JArray(
+                     RoamingNetworks.
+                         Where          (roamingNetwork => roamingNetwork is not null).
+                         OrderBy        (roamingNetwork => roamingNetwork.Id).
+                         //Where          (roamingNetwork => IncludeRemovedRoamingNetworks || roamingNetwork.Status != RoamingNetworkStatusType.Removed).
+                         SkipTakeFilter (Skip, Take).
+                         SafeSelect     (roamingNetwork => roamingNetwork.ToJSON(Embedded,
+                                                                                 ExpandChargingStationOperatorIds,
+                                                                                 ExpandRoamingNetworkIds,
+                                                                                 ExpandChargingStationIds,
+                                                                                 ExpandEVSEIds,
+                                                                                 ExpandBrandIds,
+                                                                                 ExpandDataLicenses,
+                                                                                 ExpandEMobilityProviderId,
+                                                                                 CustomRoamingNetworkSerializer,
+                                                                                 CustomChargingStationOperatorSerializer,
+                                                                                 CustomChargingPoolSerializer,
+                                                                                 CustomChargingStationSerializer,
+                                                                                 CustomEVSESerializer)).
+                         Where          (roamingNetwork => roamingNetwork is not null)
+                 )
 
-               : new JArray(RoamingNetworks.
-                                Where         (roamingNetwork => roamingNetwork is not null).
-                                OrderBy       (roamingNetwork => roamingNetwork.Id).
-                                SkipTakeFilter(Skip, Take).
-                                SafeSelect    (roamingNetwork => roamingNetwork.ToJSON(Embedded,
-                                                                                       ExpandChargingStationOperatorIds,
-                                                                                       ExpandRoamingNetworkIds,
-                                                                                       ExpandChargingStationIds,
-                                                                                       ExpandEVSEIds,
-                                                                                       ExpandBrandIds,
-                                                                                       ExpandDataLicenses,
-                                                                                       ExpandEMobilityProviderId,
-                                                                                       CustomRoamingNetworkSerializer,
-                                                                                       CustomChargingStationOperatorSerializer,
-                                                                                       CustomChargingPoolSerializer,
-                                                                                       CustomChargingStationSerializer,
-                                                                                       CustomEVSESerializer)));
+               : [];
 
         #endregion
 

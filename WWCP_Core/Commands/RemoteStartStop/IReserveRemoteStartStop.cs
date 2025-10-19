@@ -119,6 +119,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
+                    ICSORoamingProvider?               CSORoamingProvider     = null,
 
                     DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
@@ -143,11 +144,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
+                              ICSORoamingProvider?                   CSORoamingProvider   = null,
 
-                              DateTimeOffset?                        Timestamp           = null,
-                              EventTracking_Id?                      EventTrackingId     = null,
-                              TimeSpan?                              RequestTimeout      = null,
-                              CancellationToken                      CancellationToken   = default);
+                              DateTimeOffset?                        Timestamp            = null,
+                              EventTracking_Id?                      EventTrackingId      = null,
+                              TimeSpan?                              RequestTimeout       = null,
+                              CancellationToken                      CancellationToken    = default);
 
         #endregion
 
@@ -179,7 +181,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
         /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -193,8 +195,9 @@ namespace cloud.charging.open.protocols.WWCP
                         RemoteAuthentication?    RemoteAuthentication     = null,
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
+                        ICSORoamingProvider?     CSORoamingProvider       = null,
 
-                        DateTimeOffset?          Timestamp                = null,
+                        DateTimeOffset?          RequestTimestamp         = null,
                         EventTracking_Id?        EventTrackingId          = null,
                         TimeSpan?                RequestTimeout           = null,
                         CancellationToken        CancellationToken        = default);
@@ -222,7 +225,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
         /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -233,8 +236,9 @@ namespace cloud.charging.open.protocols.WWCP
                        EMobilityProvider_Id?  ProviderId             = null,
                        RemoteAuthentication?  RemoteAuthentication   = null,
                        Auth_Path?             AuthenticationPath     = null,
+                       ICSORoamingProvider?   CSORoamingProvider     = null,
 
-                       DateTimeOffset?        Timestamp              = null,
+                       DateTimeOffset?        RequestTimestamp       = null,
                        EventTracking_Id?      EventTrackingId        = null,
                        TimeSpan?              RequestTimeout         = null,
                        CancellationToken      CancellationToken      = default);
@@ -306,7 +310,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -323,8 +327,9 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
+                    ICSORoamingProvider?               CSORoamingProvider     = null,
 
-                    DateTimeOffset?                    Timestamp              = null,
+                    DateTimeOffset?                    RequestTimestamp       = null,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null,
                     CancellationToken                  CancellationToken      = default);
@@ -345,7 +350,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
         /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -358,8 +363,9 @@ namespace cloud.charging.open.protocols.WWCP
                         RemoteAuthentication?    RemoteAuthentication     = null,
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
+                        ICSORoamingProvider?     CSORoamingProvider       = null,
 
-                        DateTimeOffset?          Timestamp                = null,
+                        DateTimeOffset?          RequestTimestamp         = null,
                         EventTracking_Id?        EventTrackingId          = null,
                         TimeSpan?                RequestTimeout           = null,
                         CancellationToken        CancellationToken        = default);

@@ -1,0 +1,10 @@
+﻿[
+  {
+    "outputFile": "HTTPRoot/css/template.css",
+    "inputFile": "HTTPRoot/template.scss"
+  },
+  {
+    "outputFile": "HTTPRoot/css/index.css",
+    "inputFile": "HTTPRoot/index.scss"
+  }
+]

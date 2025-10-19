@@ -24,6 +24,7 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -34,7 +35,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// A charging node.
     /// </summary>
     public class ChargingNode : NetworkServiceNode,
-                                IRoamingNetworks
+                                IWWCPCore
     {
 
         #region Data
@@ -90,50 +91,58 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data
 
-        private readonly RoamingNetworks roamingNetworks = new ();
+        private readonly WWCPCore roamingNetworks = new ();
 
         /// <summary>
         /// An enumeration of all roaming networks.
         /// </summary>
-        public IEnumerable<RoamingNetwork> RoamingNetworks
+        public IEnumerable<IRoamingNetwork> RoamingNetworks
             => roamingNetworks;
 
         #endregion
 
         #region Events
 
-        public IVotingSender<RoamingNetworks, RoamingNetwork, Boolean> OnRoamingNetworkAddition
+        public IVotingSender<WWCPCore, IRoamingNetwork, Boolean> OnRoamingNetworkAddition
             => roamingNetworks.OnRoamingNetworkAddition;
 
-        public IVotingSender<RoamingNetworks, RoamingNetwork, Boolean> OnRoamingNetworkRemoval
+        public IVotingSender<WWCPCore, IRoamingNetwork, Boolean> OnRoamingNetworkRemoval
             => roamingNetworks.OnRoamingNetworkRemoval;
 
         #endregion
 
 
-        public RoamingNetwork AddRoamingNetwork(RoamingNetwork RoamingNetwork)
+        public IRoamingNetwork AddRoamingNetwork(IRoamingNetwork RoamingNetwork)
             => roamingNetworks.AddRoamingNetwork(RoamingNetwork);
 
-        public void AddRoamingNetworks(IEnumerable<RoamingNetwork> RoamingNetworks)
+        public void AddRoamingNetworks(IEnumerable<IRoamingNetwork> RoamingNetworks)
             => roamingNetworks.AddRoamingNetworks(RoamingNetworks);
 
-        public RoamingNetwork? GetRoamingNetwork(RoamingNetwork_Id RoamingNetworkId)
+        public Boolean Contains(RoamingNetwork_Id RoamingNetworkId)
+            => roamingNetworks.Contains(RoamingNetworkId);
+
+        public IRoamingNetwork? GetRoamingNetwork(RoamingNetwork_Id RoamingNetworkId)
             => roamingNetworks.GetRoamingNetwork(RoamingNetworkId);
 
-        public Boolean TryGetRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, out RoamingNetwork? RoamingNetwork)
+        public Boolean TryGetRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, [NotNullWhen(true)] out IRoamingNetwork? RoamingNetwork)
+
             => roamingNetworks.TryGetRoamingNetwork(RoamingNetworkId,
                                                     out RoamingNetwork);
-        public RoamingNetwork? RemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId)
+
+        public IRoamingNetwork? RemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId)
+
             => roamingNetworks.RemoveRoamingNetwork(RoamingNetworkId);
 
-        public Boolean RemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, out RoamingNetwork? RoamingNetwork)
+
+        public Boolean RemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, [NotNullWhen(true)] out IRoamingNetwork? RoamingNetwork)
+
             => roamingNetworks.RemoveRoamingNetwork(RoamingNetworkId,
                                                     out RoamingNetwork);
 
 
         #region IEnumerable<RoamingNetwork>
 
-        IEnumerator<RoamingNetwork> IEnumerable<RoamingNetwork>.GetEnumerator()
+        IEnumerator<IRoamingNetwork> IEnumerable<IRoamingNetwork>.GetEnumerator()
         {
             throw new NotImplementedException();
         }

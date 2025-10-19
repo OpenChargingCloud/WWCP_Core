@@ -1702,6 +1702,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
+                    ICSORoamingProvider?               CSORoamingProvider     = null,
 
                     DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
@@ -1722,6 +1723,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                            AuthTokens,
                            eMAIds,
                            PINs,
+                           CSORoamingProvider,
 
                            Timestamp,
                            EventTrackingId,
@@ -1767,6 +1769,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
+                    ICSORoamingProvider?               CSORoamingProvider     = null,
 
                     DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
@@ -1835,25 +1838,27 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         remoteStation is not null)
                     {
 
-                        result = await remoteStation.
-                                           Reserve(ChargingLocation,
-                                                   ReservationLevel,
-                                                   ReservationStartTime,
-                                                   Duration,
-                                                   ReservationId,
-                                                   LinkedReservationId,
-                                                   ProviderId,
-                                                   RemoteAuthentication,
-                                                   AuthenticationPath,
-                                                   ChargingProduct,
-                                                   AuthTokens,
-                                                   eMAIds,
-                                                   PINs,
+                        result = await remoteStation.Reserve(
+                                           ChargingLocation,
+                                           ReservationLevel,
+                                           ReservationStartTime,
+                                           Duration,
+                                           ReservationId,
+                                           LinkedReservationId,
+                                           ProviderId,
+                                           RemoteAuthentication,
+                                           AuthenticationPath,
+                                           ChargingProduct,
+                                           AuthTokens,
+                                           eMAIds,
+                                           PINs,
+                                           CSORoamingProvider,
 
-                                                   Timestamp,
-                                                   EventTrackingId,
-                                                   RequestTimeout,
-                                                   CancellationToken);
+                                           Timestamp,
+                                           EventTrackingId,
+                                           RequestTimeout,
+                                           CancellationToken
+                                       );
 
                         newReservation = result.Reservation;
 
@@ -1868,25 +1873,29 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         foreach (var remoteStation2 in chargingStations)
                         {
 
-                            results.Add(await remoteStation2.
-                                                  Reserve(ChargingLocation,
-                                                          ReservationLevel,
-                                                          ReservationStartTime,
-                                                          Duration,
-                                                          ChargingReservation_Id.NewRandom(OperatorId),
-                                                          LinkedReservationId,
-                                                          ProviderId,
-                                                          RemoteAuthentication,
-                                                          AuthenticationPath,
-                                                          ChargingProduct,
-                                                          AuthTokens,
-                                                          eMAIds,
-                                                          PINs,
+                            results.Add(
+                                await remoteStation2.Reserve(
+                                          ChargingLocation,
+                                          ReservationLevel,
+                                          ReservationStartTime,
+                                          Duration,
+                                          ChargingReservation_Id.NewRandom(OperatorId),
+                                          LinkedReservationId,
+                                          ProviderId,
+                                          RemoteAuthentication,
+                                          AuthenticationPath,
+                                          ChargingProduct,
+                                          AuthTokens,
+                                          eMAIds,
+                                          PINs,
+                                          CSORoamingProvider,
 
-                                                          Timestamp,
-                                                          EventTrackingId,
-                                                          RequestTimeout,
-                                                          CancellationToken));
+                                          Timestamp,
+                                          EventTrackingId,
+                                          RequestTimeout,
+                                          CancellationToken
+                                      )
+                            );
 
                         }
 
@@ -2019,11 +2028,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
+                              ICSORoamingProvider?                   CSORoamingProvider   = null,
 
-                              DateTimeOffset?                        Timestamp           = null,
-                              EventTracking_Id?                      EventTrackingId     = null,
-                              TimeSpan?                              RequestTimeout      = null,
-                              CancellationToken                      CancellationToken   = default)
+                              DateTimeOffset?                        Timestamp            = null,
+                              EventTracking_Id?                      EventTrackingId      = null,
+                              TimeSpan?                              RequestTimeout       = null,
+                              CancellationToken                      CancellationToken    = default)
 
         {
 
@@ -2079,13 +2089,16 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         var chargingStation = GetChargingStationById(_Reservation.ChargingStationId.Value);
 
                         if (chargingStation is not null)
-                            result = await chargingStation.CancelReservation(ReservationId,
-                                                                             Reason,
+                            result = await chargingStation.CancelReservation(
+                                               ReservationId,
+                                               Reason,
+                                               CSORoamingProvider,
 
-                                                                             Timestamp,
-                                                                             EventTrackingId,
-                                                                             RequestTimeout,
-                                                                             CancellationToken);
+                                               Timestamp,
+                                               EventTrackingId,
+                                               RequestTimeout,
+                                               CancellationToken
+                                           );
 
                         if (result is not null && result.Result != CancelReservationResultTypes.UnknownReservationId)
                             return result;
@@ -2095,13 +2108,16 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     foreach (var chargingStation in chargingStations)
                     {
 
-                        result = await chargingStation.CancelReservation(ReservationId,
-                                                                         Reason,
+                        result = await chargingStation.CancelReservation(
+                                           ReservationId,
+                                           Reason,
+                                           CSORoamingProvider,
 
-                                                                         Timestamp,
-                                                                         EventTrackingId,
-                                                                         RequestTimeout,
-                                                                         CancellationToken);
+                                           Timestamp,
+                                           EventTrackingId,
+                                           RequestTimeout,
+                                           CancellationToken
+                                       );
 
                         if (result.Result != CancelReservationResultTypes.UnknownReservationId)
                             break;
@@ -2112,20 +2128,27 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 else
                 {
                     result = AdminStatus.Value switch {
-                        _ => CancelReservationResult.OutOfService(ReservationId,
-                                                                  Reason),
+                        _ => CancelReservationResult.OutOfService(
+                                 ReservationId,
+                                 Reason
+                             ),
                     };
                 }
 
             }
             catch (Exception e)
             {
-                result = CancelReservationResult.Error(ReservationId,
-                                                       Reason,
-                                                       e.Message);
+                result = CancelReservationResult.Error(
+                             ReservationId,
+                             Reason,
+                             e.Message
+                         );
             }
 
-            result ??= CancelReservationResult.Error(ReservationId, Reason);
+            result ??= CancelReservationResult.Error(
+                           ReservationId,
+                           Reason
+                       );
 
 
             #region Send OnCancelReservationResponse event
@@ -2714,6 +2737,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         RemoteAuthentication?    RemoteAuthentication     = null,
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
+                        ICSORoamingProvider?     CSORoamingProvider       = null,
 
                         DateTimeOffset?          Timestamp                = null,
                         EventTracking_Id?        EventTrackingId          = null,
@@ -2729,6 +2753,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                RemoteAuthentication,
                                AdditionalSessionInfos,
                                AuthenticationPath,
+                               CSORoamingProvider,
 
                                Timestamp,
                                EventTrackingId,
@@ -2763,6 +2788,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         RemoteAuthentication?    RemoteAuthentication     = null,
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
+                        ICSORoamingProvider?     CSORoamingProvider       = null,
 
                         DateTimeOffset?          RequestTimestamp         = null,
                         EventTracking_Id?        EventTrackingId          = null,
@@ -2835,6 +2861,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                            RemoteAuthentication,
                                            AdditionalSessionInfos,
                                            AuthenticationPath,
+                                           CSORoamingProvider,
 
                                            RequestTimestamp,
                                            EventTrackingId,
@@ -2921,6 +2948,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                        EMobilityProvider_Id?  ProviderId             = null,
                        RemoteAuthentication?  RemoteAuthentication   = null,
                        Auth_Path?             AuthenticationPath     = null,
+                       ICSORoamingProvider?   CSORoamingProvider     = null,
 
                        DateTimeOffset?        Timestamp              = null,
                        EventTracking_Id?      EventTrackingId        = null,
@@ -2980,17 +3008,19 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         foreach (var remoteStation in chargingStations)
                         {
 
-                            result = await remoteStation.
-                                               RemoteStop(SessionId,
-                                                          ReservationHandling,
-                                                          ProviderId,
-                                                          RemoteAuthentication,
-                                                          AuthenticationPath,
+                            result = await remoteStation.RemoteStop(
+                                               SessionId,
+                                               ReservationHandling,
+                                               ProviderId,
+                                               RemoteAuthentication,
+                                               AuthenticationPath,
+                                               CSORoamingProvider,
 
-                                                          Timestamp,
-                                                          EventTrackingId,
-                                                          RequestTimeout,
-                                                          CancellationToken);
+                                               Timestamp,
+                                               EventTrackingId,
+                                               RequestTimeout,
+                                               CancellationToken
+                                           );
 
                             if (result?.Result == RemoteStopResultTypes.Success)
                                 break;
@@ -3012,6 +3042,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                       ProviderId,
                                                       RemoteAuthentication,
                                                       AuthenticationPath,
+                                                      CSORoamingProvider,
 
                                                       Timestamp,
                                                       EventTrackingId,
@@ -3030,6 +3061,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                       ProviderId,
                                                       RemoteAuthentication,
                                                       AuthenticationPath,
+                                                      CSORoamingProvider,
 
                                                       Timestamp,
                                                       EventTrackingId,

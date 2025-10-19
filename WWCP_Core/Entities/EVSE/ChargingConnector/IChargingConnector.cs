@@ -26,6 +26,44 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    public static class ChargingConnectorExtensions
+    {
+
+        #region ToJSON(this ChargingConnectors, IncludeParentIds = true)
+
+        public static JArray ToJSON(this IEnumerable<IChargingConnector>                 ChargingConnectors,
+                                    UInt64?                                              Skip                                = null,
+                                    UInt64?                                              Take                                = null,
+                                    Boolean                                              Embedded                            = false,
+                                    CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null)
+
+            => ChargingConnectors is not null && ChargingConnectors.Any()
+
+                   ? new JArray(
+                         ChargingConnectors.
+                             Where          (chargingConnector => chargingConnector is not null).
+                             OrderBy        (chargingConnector => chargingConnector.Id).
+                             SkipTakeFilter (Skip, Take).
+                             SafeSelect     (chargingConnector => chargingConnector.ToJSON(Embedded,
+                                                                                           //ExpandRoamingNetworkId,
+                                                                                           //ExpandChargingStationOperatorId,
+                                                                                           //ExpandChargingPoolId,
+                                                                                           //ExpandEVSEIds,
+                                                                                           //ExpandBrandIds,
+                                                                                           //ExpandDataLicenses,
+                                                                                           //CustomChargingStationSerializer,
+                                                                                           //CustomEVSESerializer,
+                                                                                           CustomChargingConnectorSerializer)).
+                             Where          (chargingConnector => chargingConnector is not null)
+                     )
+
+                   : [];
+
+        #endregion
+
+    }
+
+
     public interface IChargingConnector
     {
 

@@ -646,23 +646,25 @@ namespace cloud.charging.open.protocols.WWCP
 
             => ChargingStations is not null && ChargingStations.Any()
 
-                   ? new JArray(ChargingStations.
-                                    Where         (station => station is not null).
-                                    OrderBy       (station => station.Id).
-                                    SkipTakeFilter(Skip, Take).
-                                    SafeSelect    (station => station.ToJSON(Embedded,
-                                                                             ExpandRoamingNetworkId,
-                                                                             ExpandChargingStationOperatorId,
-                                                                             ExpandChargingPoolId,
-                                                                             ExpandEVSEIds,
-                                                                             ExpandBrandIds,
-                                                                             ExpandDataLicenses,
-                                                                             CustomChargingStationSerializer,
-                                                                             CustomEVSESerializer,
-                                                                             CustomChargingConnectorSerializer)).
-                                    Where         (station => station is not null))
+                   ? new JArray(
+                         ChargingStations.
+                             Where          (chargingStation => chargingStation is not null).
+                             OrderBy        (chargingStation => chargingStation.Id).
+                             SkipTakeFilter (Skip, Take).
+                             SafeSelect     (chargingStation => chargingStation.ToJSON(Embedded,
+                                                                                       ExpandRoamingNetworkId,
+                                                                                       ExpandChargingStationOperatorId,
+                                                                                       ExpandChargingPoolId,
+                                                                                       ExpandEVSEIds,
+                                                                                       ExpandBrandIds,
+                                                                                       ExpandDataLicenses,
+                                                                                       CustomChargingStationSerializer,
+                                                                                       CustomEVSESerializer,
+                                                                                       CustomChargingConnectorSerializer)).
+                             Where          (chargingStation => chargingStation is not null)
+                     )
 
-                   : new JArray();
+                   : [];
 
         #endregion
 

@@ -27,25 +27,6 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public static class ChargingConnectorExtetions
-    {
-
-        #region ToJSON(this ChargingConnectors, IncludeParentIds = true)
-
-        public static JArray ToJSON(this IEnumerable<IChargingConnector>                 ChargingConnectors,
-                                    Boolean                                              Embedded                            = false,
-                                    CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null)
-
-            => ChargingConnectors is not null && ChargingConnectors.Any()
-                   ? new JArray(ChargingConnectors.SafeSelect(chargingConnector => chargingConnector.ToJSON(Embedded,
-                                                                                                            CustomChargingConnectorSerializer)))
-                   : [];
-
-        #endregion
-
-    }
-
-
     /// <summary>
     /// A charging connector to connect an electric vehicle (EV)
     /// to an Electric Vehicle Supply Equipment (EVSE).
@@ -325,10 +306,13 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.LogException(e, "ChargingConnector.ToJSON(...)");
+                return new JObject(
+                           new JProperty("@id",         Id.ToString()),
+                           new JProperty("@context",    JSONLDContext),
+                           new JProperty("exception",   e.Message),
+                           new JProperty("stackTrace",  e.StackTrace)
+                       );
             }
-
-            return null;
 
         }
 

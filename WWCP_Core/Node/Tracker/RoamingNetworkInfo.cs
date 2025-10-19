@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
     public static class Ext
     {
 
-        public static RoamingNetworkInfo Create(this RoamingNetwork    RoamingNetwork,
+        public static RoamingNetworkInfo Create(this IRoamingNetwork   RoamingNetwork,
                                                 Tracker_Id             TrackerId,
                                                 NetworkServiceNode_Id  NodeId,
                                                 DateTime               NotBefore,

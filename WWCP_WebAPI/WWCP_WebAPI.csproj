@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="HTTPRoot\css\index.css" />
+    <None Remove="HTTPRoot\css\index.min.css" />
+    <None Remove="HTTPRoot\css\template.css" />
+    <None Remove="HTTPRoot\css\template.min.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="HTTPRoot\css\index.css" />
+    <EmbeddedResource Include="HTTPRoot\css\index.min.css" />
+    <EmbeddedResource Include="HTTPRoot\css\template.css" />
+    <EmbeddedResource Include="HTTPRoot\css\template.min.css" />
+    <EmbeddedResource Include="HTTPRoot\defaults\defaults.js" />
+    <EmbeddedResource Include="HTTPRoot\defaults\defaults.js.map" />
+    <EmbeddedResource Include="HTTPRoot\defaults\defaults.ts" />
+    <EmbeddedResource Include="HTTPRoot\defaults\_defaults.scss" />
+    <EmbeddedResource Include="HTTPRoot\favicon.png" />
+    <EmbeddedResource Include="HTTPRoot\index.scss" />
+    <EmbeddedResource Include="HTTPRoot\index.shtml" />
+    <EmbeddedResource Include="HTTPRoot\template.html" />
+    <EmbeddedResource Include="HTTPRoot\template.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WWCP_HTTPAPI\WWCP_HTTPAPI.csproj" />
+  </ItemGroup>
+
+</Project>

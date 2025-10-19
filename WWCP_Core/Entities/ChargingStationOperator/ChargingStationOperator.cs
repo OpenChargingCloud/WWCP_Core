@@ -5434,6 +5434,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
+                    ICSORoamingProvider?               CSORoamingProvider     = null,
 
                     DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
@@ -5454,6 +5455,7 @@ namespace cloud.charging.open.protocols.WWCP
                            AuthTokens,
                            eMAIds,
                            PINs,
+                           CSORoamingProvider,
 
                            Timestamp,
                            EventTrackingId,
@@ -5499,6 +5501,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
+                    ICSORoamingProvider?               CSORoamingProvider     = null,
 
                     DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
@@ -5563,32 +5566,36 @@ namespace cloud.charging.open.protocols.WWCP
                     if (RemoteChargingStationOperator is not null)
                     {
 
-                        result = await RemoteChargingStationOperator.
-                                           Reserve(ChargingLocation,
-                                                   ReservationLevel,
-                                                   ReservationStartTime,
-                                                   Duration,
-                                                   ReservationId,
-                                                   LinkedReservationId,
-                                                   ProviderId,
-                                                   RemoteAuthentication,
-                                                   AuthenticationPath,
-                                                   ChargingProduct,
-                                                   AuthTokens,
-                                                   eMAIds,
-                                                   PINs,
+                        result = await RemoteChargingStationOperator.Reserve(
+                                           ChargingLocation,
+                                           ReservationLevel,
+                                           ReservationStartTime,
+                                           Duration,
+                                           ReservationId,
+                                           LinkedReservationId,
+                                           ProviderId,
+                                           RemoteAuthentication,
+                                           AuthenticationPath,
+                                           ChargingProduct,
+                                           AuthTokens,
+                                           eMAIds,
+                                           PINs,
+                                           CSORoamingProvider,
 
-                                                   Timestamp,
-                                                   EventTrackingId,
-                                                   RequestTimeout,
-                                                   CancellationToken);
+                                           Timestamp,
+                                           EventTrackingId,
+                                           RequestTimeout,
+                                           CancellationToken
+                                       );
 
                         if (result.Result == ReservationResultType.Success)
                         {
 
-                            OnNewReservation?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                     this,
-                                                     result.Reservation);
+                            OnNewReservation?.Invoke(
+                                org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                                this,
+                                result.Reservation
+                            );
 
                         }
 
@@ -5669,11 +5676,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
+                              ICSORoamingProvider?                   CSORoamingProvider   = null,
 
-                              DateTimeOffset?                        Timestamp           = null,
-                              EventTracking_Id?                      EventTrackingId     = null,
-                              TimeSpan?                              RequestTimeout      = null,
-                              CancellationToken                      CancellationToken   = default)
+                              DateTimeOffset?                        Timestamp            = null,
+                              EventTracking_Id?                      EventTrackingId      = null,
+                              TimeSpan?                              RequestTimeout       = null,
+                              CancellationToken                      CancellationToken    = default)
 
         {
 
@@ -5723,37 +5731,45 @@ namespace cloud.charging.open.protocols.WWCP
                     if (RemoteChargingStationOperator is not null)
                     {
 
-                        result = await RemoteChargingStationOperator.
-                                           CancelReservation(ReservationId,
-                                                             Reason,
+                        result = await RemoteChargingStationOperator.CancelReservation(
+                                           ReservationId,
+                                           Reason,
+                                           CSORoamingProvider,
 
-                                                             Timestamp,
-                                                             EventTrackingId,
-                                                             RequestTimeout,
-                                                             CancellationToken);
+                                           Timestamp,
+                                           EventTrackingId,
+                                           RequestTimeout,
+                                           CancellationToken
+                                       );
 
                     }
 
                     else
-                        result = CancelReservationResult.Offline(ReservationId,
-                                                                 Reason);
+                        result = CancelReservationResult.Offline(
+                                     ReservationId,
+                                     Reason
+                                 );
 
                 }
 
                 else
                 {
                     result = AdminStatus.Value switch {
-                        _ => CancelReservationResult.OutOfService(ReservationId,
-                                                                  Reason),
+                        _ => CancelReservationResult.OutOfService(
+                                 ReservationId,
+                                 Reason
+                             )
                     };
                 }
 
             }
             catch (Exception e)
             {
-                result = CancelReservationResult.Error(ReservationId,
-                                                       Reason,
-                                                       e.Message);
+                result = CancelReservationResult.Error(
+                             ReservationId,
+                             Reason,
+                             e.Message
+                         );
             }
 
 
@@ -6304,6 +6320,7 @@ namespace cloud.charging.open.protocols.WWCP
                         RemoteAuthentication?    RemoteAuthentication     = null,
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
+                        ICSORoamingProvider?     CSORoamingProvider       = null,
 
                         DateTimeOffset?          RequestTimestamp         = null,
                         EventTracking_Id?        EventTrackingId          = null,
@@ -6370,6 +6387,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            RemoteAuthentication,
                                            AdditionalSessionInfos,
                                            AuthenticationPath,
+                                           CSORoamingProvider,
 
                                            RequestTimestamp,
                                            EventTrackingId,
@@ -6474,6 +6492,7 @@ namespace cloud.charging.open.protocols.WWCP
                        EMobilityProvider_Id?  ProviderId             = null,
                        RemoteAuthentication?  RemoteAuthentication   = null,
                        Auth_Path?             AuthenticationPath     = null,
+                       ICSORoamingProvider?   CSORoamingProvider     = null,
 
                        DateTimeOffset?        RequestTimestamp       = null,
                        EventTracking_Id?      EventTrackingId        = null,
@@ -6536,6 +6555,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            ProviderId,
                                            RemoteAuthentication,
                                            AuthenticationPath,
+                                           CSORoamingProvider,
 
                                            RequestTimestamp,
                                            EventTrackingId,

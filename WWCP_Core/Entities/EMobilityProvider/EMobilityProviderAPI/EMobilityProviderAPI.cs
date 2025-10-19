@@ -557,6 +557,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                                 remoteStartRequest.ChargingSessionId,
                                                                                 remoteStartRequest.AdditionalSessionInfos,
                                                                                 remoteStartRequest.AuthenticationPath,
+                                                                                null,
 
                                                                                 remoteStartRequest.Timestamp,
                                                                                 remoteStartRequest.EventTrackingId,

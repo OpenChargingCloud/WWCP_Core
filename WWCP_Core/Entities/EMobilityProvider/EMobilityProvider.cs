@@ -3230,6 +3230,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
                     IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
+                    ICSORoamingProvider?               CSORoamingProvider     = null,
 
                     DateTimeOffset?                    Timestamp              = null,
                     EventTracking_Id?                  EventTrackingId        = null,
@@ -3284,25 +3285,27 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var response = await RoamingNetwork.
-                                         Reserve(ChargingLocation,
-                                                 ReservationLevel,
-                                                 ReservationStartTime,
-                                                 Duration,
-                                                 ReservationId,
-                                                 LinkedReservationId,
-                                                 Id,
-                                                 RemoteAuthentication,
-                                                 AuthenticationPath,
-                                                 ChargingProduct,
-                                                 AuthTokens,
-                                                 eMAIds,
-                                                 PINs,
+                var response = await RoamingNetwork.Reserve(
+                                         ChargingLocation,
+                                         ReservationLevel,
+                                         ReservationStartTime,
+                                         Duration,
+                                         ReservationId,
+                                         LinkedReservationId,
+                                         Id,
+                                         RemoteAuthentication,
+                                         AuthenticationPath,
+                                         ChargingProduct,
+                                         AuthTokens,
+                                         eMAIds,
+                                         PINs,
+                                         CSORoamingProvider,
 
-                                                 Timestamp,
-                                                 EventTrackingId,
-                                                 RequestTimeout,
-                                                 CancellationToken);
+                                         Timestamp,
+                                         EventTrackingId,
+                                         RequestTimeout,
+                                         CancellationToken
+                                     );
 
 
             }
@@ -3372,11 +3375,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
+                              ICSORoamingProvider?                   CSORoamingProvider   = null,
 
-                              DateTimeOffset?                        Timestamp           = null,
-                              EventTracking_Id?                      EventTrackingId     = null,
-                              TimeSpan?                              RequestTimeout      = null,
-                              CancellationToken                      CancellationToken   = default)
+                              DateTimeOffset?                        Timestamp            = null,
+                              EventTracking_Id?                      EventTrackingId      = null,
+                              TimeSpan?                              RequestTimeout       = null,
+                              CancellationToken                      CancellationToken    = default)
 
         {
 
@@ -3419,14 +3423,16 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var response = await RoamingNetwork.
-                                         CancelReservation(ReservationId,
-                                                           Reason,
+                var response = await RoamingNetwork.CancelReservation(
+                                         ReservationId,
+                                         Reason,
+                                         CSORoamingProvider,
 
-                                                           Timestamp,
-                                                           EventTrackingId,
-                                                           RequestTimeout,
-                                                           CancellationToken);
+                                         Timestamp,
+                                         EventTrackingId,
+                                         RequestTimeout,
+                                         CancellationToken
+                                     );
 
 
                 //var OnCancelReservationResponseLocal = OnCancelReservationResponse;
@@ -3441,13 +3447,17 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                result = CancelReservationResult.Error(ReservationId,
-                                                       Reason,
-                                                       e.Message);
+                result = CancelReservationResult.Error(
+                             ReservationId,
+                             Reason,
+                             e.Message
+                         );
             }
 
-            result ??= CancelReservationResult.Error(ReservationId,
-                                                     Reason);
+            result ??= CancelReservationResult.Error(
+                           ReservationId,
+                           Reason
+                       );
 
 
             #region Send OnCancelReservationResponse event
@@ -3617,6 +3627,7 @@ namespace cloud.charging.open.protocols.WWCP
                         RemoteAuthentication?    RemoteAuthentication     = null,
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
+                        ICSORoamingProvider?     CSORoamingProvider       = null,
 
                         DateTimeOffset?          RequestTimestamp         = null,
                         EventTracking_Id?        EventTrackingId          = null,
@@ -3673,6 +3684,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    RemoteAuthentication,
                                    AdditionalSessionInfos,
                                    AuthenticationPath,
+                                   CSORoamingProvider,
 
                                    RequestTimestamp,
                                    EventTrackingId,
@@ -3683,7 +3695,10 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                result = RemoteStartResult.Error(e.Message, System_Id.Local);
+                result = RemoteStartResult.Error(
+                             e.Message,
+                             System_Id.Local
+                         );
             }
 
 
@@ -3741,6 +3756,7 @@ namespace cloud.charging.open.protocols.WWCP
                        EMobilityProvider_Id?  ProviderId             = null, // Will be ignored!
                        RemoteAuthentication?  RemoteAuthentication   = null,
                        Auth_Path?             AuthenticationPath     = null,
+                       ICSORoamingProvider?   CSORoamingProvider     = null,
 
                        DateTimeOffset?        Timestamp              = null,
                        EventTracking_Id?      EventTrackingId        = null,
@@ -3790,24 +3806,28 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                result = await RoamingNetwork.
-                                   RemoteStop(SessionId,
-                                              ReservationHandling,
-                                              Id,
-                                              RemoteAuthentication,
-                                              AuthenticationPath,
+                result = await RoamingNetwork.RemoteStop(
+                                   SessionId,
+                                   ReservationHandling,
+                                   Id,
+                                   RemoteAuthentication,
+                                   AuthenticationPath,
+                                   CSORoamingProvider,
 
-                                              Timestamp,
-                                              EventTrackingId,
-                                              RequestTimeout,
-                                              CancellationToken);
+                                   Timestamp,
+                                   EventTrackingId,
+                                   RequestTimeout,
+                                   CancellationToken
+                               );
 
             }
             catch (Exception e)
             {
-                result = RemoteStopResult.Error(SessionId,
-                                                System_Id.Local,
-                                                e.Message);
+                result = RemoteStopResult.Error(
+                             SessionId,
+                             System_Id.Local,
+                             e.Message
+                         );
             }
 
 

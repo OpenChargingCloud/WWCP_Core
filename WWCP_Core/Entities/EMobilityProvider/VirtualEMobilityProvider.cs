@@ -374,6 +374,36 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoteStart(ChargingLocation, RemoteAuthentication, ChargingProduct = null, ReservationId = null, SessionId = null, AdditionalSessionInfos = null, AuthenticationPath = null, ...)
 
+        Task<RemoteStartResult>
+
+            IRemoteEMobilityProviderUI.RemoteStart(ChargingLocation         ChargingLocation,
+                                                   RemoteAuthentication     RemoteAuthentication,
+                                                   ChargingProduct?         ChargingProduct,
+                                                   ChargingReservation_Id?  ReservationId,
+                                                   ChargingSession_Id?      SessionId,
+                                                   JObject?                 AdditionalSessionInfos,
+                                                   Auth_Path?               AuthenticationPath,
+
+                                                   DateTimeOffset?          RequestTimestamp,
+                                                   EventTracking_Id?        EventTrackingId,
+                                                   TimeSpan?                RequestTimeout,
+                                                   CancellationToken        CancellationToken)
+
+            => RemoteStart(ChargingLocation,
+                           RemoteAuthentication,
+                           ChargingProduct,
+                           ReservationId,
+                           SessionId,
+                           AdditionalSessionInfos,
+                           AuthenticationPath,
+                           null,
+
+                           RequestTimestamp,
+                           EventTrackingId,
+                           RequestTimeout,
+                           CancellationToken);
+
+
         /// <summary>
         /// Start a charging session at the given charging location.
         /// </summary>
@@ -396,6 +426,7 @@ namespace cloud.charging.open.protocols.WWCP
                         ChargingSession_Id?      SessionId                = null,
                         JObject?                 AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
+                        ICSORoamingProvider?     CSORoamingProvider       = null,
 
                         DateTimeOffset?          RequestTimestamp         = null,
                         EventTracking_Id?        EventTrackingId          = null,
@@ -471,6 +502,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    RemoteAuthentication,
                                    AdditionalSessionInfos,
                                    AuthenticationPath,
+                                   CSORoamingProvider,
 
                                    RequestTimestamp,
                                    EventTrackingId,
@@ -540,6 +572,30 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoteStop (SessionId, ReservationHandling, RemoteAuthentication = null, AuthenticationPath = null, ...)
 
+        Task<RemoteStopResult>
+
+            IRemoteEMobilityProviderUI.RemoteStop(ChargingSession_Id     SessionId,
+                                                  ReservationHandling?   ReservationHandling,
+                                                  RemoteAuthentication?  RemoteAuthentication,
+                                                  Auth_Path?             AuthenticationPath,
+
+                                                  DateTimeOffset?        RequestTimestamp,
+                                                  EventTracking_Id?      EventTrackingId,
+                                                  TimeSpan?              RequestTimeout,
+                                                  CancellationToken      CancellationToken)
+
+            => RemoteStop(SessionId,
+                          ReservationHandling,
+                          RemoteAuthentication,
+                          AuthenticationPath,
+                          null,
+
+                          RequestTimestamp,
+                          EventTrackingId,
+                          RequestTimeout,
+                          CancellationToken);
+
+
         /// <summary>
         /// Stop the given charging session.
         /// </summary>
@@ -557,6 +613,7 @@ namespace cloud.charging.open.protocols.WWCP
                        ReservationHandling?   ReservationHandling    = null,
                        RemoteAuthentication?  RemoteAuthentication   = null,
                        Auth_Path?             AuthenticationPath     = null,
+                       ICSORoamingProvider?   CSORoamingProvider     = null,
 
                        DateTimeOffset?        RequestTimestamp       = null,
                        EventTracking_Id?      EventTrackingId        = null,
@@ -612,6 +669,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    Id,
                                    RemoteAuthentication,
                                    AuthenticationPath,
+                                   CSORoamingProvider,
 
                                    RequestTimestamp,
                                    EventTrackingId,

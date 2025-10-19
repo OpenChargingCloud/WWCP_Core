@@ -68,20 +68,22 @@ namespace cloud.charging.open.protocols.WWCP
 
             => EVSEs is not null && EVSEs.Any()
 
-                   ? new JArray(EVSEs.Where         (evse => evse is not null).
-                                      OrderBy       (evse => evse.Id).
-                                      Where         (evse => IncludeRemovedEVSEs || evse.Status != EVSEStatusType.Removed).
-                                      SkipTakeFilter(Skip, Take).
-                                      SafeSelect    (evse => evse.ToJSON(Embedded,
-                                                                         ExpandRoamingNetworkId,
-                                                                         ExpandChargingStationOperatorId,
-                                                                         ExpandChargingPoolId,
-                                                                         ExpandChargingStationId,
-                                                                         ExpandBrandIds,
-                                                                         ExpandDataLicenses,
-                                                                         CustomEVSESerializer,
-                                                                         CustomChargingConnectorSerializer)).
-                                      Where         (json => json is not null))
+                   ? new JArray(
+                         EVSEs.Where          (evse => evse is not null).
+                               OrderBy        (evse => evse.Id).
+                               Where          (evse => IncludeRemovedEVSEs || evse.Status != EVSEStatusType.Removed).
+                               SkipTakeFilter (Skip, Take).
+                               SafeSelect     (evse => evse.ToJSON(Embedded,
+                                                                   ExpandRoamingNetworkId,
+                                                                   ExpandChargingStationOperatorId,
+                                                                   ExpandChargingPoolId,
+                                                                   ExpandChargingStationId,
+                                                                   ExpandBrandIds,
+                                                                   ExpandDataLicenses,
+                                                                   CustomEVSESerializer,
+                                                                   CustomChargingConnectorSerializer)).
+                               Where          (evse => evse is not null)
+                     )
 
                    : [];
 

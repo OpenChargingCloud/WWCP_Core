@@ -60,11 +60,11 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// <summary>
         /// The default URI prefix of the WWCP tracker API.
         /// </summary>
-        public  static readonly HTTPPath DefaultURLPrefix       = HTTPPath.Parse("/tracker");
+        public  static readonly HTTPPath                                           DefaultURLPrefix       = HTTPPath.Parse("/tracker");
 
-        private ConcurrentDictionary<RoamingNetwork_Id, List<RoamingNetworkInfo>> _LocalRoamingNetworks;
+        private ConcurrentDictionary<RoamingNetwork_Id, List<RoamingNetworkInfo>>  localRoamingNetworks   = [];
 
-        private Dictionary<String, String> _Logins;
+        private ConcurrentDictionary<String, String>                               logins                 = [];
 
         #endregion
 
@@ -73,55 +73,45 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// <summary>
         /// The unique identification of this tracker client.
         /// </summary>
-        public Tracker_Id                                   Id              { get; }
+        public Tracker_Id   Id              { get; }
 
         /// <summary>
         /// An optional description of this tracker client.
         /// </summary>
-        public I18NString                                   Description     { get; }
+        public I18NString   Description     { get; }
 
 
         /// <summary>
         /// The HTTP server of the WWCP tracker.
         /// </summary>
-        public HTTPServer<RoamingNetworks, RoamingNetwork>  HTTPServer      { get; }
+        public HTTPServer   HTTPServer      { get; }
 
         /// <summary>
         /// The common URI prefix of the HTTP server of the WWCP tracker.
         /// </summary>
-        public HTTPPath                                     URLPrefix       { get; }
+        public HTTPPath     URLPrefix       { get; }
 
         /// <summary>
         /// The DNS client used by the tracker.
         /// </summary>
-        public DNSClient                                    DNSClient       { get; }
+        public DNSClient    DNSClient       { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        public Tracker(Tracker_Id                                   Id,
-                       I18NString                                   Description,
-                       HTTPServer<RoamingNetworks, RoamingNetwork>  HTTPServer,
-                       HTTPPath?                                    URLPrefix   = null,
-                       DNSClient?                                   DNSClient   = null)
+        public Tracker(Tracker_Id  Id,
+                       I18NString  Description,
+                       HTTPServer  HTTPServer,
+                       HTTPPath?   URLPrefix   = null,
+                       DNSClient?  DNSClient   = null)
         {
 
-            #region Initial checks
-
-            if (Id.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(Id), "The given unique tracker client identification must not be null or empty!");
-
-            #endregion
-
-            this.Id                     = Id;
-            this.Description            = Description ?? I18NString.Empty;
-            this.HTTPServer             = HTTPServer  ?? throw new ArgumentNullException(nameof(HTTPServer),  "The given HTTP server must not be null!");
-            this.URLPrefix              = URLPrefix   ?? DefaultURLPrefix;
-            this.DNSClient              = DNSClient   ?? new DNSClient();
-
-            this._Logins                = new Dictionary<String, String>();
-            this._LocalRoamingNetworks  = new ConcurrentDictionary<RoamingNetwork_Id, List<RoamingNetworkInfo>>();
+            this.Id           = Id;
+            this.Description  = Description ?? I18NString.Empty;
+            this.HTTPServer   = HTTPServer  ?? throw new ArgumentNullException(nameof(HTTPServer),  "The given HTTP server must not be null!");
+            this.URLPrefix    = URLPrefix   ?? DefaultURLPrefix;
+            this.DNSClient    = DNSClient   ?? new DNSClient();
 
             RegisterURITemplates();
 
@@ -147,7 +137,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                          HTTPDelegate: Request => {
 
                                              var Now   = Timestamp.Now;
-                                             var JSON  = _LocalRoamingNetworks.
+                                             var JSON  = localRoamingNetworks.
                                                              Select (kvp => {
 
                                                                 var LocalRoamingNetwork = kvp.Value.First(rni => rni is not null)?.RoamingNetwork;
@@ -348,7 +338,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
             foreach (var roamingnetworkinfo in RoamingNetworkInfos)
             {
 
-                if (_LocalRoamingNetworks.TryGetValue(roamingnetworkinfo.RoamingNetworkId, out var roamingNetworkList))
+                if (localRoamingNetworks.TryGetValue(roamingnetworkinfo.RoamingNetworkId, out var roamingNetworkList))
                 {
                     lock (roamingNetworkList)
                     {
@@ -357,8 +347,10 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                 }
 
                 else
-                    _LocalRoamingNetworks.TryAdd(roamingnetworkinfo.RoamingNetworkId,
-                                                 new List<RoamingNetworkInfo> { roamingnetworkinfo });
+                    localRoamingNetworks.TryAdd(
+                        roamingnetworkinfo.RoamingNetworkId,
+                        [ roamingnetworkinfo ]
+                    );
 
             }
 
