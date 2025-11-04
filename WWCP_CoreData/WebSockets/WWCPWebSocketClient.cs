@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <param name="Description">An optional description of this HTTP/websocket client.</param>
         /// <param name="RemoteCertificateValidator">The remote SSL/TLS certificate validator.</param>
         /// <param name="LocalCertificateSelector">A delegate to select a TLS client certificate.</param>
-        /// <param name="ClientCert">The SSL/TLS client certificate to use of HTTP authentication.</param>
+        /// <param name="ClientCert">The SSL/TLS client certificate to use for HTTP authentication.</param>
         /// <param name="HTTPUserAgent">The HTTP user agent identification.</param>
         /// <param name="URLPathPrefix">An optional default URL path prefix.</param>
         /// <param name="HTTPAuthentication">The WebService-Security username/password.</param>
@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                    Boolean?                                                        PreferIPv4                   = null,
                                    RemoteTLSServerCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketClient>?  RemoteCertificateValidator   = null,
                                    LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
-                                   X509Certificate?                                                ClientCert                   = null,
+                                   X509Certificate2?                                               ClientCertificate            = null,
                                    SslProtocols?                                                   TLSProtocol                  = null,
                                    String                                                          HTTPUserAgent                = DefaultHTTPUserAgent,
                                    IHTTPAuthentication?                                            HTTPAuthentication           = null,
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                    PreferIPv4,
                    RemoteCertificateValidator,
                    LocalCertificateSelector,
-                   ClientCert,
+                   ClientCertificate,
                    TLSProtocol,
                    HTTPUserAgent ?? DefaultHTTPUserAgent,
                    HTTPAuthentication,

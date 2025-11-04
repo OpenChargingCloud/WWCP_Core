@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="PreferIPv4">Prefer IPv4 instead of IPv6.</param>
         /// <param name="RemoteCertificateValidator">The remote TLS certificate validator.</param>
         /// <param name="LocalCertificateSelector">A delegate to select a TLS client certificate.</param>
-        /// <param name="ClientCert">The TLS client certificate to use of HTTP authentication.</param>
+        /// <param name="ClientCert">The TLS client certificate to use for HTTP authentication.</param>
         /// <param name="TLSProtocol">The TLS protocol to use.</param>
         /// <param name="ContentType">An optional HTTP content type.</param>
         /// <param name="Accept">The optional HTTP accept header.</param>
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                           Boolean?                                                   PreferIPv4                   = null,
                                           RemoteTLSServerCertificateValidationHandler<IHTTPClient>?  RemoteCertificateValidator   = null,
                                           LocalCertificateSelectionHandler?                          LocalCertificateSelector     = null,
-                                          X509Certificate?                                           ClientCert                   = null,
+                                          X509Certificate2?                                          ClientCertificate            = null,
                                           SslProtocols?                                              TLSProtocol                  = null,
                                           HTTPContentType?                                           ContentType                  = null,
                                           AcceptTypes?                                               Accept                       = null,
@@ -320,11 +320,12 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                    PreferIPv4,
                    RemoteCertificateValidator,
                    LocalCertificateSelector,
-                   ClientCert,
+                   ClientCertificate,
                    TLSProtocol,
                    ContentType,
                    Accept,
                    Authentication,
+                   null,  // TOTPConfig
                    HTTPUserAgent ?? DefaultHTTPUserAgent,
                    ConnectionType.Close,
                    RequestTimeout,
@@ -422,11 +423,12 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                       PreferIPv4,
                                                                       RemoteCertificateValidator,
                                                                       LocalCertificateSelector,
-                                                                      ClientCert,
+                                                                      ClientCertificate,
                                                                       TLSProtocols,
                                                                       ContentType,
                                                                       Accept,
-                                                                      Authentication,
+                                                                      HTTPAuthentication,
+                                                                      null,  // TOTPConfig
                                                                       HTTPUserAgent,
                                                                       Connection,
                                                                       RequestTimeout,
@@ -816,11 +818,12 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                       PreferIPv4,
                                                                       RemoteCertificateValidator,
                                                                       LocalCertificateSelector,
-                                                                      ClientCert,
+                                                                      ClientCertificate,
                                                                       TLSProtocols,
                                                                       ContentType,
                                                                       Accept,
-                                                                      Authentication,
+                                                                      HTTPAuthentication,
+                                                                      null,  // TOTPConfig
                                                                       HTTPUserAgent,
                                                                       Connection,
                                                                       RequestTimeout,

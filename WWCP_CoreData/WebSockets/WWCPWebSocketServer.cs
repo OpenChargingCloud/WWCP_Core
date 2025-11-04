@@ -421,7 +421,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                             Timestamp.Now,
                                             totpConfig.SharedSecret,
                                             totpConfig.ValidityTime,
-                                            totpConfig.TOTPLength,
+                                            totpConfig.Length,
                                             totpConfig.Alphabet
                                         );
 
@@ -485,7 +485,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                             Timestamp.Now,
                                             totpConfig.SharedSecret,
                                             totpConfig.ValidityTime,
-                                            totpConfig.TOTPLength,
+                                            totpConfig.Length,
                                             totpConfig.Alphabet
                                         );
 
