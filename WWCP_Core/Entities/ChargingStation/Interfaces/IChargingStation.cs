@@ -681,7 +681,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// The common interface of all charging stations.
     /// </summary>
     public interface IChargingStation : IEntity<ChargingStation_Id>,
-                                        IAdminStatus<ChargingStationAdminStatusTypes>,
+                                        IAdminStatus<ChargingStationAdminStatusType>,
                                         IStatus<ChargingStationStatusType>,
                                         ISendAuthorizeStartStop,
                                         ILocalRemoteStartStop,

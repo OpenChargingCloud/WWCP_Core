@@ -139,9 +139,9 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
         #region AdminStatus
 
-        private Timestamped<ChargingStationAdminStatusTypes> _AdminStatus;
+        private Timestamped<ChargingStationAdminStatusType> _AdminStatus;
 
-        public Timestamped<ChargingStationAdminStatusTypes> AdminStatus
+        public Timestamped<ChargingStationAdminStatusType> AdminStatus
         {
 
             get
@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
                                       GeoCoordinate?                                                                          StationGeoCoordinate      = null,
                                       IEnumerable<EVSE_Id>?                                                                   EVSEIds                   = null,
                                       String?                                                                                 PhoneNumber               = null,
-                                      Timestamped<ChargingStationAdminStatusTypes>?                                           AdminStatus               = null,
+                                      Timestamped<ChargingStationAdminStatusType>?                                           AdminStatus               = null,
                                       DateTime?                                                                               Created                   = null,
                                       Boolean                                                                                 OutOfService              = false,
                                       ChargingStationOperator?                                                                ForwardedToOperator       = null)
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
             this.StationServiceTag                    = StationServiceTag;
             this.StationAddress                       = StationAddress;
             this.StationGeoCoordinate                 = StationGeoCoordinate;
-            this._AdminStatus                         = AdminStatus           is not null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
+            this._AdminStatus                         = AdminStatus           is not null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusType>(ChargingStationAdminStatusType.Operational);
             this.PhoneNumber                          = PhoneNumber;
             this.Created                              = Created               is not null ? Created.Value                 : Timestamp.Now;
             this.OutOfService                         = OutOfService;

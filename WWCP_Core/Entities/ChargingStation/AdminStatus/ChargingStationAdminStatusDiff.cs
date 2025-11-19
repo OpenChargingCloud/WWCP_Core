@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// </summary>
     public class ChargingStationAdminStatusDiff : StatusDiff<ChargingStationOperator_Id,
                                                              ChargingStation_Id,
-                                                             ChargingStationAdminStatusTypes>
+                                                             ChargingStationAdminStatusType>
     {
 
         /// <summary>
@@ -44,8 +44,8 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingStationAdminStatusDiff(DateTime                                                                         Timestamp,
                                               ChargingStationOperator_Id                                                       ChargingStationOperatorId,
                                               I18NString?                                                                      ChargingStationOperatorName   = null,
-                                              IEnumerable<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusTypes>>?  NewStatus                     = null,
-                                              IEnumerable<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusTypes>>?  ChangedStatus                 = null,
+                                              IEnumerable<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>?  NewStatus                     = null,
+                                              IEnumerable<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>?  ChangedStatus                 = null,
                                               IEnumerable<ChargingStation_Id>?                                                 RemovedIds                    = null)
 
             : base(Timestamp,

@@ -4306,7 +4306,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetChargingStationAdminStatus (ChargingStationId, CurrentAdminStatus)
 
         public async Task SetChargingStationAdminStatus(ChargingStation_Id                            ChargingStationId,
-                                                        Timestamped<ChargingStationAdminStatusTypes>  CurrentAdminStatus)
+                                                        Timestamped<ChargingStationAdminStatusType>  CurrentAdminStatus)
         {
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator) &&
@@ -4327,7 +4327,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetChargingStationAdminStatus (ChargingStationId, CurrentAdminStatusList)
 
         public async Task SetChargingStationAdminStatus(ChargingStation_Id                                         ChargingStationId,
-                                                        IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  CurrentAdminStatusList)
+                                                        IEnumerable<Timestamped<ChargingStationAdminStatusType>>  CurrentAdminStatusList)
         { 
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator) &&
@@ -4410,11 +4410,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TimestampFilter">An optional status timestamp filter.</param>
         /// <param name="AdminStatusFilter">An optional admin status value filter.</param>
         /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>>
+        public IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusType>>>>
 
             ChargingStationAdminStatusSchedule(IncludeChargingStationDelegate?                  IncludeChargingStations   = null,
                                                Func<DateTimeOffset,                  Boolean>?  TimestampFilter           = null,
-                                               Func<ChargingStationAdminStatusTypes, Boolean>?  AdminStatusFilter         = null,
+                                               Func<ChargingStationAdminStatusType, Boolean>?  AdminStatusFilter         = null,
                                                UInt64?                                          Skip                      = null,
                                                UInt64?                                          Take                      = null)
 
@@ -4446,8 +4446,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateChargingStationAdminStatus(DateTimeOffset                                 Timestamp,
                                                              EventTracking_Id                               EventTrackingId,
                                                              IChargingStation                               ChargingStation,
-                                                             Timestamped<ChargingStationAdminStatusTypes>   NewAdminStatus,
-                                                             Timestamped<ChargingStationAdminStatusTypes>?  OldAdminStatus   = null,
+                                                             Timestamped<ChargingStationAdminStatusType>   NewAdminStatus,
+                                                             Timestamped<ChargingStationAdminStatusType>?  OldAdminStatus   = null,
                                                              Context?                                       DataSource       = null)
         {
 

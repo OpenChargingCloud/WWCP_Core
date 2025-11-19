@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdminStatus">A charging station admin status.</param>
         public static Boolean Contains(this IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus,
                                        ChargingStation_Id                            Id,
-                                       ChargingStationAdminStatusTypes               AdminStatus)
+                                       ChargingStationAdminStatusType               AdminStatus)
         {
 
             foreach (var status in ChargingStationAdminStatus)
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The current admin status of the charging station.
         /// </summary>
-        public ChargingStationAdminStatusTypes  AdminStatus    { get; }
+        public ChargingStationAdminStatusType  AdminStatus    { get; }
 
         /// <summary>
         /// The timestamp of the current admin status of the charging station.
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamped admin status of the charging station.
         /// </summary>
-        public Timestamped<ChargingStationAdminStatusTypes> TimestampedAdminStatus
+        public Timestamped<ChargingStationAdminStatusType> TimestampedAdminStatus
             => new (Timestamp, AdminStatus);
 
         #endregion
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdminStatus">The current timestamped adminstatus of the charging station.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public ChargingStationAdminStatus(ChargingStation_Id                            Id,
-                                          Timestamped<ChargingStationAdminStatusTypes>  AdminStatus,
+                                          Timestamped<ChargingStationAdminStatusType>  AdminStatus,
                                           JObject?                                      CustomData     = null,
                                           UserDefinedDictionary?                        InternalData   = null)
 
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp of the status change of the charging station.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public ChargingStationAdminStatus(ChargingStation_Id               Id,
-                                          ChargingStationAdminStatusTypes  AdminStatus,
+                                          ChargingStationAdminStatusType  AdminStatus,
                                           DateTime                         Timestamp,
                                           JObject?                         CustomData     = null,
                                           UserDefinedDictionary?           InternalData   = null)

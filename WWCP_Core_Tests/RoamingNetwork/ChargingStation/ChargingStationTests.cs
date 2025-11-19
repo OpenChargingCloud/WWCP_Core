@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 ClassicAssert.AreEqual ("GraphDefined Charging Station #AAAA",             DE_GEF_S0001_AAAA.Name.       FirstText());
                 ClassicAssert.AreEqual ("powered by GraphDefined Charging Stations GmbH",  DE_GEF_S0001_AAAA.Description.FirstText());
 
-                ClassicAssert.AreEqual (ChargingStationAdminStatusTypes.OutOfService,      DE_GEF_S0001_AAAA.AdminStatus);
+                ClassicAssert.AreEqual (ChargingStationAdminStatusType.OutOfService,      DE_GEF_S0001_AAAA.AdminStatus);
                 ClassicAssert.AreEqual (1,                                                 DE_GEF_S0001_AAAA.AdminStatusSchedule().Count());
 
                 ClassicAssert.AreEqual (ChargingStationStatusType.Offline,                DE_GEF_S0001_AAAA.Status);
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     ClassicAssert.AreEqual ("DE*GEF Station 1234",                             DE_GEF_S1234.Name.       FirstText());
                     ClassicAssert.AreEqual ("powered by GraphDefined Charging Stations GmbH",  DE_GEF_S1234.Description.FirstText());
 
-                    ClassicAssert.AreEqual (ChargingStationAdminStatusTypes.Operational,       DE_GEF_S1234.AdminStatus);
+                    ClassicAssert.AreEqual (ChargingStationAdminStatusType.Operational,       DE_GEF_S1234.AdminStatus);
                     ClassicAssert.AreEqual (ChargingStationStatusType.Available,              DE_GEF_S1234.Status);
 
                     ClassicAssert.IsTrue   (roamingNetwork.ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S1234")));
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                     Id:                  ChargingStation_Id.Parse("DE*GEF*S1234"),
                                                     Name:                I18NString.Create(Languages.de, "DE*GEF Station 1234"),
                                                     Description:         I18NString.Create(Languages.de, "powered by GraphDefined Charging Stations GmbH"),
-                                                    InitialAdminStatus:  ChargingStationAdminStatusTypes.OutOfService,
+                                                    InitialAdminStatus:  ChargingStationAdminStatusType.OutOfService,
                                                     InitialStatus:       ChargingStationStatusType.Offline,
                                                     OnSuccess:           (evse, et) => success = true,
                                                     Configurator:        evse => {
@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     ClassicAssert.AreEqual ("DE*GEF Station 1234",                             DE_GEF_S1234.Name.       FirstText());
                     ClassicAssert.AreEqual ("powered by GraphDefined Charging Stations GmbH",  DE_GEF_S1234.Description.FirstText());
 
-                    ClassicAssert.AreEqual (ChargingStationAdminStatusTypes.OutOfService,      DE_GEF_S1234.AdminStatus);
+                    ClassicAssert.AreEqual (ChargingStationAdminStatusType.OutOfService,      DE_GEF_S1234.AdminStatus);
                     ClassicAssert.AreEqual (ChargingStationStatusType.Offline,                DE_GEF_S1234.Status);
 
                     ClassicAssert.IsTrue   (roamingNetwork.ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S1234")));
@@ -349,15 +349,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 // Status entries are compared by their ISO 8601 timestamps!
                 Thread.Sleep(1000);
 
-                DE_GEF_S0001_AAAA.AdminStatus = ChargingStationAdminStatusTypes.InternalUse;
-                ClassicAssert.AreEqual(ChargingStationAdminStatusTypes.InternalUse,  DE_GEF_S0001_AAAA.AdminStatus);
+                DE_GEF_S0001_AAAA.AdminStatus = ChargingStationAdminStatusType.InternalUse;
+                ClassicAssert.AreEqual(ChargingStationAdminStatusType.InternalUse,  DE_GEF_S0001_AAAA.AdminStatus);
                 ClassicAssert.AreEqual("internalUse, outOfService",                  DE_GEF_S0001_AAAA.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 ClassicAssert.AreEqual(2,                                            DE_GEF_S0001_AAAA.AdminStatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
-                DE_GEF_S0001_AAAA.AdminStatus = ChargingStationAdminStatusTypes.Operational;
-                ClassicAssert.AreEqual(ChargingStationAdminStatusTypes.Operational,  DE_GEF_S0001_AAAA.AdminStatus);
+                DE_GEF_S0001_AAAA.AdminStatus = ChargingStationAdminStatusType.Operational;
+                ClassicAssert.AreEqual(ChargingStationAdminStatusType.Operational,  DE_GEF_S0001_AAAA.AdminStatus);
                 ClassicAssert.AreEqual("operational, internalUse, outOfService",     DE_GEF_S0001_AAAA.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 ClassicAssert.AreEqual(3,                                            DE_GEF_S0001_AAAA.AdminStatusSchedule().Count());
 

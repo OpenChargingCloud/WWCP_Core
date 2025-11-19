@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         URL?                                                            CertificationInfo              = null,
                                                                         URL?                                                            CalibrationInfo                = null,
 
-                                                                        Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
+                                                                        Timestamped<ChargingStationAdminStatusType>?                   InitialAdminStatus             = null,
                                                                         Timestamped<ChargingStationStatusType>?                        InitialStatus                  = null,
                                                                         UInt16?                                                         MaxAdminStatusScheduleSize     = null,
                                                                         UInt16?                                                         MaxStatusScheduleSize          = null,
@@ -223,7 +223,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                    URL?                                                            CertificationInfo              = null,
                                                                                    URL?                                                            CalibrationInfo                = null,
 
-                                                                                   Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
+                                                                                   Timestamped<ChargingStationAdminStatusType>?                   InitialAdminStatus             = null,
                                                                                    Timestamped<ChargingStationStatusType>?                        InitialStatus                  = null,
                                                                                    UInt16?                                                         MaxAdminStatusScheduleSize     = null,
                                                                                    UInt16?                                                         MaxStatusScheduleSize          = null,
@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                         URL?                                                            CertificationInfo                      = null,
                                                                                         URL?                                                            CalibrationInfo                        = null,
 
-                                                                                        Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus                     = null,
+                                                                                        Timestamped<ChargingStationAdminStatusType>?                   InitialAdminStatus                     = null,
                                                                                         Timestamped<ChargingStationStatusType>?                        InitialStatus                          = null,
                                                                                         UInt16?                                                         MaxAdminStatusScheduleSize             = null,
                                                                                         UInt16?                                                         MaxStatusScheduleSize                  = null,
@@ -491,7 +491,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                               URL?                                                            CertificationInfo              = null,
                                                                               URL?                                                            CalibrationInfo                = null,
 
-                                                                              Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
+                                                                              Timestamped<ChargingStationAdminStatusType>?                   InitialAdminStatus             = null,
                                                                               Timestamped<ChargingStationStatusType>?                        InitialStatus                  = null,
                                                                               UInt16?                                                         MaxAdminStatusScheduleSize     = null,
                                                                               UInt16?                                                         MaxStatusScheduleSize          = null,

@@ -501,10 +501,10 @@ namespace cloud.charging.open.protocols.WWCP
         IEnumerable<ChargingStationStatus>       ChargingStationStatus             (IncludeChargingStationDelegate?                  IncludeChargingStations   = null);
 
 
-        IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>>
+        IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusType>>>>
                                                  ChargingStationAdminStatusSchedule(IncludeChargingStationDelegate?                  IncludeChargingStations   = null,
                                                                                     Func<DateTimeOffset,                  Boolean>?  TimestampFilter           = null,
-                                                                                    Func<ChargingStationAdminStatusTypes, Boolean>?  AdminStatusFilter         = null,
+                                                                                    Func<ChargingStationAdminStatusType, Boolean>?  AdminStatusFilter         = null,
                                                                                     UInt64?                                          Skip                      = null,
                                                                                     UInt64?                                          Take                      = null);
 
@@ -518,10 +518,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetChargingStationAdminStatus
 
         Task SetChargingStationAdminStatus(ChargingStation_Id                            ChargingStationId,
-                                           Timestamped<ChargingStationAdminStatusTypes>  CurrentAdminStatus);
+                                           Timestamped<ChargingStationAdminStatusType>  CurrentAdminStatus);
 
         Task SetChargingStationAdminStatus(ChargingStation_Id                                         ChargingStationId,
-                                           IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  CurrentAdminStatusList);
+                                           IEnumerable<Timestamped<ChargingStationAdminStatusType>>  CurrentAdminStatusList);
 
         #endregion
 

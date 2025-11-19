@@ -31,14 +31,14 @@ namespace cloud.charging.open.protocols.WWCP
     {
 
         /// <summary>
-        /// Indicates whether this charging station status types is null or empty.
+        /// Indicates whether this charging station status type is null or empty.
         /// </summary>
         /// <param name="ChargingStationStatusType">A charging station status type.</param>
         public static Boolean IsNullOrEmpty(this ChargingStationStatusType? ChargingStationStatusType)
             => !ChargingStationStatusType.HasValue || ChargingStationStatusType.Value.IsNullOrEmpty;
 
         /// <summary>
-        /// Indicates whether this charging station status types is null or empty.
+        /// Indicates whether this charging station status type is null or empty.
         /// </summary>
         /// <param name="ChargingStationStatusType">A charging station status type.</param>
         public static Boolean IsNotNullOrEmpty(this ChargingStationStatusType? ChargingStationStatusType)

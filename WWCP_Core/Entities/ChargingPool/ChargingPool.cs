@@ -2323,8 +2323,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateChargingStationAdminStatus(DateTimeOffset                                 Timestamp,
                                                              EventTracking_Id                               EventTrackingId,
                                                              IChargingStation                               ChargingStation,
-                                                             Timestamped<ChargingStationAdminStatusTypes>   NewStatus,
-                                                             Timestamped<ChargingStationAdminStatusTypes>?  OldStatus    = null,
+                                                             Timestamped<ChargingStationAdminStatusType>   NewStatus,
+                                                             Timestamped<ChargingStationAdminStatusType>?  OldStatus    = null,
                                                              Context?                                       DataSource   = null)
         {
 

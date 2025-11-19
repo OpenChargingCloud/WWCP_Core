@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                        URL?                                                            CertificationInfo                    = null,
                                                                        URL?                                                            CalibrationInfo                      = null,
 
-                                                                       Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus                   = null,
+                                                                       Timestamped<ChargingStationAdminStatusType>?                   InitialAdminStatus                   = null,
                                                                        Timestamped<ChargingStationStatusType>?                        InitialStatus                        = null,
                                                                        UInt16?                                                         MaxAdminStatusScheduleSize           = null,
                                                                        UInt16?                                                         MaxStatusScheduleSize                = null,
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                 ChargingPool.RoamingNetwork,
                                                 newStation.Name,
                                                 newStation.Description,
-                                                InitialAdminStatus ?? ChargingStationAdminStatusTypes.Operational,
+                                                InitialAdminStatus ?? ChargingStationAdminStatusType.Operational,
                                                 InitialStatus      ?? ChargingStationStatusType.Available,
                                                 EllipticCurve,
                                                 PrivateKey,
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                                   URL?                                                            CertificationInfo                    = null,
                                                                                   URL?                                                            CalibrationInfo                      = null,
 
-                                                                                  Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus                   = null,
+                                                                                  Timestamped<ChargingStationAdminStatusType>?                   InitialAdminStatus                   = null,
                                                                                   Timestamped<ChargingStationStatusType>?                        InitialStatus                        = null,
                                                                                   UInt16?                                                         MaxAdminStatusScheduleSize           = null,
                                                                                   UInt16?                                                         MaxStatusScheduleSize                = null,
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                 ChargingPool.RoamingNetwork,
                                                 newStation.Name,
                                                 newStation.Description,
-                                                InitialAdminStatus ?? ChargingStationAdminStatusTypes.Operational,
+                                                InitialAdminStatus ?? ChargingStationAdminStatusType.Operational,
                                                 InitialStatus      ?? ChargingStationStatusType.Available,
                                                 EllipticCurve,
                                                 PrivateKey,
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                                        URL?                                                            CertificationInfo                      = null,
                                                                                        URL?                                                            CalibrationInfo                        = null,
 
-                                                                                       Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus                     = null,
+                                                                                       Timestamped<ChargingStationAdminStatusType>?                   InitialAdminStatus                     = null,
                                                                                        Timestamped<ChargingStationStatusType>?                        InitialStatus                          = null,
                                                                                        UInt16?                                                         MaxAdminStatusScheduleSize             = null,
                                                                                        UInt16?                                                         MaxStatusScheduleSize                  = null,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                 ChargingPool.RoamingNetwork,
                                                 newStation.Name,
                                                 newStation.Description,
-                                                InitialAdminStatus ?? ChargingStationAdminStatusTypes.Operational,
+                                                InitialAdminStatus ?? ChargingStationAdminStatusType.Operational,
                                                 InitialStatus      ?? ChargingStationStatusType.Available,
                                                 EllipticCurve,
                                                 PrivateKey,
@@ -514,7 +514,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
     /// A virtual charging station for (internal) tests.
     /// </summary>
     public class VirtualChargingStation : ACryptoEMobilityEntity<ChargingStation_Id,
-                                                                 ChargingStationAdminStatusTypes,
+                                                                 ChargingStationAdminStatusType,
                                                                  ChargingStationStatusType>,
                                           IEquatable<VirtualChargingStation>, IComparable<VirtualChargingStation>, IComparable,
                                           IRemoteChargingStation
@@ -689,7 +689,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                       IRoamingNetwork                                RoamingNetwork,
                                       I18NString?                                    Name                     = null,
                                       I18NString?                                    Description              = null,
-                                      Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus       = null,
+                                      Timestamped<ChargingStationAdminStatusType>?  InitialAdminStatus       = null,
                                       Timestamped<ChargingStationStatusType>?       InitialStatus            = null,
                                       String?                                        EllipticCurve            = "P-256",
                                       ECPrivateKeyParameters?                        PrivateKey               = null,
@@ -705,7 +705,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    EllipticCurve,
                    PrivateKey,
                    PublicKeyCertificates,
-                   InitialAdminStatus     ?? ChargingStationAdminStatusTypes.Operational,
+                   InitialAdminStatus     ?? ChargingStationAdminStatusType.Operational,
                    InitialStatus          ?? ChargingStationStatusType.Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize)
@@ -823,8 +823,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="NewStatus">The new EVSE admin status.</param>
         internal async Task UpdateAdminStatus(DateTimeOffset                                 Timestamp,
                                               EventTracking_Id                               EventTrackingId,
-                                              Timestamped<ChargingStationAdminStatusTypes>   NewStatus,
-                                              Timestamped<ChargingStationAdminStatusTypes>?  OldStatus    = null,
+                                              Timestamped<ChargingStationAdminStatusType>   NewStatus,
+                                              Timestamped<ChargingStationAdminStatusType>?  OldStatus    = null,
                                               Context?                                       DataSource   = null)
         {
 
@@ -1476,8 +1476,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 if (ChargingLocation.ChargingStationId.HasValue && ChargingLocation.ChargingStationId.Value != Id)
                     result = ReservationResult.UnknownLocation;
 
-                else if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
-                         AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
+                else if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
+                         AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
                 {
 
                     #region Check if the eMAId is on the white list
@@ -1746,8 +1746,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             #endregion
 
 
-            if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
-                AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
+            if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
+                AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
             {
 
                 if (TryGetChargingReservationById(ReservationId, out canceledReservation))
@@ -2582,8 +2582,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     result = RemoteStartResult.UnknownLocation(System_Id.Local);
                 }
 
-                else if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
-                         AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
+                else if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
+                         AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
                 {
 
                     #region Check if the eMAId is on the white list
@@ -2746,8 +2746,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             try
             {
 
-                if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
-                    AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
+                    AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
                 {
 
                     #region Check if the eMAId is on the white list

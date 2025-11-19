@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// A charging station to charge an electric vehicle.
     /// </summary>
     public class ChargingStation : AEMobilityEntity<ChargingStation_Id,
-                                                    ChargingStationAdminStatusTypes,
+                                                    ChargingStationAdminStatusType,
                                                     ChargingStationStatusType>,
                                    IEquatable <ChargingStation>,
                                    IComparable<ChargingStation>,
@@ -1321,7 +1321,7 @@ namespace cloud.charging.open.protocols.WWCP
                                URL?                                           CertificationInfo              = null,
                                URL?                                           CalibrationInfo                = null,
 
-                               Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
+                               Timestamped<ChargingStationAdminStatusType>?  InitialAdminStatus             = null,
                                Timestamped<ChargingStationStatusType>?       InitialStatus                  = null,
                                UInt16?                                        MaxAdminStatusScheduleSize     = null,
                                UInt16?                                        MaxStatusScheduleSize          = null,
@@ -1339,7 +1339,7 @@ namespace cloud.charging.open.protocols.WWCP
             : base(Id,
                    Name,
                    Description,
-                   InitialAdminStatus         ?? ChargingStationAdminStatusTypes.Operational,
+                   InitialAdminStatus         ?? ChargingStationAdminStatusType.Operational,
                    InitialStatus              ?? ChargingStationStatusType.     Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxChargingStationAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxChargingStationStatusScheduleSize,
@@ -1615,8 +1615,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DataSource">An optional data source or context for the charging station admin status update.</param>
         internal async Task UpdateAdminStatus(DateTimeOffset                                 Timestamp,
                                               EventTracking_Id                               EventTrackingId,
-                                              Timestamped<ChargingStationAdminStatusTypes>   NewStatus,
-                                              Timestamped<ChargingStationAdminStatusTypes>?  OldStatus    = null,
+                                              Timestamped<ChargingStationAdminStatusType>   NewStatus,
+                                              Timestamped<ChargingStationAdminStatusType>?  OldStatus    = null,
                                               Context?                                       DataSource   = null)
         {
 
@@ -2971,8 +2971,8 @@ namespace cloud.charging.open.protocols.WWCP
                 if (ChargingLocation.ChargingStationId.HasValue && ChargingLocation.ChargingStationId.Value != Id)
                     result = ReservationResult.UnknownLocation;
 
-                else if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
-                         AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
+                else if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
+                         AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
                 {
 
                     var EVSEId = ChargingLocation.EVSEId;
@@ -3140,8 +3140,8 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
-                    AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
+                    AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
                 {
 
                     if (RemoteChargingStation is not null)
@@ -3827,8 +3827,8 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
-                    AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
+                    AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
                 {
 
                     if (ChargingLocation.EVSEId.HasValue                            &&
@@ -3999,8 +3999,8 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
-                    AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
+                    AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
                 {
 
                     if (TryGetChargingSessionById(SessionId,                    out var chargingSession) &&

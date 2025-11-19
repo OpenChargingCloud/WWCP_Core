@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamped admin status of the charging station.
         /// </summary>
-        public StatusSchedule<ChargingStationAdminStatusTypes>  StatusSchedule    { get; }
+        public StatusSchedule<ChargingStationAdminStatusType>  StatusSchedule    { get; }
 
         #endregion
 
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="StatusSchedule">The timestamped admin status of the charging station.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public ChargingStationAdminStatusSchedule(ChargingStation_Id                               Id,
-                                                  StatusSchedule<ChargingStationAdminStatusTypes>  StatusSchedule,
+                                                  StatusSchedule<ChargingStationAdminStatusType>  StatusSchedule,
                                                   JObject?                                         CustomData     = null,
                                                   UserDefinedDictionary?                           InternalData   = null)
 

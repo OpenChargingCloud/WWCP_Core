@@ -31,18 +31,18 @@ namespace cloud.charging.open.protocols.WWCP
     {
 
         /// <summary>
-        /// Indicates whether this charging station admin status types is null or empty.
+        /// Indicates whether this charging station admin status type is null or empty.
         /// </summary>
-        /// <param name="ChargingStationAdminStatusTypes">A charging station admin status type.</param>
-        public static Boolean IsNullOrEmpty(this ChargingStationAdminStatusTypes? ChargingStationAdminStatusTypes)
-            => !ChargingStationAdminStatusTypes.HasValue || ChargingStationAdminStatusTypes.Value.IsNullOrEmpty;
+        /// <param name="ChargingStationAdminStatusType">A charging station admin status type.</param>
+        public static Boolean IsNullOrEmpty(this ChargingStationAdminStatusType? ChargingStationAdminStatusType)
+            => !ChargingStationAdminStatusType.HasValue || ChargingStationAdminStatusType.Value.IsNullOrEmpty;
 
         /// <summary>
-        /// Indicates whether this charging station admin status types is null or empty.
+        /// Indicates whether this charging station admin status type is null or empty.
         /// </summary>
-        /// <param name="ChargingStationAdminStatusTypes">A charging station admin status type.</param>
-        public static Boolean IsNotNullOrEmpty(this ChargingStationAdminStatusTypes? ChargingStationAdminStatusTypes)
-            => ChargingStationAdminStatusTypes.HasValue && ChargingStationAdminStatusTypes.Value.IsNotNullOrEmpty;
+        /// <param name="ChargingStationAdminStatusType">A charging station admin status type.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargingStationAdminStatusType? ChargingStationAdminStatusType)
+            => ChargingStationAdminStatusType.HasValue && ChargingStationAdminStatusType.Value.IsNotNullOrEmpty;
 
     }
 
@@ -50,9 +50,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The admin status of a charging station.
     /// </summary>
-    public readonly struct ChargingStationAdminStatusTypes : IId,
-                                                             IEquatable<ChargingStationAdminStatusTypes>,
-                                                             IComparable<ChargingStationAdminStatusTypes>
+    public readonly struct ChargingStationAdminStatusType : IId,
+                                                            IEquatable<ChargingStationAdminStatusType>,
+                                                            IComparable<ChargingStationAdminStatusType>
     {
 
         #region Data
@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new charging station admin status type based on the given string.
         /// </summary>
-        private ChargingStationAdminStatusTypes(String Text)
+        private ChargingStationAdminStatusType(String Text)
         {
             InternalId = Text;
         }
@@ -105,10 +105,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given string as a charging station admin status type.
         /// </summary>
         /// <param name="Text">A text representation of a charging station admin status type.</param>
-        public static ChargingStationAdminStatusTypes Parse(String Text)
+        public static ChargingStationAdminStatusType Parse(String Text)
         {
 
-            if (TryParse(Text, out ChargingStationAdminStatusTypes chargingStationAdminStatusTypes))
+            if (TryParse(Text, out ChargingStationAdminStatusType chargingStationAdminStatusTypes))
                 return chargingStationAdminStatusTypes;
 
             throw new ArgumentException($"Invalid text representation of a charging station admin status type: '" + Text + "'!",
@@ -124,10 +124,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Try to parse the given string as a charging station admin status type.
         /// </summary>
         /// <param name="Text">A text representation of a charging station admin status type.</param>
-        public static ChargingStationAdminStatusTypes? TryParse(String Text)
+        public static ChargingStationAdminStatusType? TryParse(String Text)
         {
 
-            if (TryParse(Text, out ChargingStationAdminStatusTypes chargingStationAdminStatusTypes))
+            if (TryParse(Text, out ChargingStationAdminStatusType chargingStationAdminStatusTypes))
                 return chargingStationAdminStatusTypes;
 
             return null;
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Text">A text representation of a charging station admin status type.</param>
         /// <param name="ChargingStationAdminStatusType">The parsed charging station admin status type.</param>
-        public static Boolean TryParse(String Text, out ChargingStationAdminStatusTypes ChargingStationAdminStatusType)
+        public static Boolean TryParse(String Text, out ChargingStationAdminStatusType ChargingStationAdminStatusType)
         {
 
             Text = Text.Trim();
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 try
                 {
-                    ChargingStationAdminStatusType = new ChargingStationAdminStatusTypes(Text);
+                    ChargingStationAdminStatusType = new ChargingStationAdminStatusType(Text);
                     return true;
                 }
                 catch
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Clone this charging station admin status type.
         /// </summary>
-        public ChargingStationAdminStatusTypes Clone()
+        public ChargingStationAdminStatusType Clone()
 
             => new (
                    InternalId.CloneString()
@@ -185,37 +185,44 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Unclear admin status of the charging station.
         /// </summary>
-        public static readonly ChargingStationAdminStatusTypes Unspecified   = new("unspecified");
+        public static ChargingStationAdminStatusType  Unspecified     { get; }
+            = new ("unspecified");
 
         /// <summary>
         /// Unknown admin status of the charging station.
         /// </summary>
-        public static readonly ChargingStationAdminStatusTypes Unknown        = new("unknown");
+        public static ChargingStationAdminStatusType  Unknown         { get; }
+            = new ("unknown");
 
         /// <summary>
         /// The charging station is planned for the future.
         /// </summary>
-        public static readonly ChargingStationAdminStatusTypes Planned       = new("planned");
+        public static ChargingStationAdminStatusType  Planned         { get; }
+            = new ("planned");
 
         /// <summary>
         /// The charging station is currently in deployment, but not fully operational yet.
         /// </summary>
-        public static readonly ChargingStationAdminStatusTypes InDeployment  = new("inDeployment");
+        public static ChargingStationAdminStatusType  InDeployment    { get; }
+            = new ("inDeployment");
 
         /// <summary>
         /// Private or internal use.
         /// </summary>
-        public static readonly ChargingStationAdminStatusTypes InternalUse   = new("internalUse");
+        public static ChargingStationAdminStatusType  InternalUse     { get; }
+            = new ("internalUse");
 
         /// <summary>
         /// The charging station is under maintenance.
         /// </summary>
-        public static readonly ChargingStationAdminStatusTypes OutOfService  = new("outOfService");
+        public static ChargingStationAdminStatusType  OutOfService    { get; }
+            = new ("outOfService");
 
         /// <summary>
         /// The charging station is operational.
         /// </summary>
-        public static readonly ChargingStationAdminStatusTypes Operational   = new("operational");
+        public static ChargingStationAdminStatusType  Operational     { get; }
+            = new ("operational");
 
         #endregion
 
@@ -230,8 +237,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationAdminStatusType1">A charging station admin status type.</param>
         /// <param name="ChargingStationAdminStatusType2">Another charging station admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ChargingStationAdminStatusTypes ChargingStationAdminStatusType1,
-                                           ChargingStationAdminStatusTypes ChargingStationAdminStatusType2)
+        public static Boolean operator == (ChargingStationAdminStatusType ChargingStationAdminStatusType1,
+                                           ChargingStationAdminStatusType ChargingStationAdminStatusType2)
 
             => ChargingStationAdminStatusType1.Equals(ChargingStationAdminStatusType2);
 
@@ -245,8 +252,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationAdminStatusType1">A charging station admin status type.</param>
         /// <param name="ChargingStationAdminStatusType2">Another charging station admin status type.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ChargingStationAdminStatusTypes ChargingStationAdminStatusType1,
-                                           ChargingStationAdminStatusTypes ChargingStationAdminStatusType2)
+        public static Boolean operator != (ChargingStationAdminStatusType ChargingStationAdminStatusType1,
+                                           ChargingStationAdminStatusType ChargingStationAdminStatusType2)
 
             => !ChargingStationAdminStatusType1.Equals(ChargingStationAdminStatusType2);
 
@@ -260,8 +267,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationAdminStatusType1">A charging station admin status type.</param>
         /// <param name="ChargingStationAdminStatusType2">Another charging station admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator < (ChargingStationAdminStatusTypes ChargingStationAdminStatusType1,
-                                          ChargingStationAdminStatusTypes ChargingStationAdminStatusType2)
+        public static Boolean operator < (ChargingStationAdminStatusType ChargingStationAdminStatusType1,
+                                          ChargingStationAdminStatusType ChargingStationAdminStatusType2)
 
             => ChargingStationAdminStatusType1.CompareTo(ChargingStationAdminStatusType2) < 0;
 
@@ -275,8 +282,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationAdminStatusType1">A charging station admin status type.</param>
         /// <param name="ChargingStationAdminStatusType2">Another charging station admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator <= (ChargingStationAdminStatusTypes ChargingStationAdminStatusType1,
-                                           ChargingStationAdminStatusTypes ChargingStationAdminStatusType2)
+        public static Boolean operator <= (ChargingStationAdminStatusType ChargingStationAdminStatusType1,
+                                           ChargingStationAdminStatusType ChargingStationAdminStatusType2)
 
             => ChargingStationAdminStatusType1.CompareTo(ChargingStationAdminStatusType2) <= 0;
 
@@ -290,8 +297,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationAdminStatusType1">A charging station admin status type.</param>
         /// <param name="ChargingStationAdminStatusType2">Another charging station admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator > (ChargingStationAdminStatusTypes ChargingStationAdminStatusType1,
-                                          ChargingStationAdminStatusTypes ChargingStationAdminStatusType2)
+        public static Boolean operator > (ChargingStationAdminStatusType ChargingStationAdminStatusType1,
+                                          ChargingStationAdminStatusType ChargingStationAdminStatusType2)
 
             => ChargingStationAdminStatusType1.CompareTo(ChargingStationAdminStatusType2) > 0;
 
@@ -305,8 +312,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationAdminStatusType1">A charging station admin status type.</param>
         /// <param name="ChargingStationAdminStatusType2">Another charging station admin status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator >= (ChargingStationAdminStatusTypes ChargingStationAdminStatusType1,
-                                           ChargingStationAdminStatusTypes ChargingStationAdminStatusType2)
+        public static Boolean operator >= (ChargingStationAdminStatusType ChargingStationAdminStatusType1,
+                                           ChargingStationAdminStatusType ChargingStationAdminStatusType2)
 
             => ChargingStationAdminStatusType1.CompareTo(ChargingStationAdminStatusType2) >= 0;
 
@@ -324,7 +331,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">A charging station admin status type to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is ChargingStationAdminStatusTypes chargingStationAdminStatusTypes
+            => Object is ChargingStationAdminStatusType chargingStationAdminStatusTypes
                    ? CompareTo(chargingStationAdminStatusTypes)
                    : throw new ArgumentException("The given object is not a charging station admin status type!",
                                                  nameof(Object));
@@ -337,7 +344,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging station admin status types.
         /// </summary>
         /// <param name="ChargingStationAdminStatusType">A charging station admin status type to compare with.</param>
-        public Int32 CompareTo(ChargingStationAdminStatusTypes ChargingStationAdminStatusType)
+        public Int32 CompareTo(ChargingStationAdminStatusType ChargingStationAdminStatusType)
 
             => String.Compare(InternalId,
                               ChargingStationAdminStatusType.InternalId,
@@ -357,7 +364,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">A charging station admin status type to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is ChargingStationAdminStatusTypes chargingStationAdminStatusTypes &&
+            => Object is ChargingStationAdminStatusType chargingStationAdminStatusTypes &&
                    Equals(chargingStationAdminStatusTypes);
 
         #endregion
@@ -368,7 +375,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging station admin status types for equality.
         /// </summary>
         /// <param name="ChargingStationAdminStatusType">A charging station admin status type to compare with.</param>
-        public Boolean Equals(ChargingStationAdminStatusTypes ChargingStationAdminStatusType)
+        public Boolean Equals(ChargingStationAdminStatusType ChargingStationAdminStatusType)
 
             => String.Equals(InternalId,
                              ChargingStationAdminStatusType.InternalId,

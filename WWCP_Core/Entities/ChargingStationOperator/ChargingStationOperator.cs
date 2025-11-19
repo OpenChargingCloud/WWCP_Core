@@ -1910,11 +1910,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdminStatusFilter">An optional admin status value filter.</param>
         /// <param name="Skip">The number of admin status entries per station to skip.</param>
         /// <param name="Take">The number of admin status entries per station to return.</param>
-        public IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>>
+        public IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusType>>>>
 
             ChargingStationAdminStatusSchedule(IncludeChargingStationDelegate?                  IncludeChargingStations   = null,
                                                Func<DateTimeOffset,                  Boolean>?  TimestampFilter           = null,
-                                               Func<ChargingStationAdminStatusTypes, Boolean>?  AdminStatusFilter         = null,
+                                               Func<ChargingStationAdminStatusType, Boolean>?  AdminStatusFilter         = null,
                                                UInt64?                                          Skip                      = null,
                                                UInt64?                                          Take                      = null)
 
@@ -1924,7 +1924,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             return chargingStationLookup.Values.
                          Where (chargingStation => IncludeChargingStations(chargingStation)).
-                         Select(chargingStation => new Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>(
+                         Select(chargingStation => new Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusType>>>(
                                                        chargingStation.Id,
                                                        chargingStation.AdminStatusSchedule(TimestampFilter,
                                                                                            AdminStatusFilter,
@@ -2087,7 +2087,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetChargingStationAdminStatus (ChargingStationId, NewAdminStatus)
 
         public async Task SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
-                                                        ChargingStationAdminStatusTypes  NewAdminStatus)
+                                                        ChargingStationAdminStatusType  NewAdminStatus)
         {
 
             if (TryGetChargingStationById(ChargingStationId, out var chargingStation))
@@ -2102,7 +2102,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetChargingStationAdminStatus (ChargingStationId, NewTimestampedAdminStatus)
 
         public async Task SetChargingStationAdminStatus(ChargingStation_Id                            ChargingStationId,
-                                                        Timestamped<ChargingStationAdminStatusTypes>  NewTimestampedAdminStatus)
+                                                        Timestamped<ChargingStationAdminStatusType>  NewTimestampedAdminStatus)
         {
 
             if (TryGetChargingStationById(ChargingStationId, out var chargingStation))
@@ -2117,13 +2117,13 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetChargingStationAdminStatus (ChargingStationId, NewAdminStatus, Timestamp)
 
         public async Task SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
-                                                        ChargingStationAdminStatusTypes  NewAdminStatus,
+                                                        ChargingStationAdminStatusType  NewAdminStatus,
                                                         DateTime                         Timestamp)
         {
 
             if (TryGetChargingStationById(ChargingStationId, out var chargingStation))
             {
-                chargingStation.AdminStatus = new Timestamped<ChargingStationAdminStatusTypes>(Timestamp, NewAdminStatus);
+                chargingStation.AdminStatus = new Timestamped<ChargingStationAdminStatusType>(Timestamp, NewAdminStatus);
             }
 
         }
@@ -2133,7 +2133,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetChargingStationAdminStatus (ChargingStationId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
         public async Task SetChargingStationAdminStatus(ChargingStation_Id                                         ChargingStationId,
-                                                        IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  AdminStatusList,
+                                                        IEnumerable<Timestamped<ChargingStationAdminStatusType>>  AdminStatusList,
                                                         ChangeMethods                                              ChangeMethod  = ChangeMethods.Replace)
         {
 
@@ -2314,8 +2314,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateChargingStationAdminStatus(DateTimeOffset                                 Timestamp,
                                                              EventTracking_Id                               EventTrackingId,
                                                              IChargingStation                               ChargingStation,
-                                                             Timestamped<ChargingStationAdminStatusTypes>   NewStatus,
-                                                             Timestamped<ChargingStationAdminStatusTypes>?  OldStatus    = null,
+                                                             Timestamped<ChargingStationAdminStatusType>   NewStatus,
+                                                             Timestamped<ChargingStationAdminStatusType>?  OldStatus    = null,
                                                              Context?                                       DataSource   = null)
         {
 
