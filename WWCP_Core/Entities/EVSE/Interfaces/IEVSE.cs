@@ -55,13 +55,14 @@ namespace cloud.charging.open.protocols.WWCP
                                     UInt64?                                              Skip                                = null,
                                     UInt64?                                              Take                                = null,
                                     Boolean                                              Embedded                            = false,
-                                    Boolean                                              IncludeRemovedEVSEs                 = false,
+                                    Boolean?                                             IncludeRemoved                      = false,
                                     InfoStatus                                           ExpandRoamingNetworkId              = InfoStatus.ShowIdOnly,
                                     InfoStatus                                           ExpandChargingStationOperatorId     = InfoStatus.ShowIdOnly,
                                     InfoStatus                                           ExpandChargingPoolId                = InfoStatus.ShowIdOnly,
                                     InfoStatus                                           ExpandChargingStationId             = InfoStatus.ShowIdOnly,
                                     InfoStatus                                           ExpandBrandIds                      = InfoStatus.ShowIdOnly,
                                     InfoStatus                                           ExpandDataLicenses                  = InfoStatus.ShowIdOnly,
+                                    Boolean?                                             IncludeCustomData                   = null,
                                     CustomJObjectSerializerDelegate<IEVSE>?              CustomEVSESerializer                = null,
                                     CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null)
 
@@ -70,8 +71,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                    ? new JArray(
                          EVSEs.Where          (evse => evse is not null).
+                               Where          (evse => IncludeRemoved == true || evse.Status != EVSEStatusType.Removed).
                                OrderBy        (evse => evse.Id).
-                               Where          (evse => IncludeRemovedEVSEs || evse.Status != EVSEStatusType.Removed).
                                SkipTakeFilter (Skip, Take).
                                SafeSelect     (evse => evse.ToJSON(Embedded,
                                                                    ExpandRoamingNetworkId,
@@ -80,6 +81,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                    ExpandChargingStationId,
                                                                    ExpandBrandIds,
                                                                    ExpandDataLicenses,
+                                                                   IncludeCustomData,
                                                                    CustomEVSESerializer,
                                                                    CustomChargingConnectorSerializer)).
                                Where          (evse => evse is not null)
@@ -378,9 +380,9 @@ namespace cloud.charging.open.protocols.WWCP
                         InfoStatus                                           ExpandChargingStationId             = InfoStatus.ShowIdOnly,
                         InfoStatus                                           ExpandBrandIds                      = InfoStatus.ShowIdOnly,
                         InfoStatus                                           ExpandDataLicenses                  = InfoStatus.ShowIdOnly,
+                        Boolean?                                             IncludeCustomData                   = null,
                         CustomJObjectSerializerDelegate<IEVSE>?              CustomEVSESerializer                = null,
                         CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null);
-
 
     }
 

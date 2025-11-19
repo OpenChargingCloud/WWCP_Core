@@ -4095,7 +4095,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) UpdateChargingStationData       (Timestamp, EventTrackingId, ChargingStation, PropertyName, NewValue, OldValue, DataSource)
+        #region (internal) UpdateChargingStationData (Timestamp, EventTrackingId, ChargingStation, PropertyName, NewValue, OldValue, DataSource)
 
         /// <summary>
         /// An event fired whenever the static data of any subordinated charging station changed.
@@ -4191,7 +4191,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region ContainsChargingStation      (ChargingStation)
+        #region ContainsChargingStation       (ChargingStation)
 
         /// <summary>
         /// Check if the given charging station is already present within the roaming network.
@@ -4213,7 +4213,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ContainsChargingStation      (ChargingStationId)
+        #region ContainsChargingStation       (ChargingStationId)
 
         /// <summary>
         /// Check if the given charging station identification is already present within the roaming network.
@@ -4234,7 +4234,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region GetChargingStationbyId       (ChargingStationId)
+        #region GetChargingStationbyId        (ChargingStationId)
 
         public IChargingStation? GetChargingStationById(ChargingStation_Id ChargingStationId)
         {
@@ -4267,7 +4267,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region TryGetChargingStationbyId    (ChargingStationId, out ChargingStation)
+        #region TryGetChargingStationbyId     (ChargingStationId, out ChargingStation)
 
         public Boolean TryGetChargingStationById(ChargingStation_Id     ChargingStationId,
                                                  out IChargingStation?  ChargingStation)
@@ -4303,68 +4303,84 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region SetChargingStationAdminStatus(ChargingStationId, CurrentAdminStatus)
+        #region SetChargingStationAdminStatus (ChargingStationId, CurrentAdminStatus)
 
-        public void SetChargingStationAdminStatus(ChargingStation_Id                            ChargingStationId,
-                                                  Timestamped<ChargingStationAdminStatusTypes>  CurrentAdminStatus)
+        public async Task SetChargingStationAdminStatus(ChargingStation_Id                            ChargingStationId,
+                                                        Timestamped<ChargingStationAdminStatusTypes>  CurrentAdminStatus)
         {
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator) &&
                 chargingStationOperator is not null)
             {
-                chargingStationOperator.SetChargingStationAdminStatus(ChargingStationId,
-                                                                      CurrentAdminStatus);
+
+                await chargingStationOperator.SetChargingStationAdminStatus(
+                          ChargingStationId,
+                          CurrentAdminStatus
+                      );
+
             }
 
         }
 
         #endregion
 
-        #region SetChargingStationAdminStatus(ChargingStationId, CurrentAdminStatusList)
+        #region SetChargingStationAdminStatus (ChargingStationId, CurrentAdminStatusList)
 
-        public void SetChargingStationAdminStatus(ChargingStation_Id                                         ChargingStationId,
-                                                  IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  CurrentAdminStatusList)
-        {
+        public async Task SetChargingStationAdminStatus(ChargingStation_Id                                         ChargingStationId,
+                                                        IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  CurrentAdminStatusList)
+        { 
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator) &&
                 chargingStationOperator is not null)
             {
-                chargingStationOperator.SetChargingStationAdminStatus(ChargingStationId,
-                                                                      CurrentAdminStatusList);
+
+                await chargingStationOperator.SetChargingStationAdminStatus(
+                          ChargingStationId,
+                          CurrentAdminStatusList
+                      );
+
             }
 
         }
 
         #endregion
 
-        #region SetChargingStationStatus     (ChargingStationId, CurrentStatus)
+        #region SetChargingStationStatus      (ChargingStationId, CurrentStatus)
 
-        public void SetChargingStationStatus(ChargingStation_Id                       ChargingStationId,
-                                             Timestamped<ChargingStationStatusTypes>  CurrentStatus)
+        public async Task SetChargingStationStatus(ChargingStation_Id                       ChargingStationId,
+                                                   Timestamped<ChargingStationStatusType>  CurrentStatus)
         {
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator) &&
                 chargingStationOperator is not null)
             {
-                chargingStationOperator.SetChargingStationStatus(ChargingStationId,
-                                                                 CurrentStatus);
+
+                await chargingStationOperator.SetChargingStationStatus(
+                          ChargingStationId,
+                          CurrentStatus
+                      );
+
             }
 
         }
 
         #endregion
 
-        #region SetChargingStationStatus     (ChargingStationId, CurrentStatusList)
+        #region SetChargingStationStatus      (ChargingStationId, CurrentStatusList)
 
-        public void SetChargingStationStatus(ChargingStation_Id                                    ChargingStationId,
-                                             IEnumerable<Timestamped<ChargingStationStatusTypes>>  CurrentStatusList)
+        public async Task SetChargingStationStatus(ChargingStation_Id                                    ChargingStationId,
+                                                   IEnumerable<Timestamped<ChargingStationStatusType>>  CurrentStatusList)
         {
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator) &&
                 chargingStationOperator is not null)
             {
-                chargingStationOperator.SetChargingStationStatus(ChargingStationId,
-                                                                 CurrentStatusList);
+
+                await chargingStationOperator.SetChargingStationStatus(
+                          ChargingStationId,
+                          CurrentStatusList
+                      );
+
             }
 
         }
@@ -4511,11 +4527,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TimestampFilter">An optional status timestamp filter.</param>
         /// <param name="StatusFilter">An optional status value filter.</param>
         /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>>
+        public IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusType>>>>
 
             ChargingStationStatusSchedule(IncludeChargingStationDelegate?             IncludeChargingStations   = null,
                                           Func<DateTimeOffset,             Boolean>?  TimestampFilter           = null,
-                                          Func<ChargingStationStatusTypes, Boolean>?  StatusFilter              = null,
+                                          Func<ChargingStationStatusType, Boolean>?  StatusFilter              = null,
                                           UInt64?                                     Skip                      = null,
                                           UInt64?                                     Take                      = null)
 
@@ -4547,8 +4563,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateChargingStationStatus(DateTimeOffset                            Timestamp,
                                                         EventTracking_Id                          EventTrackingId,
                                                         IChargingStation                          ChargingStation,
-                                                        Timestamped<ChargingStationStatusTypes>   NewStatus,
-                                                        Timestamped<ChargingStationStatusTypes>?  OldStatus    = null,
+                                                        Timestamped<ChargingStationStatusType>   NewStatus,
+                                                        Timestamped<ChargingStationStatusType>?  OldStatus    = null,
                                                         Context?                                  DataSource   = null)
         {
 

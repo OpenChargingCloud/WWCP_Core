@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// </summary>
     public class ChargingStation : AEMobilityEntity<ChargingStation_Id,
                                                     ChargingStationAdminStatusTypes,
-                                                    ChargingStationStatusTypes>,
+                                                    ChargingStationStatusType>,
                                    IEquatable <ChargingStation>,
                                    IComparable<ChargingStation>,
                                    IChargingStation
@@ -1244,7 +1244,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A delegate called to aggregate the dynamic status of all subordinated EVSEs.
         /// </summary>
-        public Func<EVSEStatusReport, ChargingStationStatusTypes>? StatusAggregationDelegate { get; set; }
+        public Func<EVSEStatusReport, ChargingStationStatusType>? StatusAggregationDelegate { get; set; }
 
         #endregion
 
@@ -1322,7 +1322,7 @@ namespace cloud.charging.open.protocols.WWCP
                                URL?                                           CalibrationInfo                = null,
 
                                Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
-                               Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
+                               Timestamped<ChargingStationStatusType>?       InitialStatus                  = null,
                                UInt16?                                        MaxAdminStatusScheduleSize     = null,
                                UInt16?                                        MaxStatusScheduleSize          = null,
 
@@ -1340,7 +1340,7 @@ namespace cloud.charging.open.protocols.WWCP
                    Name,
                    Description,
                    InitialAdminStatus         ?? ChargingStationAdminStatusTypes.Operational,
-                   InitialStatus              ?? ChargingStationStatusTypes.     Available,
+                   InitialStatus              ?? ChargingStationStatusType.     Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxChargingStationAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxChargingStationStatusScheduleSize,
                    DataSource,
@@ -1645,8 +1645,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DataSource">An optional data source or context for the charging station status update.</param>
         internal async Task UpdateStatus(DateTimeOffset                            Timestamp,
                                          EventTracking_Id                          EventTrackingId,
-                                         Timestamped<ChargingStationStatusTypes>   NewStatus,
-                                         Timestamped<ChargingStationStatusTypes>?  OldStatus    = null,
+                                         Timestamped<ChargingStationStatusType>   NewStatus,
+                                         Timestamped<ChargingStationStatusType>?  OldStatus    = null,
                                          Context?                                  DataSource   = null)
         {
 
@@ -4122,6 +4122,8 @@ namespace cloud.charging.open.protocols.WWCP
                               InfoStatus                                           ExpandEVSEIds                       = InfoStatus.Expanded,
                               InfoStatus                                           ExpandBrandIds                      = InfoStatus.ShowIdOnly,
                               InfoStatus                                           ExpandDataLicenses                  = InfoStatus.ShowIdOnly,
+                              Boolean?                                             IncludeRemovedEVSEs                 = false,
+                              Boolean?                                             IncludeCustomData                   = null,
                               CustomJObjectSerializerDelegate<IChargingStation>?   CustomChargingStationSerializer     = null,
                               CustomJObjectSerializerDelegate<IEVSE>?              CustomEVSESerializer                = null,
                               CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null)
@@ -4213,6 +4215,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          () => new JProperty("EVSEs",
                                                              new JArray(EVSEs.OrderBy(evse   => evse.Id).
                                                                               ToJSON (Embedded:                           true,
+                                                                                      IncludeRemoved:                     IncludeRemovedEVSEs,
                                                                                       ExpandRoamingNetworkId:             InfoStatus.Hidden,
                                                                                       ExpandChargingStationOperatorId:    InfoStatus.Hidden,
                                                                                       ExpandChargingPoolId:               InfoStatus.Hidden,
@@ -4240,7 +4243,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                    : null,
 
-                               CustomData.HasValues
+                               CustomData.HasValues && IncludeCustomData == true
                                    ? new JProperty("customData",            CustomData)
                                    : null
 

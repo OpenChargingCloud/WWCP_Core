@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) Unspecified              (Timestamp, AuthorizatorId, ...)
 
         /// <summary>
-        /// An unspecified error occured.
+        /// An unspecified error occurred.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// An unspecified error occured.
+        /// An unspecified error occurred.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
@@ -684,7 +684,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) Timeout                  (Timestamp, AuthorizatorId, ...)
 
         /// <summary>
-        /// A timeout occured.
+        /// A timeout occurred.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
@@ -1380,7 +1380,7 @@ namespace cloud.charging.open.protocols.WWCP
         InvalidToken,
 
         /// <summary>
-        /// A data format error occured.
+        /// A data format error occurred.
         /// </summary>
         CouldNotConvertCDRFormat,
 
@@ -1396,7 +1396,7 @@ namespace cloud.charging.open.protocols.WWCP
         Success,
 
         /// <summary>
-        /// A timeout occured.
+        /// A timeout occurred.
         /// </summary>
         Timeout,
 

@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) CommunicationError(Message = "", AdditionalInfo = null)
 
         /// <summary>
-        /// A communication error occured.
+        /// A communication error occurred.
         /// </summary>
         /// <param name="Message">An optional (error-)message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
@@ -405,7 +405,7 @@ namespace cloud.charging.open.protocols.WWCP
         Timeout,
 
         /// <summary>
-        /// A communication error occured.
+        /// A communication error occurred.
         /// </summary>
         CommunicationError,
 

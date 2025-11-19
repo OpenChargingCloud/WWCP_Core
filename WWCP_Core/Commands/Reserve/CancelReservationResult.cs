@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) CommunicationError    (ReservationId, Reason, Message = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
-        /// A communication error occured.
+        /// A communication error occurred.
         /// </summary>
         /// <param name="ReservationId">A reservation identification.</param>
         /// <param name="Reason">A reason for the charging reservation cancellation.</param>
@@ -421,7 +421,7 @@ namespace cloud.charging.open.protocols.WWCP
         Timeout,
 
         /// <summary>
-        /// A communication error occured.
+        /// A communication error occurred.
         /// </summary>
         CommunicationError,
 

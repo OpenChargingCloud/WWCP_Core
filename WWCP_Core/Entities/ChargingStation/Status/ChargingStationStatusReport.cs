@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A charging station status report.
     /// </summary>
-    public class ChargingStationStatusReport : StatusReport<IChargingStation, ChargingStationStatusTypes>
+    public class ChargingStationStatusReport : StatusReport<IChargingStation, ChargingStationStatusType>
     {
 
         /// <summary>

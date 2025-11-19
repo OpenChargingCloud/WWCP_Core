@@ -185,47 +185,62 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Unknown status of the charging pool.
         /// </summary>
-        public static readonly ChargingPoolStatusType Unknown           = new("unknown");
+        public static ChargingPoolStatusType  Unknown             { get; }
+            = new ("unknown");
 
         /// <summary>
         /// Unclear status of the charging pool.
         /// </summary>
-        public static readonly ChargingPoolStatusType Unspecified       = new("unspecified");
+        public static ChargingPoolStatusType  Unspecified         { get; }
+            = new ("unspecified");
 
         /// <summary>
         /// The charging pool is currently offline.
         /// </summary>
-        public static readonly ChargingPoolStatusType Offline           = new("offline");
+        public static ChargingPoolStatusType  Offline             { get; }
+            = new ("offline");
 
         /// <summary>
         /// The charging pool is not fully operational yet.
         /// </summary>
-        public static readonly ChargingPoolStatusType InDeployment      = new("inDeployment");
+        public static ChargingPoolStatusType  InDeployment        { get; }
+            = new ("inDeployment");
 
         /// <summary>
         /// Some ongoing charging sessions or reservations, but still ready to charge.
         /// </summary>
-        public static readonly ChargingPoolStatusType PartialAvailable  = new("partialAvailable");
+        public static ChargingPoolStatusType  PartialAvailable    { get; }
+            = new ("partialAvailable");
 
         /// <summary>
         /// The charging pool is available.
         /// </summary>
-        public static readonly ChargingPoolStatusType Available         = new("available");
+        public static ChargingPoolStatusType  Available           { get; }
+            = new ("available");
 
         /// <summary>
         /// The entire charging pool was reserved by an ev customer.
         /// </summary>
-        public static readonly ChargingPoolStatusType Reserved          = new("reserved");
+        public static ChargingPoolStatusType  Reserved            { get; }
+            = new ("reserved");
 
         /// <summary>
         /// The entire charging pool is charging. Currently no additional charging sessions are possible.
         /// </summary>
-        public static readonly ChargingPoolStatusType Charging          = new("charging");
+        public static ChargingPoolStatusType  Charging            { get; }
+            = new ("charging");
 
         /// <summary>
-        /// A fatal error has occured within the charging pool.
+        /// The charging pool was removed.
         /// </summary>
-        public static readonly ChargingPoolStatusType Error             = new("error");
+        public static ChargingPoolStatusType  Removed             { get; }
+            = new ("removed");
+
+        /// <summary>
+        /// A fatal error has occurred within the charging pool.
+        /// </summary>
+        public static ChargingPoolStatusType  Error               { get; }
+            = new ("error");
 
         #endregion
 

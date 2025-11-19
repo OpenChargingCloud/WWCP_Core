@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                               Name:                I18NString.Create(Languages.de, "GraphDefined Charging Station #AAAA"),
                                               Description:         I18NString.Create(Languages.de, "powered by GraphDefined Charging Stations GmbH"),
                                               InitialAdminStatus:  ChargingStationAdminStatusTypes.OutOfService,
-                                              InitialStatus:       ChargingStationStatusTypes.Offline
+                                              InitialStatus:       ChargingStationStatusType.Offline
                                           ).Result.ChargingStation
 
                                         : null;

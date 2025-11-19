@@ -359,7 +359,7 @@ namespace cloud.charging.open.protocols.WWCP
         OutOfService,
 
         /// <summary>
-        /// A timeout occured.
+        /// A timeout occurred.
         /// </summary>
         Timeout,
 

@@ -185,126 +185,126 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Unknown status of the EVSE.
         /// </summary>
-        public static EVSEStatusType Unknown             { get; }
+        public static EVSEStatusType  Unknown             { get; }
             = new ("unknown");
 
         /// <summary>
         /// Unclear status of the EVSE.
         /// </summary>
-        public static EVSEStatusType Unspecified         { get; }
+        public static EVSEStatusType  Unspecified         { get; }
             = new ("unspecified");
 
         /// <summary>
         /// Currently no communication with the EVSE possible,
         /// but charging in offline mode might be available.
         /// </summary>
-        public static EVSEStatusType Offline             { get; }
+        public static EVSEStatusType  Offline             { get; }
             = new ("offline");
 
         /// <summary>
         /// The EVSE is not fully operational yet.
         /// </summary>
-        public static EVSEStatusType InDeployment        { get; }
+        public static EVSEStatusType  InDeployment        { get; }
             = new ("inDeployment");
 
         /// <summary>
         /// The EVSE is reserved for future charging.
         /// </summary>
-        public static EVSEStatusType Reserved            { get; }
+        public static EVSEStatusType  Reserved            { get; }
             = new ("reserved");
 
         /// <summary>
         /// The EVSE is available for charging.
         /// </summary>
-        public static EVSEStatusType Available           { get; }
+        public static EVSEStatusType  Available           { get; }
             = new ("available");
 
         /// <summary>
         /// The door of a charging locker is open, the EVSE is unlocked
         /// and is waiting for the customer to plugin.
         /// </summary>
-        public static EVSEStatusType WaitingForPlugin    { get; }
+        public static EVSEStatusType  WaitingForPlugin    { get; }
             = new ("waitingForPlugin");
 
         /// <summary>
         /// A cable is plugged into the socket or a vehicle is connected
         /// to the cable, but both without any further action.
         /// </summary>
-        public static EVSEStatusType PluggedIn           { get; }
+        public static EVSEStatusType  PluggedIn           { get; }
             = new ("pluggedIn");
 
         /// <summary>
         /// The EVSE is currently charging a vehicle.
         /// </summary>
-        public static EVSEStatusType Charging            { get; }
+        public static EVSEStatusType  Charging            { get; }
             = new ("charging");
 
         /// <summary>
         /// The EVSE is currently occupied and not accessible.
         /// </summary>
-        public static EVSEStatusType Occupied            { get; }
+        public static EVSEStatusType  Occupied            { get; }
             = new ("occupied");
 
         /// <summary>
         /// The EVSE has a mechanical door, e.g. an e-bike charging locker,
         /// which was not closed after the customer took the battery out.
         /// </summary>
-        public static EVSEStatusType DoorNotClosed       { get; }
+        public static EVSEStatusType  DoorNotClosed       { get; }
             = new ("doorNotClosed");
 
         /// <summary>
-        /// The EVSE is not ready for charging because an error has occured.
+        /// The EVSE is not ready for charging because an error has occurred.
         /// </summary>
-        public static EVSEStatusType Error               { get; }
+        public static EVSEStatusType  Error               { get; }
             = new ("error");
 
         /// <summary>
-        /// The EVSE is not ready for charging because a fault has occured.
+        /// The EVSE is not ready for charging because a fault has occurred.
         /// </summary>
-        public static EVSEStatusType Faulted             { get; }
+        public static EVSEStatusType  Faulted             { get; }
             = new ("faulted");
 
         /// <summary>
         /// The EVSE is not ready for charging because it is under maintenance.
         /// </summary>
-        public static EVSEStatusType Unavailable         { get; }
+        public static EVSEStatusType  Unavailable         { get; }
             = new ("unavailable");
 
         /// <summary>
         /// The EVSE is not ready for charging because it is under maintenance.
         /// </summary>
-        public static EVSEStatusType Inoperative         { get; }
+        public static EVSEStatusType  Inoperative         { get; }
             = new ("inoperative");
 
         /// <summary>
         /// The EVSE is not ready for charging because it is under maintenance
         /// or was disabled by the charging station operator.
         /// </summary>
-        public static EVSEStatusType OutOfService        { get; }
+        public static EVSEStatusType  OutOfService        { get; }
             = new ("outOfService");
 
         /// <summary>
         /// The EVSE is not ready for charging because it is under maintenance.
         /// </summary>
-        public static EVSEStatusType OutOfOrder          { get; }
+        public static EVSEStatusType  OutOfOrder          { get; }
             = new ("outOfOrder");
 
         /// <summary>
         /// The EVSE is not accessible because of a physical barrier, i.e. a car.
         /// </summary>
-        public static EVSEStatusType Blocked             { get; }
+        public static EVSEStatusType  Blocked             { get; }
             = new ("blocked");
 
         /// <summary>
         /// The EVSE was removed.
         /// </summary>
-        public static EVSEStatusType Removed             { get; }
+        public static EVSEStatusType  Removed             { get; }
             = new ("removed");
 
         /// <summary>
         /// The EVSE is in an unknown state.
         /// </summary>
-        public static EVSEStatusType Other               { get; }
+        public static EVSEStatusType  Other               { get; }
             = new ("other");
 
         #endregion

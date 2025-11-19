@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static readonly EnergyMeterStatusTypes DoorNotClosed     = new("doorNotClosed");
 
         /// <summary>
-        /// A fatal error has occured within the EnergyMeter.
+        /// A fatal error has occurred within the EnergyMeter.
         /// </summary>
         public static readonly EnergyMeterStatusTypes Error             = new("error");
 

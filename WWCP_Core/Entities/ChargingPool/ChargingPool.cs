@@ -28,7 +28,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using System.Linq;
 
 #endregion
 
@@ -2356,8 +2355,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateChargingStationStatus(DateTimeOffset                            Timestamp,
                                                         EventTracking_Id                          EventTrackingId,
                                                         IChargingStation                          ChargingStation,
-                                                        Timestamped<ChargingStationStatusTypes>   NewStatus,
-                                                        Timestamped<ChargingStationStatusTypes>?  OldStatus    = null,
+                                                        Timestamped<ChargingStationStatusType>   NewStatus,
+                                                        Timestamped<ChargingStationStatusType>?  OldStatus    = null,
                                                         Context?                                  DataSource   = null)
         {
 
@@ -4319,6 +4318,8 @@ namespace cloud.charging.open.protocols.WWCP
                               InfoStatus                                           ExpandEVSEIds                       = InfoStatus.Hidden,
                               InfoStatus                                           ExpandBrandIds                      = InfoStatus.ShowIdOnly,
                               InfoStatus                                           ExpandDataLicenses                  = InfoStatus.ShowIdOnly,
+                              Boolean?                                             IncludeRemovedChargingStations      = false,
+                              Boolean?                                             IncludeCustomData                   = null,
                               CustomJObjectSerializerDelegate<IChargingPool>?      CustomChargingPoolSerializer        = null,
                               CustomJObjectSerializerDelegate<IChargingStation>?   CustomChargingStationSerializer     = null,
                               CustomJObjectSerializerDelegate<IEVSE>?              CustomEVSESerializer                = null,
@@ -4330,7 +4331,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 var json = JSONObject.Create(
 
-                               new JProperty("@id", Id.ToString()),
+                                     new JProperty("@id",          Id.ToString()),
 
                                !Embedded
                                    ? new JProperty("@context",     JSONLDContext)
@@ -4412,18 +4413,21 @@ namespace cloud.charging.open.protocols.WWCP
                                    ? ExpandChargingStationIds.Switch(
 
                                          () => new JProperty("chargingStationIds",  ChargingStationIds().
-                                                                                                 OrderBy(stationId => stationId).
-                                                                                                 Select (stationId => stationId.ToString())),
+                                                                                                 OrderBy(chargingStationId => chargingStationId).
+                                                                                                 Select (chargingStationId => chargingStationId.ToString())),
 
                                          () => new JProperty("chargingStations",    ChargingStations.
-                                                                                                 OrderBy(station   => station.Id).
+                                                                                                 OrderBy(chargingStation   => chargingStation.Id).
                                                                                                  ToJSON (Embedded:                           true,
+                                                                                                         IncludeRemoved:                     IncludeRemovedChargingStations,
                                                                                                          ExpandRoamingNetworkId:             InfoStatus.Hidden,
                                                                                                          ExpandChargingStationOperatorId:    InfoStatus.Hidden,
                                                                                                          ExpandChargingPoolId:               InfoStatus.Hidden,
                                                                                                          ExpandEVSEIds:                      InfoStatus.Expanded,
                                                                                                          ExpandBrandIds:                     ExpandBrandIds,
                                                                                                          ExpandDataLicenses:                 ExpandDataLicenses,
+                                                                                                         IncludeRemovedEVSEs:                IncludeRemovedChargingStations, // just for equivalent behavior!
+                                                                                                         IncludeCustomData:                  IncludeCustomData,
                                                                                                          CustomChargingStationSerializer:    CustomChargingStationSerializer,
                                                                                                          CustomEVSESerializer:               CustomEVSESerializer,
                                                                                                          CustomChargingConnectorSerializer:  CustomChargingConnectorSerializer)))
@@ -4443,12 +4447,14 @@ namespace cloud.charging.open.protocols.WWCP
                                                              new JArray(EVSEs.
                                                                                                  OrderBy(evse   => evse).
                                                                                                  ToJSON (Embedded:                         true,
+                                                                                                         IncludeRemoved:                   false,
                                                                                                          ExpandRoamingNetworkId:           InfoStatus.Hidden,
                                                                                                          ExpandChargingStationOperatorId:  InfoStatus.Hidden,
                                                                                                          ExpandChargingPoolId:             InfoStatus.Hidden,
                                                                                                          ExpandChargingStationId:          InfoStatus.Hidden,
                                                                                                          ExpandBrandIds:                   ExpandBrandIds,
                                                                                                          ExpandDataLicenses:               ExpandDataLicenses,
+                                                                                                         IncludeCustomData:                IncludeCustomData,
                                                                                                          CustomEVSESerializer:             CustomEVSESerializer))))
 
                                    : null,
@@ -4469,7 +4475,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                    : null,
 
-                               CustomData.HasValues
+                               CustomData.HasValues && IncludeCustomData == true
                                    ? new JProperty("customData",            CustomData)
                                    : null
 

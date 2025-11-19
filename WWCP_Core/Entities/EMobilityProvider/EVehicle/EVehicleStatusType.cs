@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.WWCP
         Reserved                = 4,
 
         /// <summary>
-        /// An error has occured.
+        /// An error has occurred.
         /// </summary>
         Faulted                 = 5,
 

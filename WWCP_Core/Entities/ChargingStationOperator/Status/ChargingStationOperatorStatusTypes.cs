@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static readonly ChargingStationOperatorStatusTypes Available     = new("available");
 
         /// <summary>
-        /// A fatal error has occured within the charging station operator.
+        /// A fatal error has occurred within the charging station operator.
         /// </summary>
         public static readonly ChargingStationOperatorStatusTypes Error         = new("error");
 

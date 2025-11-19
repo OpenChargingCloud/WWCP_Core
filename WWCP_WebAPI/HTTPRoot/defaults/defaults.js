@@ -227,7 +227,7 @@ function OCPIStartSearch2(requestURL, searchFilters, doStartUp, nameOfItem, idOf
                     DoSearchError("HTTP Status Code " + status + (response ? ": " + response : ""));
             }
             catch (exception) {
-                DoSearchError("Exception occured: " + exception);
+                DoSearchError("Exception occurred: " + exception);
             }
             if (whenDone)
                 whenDone();
@@ -526,7 +526,7 @@ async function OCPIGetCollection(requestURL, doStartUp, nameOfItems, doStatistic
     //        }
     //        catch (exception)
     //        {
-    //            DoSearchError("Exception occured: " + exception);
+    //            DoSearchError("Exception occurred: " + exception);
     //        }
     //
     //        if (doFinish)

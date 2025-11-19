@@ -42,12 +42,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The new timestamped status of the charging station.
         /// </summary>
-        public Timestamped<ChargingStationStatusTypes>   NewStatus     { get; }
+        public Timestamped<ChargingStationStatusType>   NewStatus     { get; }
 
         /// <summary>
         /// The old timestamped status of the charging station.
         /// </summary>
-        public Timestamped<ChargingStationStatusTypes>?  OldStatus     { get; }
+        public Timestamped<ChargingStationStatusType>?  OldStatus     { get; }
 
         /// <summary>
         /// An optional data source or context for this charging station status update.
@@ -66,8 +66,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OldStatus">The optional old timestamped status of the charging station.</param>
         /// <param name="DataSource">An optional data source or context for the charging station status update.</param>
         public ChargingStationStatusUpdate(ChargingStation_Id                        Id,
-                                           Timestamped<ChargingStationStatusTypes>   NewStatus,
-                                           Timestamped<ChargingStationStatusTypes>?  OldStatus    = null,
+                                           Timestamped<ChargingStationStatusType>   NewStatus,
+                                           Timestamped<ChargingStationStatusType>?  OldStatus    = null,
                                            Context?                                  DataSource   = null)
 
         {

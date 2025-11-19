@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.WWCP
         Occupied            = 6,
 
         /// <summary>
-        /// A car is connected and an error has occured during charge (this status appeared while charging).
+        /// A car is connected and an error has occurred during charge (this status appeared while charging).
         /// </summary>
         Faulted             = 7,
 

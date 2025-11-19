@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.WWCP
         Charging            = 8,
 
         /// <summary>
-        /// An error has occured in the EVSE group.
+        /// An error has occurred in the EVSE group.
         /// </summary>
         Faulted             = 9,
 

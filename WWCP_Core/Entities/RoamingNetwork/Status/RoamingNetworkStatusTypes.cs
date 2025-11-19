@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static readonly RoamingNetworkStatusTypes Available     = new("available");
 
         /// <summary>
-        /// A fatal error has occured within the roaming network.
+        /// A fatal error has occurred within the roaming network.
         /// </summary>
         public static readonly RoamingNetworkStatusTypes Error         = new("error");
 

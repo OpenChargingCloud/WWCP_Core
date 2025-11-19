@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         URL?                                                            CalibrationInfo                = null,
 
                                                                         Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                                        Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
+                                                                        Timestamped<ChargingStationStatusType>?                        InitialStatus                  = null,
                                                                         UInt16?                                                         MaxAdminStatusScheduleSize     = null,
                                                                         UInt16?                                                         MaxStatusScheduleSize          = null,
 
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                    URL?                                                            CalibrationInfo                = null,
 
                                                                                    Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                                                   Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
+                                                                                   Timestamped<ChargingStationStatusType>?                        InitialStatus                  = null,
                                                                                    UInt16?                                                         MaxAdminStatusScheduleSize     = null,
                                                                                    UInt16?                                                         MaxStatusScheduleSize          = null,
 
@@ -357,7 +357,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                         URL?                                                            CalibrationInfo                        = null,
 
                                                                                         Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus                     = null,
-                                                                                        Timestamped<ChargingStationStatusTypes>?                        InitialStatus                          = null,
+                                                                                        Timestamped<ChargingStationStatusType>?                        InitialStatus                          = null,
                                                                                         UInt16?                                                         MaxAdminStatusScheduleSize             = null,
                                                                                         UInt16?                                                         MaxStatusScheduleSize                  = null,
 
@@ -492,7 +492,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                               URL?                                                            CalibrationInfo                = null,
 
                                                                               Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                                              Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
+                                                                              Timestamped<ChargingStationStatusType>?                        InitialStatus                  = null,
                                                                               UInt16?                                                         MaxAdminStatusScheduleSize     = null,
                                                                               UInt16?                                                         MaxStatusScheduleSize          = null,
 
@@ -591,12 +591,15 @@ namespace cloud.charging.open.protocols.WWCP
                                     UInt64?                                              Skip                                = null,
                                     UInt64?                                              Take                                = null,
                                     Boolean                                              Embedded                            = false,
+                                    Boolean?                                             IncludeRemoved                      = false,
                                     InfoStatus                                           ExpandRoamingNetworkId              = InfoStatus.ShowIdOnly,
                                     InfoStatus                                           ExpandChargingStationOperatorId     = InfoStatus.ShowIdOnly,
                                     InfoStatus                                           ExpandChargingStationIds            = InfoStatus.Expanded,
                                     InfoStatus                                           ExpandEVSEIds                       = InfoStatus.Hidden,
                                     InfoStatus                                           ExpandBrandIds                      = InfoStatus.ShowIdOnly,
                                     InfoStatus                                           ExpandDataLicenses                  = InfoStatus.ShowIdOnly,
+                                    Boolean?                                             IncludeRemovedChargingStations      = false,
+                                    Boolean?                                             IncludeCustomData                   = null,
                                     CustomJObjectSerializerDelegate<IChargingPool>?      CustomChargingPoolSerializer        = null,
                                     CustomJObjectSerializerDelegate<IChargingStation>?   CustomChargingStationSerializer     = null,
                                     CustomJObjectSerializerDelegate<IEVSE>?              CustomEVSESerializer                = null,
@@ -608,6 +611,7 @@ namespace cloud.charging.open.protocols.WWCP
                    ? new JArray(
                          ChargingPools.
                              Where          (chargingPool => chargingPool is not null).
+                             Where          (chargingPool => IncludeRemoved == true || chargingPool.Status != ChargingPoolStatusType.Removed).
                              OrderBy        (chargingPool => chargingPool.Id).
                              SkipTakeFilter (Skip, Take).
                              SafeSelect     (chargingPool => chargingPool.ToJSON(Embedded,
@@ -617,6 +621,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                  ExpandEVSEIds,
                                                                                  ExpandBrandIds,
                                                                                  ExpandDataLicenses,
+                                                                                 IncludeRemovedChargingStations,
+                                                                                 IncludeCustomData,
                                                                                  CustomChargingPoolSerializer,
                                                                                  CustomChargingStationSerializer,
                                                                                  CustomEVSESerializer,
@@ -1215,7 +1221,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         /// <param name="TimestampFilter">An optional status timestamp filter.</param>
         /// <param name="StatusFilter">An optional status value filter.</param>
-        /// <param name="HistorySize">The size of the history.</param>
         IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>>
 
             EVSEAdminStatusSchedule(IncludeEVSEDelegate?                 IncludeEVSEs      = null,
@@ -1236,7 +1241,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         /// <param name="TimestampFilter">An optional status timestamp filter.</param>
         /// <param name="StatusFilter">An optional status value filter.</param>
-        /// <param name="HistorySize">The size of the history.</param>
         IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>>
 
             EVSEStatusSchedule(IncludeEVSEDelegate?            IncludeEVSEs      = null,
@@ -1339,6 +1343,8 @@ namespace cloud.charging.open.protocols.WWCP
                               InfoStatus                                           ExpandEVSEIds                       = InfoStatus.Hidden,
                               InfoStatus                                           ExpandBrandIds                      = InfoStatus.ShowIdOnly,
                               InfoStatus                                           ExpandDataLicenses                  = InfoStatus.ShowIdOnly,
+                              Boolean?                                             IncludeRemovedChargingStations      = null,
+                              Boolean?                                             IncludeCustomData                   = null,
                               CustomJObjectSerializerDelegate<IChargingPool>?      CustomChargingPoolSerializer        = null,
                               CustomJObjectSerializerDelegate<IChargingStation>?   CustomChargingStationSerializer     = null,
                               CustomJObjectSerializerDelegate<IEVSE>?              CustomEVSESerializer                = null,

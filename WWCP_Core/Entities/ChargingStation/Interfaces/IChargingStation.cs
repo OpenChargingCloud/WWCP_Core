@@ -633,12 +633,15 @@ namespace cloud.charging.open.protocols.WWCP
                                     UInt64?                                              Skip                                = null,
                                     UInt64?                                              Take                                = null,
                                     Boolean                                              Embedded                            = false,
+                                    Boolean?                                             IncludeRemoved                      = false,
                                     InfoStatus                                           ExpandRoamingNetworkId              = InfoStatus.ShowIdOnly,
                                     InfoStatus                                           ExpandChargingStationOperatorId     = InfoStatus.ShowIdOnly,
                                     InfoStatus                                           ExpandChargingPoolId                = InfoStatus.ShowIdOnly,
                                     InfoStatus                                           ExpandEVSEIds                       = InfoStatus.Expanded,
                                     InfoStatus                                           ExpandBrandIds                      = InfoStatus.ShowIdOnly,
                                     InfoStatus                                           ExpandDataLicenses                  = InfoStatus.ShowIdOnly,
+                                    Boolean?                                             IncludeRemovedEVSEs                 = false,
+                                    Boolean?                                             IncludeCustomData                   = null,
                                     CustomJObjectSerializerDelegate<IChargingStation>?   CustomChargingStationSerializer     = null,
                                     CustomJObjectSerializerDelegate<IEVSE>?              CustomEVSESerializer                = null,
                                     CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null)
@@ -649,6 +652,7 @@ namespace cloud.charging.open.protocols.WWCP
                    ? new JArray(
                          ChargingStations.
                              Where          (chargingStation => chargingStation is not null).
+                             Where          (chargingStation => IncludeRemoved == true || chargingStation.Status != ChargingStationStatusType.Removed).
                              OrderBy        (chargingStation => chargingStation.Id).
                              SkipTakeFilter (Skip, Take).
                              SafeSelect     (chargingStation => chargingStation.ToJSON(Embedded,
@@ -658,6 +662,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                        ExpandEVSEIds,
                                                                                        ExpandBrandIds,
                                                                                        ExpandDataLicenses,
+                                                                                       IncludeRemovedEVSEs,
+                                                                                       IncludeCustomData,
                                                                                        CustomChargingStationSerializer,
                                                                                        CustomEVSESerializer,
                                                                                        CustomChargingConnectorSerializer)).
@@ -676,7 +682,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// </summary>
     public interface IChargingStation : IEntity<ChargingStation_Id>,
                                         IAdminStatus<ChargingStationAdminStatusTypes>,
-                                        IStatus<ChargingStationStatusTypes>,
+                                        IStatus<ChargingStationStatusType>,
                                         ISendAuthorizeStartStop,
                                         ILocalRemoteStartStop,
                                         ILocalChargingReservations,
@@ -945,7 +951,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A delegate called to aggregate the dynamic status of all subordinated EVSEs.
         /// </summary>
-        Func<EVSEStatusReport, ChargingStationStatusTypes> StatusAggregationDelegate { get; set; }
+        Func<EVSEStatusReport, ChargingStationStatusType> StatusAggregationDelegate { get; set; }
 
         #endregion
 
@@ -1266,6 +1272,8 @@ namespace cloud.charging.open.protocols.WWCP
                        InfoStatus                                           ExpandEVSEIds                       = InfoStatus.Expanded,
                        InfoStatus                                           ExpandBrandIds                      = InfoStatus.ShowIdOnly,
                        InfoStatus                                           ExpandDataLicenses                  = InfoStatus.ShowIdOnly,
+                       Boolean?                                             IncludeRemovedEVSEs                 = false,
+                       Boolean?                                             IncludeCustomData                   = null,
                        CustomJObjectSerializerDelegate<IChargingStation>?   CustomChargingStationSerializer     = null,
                        CustomJObjectSerializerDelegate<IEVSE>?              CustomEVSESerializer                = null,
                        CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null);

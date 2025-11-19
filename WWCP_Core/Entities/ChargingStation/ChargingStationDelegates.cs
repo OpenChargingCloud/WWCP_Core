@@ -75,8 +75,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnChargingStationStatusChangedDelegate(DateTimeOffset                            Timestamp,
                                                                 EventTracking_Id                          EventTrackingId,
                                                                 IChargingStation                          ChargingStation,
-                                                                Timestamped<ChargingStationStatusTypes>   NewStatus,
-                                                                Timestamped<ChargingStationStatusTypes>?  OldStatus,
+                                                                Timestamped<ChargingStationStatusType>   NewStatus,
+                                                                Timestamped<ChargingStationStatusType>?  OldStatus,
                                                                 Context?                                  DataSource);
 
 }

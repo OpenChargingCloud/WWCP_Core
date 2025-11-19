@@ -1261,11 +1261,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="StatusFilter">An optional admin status value filter.</param>
         /// <param name="Skip">The number of status entries per station to skip.</param>
         /// <param name="Take">The number of status entries per station to return.</param>
-        IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>>
+        IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusType>>>>
 
             ChargingStationStatusSchedule(IncludeChargingStationDelegate?             IncludeChargingStations   = null,
                                           Func<DateTimeOffset,             Boolean>?  TimestampFilter           = null,
-                                          Func<ChargingStationStatusTypes, Boolean>?  StatusFilter              = null,
+                                          Func<ChargingStationStatusType, Boolean>?  StatusFilter              = null,
                                           UInt64?                                     Skip                      = null,
                                           UInt64?                                     Take                      = null);
 
@@ -1320,17 +1320,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingStationAdminStatus
 
-        void SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
+        Task SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
                                            ChargingStationAdminStatusTypes  NewAdminStatus);
 
-        void SetChargingStationAdminStatus(ChargingStation_Id                            ChargingStationId,
+        Task SetChargingStationAdminStatus(ChargingStation_Id                            ChargingStationId,
                                            Timestamped<ChargingStationAdminStatusTypes>  NewTimestampedAdminStatus);
 
-        void SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
+        Task SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
                                            ChargingStationAdminStatusTypes  NewAdminStatus,
                                            DateTime                         Timestamp);
 
-        void SetChargingStationAdminStatus(ChargingStation_Id                                         ChargingStationId,
+        Task SetChargingStationAdminStatus(ChargingStation_Id                                         ChargingStationId,
                                            IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  AdminStatusList,
                                            ChangeMethods                                              ChangeMethod  = ChangeMethods.Replace);
 
@@ -1338,18 +1338,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingStationStatus
 
-        void SetChargingStationStatus(ChargingStation_Id          ChargingStationId,
-                                      ChargingStationStatusTypes  NewStatus);
+        Task SetChargingStationStatus(ChargingStation_Id          ChargingStationId,
+                                      ChargingStationStatusType  NewStatus);
 
-        void SetChargingStationStatus(ChargingStation_Id                       ChargingStationId,
-                                      Timestamped<ChargingStationStatusTypes>  NewTimestampedStatus);
+        Task SetChargingStationStatus(ChargingStation_Id                       ChargingStationId,
+                                      Timestamped<ChargingStationStatusType>  NewTimestampedStatus);
 
-        void SetChargingStationStatus(ChargingStation_Id          ChargingStationId,
-                                      ChargingStationStatusTypes  NewStatus,
+        Task SetChargingStationStatus(ChargingStation_Id          ChargingStationId,
+                                      ChargingStationStatusType  NewStatus,
                                       DateTime                    Timestamp);
 
-        void SetChargingStationStatus(ChargingStation_Id                                    ChargingStationId,
-                                      IEnumerable<Timestamped<ChargingStationStatusTypes>>  StatusList,
+        Task SetChargingStationStatus(ChargingStation_Id                                    ChargingStationId,
+                                      IEnumerable<Timestamped<ChargingStationStatusType>>  StatusList,
                                       ChangeMethods                                         ChangeMethod  = ChangeMethods.Replace);
 
         #endregion

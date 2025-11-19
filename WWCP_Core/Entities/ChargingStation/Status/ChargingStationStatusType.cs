@@ -34,14 +34,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// Indicates whether this charging station status types is null or empty.
         /// </summary>
         /// <param name="ChargingStationStatusType">A charging station status type.</param>
-        public static Boolean IsNullOrEmpty(this ChargingStationStatusTypes? ChargingStationStatusType)
+        public static Boolean IsNullOrEmpty(this ChargingStationStatusType? ChargingStationStatusType)
             => !ChargingStationStatusType.HasValue || ChargingStationStatusType.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this charging station status types is null or empty.
         /// </summary>
         /// <param name="ChargingStationStatusType">A charging station status type.</param>
-        public static Boolean IsNotNullOrEmpty(this ChargingStationStatusTypes? ChargingStationStatusType)
+        public static Boolean IsNotNullOrEmpty(this ChargingStationStatusType? ChargingStationStatusType)
             => ChargingStationStatusType.HasValue && ChargingStationStatusType.Value.IsNotNullOrEmpty;
 
     }
@@ -50,9 +50,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The status type of a charging station.
     /// </summary>
-    public readonly struct ChargingStationStatusTypes : IId,
-                                                        IEquatable<ChargingStationStatusTypes>,
-                                                        IComparable<ChargingStationStatusTypes>
+    public readonly struct ChargingStationStatusType : IId,
+                                                       IEquatable<ChargingStationStatusType>,
+                                                       IComparable<ChargingStationStatusType>
     {
 
         #region Data
@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new charging station status types based on the given string.
         /// </summary>
-        private ChargingStationStatusTypes(String Text)
+        private ChargingStationStatusType(String Text)
         {
             InternalId = Text;
         }
@@ -105,10 +105,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given string as a charging station status type.
         /// </summary>
         /// <param name="Text">A text representation of a charging station status type.</param>
-        public static ChargingStationStatusTypes Parse(String Text)
+        public static ChargingStationStatusType Parse(String Text)
         {
 
-            if (TryParse(Text, out ChargingStationStatusTypes chargingStationStatusTypes))
+            if (TryParse(Text, out ChargingStationStatusType chargingStationStatusTypes))
                 return chargingStationStatusTypes;
 
             throw new ArgumentException($"Invalid text representation of a charging station status type: '" + Text + "'!",
@@ -124,10 +124,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Try to parse the given string as a charging station status type.
         /// </summary>
         /// <param name="Text">A text representation of a charging station status type.</param>
-        public static ChargingStationStatusTypes? TryParse(String Text)
+        public static ChargingStationStatusType? TryParse(String Text)
         {
 
-            if (TryParse(Text, out ChargingStationStatusTypes chargingStationStatusTypes))
+            if (TryParse(Text, out ChargingStationStatusType chargingStationStatusTypes))
                 return chargingStationStatusTypes;
 
             return null;
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Text">A text representation of a charging station status type.</param>
         /// <param name="ChargingStationStatusType">The parsed charging station status type.</param>
-        public static Boolean TryParse(String Text, out ChargingStationStatusTypes ChargingStationStatusType)
+        public static Boolean TryParse(String Text, out ChargingStationStatusType ChargingStationStatusType)
         {
 
             Text = Text.Trim();
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 try
                 {
-                    ChargingStationStatusType = new ChargingStationStatusTypes(Text);
+                    ChargingStationStatusType = new ChargingStationStatusType(Text);
                     return true;
                 }
                 catch
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Clone this charging station status type.
         /// </summary>
-        public ChargingStationStatusTypes Clone()
+        public ChargingStationStatusType Clone()
 
             => new (
                    InternalId.CloneString()
@@ -185,72 +185,91 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Unknown status of the ChargingStation.
         /// </summary>
-        public static readonly ChargingStationStatusTypes Unknown           = new("unknown");
+        public static ChargingStationStatusType Unknown             { get; }
+            = new ("unknown");
 
         /// <summary>
         /// Unclear status of the ChargingStation.
         /// </summary>
-        public static readonly ChargingStationStatusTypes Unspecified       = new("unspecified");
+        public static ChargingStationStatusType Unspecified         { get; }
+            = new ("unspecified");
 
         /// <summary>
         /// Currently no communication with the ChargingStation possible,
         /// but charging in offline mode might be available.
         /// </summary>
-        public static readonly ChargingStationStatusTypes Offline           = new("offline");
+        public static ChargingStationStatusType Offline             { get; }
+            = new ("offline");
 
         /// <summary>
         /// The ChargingStation is not fully operational yet.
         /// </summary>
-        public static readonly ChargingStationStatusTypes InDeployment      = new("inDeployment");
+        public static ChargingStationStatusType InDeployment        { get; }
+            = new ("inDeployment");
 
         /// <summary>
         /// The ChargingStation is reserved for future charging.
         /// </summary>
-        public static readonly ChargingStationStatusTypes Reserved          = new("reserved");
+        public static ChargingStationStatusType Reserved            { get; }
+            = new ("reserved");
 
         /// <summary>
         /// The ChargingStation is available for charging.
         /// </summary>
-        public static readonly ChargingStationStatusTypes Available         = new("available");
+        public static ChargingStationStatusType Available           { get; }
+            = new ("available");
 
         /// <summary>
         /// Some ongoing charging sessions or reservations, but still ready to charge.
         /// </summary>
-        public static readonly ChargingStationStatusTypes PartialAvailable  = new("partialAvailable");
+        public static ChargingStationStatusType PartialAvailable    { get; }
+            = new ("partialAvailable");
 
         /// <summary>
         /// The door of a charging locker is open, the ChargingStation is unlocked
         /// and is waiting for the customer to plugin.
         /// </summary>
-        public static readonly ChargingStationStatusTypes WaitingForPlugin  = new("waitingForPlugin");
+        public static ChargingStationStatusType WaitingForPlugin    { get; }
+            = new ("waitingForPlugin");
 
         /// <summary>
         /// A cable is plugged into the socket or a vehicle is connected
         /// to the cable, but both without any further action.
         /// </summary>
-        public static readonly ChargingStationStatusTypes PluggedIn         = new("pluggedIn");
+        public static ChargingStationStatusType PluggedIn           { get; }
+            = new ("pluggedIn");
 
         /// <summary>
         /// An ongoing charging process.
         /// </summary>
-        public static readonly ChargingStationStatusTypes Charging          = new("charging");
+        public static ChargingStationStatusType Charging            { get; }
+            = new ("charging");
 
         /// <summary>
         /// The ChargingStation has a mechanical door, e.g. an e-bike charging locker,
         /// which was not closed after the customer took the battery out.
         /// </summary>
-        public static readonly ChargingStationStatusTypes DoorNotClosed     = new("doorNotClosed");
+        public static ChargingStationStatusType DoorNotClosed       { get; }
+            = new ("doorNotClosed");
 
         /// <summary>
-        /// A fatal error has occured within the ChargingStation.
+        /// A fatal error has occurred within the ChargingStation.
         /// </summary>
-        public static readonly ChargingStationStatusTypes Error             = new("error");
+        public static ChargingStationStatusType Error               { get; }
+            = new ("error");
 
         /// <summary>
-        /// The ChargingStation is not ready for charging because it is under maintenance
+        /// The charging station was removed.
+        /// </summary>
+        public static ChargingStationStatusType  Removed            { get; }
+            = new ("removed");
+
+        /// <summary>
+        /// The charging station is not ready for charging because it is under maintenance
         /// or was disabled by the charging station operator.
         /// </summary>
-        public static readonly ChargingStationStatusTypes OutOfService      = new("outOfService");
+        public static ChargingStationStatusType OutOfService        { get; }
+            = new ("outOfService");
 
         #endregion
 
@@ -265,8 +284,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationStatusType1">A charging station status type.</param>
         /// <param name="ChargingStationStatusType2">Another charging station status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ChargingStationStatusTypes ChargingStationStatusType1,
-                                           ChargingStationStatusTypes ChargingStationStatusType2)
+        public static Boolean operator == (ChargingStationStatusType ChargingStationStatusType1,
+                                           ChargingStationStatusType ChargingStationStatusType2)
 
             => ChargingStationStatusType1.Equals(ChargingStationStatusType2);
 
@@ -280,8 +299,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationStatusType1">A charging station status type.</param>
         /// <param name="ChargingStationStatusType2">Another charging station status type.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ChargingStationStatusTypes ChargingStationStatusType1,
-                                           ChargingStationStatusTypes ChargingStationStatusType2)
+        public static Boolean operator != (ChargingStationStatusType ChargingStationStatusType1,
+                                           ChargingStationStatusType ChargingStationStatusType2)
 
             => !ChargingStationStatusType1.Equals(ChargingStationStatusType2);
 
@@ -295,8 +314,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationStatusType1">A charging station status type.</param>
         /// <param name="ChargingStationStatusType2">Another charging station status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator < (ChargingStationStatusTypes ChargingStationStatusType1,
-                                          ChargingStationStatusTypes ChargingStationStatusType2)
+        public static Boolean operator < (ChargingStationStatusType ChargingStationStatusType1,
+                                          ChargingStationStatusType ChargingStationStatusType2)
 
             => ChargingStationStatusType1.CompareTo(ChargingStationStatusType2) < 0;
 
@@ -310,8 +329,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationStatusType1">A charging station status type.</param>
         /// <param name="ChargingStationStatusType2">Another charging station status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator <= (ChargingStationStatusTypes ChargingStationStatusType1,
-                                           ChargingStationStatusTypes ChargingStationStatusType2)
+        public static Boolean operator <= (ChargingStationStatusType ChargingStationStatusType1,
+                                           ChargingStationStatusType ChargingStationStatusType2)
 
             => ChargingStationStatusType1.CompareTo(ChargingStationStatusType2) <= 0;
 
@@ -325,8 +344,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationStatusType1">A charging station status type.</param>
         /// <param name="ChargingStationStatusType2">Another charging station status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator > (ChargingStationStatusTypes ChargingStationStatusType1,
-                                          ChargingStationStatusTypes ChargingStationStatusType2)
+        public static Boolean operator > (ChargingStationStatusType ChargingStationStatusType1,
+                                          ChargingStationStatusType ChargingStationStatusType2)
 
             => ChargingStationStatusType1.CompareTo(ChargingStationStatusType2) > 0;
 
@@ -340,8 +359,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationStatusType1">A charging station status type.</param>
         /// <param name="ChargingStationStatusType2">Another charging station status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator >= (ChargingStationStatusTypes ChargingStationStatusType1,
-                                           ChargingStationStatusTypes ChargingStationStatusType2)
+        public static Boolean operator >= (ChargingStationStatusType ChargingStationStatusType1,
+                                           ChargingStationStatusType ChargingStationStatusType2)
 
             => ChargingStationStatusType1.CompareTo(ChargingStationStatusType2) >= 0;
 
@@ -359,7 +378,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">A charging station status type to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is ChargingStationStatusTypes chargingStationStatusTypes
+            => Object is ChargingStationStatusType chargingStationStatusTypes
                    ? CompareTo(chargingStationStatusTypes)
                    : throw new ArgumentException("The given object is not a charging station status type!",
                                                  nameof(Object));
@@ -372,7 +391,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging station status types.
         /// </summary>
         /// <param name="ChargingStationStatusType">A charging station status type to compare with.</param>
-        public Int32 CompareTo(ChargingStationStatusTypes ChargingStationStatusType)
+        public Int32 CompareTo(ChargingStationStatusType ChargingStationStatusType)
 
             => String.Compare(InternalId,
                               ChargingStationStatusType.InternalId,
@@ -392,7 +411,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">A charging station status type to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is ChargingStationStatusTypes chargingStationStatusTypes &&
+            => Object is ChargingStationStatusType chargingStationStatusTypes &&
                    Equals(chargingStationStatusTypes);
 
         #endregion
@@ -403,7 +422,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging station status types for equality.
         /// </summary>
         /// <param name="ChargingStationStatusType">A charging station status type to compare with.</param>
-        public Boolean Equals(ChargingStationStatusTypes ChargingStationStatusType)
+        public Boolean Equals(ChargingStationStatusType ChargingStationStatusType)
 
             => String.Equals(InternalId,
                              ChargingStationStatusType.InternalId,

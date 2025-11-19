@@ -2962,6 +2962,7 @@ namespace cloud.charging.open.protocols.WWCP
                                InfoStatus                                           ExpandChargingStationId             = InfoStatus.ShowIdOnly,
                                InfoStatus                                           ExpandBrandIds                      = InfoStatus.ShowIdOnly,
                                InfoStatus                                           ExpandDataLicenses                  = InfoStatus.ShowIdOnly,
+                               Boolean?                                             IncludeCustomData                   = null,
                                CustomJObjectSerializerDelegate<IEVSE>?              CustomEVSESerializer                = null,
                                CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null)
         {
@@ -3103,7 +3104,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            ? new JProperty("openingTimes",          ChargingStation.OpeningTimes.ToJSON())
                                            : null,
 
-                                       CustomData.HasValues
+                                       CustomData.HasValues && IncludeCustomData == true
                                            ? new JProperty("customData",            CustomData)
                                            : null
 

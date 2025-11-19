@@ -403,7 +403,7 @@ namespace cloud.charging.open.protocols.WWCP
             => new (SessionId,
                     RemoteStopResultTypes.Timeout,
                     Sender,
-                    Description ?? I18NString.Create("A timeout occured!"),
+                    Description ?? I18NString.Create("A timeout occurred!"),
                     Runtime: Runtime);
 
         #endregion
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.WWCP
             => new (SessionId,
                     RemoteStopResultTypes.CommunicationError,
                     Sender,
-                    Description ?? I18NString.Create("A communication error occured!"),
+                    Description ?? I18NString.Create("A communication error occurred!"),
                     AdditionalInfo,
                     Runtime: Runtime);
 
@@ -450,7 +450,7 @@ namespace cloud.charging.open.protocols.WWCP
             => new (SessionId,
                     RemoteStopResultTypes.Error,
                     Sender,
-                    Description ?? I18NString.Create("An error occured!"),
+                    Description ?? I18NString.Create("An error occurred!"),
                     AdditionalInfo,
                     Runtime: Runtime);
 
@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.WWCP
                     Sender,
                     Description?.Trim().IsNotNullOrEmpty() == false
                          ? I18NString.Create(Description)
-                         : I18NString.Create("An error occured!"),
+                         : I18NString.Create("An error occurred!"),
                     AdditionalInfo,
                     Runtime: Runtime);
 
@@ -826,7 +826,7 @@ namespace cloud.charging.open.protocols.WWCP
         Unauthorized,
 
         /// <summary>
-        /// A communication error occured.
+        /// A communication error occurred.
         /// </summary>
         CommunicationError,
 

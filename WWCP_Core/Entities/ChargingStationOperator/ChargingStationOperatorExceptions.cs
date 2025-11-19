@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An invalid charging pool operator identification was given.
         /// </summary>
-        /// <param name="ChargingStationOperator">The charging station operator in which the exception occured.</param>
+        /// <param name="ChargingStationOperator">The charging station operator in which the exception occurred.</param>
         /// <param name="InvalidChargingStationOperatorId">The invalid operator identification.</param>
         public InvalidChargingPoolOperatorId(ChargingStationOperator     ChargingStationOperator,
                                              ChargingStationOperator_Id  InvalidChargingStationOperatorId)

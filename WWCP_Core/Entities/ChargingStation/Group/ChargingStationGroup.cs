@@ -857,8 +857,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal void UpdateChargingStationStatus(DateTime                                  Timestamp,
                                                   EventTracking_Id                          EventTrackingId,
                                                   ChargingStation                           ChargingStation,
-                                                  Timestamped<ChargingStationStatusTypes>   NewStatus,
-                                                  Timestamped<ChargingStationStatusTypes>?  OldStatus    = null,
+                                                  Timestamped<ChargingStationStatusType>   NewStatus,
+                                                  Timestamped<ChargingStationStatusType>?  OldStatus    = null,
                                                   Context?                                  DataSource   = null)
         {
 
