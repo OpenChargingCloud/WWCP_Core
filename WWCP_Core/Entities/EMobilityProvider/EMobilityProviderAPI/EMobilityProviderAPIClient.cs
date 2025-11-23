@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
@@ -298,7 +299,9 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                           Boolean?                                                   PreferIPv4                   = null,
                                           RemoteTLSServerCertificateValidationHandler<IHTTPClient>?  RemoteCertificateValidator   = null,
                                           LocalCertificateSelectionHandler?                          LocalCertificateSelector     = null,
-                                          X509Certificate2?                                          ClientCertificate            = null,
+                                          IEnumerable<X509Certificate2>?                             ClientCertificates           = null,
+                                          SslStreamCertificateContext?                               ClientCertificateContext     = null,
+                                          IEnumerable<X509Certificate2>?                             ClientCertificateChain       = null,
                                           SslProtocols?                                              TLSProtocol                  = null,
                                           HTTPContentType?                                           ContentType                  = null,
                                           AcceptTypes?                                               Accept                       = null,
@@ -320,7 +323,9 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                    PreferIPv4,
                    RemoteCertificateValidator,
                    LocalCertificateSelector,
-                   ClientCertificate,
+                   ClientCertificates,
+                   ClientCertificateContext,
+                   ClientCertificateChain,
                    TLSProtocol,
                    ContentType,
                    Accept,
@@ -423,7 +428,9 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                       PreferIPv4,
                                                                       RemoteCertificateValidator,
                                                                       LocalCertificateSelector,
-                                                                      ClientCertificate,
+                                                                      ClientCertificates,
+                                                                      ClientCertificateContext,
+                                                                      ClientCertificateChain,
                                                                       TLSProtocols,
                                                                       ContentType,
                                                                       Accept,
@@ -818,7 +825,9 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                       PreferIPv4,
                                                                       RemoteCertificateValidator,
                                                                       LocalCertificateSelector,
-                                                                      ClientCertificate,
+                                                                      ClientCertificates,
+                                                                      ClientCertificateContext,
+                                                                      ClientCertificateChain,
                                                                       TLSProtocols,
                                                                       ContentType,
                                                                       Accept,

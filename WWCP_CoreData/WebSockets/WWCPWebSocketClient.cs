@@ -31,6 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using System.Net.Security;
 
 #endregion
 
@@ -131,7 +132,9 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                    Boolean?                                                        PreferIPv4                   = null,
                                    RemoteTLSServerCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketClient>?  RemoteCertificateValidator   = null,
                                    LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
-                                   X509Certificate2?                                               ClientCertificate            = null,
+                                   IEnumerable<X509Certificate2>?                                  ClientCertificates           = null,
+                                   SslStreamCertificateContext?                                    ClientCertificateContext     = null,
+                                   IEnumerable<X509Certificate2>?                                  ClientCertificateChain       = null,
                                    SslProtocols?                                                   TLSProtocol                  = null,
                                    String                                                          HTTPUserAgent                = DefaultHTTPUserAgent,
                                    IHTTPAuthentication?                                            HTTPAuthentication           = null,
@@ -162,7 +165,9 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                    PreferIPv4,
                    RemoteCertificateValidator,
                    LocalCertificateSelector,
-                   ClientCertificate,
+                   ClientCertificates,
+                   ClientCertificateContext,
+                   ClientCertificateChain,
                    TLSProtocol,
                    HTTPUserAgent ?? DefaultHTTPUserAgent,
                    HTTPAuthentication,
