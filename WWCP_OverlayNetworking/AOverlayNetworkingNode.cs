@@ -17,18 +17,20 @@
 
 #region Usings
 
+using System.Net.Security;
 using System.Collections.Concurrent;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Authentication;
-using cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
+using cloud.charging.open.protocols.WWCP.OverlayNetworking.WebSockets;
 
 #endregion
 
@@ -322,7 +324,9 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                                Boolean?                                                        PreferIPv4                   = null,
                                                                RemoteTLSServerCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketClient>?  RemoteCertificateValidator   = null,
                                                                LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
-                                                               X509Certificate2?                                               ClientCertificate            = null,
+                                                               IEnumerable<X509Certificate2>?                                  ClientCertificates           = null,
+                                                               SslStreamCertificateContext?                                    ClientCertificateContext     = null,
+                                                               IEnumerable<X509Certificate2>?                                  ClientCertificateChain       = null,
                                                                SslProtocols?                                                   TLSProtocol                  = null,
                                                                String?                                                         HTTPUserAgent                = null,
                                                                IHTTPAuthentication?                                            HTTPAuthentication           = null,
@@ -358,7 +362,9 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                           PreferIPv4,
                                           RemoteCertificateValidator,
                                           LocalCertificateSelector,
-                                          ClientCertificate,
+                                          ClientCertificates,
+                                          ClientCertificateContext,
+                                          ClientCertificateChain,
                                           TLSProtocol,
                                           HTTPUserAgent,
                                           HTTPAuthentication,

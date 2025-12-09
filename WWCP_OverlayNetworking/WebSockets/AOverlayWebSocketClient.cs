@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Reflection;
+using System.Net.Security;
 using System.Collections.Concurrent;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
@@ -84,7 +85,9 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                       Boolean?                                                        PreferIPv4                   = null,
                                       RemoteTLSServerCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketClient>?  RemoteCertificateValidator   = null,
                                       LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
-                                      X509Certificate2?                                               ClientCertificate            = null,
+                                      IEnumerable<X509Certificate2>?                                  ClientCertificates           = null,
+                                      SslStreamCertificateContext?                                    ClientCertificateContext     = null,
+                                      IEnumerable<X509Certificate2>?                                  ClientCertificateChain       = null,
                                       SslProtocols?                                                   TLSProtocol                  = null,
                                       String                                                          HTTPUserAgent                = DefaultHTTPUserAgent,
                                       IHTTPAuthentication?                                            HTTPAuthentication           = null,
@@ -118,7 +121,9 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                    PreferIPv4,
                    RemoteCertificateValidator,
                    LocalCertificateSelector,
-                   ClientCertificate,
+                   ClientCertificates,
+                   ClientCertificateContext,
+                   ClientCertificateChain,
                    TLSProtocol,
                    HTTPUserAgent,
                    HTTPAuthentication,
@@ -246,7 +251,9 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                        Boolean?                                                        PreferIPv4                   = null,
                                        RemoteTLSServerCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketClient>?  RemoteCertificateValidator   = null,
                                        LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
-                                       X509Certificate2?                                               ClientCert                   = null,
+                                       IEnumerable<X509Certificate2>?                                  ClientCertificates           = null,
+                                       SslStreamCertificateContext?                                    ClientCertificateContext     = null,
+                                       IEnumerable<X509Certificate2>?                                  ClientCertificateChain       = null,
                                        SslProtocols?                                                   TLSProtocol                  = null,
                                        String                                                          HTTPUserAgent                = DefaultHTTPUserAgent,
                                        IHTTPAuthentication?                                            HTTPAuthentication           = null,
@@ -277,7 +284,9 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                    PreferIPv4,
                    RemoteCertificateValidator,
                    LocalCertificateSelector,
-                   ClientCert,
+                   ClientCertificates,
+                   ClientCertificateContext,
+                   ClientCertificateChain,
                    TLSProtocol,
                    HTTPUserAgent,
                    HTTPAuthentication,
