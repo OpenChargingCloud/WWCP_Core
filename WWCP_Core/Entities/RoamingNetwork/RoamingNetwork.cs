@@ -55,10 +55,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a JSON representation for the given roaming networks collection.
         /// </summary>
         /// <param name="RoamingNetworks">An enumeration of roaming networks.</param>
+        /// <param name="Embedded">Whether this roaming network is embedded into another data structure.</param>
         /// <param name="Skip">The optional number of roaming networks to skip.</param>
         /// <param name="Take">The optional number of roaming networks to return.</param>
         public static JArray ToJSON(this IEnumerable<IRoamingNetwork>                           RoamingNetworks,
                                     Boolean                                                     Embedded                                  = false,
+                                    UInt64?                                                     Skip                                      = null,
+                                    UInt64?                                                     Take                                      = null,
+
+                                    InfoStatus                                                  ExpandRoamingNetworkIds                   = InfoStatus.ShowIdOnly,
                                     InfoStatus                                                  ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
                                     InfoStatus                                                  ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
                                     InfoStatus                                                  ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
@@ -66,37 +71,45 @@ namespace cloud.charging.open.protocols.WWCP
                                     InfoStatus                                                  ExpandBrandIds                            = InfoStatus.ShowIdOnly,
                                     InfoStatus                                                  ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
                                     InfoStatus                                                  ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
+
                                     CustomJObjectSerializerDelegate<IRoamingNetwork>?           CustomRoamingNetworkSerializer            = null,
                                     CustomJObjectSerializerDelegate<IChargingStationOperator>?  CustomChargingStationOperatorSerializer   = null,
                                     CustomJObjectSerializerDelegate<IChargingPool>?             CustomChargingPoolSerializer              = null,
                                     CustomJObjectSerializerDelegate<IChargingStation>?          CustomChargingStationSerializer           = null,
-                                    CustomJObjectSerializerDelegate<IEVSE>?                     CustomEVSESerializer                      = null,
-                                    UInt64?                                                     Skip                                      = null,
-                                    UInt64?                                                     Take                                      = null)
+                                    CustomJObjectSerializerDelegate<IEVSE>?                     CustomEVSESerializer                      = null)
         {
 
             #region Initial checks
 
             if (RoamingNetworks is null || !RoamingNetworks.Any())
-                return new JArray();
+                return [];
 
             #endregion
 
-            return new JArray(RoamingNetworks.
-                                  SkipTakeFilter(Skip, Take).
-                                  Select        (roamingNetwork => roamingNetwork.ToJSON(Embedded,
-                                                                                         ExpandChargingStationOperatorIds,
-                                                                                         ExpandChargingPoolIds,
-                                                                                         ExpandChargingStationIds,
-                                                                                         ExpandEVSEIds,
-                                                                                         ExpandBrandIds,
-                                                                                         ExpandDataLicenses,
-                                                                                         ExpandEMobilityProviderId,
-                                                                                         CustomRoamingNetworkSerializer,
-                                                                                         CustomChargingStationOperatorSerializer,
-                                                                                         CustomChargingPoolSerializer,
-                                                                                         CustomChargingStationSerializer,
-                                                                                         CustomEVSESerializer)));
+            return new JArray(
+                       RoamingNetworks.
+                           SkipTakeFilter(Skip, Take).
+                           Select        (roamingNetwork => roamingNetwork.ToJSON(
+
+                                                                Embedded,
+
+                                                                ExpandRoamingNetworkIds,
+                                                                ExpandChargingStationOperatorIds,
+                                                                ExpandChargingPoolIds,
+                                                                ExpandChargingStationIds,
+                                                                ExpandEVSEIds,
+                                                                ExpandBrandIds,
+                                                                ExpandDataLicenses,
+                                                                ExpandEMobilityProviderId,
+
+                                                                CustomRoamingNetworkSerializer,
+                                                                CustomChargingStationOperatorSerializer,
+                                                                CustomChargingPoolSerializer,
+                                                                CustomChargingStationSerializer,
+                                                                CustomEVSESerializer
+
+                                                            ))
+                   );
 
         }
 
@@ -277,8 +290,8 @@ namespace cloud.charging.open.protocols.WWCP
                               UserDefinedDictionary?                     InternalData                                 = null)
 
             : base(Id,
-                   Name                       ?? new I18NString(Languages.en, "RNTest1"),
-                   Description                ?? new I18NString(Languages.en, "A roaming network for testing purposes"),
+                   Name,
+                   Description,
                    InitialAdminStatus         ?? RoamingNetworkAdminStatusTypes.Operational,
                    InitialStatus              ?? RoamingNetworkStatusTypes.Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
@@ -5255,7 +5268,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EnergyMeters...
 
-        private readonly ConcurrentDictionary<EnergyMeter_Id, IEnergyMeter> energyMeters;
+        private readonly ConcurrentDictionary<EnergyMeter_Id, IEnergyMeter> energyMeters = [];
 
         #region EnergyMeters
 
@@ -7156,13 +7169,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ReservationId">The charging reservation identification.</param>
         /// <param name="Reservation">The charging reservation.</param>
-        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation? Reservation)
+        public Boolean TryGetChargingReservationById(ChargingReservation_Id                        ReservationId,
+                                                     [NotNullWhen(true)] out ChargingReservation?  Reservation)
         {
 
             if (ReservationsStore.TryGet(ReservationId, out var reservationCollection))
             {
                 Reservation = reservationCollection?.LastOrDefault();
-                return true;
+                return Reservation is not null;
             }
 
             Reservation = null;
@@ -9573,6 +9587,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
         public JObject ToJSON(Boolean                                                     Embedded                                  = false,
+
+                              InfoStatus                                                  ExpandRoamingNetworkIds                   = InfoStatus.ShowIdOnly,
                               InfoStatus                                                  ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
                               InfoStatus                                                  ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
                               InfoStatus                                                  ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
@@ -9580,6 +9596,7 @@ namespace cloud.charging.open.protocols.WWCP
                               InfoStatus                                                  ExpandBrandIds                            = InfoStatus.ShowIdOnly,
                               InfoStatus                                                  ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
                               InfoStatus                                                  ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
+
                               CustomJObjectSerializerDelegate<IRoamingNetwork>?           CustomRoamingNetworkSerializer            = null,
                               CustomJObjectSerializerDelegate<IChargingStationOperator>?  CustomChargingStationOperatorSerializer   = null,
                               CustomJObjectSerializerDelegate<IChargingPool>?             CustomChargingPoolSerializer              = null,

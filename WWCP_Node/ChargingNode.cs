@@ -18,13 +18,13 @@
 #region Usings
 
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using System.Diagnostics.CodeAnalysis;
+using org.GraphDefined.Vanaheimr.Hermod.HTTPTest;
 
 #endregion
 
@@ -43,6 +43,10 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #region Properties
+
+        public WWCP_HTTPAPI  HTTPAPI    { get; }
+
+        public WWCP_WebAPI?  WebAPI     { get; }
 
         #endregion
 
@@ -65,9 +69,10 @@ namespace cloud.charging.open.protocols.WWCP
                             IEnumerable<CryptoKeyInfo>?  Identities       = null,
                             IEnumerable<CryptoKeyInfo>?  IdentityGroups   = null,
 
-                            HTTPAPI?                     DefaultHTTPAPI   = null,
+                            HTTPTestServerX?             HTTPTestServer   = null,
+                            HTTPExtAPIX?                 DefaultHTTPAPI   = null,
 
-                            DNSClient?                   DNSClient        = null)
+                            IDNSClient?                  DNSClient        = null)
 
             : base(Id,
                    Name,
@@ -76,11 +81,17 @@ namespace cloud.charging.open.protocols.WWCP
                    Identities,
                    IdentityGroups,
 
+                   HTTPTestServer,
+                   null, //DefaultHTTPAPI,
                    DefaultHTTPAPI,
 
                    DNSClient)
 
         {
+
+            this.HTTPAPI = new WWCP_HTTPAPI(
+                               this.DefaultHTTPAPIX
+                           );
 
         }
 
@@ -134,10 +145,10 @@ namespace cloud.charging.open.protocols.WWCP
             => roamingNetworks.RemoveRoamingNetwork(RoamingNetworkId);
 
 
-        public Boolean RemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, [NotNullWhen(true)] out IRoamingNetwork? RoamingNetwork)
+        public Boolean TryRemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, [NotNullWhen(true)] out IRoamingNetwork? RoamingNetwork)
 
-            => roamingNetworks.RemoveRoamingNetwork(RoamingNetworkId,
-                                                    out RoamingNetwork);
+            => roamingNetworks.TryRemoveRoamingNetwork(RoamingNetworkId,
+                                                       out RoamingNetwork);
 
 
         #region IEnumerable<RoamingNetwork>

@@ -288,17 +288,20 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region RemoveRoamingNetwork(RoamingNetworkId, out RoamingNetwork)
+        #region TryRemoveRoamingNetwork(RoamingNetworkId, out RoamingNetwork)
 
         /// <summary>
         /// Try to return the roaming network identified by the given unique roaming network identification.
         /// </summary>
         /// <param name="RoamingNetworkId">The unique identification of a roaming network.</param>
         /// <param name="RoamingNetwork">The roaming network.</param>
-        /// <returns>True, when the roaming network was found; false else.</returns>
-        public Boolean RemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, out IRoamingNetwork? RoamingNetwork)
+        public Boolean TryRemoveRoamingNetwork(RoamingNetwork_Id                         RoamingNetworkId,
+                                               [NotNullWhen(true)] out IRoamingNetwork?  RoamingNetwork)
 
-            => roamingNetworks.TryRemove(RoamingNetworkId, out RoamingNetwork);
+            => roamingNetworks.TryRemove(
+                   RoamingNetworkId,
+                   out RoamingNetwork
+               );
 
         #endregion
 

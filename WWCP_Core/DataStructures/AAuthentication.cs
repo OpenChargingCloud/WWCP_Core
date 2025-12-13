@@ -250,11 +250,21 @@ namespace cloud.charging.open.protocols.WWCP
                 Authentication  = null;
                 ErrorResponse   = null;
 
-                if (!AuthenticationTypeExtensions.TryParse(JSON["authenticationType"]?.Value<String>() ?? "", out var authenticationType) ||
-                    authenticationType != AuthenticationType.Remote)
+                if (!AuthenticationTypeExtensions.TryParse(JSON["authenticationType"]?.Value<String>() ?? "", out var authenticationType))
                 {
-                    ErrorResponse = "The given JSON representation does not contain a valid authentication type!";
-                    return false;
+
+                    if      (JSON["authToken"]?.           Value<String>() is not null)
+                        authenticationType = AuthenticationType.Local;
+
+                    else if (JSON["remoteIdentification"]?.Value<String>() is not null)
+                        authenticationType = AuthenticationType.Remote;
+
+                    else
+                    {
+                        ErrorResponse = "The given JSON representation does not contain a valid authentication type!";
+                        return false;
+                    }
+
                 }
 
                 switch (authenticationType)

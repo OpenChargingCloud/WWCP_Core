@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         IEnumerable<ChargingReservation> ChargingReservations { get; }
 
-        Boolean TryGetChargingReservationById (ChargingReservation_Id ReservationId, out ChargingReservation?           ChargingReservation);
+        Boolean TryGetChargingReservationById (ChargingReservation_Id ReservationId, [NotNullWhen(true)] out ChargingReservation?           ChargingReservation);
 
         Boolean TryGetChargingReservationsById(ChargingReservation_Id ReservationId, out ChargingReservationCollection? ChargingReservations);
 

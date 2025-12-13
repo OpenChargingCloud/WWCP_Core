@@ -134,8 +134,10 @@ namespace cloud.charging.open.protocols.WWCP
                                     UInt64?                                                     Skip                                      = null,
                                     UInt64?                                                     Take                                      = null,
                                     Boolean                                                     Embedded                                  = false,
+
                                     InfoStatus                                                  ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
                                     InfoStatus                                                  ExpandRoamingNetworkIds                   = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                  ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
                                     InfoStatus                                                  ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
                                     InfoStatus                                                  ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
                                     InfoStatus                                                  ExpandBrandIds                            = InfoStatus.ShowIdOnly,
@@ -161,6 +163,7 @@ namespace cloud.charging.open.protocols.WWCP
                          SafeSelect     (roamingNetwork => roamingNetwork.ToJSON(Embedded,
                                                                                  ExpandChargingStationOperatorIds,
                                                                                  ExpandRoamingNetworkIds,
+                                                                                 ExpandChargingPoolIds,
                                                                                  ExpandChargingStationIds,
                                                                                  ExpandEVSEIds,
                                                                                  ExpandBrandIds,
@@ -913,6 +916,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a roaming network API.</param>
         JObject ToJSON(Boolean                                                     Embedded                                  = false,
+
+                       InfoStatus                                                  ExpandRoamingNetworkIds                   = InfoStatus.ShowIdOnly,
                        InfoStatus                                                  ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
                        InfoStatus                                                  ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
                        InfoStatus                                                  ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
@@ -920,6 +925,7 @@ namespace cloud.charging.open.protocols.WWCP
                        InfoStatus                                                  ExpandBrandIds                            = InfoStatus.ShowIdOnly,
                        InfoStatus                                                  ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
                        InfoStatus                                                  ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
+
                        CustomJObjectSerializerDelegate<IRoamingNetwork>?           CustomRoamingNetworkSerializer            = null,
                        CustomJObjectSerializerDelegate<IChargingStationOperator>?  CustomChargingStationOperatorSerializer   = null,
                        CustomJObjectSerializerDelegate<IChargingPool>?             CustomChargingPoolSerializer              = null,

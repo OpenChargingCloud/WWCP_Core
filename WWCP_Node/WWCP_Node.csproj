@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WWCP_Core\WWCP_Core.csproj" />
+    <ProjectReference Include="..\WWCP_HTTPAPI\WWCP_HTTPAPI.csproj" />
+    <ProjectReference Include="..\WWCP_WebAPI\WWCP_WebAPI.csproj" />
+  </ItemGroup>
+
+</Project>

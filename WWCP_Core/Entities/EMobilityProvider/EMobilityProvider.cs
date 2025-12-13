@@ -27,6 +27,7 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -2770,6 +2771,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         public IEnumerable<ChargingReservation> ChargingReservations => throw new NotImplementedException();
 
+        public IEnumerable<ChargingSession> ChargingSessions => throw new NotImplementedException();
+
         #endregion
 
         #region AuthorizeStart(LocalAuthentication, ChargingLocation = null,            ChargingProduct = null, SessionId = null, OperatorId = null, ...)
@@ -3132,7 +3135,7 @@ namespace cloud.charging.open.protocols.WWCP
         //ToDo: Send Tokens!
         //ToDo: Download CDRs!
 
-        #region Reservations...
+        #region Reservations
 
         #region Data
 
@@ -3544,7 +3547,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region RemoteStart/-Stop and Sessions
+        #region RemoteStart/-Stop
 
         #region Data
 
@@ -3866,6 +3869,27 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+        #endregion
+
+        #region ChargingSessions
+
+        public Boolean ContainsChargingSessionId(ChargingSession_Id ChargingSessionId)
+        {
+            return false;
+        }
+
+        public ChargingSession? GetChargingSessionById(ChargingSession_Id ChargingSessionId)
+        {
+            return null;
+        }
+
+        public Boolean TryGetChargingSessionById(ChargingSession_Id                        ChargingSessionId,
+                                                 [NotNullWhen(true)] out ChargingSession?  ChargingSession)
+        {
+            ChargingSession = null;
+            return false;
+        }
 
         #endregion
 

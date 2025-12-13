@@ -46,6 +46,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           ISendChargeDetailRecords,
                                           IChargingReservations,
                                           IRemoteStartStop,
+                                          IChargingSessions,
                                           ISend2RemoteEMobilityProvider,
                                           IEquatable<IEMobilityProvider>,
                                           IComparable<IEMobilityProvider>,

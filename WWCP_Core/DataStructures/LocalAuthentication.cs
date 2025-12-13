@@ -130,8 +130,16 @@ namespace cloud.charging.open.protocols.WWCP
                 if (!AuthenticationTypeExtensions.TryParse(JSON["authenticationType"]?.Value<String>() ?? "", out var authenticationType) ||
                     authenticationType != AuthenticationType.Local)
                 {
-                    ErrorResponse = "The given JSON representation does not contain a valid local authentication!";
-                    return false;
+
+                    if (JSON["authToken"]?.Value<String>() is not null)
+                        authenticationType = AuthenticationType.Local;
+
+                    else
+                    {
+                        ErrorResponse = "The given JSON representation does not contain a valid local authentication!";
+                        return false;
+                    }
+
                 }
 
                 var authToken                    = JSON["authToken"]?.                  Value<String>();

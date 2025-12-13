@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The authentication used for starting this charging process.
         /// </summary>
         [Optional]
-        public AAuthentication?                 AuthenticationStart    { get; }
+        public AAuthentication?                 AuthenticationStart    { get; internal set; }
 
         /// <summary>
         /// The authentication used for stopping this charging process.

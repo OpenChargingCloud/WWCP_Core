@@ -46,8 +46,8 @@ namespace cloud.charging.open.protocols.WWCP
                                      [NotNullWhen(true)] out IRoamingNetwork?  RoamingNetwork);
 
         IRoamingNetwork? RemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId);
-
-        Boolean RemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, out IRoamingNetwork? RoamingNetwork);
+        Boolean TryRemoveRoamingNetwork(RoamingNetwork_Id                         RoamingNetworkId,
+                                        [NotNullWhen(true)] out IRoamingNetwork?  RoamingNetwork);
 
     }
 
