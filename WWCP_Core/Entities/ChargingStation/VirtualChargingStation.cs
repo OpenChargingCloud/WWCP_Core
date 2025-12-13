@@ -1483,7 +1483,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     #region Check if the eMAId is on the white list
 
                     if (UseWhiteLists &&
-                       !WhiteLists["default"].Contains(RemoteAuthentication.ToLocal))
+                       !WhiteLists["default"].Contains(RemoteAuthentication.AsLocalAuthentication()))
                     {
                         result = ReservationResult.InvalidCredentials;
                     }
@@ -2589,7 +2589,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     #region Check if the eMAId is on the white list
 
                     if (UseWhiteLists &&
-                       !WhiteLists["default"].Contains(RemoteAuthentication.ToLocal))
+                       !WhiteLists["default"].Contains(RemoteAuthentication.AsLocalAuthentication()))
                     {
                         result = RemoteStartResult.InvalidCredentials(System_Id.Local);
                     }
@@ -2753,7 +2753,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     #region Check if the eMAId is on the white list
 
                     if (UseWhiteLists &&
-                       !WhiteLists["default"].Contains(RemoteAuthentication.ToLocal))
+                       !WhiteLists["default"].Contains(RemoteAuthentication.AsLocalAuthentication()))
                     {
                         result = RemoteStopResult.InvalidCredentials(SessionId, System_Id.Local);
                     }

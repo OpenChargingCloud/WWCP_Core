@@ -6354,7 +6354,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-
         #region Charging Sessions
 
         #region Data
@@ -6455,7 +6454,10 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean TryGetChargingSessionById(ChargingSession_Id                        ChargingSessionId,
                                                  [NotNullWhen(true)] out ChargingSession?  ChargingSession)
 
-            => SessionsStore.TryGet(ChargingSessionId, out ChargingSession);
+            => SessionsStore.TryGet(
+                   ChargingSessionId,
+                   out ChargingSession
+               );
 
 
         /// <summary>
@@ -6492,7 +6494,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region RegisterExternalChargingSession(Timestamp, Sender, ChargingSession)
+
+        #region AddExternalChargingSession    (Timestamp, Sender, ChargingSession)
 
         /// <summary>
         /// Register an external charging session which was not registered
@@ -6501,11 +6504,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="Sender">The sender of the charging session.</param>
         /// <param name="ChargingSession">The charging session.</param>
-        public Task<Boolean> RegisterExternalChargingSession(DateTimeOffset   Timestamp,
-                                                             Object           Sender,
-                                                             String           Command,
-                                                             ChargingSession  ChargingSession,
-                                                             DateTimeOffset?  NoAutoDeletionBefore   = null)
+        public Task<Boolean> AddExternalChargingSession(DateTimeOffset     Timestamp,
+                                                        Object             Sender,
+                                                        String             Command,
+                                                        ChargingSession    ChargingSession,
+                                                        DateTimeOffset?    NoAutoDeletionBefore   = null,
+                                                        CancellationToken  CancellationToken      = default)
         {
 
             ChargingSession.RoamingNetwork = this;
@@ -6520,20 +6524,77 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region RemoveExternalChargingSession(Timestamp, Sender, ChargingSession)
+        #region UpdateExternalChargingSession (Timestamp, Sender, ChargingSession)
 
         /// <summary>
-        /// Register an external charging session which was not registered
-        /// via the RemoteStart or AuthStart mechanisms.
+        /// Update an external charging session.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="Sender">The sender of the charging session.</param>
         /// <param name="ChargingSession">The charging session.</param>
-        public void RemoveExternalChargingSession(DateTime         Timestamp,
-                                                  Object           Sender,
-                                                  ChargingSession  ChargingSession)
+        public async Task<Boolean> UpdateExternalChargingSession(DateTimeOffset     Timestamp,
+                                                                 Object             Sender,
+                                                                 String             Command,
+                                                                 ChargingSession    ChargingSession,
+                                                                 DateTimeOffset?    NoAutoDeletionBefore   = null,
+                                                                 CancellationToken  CancellationToken      = default)
         {
-            //SessionsStore.RemoveExternalChargingSession(Timestamp, Sender, ChargingSession);
+
+            ChargingSession.RoamingNetwork = this;
+
+            await SessionsStore.UpdateSession(
+                      ChargingSession.Id,
+                      oldSession => ChargingSession
+                  );
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region RemoveExternalChargingSession (Timestamp, Sender, ChargingSessionId)
+
+        /// <summary>
+        /// Remove an external charging session.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="Sender">The sender of the charging session.</param>
+        /// <param name="ChargingSessionId">The charging session identification.</param>
+        public async Task RemoveExternalChargingSession(DateTime            Timestamp,
+                                                        Object              Sender,
+                                                        ChargingSession_Id  ChargingSessionId,
+                                                        CancellationToken   CancellationToken   = default)
+        {
+
+            await SessionsStore.RemoveSession(
+                      ChargingSessionId
+                  );
+
+        }
+
+        #endregion
+
+        #region RemoveExternalChargingSession (Timestamp, Sender, ChargingSession)
+
+        /// <summary>
+        /// Remove an external charging session.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="Sender">The sender of the charging session.</param>
+        /// <param name="ChargingSession">The charging session.</param>
+        public async Task RemoveExternalChargingSession(DateTime           Timestamp,
+                                                        Object             Sender,
+                                                        ChargingSession    ChargingSession,
+                                                        CancellationToken  CancellationToken   = default)
+        {
+
+            ChargingSession.RoamingNetwork = this;
+
+            await SessionsStore.RemoveSession(
+                      ChargingSession.Id
+                  );
+
         }
 
         #endregion
@@ -7257,7 +7318,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region AuthorizeStart           (LocalAuthentication, ChargingLocation = null, ChargingProduct = null, SessionId = null, OperatorId = null, ...)
+        #region AuthorizeStart (           LocalAuthentication, ChargingLocation = null, ChargingProduct = null, SessionId = null, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize start request at the given EVSE.
@@ -7629,7 +7690,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AuthorizeStop (SessionId, LocalAuthentication, ChargingLocation = null,                                           OperatorId = null, ...)
+        #region AuthorizeStop  (SessionId, LocalAuthentication, ChargingLocation = null,                                           OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize stop request at the given location.
@@ -7968,7 +8029,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoteStart/-Stop
 
-        #region RemoteStart(ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
+        #region RemoteStart (ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Start a charging session at the given charging location.
@@ -8228,7 +8289,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region RemoteStop (SessionId, ReservationHandling = null, ProviderId = null, RemoteAuthentication = null, ...)
+        #region RemoteStop  (SessionId, ReservationHandling = null, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Stop the given charging session.
@@ -8588,7 +8649,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region SendChargeDetailRecord (ChargeDetailRecord,  ...)
+        #region SendChargeDetailRecord  (ChargeDetailRecord,  ...)
 
         /// <summary>
         /// Send a charge detail record.
@@ -8623,7 +8684,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region SendChargeDetailRecords(ChargeDetailRecords, ...)
+        #region SendChargeDetailRecords (ChargeDetailRecords, ...)
 
         /// <summary>
         /// Send a charge detail record.
@@ -8849,13 +8910,13 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region ...the CSORoamingProvider(Id) is known, or...
 
-                    else if (cdr.CSORoamingProviderStart is not null)
-                        iSendChargeDetailRecords = cdr.CSORoamingProviderStart;
+                    else if (cdr.RoamingProviderStart is not null)
+                        iSendChargeDetailRecords = cdr.RoamingProviderStart;
 
-                    else if (cdr.CSORoamingProviderIdStart.HasValue)
+                    else if (cdr.RoamingProviderIdStart.HasValue)
                     {
 
-                        var empRoamingProviderId      = cdr.CSORoamingProviderIdStart.ToString();
+                        var empRoamingProviderId      = cdr.RoamingProviderIdStart.ToString();
                         var empRoamingProviderForCDR  = allRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == empRoamingProviderId) as ICSORoamingProvider;
 
                         if (empRoamingProviderForCDR is not null)
@@ -8976,18 +9037,21 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            LocalAuthentication LL = null;
+                            LocalAuthentication? LL = null;
 
-                            if (chargeDetailRecord.AuthenticationStart is LocalAuthentication)
-                                LL = chargeDetailRecord.AuthenticationStart as LocalAuthentication;
+                            if (chargeDetailRecord.AuthenticationStart is LocalAuthentication lc)
+                                LL = lc;
 
-                            else if (chargeDetailRecord.AuthenticationStart is RemoteAuthentication)
-                                LL = (chargeDetailRecord.AuthenticationStart as RemoteAuthentication).ToLocal;
+                            else if (chargeDetailRecord.AuthenticationStart is RemoteAuthentication ra)
+                                LL = ra.AsLocalAuthentication();
 
                             if (LL is not null)
                             {
 
-                                var authStartResult = await eMob.AuthorizeStart(LL);
+                                var authStartResult = await eMob.AuthorizeStart(
+                                                                LL,
+                                                                CancellationToken:  CancellationToken
+                                                            );
 
                                 if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                     authStartResult.Result == AuthStartResultTypes.Blocked)
@@ -9016,7 +9080,10 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(
+                                                            chargeDetailRecord.AuthenticationStop as LocalAuthentication,
+                                                            CancellationToken:  CancellationToken
+                                                        );
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
@@ -9045,7 +9112,10 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStart as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(
+                                                            chargeDetailRecord.AuthenticationStart as LocalAuthentication,
+                                                            CancellationToken:  CancellationToken
+                                                        );
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
@@ -9074,7 +9144,10 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(
+                                                            chargeDetailRecord.AuthenticationStop as LocalAuthentication,
+                                                            CancellationToken:  CancellationToken
+                                                        );
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
@@ -9103,7 +9176,10 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStart as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(
+                                                            chargeDetailRecord.AuthenticationStart as LocalAuthentication,
+                                                            CancellationToken:  CancellationToken
+                                                        );
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
@@ -9132,7 +9208,10 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(
+                                                            chargeDetailRecord.AuthenticationStop as LocalAuthentication,
+                                                            CancellationToken: CancellationToken
+                                                        );
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
@@ -9162,7 +9241,10 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStart as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(
+                                                            chargeDetailRecord.AuthenticationStart as LocalAuthentication,
+                                                            CancellationToken:  CancellationToken
+                                                        );
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
@@ -9198,7 +9280,10 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(
+                                                            chargeDetailRecord.AuthenticationStop as LocalAuthentication,
+                                                            CancellationToken:  CancellationToken
+                                                        );
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
@@ -9225,7 +9310,10 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStart as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(
+                                                            chargeDetailRecord.AuthenticationStart as LocalAuthentication,
+                                                            CancellationToken:  CancellationToken
+                                                        );
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
@@ -9252,7 +9340,10 @@ namespace cloud.charging.open.protocols.WWCP
                         foreach (var eMob in eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(chargeDetailRecord.AuthenticationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(
+                                                            chargeDetailRecord.AuthenticationStop as LocalAuthentication,
+                                                            CancellationToken:  CancellationToken
+                                                        );
 
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
@@ -9473,7 +9564,6 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
-
 
 
         #region ToJSON(this RoamingNetwork, Embedded = false, ...)

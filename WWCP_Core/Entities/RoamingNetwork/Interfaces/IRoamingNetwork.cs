@@ -630,11 +630,29 @@ namespace cloud.charging.open.protocols.WWCP
         Task ReceiveSendChargeDetailRecordResults(IEnumerable<SendCDRResult> SendCDRResults);
 
 
-        Task<Boolean> RegisterExternalChargingSession(DateTimeOffset   Timestamp,
-                                                      Object           Sender,
-                                                      String           Command,
-                                                      ChargingSession  ChargingSession,
-                                                      DateTimeOffset?  NoAutoDeletionBefore   = null);
+        Task<Boolean> AddExternalChargingSession(DateTimeOffset     Timestamp,
+                                                 Object             Sender,
+                                                 String             Command,
+                                                 ChargingSession    ChargingSession,
+                                                 DateTimeOffset?    NoAutoDeletionBefore   = null,
+                                                 CancellationToken  CancellationToken      = default);
+
+        Task<Boolean> UpdateExternalChargingSession(DateTimeOffset     Timestamp,
+                                                    Object             Sender,
+                                                    String             Command,
+                                                    ChargingSession    ChargingSession,
+                                                    DateTimeOffset?    NoAutoDeletionBefore   = null,
+                                                    CancellationToken  CancellationToken      = default);
+
+        Task RemoveExternalChargingSession(DateTime            Timestamp,
+                                           Object              Sender,
+                                           ChargingSession_Id  ChargingSessionId,
+                                           CancellationToken   CancellationToken   = default);
+
+        Task RemoveExternalChargingSession(DateTime           Timestamp,
+                                           Object             Sender,
+                                           ChargingSession    ChargingSession,
+                                           CancellationToken  CancellationToken   = default);
 
         #endregion
 

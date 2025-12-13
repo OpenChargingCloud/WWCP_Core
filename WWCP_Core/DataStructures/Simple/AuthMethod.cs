@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The length of the authentication method.
         /// </summary>
-        public UInt64 Length
+        public UInt64  Length
             => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
@@ -182,32 +182,32 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An authentication request has been sent to the eMSP.
         /// </summary>
-        public static AuthMethod AUTH_REQUEST
-            => Parse("AUTH_REQUEST");
+        public static AuthMethod  AUTH_REQUEST    { get; }
+            = Parse("AUTH_REQUEST");
 
         /// <summary>
         /// The authentication request was implicitly sent within a reservation request.
         /// </summary>
-        public static AuthMethod RESERVE
-            => Parse("RESERVE");
+        public static AuthMethod  RESERVE         { get; }
+            = Parse("RESERVE");
 
         /// <summary>
         /// The authentication request was implicitly sent within a remote start request.
         /// </summary>
-        public static AuthMethod REMOTESTART
-            => Parse("REMOTESTART");
+        public static AuthMethod  REMOTESTART     { get; }
+            = Parse("REMOTESTART");
 
         /// <summary>
         /// A whitelist was used for authentication, no request to the eMSP has been performed.
         /// </summary>
-        public static AuthMethod WHITELIST
-            => Parse("WHITELIST");
+        public static AuthMethod  WHITELIST       { get; }
+            = Parse("WHITELIST");
 
         /// <summary>
         /// Online Certificate Status Protocol (OCSP)
         /// </summary>
-        public static AuthMethod OCSP
-            => Parse("OCSP");
+        public static AuthMethod  OCSP            { get; }
+            = Parse("OCSP");
 
         #endregion
 

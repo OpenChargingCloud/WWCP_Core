@@ -71,28 +71,28 @@ namespace cloud.charging.open.protocols.WWCP
 
             var json = JSONObject.Create(
 
-                                 new JProperty("timestamp",               Timestamp.                 ToISO8601()),
-                                 new JProperty("systemId",                SystemId.                  ToString()),
+                                 new JProperty("timestamp",              Timestamp.                 ToISO8601()),
+                                 new JProperty("systemId",               SystemId.                  ToString()),
 
                            CSORoamingProviderId.HasValue
-                               ? new JProperty("CSORoamingProviderId",    CSORoamingProviderId.Value.ToString())
+                               ? new JProperty("CSORoamingProviderId",   CSORoamingProviderId.Value.ToString())
                                : null,
 
                            EMPRoamingProviderId.HasValue
-                               ? new JProperty("EMPRoamingProviderId",    EMPRoamingProviderId.Value.ToString())
+                               ? new JProperty("EMPRoamingProviderId",   EMPRoamingProviderId.Value.ToString())
                                : null,
 
                            ProviderId.HasValue
-                               ? new JProperty("providerId",              ProviderId.          Value.ToString())
+                               ? new JProperty("providerId",             ProviderId.          Value.ToString())
                                : null,
 
                            Authentication.IsDefined()
-                               ? new JProperty("authentication",          Authentication.            ToJSON())
+                               ? new JProperty("authentication",         Authentication.            ToJSON())
                                : null,
 
                            RemoteStopResult is not null
-                               ? new JProperty("remoteStopResult",        RemoteStopResult.          ToJSON(Embedded: true,
-                                                                                                            CustomChargeDetailRecordSerializer))
+                               ? new JProperty("remoteStopResult",       RemoteStopResult.          ToJSON(Embedded: true,
+                                                                                                           CustomChargeDetailRecordSerializer))
                                : null
 
                 );
@@ -496,15 +496,19 @@ namespace cloud.charging.open.protocols.WWCP
             if (InternalData.TryAdd(ChargingSession.Id, ChargingSession))
             {
 
-                await LogIt(Command,
-                            ChargingSession.Id,
-                            "chargingSession",
-                            ChargingSession.ToJSON(Embedded:    true,
-                                                   OnlineInfos: false,
-                                                   CustomChargingSessionSerializer,
-                                                   CustomCDRReceivedInfoSerializer,
-                                                   CustomChargeDetailRecordSerializer,
-                                                   CustomSendCDRResultSerializer));
+                await LogIt(
+                          Command,
+                          ChargingSession.Id,
+                          "chargingSession",
+                          ChargingSession.ToJSON(
+                              Embedded:    true,
+                              OnlineInfos: false,
+                              CustomChargingSessionSerializer,
+                              CustomCDRReceivedInfoSerializer,
+                              CustomChargeDetailRecordSerializer,
+                              CustomSendCDRResultSerializer
+                          )
+                      );
 
                 return true;
 
@@ -537,26 +541,34 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             if (updated)
-                await LogIt("update",
-                            ChargingSession.Id,
-                            "chargingSession",
-                            ChargingSession.ToJSON(Embedded:    true,
-                                                   OnlineInfos: false,
-                                                   CustomChargingSessionSerializer,
-                                                   CustomCDRReceivedInfoSerializer,
-                                                   CustomChargeDetailRecordSerializer,
-                                                   CustomSendCDRResultSerializer));
+                await LogIt(
+                          "update",
+                          ChargingSession.Id,
+                          "chargingSession",
+                          ChargingSession.ToJSON(
+                              Embedded:    true,
+                              OnlineInfos: false,
+                              CustomChargingSessionSerializer,
+                              CustomCDRReceivedInfoSerializer,
+                              CustomChargeDetailRecordSerializer,
+                              CustomSendCDRResultSerializer
+                          )
+                      );
 
             else
-                await LogIt("new",
-                            ChargingSession.Id,
-                            "chargingSession",
-                            ChargingSession.ToJSON(Embedded:    true,
-                                                   OnlineInfos: false,
-                                                   CustomChargingSessionSerializer,
-                                                   CustomCDRReceivedInfoSerializer,
-                                                   CustomChargeDetailRecordSerializer,
-                                                   CustomSendCDRResultSerializer));
+                await LogIt(
+                          "new",
+                          ChargingSession.Id,
+                          "chargingSession",
+                          ChargingSession.ToJSON(
+                              Embedded:    true,
+                              OnlineInfos: false,
+                              CustomChargingSessionSerializer,
+                              CustomCDRReceivedInfoSerializer,
+                              CustomChargeDetailRecordSerializer,
+                              CustomSendCDRResultSerializer
+                          )
+                      );
 
         }
 
@@ -564,24 +576,28 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region UpdateSession      (Id, UpdateFunc)
 
-        public async Task UpdateSession(ChargingSession_Id       Id,
-                                        Action<ChargingSession>  UpdateFunc)
+        public async Task UpdateSession(ChargingSession_Id                      Id,
+                                        Func<ChargingSession, ChargingSession>  UpdateFunc)
         {
 
             if (InternalData.TryGetValue(Id, out var chargingSession))
             {
 
-                UpdateFunc(chargingSession);
+                var updatedChargingSession = UpdateFunc(chargingSession);
 
-                await LogIt("update",
-                            Id,
-                            "chargingSession",
-                            chargingSession.ToJSON(Embedded:    true,
-                                                   OnlineInfos: false,
-                                                   CustomChargingSessionSerializer,
-                                                   CustomCDRReceivedInfoSerializer,
-                                                   CustomChargeDetailRecordSerializer,
-                                                   CustomSendCDRResultSerializer));
+                await LogIt(
+                          "update",
+                          Id,
+                          "chargingSession",
+                          updatedChargingSession.ToJSON(
+                              Embedded:     true,
+                              OnlineInfos:  false,
+                              CustomChargingSessionSerializer,
+                              CustomCDRReceivedInfoSerializer,
+                              CustomChargeDetailRecordSerializer,
+                              CustomSendCDRResultSerializer
+                          )
+                      );
 
             }
 
@@ -601,26 +617,31 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region RemoveSession      (Id, Authentication)
+        #region RemoveSession      (Id, Authentication = null)
 
-        public async Task RemoveSession(ChargingSession_Id  Id,
-                                        AAuthentication     Authentication)
+        public async Task RemoveSession(ChargingSession_Id   Id,
+                                        AAuthentication?     Authentication   = null)
         {
 
             if (InternalData.TryRemove(Id, out var chargingSession))
             {
 
-                chargingSession.AuthenticationStop = Authentication;
+                if (Authentication is not null)
+                    chargingSession.AuthenticationStop = Authentication;
 
-                await LogIt("remove",
-                            chargingSession.Id,
-                            "chargingSession",
-                            chargingSession.ToJSON(Embedded:    true,
-                                                   OnlineInfos: false,
-                                                   CustomChargingSessionSerializer,
-                                                   CustomCDRReceivedInfoSerializer,
-                                                   CustomChargeDetailRecordSerializer,
-                                                   CustomSendCDRResultSerializer));
+                await LogIt(
+                          "remove",
+                          chargingSession.Id,
+                          "chargingSession",
+                          chargingSession.ToJSON(
+                              Embedded:    true,
+                              OnlineInfos: false,
+                              CustomChargingSessionSerializer,
+                              CustomCDRReceivedInfoSerializer,
+                              CustomChargeDetailRecordSerializer,
+                              CustomSendCDRResultSerializer
+                          )
+                      );
 
             }
 
@@ -651,7 +672,6 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
-
 
 
         #region RemoteStart  (EventTrackingId, NewChargingSession, Result, UpdateFunc = null)

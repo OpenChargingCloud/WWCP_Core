@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            ? Warnings.Where     (warning => warning is not null).
                                                       SafeSelect(warning => warning.Trim()).
                                                       Where     (warning => warning.IsNotNullOrEmpty())
-                                           : new String[0];
+                                           : [];
 
         }
 
@@ -69,17 +69,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional description of the result code.
         /// </summary>
-        public String               Description     { get; }
+        public String?                            Description     { get; }
 
         /// <summary>
         /// Warnings or additional information.
         /// </summary>
-        public IEnumerable<String>  Warnings        { get; }
+        public IEnumerable<String>                Warnings        { get; }
 
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?            Runtime         { get;  }
+        public TimeSpan?                          Runtime         { get;  }
 
         #endregion
 
@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.WWCP
                                     ? Warnings.Where     (warning => warning is not null).
                                                SafeSelect(warning => warning.Trim()).
                                                Where     (warning => warning.IsNotNullOrEmpty())
-                                    : new String[0];
+                                    : [];
 
             this.Runtime      = Runtime;
 
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.WWCP
                                     ? Warnings.Where     (warning => warning is not null).
                                                SafeSelect(warning => warning.Trim()).
                                                Where     (warning => warning.IsNotNullOrEmpty())
-                                    : new String[0];
+                                    : [];
 
             this.Runtime      = Runtime;
 
@@ -164,10 +164,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushAuthenticationDataResult AdminDown(IId                      SenderId,
                                                              ISendAuthenticationData  ISendAuthenticationData,
-                                                             IEnumerable<EVSE>        RejectedEVSEs  = null,
-                                                             String                   Description    = null,
-                                                             IEnumerable<String>      Warnings       = null,
-                                                             TimeSpan?                Runtime        = null)
+                                                             IEnumerable<EVSE>?       RejectedEVSEs   = null,
+                                                             String?                  Description     = null,
+                                                             IEnumerable<String>?     Warnings        = null,
+                                                             TimeSpan?                Runtime         = null)
 
             => new (SenderId,
                     ISendAuthenticationData,
@@ -180,10 +180,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushAuthenticationDataResult AdminDown(IId                         SenderId,
                                                              IReceiveAuthenticationData  IReceiveAuthenticationData,
-                                                             IEnumerable<EVSE>           RejectedEVSEs  = null,
-                                                             String                      Description    = null,
-                                                             IEnumerable<String>         Warnings       = null,
-                                                             TimeSpan?                   Runtime        = null)
+                                                             IEnumerable<EVSE>?          RejectedEVSEs   = null,
+                                                             String?                     Description     = null,
+                                                             IEnumerable<String>?        Warnings        = null,
+                                                             TimeSpan?                   Runtime         = null)
 
             => new (SenderId,
                     IReceiveAuthenticationData,
@@ -199,14 +199,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushAuthenticationDataResult Success(IId                      SenderId,
                                                            ISendAuthenticationData  ISendAuthenticationData,
-                                                           String                   Description   = null,
-                                                           IEnumerable<String>      Warnings      = null,
+                                                           String?                  Description   = null,
+                                                           IEnumerable<String>?     Warnings      = null,
                                                            TimeSpan?                Runtime       = null)
 
             => new (SenderId,
                     ISendAuthenticationData,
                     PushAuthenticationDataResultTypes.Success,
-                    Array.Empty<EVSE>(),
+                    [],
                     Description,
                     Warnings,
                     Runtime);
@@ -214,14 +214,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushAuthenticationDataResult Success(IId                         SenderId,
                                                            IReceiveAuthenticationData  IReceiveAuthenticationData,
-                                                           String                      Description   = null,
-                                                           IEnumerable<String>         Warnings      = null,
+                                                           String?                     Description   = null,
+                                                           IEnumerable<String>?        Warnings      = null,
                                                            TimeSpan?                   Runtime       = null)
 
             => new (SenderId,
                     IReceiveAuthenticationData,
                     PushAuthenticationDataResultTypes.Success,
-                    Array.Empty<EVSE>(),
+                    [],
                     Description,
                     Warnings,
                     Runtime);
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.WWCP
             => new (SenderId,
                     ISendAuthenticationData,
                     PushAuthenticationDataResultTypes.Enqueued,
-                    Array.Empty<EVSE>(),
+                    [],
                     Description,
                     Warnings,
                     Runtime);
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.WWCP
             => new (SenderId,
                     ISendAuthenticationData,
                     PushAuthenticationDataResultTypes.NoOperation,
-                    Array.Empty<EVSE>(),
+                    [],
                     Description,
                     Warnings,
                     Runtime);
@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.WWCP
             => new (SenderId,
                     IReceiveAuthenticationData,
                     PushAuthenticationDataResultTypes.NoOperation,
-                    Array.Empty<EVSE>(),
+                    [],
                     Description,
                     Warnings,
                     Runtime);
@@ -284,10 +284,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushAuthenticationDataResult Error(IId                      SenderId,
                                                          ISendAuthenticationData  ISendAuthenticationData,
-                                                         IEnumerable<EVSE>        RejectedEVSEs  = null,
-                                                         String                   Description    = null,
-                                                         IEnumerable<String>      Warnings       = null,
-                                                         TimeSpan?                Runtime        = null)
+                                                         IEnumerable<EVSE>?       RejectedEVSEs   = null,
+                                                         String?                  Description     = null,
+                                                         IEnumerable<String>?     Warnings        = null,
+                                                         TimeSpan?                Runtime         = null)
 
             => new (SenderId,
                     ISendAuthenticationData,
@@ -300,10 +300,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushAuthenticationDataResult Error(IId                         SenderId,
                                                          IReceiveAuthenticationData  IReceiveAuthenticationData,
-                                                         IEnumerable<EVSE>           RejectedEVSEs  = null,
-                                                         String                      Description    = null,
-                                                         IEnumerable<String>         Warnings       = null,
-                                                         TimeSpan?                   Runtime        = null)
+                                                         IEnumerable<EVSE>?          RejectedEVSEs   = null,
+                                                         String?                     Description     = null,
+                                                         IEnumerable<String>?        Warnings        = null,
+                                                         TimeSpan?                   Runtime         = null)
 
             => new (SenderId,
                     IReceiveAuthenticationData,

@@ -1277,19 +1277,19 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                            receivedCDRInfos.Count != 0
-                               ? new JProperty("receivedCDRInfos",            new JArray(receivedCDRInfos.  Select(cdrReceivedInfo   => cdrReceivedInfo.ToJSON(Embedded:                             true,
-                                                                                                                                                           CustomCDRReceivedInfoSerializer:      CustomCDRReceivedInfoSerializer,
-                                                                                                                                                           CustomChargeDetailRecordSerializer:   CustomChargeDetailRecordSerializer,
-                                                                                                                                                           CustomSendCDRResultSerializer:        CustomSendCDRResultSerializer,
-                                                                                                                                                           CustomWarningSerializer:              CustomWarningSerializer))))
+                               ? new JProperty("receivedCDRInfos",            new JArray(receivedCDRInfos.Select(cdrReceivedInfo   => cdrReceivedInfo.ToJSON(Embedded:                            true,
+                                                                                                                                                             CustomCDRReceivedInfoSerializer:     CustomCDRReceivedInfoSerializer,
+                                                                                                                                                             CustomChargeDetailRecordSerializer:  CustomChargeDetailRecordSerializer,
+                                                                                                                                                             CustomSendCDRResultSerializer:       CustomSendCDRResultSerializer,
+                                                                                                                                                             CustomWarningSerializer:             CustomWarningSerializer))))
                                : null,
 
 
                            sendCDRResults.Count != 0
-                               ? new JProperty("sendCDRResults",              new JArray(sendCDRResults.Select(CDRResult         => CDRResult.      ToJSON(Embedded:                             true,
-                                                                                                                                                           CustomChargeDetailRecordSerializer:   CustomChargeDetailRecordSerializer,
-                                                                                                                                                           CustomSendCDRResultSerializer:        CustomSendCDRResultSerializer,
-                                                                                                                                                           CustomWarningSerializer:              CustomWarningSerializer))))
+                               ? new JProperty("sendCDRResults",              new JArray(sendCDRResults.  Select(CDRResult         => CDRResult.      ToJSON(Embedded:                            true,
+                                                                                                                                                             CustomChargeDetailRecordSerializer:  CustomChargeDetailRecordSerializer,
+                                                                                                                                                             CustomSendCDRResultSerializer:       CustomSendCDRResultSerializer,
+                                                                                                                                                             CustomWarningSerializer:             CustomWarningSerializer))))
                                : null,
 
 
@@ -1322,8 +1322,8 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("energyMeterValues",           JSONArray.Create(
                                                                                   EnergyMeteringValues.
                                                                                   Select(meterValue => JSONObject.Create(
-                                                                                                           new JProperty("timestamp", meterValue.Timestamp.ToISO8601()),
-                                                                                                           new JProperty("value",     meterValue.WattHours)
+                                                                                                           new JProperty("timestamp",  meterValue.Timestamp.ToISO8601()),
+                                                                                                           new JProperty("value",      meterValue.WattHours)
                                                                                                        ))
                                                                               ))
                                : null

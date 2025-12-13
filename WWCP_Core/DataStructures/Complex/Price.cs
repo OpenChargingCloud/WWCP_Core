@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -145,9 +146,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="Price">The parsed price.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject      JSON,
-                                       out Price    Price,
-                                       out String?  ErrorResponse)
+        public static Boolean TryParse(JObject                           JSON,
+                                       out Price                         Price,
+                                       [NotNullWhen(false)] out String?  ErrorResponse)
 
             => TryParse(JSON,
                         out Price,
@@ -164,7 +165,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CustomPriceParser">An optional delegate to parse custom price JSON objects.</param>
         public static Boolean TryParse(JObject                              JSON,
                                        out Price                            Price,
-                                       out String?                          ErrorResponse,
+                                       [NotNullWhen(false)] out String?     ErrorResponse,
                                        CustomJObjectParserDelegate<Price>?  CustomPriceParser   = null)
         {
 
@@ -219,9 +220,11 @@ namespace cloud.charging.open.protocols.WWCP
                 #endregion
 
 
-                Price = new Price(Base,
-                                  VAT,
-                                  Currency);
+                Price = new Price(
+                            Base,
+                            VAT,
+                            Currency
+                        );
 
 
                 if (CustomPriceParser is not null)

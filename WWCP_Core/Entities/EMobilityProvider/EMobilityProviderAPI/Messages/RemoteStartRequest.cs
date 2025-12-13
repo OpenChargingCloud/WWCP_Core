@@ -233,8 +233,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                              "remote authentication",
                                              WWCP.RemoteAuthentication.TryParse,
                                              out RemoteAuthentication? RemoteAuthentication,
-                                             out ErrorResponse) ||
-                     RemoteAuthentication is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }

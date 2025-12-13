@@ -523,9 +523,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="ResponseMapper">An optional response mapper delegate.</param>
-        public JObject ToJSON(Boolean                                              Embedded                             = false,
-                              CustomJObjectSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null,
-                              Func<JObject, JObject>                               ResponseMapper                       = null)
+        public JObject ToJSON(Boolean                                               Embedded                             = false,
+                              CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   = null,
+                              Func<JObject, JObject>?                               ResponseMapper                       = null)
         {
 
             var json = JSONObject.Create(
