@@ -67,13 +67,15 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             if (!SendCDRResults.Any())
-                return SendCDRsResult.Error(Timestamp.Now,
-                                            AuthorizatorId,
-                                            ISendChargeDetailRecords,
-                                            ChargeDetailRecord:  null,
-                                            Description:         Description,
-                                            Warnings:            Warnings,
-                                            Runtime:             TimeSpan.Zero);
+                return SendCDRsResult.Error(
+                           Timestamp.Now,
+                           AuthorizatorId,
+                           ISendChargeDetailRecords,
+                           ChargeDetailRecord:  null,
+                           Description:         Description,
+                           Warnings:            Warnings,
+                           Runtime:             TimeSpan.Zero
+                       );
 
 
             var analysis  = SendCDRResults.GroupBy(sendCDRResult => sendCDRResult.Result).    ToArray();
@@ -81,23 +83,27 @@ namespace cloud.charging.open.protocols.WWCP
             var newest    = SendCDRResults.MaxBy  (sendCDRResult => sendCDRResult.Timestamp)!.Timestamp;
 
             if (analysis.Length == 1)
-                return new SendCDRsResult(newest,
-                                          AuthorizatorId,
-                                          ISendChargeDetailRecords,
-                                          analysis.First().Key.Convert(),
-                                          SendCDRResults,
-                                          Description ?? SendCDRResults.First().Description,
-                                          Warnings,
-                                          newest - oldest);
+                return new SendCDRsResult(
+                           newest,
+                           AuthorizatorId,
+                           ISendChargeDetailRecords,
+                           analysis.First().Key.Convert(),
+                           SendCDRResults,
+                           Description ?? SendCDRResults.First().Description,
+                           Warnings,
+                           newest - oldest
+                       );
 
-            return new SendCDRsResult(newest,
-                                      AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.Mixed,
-                                      SendCDRResults,
-                                      Description,
-                                      Warnings,
-                                      newest - oldest);
+            return new SendCDRsResult(
+                       newest,
+                       AuthorizatorId,
+                       ISendChargeDetailRecords,
+                       SendCDRsResultTypes.Mixed,
+                       SendCDRResults,
+                       Description,
+                       Warnings,
+                       newest - oldest
+                   );
 
         }
 
@@ -113,13 +119,15 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             if (!SendCDRResults.Any())
-                return SendCDRsResult.Error(Timestamp.Now,
-                                            AuthorizatorId,
-                                            IReceiveChargeDetailRecords,
-                                            ChargeDetailRecord:  null,
-                                            Description:         Description,
-                                            Warnings:            Warnings,
-                                            Runtime:             TimeSpan.Zero);
+                return SendCDRsResult.Error(
+                           Timestamp.Now,
+                           AuthorizatorId,
+                           IReceiveChargeDetailRecords,
+                           ChargeDetailRecord:  null,
+                           Description:         Description,
+                           Warnings:            Warnings,
+                           Runtime:             TimeSpan.Zero
+                       );
 
 
             var analysis  = SendCDRResults.GroupBy(sendCDRResult => sendCDRResult.Result).    ToArray();
@@ -127,23 +135,27 @@ namespace cloud.charging.open.protocols.WWCP
             var newest    = SendCDRResults.MaxBy  (sendCDRResult => sendCDRResult.Timestamp)!.Timestamp;
 
             if (analysis.Length == 1)
-                return new SendCDRsResult(newest,
-                                          AuthorizatorId,
-                                          IReceiveChargeDetailRecords,
-                                          analysis.First().Key.Convert(),
-                                          SendCDRResults,
-                                          Description ?? SendCDRResults.First().Description,
-                                          Warnings,
-                                          newest - oldest);
+                return new SendCDRsResult(
+                           newest,
+                           AuthorizatorId,
+                           IReceiveChargeDetailRecords,
+                           analysis.First().Key.Convert(),
+                           SendCDRResults,
+                           Description ?? SendCDRResults.First().Description,
+                           Warnings,
+                           newest - oldest
+                       );
 
-            return new SendCDRsResult(newest,
-                                      AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.Mixed,
-                                      SendCDRResults,
-                                      Description,
-                                      Warnings,
-                                      newest - oldest);
+            return new SendCDRsResult(
+                       newest,
+                       AuthorizatorId,
+                       IReceiveChargeDetailRecords,
+                       SendCDRsResultTypes.Mixed,
+                       SendCDRResults,
+                       Description,
+                       Warnings,
+                       newest - oldest
+                   );
 
         }
 
@@ -319,7 +331,11 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.NoOperation,
-                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Unspecified(Timestamp, AuthorizatorId, cdr)),
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Unspecified(
+                                                                  Timestamp,
+                                                                  AuthorizatorId,
+                                                                  cdr
+                                                              )),
                         Description,
                         Warnings,
                         Runtime);
@@ -351,7 +367,11 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.NoOperation,
-                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Unspecified(Timestamp, AuthorizatorId, cdr)),
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Unspecified(
+                                                                  Timestamp,
+                                                                  AuthorizatorId,
+                                                                  cdr
+                                                              )),
                         Description,
                         Warnings,
                         Runtime);
@@ -385,7 +405,11 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.NoOperation,
-                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.NoOperation(Timestamp, AuthorizatorId, cdr)),
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.NoOperation(
+                                                                  Timestamp,
+                                                                  AuthorizatorId,
+                                                                  cdr
+                                                              )),
                         Description,
                         Warnings,
                         Runtime);
@@ -417,7 +441,11 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.NoOperation,
-                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.NoOperation(Timestamp, AuthorizatorId, cdr)),
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.NoOperation(
+                                                                  Timestamp,
+                                                                  AuthorizatorId,
+                                                                  cdr
+                                                              )),
                         Description,
                         Warnings,
                         Runtime);
@@ -451,7 +479,11 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.AdminDown,
-                        ResultMap.SafeSelect(cdr => SendCDRResult.AdminDown(Timestamp, AuthorizatorId, cdr)),
+                        ResultMap.SafeSelect(cdr => SendCDRResult.AdminDown(
+                                                        Timestamp,
+                                                        AuthorizatorId,
+                                                        cdr
+                                                    )),
                         Description,
                         Warnings,
                         Runtime);
@@ -481,7 +513,11 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.AdminDown,
-                        ResultMap.Select(cdr => SendCDRResult.AdminDown(Timestamp, AuthorizatorId, cdr)),
+                        ResultMap.Select(cdr => SendCDRResult.AdminDown(
+                                                    Timestamp,
+                                                    AuthorizatorId,
+                                                    cdr
+                                                )),
                         Description,
                         Warnings,
                         Runtime);
@@ -515,7 +551,11 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.OutOfService,
-                        ResultMap.Select(cdr => SendCDRResult.OutOfService(Timestamp, AuthorizatorId, cdr)),
+                        ResultMap.Select(cdr => SendCDRResult.OutOfService(
+                                                    Timestamp,
+                                                    AuthorizatorId,
+                                                    cdr
+                                                )),
                         Description,
                         Warnings,
                         Runtime);
@@ -546,7 +586,11 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.OutOfService,
-                        RejectedChargeDetailRecords.Select(cdr => SendCDRResult.OutOfService(Timestamp, AuthorizatorId, cdr)),
+                        RejectedChargeDetailRecords.Select(cdr => SendCDRResult.OutOfService(
+                                                                      Timestamp,
+                                                                      AuthorizatorId,
+                                                                      cdr
+                                                                  )),
                         Description,
                         Warnings,
                         Runtime);
@@ -576,14 +620,20 @@ namespace cloud.charging.open.protocols.WWCP
                      TimeSpan?                 Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.Enqueued,
-                                      [ SendCDRResult.Enqueued(Timestamp, AuthorizatorId, ChargeDetailRecord) ],
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        ISendChargeDetailRecords,
+                        SendCDRsResultTypes.Enqueued,
+                        [
+                            SendCDRResult.Enqueued(
+                                Timestamp,
+                                AuthorizatorId,
+                                ChargeDetailRecord
+                            )
+                        ],
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
         /// <summary>
@@ -611,7 +661,11 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.Enqueued,
-                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Enqueued(Timestamp, AuthorizatorId, cdr)),
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Enqueued(
+                                                                  Timestamp,
+                                                                  AuthorizatorId,
+                                                                  cdr
+                                                              )),
                         Description,
                         Warnings,
                         Runtime);
@@ -643,7 +697,13 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.Enqueued,
-                        [ SendCDRResult.Enqueued(Timestamp, AuthorizatorId, ChargeDetailRecord) ],
+                        [
+                            SendCDRResult.Enqueued(
+                                Timestamp,
+                                AuthorizatorId,
+                                ChargeDetailRecord
+                            )
+                        ],
                         Description,
                         Warnings,
                         Runtime);
@@ -674,7 +734,11 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.Enqueued,
-                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Enqueued(Timestamp, AuthorizatorId, cdr)),
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Enqueued(
+                                                                  Timestamp,
+                                                                  AuthorizatorId,
+                                                                  cdr
+                                                              )),
                         Description,
                         Warnings,
                         Runtime);
@@ -708,7 +772,11 @@ namespace cloud.charging.open.protocols.WWCP
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.Timeout,
-                        ResultMap.SafeSelect(cdr => SendCDRResult.Timeout(Timestamp, AuthorizatorId, cdr)),
+                        ResultMap.SafeSelect(cdr => SendCDRResult.Timeout(
+                                                        Timestamp,
+                                                        AuthorizatorId,
+                                                        cdr
+                                                    )),
                         Description,
                         Warnings,
                         Runtime);
