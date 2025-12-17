@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <summary>
         /// An event sent whenever a GET locations request was received.
         /// </summary>
-        public HTTPRequestLogEvent OnGetLocationsRequest = new ();
+        public HTTPRequestLogEvent OnGetLocationsRequest = new();
 
         /// <summary>
         /// An event sent whenever a GET locations request was received.
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <summary>
         /// An event sent whenever a GET locations response was sent.
         /// </summary>
-        public HTTPResponseLogEvent OnGetLocationsResponse = new ();
+        public HTTPResponseLogEvent OnGetLocationsResponse = new();
 
         /// <summary>
         /// An event sent whenever a GET locations response was sent.

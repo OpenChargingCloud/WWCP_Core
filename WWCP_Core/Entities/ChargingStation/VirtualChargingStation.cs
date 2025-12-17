@@ -542,7 +542,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         public  static readonly TimeSpan  DefaultSelfCheckTimeSpan  = TimeSpan.FromSeconds(15);
 
-        private        readonly Object    ReservationExpiredLock = new ();
+        private        readonly Object    ReservationExpiredLock = new();
         private        readonly Timer     ReservationExpiredTimer;
 
 

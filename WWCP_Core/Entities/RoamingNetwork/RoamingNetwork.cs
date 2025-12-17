@@ -149,21 +149,21 @@ namespace cloud.charging.open.protocols.WWCP
         protected static readonly  Byte                                               MinChargingStationOperatorNameLength   = 5;
 
 
-        private readonly           PriorityList<ISendRoamingNetworkData>              allSendRoamingNetworkData              = new ();
-        private readonly           PriorityList<ISendChargingStationOperatorData>     allSendChargingStationOperatorData     = new ();
-        private readonly           PriorityList<ISendChargingPoolData>                allSendChargingPoolData                = new ();
-        private readonly           PriorityList<ISendChargingStationData>             allSendChargingStationData             = new ();
-        private readonly           PriorityList<ISendEVSEData>                        allSendEVSEData                        = new ();
+        private readonly           PriorityList<ISendRoamingNetworkData>              allSendRoamingNetworkData              = new();
+        private readonly           PriorityList<ISendChargingStationOperatorData>     allSendChargingStationOperatorData     = new();
+        private readonly           PriorityList<ISendChargingPoolData>                allSendChargingPoolData                = new();
+        private readonly           PriorityList<ISendChargingStationData>             allSendChargingStationData             = new();
+        private readonly           PriorityList<ISendEVSEData>                        allSendEVSEData                        = new();
 
-        private readonly           PriorityList<ISendAdminStatus>                     allSendAdminStatus                     = new ();
-        private readonly           PriorityList<ISendStatus>                          allSendStatus                          = new ();
-        private readonly           PriorityList<ISendEnergyStatus>                    allSendEnergyStatus                    = new ();
+        private readonly           PriorityList<ISendAdminStatus>                     allSendAdminStatus                     = new();
+        private readonly           PriorityList<ISendStatus>                          allSendStatus                          = new();
+        private readonly           PriorityList<ISendEnergyStatus>                    allSendEnergyStatus                    = new();
 
-        private readonly           PriorityList<ISendAuthorizeStartStop>              allSend2RemoteAuthorizeStartStop       = new ();
-        private readonly           PriorityList<ISendChargeDetailRecords>             allRemoteSendChargeDetailRecord        = new ();
+        private readonly           PriorityList<ISendAuthorizeStartStop>              allSend2RemoteAuthorizeStartStop       = new();
+        private readonly           PriorityList<ISendChargeDetailRecords>             allRemoteSendChargeDetailRecord        = new();
 
-        private readonly           ConcurrentDictionary<UInt32, IEMPRoamingProvider>  eMobilityRoamingServices               = new ();
-        private readonly           ConcurrentDictionary<UInt32, ICSORoamingProvider>  csoRoamingServices                     = new ();
+        private readonly           ConcurrentDictionary<UInt32, IEMPRoamingProvider>  eMobilityRoamingServices               = new();
+        private readonly           ConcurrentDictionary<UInt32, ICSORoamingProvider>  csoRoamingServices                     = new();
 
         #endregion
 
@@ -458,7 +458,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EMPRoamingProviders
 
-        private readonly ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider> empRoamingProviders = new ();
+        private readonly ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider> empRoamingProviders = new();
 
         /// <summary>
         /// Return all e-mobility provider roaming providers registered within this roaming network.
@@ -1330,7 +1330,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region CSORoamingProviders
 
-        private readonly ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>  csoRoamingProviders = new ();
+        private readonly ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>  csoRoamingProviders = new();
 
         /// <summary>
         /// Return all charging station operator roaming providers registered within this roaming network.

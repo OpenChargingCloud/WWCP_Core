@@ -1810,7 +1810,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data
 
-        private readonly ConcurrentDictionary<ChargingStation_Id, IChargingStation> chargingStationLookup = new ();
+        private readonly ConcurrentDictionary<ChargingStation_Id, IChargingStation> chargingStationLookup = new();
 
         /// <summary>
         /// Return an enumeration of all charging stations.
@@ -2849,7 +2849,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data
 
-        private readonly ConcurrentDictionary<EVSE_Id, IEVSE> evseLookup = new ();
+        private readonly ConcurrentDictionary<EVSE_Id, IEVSE> evseLookup = new();
 
         /// <summary>
         /// Return an enumeration of all EVSEs.

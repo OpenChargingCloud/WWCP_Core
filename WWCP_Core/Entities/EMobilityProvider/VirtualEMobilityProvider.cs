@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.RoamingNetwork    = RoamingNetwork;
             this.RequestTimeout    = DefaultRequestTimeout;
 
-            this.ChargingSessions  = new ();
+            this.ChargingSessions  = new();
 
         }
 

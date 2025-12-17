@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.WWCP
         protected               UInt64                                                           _CDRRunId                               = 1;
 
         protected readonly      SemaphoreSlim                                                    DataAndStatusLock                       = new (1, 1);
-        protected readonly      Object                                                           DataAndStatusLockOld                    = new ();
+        protected readonly      Object                                                           DataAndStatusLockOld                    = new();
 
         protected readonly      SemaphoreSlim                                                    FlushEVSEDataAndStatusLock              = new (1, 1);
         protected readonly      Timer                                                            FlushEVSEDataAndStatusTimer;

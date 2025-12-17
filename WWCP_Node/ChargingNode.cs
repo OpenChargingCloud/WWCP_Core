@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data
 
-        private readonly WWCPCore roamingNetworks = new ();
+        private readonly WWCPCore roamingNetworks = new();
 
         /// <summary>
         /// An enumeration of all roaming networks.
