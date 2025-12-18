@@ -232,6 +232,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                     String?                                                    LogfileName                  = DefaultLogfileName,
                                     LogfileCreatorDelegate?                                    LogfileCreator               = null,
                                     DNSClient?                                                 DNSClient                    = null,
+                                    String?                                                    Description                  = null,
                                     Boolean                                                    AutoStart                    = false)
 
             : base(HTTPHostname,
@@ -274,6 +275,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                    LogfileName,
                    LogfileCreator,
                    DNSClient,
+                   Description,
                    AutoStart)
 
         {
