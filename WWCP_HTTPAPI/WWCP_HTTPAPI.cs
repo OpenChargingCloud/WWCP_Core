@@ -1206,7 +1206,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Custom JSON serializers
 
-        //public CustomJObjectSerializerDelegate<VersionInformation>?           CustomVersionInformationSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<ReceivedCDRInfo>?     CustomCDRReceivedInfoSerializer       { get; set; }
+        public CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<SendCDRResult>?       CustomSendCDRResultSerializer         { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSession>?     CustomChargingSessionSerializer       { get; set; }
 
         #endregion
 
@@ -2570,6 +2573,184 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
             #endregion
+
+
+
+
+            #region GET         ~/RNs/{RoamingNetworkId}/ChargingSessions/MissingCDRResponses
+
+            // ----------------------------------------------------------------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:3004/RNs/Prod/ChargingSessions/MissingCDRResponses?ExpandCDRs=false
+            // ----------------------------------------------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.GET,
+                URLPathPrefix + "RNs/{RoamingNetworkId}/ChargingSessions/MissingCDRResponses",
+                HTTPContentType.Application.JSON_UTF8,
+                request => {
+
+                    #region Get HTTP user and its organizations
+
+                    // Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    if (!HTTPBaseAPI.TryGetHTTPUser(request,
+                                                    out var httpUser,
+                                                    out var httpOrganizations,
+                                                    out var httpResponseBuilder,
+                                                    Recursive: true))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+                    #region Get roaming network
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out httpResponseBuilder))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+
+                    var skip                 = request.QueryString.GetUInt64("skip");
+                    var take                 = request.QueryString.GetUInt64("take");
+                    var from                 = request.QueryString.ParseFromTimestampFilter();
+                    var to                   = request.QueryString.ParseToTimestampFilter();
+                    var expandCDRs           = request.QueryString.GetBoolean("ExpandCDRs") ?? false;
+
+                    var missingCDRResponses  = roamingNetwork.ChargingSessions.
+                                                   Where  (session => session.ReceivedCDRInfos.Any() &&
+                                                                     !session.SendCDRResults.  Any() &&
+                                                                     (!from.HasValue ||                                                                                   session.SessionTime.StartTime     >= from.Value) &&
+                                                                     (!to.  HasValue || !session.SessionTime.EndTime.HasValue || (session.SessionTime.EndTime.HasValue && session.SessionTime.EndTime.Value <= to.  Value))).
+                                                   ToArray();
+
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(request) {
+                            HTTPStatusCode                = HTTPStatusCode.OK,
+                            Server                        = HTTPServiceName,
+                            Date                          = Timestamp.Now,
+                            AccessControlAllowOrigin      = "*",
+                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
+                            ContentType                   = HTTPContentType.Application.JSON_UTF8,
+                            Content                       = new JArray(
+                                                                expandCDRs
+                                                                    ? missingCDRResponses.
+                                                                          OrderBy(session => session.SessionTime.StartTime).
+                                                                          ToJSON (Embedded:    false,
+                                                                                  OnlineInfos: false,
+                                                                                  CustomChargingSessionSerializer,
+                                                                                  CustomCDRReceivedInfoSerializer,
+                                                                                  CustomChargeDetailRecordSerializer,
+                                                                                  CustomSendCDRResultSerializer,
+                                                                                  skip,
+                                                                                  take)
+                                                                    : missingCDRResponses.
+                                                                          OrderBy       (session => session.SessionTime.StartTime).
+                                                                          SkipTakeFilter(skip, take).
+                                                                          Select        (session => session.Id.ToString())
+                                                            ).ToUTF8Bytes(),
+                            X_ExpectedTotalNumberOfItems  = missingCDRResponses.ULongCount(),
+                            Connection                    = ConnectionType.Close
+                        }.AsImmutable);
+
+                });
+
+            #endregion
+
+            #region GET         ~/RNs/{RoamingNetworkId}/ChargingSessions/FailedCDRResponses
+
+            // ---------------------------------------------------------------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:3004/RNs/Prod/ChargingSessions/FailedCDRResponses?ExpandCDRs=false
+            // ---------------------------------------------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.GET,
+                URLPathPrefix + "RNs/{RoamingNetworkId}/ChargingSessions/FailedCDRResponses",
+                HTTPContentType.Application.JSON_UTF8,
+                request => {
+
+                    #region Get HTTP user and its organizations
+
+                    // Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    if (!HTTPBaseAPI.TryGetHTTPUser(request,
+                                                    out var httpUser,
+                                                    out var httpOrganizations,
+                                                    out var httpResponseBuilder,
+                                                    Recursive: true))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+                    #region Get roaming network
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out httpResponseBuilder))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+
+                    var skip                 = request.QueryString.GetUInt64("skip");
+                    var take                 = request.QueryString.GetUInt64("take");
+                    var from                 = request.QueryString.ParseFromTimestampFilter();
+                    var to                   = request.QueryString.ParseToTimestampFilter();
+                    var expandCDRs           = request.QueryString.GetBoolean("ExpandCDRs") ?? false;
+
+                    var missingCDRResponses  = roamingNetwork.ChargingSessions.
+                                                   Where  (session => session.ReceivedCDRInfos.Any() &&
+                                                                      session.SendCDRResults.  Any() &&
+                                                                      session.SendCDRResults.  All(sendCDRResult => sendCDRResult.Result != SendCDRResultTypes.Success) &&
+                                                                     (!from.HasValue ||                                                                                   session.SessionTime.StartTime     >= from.Value) &&
+                                                                     (!to.  HasValue || !session.SessionTime.EndTime.HasValue || (session.SessionTime.EndTime.HasValue && session.SessionTime.EndTime.Value <= to.  Value))).
+                                                   ToArray();
+
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(request) {
+                            HTTPStatusCode                = HTTPStatusCode.OK,
+                            Server                        = HTTPServiceName,
+                            Date                          = Timestamp.Now,
+                            AccessControlAllowOrigin      = "*",
+                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
+                            ContentType                   = HTTPContentType.Application.JSON_UTF8,
+                            Content                       = new JArray(
+                                                                expandCDRs
+                                                                    ? missingCDRResponses.
+                                                                        OrderBy(session => session.SessionTime.StartTime).
+                                                                        ToJSON (Embedded:    false,
+                                                                                OnlineInfos: false,
+                                                                                CustomChargingSessionSerializer,
+                                                                                CustomCDRReceivedInfoSerializer,
+                                                                                CustomChargeDetailRecordSerializer,
+                                                                                CustomSendCDRResultSerializer,
+                                                                                skip,
+                                                                                take)
+                                                                    : missingCDRResponses.
+                                                                          OrderBy       (session => session.SessionTime.StartTime).
+                                                                          SkipTakeFilter(skip, take).
+                                                                          Select        (session => session.Id.ToString())
+                                                            ).ToUTF8Bytes(),
+                            X_ExpectedTotalNumberOfItems  = missingCDRResponses.ULongCount(),
+                            Connection                    = ConnectionType.Close
+                        }.AsImmutable);
+
+                });
+
+            #endregion
+
+
 
 
             #region GET      ~/support
