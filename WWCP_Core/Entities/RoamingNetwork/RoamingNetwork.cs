@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2025 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -5223,6 +5223,24 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                     )
                                                                                                 ],
                                                                                                 EventTrackingId: EventTrackingId));
+
+
+                foreach (var xxx in allSendStatus)
+                {
+
+                    await xxx.UpdateEVSEStatus(
+                              [
+                                  new EVSEStatusUpdate(
+                                      EVSE.Id,
+                                      NewStatus,
+                                      OldStatus,
+                                      DataSource
+                                  )
+                              ],
+                              EventTrackingId: EventTrackingId
+                          );
+
+                }
 
 
                 var onEVSEStatusChanged = OnEVSEStatusChanged;
