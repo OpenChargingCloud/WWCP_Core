@@ -4995,15 +4995,35 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateEVSEAdminStatus([
-                                                                                                                        new EVSEAdminStatusUpdate(
-                                                                                                                            EVSE.Id,
-                                                                                                                            NewAdminStatus,
-                                                                                                                            OldAdminStatus,
-                                                                                                                            DataSource
-                                                                                                                        )
-                                                                                                                    ],
-                                                                                                                    EventTrackingId: EventTrackingId));
+                var evseAdminStatusUpdate     = new EVSEAdminStatusUpdate[] {
+                                                    new (
+                                                        EVSE.Id,
+                                                        NewAdminStatus,
+                                                        OldAdminStatus,
+                                                        DataSource
+                                                    )
+                                                };
+
+                var pushEVSEAdminStatusTasks  = allSendAdminStatus.Select(async sendAdminStatus => {
+                                                    try
+                                                    {
+
+                                                        await sendAdminStatus.
+                                                                  UpdateEVSEAdminStatus(
+                                                                      evseAdminStatusUpdate,
+                                                                      EventTrackingId: EventTrackingId
+                                                                  ).
+                                                                  ConfigureAwait(false);
+
+                                                    }
+                                                    catch (Exception e)
+                                                    {
+                                                        DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus sender '{sendAdminStatus}' EVSE '{EVSE.Id}' from '{OldAdminStatus}' to '{NewAdminStatus}'!");
+                                                    }
+                                                });
+
+                await Task.WhenAll(pushEVSEAdminStatusTasks).
+                           ConfigureAwait(false);
 
 
                 var onEVSEAdminStatusChanged = OnEVSEAdminStatusChanged;
@@ -5214,33 +5234,53 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendStatus.WhenAll(iSendStatus => iSendStatus.UpdateEVSEStatus([
-                                                                                                    new EVSEStatusUpdate(
-                                                                                                        EVSE.Id,
-                                                                                                        NewStatus,
-                                                                                                        OldStatus,
-                                                                                                        DataSource
-                                                                                                    )
-                                                                                                ],
-                                                                                                EventTrackingId: EventTrackingId));
+                var evseStatusUpdate     = new EVSEStatusUpdate[] {
+                                               new (
+                                                   EVSE.Id,
+                                                   NewStatus,
+                                                   OldStatus,
+                                                   DataSource
+                                               )
+                                           };
+
+                var pushEVSEStatusTasks  = allSendStatus.Select(async sendStatus => {
+                                               try
+                                               {
+
+                                                   await sendStatus.
+                                                             UpdateEVSEStatus(
+                                                                 evseStatusUpdate,
+                                                                 EventTrackingId: EventTrackingId
+                                                             ).
+                                                             ConfigureAwait(false);
+
+                                               }
+                                               catch (Exception e)
+                                               {
+                                                   DebugX.LogException(e, $"RoamingNetwork '{Id}'.UpdateEVSEStatus sender '{sendStatus}' EVSE '{EVSE.Id}' from '{OldStatus}' to '{NewStatus}'!");
+                                               }
+                                           });
+
+                await Task.WhenAll(pushEVSEStatusTasks).
+                           ConfigureAwait(false);
 
 
-                foreach (var xxx in allSendStatus)
-                {
+                //foreach (var xxx in allSendStatus)
+                //{
 
-                    await xxx.UpdateEVSEStatus(
-                              [
-                                  new EVSEStatusUpdate(
-                                      EVSE.Id,
-                                      NewStatus,
-                                      OldStatus,
-                                      DataSource
-                                  )
-                              ],
-                              EventTrackingId: EventTrackingId
-                          );
+                //    await xxx.UpdateEVSEStatus(
+                //              [
+                //                  new EVSEStatusUpdate(
+                //                      EVSE.Id,
+                //                      NewStatus,
+                //                      OldStatus,
+                //                      DataSource
+                //                  )
+                //              ],
+                //              EventTrackingId: EventTrackingId
+                //          );
 
-                }
+                //}
 
 
                 var onEVSEStatusChanged = OnEVSEStatusChanged;
