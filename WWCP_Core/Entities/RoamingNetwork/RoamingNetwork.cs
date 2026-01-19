@@ -7576,34 +7576,36 @@ namespace cloud.charging.open.protocols.WWCP
                 #region Send the request to all authorization services
 
                 result  ??= await allSend2RemoteAuthorizeStartStop.WhenFirst(
-                                      Work:           sendAuthorizeStartStop => sendAuthorizeStartStop.AuthorizeStart(
-                                                                                    LocalAuthentication,
-                                                                                    ChargingLocation,
-                                                                                    ChargingProduct,
-                                                                                    SessionId,
-                                                                                    CPOPartnerSessionId,
-                                                                                    OperatorId,
 
-                                                                                    RequestTimestamp,
-                                                                                    EventTrackingId,
-                                                                                    RequestTimeout,
-                                                                                    CancellationToken
-                                                                                ),
+                                      Work:                   (sendAuthorizeStartStop, ct) => sendAuthorizeStartStop.AuthorizeStart(
+                                                                                                  LocalAuthentication,
+                                                                                                  ChargingLocation,
+                                                                                                  ChargingProduct,
+                                                                                                  SessionId,
+                                                                                                  CPOPartnerSessionId,
+                                                                                                  OperatorId,
 
-                                      VerifyResult:   result2  => result2.Result == AuthStartResultTypes.Authorized ||
-                                                                  result2.Result == AuthStartResultTypes.Blocked,
+                                                                                                  RequestTimestamp,
+                                                                                                  EventTrackingId,
+                                                                                                  RequestTimeout,
+                                                                                                  ct
+                                                                                              ),
 
-                                      Timeout:        RequestTimeout.Value,
+                                      VerifyResult:           result2  => result2.Result == AuthStartResultTypes.Authorized ||
+                                                                          result2.Result == AuthStartResultTypes.Blocked,
 
-                                      OnException:    null,
+                                      Timeout:                RequestTimeout.Value,
+                                      ExceptionHandler:            null,
 
-                                      DefaultResult:  runtime  => AuthStartResult.NotAuthorized(
-                                                                      Id,
-                                                                      this,
-                                                                      SessionId:    SessionId,
-                                                                      Description:  I18NString.Create("No authorization service returned a positiv result!"),
-                                                                      Runtime:      runtime
-                                                                  )
+                                      DefaultResult:          runtime  => AuthStartResult.NotAuthorized(
+                                                                              Id,
+                                                                              this,
+                                                                              SessionId:    SessionId,
+                                                                              Description:  I18NString.Create("No authorization service returned a positiv result!"),
+                                                                              Runtime:      runtime
+                                                                          ),
+
+                                      ExternalCancellation:   CancellationToken
 
                                   ).
                                   ConfigureAwait(false);
@@ -7998,35 +8000,36 @@ namespace cloud.charging.open.protocols.WWCP
                 #region Send the request to all authorization services
 
                 result ??= await allSend2RemoteAuthorizeStartStop.WhenFirst(
-                                     Work:           sendAuthorizeStartStop => sendAuthorizeStartStop.AuthorizeStop(
-                                                                                   SessionId,
-                                                                                   LocalAuthentication,
-                                                                                   ChargingLocation,
-                                                                                   CPOPartnerSessionId,
-                                                                                   OperatorId,
 
-                                                                                   RequestTimestamp,
-                                                                                   EventTrackingId,
-                                                                                   RequestTimeout,
-                                                                                   CancellationToken
-                                                                               ),
+                                     Work:                   (sendAuthorizeStartStop, ct) => sendAuthorizeStartStop.AuthorizeStop(
+                                                                                                 SessionId,
+                                                                                                 LocalAuthentication,
+                                                                                                 ChargingLocation,
+                                                                                                 CPOPartnerSessionId,
+                                                                                                 OperatorId,
 
-                                     VerifyResult:   result2 => result2.Result == AuthStopResultTypes.Authorized ||
-                                                                result2.Result == AuthStopResultTypes.Blocked,
+                                                                                                 RequestTimestamp,
+                                                                                                 EventTrackingId,
+                                                                                                 RequestTimeout,
+                                                                                                 ct
+                                                                                             ),
 
-                                     Timeout:        RequestTimeout.Value,
+                                     VerifyResult:           result2 => result2.Result == AuthStopResultTypes.Authorized ||
+                                                                        result2.Result == AuthStopResultTypes.Blocked,
 
-                                     OnException:    null,
+                                     Timeout:                RequestTimeout.Value,
+                                     ExceptionHandler:            null,
 
-                                     DefaultResult:  runtime => AuthStopResult.NotAuthorized(
-                                                                    Id,
-                                                                    this,
-                                                                    SessionId:    SessionId,
-                                                                    Description:  I18NString.Create("No authorization service returned a positiv result!"),
-                                                                    Runtime:      runtime
-                                                                )
+                                     DefaultResult:          runtime => AuthStopResult.NotAuthorized(
+                                                                            Id,
+                                                                            this,
+                                                                            SessionId:    SessionId,
+                                                                            Description:  I18NString.Create("No authorization service returned a positiv result!"),
+                                                                            Runtime:      runtime
+                                                                        ),
 
-                                 ).
+                                     ExternalCancellation:   CancellationToken).
+
                                  ConfigureAwait(false);
 
                 #endregion
