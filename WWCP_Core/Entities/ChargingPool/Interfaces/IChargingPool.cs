@@ -817,7 +817,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Charging facilities of the charging pool, e.g. a supermarket.
         /// </summary>
         [Optional]
-        ReactiveSet<Facilities>                 Facilities                  { get; }
+        ReactiveSet<Facility>                   Facilities                  { get; }
 
         /// <summary>
         /// URIs of photos of this charging pool.

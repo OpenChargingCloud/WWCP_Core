@@ -595,7 +595,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Charging facilities of the charging pool, e.g. a supermarket.
         /// </summary>
         [Optional]
-        public ReactiveSet<Facilities>                  Facilities              { get; }
+        public ReactiveSet<Facility>                 Facilities             { get; }
 
         #endregion
 
@@ -1083,6 +1083,7 @@ namespace cloud.charging.open.protocols.WWCP
                             IEnumerable<Languages>?                    LocationLanguages                = null,
                             PhoneNumber?                               HotlinePhoneNumber               = null,
 
+                            IEnumerable<Facility>?                     Facilities                       = null,
                             IEnumerable<LocationService>?              Services                         = null,
                             IEnumerable<AdditionalGeoLocation>?        RelatedLocations                 = null,
 
@@ -1198,7 +1199,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.Facilities                         = new ReactiveSet<Facilities>();
+            this.Facilities                         = new ReactiveSet<Facility>();
             this.Facilities.OnSetChanged           += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -4526,6 +4527,7 @@ namespace cloud.charging.open.protocols.WWCP
                             LocationLanguages,
                             HotlinePhoneNumber?.Clone(),
 
+                            [.. Facilities],
                             Services.           Select(service          => service.         Clone()),
                             RelatedLocations.   Select(relatedLocation  => relatedLocation. Clone()),
 

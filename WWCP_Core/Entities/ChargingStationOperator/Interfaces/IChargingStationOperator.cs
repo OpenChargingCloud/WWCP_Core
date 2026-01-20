@@ -129,6 +129,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   IEnumerable<Languages>?                                             LocationLanguages              = null,
                                                                   PhoneNumber?                                                        HotlinePhoneNumber             = null,
 
+                                                                  IEnumerable<Facility>?                                              Facilities                     = null,
                                                                   IEnumerable<LocationService>?                                       Services                       = null,
                                                                   IEnumerable<AdditionalGeoLocation>?                                 RelatedLocations               = null,
 
@@ -182,6 +183,7 @@ namespace cloud.charging.open.protocols.WWCP
                        LocationLanguages,
                        HotlinePhoneNumber,
 
+                       Facilities,
                        Services,
                        RelatedLocations,
 
@@ -250,6 +252,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                              IEnumerable<Languages>?                                      LocationLanguages              = null,
                                                                              PhoneNumber?                                                 HotlinePhoneNumber             = null,
 
+                                                                             IEnumerable<Facility>?                                       Facilities                     = null,
                                                                              IEnumerable<LocationService>?                                Services                       = null,
                                                                              IEnumerable<AdditionalGeoLocation>?                          RelatedLocations               = null,
 
@@ -260,8 +263,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                              IEnumerable<IChargingStation>?                               ChargingStations               = null,
                                                                              IEnumerable<IEnergyMeter>?                                   EnergyMeters                   = null,
 
-                                                                             Timestamped<ChargingPoolAdminStatusType>?                   InitialAdminStatus             = null,
-                                                                             Timestamped<ChargingPoolStatusType>?                        InitialStatus                  = null,
+                                                                             Timestamped<ChargingPoolAdminStatusType>?                    InitialAdminStatus             = null,
+                                                                             Timestamped<ChargingPoolStatusType>?                         InitialStatus                  = null,
                                                                              UInt16?                                                      MaxAdminStatusScheduleSize     = null,
                                                                              UInt16?                                                      MaxStatusScheduleSize          = null,
 
@@ -302,6 +305,7 @@ namespace cloud.charging.open.protocols.WWCP
                        LocationLanguages,
                        HotlinePhoneNumber,
 
+                       Facilities,
                        Services,
                        RelatedLocations,
 
@@ -371,6 +375,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                   IEnumerable<Languages>?                                             LocationLanguages                      = null,
                                                                                   PhoneNumber?                                                        HotlinePhoneNumber                     = null,
 
+                                                                                  IEnumerable<Facility>?                                              Facilities                             = null,
                                                                                   IEnumerable<LocationService>?                                       Services                               = null,
                                                                                   IEnumerable<AdditionalGeoLocation>?                                 RelatedLocations                       = null,
 
@@ -381,8 +386,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                   IEnumerable<IChargingStation>?                                      ChargingStations                       = null,
                                                                                   IEnumerable<IEnergyMeter>?                                          EnergyMeters                           = null,
 
-                                                                                  Timestamped<ChargingPoolAdminStatusType>?                          InitialAdminStatus                     = null,
-                                                                                  Timestamped<ChargingPoolStatusType>?                               InitialStatus                          = null,
+                                                                                  Timestamped<ChargingPoolAdminStatusType>?                           InitialAdminStatus                     = null,
+                                                                                  Timestamped<ChargingPoolStatusType>?                                InitialStatus                          = null,
                                                                                   UInt16?                                                             MaxAdminStatusScheduleSize             = null,
                                                                                   UInt16?                                                             MaxStatusScheduleSize                  = null,
 
@@ -425,6 +430,7 @@ namespace cloud.charging.open.protocols.WWCP
                        LocationLanguages,
                        HotlinePhoneNumber,
 
+                       Facilities,
                        Services,
                        RelatedLocations,
 
@@ -495,6 +501,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         IEnumerable<Languages>?                                             LocationLanguages              = null,
                                                                         PhoneNumber?                                                        HotlinePhoneNumber             = null,
 
+                                                                        IEnumerable<Facility>?                                              Facilities                     = null,
                                                                         IEnumerable<LocationService>?                                       Services                       = null,
                                                                         IEnumerable<AdditionalGeoLocation>?                                 RelatedLocations               = null,
 
@@ -505,8 +512,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         IEnumerable<IChargingStation>?                                      ChargingStations               = null,
                                                                         IEnumerable<IEnergyMeter>?                                          EnergyMeters                   = null,
 
-                                                                        Timestamped<ChargingPoolAdminStatusType>?                          InitialAdminStatus             = null,
-                                                                        Timestamped<ChargingPoolStatusType>?                               InitialStatus                  = null,
+                                                                        Timestamped<ChargingPoolAdminStatusType>?                           InitialAdminStatus             = null,
+                                                                        Timestamped<ChargingPoolStatusType>?                                InitialStatus                  = null,
                                                                         UInt16?                                                             MaxAdminStatusScheduleSize     = null,
                                                                         UInt16?                                                             MaxStatusScheduleSize          = null,
 
@@ -548,6 +555,7 @@ namespace cloud.charging.open.protocols.WWCP
                        LocationLanguages,
                        HotlinePhoneNumber,
 
+                       Facilities,
                        Services,
                        RelatedLocations,
 

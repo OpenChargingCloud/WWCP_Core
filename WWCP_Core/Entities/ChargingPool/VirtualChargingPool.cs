@@ -68,6 +68,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          IEnumerable<Languages>?                                             LocationLanguages                 = null,
                                                                          PhoneNumber?                                                        HotlinePhoneNumber                = null,
 
+                                                                         IEnumerable<Facility>?                                              Facilities                        = null,
                                                                          IEnumerable<LocationService>?                                       Services                          = null,
                                                                          IEnumerable<AdditionalGeoLocation>?                                 RelatedLocations                  = null,
 
@@ -78,8 +79,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          IEnumerable<IChargingStation>?                                      ChargingStations                  = null,
                                                                          IEnumerable<IEnergyMeter>?                                          EnergyMeters                      = null,
 
-                                                                         Timestamped<ChargingPoolAdminStatusType>?                          InitialAdminStatus                = null,
-                                                                         Timestamped<ChargingPoolStatusType>?                               InitialStatus                     = null,
+                                                                         Timestamped<ChargingPoolAdminStatusType>?                           InitialAdminStatus                = null,
+                                                                         Timestamped<ChargingPoolStatusType>?                                InitialStatus                     = null,
                                                                          String                                                              EllipticCurve                     = "P-256",
                                                                          ECPrivateKeyParameters?                                             PrivateKey                        = null,
                                                                          PublicKeyCertificates?                                              PublicKeyCertificates             = null,
@@ -121,6 +122,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    LocationLanguages,
                    HotlinePhoneNumber,
 
+                   Facilities,
                    Services,
                    RelatedLocations,
 
@@ -633,7 +635,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// Charging facilities of the charging pool, e.g. a supermarket.
         /// </summary>
         [Optional]
-        public ReactiveSet<Facilities>                  Facilities              { get; }
+        public ReactiveSet<Facility>                  Facilities              { get; }
 
         #endregion
 
