@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.WWCP
             //                                                     EnableLogging:            true,
             //                                                     LogfilePrefix:            LogfilePrefix);
 
-            RegisterURITemplates();
+            RegisterURLTemplates();
 
             //this.RequestTimeout        = RequestTimeout;
 
@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The following will register HTTP overlays for text/html
         /// showing a html representation of the WWCP WebAPI!
         /// </summary>
-        private void RegisterURITemplates()
+        private void RegisterURLTemplates()
         {
 
      

@@ -113,15 +113,15 @@ namespace cloud.charging.open.protocols.WWCP.Networking
             this.URLPrefix    = URLPrefix   ?? DefaultURLPrefix;
             this.DNSClient    = DNSClient   ?? new DNSClient();
 
-            RegisterURITemplates();
+            RegisterURLTemplates();
 
         }
 
         #endregion
 
-        #region (private) RegisterURITemplates()
+        #region (private) RegisterURLTemplates()
 
-        private void RegisterURITemplates()
+        private void RegisterURLTemplates()
         {
 
             #region GET  /
