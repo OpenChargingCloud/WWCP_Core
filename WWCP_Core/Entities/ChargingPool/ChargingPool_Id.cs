@@ -322,8 +322,10 @@ namespace cloud.charging.open.protocols.WWCP
                 if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out var chargingStationOperatorId))
                 {
 
-                    ChargingPoolId = new ChargingPool_Id(chargingStationOperatorId,
-                                                         matchCollection[0].Groups[2].Value);
+                    ChargingPoolId = new ChargingPool_Id(
+                                         chargingStationOperatorId,
+                                         matchCollection[0].Groups[2].Value
+                                     );
 
                     return true;
 

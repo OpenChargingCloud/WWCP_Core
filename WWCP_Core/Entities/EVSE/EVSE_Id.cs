@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return evseId;
             }
 
-            throw new ArgumentException("Illegal EVSE identification '" + Text + "'!",
+            throw new ArgumentException($"Illegal EVSE identification '{Text}'!",
                                         nameof(Text));
 
         }
