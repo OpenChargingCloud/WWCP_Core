@@ -121,11 +121,11 @@ namespace cloud.charging.open.protocols.WWCP
         public CertificateChain?                        PublicKeyCertificateChain    { get; }
 
         /// <summary>
-        /// The enumeration of transparency softwares and their legal status,
+        /// The enumeration of transparency software and their legal status,
         /// which can be used to validate the charging session data.
         /// </summary>
         [Optional]
-        public IEnumerable<TransparencySoftwareStatus>  TransparencySoftwares        { get; }
+        public IEnumerable<TransparencySoftwareStatus>  TransparencySoftware         { get; }
 
         ///// <summary>
         ///// The timestamp when this energy meter was last updated (or created).
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="FirmwareVersion">An optional firmware version of the energy meter.</param>
         /// <param name="PublicKeys">The optional public key of the energy meter used for signing the energy meter values.</param>
         /// <param name="PublicKeyCertificateChain">One or multiple optional certificates for the public key of the energy meter.</param>
-        /// <param name="TransparencySoftwares">An enumeration of transparency softwares and their legal status, which can be used to validate the charging session data.</param>
+        /// <param name="TransparencySoftware">An enumeration of transparency software and their legal status, which can be used to validate the charging session data.</param>
         /// 
         /// <param name="LastChange">The timestamp when this energy meter was last updated (or created).</param>
         public EnergyMeter(EnergyMeter_Id                             Id,
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.WWCP
                            String?                                    FirmwareVersion              = null,
                            IEnumerable<PublicKey>?                    PublicKeys                   = null,
                            CertificateChain?                          PublicKeyCertificateChain    = null,
-                           IEnumerable<TransparencySoftwareStatus>?   TransparencySoftwares        = null,
+                           IEnumerable<TransparencySoftwareStatus>?   TransparencySoftware         = null,
 
                            Timestamped<EnergyMeterAdminStatusTypes>?  InitialAdminStatus           = null,
                            Timestamped<EnergyMeterStatusTypes>?       InitialStatus                = null,
@@ -214,9 +214,9 @@ namespace cloud.charging.open.protocols.WWCP
             this.SerialNumber               = SerialNumber;
             this.HardwareVersion            = HardwareVersion;
             this.FirmwareVersion            = FirmwareVersion;
-            this.PublicKeys                 = PublicKeys?.Distinct()            ?? [];
+            this.PublicKeys                 = PublicKeys?.          Distinct() ?? [];
             this.PublicKeyCertificateChain  = PublicKeyCertificateChain;
-            this.TransparencySoftwares      = TransparencySoftwares?.Distinct() ?? [];
+            this.TransparencySoftware       = TransparencySoftware?.Distinct() ?? [];
 
             Configurator?.Invoke(this);
 
@@ -425,12 +425,12 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Parse TransparencySoftwareStatus    [optional]
+                #region Parse TransparencySoftware          [optional]
 
-                if (JSON.ParseOptionalHashSet("transparencySoftwares",
-                                              "transparency softwares",
+                if (JSON.ParseOptionalHashSet("transparencySoftware",
+                                              "transparency software",
                                               TransparencySoftwareStatus.TryParse,
-                                              out HashSet<TransparencySoftwareStatus> TransparencySoftwares,
+                                              out HashSet<TransparencySoftwareStatus> transparencySoftware,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   FirmwareVersion,
                                   PublicKeys,
                                   PublicKeyCertificateChain,
-                                  TransparencySoftwares,
+                                  transparencySoftware,
 
                                   null, // InitialAdminStatus
                                   null, // InitialStatus
@@ -570,8 +570,8 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("publicKeyCertificateChain",   PublicKeyCertificateChain.Value.ToString())
                                : null,
 
-                           TransparencySoftwares.Any()
-                               ? new JProperty("transparencySoftwares",       new JArray(TransparencySoftwares.Select(transparencySoftwareStatus => transparencySoftwareStatus.ToJSON(CustomTransparencySoftwareStatusSerializer,
+                           TransparencySoftware.Any()
+                               ? new JProperty("transparencySoftware",        new JArray(TransparencySoftware.Select(transparencySoftwareStatus => transparencySoftwareStatus.ToJSON(CustomTransparencySoftwareStatusSerializer,
                                                                                                                                                                                       CustomTransparencySoftwareSerializer))))
                                : null,
 
@@ -612,7 +612,7 @@ namespace cloud.charging.open.protocols.WWCP
                    FirmwareVersion is not null ? new String(FirmwareVersion.ToCharArray()) : null,
                    PublicKeys.Select(publicKey => publicKey.Clone()).ToArray(),
                    PublicKeyCertificateChain?.Clone(),
-                   TransparencySoftwares.Select(transparencySoftwareStatus => transparencySoftwareStatus.Clone()).ToArray(),
+                   TransparencySoftware.Select(transparencySoftwareStatus => transparencySoftwareStatus.Clone()).ToArray(),
 
                    AdminStatus,
                    Status,
@@ -839,7 +839,7 @@ namespace cloud.charging.open.protocols.WWCP
                         ? PublicKeyCertificateChain.Value.CompareTo(EnergyMeter.PublicKeyCertificateChain.Value)
                         : 0;
 
-            // TransparencySoftwares
+            // TransparencySoftware
             // Description
 
             return c;
@@ -914,8 +914,8 @@ namespace cloud.charging.open.protocols.WWCP
                PublicKeys.Count().Equals(EnergyMeter.PublicKeys.Count()) &&
                PublicKeys.All(publicKey => EnergyMeter.PublicKeys.Contains(publicKey)) &&
 
-               TransparencySoftwares.Count().Equals(EnergyMeter.TransparencySoftwares.Count()) &&
-               TransparencySoftwares.All(transparencySoftwareStatus => EnergyMeter.TransparencySoftwares.Contains(transparencySoftwareStatus));
+               TransparencySoftware.Count().Equals(EnergyMeter.TransparencySoftware.Count()) &&
+               TransparencySoftware.All(transparencySoftwareStatus => EnergyMeter.TransparencySoftware.Contains(transparencySoftwareStatus));
 
         #endregion
 
@@ -940,7 +940,7 @@ namespace cloud.charging.open.protocols.WWCP
                       (ManufacturerURL?.          GetHashCode()  ?? 0) * 13 ^
                       (PublicKeys?.               CalcHashCode() ?? 0) * 11 ^
                       (PublicKeyCertificateChain?.GetHashCode()  ?? 0) * 7 ^
-                      (TransparencySoftwares?.    CalcHashCode() ?? 0) * 5 ^
+                      (TransparencySoftware?.    CalcHashCode() ?? 0) * 5 ^
                       (Description?.              GetHashCode()  ?? 0) * 3 ^
                        LastChangeDate.            GetHashCode();
 
@@ -992,8 +992,8 @@ namespace cloud.charging.open.protocols.WWCP
                        ? $"public key certificate chain: {PublicKeyCertificateChain.Value.ToString().SubstringMax(20)}"
                        : String.Empty,
 
-                   TransparencySoftwares.Any()
-                       ? $"{TransparencySoftwares.Count()} transparency software(s)"
+                   TransparencySoftware.Any()
+                       ? $"{TransparencySoftware.Count()} transparency software(s)"
                        : String.Empty,
 
                    Description is not null && Description.IsNotNullOrEmpty()

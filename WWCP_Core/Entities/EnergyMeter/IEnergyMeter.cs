@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.WWCP
         String?                                  HardwareVersion              { get; }
         IEnumerable<PublicKey>                   PublicKeys                   { get; }
         CertificateChain?                        PublicKeyCertificateChain    { get; }
-        IEnumerable<TransparencySoftwareStatus>  TransparencySoftwares        { get; }
+        IEnumerable<TransparencySoftwareStatus>  TransparencySoftware        { get; }
 
         #endregion
 
