@@ -450,7 +450,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 }
 
-                if (publicKey is null)
+                if (publicKey is null || publicKey.Length == 0)
                 {
                     ErrorResponse = $"The given encoded public key '{PublicKey}' could not be parsed!";
                     return false;

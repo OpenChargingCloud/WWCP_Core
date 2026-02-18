@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.WWCP
         public  static readonly Regex  ChargingStationId_RegEx  = new (@"^([a-zA-Z]{2}\*?[a-zA-Z0-9]{3})\*?S([a-zA-Z0-9][a-zA-Z0-9\*]{0,50})$",
                                                                        RegexOptions.IgnorePatternWhitespace);
 
-        private static readonly Char[] StarSplitter             = new Char[] { '*' };
+        private static readonly Char[] StarSplitter             = [ '*' ];
 
         #endregion
 
@@ -99,30 +99,30 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The charging station operator identification.
         /// </summary>
-        public ChargingStationOperator_Id  OperatorId   { get; }
+        public ChargingStationOperator_Id  OperatorId    { get; }
 
         /// <summary>
         /// The suffix of the identification.
         /// </summary>
-        public String                      Suffix       { get; }
+        public String                      Suffix        { get; }
 
 
         /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
-        public Boolean IsNullOrEmpty
+        public Boolean  IsNullOrEmpty
             => Suffix.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
-        public Boolean IsNotNullOrEmpty
+        public Boolean  IsNotNullOrEmpty
             => !Suffix.IsNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.
         /// </summary>
-        public UInt64 Length
+        public UInt64   Length
 
             => OperatorId.Format switch {
                    OperatorIdFormats.DIN       => OperatorId.Length + 1 + (UInt64) Suffix.Length,
@@ -493,7 +493,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (RemoveLastStar)
             {
 
-                var starPosition = EVSEId.Suffix.LastIndexOf("*");
+                var starPosition = EVSEId.Suffix.LastIndexOf('*');
 
                 if (starPosition > 0)
                     suffix = suffix[..starPosition];
@@ -611,8 +611,10 @@ namespace cloud.charging.open.protocols.WWCP
                 if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out var chargingStationOperatorId))
                 {
 
-                    ChargingStationId = new ChargingStation_Id(chargingStationOperatorId,
-                                                               matchCollection[0].Groups[2].Value);
+                    ChargingStationId = new ChargingStation_Id(
+                                            chargingStationOperatorId,
+                                            matchCollection[0].Groups[2].Value
+                                        );
 
                     return true;
 
@@ -683,16 +685,18 @@ namespace cloud.charging.open.protocols.WWCP
             if (RemoveLastStar)
             {
 
-                var starPosition = EVSEId.Suffix.LastIndexOf("*");
+                var starPosition = EVSEId.Suffix.LastIndexOf('*');
 
                 if (starPosition > 0)
                     suffix = suffix[..starPosition];
 
             }
 
-            return TryParse(EVSEId.OperatorId,
-                            suffix.ToUpper(),
-                            out ChargingStationId);
+            return TryParse(
+                       EVSEId.OperatorId,
+                       suffix.ToUpper(),
+                       out ChargingStationId
+                   );
 
         }
 
@@ -917,7 +921,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Format">The format of the identification.</param>
         public String ToString(OperatorIdFormats Format)
 
-            => OperatorId.Format switch {
+            => Format switch {
                    OperatorIdFormats.ISO       => String.Concat(OperatorId,  "S", Suffix),
                    OperatorIdFormats.ISO_STAR  => String.Concat(OperatorId, "*S", Suffix),
                    _                           => String.Concat(OperatorId, "*S", Suffix)

@@ -407,7 +407,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="RemoteRoamingNetworkInfo">An object to compare with.</param>
-        public Int32 CompareTo(RoamingNetworkInfo RemoteRoamingNetworkInfo)
+        public Int32 CompareTo(RoamingNetworkInfo? RemoteRoamingNetworkInfo)
         {
 
             if ((Object) RemoteRoamingNetworkInfo is null)
@@ -435,7 +435,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -459,7 +459,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="RemoteRoamingNetworkInfo">A RemoteRoamingNetworkInfo to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RoamingNetworkInfo RemoteRoamingNetworkInfo)
+        public Boolean Equals(RoamingNetworkInfo? RemoteRoamingNetworkInfo)
         {
 
             if ((Object) RemoteRoamingNetworkInfo is null)

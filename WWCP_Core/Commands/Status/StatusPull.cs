@@ -17,14 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
@@ -37,14 +30,14 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<T>        Status      { get; }
         public IEnumerable<Warning>  Warnings    { get; }
 
-        public StatusPull(IEnumerable<T>        Status,
-                          IEnumerable<Warning>  Warnings = null)
+        public StatusPull(IEnumerable<T>         Status,
+                          IEnumerable<Warning>?  Warnings   = null)
         {
 
-            this.Status    = Status ?? new T[0];
+            this.Status    = Status ?? [];
             this.Warnings  = Warnings is not null
                                  ? Warnings.Where(warning => warning is not null)
-                                 : new Warning[0];
+                                 : [];
 
         }
 

@@ -73,13 +73,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         IEnumerable<ChargingReservation> ChargingReservations { get; }
 
-        Boolean TryGetChargingReservationById (ChargingReservation_Id ReservationId, [NotNullWhen(true)] out ChargingReservation?           ChargingReservation);
+        Boolean TryGetChargingReservationById (ChargingReservation_Id                        ReservationId,
+                                               [NotNullWhen(true)] out ChargingReservation?  ChargingReservation);
 
-        Boolean TryGetChargingReservationsById(ChargingReservation_Id ReservationId, out ChargingReservationCollection? ChargingReservations);
+        Boolean TryGetChargingReservationsById(ChargingReservation_Id              ReservationId,
+                                               out ChargingReservationCollection?  ChargingReservations);
 
-        ChargingReservation?           GetChargingReservationById (ChargingReservation_Id ReservationId);
+        ChargingReservation?           GetChargingReservationById (ChargingReservation_Id  ReservationId);
 
-        ChargingReservationCollection? GetChargingReservationsById(ChargingReservation_Id ReservationId);
+        ChargingReservationCollection? GetChargingReservationsById(ChargingReservation_Id  ReservationId);
 
 
         #region Reserve(ChargingLocation, ReservationLevel = EVSE, StartTime = null, Duration = null, ReservationId = null, ProviderId = null, ...)
@@ -259,26 +261,27 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// All charging sessions.
         /// </summary>
-        IEnumerable<ChargingSession> ChargingSessions { get; }
+        IEnumerable<ChargingSession> ChargingSessions  { get; }
 
         /// <summary>
         /// Whether the given charging session identification is known within the roaming network.
         /// </summary>
         /// <param name="ChargingSessionId">The charging session identification.</param>
-        Boolean ContainsChargingSessionId(ChargingSession_Id ChargingSessionId);
+        Boolean ContainsChargingSessionId(ChargingSession_Id  ChargingSessionId);
 
         /// <summary>
         /// Return the charging session specified by the given charging session identification.
         /// </summary>
         /// <param name="ChargingSessionId">The charging session identification.</param>
-        ChargingSession? GetChargingSessionById(ChargingSession_Id ChargingSessionId);
+        ChargingSession? GetChargingSessionById(ChargingSession_Id  ChargingSessionId);
 
         /// <summary>
         /// Try to return the charging session specified by the given charging session identification.
         /// </summary>
         /// <param name="ChargingSessionId">The charging session identification.</param>
         /// <param name="ChargingSession">The charging session.</param>
-        Boolean TryGetChargingSessionById(ChargingSession_Id ChargingSessionId, [NotNullWhen(true)] out ChargingSession? ChargingSession);
+        Boolean TryGetChargingSessionById(ChargingSession_Id                        ChargingSessionId,
+                                          [NotNullWhen(true)] out ChargingSession?  ChargingSession);
 
     }
 

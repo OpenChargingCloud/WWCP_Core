@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="AuthInfoStatus">An object to compare with.</param>
-        public Int32 CompareTo(AuthInfoStatus AuthInfoStatus)
+        public Int32 CompareTo(AuthInfoStatus? AuthInfoStatus)
         {
 
             if ((Object)AuthInfoStatus is null)
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthInfoStatus">An EVSE identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(AuthInfoStatus AuthInfoStatus)
+        public Boolean Equals(AuthInfoStatus? AuthInfoStatus)
         {
 
             if ((Object)AuthInfoStatus is null)

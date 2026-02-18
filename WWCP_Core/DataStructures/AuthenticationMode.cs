@@ -270,23 +270,23 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Properties
 
-            public String  Number         { get; }
+            public String   Number         { get; }
 
-            public String  StationCode    { get; }
+            public String?  StationCode    { get; }
 
             #endregion
 
             #region Constructor(s)
 
-            public SMS(String  Number,
-                       String  StationCode = null)
+            public SMS(String   Number,
+                       String?  StationCode = null)
 
                 : base("SMS")
 
             {
 
                 if (Number.IsNullOrEmpty())
-                    throw new ArgumentNullException("Number", "The given SMS telephone number must not be null or empty!");
+                    throw new ArgumentNullException(nameof(Number), "The given SMS telephone number must not be null or empty!");
 
                 this.Number       = Number;
                 this.StationCode  = StationCode;

@@ -111,10 +111,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                               ChargingReservationCancellationReason  Reason,
                                                               TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResultTypes.UnknownEVSE,
-                                           ReservationId,
-                                           Reason,
-                                           Runtime: Runtime);
+            => new (CancelReservationResultTypes.UnknownEVSE,
+                    ReservationId,
+                    Reason,
+                    Runtime: Runtime);
 
         #endregion
 
@@ -130,10 +130,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                                    ChargingReservationCancellationReason  Reason,
                                                                    TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResultTypes.UnknownReservationId,
-                                           ReservationId,
-                                           Reason,
-                                           Runtime: Runtime);
+            => new (CancelReservationResultTypes.UnknownReservationId,
+                    ReservationId,
+                    Reason,
+                    Runtime: Runtime);
 
         #endregion
 
@@ -149,10 +149,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   ChargingReservationCancellationReason  Reason,
                                                                   TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResultTypes.UnknownChargingPool,
-                                           ReservationId,
-                                           Reason,
-                                           Runtime: Runtime);
+            => new (CancelReservationResultTypes.UnknownChargingPool,
+                    ReservationId,
+                    Reason,
+                    Runtime: Runtime);
 
         #endregion
 
@@ -168,10 +168,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                                      ChargingReservationCancellationReason  Reason,
                                                                      TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResultTypes.UnknownChargingStation,
-                                           ReservationId,
-                                           Reason,
-                                           Runtime: Runtime);
+            => new (CancelReservationResultTypes.UnknownChargingStation,
+                    ReservationId,
+                    Reason,
+                    Runtime: Runtime);
 
         #endregion
 
@@ -187,10 +187,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                           ChargingReservationCancellationReason  Reason,
                                                           TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResultTypes.UnknownEVSE,
-                                           ReservationId,
-                                           Reason,
-                                           Runtime: Runtime);
+            => new (CancelReservationResultTypes.UnknownEVSE,
+                    ReservationId,
+                    Reason,
+                    Runtime: Runtime);
 
         #endregion
 
@@ -210,12 +210,12 @@ namespace cloud.charging.open.protocols.WWCP
                                                            String                                 AdditionalInfo  = null,
                                                            TimeSpan?                              Runtime         = null)
 
-            => new CancelReservationResult(CancelReservationResultTypes.OutOfService,
-                                           ReservationId,
-                                           Reason,
-                                           Message:         Message,
-                                           AdditionalInfo:  AdditionalInfo,
-                                           Runtime:         Runtime);
+            => new (CancelReservationResultTypes.OutOfService,
+                    ReservationId,
+                    Reason,
+                    Message:         Message,
+                    AdditionalInfo:  AdditionalInfo,
+                    Runtime:         Runtime);
 
         #endregion
 
@@ -235,12 +235,12 @@ namespace cloud.charging.open.protocols.WWCP
                                                       String                                 AdditionalInfo  = null,
                                                       TimeSpan?                              Runtime         = null)
 
-            => new CancelReservationResult(CancelReservationResultTypes.Offline,
-                                           ReservationId,
-                                           Reason,
-                                           Message:         Message,
-                                           AdditionalInfo:  AdditionalInfo,
-                                           Runtime:         Runtime);
+            => new (CancelReservationResultTypes.Offline,
+                    ReservationId,
+                    Reason,
+                    Message:         Message,
+                    AdditionalInfo:  AdditionalInfo,
+                    Runtime:         Runtime);
 
         #endregion
 
@@ -258,11 +258,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                       ChargingReservation                    Reservation  = null,
                                                       TimeSpan?                              Runtime      = null)
 
-            => new CancelReservationResult(CancelReservationResultTypes.Success,
-                                           ReservationId,
-                                           Reason,
-                                           Reservation,
-                                           Runtime: Runtime);
+            => new (CancelReservationResultTypes.Success,
+                    ReservationId,
+                    Reason,
+                    Reservation,
+                    Runtime: Runtime);
 
         #endregion
 
@@ -282,12 +282,12 @@ namespace cloud.charging.open.protocols.WWCP
                                                       String                                 AdditionalInfo  = null,
                                                       TimeSpan?                              Runtime         = null)
 
-            => new CancelReservationResult(CancelReservationResultTypes.Timeout,
-                                           ReservationId,
-                                           Reason,
-                                           Message:         Message,
-                                           AdditionalInfo:  AdditionalInfo,
-                                           Runtime:         Runtime);
+            => new (CancelReservationResultTypes.Timeout,
+                    ReservationId,
+                    Reason,
+                    Message:         Message,
+                    AdditionalInfo:  AdditionalInfo,
+                    Runtime:         Runtime);
 
         #endregion
 
@@ -303,16 +303,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The optional runtime of the reequest.</param>
         public static CancelReservationResult CommunicationError(ChargingReservation_Id                 ReservationId,
                                                                  ChargingReservationCancellationReason  Reason,
-                                                                 String                                 Message         = null,
-                                                                 String                                 AdditionalInfo  = null,
-                                                                 TimeSpan?                              Runtime         = null)
+                                                                 String?                                Message          = null,
+                                                                 String?                                AdditionalInfo   = null,
+                                                                 TimeSpan?                              Runtime          = null)
 
-            => new CancelReservationResult(CancelReservationResultTypes.CommunicationError,
-                                           ReservationId,
-                                           Reason,
-                                           Message:         Message,
-                                           AdditionalInfo:  AdditionalInfo,
-                                           Runtime:         Runtime);
+            => new (CancelReservationResultTypes.CommunicationError,
+                    ReservationId,
+                    Reason,
+                    Message:         Message,
+                    AdditionalInfo:  AdditionalInfo,
+                    Runtime:         Runtime);
 
         #endregion
 

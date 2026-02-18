@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult UnknownChargingStationOperator
 
-            => new ReservationResult(ReservationResultType.UnknownChargingStationOperator);
+            => new (ReservationResultType.UnknownChargingStationOperator);
 
         #endregion
 
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult UnknownChargingReservationId
 
-            => new ReservationResult(ReservationResultType.UnknownChargingReservationId);
+            => new (ReservationResultType.UnknownChargingReservationId);
 
         #endregion
 
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult UnknownChargingPool
 
-            => new ReservationResult(ReservationResultType.UnknownChargingPool);
+            => new (ReservationResultType.UnknownChargingPool);
 
         #endregion
 
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult UnknownChargingStation
 
-            => new ReservationResult(ReservationResultType.UnknownChargingStation);
+            => new (ReservationResultType.UnknownChargingStation);
 
         #endregion
 
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult UnknownLocation
 
-            => new ReservationResult(ReservationResultType.UnknownLocation);
+            => new (ReservationResultType.UnknownLocation);
 
         #endregion
 
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult AlreadyInUse
 
-            => new ReservationResult(ReservationResultType.AlreadyInUse);
+            => new (ReservationResultType.AlreadyInUse);
 
         #endregion
 
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult AlreadyReserved
 
-            => new ReservationResult(ReservationResultType.AlreadyReserved);
+            => new (ReservationResultType.AlreadyReserved);
 
         #endregion
 
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult InvalidCredentials
 
-            => new ReservationResult(ReservationResultType.InvalidCredentials);
+            => new (ReservationResultType.InvalidCredentials);
 
         #endregion
 
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult InternalUse
 
-            => new ReservationResult(ReservationResultType.InternalUse);
+            => new (ReservationResultType.InternalUse);
 
         #endregion
 
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult OutOfService
 
-            => new ReservationResult(ReservationResultType.OutOfService);
+            => new (ReservationResultType.OutOfService);
 
         #endregion
 
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult Offline
 
-            => new ReservationResult(ReservationResultType.Offline);
+            => new (ReservationResultType.Offline);
 
         #endregion
 
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult NoEVSEsAvailable
 
-            => new ReservationResult(ReservationResultType.NoEVSEsAvailable);
+            => new (ReservationResultType.NoEVSEsAvailable);
 
         #endregion
 
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult Success()
 
-            => new ReservationResult(ReservationResultType.Success);
+            => new (ReservationResultType.Success);
 
         #endregion
 
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult Success(ChargingReservation Reservation)
 
-            => new ReservationResult(Reservation);
+            => new (Reservation);
 
         #endregion
 
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult Timeout
 
-            => new ReservationResult(ReservationResultType.Timeout);
+            => new (ReservationResultType.Timeout);
 
         #endregion
 
@@ -277,12 +277,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Message">An optional (error-)message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
-        public static ReservationResult CommunicationError(String Message         = null,
-                                                           Object AdditionalInfo  = null)
+        public static ReservationResult CommunicationError(String? Message          = null,
+                                                           Object? AdditionalInfo   = null)
 
-            => new ReservationResult(ReservationResultType.CommunicationError,
-                                     Message,
-                                     AdditionalInfo);
+            => new (
+                   ReservationResultType.CommunicationError,
+                   Message,
+                   AdditionalInfo
+               );
 
         #endregion
 
@@ -293,12 +295,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Message">An optional (error-)message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
-        public static ReservationResult Error(String Message         = null,
-                                              Object AdditionalInfo  = null)
+        public static ReservationResult Error(String? Message          = null,
+                                              Object? AdditionalInfo   = null)
 
-            => new ReservationResult(ReservationResultType.Error,
-                                     Message,
-                                     AdditionalInfo);
+            => new (
+                   ReservationResultType.Error,
+                   Message,
+                   AdditionalInfo
+               );
 
         #endregion
 

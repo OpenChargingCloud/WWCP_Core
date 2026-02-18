@@ -17,10 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -34,14 +30,14 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<T>        POIData     { get; }
         public IEnumerable<Warning>  Warnings    { get; }
 
-        public POIDataPull(IEnumerable<T>        POIData,
-                           IEnumerable<Warning>  Warnings = null)
+        public POIDataPull(IEnumerable<T>         POIData,
+                           IEnumerable<Warning>?  Warnings   = null)
         {
 
             this.POIData   = POIData;
             this.Warnings  = Warnings is not null
                                  ? Warnings.Where(warning => warning is not null)
-                                 : new Warning[0];
+                                 : [];
 
         }
 
@@ -50,7 +46,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             this.POIData   = POIData;
-            this.Warnings  = Warnings ?? new Warning[0];
+            this.Warnings  = Warnings ?? [];
 
         }
 
