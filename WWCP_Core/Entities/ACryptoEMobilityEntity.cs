@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The roaming network of this charging pool.
         /// </summary>
         [InternalUseOnly]
-        public IRoamingNetwork?         RoamingNetwork           { get; }
+        public IRoamingNetwork          RoamingNetwork           { get; }
 
         public String                   EllipticCurve            { get; }
         public X9ECParameters?          ECP                      { get; }
