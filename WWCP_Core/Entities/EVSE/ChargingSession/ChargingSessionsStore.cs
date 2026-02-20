@@ -988,8 +988,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         public ReloadStatistics LoadLogfiles2()
 
-            => LoadLogFiles2(LogFilePath,
-                             LogfileSearchPattern(RoamingNetworkId));
+            => LoadLogFiles2(
+                   LogFilePath,
+                   LogfileSearchPattern(RoamingNetworkId)
+               );
 
         #endregion
 
