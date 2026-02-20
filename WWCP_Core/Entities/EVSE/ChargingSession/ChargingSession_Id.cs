@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The regular expression for parsing a charging session identification.
         /// </summary>
-        public static readonly Regex ChargingSessionId_RegEx = new (@"^([A-Z]{2}[\*\-]?[A-Z0-9]{3})\*?N([A-Za-z0-9][A-Za-z0-9\*\-]{0,250})$",
+        public static readonly Regex ChargingSessionId_RegEx = new (@"^([A-Z]{2}[\*\-]?[A-Z0-9]{3})[\*\-]?N([A-Za-z0-9][A-Za-z0-9\*\-]{0,250})$",
                                                                     RegexOptions.IgnorePatternWhitespace);
 
         #endregion
