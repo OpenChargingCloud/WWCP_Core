@@ -1294,9 +1294,6 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-
-
-
             try
             {
 

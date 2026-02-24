@@ -108,6 +108,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
         /// The unique identification of this WWCP importer.
         /// </summary>
         public String                                                           Id                                   { get; }
+        public String                                                           LoggingPath                          { get; }
 
         public IEnumerable<IChargingStationOperator>                            AllChargingStationOperators          { get; }
 
@@ -177,6 +178,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
         /// Create a new WWCP importer.
         /// </summary>
         public WWCPImporter(String                                                            Id,
+                            String                                                            LoggingPath,
 
                             IEnumerable<IChargingStationOperator>?                            AllChargingStationOperators         = null,
                             Func<ChargingStation_Id, IEnumerable<IChargingStationOperator>>?  GetChargingStationOperators         = null,
@@ -212,6 +214,8 @@ namespace cloud.charging.open.protocols.WWCP.Importer
             #endregion
 
             this.Id                                 = Id;
+            this.LoggingPath                        = LoggingPath;
+
             this.ImportEvery                        = ImportEvery ?? DefaultImportEvery;
             this.OnStartup                          = OnStartup;
             this.OnStartupFinished                  = OnStartupFinished;
