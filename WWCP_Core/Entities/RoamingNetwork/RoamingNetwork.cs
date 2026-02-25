@@ -7709,6 +7709,7 @@ namespace cloud.charging.open.protocols.WWCP
                           ) {
                               RoamingNetwork             = this,
                               CSORoamingProviderStart    = result.ISendAuthorizeStartStop as ICSORoamingProvider,
+                              AuthorizatorIdStart        = result.AuthorizatorId,
                               ProviderIdStart            = result.ProviderId,
                               ChargingStationOperatorId  = OperatorId,
                               EVSEId                     = ChargingLocation?.EVSEId,

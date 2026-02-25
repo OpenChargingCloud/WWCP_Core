@@ -835,6 +835,9 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        public IId? AuthorizatorIdStart { get; set; }
+        public IId? AuthorizatorIdStop  { get; set; }
+
         #region CSORoamingProviderStart
 
         private CSORoamingProvider_Id? csoRoamingProviderIdStart;
@@ -1469,7 +1472,11 @@ namespace cloud.charging.open.protocols.WWCP
                                          ? new JProperty("EMPRoamingProviderId",   EMPRoamingProviderIdStart.ToString())
                                          : null,
 
-                                     ProviderIdStart is not null
+                                     AuthorizatorIdStart is not null
+                                         ? new JProperty("authorizatorId",         AuthorizatorIdStart.      ToString())
+                                         : null,
+
+                                     ProviderIdStart     is not null
                                          ? new JProperty("providerId",             ProviderIdStart.          ToString())
                                          : null,
 
@@ -1505,7 +1512,11 @@ namespace cloud.charging.open.protocols.WWCP
                                          ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStop. ToString())
                                          : null,
 
-                                     ProviderIdStop is not null
+                                     AuthorizatorIdStop is not null
+                                         ? new JProperty("authorizatorId",        AuthorizatorIdStop.       ToString())
+                                         : null,
+
+                                     ProviderIdStop     is not null
                                          ? new JProperty("providerId",            ProviderIdStop.           ToString())
                                          : null,
 
