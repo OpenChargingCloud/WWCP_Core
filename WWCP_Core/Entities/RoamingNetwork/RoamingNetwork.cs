@@ -8234,6 +8234,7 @@ namespace cloud.charging.open.protocols.WWCP
                                       result,
                                       session => {
                                           session.CSORoamingProviderStart ??= CSORoamingProvider;
+                                          session.AddAdditionalSessionInfos(AdditionalSessionInfos);
                                       }
                                   );
 
@@ -8294,6 +8295,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           session => {
                                               session.CSORoamingProviderStart ??= CSORoamingProvider;
                                               session.EMPRoamingProviderStart ??= empRoamingProvider;
+                                              session.AddAdditionalSessionInfos(AdditionalSessionInfos);
                                           }
                                       );
 
@@ -8375,23 +8377,24 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
         /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<RemoteStopResult>
 
             RemoteStop(ChargingSession_Id     SessionId,
-                       ReservationHandling?   ReservationHandling    = null,
-                       EMobilityProvider_Id?  ProviderId             = null,
-                       RemoteAuthentication?  RemoteAuthentication   = null,
-                       Auth_Path?             AuthenticationPath     = null,
-                       ICSORoamingProvider?   CSORoamingProvider     = null,
+                       ReservationHandling?   ReservationHandling      = null,
+                       EMobilityProvider_Id?  ProviderId               = null,
+                       RemoteAuthentication?  RemoteAuthentication     = null,
+                       JObject?               AdditionalSessionInfos   = null,
+                       Auth_Path?             AuthenticationPath       = null,
+                       ICSORoamingProvider?   CSORoamingProvider       = null,
 
-                       DateTimeOffset?        RequestTimestamp       = null,
-                       EventTracking_Id?      EventTrackingId        = null,
-                       TimeSpan?              RequestTimeout         = null,
-                       CancellationToken      CancellationToken      = default)
+                       DateTimeOffset?        RequestTimestamp         = null,
+                       EventTracking_Id?      EventTrackingId          = null,
+                       TimeSpan?              RequestTimeout           = null,
+                       CancellationToken      CancellationToken        = default)
 
         {
 
@@ -8459,6 +8462,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                ReservationHandling,
                                                ProviderId,
                                                RemoteAuthentication,
+                                               AdditionalSessionInfos,
                                                AuthenticationPath,
                                                CSORoamingProvider,
 
@@ -8484,6 +8488,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                    ReservationHandling,
                                                    ProviderId,
                                                    RemoteAuthentication,
+                                                   AdditionalSessionInfos,
                                                    AuthenticationPath,
                                                    CSORoamingProvider,
 
@@ -8523,6 +8528,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            ReservationHandling,
                                            ProviderId,
                                            RemoteAuthentication,
+                                           AdditionalSessionInfos,
                                            AuthenticationPath,
                                            CSORoamingProvider,
 
@@ -8561,6 +8567,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            ReservationHandling,
                                            ProviderId,
                                            RemoteAuthentication,
+                                           AdditionalSessionInfos,
                                            AuthenticationPath,
                                            CSORoamingProvider,
 
@@ -8610,7 +8617,10 @@ namespace cloud.charging.open.protocols.WWCP
                       RemoteAuthentication,
                       ProviderId,
                       CSORoamingProvider,
-                      result
+                      result,
+                      session => {
+                          session.AddAdditionalSessionInfos(AdditionalSessionInfos);
+                      }
                   );
 
 
@@ -8906,20 +8916,24 @@ namespace cloud.charging.open.protocols.WWCP
                         if (filterResult.IsNeitherNullNorEmpty())
                         {
 
-                            resultMap.Add(SendCDRResult.Filtered(
-                                              Timestamp.Now,
-                                              Id,
-                                              chargeDetailRecord,
-                                              Warnings: filterResult.SafeSelect(filterResult => Warning.Create(filterResult))
-                                          ));
+                            resultMap.Add(
+                                SendCDRResult.Filtered(
+                                    Timestamp.Now,
+                                    Id,
+                                    chargeDetailRecord,
+                                    Warnings: filterResult.SafeSelect(filterResult => Warning.Create(filterResult))
+                                )
+                            );
 
                             var onCDRWasFiltered = OnCDRWasFiltered;
                             if (onCDRWasFiltered is not null)
                             {
                                 try
                                 {
-                                    await onCDRWasFiltered.Invoke(chargeDetailRecord,
-                                                                       filterResult);
+                                    await onCDRWasFiltered.Invoke(
+                                              chargeDetailRecord,
+                                              filterResult
+                                          );
                                 }
                                 catch (Exception e)
                                 {

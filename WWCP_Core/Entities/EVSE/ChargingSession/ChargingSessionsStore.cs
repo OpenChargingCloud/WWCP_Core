@@ -690,7 +690,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 NewChargingSession.SystemIdStart = systemId;
                 InternalData.TryAdd(NewChargingSession.Id, NewChargingSession);
-                UpdateFunc?.Invoke(NewChargingSession);
+                UpdateFunc?. Invoke(NewChargingSession);
 
                 await LogIt("remoteStart",
                             NewChargingSession.Id,
@@ -718,12 +718,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoteStop   (EventTrackingId, Id, Authentication, ProviderId = null, CSORoamingProvider = null)
 
-        public async Task<Boolean> RemoteStop(EventTracking_Id       EventTrackingId,
-                                              ChargingSession_Id     Id,
-                                              AAuthentication?       Authentication,
-                                              EMobilityProvider_Id?  ProviderId,
-                                              ICSORoamingProvider?   CSORoamingProvider,
-                                              RemoteStopResult       Result)
+        public async Task<Boolean> RemoteStop(EventTracking_Id          EventTrackingId,
+                                              ChargingSession_Id        Id,
+                                              AAuthentication?          Authentication,
+                                              EMobilityProvider_Id?     ProviderId,
+                                              ICSORoamingProvider?      CSORoamingProvider,
+                                              RemoteStopResult          Result,
+                                              Action<ChargingSession>?  UpdateFunc = null)
         {
 
             if (InternalData.TryGetValue(Id, out var chargingSession))

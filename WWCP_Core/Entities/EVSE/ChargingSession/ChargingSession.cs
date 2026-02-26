@@ -1136,6 +1136,17 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        public void AddAdditionalSessionInfos(JObject? AdditionalSessionInfos)
+        {
+            if (AdditionalSessionInfos is not null)
+            {
+                foreach (var property in AdditionalSessionInfos.Properties())
+                {
+                    this.CustomData[property.Name] = property.Value;
+                }
+            }
+        }
+
         public void AddEnergyMeterValue(EnergyMeteringValue Value)
         {
             energyMeterValues.Add(Value);
@@ -1307,7 +1318,8 @@ namespace cloud.charging.open.protocols.WWCP
                                        ChargingSession_Id.Parse(sessionId),
                                        EventTrackingId:  JSON["eventTrackingId"]?.Value<String>() is String eventTrackingId
                                                              ? EventTracking_Id.Parse(eventTrackingId)
-                                                             : EventTracking_Id.New
+                                                             : EventTracking_Id.New,
+                                       CustomData:       JSON["customData"] as JObject
                                    ) {
 
                                        EVSEId                     = JSON["EVSEId"]?.                   Value<String>() is String EVSEId                    ? EVSE_Id.                   Parse(EVSEId)                    : null,
@@ -1611,12 +1623,14 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                            new JProperty("value",      meterValue.WattHours)
                                                                                                        ))
                                                                               ))
-                               : null
+                               : null,
 
                            //_UserDefined.Any()
                            //    ? new JProperty("userDefined",    new JObject(_UserDefined.Where(kkvp => kkvp.Value is JObject).
                            //                                                               Select(kkvp => new JProperty(kkvp.Key, kkvp.Value as JObject))))
                            //    : null
+
+                                 new JProperty("customData",                  CustomData)
 
                 );
 

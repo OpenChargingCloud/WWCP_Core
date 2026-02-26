@@ -2684,16 +2684,17 @@ namespace cloud.charging.open.protocols.WWCP
         public async Task<RemoteStopResult>
 
             RemoteStop(ChargingSession_Id     SessionId,
-                       ReservationHandling?   ReservationHandling    = null,
-                       EMobilityProvider_Id?  ProviderId             = null,
-                       RemoteAuthentication?  RemoteAuthentication   = null,
-                       Auth_Path?             AuthenticationPath     = null,
-                       ICSORoamingProvider?   CSORoamingProvider     = null,
+                       ReservationHandling?   ReservationHandling      = null,
+                       EMobilityProvider_Id?  ProviderId               = null,
+                       RemoteAuthentication?  RemoteAuthentication     = null,
+                       JObject?               AdditionalSessionInfos   = null,
+                       Auth_Path?             AuthenticationPath       = null,
+                       ICSORoamingProvider?   CSORoamingProvider       = null,
 
-                       DateTimeOffset?        RequestTimestamp       = null,
-                       EventTracking_Id?      EventTrackingId        = null,
-                       TimeSpan?              RequestTimeout         = null,
-                       CancellationToken      CancellationToken      = default)
+                       DateTimeOffset?        RequestTimestamp         = null,
+                       EventTracking_Id?      EventTrackingId          = null,
+                       TimeSpan?              RequestTimeout           = null,
+                       CancellationToken      CancellationToken        = default)
         {
 
             #region Initial checks
@@ -2750,6 +2751,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                ReservationHandling,
                                                ProviderId,
                                                RemoteAuthentication,
+                                               AdditionalSessionInfos,
                                                AuthenticationPath,
                                                CSORoamingProvider,
 
@@ -2770,6 +2772,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                ReservationHandling,
                                                ProviderId,
                                                RemoteAuthentication,
+                                               AdditionalSessionInfos,
                                                AuthenticationPath,
                                                CSORoamingProvider,
 
@@ -2790,6 +2793,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                ReservationHandling,
                                                ProviderId,
                                                RemoteAuthentication,
+                                               AdditionalSessionInfos,
                                                AuthenticationPath,
                                                CSORoamingProvider,
 
@@ -2810,6 +2814,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                ReservationHandling,
                                                ProviderId,
                                                RemoteAuthentication,
+                                               AdditionalSessionInfos,
                                                AuthenticationPath,
                                                CSORoamingProvider,
 
@@ -2830,6 +2835,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                ReservationHandling,
                                                ProviderId,
                                                RemoteAuthentication,
+                                               AdditionalSessionInfos,
                                                AuthenticationPath,
                                                CSORoamingProvider,
 

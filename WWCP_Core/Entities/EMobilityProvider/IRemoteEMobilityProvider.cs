@@ -129,14 +129,15 @@ namespace cloud.charging.open.protocols.WWCP
         Task<RemoteStopResult>
 
             RemoteStop(ChargingSession_Id     SessionId,
-                       ReservationHandling?   ReservationHandling    = null,
-                       RemoteAuthentication?  RemoteAuthentication   = null,
-                       Auth_Path?             AuthenticationPath     = null,
+                       ReservationHandling?   ReservationHandling      = null,
+                       RemoteAuthentication?  RemoteAuthentication     = null,
+                       JObject?               AdditionalSessionInfos   = null,
+                       Auth_Path?             AuthenticationPath       = null,
 
-                       DateTimeOffset?        Timestamp              = null,
-                       EventTracking_Id?      EventTrackingId        = null,
-                       TimeSpan?              RequestTimeout         = null,
-                       CancellationToken      CancellationToken      = default);
+                       DateTimeOffset?        Timestamp                = null,
+                       EventTracking_Id?      EventTrackingId          = null,
+                       TimeSpan?              RequestTimeout           = null,
+                       CancellationToken      CancellationToken        = default);
 
         #endregion
 
