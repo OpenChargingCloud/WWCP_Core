@@ -1190,7 +1190,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         void SetChargingPoolAdminStatus(ChargingPool_Id                                        ChargingPoolId,
                                         ChargingPoolAdminStatusType                            NewStatus,
-                                        DateTime                                               Timestamp);
+                                        DateTimeOffset                                         Timestamp);
 
         void SetChargingPoolAdminStatus(ChargingPool_Id                                        ChargingPoolId,
                                         IEnumerable<Timestamped<ChargingPoolAdminStatusType>>  StatusList,
@@ -1328,37 +1328,37 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingStationAdminStatus
 
-        Task SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
+        Task SetChargingStationAdminStatus(ChargingStation_Id              ChargingStationId,
                                            ChargingStationAdminStatusType  NewAdminStatus);
 
-        Task SetChargingStationAdminStatus(ChargingStation_Id                            ChargingStationId,
+        Task SetChargingStationAdminStatus(ChargingStation_Id                           ChargingStationId,
                                            Timestamped<ChargingStationAdminStatusType>  NewTimestampedAdminStatus);
 
-        Task SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
+        Task SetChargingStationAdminStatus(ChargingStation_Id              ChargingStationId,
                                            ChargingStationAdminStatusType  NewAdminStatus,
-                                           DateTime                         Timestamp);
+                                           DateTimeOffset                  Timestamp);
 
-        Task SetChargingStationAdminStatus(ChargingStation_Id                                         ChargingStationId,
+        Task SetChargingStationAdminStatus(ChargingStation_Id                                        ChargingStationId,
                                            IEnumerable<Timestamped<ChargingStationAdminStatusType>>  AdminStatusList,
-                                           ChangeMethods                                              ChangeMethod  = ChangeMethods.Replace);
+                                           ChangeMethods                                             ChangeMethod  = ChangeMethods.Replace);
 
         #endregion
 
         #region SetChargingStationStatus
 
-        Task SetChargingStationStatus(ChargingStation_Id          ChargingStationId,
+        Task SetChargingStationStatus(ChargingStation_Id         ChargingStationId,
                                       ChargingStationStatusType  NewStatus);
 
-        Task SetChargingStationStatus(ChargingStation_Id                       ChargingStationId,
+        Task SetChargingStationStatus(ChargingStation_Id                      ChargingStationId,
                                       Timestamped<ChargingStationStatusType>  NewTimestampedStatus);
 
-        Task SetChargingStationStatus(ChargingStation_Id          ChargingStationId,
+        Task SetChargingStationStatus(ChargingStation_Id         ChargingStationId,
                                       ChargingStationStatusType  NewStatus,
-                                      DateTime                    Timestamp);
+                                      DateTimeOffset             Timestamp);
 
-        Task SetChargingStationStatus(ChargingStation_Id                                    ChargingStationId,
+        Task SetChargingStationStatus(ChargingStation_Id                                   ChargingStationId,
                                       IEnumerable<Timestamped<ChargingStationStatusType>>  StatusList,
-                                      ChangeMethods                                         ChangeMethod  = ChangeMethods.Replace);
+                                      ChangeMethods                                        ChangeMethod  = ChangeMethods.Replace);
 
         #endregion
 
@@ -1702,19 +1702,19 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVSEAdminStatus
         void SetEVSEAdminStatus(EVSEAdminStatus NewAdminStatus);
 
-        void SetEVSEAdminStatus(EVSE_Id EVSEId,
-                                EVSEAdminStatusType NewAdminStatus);
+        void SetEVSEAdminStatus(EVSE_Id              EVSEId,
+                                EVSEAdminStatusType  NewAdminStatus);
 
-        void SetEVSEAdminStatus(EVSE_Id                            EVSEId,
+        void SetEVSEAdminStatus(EVSE_Id                           EVSEId,
                                 Timestamped<EVSEAdminStatusType>  NewTimestampedAdminStatus);
 
-        void SetEVSEAdminStatus(EVSE_Id               EVSEId,
+        void SetEVSEAdminStatus(EVSE_Id              EVSEId,
                                 EVSEAdminStatusType  NewAdminStatus,
-                                DateTime              Timestamp);
+                                DateTimeOffset       Timestamp);
 
-        void SetEVSEAdminStatus(EVSE_Id                                         EVSEId,
+        void SetEVSEAdminStatus(EVSE_Id                                        EVSEId,
                                 IEnumerable<Timestamped<EVSEAdminStatusType>>  AdminStatusList,
-                                ChangeMethods                                   ChangeMethod  = ChangeMethods.Replace);
+                                ChangeMethods                                  ChangeMethod  = ChangeMethods.Replace);
 
         EVSEAdminStatusDiff ApplyEVSEAdminStatusDiff(EVSEAdminStatusDiff EVSEAdminStatusDiff);
 
@@ -1724,19 +1724,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         void SetEVSEStatus(EVSEStatus  NewStatus);
 
-        void SetEVSEStatus(EVSE_Id          EVSEId,
+        void SetEVSEStatus(EVSE_Id         EVSEId,
                            EVSEStatusType  NewStatus);
 
-        void SetEVSEStatus(EVSE_Id                       EVSEId,
+        void SetEVSEStatus(EVSE_Id                      EVSEId,
                            Timestamped<EVSEStatusType>  NewTimestampedStatus);
 
-        void SetEVSEStatus(EVSE_Id          EVSEId,
+        void SetEVSEStatus(EVSE_Id         EVSEId,
                            EVSEStatusType  NewStatus,
-                           DateTime         Timestamp);
+                           DateTimeOffset  Timestamp);
 
-        void SetEVSEStatus(EVSE_Id                                    EVSEId,
+        void SetEVSEStatus(EVSE_Id                                   EVSEId,
                            IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
-                           ChangeMethods                              ChangeMethod  = ChangeMethods.Replace);
+                           ChangeMethods                             ChangeMethod  = ChangeMethods.Replace);
 
         EVSEStatusDiff ApplyEVSEStatusDiff(EVSEStatusDiff EVSEStatusDiff);
 

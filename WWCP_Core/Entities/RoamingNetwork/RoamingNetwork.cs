@@ -5085,20 +5085,16 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region SetEVSEStatus(EVSEStatusList)
+        #region SetEVSEStatus (EVSEStatusList)
 
         public void SetEVSEStatus(IEnumerable<EVSEStatus> EVSEStatusList)
         {
 
-            if (EVSEStatusList is not null)
+            foreach (var evseStatus in EVSEStatusList)
             {
-                foreach (var evseStatus in EVSEStatusList)
+                if (TryGetChargingStationOperatorById(evseStatus.Id.OperatorId, out var chargingStationOperator))
                 {
-                    if (TryGetChargingStationOperatorById(evseStatus.Id.OperatorId, out var chargingStationOperator) &&
-                        chargingStationOperator is not null)
-                    {
-                        chargingStationOperator.SetEVSEStatus(evseStatus);
-                    }
+                    chargingStationOperator.SetEVSEStatus(evseStatus);
                 }
             }
 
@@ -5106,66 +5102,66 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region SetEVSEStatus(EVSEId, NewStatus)
+        #region SetEVSEStatus (EVSEId, NewStatus)
 
-        public void SetEVSEStatus(EVSE_Id                       EVSEId,
+        public void SetEVSEStatus(EVSE_Id                      EVSEId,
                                   Timestamped<EVSEStatusType>  NewStatus)
         {
 
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator) &&
-                chargingStationOperator is not null)
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator))
             {
-
-                chargingStationOperator.SetEVSEStatus(EVSEId,
-                                                      NewStatus);
-
+                chargingStationOperator.SetEVSEStatus(
+                    EVSEId,
+                    NewStatus
+                );
             }
 
         }
 
         #endregion
 
-        #region SetEVSEStatus(EVSEId, Timestamp, NewStatus)
+        #region SetEVSEStatus (EVSEId, Timestamp, NewStatus)
 
         public void SetEVSEStatus(EVSE_Id         EVSEId,
                                   DateTimeOffset  Timestamp,
                                   EVSEStatusType  NewStatus)
         {
 
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator) &&
-                chargingStationOperator is not null)
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator))
             {
-
-                chargingStationOperator.SetEVSEStatus(EVSEId,
-                                                      new Timestamped<EVSEStatusType>(Timestamp,
-                                                                                      NewStatus));
-
+                chargingStationOperator.SetEVSEStatus(
+                    EVSEId,
+                    new Timestamped<EVSEStatusType>(
+                        Timestamp,
+                        NewStatus
+                    )
+                );
             }
 
         }
 
         #endregion
 
-        #region SetEVSEStatus(EVSEId, StatusList)
+        #region SetEVSEStatus (EVSEId, StatusList)
 
-        public void SetEVSEStatus(EVSE_Id                                    EVSEId,
+        public void SetEVSEStatus(EVSE_Id                                   EVSEId,
                                   IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
-                                  ChangeMethods                              ChangeMethod  = ChangeMethods.Replace)
+                                  ChangeMethods                             ChangeMethod  = ChangeMethods.Replace)
         {
 
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator) &&
-                chargingStationOperator is not null)
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator))
             {
-
-                chargingStationOperator.SetEVSEStatus(EVSEId,
-                                                      StatusList,
-                                                      ChangeMethod);
-
+                chargingStationOperator.SetEVSEStatus(
+                    EVSEId,
+                    StatusList,
+                    ChangeMethod
+                );
             }
 
         }
 
         #endregion
+
 
         #region EVSEStatus             (IncludeEVSEs = null)
 

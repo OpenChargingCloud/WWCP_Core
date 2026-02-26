@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The total price.
         /// </summary>
-        public Decimal Total
+        public Decimal    Total
             => Base + (VAT ?? 0);
 
         #endregion

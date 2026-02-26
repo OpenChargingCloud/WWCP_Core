@@ -595,7 +595,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateData(DateTime          Timestamp,
+        internal async Task UpdateData(DateTimeOffset    Timestamp,
                                        EventTracking_Id  EventTrackingId,
                                        Object            Sender,
                                        String            PropertyName,
@@ -606,11 +606,11 @@ namespace cloud.charging.open.protocols.WWCP
             var onDataChanged = OnDataChanged;
             if (onDataChanged is not null)
                 await onDataChanged(Timestamp,
-                                         EventTrackingId,
-                                         Sender as ChargingStationOperator,
-                                         PropertyName,
-                                         OldValue,
-                                         NewValue);
+                                    EventTrackingId,
+                                    Sender as ChargingStationOperator,
+                                    PropertyName,
+                                    OldValue,
+                                    NewValue);
 
         }
 
@@ -625,7 +625,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                              Timestamp,
+        internal async Task UpdateAdminStatus(DateTimeOffset                                        Timestamp,
                                               EventTracking_Id                                      EventTrackingId,
                                               Timestamped<ChargingStationOperatorAdminStatusTypes>  OldStatus,
                                               Timestamped<ChargingStationOperatorAdminStatusTypes>  NewStatus)
@@ -634,10 +634,10 @@ namespace cloud.charging.open.protocols.WWCP
             var onAdminStatusChanged = OnAdminStatusChanged;
             if (onAdminStatusChanged is not null)
                 await onAdminStatusChanged(Timestamp,
-                                                EventTrackingId,
-                                                this,
-                                                OldStatus,
-                                                NewStatus);
+                                           EventTrackingId,
+                                           this,
+                                           OldStatus,
+                                           NewStatus);
 
         }
 
@@ -652,7 +652,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                                         Timestamp,
+        internal async Task UpdateStatus(DateTimeOffset                                   Timestamp,
                                          EventTracking_Id                                 EventTrackingId,
                                          Timestamped<ChargingStationOperatorStatusTypes>  OldStatus,
                                          Timestamped<ChargingStationOperatorStatusTypes>  NewStatus)
@@ -661,10 +661,10 @@ namespace cloud.charging.open.protocols.WWCP
             var onStatusChanged = OnStatusChanged;
             if (onStatusChanged is not null)
                 await onStatusChanged(Timestamp,
-                                           EventTrackingId,
-                                           this,
-                                           OldStatus,
-                                           NewStatus);
+                                      EventTrackingId,
+                                      this,
+                                      OldStatus,
+                                      NewStatus);
 
         }
 
@@ -1653,13 +1653,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingPoolAdminStatus(ChargingPoolId, NewStatus)
 
-        public void SetChargingPoolAdminStatus(ChargingPool_Id                            ChargingPoolId,
+        public void SetChargingPoolAdminStatus(ChargingPool_Id                           ChargingPoolId,
                                                Timestamped<ChargingPoolAdminStatusType>  NewStatus,
-                                               Boolean                                    SendUpstream = false)
+                                               Boolean                                   SendUpstream = false)
         {
 
-            if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool) &&
-                chargingPool is not null)
+            if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool))
             {
                 chargingPool.AdminStatus = NewStatus;
             }
@@ -1670,15 +1669,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingPoolAdminStatus(ChargingPoolId, NewStatus, Timestamp)
 
-        public void SetChargingPoolAdminStatus(ChargingPool_Id               ChargingPoolId,
+        public void SetChargingPoolAdminStatus(ChargingPool_Id              ChargingPoolId,
                                                ChargingPoolAdminStatusType  NewStatus,
-                                               DateTime                      Timestamp)
+                                               DateTimeOffset               Timestamp)
         {
 
-            if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool) &&
-                chargingPool is not null)
+            if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool))
             {
-                chargingPool.AdminStatus = new Timestamped<ChargingPoolAdminStatusType>(Timestamp, NewStatus);
+                chargingPool.AdminStatus = new Timestamped<ChargingPoolAdminStatusType>(
+                                               Timestamp,
+                                               NewStatus
+                                           );
             }
 
         }
@@ -1687,15 +1688,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingPoolAdminStatus(ChargingPoolId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
-        public void SetChargingPoolAdminStatus(ChargingPool_Id                                         ChargingPoolId,
+        public void SetChargingPoolAdminStatus(ChargingPool_Id                                        ChargingPoolId,
                                                IEnumerable<Timestamped<ChargingPoolAdminStatusType>>  StatusList,
-                                               ChangeMethods                                           ChangeMethod  = ChangeMethods.Replace)
+                                               ChangeMethods                                          ChangeMethod  = ChangeMethods.Replace)
         {
 
-            if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool) &&
-                chargingPool is not null)
+            if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool))
             {
-                chargingPool.SetAdminStatus(StatusList, ChangeMethod);
+                chargingPool.SetAdminStatus(
+                    StatusList,
+                    ChangeMethod
+                );
             }
 
         }
@@ -2086,7 +2089,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingStationAdminStatus (ChargingStationId, NewAdminStatus)
 
-        public async Task SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
+        public async Task SetChargingStationAdminStatus(ChargingStation_Id              ChargingStationId,
                                                         ChargingStationAdminStatusType  NewAdminStatus)
         {
 
@@ -2101,7 +2104,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingStationAdminStatus (ChargingStationId, NewTimestampedAdminStatus)
 
-        public async Task SetChargingStationAdminStatus(ChargingStation_Id                            ChargingStationId,
+        public async Task SetChargingStationAdminStatus(ChargingStation_Id                           ChargingStationId,
                                                         Timestamped<ChargingStationAdminStatusType>  NewTimestampedAdminStatus)
         {
 
@@ -2116,14 +2119,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingStationAdminStatus (ChargingStationId, NewAdminStatus, Timestamp)
 
-        public async Task SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
+        public async Task SetChargingStationAdminStatus(ChargingStation_Id              ChargingStationId,
                                                         ChargingStationAdminStatusType  NewAdminStatus,
-                                                        DateTime                         Timestamp)
+                                                        DateTimeOffset                  Timestamp)
         {
 
             if (TryGetChargingStationById(ChargingStationId, out var chargingStation))
             {
-                chargingStation.AdminStatus = new Timestamped<ChargingStationAdminStatusType>(Timestamp, NewAdminStatus);
+                chargingStation.AdminStatus = new Timestamped<ChargingStationAdminStatusType>(
+                                                  Timestamp,
+                                                  NewAdminStatus
+                                              );
             }
 
         }
@@ -2132,14 +2138,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingStationAdminStatus (ChargingStationId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
-        public async Task SetChargingStationAdminStatus(ChargingStation_Id                                         ChargingStationId,
+        public async Task SetChargingStationAdminStatus(ChargingStation_Id                                        ChargingStationId,
                                                         IEnumerable<Timestamped<ChargingStationAdminStatusType>>  AdminStatusList,
-                                                        ChangeMethods                                              ChangeMethod  = ChangeMethods.Replace)
+                                                        ChangeMethods                                             ChangeMethod  = ChangeMethods.Replace)
         {
 
             if (TryGetChargingStationById(ChargingStationId, out var chargingStation))
             {
-                chargingStation.SetAdminStatus(AdminStatusList, ChangeMethod);
+                chargingStation.SetAdminStatus(
+                    AdminStatusList,
+                    ChangeMethod
+                );
             }
 
             //if (SendUpstream)
@@ -2164,7 +2173,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingStationStatus      (ChargingStationId, NewStatus)
 
-        public async Task SetChargingStationStatus(ChargingStation_Id          ChargingStationId,
+        public async Task SetChargingStationStatus(ChargingStation_Id         ChargingStationId,
                                                    ChargingStationStatusType  NewStatus)
         {
 
@@ -2179,7 +2188,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingStationStatus      (ChargingStationId, NewTimestampedStatus)
 
-        public async Task SetChargingStationStatus(ChargingStation_Id                       ChargingStationId,
+        public async Task SetChargingStationStatus(ChargingStation_Id                      ChargingStationId,
                                                    Timestamped<ChargingStationStatusType>  NewTimestampedStatus)
         {
 
@@ -2194,19 +2203,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingStationStatus      (ChargingStationId, NewStatus, Timestamp)
 
-        public async Task SetChargingStationStatus(ChargingStation_Id          ChargingStationId,
+        public async Task SetChargingStationStatus(ChargingStation_Id         ChargingStationId,
                                                    ChargingStationStatusType  NewStatus,
-                                                   DateTime                    Timestamp)
+                                                   DateTimeOffset             Timestamp)
         {
 
             if (TryGetChargingStationById(ChargingStationId, out var chargingStation))
             {
-
                 chargingStation.Status = new Timestamped<ChargingStationStatusType>(
                                              Timestamp,
                                              NewStatus
                                          );
-
             }
 
         }
@@ -2215,14 +2222,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingStationStatus      (ChargingStationId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
-        public async Task SetChargingStationStatus(ChargingStation_Id                                    ChargingStationId,
+        public async Task SetChargingStationStatus(ChargingStation_Id                                   ChargingStationId,
                                                    IEnumerable<Timestamped<ChargingStationStatusType>>  StatusList,
-                                                   ChangeMethods                                         ChangeMethod  = ChangeMethods.Replace)
+                                                   ChangeMethods                                        ChangeMethod  = ChangeMethods.Replace)
         {
 
             if (TryGetChargingStationById(ChargingStationId, out var chargingStation))
             {
-                chargingStation.SetStatus(StatusList, ChangeMethod);
+                chargingStation.SetStatus(
+                    StatusList,
+                    ChangeMethod
+                );
             }
 
             //if (SendUpstream)
@@ -2910,7 +2920,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region EVSEIds                (IncludeEVSEs = null)
+        #region EVSEIds                 (IncludeEVSEs = null)
 
         /// <summary>
         /// Return an enumeration of all EVSE identifications.
@@ -2929,7 +2939,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region EVSEAdminStatus        (IncludeEVSEs = null)
+        #region EVSEAdminStatus         (IncludeEVSEs = null)
 
         /// <summary>
         /// Return an enumeration of all EVSE admin status.
@@ -2948,7 +2958,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region EVSEAdminStatusSchedule(IncludeEVSEs = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
+        #region EVSEAdminStatusSchedule (IncludeEVSEs = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
 
         /// <summary>
         /// Return the admin status of all EVSEs registered within this roaming network.
@@ -2983,7 +2993,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region EVSEStatus             (IncludeEVSEs = null)
+        #region EVSEStatus              (IncludeEVSEs = null)
 
         /// <summary>
         /// Return an enumeration of all EVSE status.
@@ -3003,7 +3013,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region EVSEStatusSchedule     (IncludeEVSEs = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
+        #region EVSEStatusSchedule      (IncludeEVSEs = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
 
         /// <summary>
         /// Return the admin status of all EVSEs registered within this roaming network.
@@ -3039,7 +3049,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region ContainsEVSE(EVSE)
+        #region ContainsEVSE                  (EVSE)
 
         /// <summary>
         /// Check if the given EVSE is already present within the Charging Station Operator.
@@ -3051,7 +3061,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ContainsEVSE(EVSEId)
+        #region ContainsEVSE                  (EVSEId)
 
         /// <summary>
         /// Check if the given EVSE identification is already present within the Charging Station Operator.
@@ -3072,7 +3082,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region GetEVSEById(EVSEId)
+        #region GetEVSEById                   (EVSEId)
 
         public IEVSE? GetEVSEById(EVSE_Id EVSEId)
         {
@@ -3099,14 +3109,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region TryGetEVSEById(EVSEId, out EVSE)
+        #region TryGetEVSEById                (EVSEId, out EVSE)
 
-        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE? EVSE)
+        public Boolean TryGetEVSEById(EVSE_Id                         EVSEId,
+                                      [NotNullWhen(true)] out IEVSE?  EVSE)
 
-            => evseLookup.TryGetValue(EVSEId, out EVSE);
+            => evseLookup.TryGetValue(
+                   EVSEId,
+                   out EVSE
+               );
 
 
-        public Boolean TryGetEVSEById(EVSE_Id? EVSEId, out IEVSE? EVSE)
+        public Boolean TryGetEVSEById(EVSE_Id?                        EVSEId,
+                                      [NotNullWhen(true)] out IEVSE?  EVSE)
         {
 
             if (!EVSEId.HasValue)
@@ -3115,15 +3130,19 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
             }
 
-            return evseLookup.TryGetValue(EVSEId.Value, out EVSE);
+            return evseLookup.TryGetValue(
+                       EVSEId.Value,
+                       out EVSE
+                   );
 
         }
 
         #endregion
 
-        #region TryGetChargingStationByEVSEId(EVSEId, out ChargingStation)
+        #region TryGetChargingStationByEVSEId (EVSEId, out ChargingStation)
 
-        public Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out IChargingStation? ChargingStation)
+        public Boolean TryGetChargingStationByEVSEId(EVSE_Id                                    EVSEId,
+                                                     [NotNullWhen(true)] out IChargingStation?  ChargingStation)
         {
 
             if (evseLookup.TryGetValue(EVSEId, out var evse))
@@ -3137,7 +3156,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public Boolean TryGetChargingStationByEVSEId(EVSE_Id? EVSEId, out IChargingStation? ChargingStation)
+        public Boolean TryGetChargingStationByEVSEId(EVSE_Id?                                   EVSEId,
+                                                     [NotNullWhen(true)] out IChargingStation?  ChargingStation)
         {
 
             if (EVSEId.HasValue &&
@@ -3154,9 +3174,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region TryGetChargingPoolByEVSEId   (EVSEId, out ChargingPool)
+        #region TryGetChargingPoolByEVSEId    (EVSEId, out ChargingPool)
 
-        public Boolean TryGetChargingPoolByEVSEId(EVSE_Id EVSEId, out IChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolByEVSEId(EVSE_Id                                 EVSEId,
+                                                  [NotNullWhen(true)] out IChargingPool?  ChargingPool)
         {
 
             if (evseLookup.TryGetValue(EVSEId, out var evse))
@@ -3170,7 +3191,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public Boolean TryGetChargingPoolByEVSEId(EVSE_Id? EVSEId, out IChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolByEVSEId(EVSE_Id?                                EVSEId,
+                                                  [NotNullWhen(true)] out IChargingPool?  ChargingPool)
         {
 
             if (EVSEId.HasValue &&
@@ -3188,13 +3210,12 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region SetEVSEAdminStatus(NewAdminStatus)
+        #region SetEVSEAdminStatus (NewAdminStatus)
 
         public void SetEVSEAdminStatus(EVSEAdminStatus NewAdminStatus)
         {
 
-            if (TryGetEVSEById(NewAdminStatus.Id, out var evse) &&
-                evse is not null)
+            if (TryGetEVSEById(NewAdminStatus.Id, out var evse))
             {
                 evse.AdminStatus = NewAdminStatus.TimestampedAdminStatus;
             }
@@ -3203,14 +3224,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region SetEVSEAdminStatus(EVSEId, NewAdminStatus)
+        #region SetEVSEAdminStatus (EVSEId, NewAdminStatus)
 
-        public void SetEVSEAdminStatus(EVSE_Id EVSEId,
-                                       EVSEAdminStatusType NewAdminStatus)
+        public void SetEVSEAdminStatus(EVSE_Id              EVSEId,
+                                       EVSEAdminStatusType  NewAdminStatus)
         {
 
-            if (TryGetEVSEById(EVSEId, out var evse) &&
-                evse is not null)
+            if (TryGetEVSEById(EVSEId, out var evse))
             {
                 evse.AdminStatus = NewAdminStatus;
             }
@@ -3219,14 +3239,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region SetEVSEAdminStatus(EVSEId, NewTimestampedAdminStatus)
+        #region SetEVSEAdminStatus (EVSEId, NewTimestampedAdminStatus)
 
-        public void SetEVSEAdminStatus(EVSE_Id                            EVSEId,
+        public void SetEVSEAdminStatus(EVSE_Id                           EVSEId,
                                        Timestamped<EVSEAdminStatusType>  NewTimestampedAdminStatus)
         {
 
-            if (TryGetEVSEById(EVSEId, out var evse) &&
-                evse is not null)
+            if (TryGetEVSEById(EVSEId, out var evse))
             {
                 evse.AdminStatus = NewTimestampedAdminStatus;
             }
@@ -3235,39 +3254,46 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region SetEVSEAdminStatus(EVSEId, NewAdminStatus, Timestamp)
+        #region SetEVSEAdminStatus (EVSEId, NewAdminStatus, Timestamp)
 
-        public void SetEVSEAdminStatus(EVSE_Id               EVSEId,
+        public void SetEVSEAdminStatus(EVSE_Id              EVSEId,
                                        EVSEAdminStatusType  NewAdminStatus,
-                                       DateTime              Timestamp)
+                                       DateTimeOffset       Timestamp)
         {
 
-            if (TryGetEVSEById(EVSEId, out var evse) &&
-                evse is not null)
+            if (TryGetEVSEById(EVSEId, out var evse))
             {
-                evse.AdminStatus = new Timestamped<EVSEAdminStatusType>(Timestamp, NewAdminStatus);
+                evse.AdminStatus = new Timestamped<EVSEAdminStatusType>(
+                                       Timestamp,
+                                       NewAdminStatus
+                                   );
             }
 
         }
 
         #endregion
 
-        #region SetEVSEAdminStatus(EVSEId, AdminStatusList, ChangeMethod = ChangeMethods.Replace)
+        #region SetEVSEAdminStatus (EVSEId, AdminStatusList, ChangeMethod = ChangeMethods.Replace)
 
-        public void SetEVSEAdminStatus(EVSE_Id                                         EVSEId,
+        public void SetEVSEAdminStatus(EVSE_Id                                        EVSEId,
                                        IEnumerable<Timestamped<EVSEAdminStatusType>>  AdminStatusList,
-                                       ChangeMethods                                   ChangeMethod  = ChangeMethods.Replace)
+                                       ChangeMethods                                  ChangeMethod  = ChangeMethods.Replace)
         {
-            if (TryGetEVSEById(EVSEId, out var evse) &&
-                evse is not null)
+
+            if (TryGetEVSEById(EVSEId, out var evse))
             {
-                evse.SetAdminStatus(AdminStatusList, ChangeMethod);
+                evse.SetAdminStatus(
+                         AdminStatusList,
+                         ChangeMethod
+                     );
             }
+
         }
 
         #endregion
 
-        #region ApplyEVSEAdminStatusDiff(EVSEAdminStatusDiff)
+
+        #region ApplyEVSEAdminStatusDiff (EVSEAdminStatusDiff)
 
         public EVSEAdminStatusDiff ApplyEVSEAdminStatusDiff(EVSEAdminStatusDiff EVSEAdminStatusDiff)
         {
@@ -3292,13 +3318,13 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region SetEVSEStatus(NewStatus)
+
+        #region SetEVSEStatus (NewStatus)
 
         public void SetEVSEStatus(EVSEStatus  NewStatus)
         {
 
-            if (TryGetEVSEById(NewStatus.Id, out var evse) &&
-                evse is not null)
+            if (TryGetEVSEById(NewStatus.Id, out var evse))
             {
                 evse.SetStatus(NewStatus);
             }
@@ -3307,14 +3333,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region SetEVSEStatus(EVSEId, NewStatus)
+        #region SetEVSEStatus (EVSEId, NewStatus)
 
-        public void SetEVSEStatus(EVSE_Id          EVSEId,
+        public void SetEVSEStatus(EVSE_Id         EVSEId,
                                   EVSEStatusType  NewStatus)
         {
 
-            if (TryGetEVSEById(EVSEId, out var evse) &&
-                evse is not null)
+            if (TryGetEVSEById(EVSEId, out var evse))
             {
                 evse.Status = NewStatus;
             }
@@ -3323,14 +3348,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region SetEVSEStatus(EVSEId, NewTimestampedStatus)
+        #region SetEVSEStatus (EVSEId, NewTimestampedStatus)
 
-        public void SetEVSEStatus(EVSE_Id                       EVSEId,
+        public void SetEVSEStatus(EVSE_Id                      EVSEId,
                                   Timestamped<EVSEStatusType>  NewTimestampedStatus)
         {
 
-            if (TryGetEVSEById(EVSEId, out var evse) &&
-                evse is not null)
+            if (TryGetEVSEById(EVSEId, out var evse))
             {
                 evse.Status = NewTimestampedStatus;
             }
@@ -3339,39 +3363,45 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region SetEVSEStatus(EVSEId, NewStatus, Timestamp)
+        #region SetEVSEStatus (EVSEId, NewStatus, Timestamp)
 
-        public void SetEVSEStatus(EVSE_Id          EVSEId,
+        public void SetEVSEStatus(EVSE_Id         EVSEId,
                                   EVSEStatusType  NewStatus,
-                                  DateTime         Timestamp)
+                                  DateTimeOffset  Timestamp)
         {
 
-            if (TryGetEVSEById(EVSEId, out var evse) &&
-                evse is not null)
+            if (TryGetEVSEById(EVSEId, out var evse))
             {
-                evse.Status = new Timestamped<EVSEStatusType>(Timestamp, NewStatus);
+
+                evse.Status = new Timestamped<EVSEStatusType>(
+                                  Timestamp,
+                                  NewStatus
+                              );
+
             }
 
         }
 
         #endregion
 
-        #region SetEVSEStatus(EVSEId, StatusList, ChangeMethod = ChangeMethods.Replace)
+        #region SetEVSEStatus (EVSEId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
-        public void SetEVSEStatus(EVSE_Id                                    EVSEId,
+        public void SetEVSEStatus(EVSE_Id                                   EVSEId,
                                   IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
-                                  ChangeMethods                              ChangeMethod  = ChangeMethods.Replace)
+                                  ChangeMethods                             ChangeMethod  = ChangeMethods.Replace)
         {
-            if (TryGetEVSEById(EVSEId, out var evse) &&
-                evse is not null)
+
+            if (TryGetEVSEById(EVSEId, out var evse))
             {
                 evse.SetStatus(StatusList, ChangeMethod);
             }
+
         }
 
         #endregion
 
-        #region CalcEVSEStatusDiff(EVSEStatus, IncludeEVSE = null)
+
+        #region CalcEVSEStatusDiff  (EVSEStatus, IncludeEVSE = null)
 
         //public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusType>  EVSEStatus,
         //                                         Func<EVSE, Boolean>                  IncludeEVSE  = null)
@@ -3454,7 +3484,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ApplyEVSEStatusDiff(EVSEStatusDiff)
+        #region ApplyEVSEStatusDiff (EVSEStatusDiff)
 
         public EVSEStatusDiff ApplyEVSEStatusDiff(EVSEStatusDiff EVSEStatusDiff)
         {
@@ -3499,7 +3529,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, NewValue,       OldValue       = null, DataSource = null)
+        #region (internal) UpdateEVSEData        (Timestamp, EventTrackingId, EVSE, NewValue,       OldValue       = null, DataSource = null)
 
         /// <summary>
         /// Update the static data of an EVSE.
@@ -3543,7 +3573,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, NewAdminStatus, OldAdminStatus = null, DataSource = null)
+        #region (internal) UpdateEVSEAdminStatus (Timestamp, EventTrackingId, EVSE, NewAdminStatus, OldAdminStatus = null, DataSource = null)
 
         /// <summary>
         /// Update the current admin status of an EVSE.
@@ -3584,7 +3614,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, EVSE, NewStatus,      OldStatus      = null, DataSource = null)
+        #region (internal) UpdateEVSEStatus      (Timestamp, EventTrackingId, EVSE, NewStatus,      OldStatus      = null, DataSource = null)
 
         /// <summary>
         /// Update the current status of an EVSE.
@@ -6299,7 +6329,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region RemoteStart(ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
+        #region RemoteStart (ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Start a charging session at the given EVSE.
@@ -6476,7 +6506,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region RemoteStop (SessionId, ReservationHandling = null, ProviderId = null, RemoteAuthentication = null, ...)
+        #region RemoteStop  (SessionId, ReservationHandling = null, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Stop the given charging session.

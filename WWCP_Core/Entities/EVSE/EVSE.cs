@@ -1240,17 +1240,21 @@ namespace cloud.charging.open.protocols.WWCP
         public void SetStatus(EVSEStatus EVSEStatus)
         {
 
-            statusSchedule.Insert(EVSEStatus.Status,
-                                  EVSEStatus.Timestamp,
-                                  EVSEStatus.Context);
+            statusSchedule.Insert(
+                EVSEStatus.Status,
+                EVSEStatus.Timestamp,
+                EVSEStatus.Context
+            );
 
         }
 
         public void SetStatus(EVSEStatusUpdate EVSEStatusUpdate)
         {
 
-            statusSchedule.Insert(EVSEStatusUpdate.NewStatus,
-                                  EVSEStatusUpdate.Context);
+            statusSchedule.Insert(
+                EVSEStatusUpdate.NewStatus,
+                EVSEStatusUpdate.Context
+            );
 
         }
 
