@@ -112,3 +112,6 @@ Backup*/
 UpgradeLog*.XML
 
 *.userprefs
+
+WWCP_WebAPI/HTTPRoot/css/*.css
+WWCP_WebAPI/HTTPRoot/css/*.min.css
