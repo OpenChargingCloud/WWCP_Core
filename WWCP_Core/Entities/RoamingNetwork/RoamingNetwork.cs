@@ -1667,7 +1667,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendChargingStationOperatorData.WhenAll(target => target.AddChargingStationOperator(ChargingStationOperator));
+                var results = allSendChargingStationOperatorData.WhenAll((target, ct) => target.AddChargingStationOperator(ChargingStationOperator));
 
             }
             catch (Exception e)
@@ -1707,10 +1707,10 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendChargingStationOperatorData.WhenAll(target => target.UpdateChargingStationOperator(ChargingStationOperator,
-                                                                                                                        PropertyName,
-                                                                                                                        OldValue,
-                                                                                                                        NewValue));
+                var results = allSendChargingStationOperatorData.WhenAll((target, ct) => target.UpdateChargingStationOperator(ChargingStationOperator,
+                                                                                                                              PropertyName,
+                                                                                                                              OldValue,
+                                                                                                                              NewValue));
 
             }
             catch (Exception e)
@@ -1750,7 +1750,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendChargingStationOperatorData.WhenAll(target => target.DeleteChargingStationOperator(ChargingStationOperator));
+                var results = allSendChargingStationOperatorData.WhenAll((target, ct) => target.DeleteChargingStationOperator(ChargingStationOperator));
 
             }
             catch (Exception e)
@@ -3405,7 +3405,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateChargingStationOperatorAdminStatus(new[] {
+                var results = allSendAdminStatus.WhenAll((iSendAdminStatus, ct) => iSendAdminStatus.UpdateChargingStationOperatorAdminStatus(new[] {
                                                                                                                                           new ChargingStationOperatorAdminStatusUpdate(
                                                                                                                                               ChargingStationOperator.Id,
                                                                                                                                               OldAdminStatus,
@@ -3500,7 +3500,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendStatus.WhenAll(iSendStatus => iSendStatus.UpdateChargingStationOperatorStatus(new[] {
+                var results = allSendStatus.WhenAll((iSendStatus, ct) => iSendStatus.UpdateChargingStationOperatorStatus(new[] {
                                                                                                                       new ChargingStationOperatorStatusUpdate(
                                                                                                                           ChargingStationOperator.Id,
                                                                                                                           OldStatus,
@@ -3586,7 +3586,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendChargingPoolData.WhenAll(target => target.AddChargingPool(ChargingPool));
+                var results = allSendChargingPoolData.WhenAll((target, ct) => target.AddChargingPool(ChargingPool));
 
             }
             catch (Exception e)
@@ -3638,7 +3638,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendChargingPoolData.WhenAll(target => target.UpdateChargingPool(ChargingPool,
+                var results = allSendChargingPoolData.WhenAll((target, ct) => target.UpdateChargingPool(ChargingPool,
                                                                                                   PropertyName,
                                                                                                   NewValue,
                                                                                                   OldValue,
@@ -3681,7 +3681,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendChargingPoolData.WhenAll(target => target.DeleteChargingPool(ChargingPool));
+                var results = allSendChargingPoolData.WhenAll((target, ct) => target.DeleteChargingPool(ChargingPool));
 
             }
             catch (Exception e)
@@ -3909,7 +3909,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateChargingPoolAdminStatus([
+                var results = allSendAdminStatus.WhenAll((iSendAdminStatus, ct) => iSendAdminStatus.UpdateChargingPoolAdminStatus([
                                                                                                                                new ChargingPoolAdminStatusUpdate(
                                                                                                                                    ChargingPool.Id,
                                                                                                                                    NewAdminStatus,
@@ -4007,7 +4007,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendStatus.WhenAll(iSendStatus => iSendStatus.UpdateChargingPoolStatus([
+                var results = allSendStatus.WhenAll((iSendStatus, ct) => iSendStatus.UpdateChargingPoolStatus([
                                                                                                            new ChargingPoolStatusUpdate(
                                                                                                                ChargingPool.Id,
                                                                                                                NewStatus,
@@ -4095,7 +4095,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendChargingStationData.WhenAll(target => target.AddChargingStation(ChargingStation,
+                var results = allSendChargingStationData.WhenAll((target, ct) => target.AddChargingStation(ChargingStation,
                                                                                                      EventTrackingId: EventTrackingId));
 
             }
@@ -4147,7 +4147,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendChargingStationData.WhenAll(iSendData => iSendData.UpdateChargingStation(ChargingStation,
+                var results = allSendChargingStationData.WhenAll((iSendData, ct) => iSendData.UpdateChargingStation(ChargingStation,
                                                                                                               PropertyName,
                                                                                                               NewValue,
                                                                                                               OldValue,
@@ -4191,7 +4191,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendChargingStationData.WhenAll(target => target.DeleteChargingStation(ChargingStation));
+                var results = allSendChargingStationData.WhenAll((target, ct) => target.DeleteChargingStation(ChargingStation));
 
             }
             catch (Exception e)
@@ -4467,7 +4467,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateChargingStationAdminStatus([
+                var results = allSendAdminStatus.WhenAll((iSendAdminStatus, ct) => iSendAdminStatus.UpdateChargingStationAdminStatus([
                                                                                                                                   new ChargingStationAdminStatusUpdate(
                                                                                                                                       ChargingStation.Id,
                                                                                                                                       NewAdminStatus,
@@ -4584,7 +4584,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendStatus.WhenAll(iSendStatus => iSendStatus.UpdateChargingStationStatus([
+                var results = allSendStatus.WhenAll((iSendStatus, ct) => iSendStatus.UpdateChargingStationStatus([
                                                                                                               new ChargingStationStatusUpdate(
                                                                                                                   ChargingStation.Id,
                                                                                                                   NewStatus,
@@ -4670,7 +4670,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendEVSEData.WhenAll(target => target.AddEVSE(EVSE,
+                var results = allSendEVSEData.WhenAll((target, ct) => target.AddEVSE(EVSE,
                                                                                EventTrackingId: EventTrackingId));
 
             }
@@ -4712,7 +4712,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendEVSEData.WhenAll(target => target.UpdateEVSE(EVSE,
+                var results = allSendEVSEData.WhenAll((target, ct) => target.UpdateEVSE(EVSE,
                                                                                   PropertyName,
                                                                                   NewValue,
                                                                                   OldValue,
@@ -4767,7 +4767,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendEVSEData.WhenAll(target => target.DeleteEVSE(EVSE));
+                var results = allSendEVSEData.WhenAll((target, ct) => target.DeleteEVSE(EVSE));
 
             }
             catch (Exception e)
