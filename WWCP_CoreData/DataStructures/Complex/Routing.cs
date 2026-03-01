@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                 if (reachabilityGroup.Count() > 1)
                 {
 
-                    var shuffledGroup     = reachabilityGroup.OrderBy(_ => Guid.NewGuid()).ToArray();
+                    var shuffledGroup     = reachabilityGroup.OrderBy(_ => UUIDv7.Generate()).ToArray();
                     var totalWeight       = reachabilityGroup.Sum(reachability => reachability.Weight);
                     var randomNumber      = new Random().Next(0, totalWeight);
                     //var currentWeightSum  = 0;

@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ParkingProduct_Id New
 
-            => ParkingProduct_Id.Parse(Guid.NewGuid().ToString());
+            => ParkingProduct_Id.Parse(UUIDv7.Generate().ToString());
 
         #endregion
 

@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Returns a new parking space identification.
         /// </summary>
         public static ParkingSpace_Id New
-            => ParkingSpace_Id.Parse(Guid.NewGuid().ToString());
+            => ParkingSpace_Id.Parse(UUIDv7.Generate().ToString());
 
         #endregion
 

@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Returns a new brand identification.
         /// </summary>
         public static Brand_Id New
-            => Parse(Guid.NewGuid().ToString());
+            => Parse(UUIDv7.Generate().ToString());
 
         #endregion
 

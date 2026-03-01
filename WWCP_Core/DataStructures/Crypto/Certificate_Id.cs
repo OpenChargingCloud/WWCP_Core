@@ -106,8 +106,8 @@ namespace cloud.charging.open.protocols.WWCP
         public static Certificate_Id NewRandom(Func<String, String>? Mapper = null)
 
             => new(Mapper is not null
-                        ? Mapper(Guid.NewGuid().ToString())
-                        : Guid.NewGuid().ToString());
+                        ? Mapper(UUIDv7.Generate().ToString())
+                        : UUIDv7.Generate().ToString());
 
         #endregion
 

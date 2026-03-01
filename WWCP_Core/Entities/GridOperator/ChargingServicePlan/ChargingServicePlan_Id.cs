@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new random charging service plan identification.
         /// </summary>
         public static ChargingServicePlan_Id NewRandom
-            => Parse(Guid.NewGuid().ToString());
+            => Parse(UUIDv7.Generate().ToString());
 
         #endregion
 

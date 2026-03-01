@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
             get
             {
-                return new ParkingSensor_Id(Guid.NewGuid().ToString());
+                return new ParkingSensor_Id(UUIDv7.Generate().ToString());
             }
         }
 
