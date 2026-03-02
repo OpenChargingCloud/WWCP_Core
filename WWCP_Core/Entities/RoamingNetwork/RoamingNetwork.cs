@@ -1603,7 +1603,7 @@ namespace cloud.charging.open.protocols.WWCP
                     }
                 }
 
-                return Array.Empty<IChargingStationOperator>();
+                return [];
 
             }
         }
@@ -1642,7 +1642,7 @@ namespace cloud.charging.open.protocols.WWCP
                 }
             }
 
-            return Array.Empty<ChargingStationOperator_Id>();
+            return [];
 
         }
 
@@ -4670,8 +4670,10 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var results = allSendEVSEData.WhenAll((target, ct) => target.AddEVSE(EVSE,
-                                                                               EventTrackingId: EventTrackingId));
+                var results = allSendEVSEData.WhenAll((target, ct) => target.AddEVSE(
+                                                                          EVSE,
+                                                                          EventTrackingId: EventTrackingId
+                                                                      ));
 
             }
             catch (Exception e)
