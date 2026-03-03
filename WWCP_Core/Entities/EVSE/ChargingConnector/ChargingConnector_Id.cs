@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Parse   (Text)
+        #region (static) Parse    (Text)
 
         /// <summary>
         /// Parse the given text as a charging connector identification.
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) Parse   (Number)
+        #region (static) Parse    (Number)
 
         /// <summary>
         /// Parse the given number as a charging connector identification.
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParse(Text)
+        #region (static) TryParse (Text)
 
         /// <summary>
         /// Try to parse the given text as a charging connector identification.
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParse(Number)
+        #region (static) TryParse (Number)
 
         /// <summary>
         /// Try to parse the given number as a charging connector identification.
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParse(Text,   out ChargingConnectorId)
+        #region (static) TryParse (Text,   out ChargingConnectorId)
 
         /// <summary>
         /// Try to parse the given text as a charging connector identification.
@@ -192,9 +192,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Text = Text.Trim();
 
-            if (Text.IsNotNullOrEmpty() &&
-                Text.Length >= 1        &&
-                Text.Length <= 3)
+            if (Text.IsNotNullOrEmpty())
             {
                 try
                 {
@@ -212,7 +210,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParse(Number, out ChargingConnectorId)
+        #region (static) TryParse (Number, out ChargingConnectorId)
 
         /// <summary>
         /// Try to parse the given number as a charging connector identification.
