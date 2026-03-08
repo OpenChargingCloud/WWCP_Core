@@ -79,7 +79,7 @@ enum SearchResultsMode {
 
 
 
-interface IOCPIResponse {
+interface IWWCPResponse {
     data:                            any;
     status_code:                     number;
     status_message?:                 string;
@@ -103,9 +103,9 @@ function EncodeToken(AccessToken: string) {
 
 //#endregion
 
-// #region OCPIGet(RessourceURI, OnSuccess, OnError)
+// #region WWCPGet(RessourceURI, OnSuccess, OnError)
 
-function OCPIGet(RessourceURI: string,
+function WWCPGet(RessourceURI: string,
                  OnSuccess: (httpStatusCode: number, httpContent: string, httpHeaders: (key: string) => string | null) => void,
                  OnError:   (httpStatusCode: number, httpContent: string, httpHeaders: (key: string) => string | null) => void) {
 
@@ -150,7 +150,7 @@ function OCPIGet(RessourceURI: string,
 // #endregion
 
 
-async function OCPIGetAsync(RessourceURI: string): Promise<[IOCPIResponse, (key: string) => string | null]> {
+async function WWCPGetAsync(RessourceURI: string): Promise<[IWWCPResponse, (key: string) => string | null]> {
 
     return new Promise((resolve, reject) => {
 
@@ -170,7 +170,7 @@ async function OCPIGetAsync(RessourceURI: string): Promise<[IOCPIResponse, (key:
                 if (this.status >= 100 && this.status < 300) {
                     try {
 
-                        const ocpiResponse = JSON.parse(ajax.responseText) as IOCPIResponse;
+                        const ocpiResponse = JSON.parse(ajax.responseText) as IWWCPResponse;
 
                         if (ocpiResponse.status_code >= 1000 &&
                             ocpiResponse.status_code <  2000) {
@@ -196,7 +196,7 @@ async function OCPIGetAsync(RessourceURI: string): Promise<[IOCPIResponse, (key:
 }
 
 
-function OCPIStartSearch<TSearchResult>(requestURL:   string,
+function WWCPStartSearch<TSearchResult>(requestURL:   string,
                                         nameOfItem:   string,
                                         idOfItem:     (searchResult: TSearchResult) => string,
                                         nameOfItems:  string,
@@ -207,7 +207,7 @@ function OCPIStartSearch<TSearchResult>(requestURL:   string,
                                         startView?:   SearchResultsMode,
                                         context?:     SearchContext) {
 
-    return OCPIStartSearch2<any, TSearchResult>(
+    return WWCPStartSearch2<any, TSearchResult>(
                requestURL,
                () => "",
                () => { },
@@ -224,7 +224,7 @@ function OCPIStartSearch<TSearchResult>(requestURL:   string,
 
 }
 
-function OCPIStartSearch2<TMetadata extends TMetadataDefaults, TSearchResult>(requestURL:     string,
+function WWCPStartSearch2<TMetadata extends TMetadataDefaults, TSearchResult>(requestURL:     string,
                                                                               searchFilters:  SearchFilter,
                                                                               doStartUp:      SearchStartUp<TMetadata>,
                                                                               nameOfItem:     string,
@@ -316,7 +316,7 @@ function OCPIStartSearch2<TMetadata extends TMetadataDefaults, TSearchResult>(re
         if (downLoadButton)
             downLoadButton.href = requestURL + "download" + filters;
 
-        OCPIGet(requestURL + filters + "&offset=" + offset + "&limit=" + limit,
+        WWCPGet(requestURL + filters + "&offset=" + offset + "&limit=" + limit,
 
                 (status, response, httpHeaders) => {
 
@@ -325,7 +325,7 @@ function OCPIStartSearch2<TMetadata extends TMetadataDefaults, TSearchResult>(re
 
                         if (status == 200 && response) {
 
-                            const ocpiResponse = JSON.parse(response) as IOCPIResponse;
+                            const ocpiResponse = JSON.parse(response) as IWWCPResponse;
 
                             if (ocpiResponse.status_code >= 1000 &&
                                 ocpiResponse.status_code <  2000)
@@ -445,7 +445,7 @@ function OCPIStartSearch2<TMetadata extends TMetadataDefaults, TSearchResult>(re
 
                             }
                             else
-                                DoSearchError("OCPI Status Code " + ocpiResponse.status_code + (ocpiResponse.status_message ? ": " + ocpiResponse.status_message : ""));
+                                DoSearchError("WWCP Status Code " + ocpiResponse.status_code + (ocpiResponse.status_message ? ": " + ocpiResponse.status_message : ""));
 
                         }
                         else
@@ -644,7 +644,7 @@ function OCPIStartSearch2<TMetadata extends TMetadataDefaults, TSearchResult>(re
 }
 
 
-async function OCPIGetCollection<TMetadata extends TMetadataDefaults, TSearchResult>(requestURL:    string,
+async function WWCPGetCollection<TMetadata extends TMetadataDefaults, TSearchResult>(requestURL:    string,
                                                                                      doStartUp:     SearchStartUp<TMetadata>,
                                                                                      nameOfItems:   string,
                                                                                      doStatistics:  StatisticsDelegate<TSearchResult>,
@@ -690,7 +690,7 @@ async function OCPIGetCollection<TMetadata extends TMetadataDefaults, TSearchRes
 
     do {
 
-        const [ocpiResponse, httpHeaders] = await OCPIGetAsync(requestURL + "offset=" + offset + "&limit=" + limit);
+        const [ocpiResponse, httpHeaders] = await WWCPGetAsync(requestURL + "offset=" + offset + "&limit=" + limit);
 
         if (ocpiResponse.data &&
             Array.isArray(ocpiResponse.data) &&
@@ -751,7 +751,7 @@ async function OCPIGetCollection<TMetadata extends TMetadataDefaults, TSearchRes
 
 
 
-    //OCPIGet(
+    //WWCPGet(
     //
     //    requestURL + "offset=" + offset + "&limit=" + limit,
     //
@@ -764,7 +764,7 @@ async function OCPIGetCollection<TMetadata extends TMetadataDefaults, TSearchRes
     //
     //            if (status == 200 && response) {
     //
-    //                const ocpiResponse = JSON.parse(response) as IOCPIResponse;
+    //                const ocpiResponse = JSON.parse(response) as IWWCPResponse;
     //
     //                if (ocpiResponse.status_code >= 1000 &&
     //                    ocpiResponse.status_code <  2000)
@@ -845,7 +845,7 @@ async function OCPIGetCollection<TMetadata extends TMetadataDefaults, TSearchRes
     //
     //                }
     //                else
-    //                    DoSearchError("OCPI Status Code " + ocpiResponse.status_code + (ocpiResponse.status_message ? ": " + ocpiResponse.status_message : ""));
+    //                    DoSearchError("WWCP Status Code " + ocpiResponse.status_code + (ocpiResponse.status_message ? ": " + ocpiResponse.status_message : ""));
     //
     //            }
     //            else

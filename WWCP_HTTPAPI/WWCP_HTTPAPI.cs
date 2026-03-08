@@ -974,44 +974,44 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// WWCP Core.
         /// </summary>
-        public ConcurrentDictionary<HTTPHostname, IWWCPCore>  WWCPCores                     { get; } = [];
+        public ConcurrentDictionary<HTTPHostname, IWWCPCore>  WWCPCores                    { get; } = [];
 
 
         /// <summary>
         /// An optional additional URL path prefix.
         /// </summary>
-        public HTTPPath?                                      AdditionalURLPathPrefix       { get; }
+        public HTTPPath?                                      AdditionalURLPathPrefix      { get; }
 
         /// <summary>
         /// Whether this API allows anonymous read access.
         /// </summary>
-        public Boolean                                        AllowsAnonymousReadAccesss    { get; }
+        public Boolean                                        AllowAnonymousReadAccesss    { get; }
 
         /// <summary>
         /// Allow anonymous access to locations as Open Data.
         /// </summary>
-        public Boolean                                        LocationsAsOpenData           { get; }
+        public Boolean                                        LocationsAsOpenData          { get; }
 
         /// <summary>
         /// Allow anonymous access to tariffs as Open Data.
         /// </summary>
-        public Boolean                                        TariffsAsOpenData             { get; }
+        public Boolean                                        TariffsAsOpenData            { get; }
 
         /// <summary>
         /// (Dis-)allow PUTting of object having an earlier 'LastUpdated'-timestamp then already existing objects.
         /// WWCP v2.2 does not define any behaviour for this.
         /// </summary>
-        public Boolean?                                       AllowDowngrades               { get; }
+        public Boolean?                                       AllowDowngrades              { get; }
 
         ///// <summary>
         ///// The logging context.
         ///// </summary>
-        //public String?                                        LoggingContext                { get; }
+        //public String?                                        LoggingContext               { get; }
 
         /// <summary>
         /// The WWCP HTTP API logger.
         /// </summary>
-        public WWCP_HTTPAPI_Logger?                           Logger                        { get; set; }
+        public WWCP_HTTPAPI_Logger?                           Logger                       { get; set; }
 
         #endregion
 
@@ -1245,39 +1245,40 @@ namespace cloud.charging.open.protocols.WWCP
                             //URL                            OurBaseURL,
                             //URL                            OurVersionsURL,
 
-                            IEnumerable<HTTPHostname>?     Hostnames                 = null,
-                            HTTPPath?                      RootPath                  = null,
-                            IEnumerable<HTTPContentType>?  HTTPContentTypes          = null,
-                            I18NString?                    Description               = null,
+                            IEnumerable<HTTPHostname>?     Hostnames                   = null,
+                            HTTPPath?                      RootPath                    = null,
+                            IEnumerable<HTTPContentType>?  HTTPContentTypes            = null,
+                            I18NString?                    Description                 = null,
 
-                            HTTPPath?                      BasePath                  = null,  // For URL prefixes in HTML!
+                            HTTPPath?                      BasePath                    = null,  // For URL prefixes in HTML!
 
-                            String?                        ExternalDNSName           = null,
-                            String?                        HTTPServerName            = DefaultHTTPServerName,
-                            String?                        HTTPServiceName           = DefaultHTTPServiceName,
-                            String?                        APIVersionHash            = null,
-                            JObject?                       APIVersionHashes          = null,
+                            String?                        ExternalDNSName             = null,
+                            String?                        HTTPServerName              = DefaultHTTPServerName,
+                            String?                        HTTPServiceName             = DefaultHTTPServiceName,
+                            String?                        APIVersionHash              = null,
+                            JObject?                       APIVersionHashes            = null,
 
-                            EMailAddress?                  APIRobotEMailAddress      = null,
-                            String?                        APIRobotGPGPassphrase     = null,
-                            ISMTPClient?                   SMTPClient                = null,
+                            EMailAddress?                  APIRobotEMailAddress        = null,
+                            String?                        APIRobotGPGPassphrase       = null,
+                            ISMTPClient?                   SMTPClient                  = null,
 
-                            HTTPPath?                      AdditionalURLPathPrefix   = null,
-                            Boolean                        LocationsAsOpenData       = true,
-                            Boolean                        TariffsAsOpenData         = false,
-                            Boolean?                       AllowDowngrades           = null,
+                            HTTPPath?                      AdditionalURLPathPrefix     = null,
+                            Boolean?                       AllowAnonymousReadAccesss   = null,
+                            Boolean?                       LocationsAsOpenData         = null,
+                            Boolean?                       TariffsAsOpenData           = null,
+                            Boolean?                       AllowDowngrades             = null,
 
-                            Boolean?                       IsDevelopment             = null,
-                            IEnumerable<String>?           DevelopmentServers        = null,
-                            //Boolean?                       SkipURLTemplates          = false,
-                            //String?                        DatabaseFileName          = DefaultAssetsDBFileName,
-                            Boolean?                       DisableNotifications      = false,
+                            Boolean?                       IsDevelopment               = null,
+                            IEnumerable<String>?           DevelopmentServers          = null,
+                            //Boolean?                       SkipURLTemplates            = false,
+                            //String?                        DatabaseFileName            = DefaultAssetsDBFileName,
+                            Boolean?                       DisableNotifications        = false,
 
-                            Boolean?                       DisableLogging            = null,
-                            String?                        LoggingContext            = null,
-                            String?                        LoggingPath               = null,
-                            String?                        LogfileName               = null,
-                            WWCPLogfileCreatorDelegate?    LogfileCreator            = null)
+                            Boolean?                       DisableLogging              = null,
+                            String?                        LoggingContext              = null,
+                            String?                        LoggingPath                 = null,
+                            String?                        LogfileName                 = null,
+                            WWCPLogfileCreatorDelegate?    LogfileCreator              = null)
 
             : base(Description ?? I18NString.Create("WWCP HTTP API"),
                    HTTPAPI,
@@ -1303,10 +1304,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             //this.WWCPCores.TryAdd(HTTPHostname.Any, WWCPCore);
 
-            this.AdditionalURLPathPrefix  = AdditionalURLPathPrefix;
-            this.LocationsAsOpenData      = LocationsAsOpenData;
-            this.TariffsAsOpenData        = TariffsAsOpenData;
-            this.AllowDowngrades          = AllowDowngrades;
+            this.AdditionalURLPathPrefix    = AdditionalURLPathPrefix;
+
+            this.AllowAnonymousReadAccesss  = AllowAnonymousReadAccesss ?? true;
+            this.LocationsAsOpenData        = LocationsAsOpenData       ?? true;
+            this.TariffsAsOpenData          = TariffsAsOpenData         ?? true;
+            this.AllowDowngrades            = AllowDowngrades           ?? false;
 
             RegisterURLTemplates();
 
@@ -1423,7 +1426,7 @@ namespace cloud.charging.open.protocols.WWCP
                             AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET" ],
                             AccessControlAllowHeaders  = [ "Authorization" ],
                             ContentType                = HTTPContentType.Text.PLAIN,
-                            Content                    = "This is an World Wide Charging Protocol v2.x HTTP service!".ToUTF8Bytes(),
+                            Content                    = "This is a World Wide Charging Protocol HTTP service!".ToUTF8Bytes(),
                             Connection                 = ConnectionType.KeepAlive,
                             Vary                       = "Accept"
                         }.AsImmutable)
@@ -1450,7 +1453,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Content                    = JSONObject.Create(
                                                              new JProperty(
                                                                  "message",
-                                                                 "This is an World Wide Charging Protocol v2.x HTTP service!"
+                                                                 "This is a World Wide Charging Protocol HTTP service!"
                                                              )
                                                          ).ToUTF8Bytes(),
                             Connection                 = ConnectionType.KeepAlive,
@@ -1481,7 +1484,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Check anonymous access
 
-                    if (!AllowsAnonymousReadAccesss)
+                    if (!AllowAnonymousReadAccesss)
                         return Task.FromResult(
                             new HTTPResponse.Builder(request) {
                                 HTTPStatusCode             = HTTPStatusCode.Unauthorized,
@@ -1526,7 +1529,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Check anonymous access
 
-                    if (!AllowsAnonymousReadAccesss)
+                    if (!AllowAnonymousReadAccesss)
                         return Task.FromResult(
                             new HTTPResponse.Builder(request) {
                                 HTTPStatusCode             = HTTPStatusCode.Unauthorized,
@@ -1572,7 +1575,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Check anonymous access
 
-                    if (!AllowsAnonymousReadAccesss)
+                    if (!AllowAnonymousReadAccesss)
                         return Task.FromResult(
                             new HTTPResponse.Builder(request) {
                                 HTTPStatusCode             = HTTPStatusCode.Unauthorized,
@@ -1687,7 +1690,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Check anonymous access
 
-                    if (!AllowsAnonymousReadAccesss)
+                    if (!AllowAnonymousReadAccesss)
                         return Task.FromResult(
                             new HTTPResponse.Builder(request) {
                                 HTTPStatusCode             = HTTPStatusCode.Unauthorized,
@@ -1764,7 +1767,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Check anonymous access
 
-                    if (!AllowsAnonymousReadAccesss)
+                    if (!AllowAnonymousReadAccesss)
                         return Task.FromResult(
                             new HTTPResponse.Builder(request) {
                                 HTTPStatusCode             = HTTPStatusCode.Unauthorized,
@@ -1821,7 +1824,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Check anonymous access
 
-                    if (!AllowsAnonymousReadAccesss)
+                    if (!AllowAnonymousReadAccesss)
                         return Task.FromResult(
                             new HTTPResponse.Builder(request) {
                                 HTTPStatusCode             = HTTPStatusCode.Unauthorized,
@@ -1884,7 +1887,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Check anonymous access
 
-                    if (!AllowsAnonymousReadAccesss)
+                    if (!AllowAnonymousReadAccesss)
                         return Task.FromResult(
                             new HTTPResponse.Builder(request) {
                                 HTTPStatusCode             = HTTPStatusCode.Unauthorized,
@@ -1950,7 +1953,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Check anonymous access
 
-                    if (!AllowsAnonymousReadAccesss)
+                    if (!AllowAnonymousReadAccesss)
                         return Task.FromResult(
                             new HTTPResponse.Builder(request) {
                                 HTTPStatusCode             = HTTPStatusCode.Unauthorized,
@@ -2006,7 +2009,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Check anonymous access
 
-                    if (!AllowsAnonymousReadAccesss)
+                    if (!AllowAnonymousReadAccesss)
                         return Task.FromResult(
                             new HTTPResponse.Builder(request) {
                                 HTTPStatusCode             = HTTPStatusCode.Unauthorized,
@@ -2063,7 +2066,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Check anonymous access
 
-                    if (!AllowsAnonymousReadAccesss)
+                    if (!AllowAnonymousReadAccesss)
                         return Task.FromResult(
                             new HTTPResponse.Builder(request) {
                                 HTTPStatusCode             = HTTPStatusCode.Unauthorized,
@@ -2576,7 +2579,6 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-
             #region GET         ~/RNs/{RoamingNetworkId}/ChargingSessions/MissingCDRResponses
 
             // ----------------------------------------------------------------------------------------------------------------------------
@@ -2752,7 +2754,6 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-
             #region GET      ~/support
 
             HTTPBaseAPI.AddHandler(
@@ -2770,7 +2771,7 @@ namespace cloud.charging.open.protocols.WWCP
                             AccessControlAllowMethods  = [ "GET" ],
                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                             ContentType                = HTTPContentType.Text.PLAIN,
-                            Content                    = "https://github.com/OpenChargingCloud/WWCP_WWCP".ToUTF8Bytes(),
+                            Content                    = "https://github.com/OpenChargingCloud/WWCP_Core".ToUTF8Bytes(),
                             Connection                 = ConnectionType.KeepAlive,
                             Vary                       = "Accept"
                         }.AsImmutable

@@ -4,9 +4,13 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>cloud.charging.open.protocols.WWCP.WebAPI</RootNamespace>
+    <AssemblyName>cloud.charging.open.protocols.WWCP.WebAPI</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="HTTPRoot\css\debugLog\debugLog.css" />
+    <None Remove="HTTPRoot\css\debugLog\debugLog.min.css" />
     <None Remove="HTTPRoot\css\index.css" />
     <None Remove="HTTPRoot\css\index.min.css" />
     <None Remove="HTTPRoot\css\template.css" />
@@ -14,17 +18,26 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="HTTPRoot\css\debugLog\debugLog.css" />
+    <EmbeddedResource Include="HTTPRoot\css\debugLog\debugLog.min.css" />
     <EmbeddedResource Include="HTTPRoot\css\index.css" />
     <EmbeddedResource Include="HTTPRoot\css\index.min.css" />
     <EmbeddedResource Include="HTTPRoot\css\template.css" />
     <EmbeddedResource Include="HTTPRoot\css\template.min.css" />
+    <EmbeddedResource Include="HTTPRoot\debugLog\debugLog.js" />
+    <EmbeddedResource Include="HTTPRoot\debugLog\debugLog.js.map" />
+    <EmbeddedResource Include="HTTPRoot\debugLog\debugLog.scss" />
+    <EmbeddedResource Include="HTTPRoot\debugLog\debugLog.shtml" />
+    <EmbeddedResource Include="HTTPRoot\debugLog\debugLog.ts" />
     <EmbeddedResource Include="HTTPRoot\defaults\defaults.js" />
     <EmbeddedResource Include="HTTPRoot\defaults\defaults.js.map" />
     <EmbeddedResource Include="HTTPRoot\defaults\defaults.ts" />
     <EmbeddedResource Include="HTTPRoot\defaults\_defaults.scss" />
     <EmbeddedResource Include="HTTPRoot\favicon.png" />
+    <EmbeddedResource Include="HTTPRoot\images\favicon_big.png" />
     <EmbeddedResource Include="HTTPRoot\index.scss" />
     <EmbeddedResource Include="HTTPRoot\index.shtml" />
+    <EmbeddedResource Include="HTTPRoot\support\support.shtml" />
     <EmbeddedResource Include="HTTPRoot\template.html" />
     <EmbeddedResource Include="HTTPRoot\template.scss" />
   </ItemGroup>
@@ -32,5 +45,9 @@
   <ItemGroup>
     <ProjectReference Include="..\WWCP_HTTPAPI\WWCP_HTTPAPI.csproj" />
   </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="tsc" />
+  </Target>
 
 </Project>

@@ -17,7 +17,7 @@
 
 #region Usings
 
-using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 using Newtonsoft.Json.Linq;
 
@@ -50,29 +50,29 @@ namespace cloud.charging.open.protocols.WWCP
         #region Data
 
         /// <summary>
-        /// The default HTTP URI prefix.
+        /// The default HTTP URL prefix.
         /// </summary>
-        public static readonly  HTTPPath            DefaultURLPathPrefix      = HTTPPath.Parse("webapi");
+        public     static readonly  HTTPPath       DefaultURLPathPrefix      = HTTPPath.Parse("webapi");
+
+        /// <summary>
+        /// The default HTTP server name.
+        /// </summary>
+        public new const            String         DefaultHTTPServerName     = "Open Charging Cloud WWCP WebAPI";
 
         /// <summary>
         /// The default HTTP service name.
         /// </summary>
-        public const            String              DefaultHTTPServerName     = $"Open Charging Cloud WWCP {Version.String} WebAPI";
-
-        /// <summary>
-        /// The default HTTP service name.
-        /// </summary>
-        public const            String              DefaultHTTPServiceName    = $"Open Charging Cloud WWCP {Version.String} WebAPI";
-
-        /// <summary>
-        /// The default HTTP realm, if HTTP Basic Authentication is used.
-        /// </summary>
-        public const            String              DefaultHTTPRealm          = $"Open Charging Cloud WWCP {Version.String} WebAPI";
+        public new const            String         DefaultHTTPServiceName    = "Open Charging Cloud WWCP WebAPI";
 
         /// <summary>
         /// The HTTP root for embedded resources.
         /// </summary>
-        public const            String              HTTPRoot                   = "cloud.charging.open.protocols.WWCPv2_1_1.WebAPI.HTTPRoot.";
+        public const                String         HTTPRoot                  = "cloud.charging.open.protocols.WWCP.WebAPI.HTTPRoot.";
+
+        ///// <summary>
+        ///// The default HTTP realm, if HTTP Basic Authentication is used.
+        ///// </summary>
+        //public const                String         DefaultHTTPRealm           = $"Open Charging Cloud WWCP {Version.String} WebAPI";
 
 
         //ToDo: http://www.iana.org/form/media-types
@@ -88,49 +88,37 @@ namespace cloud.charging.open.protocols.WWCP
         //public static readonly HTTPContentType                      WWCPPlusHTMLContentType    = new ("application", "vnd.WWCPPlus+html", "utf-8", null, null);
 
 
-        public static readonly HTTPEventSource_Id  DebugLogId                 = HTTPEventSource_Id.Parse($"WWCP{Version.String}_debugLog");
+        public static readonly HTTPEventSource_Id  DebugLogId                = HTTPEventSource_Id.Parse("WWCP_debugLog");
 
         /// <summary>
         /// The default WebAPI logfile name.
         /// </summary>
-        public  const          String              DefaultLogfileName         = $"WWCP{Version.String}_WebAPI.log";
+        public  const          String              DefaultLogfileName        = "WWCP_WebAPI.log";
 
         #endregion
 
         #region Properties
 
-        //public CommonWebAPI             CommonWebAPI    { get; }
-
-        //public CommonAPI                CommonAPI
-        //    => HTTPBaseAPI;
+        public WWCP_HTTPAPI              WWCP_HTTPAPI
+            => HTTPBaseAPI;
 
 
-        public HTTPPath                                     OverlayURLPathPrefix    { get; }
+        public HTTPPath?                 OverlayURLPathPrefix    { get; }
 
         /// <summary>
         /// The HTTP URI prefix.
         /// </summary>
-        public HTTPPath?                                    APIURLPathPrefix        { get; }
+        public HTTPPath?                 APIURLPathPrefix        { get; }
+
+        /// <summary>
+        /// Make use of HTTP Server Sent Events for debug information.
+        /// </summary>
+        public Boolean                   UseHTTPSSE              { get; }
 
         /// <summary>
         /// Debug information via HTTP Server Sent Events.
         /// </summary>
-    //    public HTTPEventSource<JObject>                     DebugLog                { get; }
-
-
-        //public CPOAPI?                                      CPOAPI                  { get; set; }
-
-        //public CPOAPILogger?                                CPOAPILogger            { get; set; }
-
-
-        //public EMSPAPI?                                     EMSPAPI                 { get; set; }
-
-        //public EMSPAPILogger?                               EMSPAPILogger           { get; set; }
-
-        /// <summary>
-        /// The default request timeout for new CPO/EMSP clients.
-        /// </summary>
-        //public TimeSpan?                                    RequestTimeout          { get; set; }
+        public HTTPEventSource<JObject>  DebugLog                { get; }
 
         #endregion
 
@@ -168,10 +156,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Attach the WWCP WebAPI to the given HTTP server.
         /// </summary>
-        /// <param name="HTTPBaseAPI.HTTPServer">A HTTP server.</param>
+        /// <param name="HTTPAPI">The WWCP HTTP API.</param>
+        /// 
+        /// <param name="OverlayURLPathPrefix">An optional prefix for the HTTP URIs.</param>
+        /// <param name="APIURLPathPrefix">An optional prefix for the HTTP URIs.</param>
         /// <param name="WebAPIURLPathPrefix">An optional prefix for the HTTP URIs.</param>
-        /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
-        /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
+        /// <param name="BasePath">The base path of the HTTP server.</param>
         public WWCP_WebAPI(WWCP_HTTPAPI             HTTPAPI,
 
                            I18NString?              Description            = null,
@@ -181,25 +171,27 @@ namespace cloud.charging.open.protocols.WWCP
                            HTTPPath?                WebAPIURLPathPrefix    = null,
                            HTTPPath?                BasePath               = null,  // For URL prefixes in HTML!
 
+                           Boolean?                 UseHTTPSSE             = null,
+
                            String?                  ExternalDNSName        = null,
                            String?                  HTTPServerName         = DefaultHTTPServerName,
                            String?                  HTTPServiceName        = DefaultHTTPServiceName,
                            String?                  APIVersionHash         = null,
                            JObject?                 APIVersionHashes       = null,
 
-                           Boolean?                 IsDevelopment          = false,
+                           Boolean?                 IsDevelopment          = null,
                            IEnumerable<String>?     DevelopmentServers     = null,
-                           Boolean?                 DisableNotifications   = false,
-                           Boolean?                 DisableLogging         = false,
+                           Boolean?                 DisableNotifications   = null,
+                           Boolean?                 DisableLogging         = null,
                            String?                  LoggingPath            = null,
                            String?                  LogfileName            = null,
                            LogfileCreatorDelegate?  LogfileCreator         = null)
 
             : base(HTTPAPI,
-                   OverlayURLPathPrefix + Version.String + WebAPIURLPathPrefix,
-                   HTTPAPI.BasePath + Version.String + BasePath,
+                   OverlayURLPathPrefix + WebAPIURLPathPrefix,
+                   HTTPAPI.BasePath     + BasePath,
 
-                   Description     ?? I18NString.Create($"WWCP{Version.String} Web API"),
+                   Description     ?? I18NString.Create($"WWCP Web API"),
 
                    ExternalDNSName,
                    HTTPServerName  ?? DefaultHTTPServerName,
@@ -218,26 +210,21 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.OverlayURLPathPrefix  = OverlayURLPathPrefix ?? HTTPPath.Root;
             this.APIURLPathPrefix      = APIURLPathPrefix;
-      //      this.VersionPath           = VersionPath ?? Version.String[..4];
 
             //this.HTTPRealm             = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;
             //this.HTTPLogins            = HTTPLogins ?? [];
 
-            //this.cpoClients            = new List<CPOClient>();
-            //this.emspClients           = new List<EMSPClient>();
+            this.UseHTTPSSE            = UseHTTPSSE ?? false;
 
-            var LogfilePrefix          = "HTTPSSEs" + Path.DirectorySeparatorChar;
-
-            //this.DebugLog              = this.AddJSONEventSource(EventIdentification:      DebugLogId,
-            //                                                     URLTemplate:              this.URLPathPrefix + DebugLogId.ToString(),
-            //                                                     MaxNumberOfCachedEvents:  10000,
-            //                                                     RetryInterval :           TimeSpan.FromSeconds(5),
-            //                                                     EnableLogging:            true,
-            //                                                     LogfilePrefix:            LogfilePrefix);
+            this.DebugLog              = HTTPBaseAPI.HTTPBaseAPI.AddJSONEventSource(
+                                             EventSourceId:            DebugLogId,
+                                             MaxNumberOfCachedEvents:  1000,
+                                             RetryInterval :           TimeSpan.FromSeconds(5),
+                                             EnableLogging:            true,
+                                             LogfilePrefix:            this.LoggingPath + "HTTPSSEs" + Path.DirectorySeparatorChar
+                                         );
 
             RegisterURLTemplates();
-
-            //this.RequestTimeout        = RequestTimeout;
 
         }
 
@@ -248,14 +235,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Manage HTTP Resources
 
+        private readonly Tuple<String, Assembly>[] resourceAssemblies = [
+            new Tuple<String, Assembly>(WWCP_WebAPI.HTTPRoot, typeof(WWCP_WebAPI).Assembly),
+            new Tuple<String, Assembly>(HTTPAPI.    HTTPRoot, typeof(HTTPAPI).    Assembly)
+        ];
+
         #region (protected override) GetResourceStream      (ResourceName)
 
         protected override Stream? GetResourceStream(String ResourceName)
 
             => GetResourceStream(
                    ResourceName,
-                   new Tuple<String, System.Reflection.Assembly>(WWCP_WebAPI.HTTPRoot, typeof(WWCP_WebAPI).Assembly),
-                   new Tuple<String, System.Reflection.Assembly>(HTTPAPI.    HTTPRoot, typeof(HTTPAPI).    Assembly)
+                   resourceAssemblies
                );
 
         #endregion
@@ -266,8 +257,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => GetResourceMemoryStream(
                    ResourceName,
-                   new Tuple<String, System.Reflection.Assembly>(WWCP_WebAPI.HTTPRoot, typeof(WWCP_WebAPI).Assembly),
-                   new Tuple<String, System.Reflection.Assembly>(HTTPAPI.    HTTPRoot, typeof(HTTPAPI).    Assembly)
+                   resourceAssemblies
                );
 
         #endregion
@@ -278,8 +268,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => GetResourceString(
                    ResourceName,
-                   new Tuple<String, System.Reflection.Assembly>(WWCP_WebAPI.HTTPRoot, typeof(WWCP_WebAPI).Assembly),
-                   new Tuple<String, System.Reflection.Assembly>(HTTPAPI.    HTTPRoot, typeof(HTTPAPI).    Assembly)
+                   resourceAssemblies
                );
 
         #endregion
@@ -290,8 +279,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => GetResourceBytes(
                    ResourceName,
-                   new Tuple<String, System.Reflection.Assembly>(WWCP_WebAPI.HTTPRoot, typeof(WWCP_WebAPI).Assembly),
-                   new Tuple<String, System.Reflection.Assembly>(HTTPAPI.    HTTPRoot, typeof(HTTPAPI).    Assembly)
+                   resourceAssemblies
                );
 
         #endregion
@@ -302,8 +290,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => MixWithHTMLTemplate(
                    ResourceName,
-                   new Tuple<String, System.Reflection.Assembly>(WWCP_WebAPI.HTTPRoot, typeof(WWCP_WebAPI).Assembly),
-                   new Tuple<String, System.Reflection.Assembly>(HTTPAPI.    HTTPRoot, typeof(HTTPAPI).    Assembly)
+                   resourceAssemblies
                );
 
         #endregion
@@ -315,13 +302,13 @@ namespace cloud.charging.open.protocols.WWCP
             => MixWithHTMLTemplate(
                    ResourceName,
                    HTMLConverter,
-                   new Tuple<String, System.Reflection.Assembly>(WWCP_WebAPI.HTTPRoot, typeof(WWCP_WebAPI).Assembly),
-                   new Tuple<String, System.Reflection.Assembly>(HTTPAPI.    HTTPRoot, typeof(HTTPAPI).    Assembly)
+                   resourceAssemblies
                );
 
         #endregion
 
         #endregion
+
 
         /// <summary>
         /// The following will register HTTP overlays for text/html
@@ -330,12 +317,303 @@ namespace cloud.charging.open.protocols.WWCP
         private void RegisterURLTemplates()
         {
 
-     
+            #region / (HTTPRoot)
+
+            WWCP_HTTPAPI.HTTPBaseAPI.MapResourceAssemblyFolder(
+                HTTPHostname.Any,
+                URLPathPrefix,
+                HTTPRoot,
+                RequireAuthentication:  false,
+                DefaultFilename:       "index.html"
+            );
+
+            #endregion
+
+
+            if (OverlayURLPathPrefix.HasValue)
+            {
+
+                #region GET ~/
+
+                #region Text
+
+                //CommonHTTPAPI.HTTPBaseAPI.AddHandler(
+                //    HTTPMethod.GET,
+                //    OverlayURLPathPrefix.Value,
+                //    HTTPContentType.Text.HTML_UTF8,
+                //    HTTPDelegate: request =>
+
+                //        Task.FromResult(
+                //            new HTTPResponse.Builder(request) {
+                //                HTTPStatusCode             = HTTPStatusCode.OK,
+                //                Server                     = HTTPServiceName,
+                //                Date                       = Timestamp.Now,
+                //                AccessControlAllowOrigin   = "*",
+                //                AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                //                AccessControlAllowHeaders  = [ "Authorization" ],
+                //                ContentType                = HTTPContentType.Text.PLAIN,
+                //                Content                    = ("This is a World Wide Charging Protocol HTTP service!" + Environment.NewLine + "Please check ~/ versions!").ToUTF8Bytes(),
+                //                Connection                 = ConnectionType.KeepAlive,
+                //                Vary                       = "Accept"
+                //            }.AsImmutable),
+
+                //    AllowReplacement: URLReplacement.Allow
+
+                //);
+
+
+                //// Just for convenience...
+                //if (OverlayURLPathPrefix.Value != HTTPPath.Root)
+                //    CommonHTTPAPI.HTTPBaseAPI.AddHandler(
+                //        HTTPMethod.GET,
+                //        OverlayURLPathPrefix.Value + "/",
+                //        HTTPContentType.Text.HTML_UTF8,
+                //        HTTPDelegate: request =>
+
+                //            Task.FromResult(
+                //                new HTTPResponse.Builder(request) {
+                //                    HTTPStatusCode             = HTTPStatusCode.OK,
+                //                    Server                     = HTTPServiceName,
+                //                    Date                       = Timestamp.Now,
+                //                    AccessControlAllowOrigin   = "*",
+                //                    AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                //                    AccessControlAllowHeaders  = [ "Authorization" ],
+                //                    ContentType                = HTTPContentType.Text.PLAIN,
+                //                    Content                    = ("This is a World Wide Charging Protocol HTTP service!" + Environment.NewLine + "Please check ~/ versions!").ToUTF8Bytes(),
+                //                    Connection                 = ConnectionType.KeepAlive,
+                //                    Vary                       = "Accept"
+                //                }.AsImmutable),
+
+                //        AllowReplacement: URLReplacement.Allow
+
+                //    );
+
+                #endregion
+
+                #region JSON
+
+                //CommonHTTPAPI.HTTPBaseAPI.AddHandler(
+                //    HTTPMethod.GET,
+                //    OverlayURLPathPrefix.Value,
+                //    HTTPContentType.Application.JSON_UTF8,
+                //    HTTPDelegate: request =>
+
+                //        Task.FromResult(
+                //            new HTTPResponse.Builder(request) {
+                //                HTTPStatusCode             = HTTPStatusCode.OK,
+                //                Server                     = HTTPServiceName,
+                //                Date                       = Timestamp.Now,
+                //                AccessControlAllowOrigin   = "*",
+                //                AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                //                AccessControlAllowHeaders  = [ "Authorization" ],
+                //                ContentType                = HTTPContentType.Application.JSON_UTF8,
+                //                Content                    = JSONObject.Create(
+                //                                                 new JProperty(
+                //                                                     "message",
+                //                                                     "This is a World Wide Charging Protocol HTTP service! Please check ~/ versions!"
+                //                                                 )
+                //                                             ).ToUTF8Bytes(),
+                //                Connection                 = ConnectionType.KeepAlive,
+                //                Vary                       = "Accept"
+                //            }.AsImmutable),
+
+                //    AllowReplacement: URLReplacement.Allow
+
+                //);
+
+
+                //// Just for convenience...
+                //if (OverlayURLPathPrefix.Value != HTTPPath.Root)
+                //    CommonHTTPAPI.HTTPBaseAPI.AddHandler(
+                //        HTTPMethod.GET,
+                //        OverlayURLPathPrefix.Value + "/",
+                //        HTTPContentType.Text.HTML_UTF8,
+                //        HTTPDelegate: request =>
+
+                //            Task.FromResult(
+                //                new HTTPResponse.Builder(request) {
+                //                    HTTPStatusCode             = HTTPStatusCode.OK,
+                //                    Server                     = HTTPServiceName,
+                //                    Date                       = Timestamp.Now,
+                //                    AccessControlAllowOrigin   = "*",
+                //                    AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                //                    AccessControlAllowHeaders  = [ "Authorization" ],
+                //                    ContentType                = HTTPContentType.Application.JSON_UTF8,
+                //                    Content                    = JSONObject.Create(
+                //                                                     new JProperty(
+                //                                                         "message",
+                //                                                         "This is a World Wide Charging Protocol HTTP service! Please check ~/ versions!"
+                //                                                     )
+                //                                                 ).ToUTF8Bytes(),
+                //                    Connection                 = ConnectionType.KeepAlive,
+                //                    Vary                       = "Accept"
+                //                }.AsImmutable),
+
+                //        AllowReplacement: URLReplacement.Allow
+
+                //    );
+
+                #endregion
+
+                #region HTML
+
+                WWCP_HTTPAPI.HTTPBaseAPI.AddHandler(
+                    HTTPMethod.GET,
+                    OverlayURLPathPrefix.Value,
+                    HTTPContentType.Text.HTML_UTF8,
+                    HTTPDelegate: request =>
+
+                        Task.FromResult(
+                            new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.OK,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                                AccessControlAllowHeaders  = [ "Authorization" ],
+                                ContentType                = HTTPContentType.Text.HTML_UTF8,
+                                Content                    = MixWithHTMLTemplate(
+                                                                 "index.shtml",
+                                                                 html => html.Replace("{{versionPath}}", "")
+                                                             ).ToUTF8Bytes(),
+                                Connection                 = ConnectionType.KeepAlive,
+                                Vary                       = "Accept"
+                            }.AsImmutable),
+
+                    AllowReplacement: URLReplacement.Allow
+
+                );
+
+
+                //// Just for convenience...
+                //if (OverlayURLPathPrefix.Value != HTTPPath.Root)
+                //    CommonHTTPAPI.HTTPBaseAPI.AddHandler(
+                //        HTTPMethod.GET,
+                //        OverlayURLPathPrefix.Value + "/",
+                //        HTTPContentType.Text.HTML_UTF8,
+                //        HTTPDelegate: request =>
+
+                //            Task.FromResult(
+                //                new HTTPResponse.Builder(request) {
+                //                    HTTPStatusCode             = HTTPStatusCode.OK,
+                //                    Server                     = HTTPServiceName,
+                //                    Date                       = Timestamp.Now,
+                //                    AccessControlAllowOrigin   = "*",
+                //                    AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                //                    AccessControlAllowHeaders  = [ "Authorization" ],
+                //                    ContentType                = HTTPContentType.Text.HTML_UTF8,
+                //                    Content                    = MixWithHTMLTemplate(
+                //                                                     "index.shtml",
+                //                                                     html => html.Replace("{{versionPath}}", "")
+                //                                                 ).ToUTF8Bytes(),
+                //                    Connection                 = ConnectionType.KeepAlive,
+                //                    Vary                       = "Accept"
+                //                }.AsImmutable),
+
+                //        AllowReplacement: URLReplacement.Allow
+
+                //    );
+
+                #endregion
+
+                #endregion
+
+
+                #region GET ~/debugLog
+
+                if (UseHTTPSSE)
+                {
+
+                    HTTPBaseAPI.HTTPBaseAPI.MapJSONEventSource(
+                        DebugLog,
+                        OverlayURLPathPrefix.Value + "debugLog"
+                    );
+
+                    WWCP_HTTPAPI.HTTPBaseAPI.AddHandler(
+                        HTTPMethod.GET,
+                        OverlayURLPathPrefix.Value + "debug",
+                        //HTTPContentType.Text.HTML_UTF8,
+                        HTTPDelegate: request =>
+
+                            Task.FromResult(
+                                new HTTPResponse.Builder(request) {
+                                    HTTPStatusCode             = HTTPStatusCode.OK,
+                                    Server                     = HTTPServerName,
+                                    Date                       = Timestamp.Now,
+                                    AccessControlAllowOrigin   = "*",
+                                    AccessControlAllowMethods  = [ "GET" ],
+                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                    ContentType                = HTTPContentType.Text.HTML_UTF8,
+                                    Content                    = MixWithHTMLTemplate("debugLog.debugLog.shtml").ToUTF8Bytes(),
+                                    Connection                 = ConnectionType.KeepAlive,
+                                    Vary                       = "Accept"
+                                }.AsImmutable
+                            )
+                    );
+
+                }
+
+                #endregion
+
+
+                #region GET ~/support
+
+                WWCP_HTTPAPI.HTTPBaseAPI.AddHandler(
+                    HTTPMethod.GET,
+                    OverlayURLPathPrefix.Value + "/support",
+                    HTTPContentType.Text.HTML_UTF8,
+                    HTTPDelegate: request =>
+
+                        Task.FromResult(
+                            new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.OK,
+                                Server                     = HTTPServerName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "GET" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                ContentType                = HTTPContentType.Text.HTML_UTF8,
+                                Content                    = MixWithHTMLTemplate("support.support.shtml").ToUTF8Bytes(),
+                                Connection                 = ConnectionType.KeepAlive,
+                                Vary                       = "Accept"
+                            }.AsImmutable
+                        )
+
+                );
+
+                #endregion
+
+                #region GET ~/favicon.png
+
+                WWCP_HTTPAPI.HTTPBaseAPI.AddHandler(
+                    HTTPMethod.GET,
+                    OverlayURLPathPrefix.Value + "/favicon.png",
+                    //HTTPContentType.Image.PNG,
+                    HTTPDelegate: request =>
+
+                        Task.FromResult(
+                            new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.OK,
+                                Server                     = HTTPServerName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "GET" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                ContentType                = HTTPContentType.Image.PNG,
+                                Content                    = GetResourceBytes("images.favicon_big.png"),
+                                Connection                 = ConnectionType.KeepAlive
+                            }.AsImmutable
+                        )
+
+                );
+
+                #endregion
+
+            }
 
         }
 
         #endregion
-
 
 
     }

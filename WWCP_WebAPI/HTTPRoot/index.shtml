@@ -6,9 +6,10 @@
     <div id="versionInfos2">
 
         <div id="description">
-            This is an Open Charge Point Interface HTTP service!
+            This is a World Wide Charging Protocol HTTP service!
         </div>
 
+        <!--
         <div id="versions">
             <ul>
                 <li><a href="{{versionPath}}versions">Versions</a></li>
@@ -18,6 +19,7 @@
                 <li><a href="{{BasePath}}/webapi/emspclients">EMSP Clients</a></li>
             </ul>
         </div>
+        -->
 
     </div>
 

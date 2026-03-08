@@ -11,7 +11,7 @@
 
     "HTTPRoot/defaults/defaults.ts",
 
-    "HTTPRoot/EVSEs/EVSEs.ts"
+    "HTTPRoot/debugLog/debugLog.ts"
 
   ]
 }

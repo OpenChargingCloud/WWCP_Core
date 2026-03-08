@@ -6,5 +6,9 @@
   {
     "outputFile": "HTTPRoot/css/index.css",
     "inputFile": "HTTPRoot/index.scss"
+  },
+  {
+    "outputFile": "HTTPRoot/css/debugLog/debugLog.css",
+    "inputFile": "HTTPRoot/debugLog/debugLog.scss"
   }
 ]

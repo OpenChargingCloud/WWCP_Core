@@ -29,8 +29,8 @@ function EncodeToken(AccessToken) {
     return buffer.join('');
 }
 //#endregion
-// #region OCPIGet(RessourceURI, OnSuccess, OnError)
-function OCPIGet(RessourceURI, OnSuccess, OnError) {
+// #region WWCPGet(RessourceURI, OnSuccess, OnError)
+function WWCPGet(RessourceURI, OnSuccess, OnError) {
     const ajax = new XMLHttpRequest();
     ajax.open("GET", RessourceURI, true);
     ajax.setRequestHeader("Accept", "application/json; charset=UTF-8");
@@ -51,7 +51,7 @@ function OCPIGet(RessourceURI, OnSuccess, OnError) {
     ajax.send();
 }
 // #endregion
-async function OCPIGetAsync(RessourceURI) {
+async function WWCPGetAsync(RessourceURI) {
     return new Promise((resolve, reject) => {
         const ajax = new XMLHttpRequest();
         ajax.open("GET", RessourceURI, true);
@@ -85,10 +85,10 @@ async function OCPIGetAsync(RessourceURI) {
         ajax.send();
     });
 }
-function OCPIStartSearch(requestURL, nameOfItem, idOfItem, nameOfItems, nameOfItems2, doListView, doTableView, linkPrefix, startView, context) {
-    return OCPIStartSearch2(requestURL, () => "", () => { }, nameOfItem, idOfItem, nameOfItems, nameOfItems2, doListView, doTableView, linkPrefix, startView, context);
+function WWCPStartSearch(requestURL, nameOfItem, idOfItem, nameOfItems, nameOfItems2, doListView, doTableView, linkPrefix, startView, context) {
+    return WWCPStartSearch2(requestURL, () => "", () => { }, nameOfItem, idOfItem, nameOfItems, nameOfItems2, doListView, doTableView, linkPrefix, startView, context);
 }
-function OCPIStartSearch2(requestURL, searchFilters, doStartUp, nameOfItem, idOfItem, nameOfItems, nameOfItems2, doListView, doTableView, linkPrefix, startView, context) {
+function WWCPStartSearch2(requestURL, searchFilters, doStartUp, nameOfItem, idOfItem, nameOfItems, nameOfItems2, doListView, doTableView, linkPrefix, startView, context) {
     requestURL = requestURL.indexOf('?') === -1
         ? requestURL + '?'
         : requestURL.endsWith('&')
@@ -144,7 +144,7 @@ function OCPIStartSearch2(requestURL, searchFilters, doStartUp, nameOfItem, idOf
             (currentDateTo != null && currentDateTo !== "" ? "&to=" + currentDateTo : "");
         if (downLoadButton)
             downLoadButton.href = requestURL + "download" + filters;
-        OCPIGet(requestURL + filters + "&offset=" + offset + "&limit=" + limit, (status, response, httpHeaders) => {
+        WWCPGet(requestURL + filters + "&offset=" + offset + "&limit=" + limit, (status, response, httpHeaders) => {
             try {
                 if (status == 200 && response) {
                     const ocpiResponse = JSON.parse(response);
@@ -221,7 +221,7 @@ function OCPIStartSearch2(requestURL, searchFilters, doStartUp, nameOfItem, idOf
                             DoSearchError("Invalid search results!");
                     }
                     else
-                        DoSearchError("OCPI Status Code " + ocpiResponse.status_code + (ocpiResponse.status_message ? ": " + ocpiResponse.status_message : ""));
+                        DoSearchError("WWCP Status Code " + ocpiResponse.status_code + (ocpiResponse.status_message ? ": " + ocpiResponse.status_message : ""));
                 }
                 else
                     DoSearchError("HTTP Status Code " + status + (response ? ": " + response : ""));
@@ -360,7 +360,7 @@ function OCPIStartSearch2(requestURL, searchFilters, doStartUp, nameOfItem, idOf
     Search(true);
     return context__;
 }
-async function OCPIGetCollection(requestURL, doStartUp, nameOfItems, doStatistics, doFinish) {
+async function WWCPGetCollection(requestURL, doStartUp, nameOfItems, doStatistics, doFinish) {
     requestURL = requestURL.indexOf('?') === -1
         ? requestURL + '?'
         : requestURL.endsWith('&')
@@ -388,7 +388,7 @@ async function OCPIGetCollection(requestURL, doStartUp, nameOfItems, doStatistic
     if (downLoadButton)
         downLoadButton.href = requestURL + "download" + filters;
     do {
-        const [ocpiResponse, httpHeaders] = await OCPIGetAsync(requestURL + "offset=" + offset + "&limit=" + limit);
+        const [ocpiResponse, httpHeaders] = await WWCPGetAsync(requestURL + "offset=" + offset + "&limit=" + limit);
         if (ocpiResponse.data &&
             Array.isArray(ocpiResponse.data) &&
             ocpiResponse.data.length > 0) {
@@ -423,7 +423,7 @@ async function OCPIGetCollection(requestURL, doStartUp, nameOfItems, doStatistic
         doFinish(totalNumberOfResults);
     //if (downLoadButton)
     //    downLoadButton.style.display = "block";
-    //OCPIGet(
+    //WWCPGet(
     //
     //    requestURL + "offset=" + offset + "&limit=" + limit,
     //
@@ -436,7 +436,7 @@ async function OCPIGetCollection(requestURL, doStartUp, nameOfItems, doStatistic
     //
     //            if (status == 200 && response) {
     //
-    //                const ocpiResponse = JSON.parse(response) as IOCPIResponse;
+    //                const ocpiResponse = JSON.parse(response) as IWWCPResponse;
     //
     //                if (ocpiResponse.status_code >= 1000 &&
     //                    ocpiResponse.status_code <  2000)
@@ -517,7 +517,7 @@ async function OCPIGetCollection(requestURL, doStartUp, nameOfItems, doStatistic
     //
     //                }
     //                else
-    //                    DoSearchError("OCPI Status Code " + ocpiResponse.status_code + (ocpiResponse.status_message ? ": " + ocpiResponse.status_message : ""));
+    //                    DoSearchError("WWCP Status Code " + ocpiResponse.status_code + (ocpiResponse.status_message ? ": " + ocpiResponse.status_message : ""));
     //
     //            }
     //            else
