@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.RoamingNetworkId         = RoamingNetworkId;
             this.roamingNetworkInfos      = RoamingNetworkInfos is not null
-                                                ? new List<RoamingNetworkInfo>(RoamingNetworkInfos)
+                                                ? [.. RoamingNetworkInfos]
                                                 : [];
 
             this.StringIdParser           = StringIdParser;
