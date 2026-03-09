@@ -7452,7 +7452,8 @@ namespace cloud.charging.open.protocols.WWCP
                           SessionId,
                           CPOPartnerSessionId,
                           allSend2RemoteAuthorizeStartStop,
-                          RequestTimeout
+                          RequestTimeout,
+                          CancellationToken
                       )
                   );
 
@@ -7751,7 +7752,8 @@ namespace cloud.charging.open.protocols.WWCP
                           allSend2RemoteAuthorizeStartStop,
                           RequestTimeout,
                           result,
-                          endTime - startTime
+                          endTime - startTime,
+                          CancellationToken
                       )
                   );
 

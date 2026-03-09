@@ -53,7 +53,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                           ChargingSession_Id?                    SessionId,
                                                           ChargingSession_Id?                    CPOPartnerSessionId,
                                                           IEnumerable<ISendAuthorizeStartStop>   ISendAuthorizeStartStops,
-                                                          TimeSpan?                              RequestTimeout);
+                                                          TimeSpan?                              RequestTimeout,
+                                                          CancellationToken                      CancellationToken);
 
 
     /// <summary>
@@ -89,6 +90,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                           IEnumerable<ISendAuthorizeStartStop>   ISendAuthorizeStartStops,
                                                           TimeSpan?                              RequestTimeout,
                                                           AuthStartResult                        Result,
-                                                          TimeSpan                               Runtime);
+                                                          TimeSpan                               Runtime,
+                                                          CancellationToken                      CancellationToken);
 
 }

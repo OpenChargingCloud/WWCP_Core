@@ -3628,7 +3628,8 @@ namespace cloud.charging.open.protocols.WWCP
                           SessionId,
                           CPOPartnerSessionId,
                           [],
-                          RequestTimeout
+                          RequestTimeout,
+                          CancellationToken
                       )
                   );
 
@@ -3700,7 +3701,8 @@ namespace cloud.charging.open.protocols.WWCP
                           [],
                           RequestTimeout,
                           result,
-                          endTime - startTime
+                          endTime - startTime,
+                          CancellationToken
                       )
                   );
 

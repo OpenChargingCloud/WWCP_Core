@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.WWCP
             => JSONObject.Create(
 
                    EVSEId.HasValue
-                       ? new JProperty("EVSEId",                      EVSEId.                   Value.ToString())
+                       ? new JProperty("evseId",                      EVSEId.                   Value.ToString())
                        : null,
 
                    ChargingStationId.HasValue

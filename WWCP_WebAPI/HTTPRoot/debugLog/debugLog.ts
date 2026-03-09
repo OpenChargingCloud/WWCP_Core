@@ -312,6 +312,65 @@ function StartDebugLog() {
         }, false);
 
 
+
+        eventSource.addEventListener('OnAuthorizeStartRequest', (event: MessageEvent<string>) => {
+
+            try {
+
+                const request = JSON.parse(event.data);
+
+                const entries = Object.entries(request);
+                if (entries.length === 0)
+                    return;
+
+                CreateLogEntry(
+                    request.timestamp        ?? Date.now(),
+                    request.roamingNetworkId ?? "",
+                    request.eventTrackingId  ?? "",
+                    request.from,
+                    request.to,
+                    "OnAuthorizeStartRequest",
+                    `${request.localAuthentication.authToken} @'${request.chargingLocation.evseId}'`,
+                    request.from ?? "" // ConnectionColorKey
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnAuthorizeStartRequest',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+        eventSource.addEventListener('OnAuthorizeStartResponse', (event: MessageEvent<string>) => {
+
+            try {
+
+                const response = JSON.parse(event.data);
+
+                AppendLogEntry(
+                    response.timestamp,
+                    response.roamingNetwork,
+                    response.eventTrackingId,
+                    `⇒ ${response.result.result} (${response.result.sessionId ?? "-"}) @'${response.result.providerId ?? "-"} / ${response.result.authorizatorId}': ${response.result.description}`,
+                    response.runtime
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnAuthorizeStartResponse',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+
         eventSource.addEventListener('OnAuthorizeHTTPRequest', (event: MessageEvent<string>) => {
 
             try {
