@@ -1190,6 +1190,856 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
+
+        // Refactored
+
+        #region (protected internal) SetChargingStationOperatorAdminStatusRequest  (Request)
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationOperatorAdminStatus HTTP was received.
+        /// </summary>
+        public HTTPRequestLogEventX OnSetChargingStationOperatorAdminStatusHTTPRequest = new();
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationOperatorAdminStatus HTTP was received.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetChargingStationOperatorAdminStatusRequest(DateTimeOffset     Timestamp,
+                                                                             HTTPAPIX           HTTPAPI,
+                                                                             HTTPRequest        HTTPRequest,
+                                                                             CancellationToken  CancellationToken)
+
+            => OnSetChargingStationOperatorAdminStatusHTTPRequest.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected internal) SetChargingStationOperatorAdminStatusResponse (Response)
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationOperatorAdminStatus HTTP response was sent.
+        /// </summary>
+        public HTTPResponseLogEventX OnSetChargingStationOperatorAdminStatusHTTPResponse = new();
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationOperatorAdminStatus HTTP response was sent.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="HTTPResponse">The HTTP response.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetChargingStationOperatorAdminStatusResponse(DateTimeOffset     Timestamp,
+                                                                              HTTPAPIX           HTTPAPI,
+                                                                              HTTPRequest        HTTPRequest,
+                                                                              HTTPResponse       HTTPResponse,
+                                                                              CancellationToken  CancellationToken)
+
+            => OnSetChargingStationOperatorAdminStatusHTTPResponse.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   HTTPResponse,
+                   CancellationToken
+               );
+
+        #endregion
+
+
+        #region (protected internal) SetChargingStationOperatorStatusRequest       (Request)
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationOperatorStatus HTTP was received.
+        /// </summary>
+        public HTTPRequestLogEventX OnSetChargingStationOperatorStatusHTTPRequest = new();
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationOperatorStatus HTTP was received.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetChargingStationOperatorStatusRequest(DateTimeOffset     Timestamp,
+                                                                        HTTPAPIX           HTTPAPI,
+                                                                        HTTPRequest        HTTPRequest,
+                                                                        CancellationToken  CancellationToken)
+
+            => OnSetChargingStationOperatorStatusHTTPRequest.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected internal) SetChargingStationOperatorStatusResponse      (Response)
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationOperatorStatus HTTP response was sent.
+        /// </summary>
+        public HTTPResponseLogEventX OnSetChargingStationOperatorStatusHTTPResponse = new();
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationOperatorStatus HTTP response was sent.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="HTTPResponse">The HTTP response.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetChargingStationOperatorStatusResponse(DateTimeOffset     Timestamp,
+                                                                         HTTPAPIX           HTTPAPI,
+                                                                         HTTPRequest        HTTPRequest,
+                                                                         HTTPResponse       HTTPResponse,
+                                                                         CancellationToken  CancellationToken)
+
+            => OnSetChargingStationOperatorStatusHTTPResponse.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   HTTPResponse,
+                   CancellationToken
+               );
+
+        #endregion
+
+
+
+        #region (protected internal) SetChargingPoolAdminStatusRequest             (Request)
+
+        /// <summary>
+        /// An event sent whenever a SetChargingPoolAdminStatus HTTP was received.
+        /// </summary>
+        public HTTPRequestLogEventX OnSetChargingPoolAdminStatusHTTPRequest = new();
+
+        /// <summary>
+        /// An event sent whenever a SetChargingPoolAdminStatus HTTP was received.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetChargingPoolAdminStatusRequest(DateTimeOffset     Timestamp,
+                                                                  HTTPAPIX           HTTPAPI,
+                                                                  HTTPRequest        HTTPRequest,
+                                                                  CancellationToken  CancellationToken)
+
+            => OnSetChargingPoolAdminStatusHTTPRequest.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected internal) SetChargingPoolAdminStatusResponse            (Response)
+
+        /// <summary>
+        /// An event sent whenever a SetChargingPoolAdminStatus HTTP response was sent.
+        /// </summary>
+        public HTTPResponseLogEventX OnSetChargingPoolAdminStatusHTTPResponse = new();
+
+        /// <summary>
+        /// An event sent whenever a SetChargingPoolAdminStatus HTTP response was sent.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="HTTPResponse">The HTTP response.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetChargingPoolAdminStatusResponse(DateTimeOffset     Timestamp,
+                                                                   HTTPAPIX           HTTPAPI,
+                                                                   HTTPRequest        HTTPRequest,
+                                                                   HTTPResponse       HTTPResponse,
+                                                                   CancellationToken  CancellationToken)
+
+            => OnSetChargingPoolAdminStatusHTTPResponse.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   HTTPResponse,
+                   CancellationToken
+               );
+
+        #endregion
+
+
+        #region (protected internal) SetChargingPoolStatusRequest                  (Request)
+
+        /// <summary>
+        /// An event sent whenever a SetChargingPoolStatus HTTP was received.
+        /// </summary>
+        public HTTPRequestLogEventX OnSetChargingPoolStatusHTTPRequest = new();
+
+        /// <summary>
+        /// An event sent whenever a SetChargingPoolStatus HTTP was received.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetChargingPoolStatusRequest(DateTimeOffset     Timestamp,
+                                                             HTTPAPIX           HTTPAPI,
+                                                             HTTPRequest        HTTPRequest,
+                                                             CancellationToken  CancellationToken)
+
+            => OnSetChargingPoolStatusHTTPRequest.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected internal) SetChargingPoolStatusResponse                 (Response)
+
+        /// <summary>
+        /// An event sent whenever a SetChargingPoolStatus HTTP response was sent.
+        /// </summary>
+        public HTTPResponseLogEventX OnSetChargingPoolStatusHTTPResponse = new();
+
+        /// <summary>
+        /// An event sent whenever a SetChargingPoolStatus HTTP response was sent.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="HTTPResponse">The HTTP response.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetChargingPoolStatusResponse(DateTimeOffset     Timestamp,
+                                                              HTTPAPIX           HTTPAPI,
+                                                              HTTPRequest        HTTPRequest,
+                                                              HTTPResponse       HTTPResponse,
+                                                              CancellationToken  CancellationToken)
+
+            => OnSetChargingPoolStatusHTTPResponse.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   HTTPResponse,
+                   CancellationToken
+               );
+
+        #endregion
+
+
+
+        #region (protected internal) SetChargingStationAdminStatusRequest          (Request)
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationAdminStatus HTTP was received.
+        /// </summary>
+        public HTTPRequestLogEventX OnSetChargingStationAdminStatusHTTPRequest = new();
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationAdminStatus HTTP was received.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetChargingStationAdminStatusRequest(DateTimeOffset     Timestamp,
+                                                                     HTTPAPIX           HTTPAPI,
+                                                                     HTTPRequest        HTTPRequest,
+                                                                     CancellationToken  CancellationToken)
+
+            => OnSetChargingStationAdminStatusHTTPRequest.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected internal) SetChargingStationAdminStatusResponse         (Response)
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationAdminStatus HTTP response was sent.
+        /// </summary>
+        public HTTPResponseLogEventX OnSetChargingStationAdminStatusHTTPResponse = new();
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationAdminStatus HTTP response was sent.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="HTTPResponse">The HTTP response.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetChargingStationAdminStatusResponse(DateTimeOffset     Timestamp,
+                                                                      HTTPAPIX           HTTPAPI,
+                                                                      HTTPRequest        HTTPRequest,
+                                                                      HTTPResponse       HTTPResponse,
+                                                                      CancellationToken  CancellationToken)
+
+            => OnSetChargingStationAdminStatusHTTPResponse.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   HTTPResponse,
+                   CancellationToken
+               );
+
+        #endregion
+
+
+        #region (protected internal) SetChargingStationStatusRequest               (Request)
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationStatus HTTP was received.
+        /// </summary>
+        public HTTPRequestLogEventX OnSetChargingStationStatusHTTPRequest = new();
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationStatus HTTP was received.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetChargingStationStatusRequest(DateTimeOffset     Timestamp,
+                                                                HTTPAPIX           HTTPAPI,
+                                                                HTTPRequest        HTTPRequest,
+                                                                CancellationToken  CancellationToken)
+
+            => OnSetChargingStationStatusHTTPRequest.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected internal) SetChargingStationStatusResponse              (Response)
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationStatus HTTP response was sent.
+        /// </summary>
+        public HTTPResponseLogEventX OnSetChargingStationStatusHTTPResponse = new();
+
+        /// <summary>
+        /// An event sent whenever a SetChargingStationStatus HTTP response was sent.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="HTTPResponse">The HTTP response.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetChargingStationStatusResponse(DateTimeOffset     Timestamp,
+                                                                 HTTPAPIX           HTTPAPI,
+                                                                 HTTPRequest        HTTPRequest,
+                                                                 HTTPResponse       HTTPResponse,
+                                                                 CancellationToken  CancellationToken)
+
+            => OnSetChargingStationStatusHTTPResponse.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   HTTPResponse,
+                   CancellationToken
+               );
+
+        #endregion
+
+
+
+        #region (protected internal) SetEVSEAdminStatusRequest                     (Request)
+
+        /// <summary>
+        /// An event sent whenever a SetEVSEAdminStatus HTTP was received.
+        /// </summary>
+        public HTTPRequestLogEventX OnSetEVSEAdminStatusHTTPRequest = new();
+
+        /// <summary>
+        /// An event sent whenever a SetEVSEAdminStatus HTTP was received.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetEVSEAdminStatusRequest(DateTimeOffset     Timestamp,
+                                                          HTTPAPIX           HTTPAPI,
+                                                          HTTPRequest        HTTPRequest,
+                                                          CancellationToken  CancellationToken)
+
+            => OnSetEVSEAdminStatusHTTPRequest.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected internal) SetEVSEAdminStatusResponse                    (Response)
+
+        /// <summary>
+        /// An event sent whenever a SetEVSEAdminStatus HTTP response was sent.
+        /// </summary>
+        public HTTPResponseLogEventX OnSetEVSEAdminStatusHTTPResponse = new();
+
+        /// <summary>
+        /// An event sent whenever a SetEVSEAdminStatus HTTP response was sent.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="HTTPResponse">The HTTP response.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetEVSEAdminStatusResponse(DateTimeOffset     Timestamp,
+                                                           HTTPAPIX           HTTPAPI,
+                                                           HTTPRequest        HTTPRequest,
+                                                           HTTPResponse       HTTPResponse,
+                                                           CancellationToken  CancellationToken)
+
+            => OnSetEVSEAdminStatusHTTPResponse.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   HTTPResponse,
+                   CancellationToken
+               );
+
+        #endregion
+
+
+        #region (protected internal) SetEVSEStatusRequest                          (Request)
+
+        /// <summary>
+        /// An event sent whenever a SetEVSEStatus HTTP was received.
+        /// </summary>
+        public HTTPRequestLogEventX OnSetEVSEStatusHTTPRequest = new();
+
+        /// <summary>
+        /// An event sent whenever a SetEVSEStatus HTTP was received.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetEVSEStatusRequest(DateTimeOffset     Timestamp,
+                                                     HTTPAPIX           HTTPAPI,
+                                                     HTTPRequest        HTTPRequest,
+                                                     CancellationToken  CancellationToken)
+
+            => OnSetEVSEStatusHTTPRequest.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected internal) SetEVSEStatusResponse                         (Response)
+
+        /// <summary>
+        /// An event sent whenever a SetEVSEStatus HTTP response was sent.
+        /// </summary>
+        public HTTPResponseLogEventX OnSetEVSEStatusHTTPResponse = new();
+
+        /// <summary>
+        /// An event sent whenever a SetEVSEStatus HTTP response was sent.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="HTTPResponse">The HTTP response.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SetEVSEStatusResponse(DateTimeOffset     Timestamp,
+                                                      HTTPAPIX           HTTPAPI,
+                                                      HTTPRequest        HTTPRequest,
+                                                      HTTPResponse       HTTPResponse,
+                                                      CancellationToken  CancellationToken)
+
+            => OnSetEVSEStatusHTTPResponse.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   HTTPResponse,
+                   CancellationToken
+               );
+
+        #endregion
+
+
+
+        #region (protected internal) SendAuthorizeHTTPRequest                      (Request)
+
+        /// <summary>
+        /// An event sent whenever an Authorize HTTP request was received.
+        /// </summary>
+        public HTTPRequestLogEventX OnAuthorizeHTTPRequest = new();
+
+        /// <summary>
+        /// An event sent whenever an Authorize HTTP request was received.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SendAuthorizeHTTPRequest(DateTimeOffset     Timestamp,
+                                                         HTTPAPIX           HTTPAPI,
+                                                         HTTPRequest        HTTPRequest,
+                                                         CancellationToken  CancellationToken)
+
+            => OnAuthorizeHTTPRequest.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected internal) SendAuthorizeHTTPResponse                     (Response)
+
+        /// <summary>
+        /// An event sent whenever an Authorize HTTP response was sent.
+        /// </summary>
+        public HTTPResponseLogEventX OnAuthorizeHTTPResponse = new();
+
+        /// <summary>
+        /// An event sent whenever an Authorize HTTP response was sent.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="HTTPResponse">The HTTP response.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SendAuthorizeHTTPResponse(DateTimeOffset     Timestamp,
+                                                          HTTPAPIX           HTTPAPI,
+                                                          HTTPRequest        HTTPRequest,
+                                                          HTTPResponse       HTTPResponse,
+                                                          CancellationToken  CancellationToken)
+
+            => OnAuthorizeHTTPResponse.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   HTTPResponse,
+                   CancellationToken
+               );
+
+        #endregion
+
+
+        #region (protected internal) SendAuthorizeStartEVSEHTTPRequest             (Request)
+
+        /// <summary>
+        /// An event sent whenever an AuthorizeStartEVSE HTTP request was received.
+        /// </summary>
+        public HTTPRequestLogEventX OnAuthorizeStartEVSEHTTPRequest = new();
+
+        /// <summary>
+        /// An event sent whenever an AuthorizeStartEVSE HTTP request was received.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SendAuthorizeStartEVSEHTTPRequest(DateTimeOffset     Timestamp,
+                                                                  HTTPAPIX           HTTPAPI,
+                                                                  HTTPRequest        HTTPRequest,
+                                                                  CancellationToken  CancellationToken)
+
+            => OnAuthorizeStartEVSEHTTPRequest.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected internal) SendAuthorizeStartEVSEHTTPResponse            (Response)
+
+        /// <summary>
+        /// An event sent whenever an AuthorizeStartEVSE HTTP response was sent.
+        /// </summary>
+        public HTTPResponseLogEventX OnAuthorizeStartEVSEHTTPResponse = new();
+
+        /// <summary>
+        /// An event sent whenever an AuthorizeStartEVSE HTTP response was sent.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="HTTPResponse">The HTTP response.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SendAuthorizeStartEVSEHTTPResponse(DateTimeOffset     Timestamp,
+                                                                   HTTPAPIX           HTTPAPI,
+                                                                   HTTPRequest        HTTPRequest,
+                                                                   HTTPResponse       HTTPResponse,
+                                                                   CancellationToken  CancellationToken)
+
+            => OnAuthorizeStartEVSEHTTPResponse.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   HTTPResponse,
+                   CancellationToken
+               );
+
+        #endregion
+
+
+        #region (protected internal) SendAuthorizeStopEVSEHTTPRequest              (Request)
+
+        /// <summary>
+        /// An event sent whenever an AuthorizeStopEVSE HTTP request was received.
+        /// </summary>
+        public HTTPRequestLogEventX OnAuthorizeStopEVSEHTTPRequest = new();
+
+        /// <summary>
+        /// An event sent whenever an AuthorizeStopEVSE HTTP request was received.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SendAuthorizeStopEVSEHTTPRequest(DateTimeOffset     Timestamp,
+                                                                 HTTPAPIX           HTTPAPI,
+                                                                 HTTPRequest        HTTPRequest,
+                                                                 CancellationToken  CancellationToken)
+
+            => OnAuthorizeStopEVSEHTTPRequest.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected internal) SendAuthorizeStopEVSEHTTPResponse             (Response)
+
+        /// <summary>
+        /// An event sent whenever an AuthorizeStopEVSE HTTP response was sent.
+        /// </summary>
+        public HTTPResponseLogEventX OnAuthorizeStopEVSEHTTPResponse = new();
+
+        /// <summary>
+        /// An event sent whenever an AuthorizeStopEVSE HTTP response was sent.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="HTTPResponse">The HTTP response.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SendAuthorizeStopEVSEHTTPResponse(DateTimeOffset     Timestamp,
+                                                                  HTTPAPIX           HTTPAPI,
+                                                                  HTTPRequest        HTTPRequest,
+                                                                  HTTPResponse       HTTPResponse,
+                                                                  CancellationToken  CancellationToken)
+
+            => OnAuthorizeStopEVSEHTTPResponse.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   HTTPResponse,
+                   CancellationToken
+               );
+
+        #endregion
+
+
+
+        #region (protected internal) SendRemoteStartEVSEHTTPRequest                (Request)
+
+        /// <summary>
+        /// An event sent whenever a RemoteStartEVSE HTTP request was received.
+        /// </summary>
+        public HTTPRequestLogEventX OnRemoteStartEVSEHTTPRequest = new();
+
+        /// <summary>
+        /// An event sent whenever a RemoteStartEVSE HTTP request was received.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SendRemoteStartEVSERequest(DateTimeOffset     Timestamp,
+                                                           HTTPAPIX           HTTPAPI,
+                                                           HTTPRequest        HTTPRequest,
+                                                           CancellationToken  CancellationToken)
+
+            => OnRemoteStartEVSEHTTPRequest.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected internal) SendRemoteStartEVSEHTTPResponse               (Response)
+
+        /// <summary>
+        /// An event sent whenever a RemoteStartEVSE HTTP response was sent.
+        /// </summary>
+        public HTTPResponseLogEventX OnRemoteStartEVSEHTTPResponse = new();
+
+        /// <summary>
+        /// An event sent whenever a RemoteStartEVSE HTTP response was sent.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="HTTPResponse">The HTTP response.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SendRemoteStartEVSEResponse(DateTimeOffset     Timestamp,
+                                                            HTTPAPIX           HTTPAPI,
+                                                            HTTPRequest        HTTPRequest,
+                                                            HTTPResponse       HTTPResponse,
+                                                            CancellationToken  CancellationToken)
+
+            => OnRemoteStartEVSEHTTPResponse.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   HTTPResponse,
+                   CancellationToken
+               );
+
+        #endregion
+
+
+        #region (protected internal) SendRemoteStopEVSEHTTPRequest                 (Request)
+
+        /// <summary>
+        /// An event sent whenever a RemoteStopEVSE HTTP request was received.
+        /// </summary>
+        public HTTPRequestLogEventX OnRemoteStopEVSEHTTPRequest = new();
+
+        /// <summary>
+        /// An event sent whenever a RemoteStopEVSE HTTP request was received.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SendRemoteStopEVSEHTTPRequest(DateTimeOffset     Timestamp,
+                                                              HTTPAPIX           HTTPAPI,
+                                                              HTTPRequest        HTTPRequest,
+                                                              CancellationToken  CancellationToken)
+
+            => OnRemoteStopEVSEHTTPRequest.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected internal) SendRemoteStopEVSEHTTPResponse                (Response)
+
+        /// <summary>
+        /// An event sent whenever a RemoteStopEVSE HTTP response was sent.
+        /// </summary>
+        public HTTPResponseLogEventX OnRemoteStopEVSEHTTPResponse = new();
+
+        /// <summary>
+        /// An event sent whenever a RemoteStopEVSE HTTP response was sent.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="HTTPResponse">The HTTP response.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SendRemoteStopEVSEHTTPResponse(DateTimeOffset     Timestamp,
+                                                               HTTPAPIX           HTTPAPI,
+                                                               HTTPRequest        HTTPRequest,
+                                                               HTTPResponse       HTTPResponse,
+                                                               CancellationToken  CancellationToken)
+
+            => OnRemoteStopEVSEHTTPResponse.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   HTTPResponse,
+                   CancellationToken
+               );
+
+        #endregion
+
+
+
+        #region (protected internal) SendChargeDetailRecordsHTTPRequest            (Request)
+
+        /// <summary>
+        /// An event sent whenever a ChargeDetailRecords HTTP request was received.
+        /// </summary>
+        public HTTPRequestLogEventX OnChargeDetailRecordsHTTPRequest = new();
+
+        /// <summary>
+        /// An event sent whenever a ChargeDetailRecords HTTP request was received.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SendChargeDetailRecordsHTTPRequest(DateTimeOffset     Timestamp,
+                                                                   HTTPAPIX           HTTPAPI,
+                                                                   HTTPRequest        HTTPRequest,
+                                                                   CancellationToken  CancellationToken)
+
+            => OnChargeDetailRecordsHTTPRequest.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected internal) SendChargeDetailRecordsHTTPResponse           (Response)
+
+        /// <summary>
+        /// An event sent whenever a ChargeDetailRecords HTTP response was sent.
+        /// </summary>
+        public HTTPResponseLogEventX OnChargeDetailRecordsHTTPResponse = new();
+
+        /// <summary>
+        /// An event sent whenever a ChargeDetailRecords HTTP response was sent.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the HTTP request.</param>
+        /// <param name="HTTPAPI">The HTTP API.</param>
+        /// <param name="HTTPRequest">The HTTP request.</param>
+        /// <param name="HTTPResponse">The HTTP response.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+        protected internal Task SendChargeDetailRecordsHTTPResponse(DateTimeOffset     Timestamp,
+                                                                    HTTPAPIX           HTTPAPI,
+                                                                    HTTPRequest        HTTPRequest,
+                                                                    HTTPResponse       HTTPResponse,
+                                                                    CancellationToken  CancellationToken)
+
+            => OnChargeDetailRecordsHTTPResponse.WhenAll(
+                   Timestamp,
+                   HTTPAPI,
+                   HTTPRequest,
+                   HTTPResponse,
+                   CancellationToken
+               );
+
+        #endregion
+
+
         #endregion
 
         #region Additional HTTP methods
@@ -2341,7 +3191,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             //                      #region Check anonymous access
 
-            //                      if (!AllowsAnonymousReadAccesss)
+            //                      if (!AllowAnonymousReadAccesss)
             //                          return Task.FromResult(
             //                              new HTTPResponse.Builder(Request) {
             //                                  HTTPStatusCode             = HTTPStatusCode.Unauthorized,
@@ -2752,6 +3602,2384 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
+
+
+
+            // EVSEs
+
+            #region ~/RNs/{RoamingNetworkId}/EVSEs
+
+            #region OPTIONS     ~/RNs/{RoamingNetworkId}/EVSEs
+
+            // ---------------------------------------------------------------------------------------
+            // curl -v -X OPTIONS -H "Accept: application/json" http://127.0.0.1:5500/RNs/Test/EVSEs
+            // ---------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.OPTIONS,
+                URLPathPrefix + "RNs/{RoamingNetworkId}/EVSEs",
+                HTTPDelegate: request => {
+
+                    #region Check anonymous access
+
+                    if (!AllowAnonymousReadAccesss)
+                        return Task.FromResult(
+                            new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.Unauthorized,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                WWWAuthenticate            = WWWAuthenticateDefaults,
+                                Connection                 = ConnectionType.KeepAlive
+                            }.AsImmutable);
+
+                    #endregion
+
+                    #region Check HTTP parameters
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out var httpResponseBuilder))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(request) {
+                            HTTPStatusCode             = HTTPStatusCode.NoContent,
+                            Server                     = HTTPServiceName,
+                            Date                       = Timestamp.Now,
+                            AccessControlAllowOrigin   = "*",
+                            AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                            AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                            Connection                 = ConnectionType.KeepAlive
+                        }.AsImmutable);
+
+                });
+
+            #endregion
+
+            #region HEAD        ~/RNs/{RoamingNetworkId}/EVSEs
+
+            // ----------------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:5500/RNs/Test/EVSEs
+            // ----------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.HEAD,
+                URLPathPrefix + "RNs/{RoamingNetworkId}/EVSEs",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPDelegate: request => {
+
+                    #region Check anonymous access
+
+                    if (!AllowAnonymousReadAccesss)
+                        return Task.FromResult(
+                            new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.Unauthorized,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                WWWAuthenticate            = WWWAuthenticateDefaults,
+                                Connection                 = ConnectionType.KeepAlive
+                            }.AsImmutable);
+
+                    #endregion
+
+                    #region Check HTTP parameters
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out var httpResponseBuilder))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(request) {
+                            HTTPStatusCode             = HTTPStatusCode.OK,
+                            Server                     = HTTPServiceName,
+                            Date                       = Timestamp.Now,
+                            AccessControlAllowOrigin   = "*",
+                            AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                            AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                            ETag                       = "1",
+                            Connection                 = ConnectionType.KeepAlive
+                        }.AsImmutable);
+
+                });
+
+            #endregion
+
+            #region GET         ~/RNs/{RoamingNetworkId}/EVSEs
+
+            // ----------------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:5500/RNs/Test/EVSEs
+            // ----------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.GET,
+                URLPathPrefix + "RNs/{RoamingNetworkId}/EVSEs",
+                HTTPContentType.Application.JSON_UTF8,
+                //HTTPRequestLogger:   GetEVSEsRequest,
+                //HTTPResponseLogger:  GetEVSEsResponse,
+                HTTPDelegate:        request => {
+
+                    #region Check anonymous access
+
+                    if (!AllowAnonymousReadAccesss)
+                        return Task.FromResult(
+                            new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.Unauthorized,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                WWWAuthenticate            = WWWAuthenticateDefaults,
+                                Connection                 = ConnectionType.KeepAlive
+                            }.AsImmutable);
+
+                    #endregion
+
+                    #region Check HTTP parameters
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out var httpResponseBuilder))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+
+                    var withMetadata            = request.QueryString.GetBoolean("withMetadata",      false);
+                    var includeRemoved          = request.QueryString.GetBoolean("includeRemoved",    false);
+                    var includeCustomData       = request.QueryString.GetBoolean("includeCustomData", false);
+
+                    var matchFilter             = request.QueryString.CreateStringFilter<IEVSE>(
+                                                      "match",
+                                                      (evse, pattern) => evse.ToString()?.Contains(pattern) == true
+                                                                         //evse.Name?.             Contains(pattern) == true ||
+                                                                         //evse.Address.           Contains(pattern)         ||
+                                                                         //evse.City.              Contains(pattern)         ||
+                                                                         //evse.PostalCode.        Contains(pattern)         ||
+                                                                         //evse.Country.ToString()?.Contains(pattern) == true         ||
+                                                                         //evse.Directions.        Matches (pattern)         ||
+                                                                         //evse.Operator?.   Name. Contains(pattern) == true ||
+                                                                         //evse.SubOperator?.Name. Contains(pattern) == true ||
+                                                                         //evse.Owner?.      Name. Contains(pattern) == true ||
+                                                                         //evse.Facilities.        Matches (pattern)         ||
+                                                                         //evse.EVSEUIds.          Matches (pattern)         ||
+                                                                         //evse.EVSEIds.           Matches (pattern)         ||
+                                                                         //evse.EVSEs.Any(evse => evse.Connectors.Any(connector => connector?.GetTariffId(emspId).ToString()?.Contains(pattern) == true))
+                                                  );
+                    var skip                    = request.QueryString.GetUInt64 ("skip");
+                    var take                    = request.QueryString.GetUInt64 ("take");
+
+                    var expand                  = request.QueryString.GetStrings("expand");
+                    var expandRoamingNetwork    = expand. ContainsIgnoreCase("network")   ? InfoStatus.Expanded   : InfoStatus.ShowIdOnly;
+                    var expandOperator          = expand. ContainsIgnoreCase("operator")  ? InfoStatus.Expanded   : InfoStatus.ShowIdOnly;
+                    var expandChargingPool      = expand. ContainsIgnoreCase("pool")      ? InfoStatus.Expanded   : InfoStatus.ShowIdOnly;
+                    var expandChargingStation   = expand. ContainsIgnoreCase("station")   ? InfoStatus.Expanded   : InfoStatus.ShowIdOnly;
+                    var expandBrands            = expand. ContainsIgnoreCase("brands")    ? InfoStatus.Expanded   : InfoStatus.ShowIdOnly;
+                    var expandDataLicenses      = expand. ContainsIgnoreCase("licenses")  ? InfoStatus.Expanded   : InfoStatus.ShowIdOnly;
+
+                    var showIds                 = request.QueryString.GetStrings("showIds");
+                    var showBrandIds            = showIds.ContainsIgnoreCase("brands")    ? InfoStatus.ShowIdOnly : InfoStatus.Hidden;
+                    var showDataLicenseIds      = showIds.ContainsIgnoreCase("licenses")  ? InfoStatus.ShowIdOnly : InfoStatus.Hidden;
+
+
+                    var allResults              = roamingNetwork.EVSEs;
+                    var totalCount              = allResults.ULongCount();
+
+                    var filteredResults         = allResults.Where(matchFilter).ToArray();
+                    var filteredCount           = filteredResults.ULongCount();
+
+                    var jsonResults             = filteredResults.
+                                                      OrderBy(evse => evse.Id).
+                                                      ToJSON (skip,
+                                                              take,
+                                                              Embedded:                         false,
+                                                              IncludeRemoved:                   includeRemoved,
+                                                              ExpandRoamingNetworkId:           expandRoamingNetwork,
+                                                              ExpandChargingStationOperatorId:  expandOperator,
+                                                              ExpandChargingPoolId:             expandChargingPool,
+                                                              ExpandChargingStationId:          expandChargingStation,
+                                                              ExpandBrandIds:                   expandBrands,
+                                                              ExpandDataLicenses:               expandDataLicenses,
+                                                              IncludeCustomData:                includeCustomData);
+
+                    return Task.FromResult(
+                               new HTTPResponse.Builder(request) {
+                                   HTTPStatusCode                = HTTPStatusCode.OK,
+                                   Server                        = DefaultHTTPServerName,
+                                   Date                          = Timestamp.Now,
+                                   AccessControlAllowMethods     = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                   AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
+                                   Content                       = withMetadata
+                                                                       ? JSONObject.Create(
+                                                                             new JProperty("totalCount",     totalCount),
+                                                                             new JProperty("filteredCount",  filteredCount),
+                                                                             new JProperty("data",           jsonResults)
+                                                                         ).ToUTF8Bytes()
+                                                                       : new JArray(jsonResults).ToUTF8Bytes(),
+                                   ContentType                   = HTTPContentType.Application.JSON_UTF8,
+                                   X_ExpectedTotalNumberOfItems  = filteredCount,
+                                   Connection                    = ConnectionType.KeepAlive,
+                                   Vary                          = "Accept"
+                               }.AsImmutable
+                           );
+
+                });
+
+            #endregion
+
+            #region COUNT       ~/RNs/{RoamingNetworkId}/EVSEs
+
+            // ---------------------------------------------------------------------------------------------------
+            // curl -v -X COUNT -H "Accept: application/json" http://127.0.0.1:5500/RNs/{RoamingNetworkId}/EVSEs
+            // ---------------------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.COUNT,
+                URLPathPrefix + "RNs/{RoamingNetworkId}/EVSEs",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPDelegate: request => {
+
+                    #region Check anonymous access
+
+                    if (!AllowAnonymousReadAccesss)
+                        return Task.FromResult(
+                            new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.Unauthorized,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                WWWAuthenticate            = WWWAuthenticateDefaults,
+                                Connection                 = ConnectionType.KeepAlive
+                            }.AsImmutable);
+
+                    #endregion
+
+                    #region Check HTTP parameters
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out var httpResponseBuilder))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+
+                    var matchFilter      = request.QueryString.CreateStringFilter<IEVSE>(
+                                               "match",
+                                               (evse, pattern) => evse.ToString()?.Contains(pattern) == true
+                                                                  //evse.Name?.             Contains(pattern) == true ||
+                                                                  //evse.Address.           Contains(pattern)         ||
+                                                                  //evse.City.              Contains(pattern)         ||
+                                                                  //evse.PostalCode.        Contains(pattern)         ||
+                                                                  //evse.Country.ToString()?.Contains(pattern) == true         ||
+                                                                  //evse.Directions.        Matches (pattern)         ||
+                                                                  //evse.Operator?.   Name. Contains(pattern) == true ||
+                                                                  //evse.SubOperator?.Name. Contains(pattern) == true ||
+                                                                  //evse.Owner?.      Name. Contains(pattern) == true ||
+                                                                  //evse.Facilities.        Matches (pattern)         ||
+                                                                  //evse.EVSEUIds.          Matches (pattern)         ||
+                                                                  //evse.EVSEIds.           Matches (pattern)         ||
+                                                                  //evse.EVSEs.Any(evse => evse.Connectors.Any(connector => connector?.GetTariffId(emspId).ToString()?.Contains(pattern) == true))
+                                           );
+
+                    var allResults       = roamingNetwork.EVSEs;
+                    var totalCount       = allResults.ULongCount();
+
+                    var matchingResults  = allResults.Where(matchFilter).ToArray();
+                    var matchingCount    = matchingResults.ULongCount();
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(request) {
+                            HTTPStatusCode               = HTTPStatusCode.OK,
+                            Server                       = HTTPServiceName,
+                            Date                         = Timestamp.Now,
+                            AccessControlAllowOrigin     = "*",
+                            AccessControlAllowMethods    = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                            AccessControlAllowHeaders    = [ "Content-Type", "Accept", "Authorization" ],
+                            ETag                         = "1",
+                            ContentType                  = HTTPContentType.Application.JSON_UTF8,
+                            Content                      = JSONObject.Create(
+                                                               new JProperty("totalCount",     totalCount),
+                                                               new JProperty("matchingCount",  matchingCount)
+                                                           ).ToUTF8Bytes(),
+                            Connection                   = ConnectionType.KeepAlive
+                        }.AsImmutable);
+
+                });
+
+            #endregion
+
+
+            #region GET         ~/RNs/{RoamingNetworkId}/EVSEs->AdminStatus
+
+            // -----------------------------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:5500/RNs/Test/EVSEs->AdminStatus
+            // -----------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.GET,
+                URLPathPrefix + "RNs/{RoamingNetworkId}/EVSEs->AdminStatus",
+                HTTPContentType.Application.JSON_UTF8,
+                //HTTPRequestLogger:  SendGetEVSEsAdminStatusRequest,
+                //HTTPResponseLogger: SendGetEVSEsAdminStatusResponse,
+                HTTPDelegate:       request => {
+
+                    #region Check anonymous access
+
+                    if (!AllowAnonymousReadAccesss)
+                        return Task.FromResult(
+                            new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.Unauthorized,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "OPTIONS", "GET", "HEAD", "COUNT" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                WWWAuthenticate            = WWWAuthenticateDefaults,
+                                Connection                 = ConnectionType.KeepAlive
+                            }.AsImmutable);
+
+                    #endregion
+
+                    #region Check HTTP parameters
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out var httpResponseBuilder))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+
+                    var skip                      = request.QueryString.GetUInt64                           ("skip");
+                    var take                      = request.QueryString.GetUInt64                           ("take");
+                    var afterFilter               = request.QueryString.CreateDateTimeFilter<DateTimeOffset>("after",  (timestamp, pattern) => timestamp >= pattern);
+                    var beforeFilter              = request.QueryString.CreateDateTimeFilter<DateTimeOffset>("before", (timestamp, pattern) => timestamp <= pattern);
+                    var matchFilter               = request.QueryString.CreateStringFilter  <EVSE_Id>       ("match",  (evseId,    pattern) => evseId.ToString().Contains(pattern));
+
+                    //ToDo: Getting the expected total count might be very expensive!
+                    var expectedCount             = roamingNetwork.EVSEAdminStatus().ULongCount();
+
+                    var evseAdminStatusSchedules  = roamingNetwork.EVSEAdminStatusSchedule(
+                                                        IncludeEVSEs:     evse      => matchFilter (evse.Id),
+                                                        TimestampFilter:  timestamp => beforeFilter(timestamp) &&
+                                                                                       afterFilter (timestamp),
+                                                        Take:             1
+                                                    );
+
+                    #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
+
+                    var filteredAdminStatus = new Dictionary<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>();
+
+                    foreach (var status in evseAdminStatusSchedules)
+                    {
+
+                        if (!filteredAdminStatus.TryGetValue(status.Item1, out IEnumerable<Timestamped<EVSEAdminStatusType>>? value))
+                            filteredAdminStatus.Add(status.Item1, status.Item2);
+
+                        else if (value.Any() && value.First().Timestamp >= status.Item2.First().Timestamp)
+                            filteredAdminStatus[status.Item1] = status.Item2;
+
+                    }
+
+                    #endregion
+
+
+                    var json = new JObject(
+                                   filteredAdminStatus.
+                                       OrderBy       (status => status.Key).
+                                       SkipTakeFilter(skip, take).
+                                       Select        (kvp    => new JProperty(
+                                                                    kvp.Key.ToString(), // EVSEId
+                                                                    kvp.Value.          // Filter multiple status having the exact same ISO 8601 timestamp!
+                                                                        GroupBy(status => status.Timestamp.ToISO8601()).
+                                                                        Select (group  => group.First()).
+                                                                        Select (status => new JArray(
+                                                                                              status.Timestamp.ToISO8601(),
+                                                                                              status.Value.    ToString())
+                                                                                          ).First()
+                                                                ))
+                               );
+
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(request) {
+                            HTTPStatusCode                 = HTTPStatusCode.OK,
+                            Server                         = HTTPServiceName,
+                            Date                           = Timestamp.Now,
+                            AccessControlAllowOrigin       = "*",
+                            AccessControlAllowMethods      = [ "GET" ],
+                            AccessControlAllowHeaders      = [ "Content-Type", "Accept", "Authorization" ],
+                            ETag                           = "1",
+                            ContentType                    = HTTPContentType.Application.JSON_UTF8,
+                            Content                        = json.ToUTF8Bytes(),
+                            X_ExpectedTotalNumberOfItems   = expectedCount,
+                            Connection                     = ConnectionType.KeepAlive
+                        }.AsImmutable);
+
+                    }, AllowReplacement: URLReplacement.Allow);
+
+            #endregion
+
+            #region GET         ~/RNs/{RoamingNetworkId}/EVSEs->GroupedAdminStatus
+
+            // ----------------------------------------------------------------------------------------------------------------
+            // curl -v -X GET -H "Accept: application/json" http://127.0.0.1:5500/RNs/{RoamingNetworkId}/EVSEs->GroupedAdminStatus
+            // ----------------------------------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.GET,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/EVSEs->GroupedAdminStatus",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPDelegate: request => {
+
+                    #region Check anonymous access
+
+                    if (!AllowAnonymousReadAccesss)
+                        return Task.FromResult(
+                            new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.Unauthorized,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "OPTIONS", "GET", "HEAD", "COUNT" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                WWWAuthenticate            = WWWAuthenticateDefaults,
+                                Connection                 = ConnectionType.KeepAlive
+                            }.AsImmutable);
+
+                    #endregion
+
+                    #region Check parameters
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out var httpResponse))
+                    {
+                        return Task.FromResult(httpResponse.AsImmutable);
+                    }
+
+                    #endregion
+
+
+                    var afterFilter            = request.QueryString.CreateDateTimeFilter<DateTimeOffset>("after",  (timestamp, pattern) => timestamp >= pattern);
+                    var beforeFilter           = request.QueryString.CreateDateTimeFilter<DateTimeOffset>("before", (timestamp, pattern) => timestamp <= pattern);
+                    var matchFilter            = request.QueryString.CreateStringFilter  <EVSE_Id>       ("match",  (evseId,    pattern) => evseId.ToString().Contains(pattern));
+
+                    //ToDo: Getting the expected total count might be very expensive!
+                    var expectedCount          = roamingNetwork.EVSEAdminStatus().ULongCount();
+
+                    var matchingEVSEs          = (matchFilter is not null
+                                                     ? roamingNetwork.EVSEs.Where(evse => matchFilter(evse.Id))
+                                                     : roamingNetwork.EVSEs).ToArray();
+
+                    var evseCount              = matchingEVSEs.Length;
+                    var evseAdminStatusGroups  = matchingEVSEs.GroupBy(evse => evse.AdminStatus.Value).ToArray();
+
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(request) {
+                            HTTPStatusCode               = HTTPStatusCode.OK,
+                            Server                       = HTTPServiceName,
+                            Date                         = Timestamp.Now,
+                            AccessControlAllowOrigin     = "*",
+                            AccessControlAllowMethods    = [ "GET", "OPTIONS" ],
+                            AccessControlAllowHeaders    = [ "Content-Type", "Accept", "Authorization" ],
+                            ETag                         = "1",
+                            ContentType                  = HTTPContentType.Application.JSON_UTF8,
+                            Content                      = JSONObject.Create(
+
+                                                               new JProperty("count",   evseCount),
+
+                                                               new JProperty("status",  JSONObject.Create(
+                                                                   evseAdminStatusGroups.Select(evseAdminStatusGroup => new JProperty(
+                                                                                                    evseAdminStatusGroup.Key.ToString().ToLower(),
+                                                                                                    new JArray(
+                                                                                                        evseAdminStatusGroup.
+                                                                                                            Select(evse => evse.Id.ToString()).
+                                                                                                            Order ()
+                                                                                                    )
+                                                                                                ))
+                                                               ))
+
+                                                           ).ToUTF8Bytes(),
+                            Connection                   = ConnectionType.KeepAlive
+                        }.AsImmutable);
+
+                });
+
+            #endregion
+
+
+            #region GET         ~/RNs/{RoamingNetworkId}/EVSEs->Status
+
+            // -----------------------------------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:5500/RNs/Test/EVSEs->Status
+            // -----------------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.GET,
+                URLPathPrefix + "RNs/{RoamingNetworkId}/EVSEs->Status",
+                HTTPContentType.Application.JSON_UTF8,
+                //HTTPRequestLogger:  SendGetEVSEsStatusRequest,
+                //HTTPResponseLogger: SendGetEVSEsStatusResponse,
+                HTTPDelegate:       request => {
+
+                    #region Check anonymous access
+
+                    if (!AllowAnonymousReadAccesss)
+                        return Task.FromResult(
+                            new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.Unauthorized,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "OPTIONS", "GET", "HEAD", "COUNT" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                WWWAuthenticate            = WWWAuthenticateDefaults,
+                                Connection                 = ConnectionType.KeepAlive
+                            }.AsImmutable);
+
+                    #endregion
+
+                    #region Check HTTP parameters
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out var httpResponseBuilder))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+
+                    var skip                 = request.QueryString.GetUInt64                           ("skip");
+                    var take                 = request.QueryString.GetUInt64                           ("take");
+                    var afterFilter          = request.QueryString.CreateDateTimeFilter<DateTimeOffset>("after",  (timestamp, pattern) => timestamp >= pattern);
+                    var beforeFilter         = request.QueryString.CreateDateTimeFilter<DateTimeOffset>("before", (timestamp, pattern) => timestamp <= pattern);
+                    var matchFilter          = request.QueryString.CreateStringFilter  <EVSE_Id>       ("match",  (evseId,    pattern) => evseId.ToString().Contains(pattern));
+
+                    //ToDo: Getting the expected total count might be very expensive!
+                    var expectedCount        = roamingNetwork.EVSEStatus().ULongCount();
+
+                    var evseStatusSchedules  = roamingNetwork.EVSEStatusSchedule(
+                                                   IncludeEVSEs:     evse      => matchFilter (evse.Id),
+                                                   TimestampFilter:  timestamp => beforeFilter(timestamp) &&
+                                                                                  afterFilter (timestamp),
+                                                   Take:             1
+                                               );
+
+                    #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
+
+                    var filteredStatus = new Dictionary<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>();
+
+                    foreach (var status in evseStatusSchedules)
+                    {
+
+                        if (!filteredStatus.TryGetValue(status.Item1, out IEnumerable<Timestamped<EVSEStatusType>>? value))
+                            filteredStatus.Add(status.Item1, status.Item2);
+
+                        else if (value.Any() && value.First().Timestamp >= status.Item2.First().Timestamp)
+                            filteredStatus[status.Item1] = status.Item2;
+
+                    }
+
+                    #endregion
+
+
+                    var json = new JObject(
+                                   filteredStatus.
+                                       OrderBy       (status => status.Key).
+                                       SkipTakeFilter(skip, take).
+                                       Select        (kvp    => new JProperty(
+                                                                    kvp.Key.ToString(), // EVSEId
+                                                                    kvp.Value.          // Filter multiple status having the exact same ISO 8601 timestamp!
+                                                                        GroupBy(status => status.Timestamp.ToISO8601()).
+                                                                        Select (group  => group.First()).
+                                                                        Select (status => new JArray(
+                                                                                              status.Timestamp.ToISO8601(),
+                                                                                              status.Value.    ToString())
+                                                                                          ).First()
+                                                                ))
+                               );
+
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(request) {
+                            HTTPStatusCode                 = HTTPStatusCode.OK,
+                            Server                         = HTTPServiceName,
+                            Date                           = Timestamp.Now,
+                            AccessControlAllowOrigin       = "*",
+                            AccessControlAllowMethods      = [ "GET" ],
+                            AccessControlAllowHeaders      = [ "Content-Type", "Accept", "Authorization" ],
+                            ETag                           = "1",
+                            ContentType                    = HTTPContentType.Application.JSON_UTF8,
+                            Content                        = json.ToUTF8Bytes(),
+                            X_ExpectedTotalNumberOfItems   = expectedCount,
+                            Connection                     = ConnectionType.KeepAlive
+                        }.AsImmutable);
+
+                    }, AllowReplacement: URLReplacement.Allow);
+
+            #endregion
+
+            #region GET         ~/RNs/{RoamingNetworkId}/EVSEs->GroupedStatus
+
+            // ----------------------------------------------------------------------------------------------------------------
+            // curl -v -X GET -H "Accept: application/json" http://127.0.0.1:5500/RNs/{RoamingNetworkId}/EVSEs->GroupedStatus
+            // ----------------------------------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.GET,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/EVSEs->GroupedStatus",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPDelegate: request => {
+
+                    #region Check anonymous access
+
+                    if (!AllowAnonymousReadAccesss)
+                        return Task.FromResult(
+                            new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.Unauthorized,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "OPTIONS", "GET", "HEAD", "COUNT" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                WWWAuthenticate            = WWWAuthenticateDefaults,
+                                Connection                 = ConnectionType.KeepAlive
+                            }.AsImmutable);
+
+                    #endregion
+
+                    #region Check parameters
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out var httpResponse))
+                    {
+                        return Task.FromResult(httpResponse.AsImmutable);
+                    }
+
+                    #endregion
+
+
+                    var afterFilter       = request.QueryString.CreateDateTimeFilter<DateTimeOffset>("after",  (timestamp, pattern) => timestamp >= pattern);
+                    var beforeFilter      = request.QueryString.CreateDateTimeFilter<DateTimeOffset>("before", (timestamp, pattern) => timestamp <= pattern);
+                    var matchFilter       = request.QueryString.CreateStringFilter  <EVSE_Id>       ("match",  (evseId,    pattern) => evseId.ToString().Contains(pattern));
+
+                    //ToDo: Getting the expected total count might be very expensive!
+                    var expectedCount     = roamingNetwork.EVSEStatus().ULongCount();
+
+                    var matchingEVSEs     = (matchFilter is not null
+                                                ? roamingNetwork.EVSEs.Where(evse => matchFilter(evse.Id))
+                                                : roamingNetwork.EVSEs).ToArray();
+
+                    var evseCount         = matchingEVSEs.Length;
+                    var evseStatusGroups  = matchingEVSEs.GroupBy(evse => evse.Status.Value).ToArray();
+
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(request) {
+                            HTTPStatusCode               = HTTPStatusCode.OK,
+                            Server                       = HTTPServiceName,
+                            Date                         = Timestamp.Now,
+                            AccessControlAllowOrigin     = "*",
+                            AccessControlAllowMethods    = [ "GET", "OPTIONS" ],
+                            AccessControlAllowHeaders    = [ "Content-Type", "Accept", "Authorization" ],
+                            ETag                         = "1",
+                            ContentType                  = HTTPContentType.Application.JSON_UTF8,
+                            Content                      = JSONObject.Create(
+
+                                                               new JProperty("count",   evseCount),
+
+                                                               new JProperty("status",  JSONObject.Create(
+                                                                   evseStatusGroups.Select(evseStatusGroup => new JProperty(
+                                                                                               evseStatusGroup.Key.ToString().ToLower(),
+                                                                                               new JArray(
+                                                                                                   evseStatusGroup.
+                                                                                                       Select(evse => evse.Id.ToString()).
+                                                                                                       Order ()
+                                                                                               )
+                                                                                           ))
+                                                               ))
+
+                                                           ).ToUTF8Bytes(),
+                            Connection                   = ConnectionType.KeepAlive
+                        }.AsImmutable);
+
+                });
+
+            #endregion
+
+            #endregion
+
+            #region ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}
+
+            #region OPTIONS     ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}
+
+            // --------------------------------------------------------------------------
+            // curl -v -X OPTIONS http://127.0.0.1:5500/RNs/Test/EVSEs/DE*GEF*E000001*1
+            // --------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.OPTIONS,
+                URLPathPrefix + "RNs/{RoamingNetworkId}/EVSEs/{EVSEId}",
+                HTTPDelegate: Request => {
+
+                    #region Check RoamingNetworkId and EVSEId URI parameters
+
+                    if (!Request.TryParseRoamingNetworkAndEVSE(this,
+                                                               out var roamingNetwork,
+                                                               out var evse,
+                                                               out var httpResponseBuilder))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(Request) {
+                            HTTPStatusCode              = HTTPStatusCode.NoContent,
+                            Server                      = HTTPServiceName,
+                            Date                        = Timestamp.Now,
+                            AccessControlAllowOrigin    = "*",
+                            AccessControlAllowMethods   = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR", "OPTIONS" ],
+                            AccessControlAllowHeaders   = [ "Content-Type", "Accept", "Authorization" ],
+                        }.AsImmutable);
+
+                },
+                AllowReplacement: URLReplacement.Allow
+            );
+
+            #endregion
+
+            #region GET         ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}
+
+            // ---------------------------------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:5500/RNs/Test/EVSEs/DE*GEF*E000001*1
+            // ---------------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.GET,
+                URLPathPrefix + "RNs/{RoamingNetworkId}/EVSEs/{EVSEId}",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPDelegate: request => {
+
+                    #region Check RoamingNetworkId and EVSEId URI parameters
+
+                    if (!request.TryParseRoamingNetworkAndEVSE(this,
+                                                               out var roamingNetwork,
+                                                               out var evse,
+                                                               out var httpResponseBuilder))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(request) {
+                            HTTPStatusCode              = HTTPStatusCode.OK,
+                            Server                      = HTTPServiceName,
+                            Date                        = Timestamp.Now,
+                            AccessControlAllowOrigin    = "*",
+                            AccessControlAllowMethods   = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                            AccessControlAllowHeaders   = [ "Content-Type", "Accept", "Authorization" ],
+                            ETag                        = "1",
+                            ContentType                 = HTTPContentType.Application.JSON_UTF8,
+                            Content                     = (evse?.ToJSON() ?? []).ToUTF8Bytes(),
+                            Connection                  = ConnectionType.KeepAlive
+                        }.AsImmutable);
+
+                }
+            );
+
+            #endregion
+
+
+            #region AUTHSTART   ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}
+
+            // -----------------------------------------------------------------------
+            // curl -v -X AUTHSTART -H "Content-Type: application/json" \
+            //                      -H "Accept:       application/json" \
+            //      -d "{ \"AuthToken\":  \"00112233\" }" \
+            //      http://127.0.0.1:5500/RNs/Test/EVSEs/DE*GEF*E000001*1
+            HTTPBaseAPI.AddHandler(
+
+                AUTHSTART,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPRequestLogger:   SendAuthorizeStartEVSEHTTPRequest,
+                HTTPResponseLogger:  SendAuthorizeStartEVSEHTTPResponse,
+                HTTPDelegate:        async request => {
+
+                    #region Parse RoamingNetworkId and EVSEId URI parameters
+
+                    if (!request.TryParseRoamingNetworkAndEVSE(this,
+                                                               out var roamingNetwork,
+                                                               out var evse,
+                                                               out var httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse JSON
+
+                    if (!request.TryParseJSONObjectRequestBody(out var json,
+                                                               out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #region Parse OperatorId             [optional]
+
+                    if (!json.ParseOptional("OperatorId",
+                                            "Charging Station Operator identification",
+                                            HTTPServiceName,
+                                            ChargingStationOperator_Id.TryParse,
+                                            out ChargingStationOperator_Id operatorId,
+                                            request,
+                                            out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse AuthToken              [mandatory]
+
+                    if (!json.ParseMandatory("AuthToken",
+                                             "authentication token",
+                                             HTTPServiceName,
+                                             AuthenticationToken.TryParse,
+                                             out AuthenticationToken authToken,
+                                             request,
+                                             out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse SessionId              [optional]
+
+                    if (!json.ParseOptionalStruct2("SessionId",
+                                                   "Charging session identification",
+                                                   HTTPServiceName,
+                                                   ChargingSession_Id.TryParse,
+                                                   out ChargingSession_Id? sessionId,
+                                                   request,
+                                                   out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse CPOPartnerSessionId    [optional]
+
+                    if (!json.ParseOptionalStruct2("CPOPartnerSessionId",
+                                                   "CPO partner charging session identification",
+                                                   HTTPServiceName,
+                                                   ChargingSession_Id.TryParse,
+                                                   out ChargingSession_Id? cpoPartnerSessionId,
+                                                   request,
+                                                   out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse ChargingProductId      [optional]
+
+                    if (!json.ParseOptionalStruct2("ChargingProductId",
+                                                   "Charging product identification",
+                                                   HTTPServiceName,
+                                                   ChargingProduct_Id.TryParse,
+                                                   out ChargingProduct_Id? chargingProductId,
+                                                   request,
+                                                   out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #endregion
+
+
+                    var result  = await roamingNetwork.AuthorizeStart(
+                                            LocalAuthentication.FromAuthToken(authToken),
+                                            ChargingLocation.FromEVSEId(evse.Id),
+                                            chargingProductId.HasValue
+                                                ? new ChargingProduct(chargingProductId.Value)
+                                                : null,
+                                            sessionId,
+                                            cpoPartnerSessionId,
+                                            operatorId,
+
+                                            request.Timestamp,
+                                            request.EventTrackingId,
+                                            null,
+                                            request.CancellationToken
+                                        );
+
+
+                    #region Authorized
+
+                    if (result.Result == AuthStartResultTypes.Authorized)
+                        return new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.OK,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                ContentType                = HTTPContentType.Application.JSON_UTF8,
+                                Content                    = result.ToJSON().ToUTF8Bytes()
+                            };
+
+                    #endregion
+
+                    #region NotAuthorized
+
+                    else if (result.Result == AuthStartResultTypes.Error)
+                        return new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.Unauthorized,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                ContentType                = HTTPContentType.Application.JSON_UTF8,
+                                Content                    = result.ToJSON().ToUTF8Bytes()
+                            };
+
+                    #endregion
+
+                    #region Forbidden
+
+                    else
+                        return new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.Forbidden, //ToDo: Is this smart?
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                ContentType                = HTTPContentType.Application.JSON_UTF8,
+                                Content                    = result.ToJSON().ToUTF8Bytes()
+                            };
+
+                    #endregion
+
+                },
+                AllowReplacement: URLReplacement.Allow
+            );
+
+            #endregion
+
+            #region AUTHSTOP    ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}
+
+            // -----------------------------------------------------------------------
+            // curl -v -X AUTHSTOP -H "Content-Type: application/json" \
+            //                     -H "Accept:       application/json" \
+            //      -d "{ \"SessionId\":  \"60ce73f6-0a88-1296-3d3d-623fdd276ddc\", \
+            //            \"AuthToken\":  \"00112233\" }" \
+            //      http://127.0.0.1:5500/RNs/Test/EVSEs/DE*GEF*E000001*1
+            HTTPBaseAPI.AddHandler(
+
+                AUTHSTOP,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPRequestLogger:  SendAuthorizeStopEVSEHTTPRequest,
+                HTTPResponseLogger: SendAuthorizeStopEVSEHTTPResponse,
+                HTTPDelegate:       async request => {
+
+                    #region Parse RoamingNetworkId and EVSEId URI parameters
+
+                    if (!request.TryParseRoamingNetworkAndEVSE(this,
+                                                               out var roamingNetwork,
+                                                               out var evse,
+                                                               out var httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse JSON
+
+                    if (!request.TryParseJSONObjectRequestBody(out var JSON,
+                                                               out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #region Parse SessionId    [mandatory]
+
+                    if (!JSON.ParseMandatory("SessionId",
+                                             "Charging session identification",
+                                             HTTPServiceName,
+                                             ChargingSession_Id.TryParse,
+                                             out ChargingSession_Id sessionId,
+                                             request,
+                                             out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse AuthToken    [mandatory]
+
+                    if (!JSON.ParseMandatory("AuthToken",
+                                             "Authentication token",
+                                             HTTPServiceName,
+                                             AuthenticationToken.TryParse,
+                                             out AuthenticationToken AuthToken,
+                                             request,
+                                             out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse CPOPartnerSessionId    [optional]
+
+                    if (!JSON.ParseOptionalStruct2("CPOPartnerSessionId",
+                                                   "CPO partner charging session identification",
+                                                   HTTPServiceName,
+                                                   ChargingSession_Id.TryParse,
+                                                   out ChargingSession_Id? CPOPartnerSessionId,
+                                                   request,
+                                                   out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse OperatorId   [optional]
+
+                    if (!JSON.ParseOptional("OperatorId",
+                                            "Charging Station Operator identification",
+                                            HTTPServiceName,
+                                            ChargingStationOperator_Id.TryParse,
+                                            out ChargingStationOperator_Id chargingStationOperatorId,
+                                            request,
+                                            out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #endregion
+
+
+                    var result = await roamingNetwork.AuthorizeStop(
+                                           sessionId,
+                                           LocalAuthentication.FromAuthToken(AuthToken),
+                                           ChargingLocation.   FromEVSEId    (evse.Id),
+                                           CPOPartnerSessionId,
+                                           chargingStationOperatorId,
+
+                                           request.Timestamp,
+                                           request.EventTrackingId,
+                                           null,
+                                           request.CancellationToken
+                                       );
+
+
+                    #region Authorized
+
+                    if (result.Result == AuthStopResultTypes.Authorized)
+                        return new HTTPResponse.Builder(request) {
+                                   HTTPStatusCode  = HTTPStatusCode.OK,
+                                   Server                     = HTTPServiceName,
+                                   Date                       = Timestamp.Now,
+                                   AccessControlAllowOrigin   = "*",
+                                   AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                   AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                   ContentType                = HTTPContentType.Application.JSON_UTF8,
+                                   Content                    = result.ToJSON().ToUTF8Bytes()
+                               };
+
+                    #endregion
+
+                    #region NotAuthorized
+
+                    else if (result.Result == AuthStopResultTypes.NotAuthorized)
+                        return new HTTPResponse.Builder(request) {
+                                   HTTPStatusCode             = HTTPStatusCode.Unauthorized,
+                                   Server                     = HTTPServiceName,
+                                   Date                       = Timestamp.Now,
+                                   AccessControlAllowOrigin   = "*",
+                                   AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                   AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                   ContentType                = HTTPContentType.Application.JSON_UTF8,
+                                   Content                    = result.ToJSON().ToUTF8Bytes()
+                               };
+
+                    #endregion
+
+                    #region Forbidden
+
+                    return new HTTPResponse.Builder(request) {
+                               HTTPStatusCode             = HTTPStatusCode.Forbidden, //ToDo: Is this smart?
+                               Server                     = HTTPServiceName,
+                               Date                       = Timestamp.Now,
+                               AccessControlAllowOrigin   = "*",
+                               AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                               AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                               ContentType                = HTTPContentType.Application.JSON_UTF8,
+                               Content                    = result.ToJSON().ToUTF8Bytes()
+                           };
+
+                    #endregion
+
+                },
+                AllowReplacement: URLReplacement.Allow
+            );
+
+            #endregion
+
+            #region REMOTESTART ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}
+
+            // -----------------------------------------------------------------------
+            // curl -v -X REMOTESTART -H "Content-Type: application/json" \
+            //                        -H "Accept:       application/json"  \
+            //      -d "{ \"ProviderId\":  \"DE*GDF\", \
+            //            \"eMAId\":       \"DE*GDF*00112233*1\" }" \
+            //      http://127.0.0.1:5500/RNs/Test/EVSEs/DE*GEF*E000001*1
+            HTTPBaseAPI.AddHandler(
+
+                REMOTESTART,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPRequestLogger:   SendRemoteStartEVSERequest,
+                HTTPResponseLogger:  SendRemoteStartEVSEResponse,
+                HTTPDelegate:        async request => {
+
+                    #region Get RoamingNetwork and EVSE URI parameters
+
+                    if (!request.TryParseRoamingNetworkAndEVSE(this,
+                                                               out var roamingNetwork,
+                                                               out var evse,
+                                                               out var httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse JSON  [optional]
+
+                    ChargingProduct_Id?      ChargingProductId    = null;
+                    ChargingReservation_Id?  ReservationId        = null;
+                    ChargingSession_Id?      SessionId            = null;
+                    EMobilityProvider_Id?    ProviderId           = null;
+                    EMobilityAccount_Id      eMAId                = default;
+                    Auth_Path?               AuthenticationPath   = null;
+
+                    if (request.TryParseJSONObjectRequestBody(out var json,
+                                                              out httpResponseBuilder))
+                    {
+
+                        #region Check ChargingProductId  [optional]
+
+                        if (!json.ParseOptionalStruct2("ChargingProductId",
+                                                       "Charging product identification",
+                                                       HTTPServiceName,
+                                                       ChargingProduct_Id.TryParse,
+                                                       out ChargingProductId,
+                                                       request,
+                                                       out httpResponseBuilder))
+                        {
+
+                            return httpResponseBuilder;
+
+                        }
+
+                        #endregion
+
+                        // MaxKWh
+                        // MaxPrice
+
+                        #region Check ReservationId      [optional]
+
+                        if (!json.ParseOptionalStruct2("ReservationId",
+                                                       "Charging reservation identification",
+                                                       HTTPServiceName,
+                                                       ChargingReservation_Id.TryParse,
+                                                       out ReservationId,
+                                                       request,
+                                                       out httpResponseBuilder))
+                        {
+
+                            return httpResponseBuilder;
+
+                        }
+
+                        #endregion
+
+                        #region Parse SessionId          [optional]
+
+                        if (!json.ParseOptionalStruct2("SessionId",
+                                                       "Charging session identification",
+                                                       HTTPServiceName,
+                                                       ChargingSession_Id.TryParse,
+                                                       out SessionId,
+                                                       request,
+                                                       out httpResponseBuilder))
+                        {
+
+                            return httpResponseBuilder;
+
+                        }
+
+                        #endregion
+
+                        #region Parse ProviderId         [optional]
+
+                        if (!json.ParseOptionalStruct2("ProviderId",
+                                                       "EV service provider identification",
+                                                       HTTPServiceName,
+                                                       EMobilityProvider_Id.TryParse,
+                                                       out ProviderId,
+                                                       request,
+                                                       out httpResponseBuilder))
+                        {
+
+                            return httpResponseBuilder;
+
+                        }
+
+                        #endregion
+
+                        #region Parse eMAId             [mandatory]
+
+                        if (!json.ParseMandatory("eMAId",
+                                                 "e-Mobility account identification",
+                                                 HTTPServiceName,
+                                                 EMobilityAccount_Id.TryParse,
+                                                 out eMAId,
+                                                 request,
+                                                 out httpResponseBuilder))
+
+                            return httpResponseBuilder;
+
+                        #endregion
+
+                        #region Parse AuthenticationPath    [optional]
+
+                        if (json.ParseOptional("authenticationPath",
+                                               "authentication path",
+                                               Auth_Path.TryParse,
+                                               out AuthenticationPath,
+                                               out var errorResponse))
+                        {
+                            if (errorResponse is not null)
+                                return new HTTPResponse.Builder(request) {
+                                        HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                                        ContentType     = HTTPContentType.Application.JSON_UTF8,
+                                        Content         = new JObject(new JProperty("description", "Invalid authentication path: " + errorResponse)).ToUTF8Bytes()
+                                    };
+                        }
+
+                        #endregion
+
+                    }
+
+                    else
+                        return httpResponseBuilder;
+
+                    #endregion
+
+
+                    var result = await roamingNetwork.RemoteStart(
+                                           ChargingLocation.FromEVSEId(evse.Id),
+                                           ChargingProductId.HasValue
+                                               ? new ChargingProduct(ChargingProductId.Value)
+                                               : null,
+                                           ReservationId,
+                                           SessionId,
+                                           ProviderId,
+                                           RemoteAuthentication.FromRemoteIdentification(eMAId),
+                                           null,
+                                           AuthenticationPath,
+                                           null,
+
+                                           request.Timestamp,
+                                           request.EventTrackingId,
+                                           null,
+                                           request.CancellationToken
+                                       );
+
+
+                    #region Success
+
+                    if (result.Result == RemoteStartResultTypes.Success)
+                        return new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.Created,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                ContentType                = HTTPContentType.Application.JSON_UTF8,
+                                Content                    = JSONObject.Create(
+
+                                                                 result.Session is not null
+                                                                     ? new JProperty("sessionId",   result.Session.Id.ToString())
+                                                                     : null
+
+                                                             ).ToUTF8Bytes()
+                            };
+
+                    #endregion
+
+                    #region ...or fail!
+
+                    else
+                        return 
+                            new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.BadRequest,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                ContentType                = HTTPContentType.Application.JSON_UTF8,
+                                Content                    = JSONObject.Create(
+
+                                                                result.Session is not null
+                                                                    ? new JProperty("sessionId",     result.Session.Id.ToString())
+                                                                    : null,
+
+                                                                      new JProperty("result",        result.Result.    ToString()),
+
+                                                                result.Description is not null
+                                                                    ? new JProperty("description",   result.Description)
+                                                                    : null
+
+                                                            ).ToUTF8Bytes()
+                            };
+
+                    #endregion
+
+                }, AllowReplacement: URLReplacement.Allow);
+
+            #endregion
+
+            #region REMOTESTOP  ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}
+
+            // -----------------------------------------------------------------------
+            // curl -v -X REMOTESTOP -H "Content-Type: application/json" \
+            //                       -H "Accept:       application/json"  \
+            //      -d "{ \"ProviderId\":  \"DE*8BD\", \
+            //            \"SessionId\":   \"60ce73f6-0a88-1296-3d3d-623fdd276ddc\", \
+            //            \"eMAId\":       \"DE*GDF*00112233*1\" }" \
+            //      http://127.0.0.1:5500/RNs/Test/EVSEs/DE*GEF*E000001*1
+            HTTPBaseAPI.AddHandler(
+
+                REMOTESTOP,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPRequestLogger:   SendRemoteStopEVSEHTTPRequest,
+                HTTPResponseLogger:  SendRemoteStopEVSEHTTPResponse,
+                HTTPDelegate:        async request => {
+
+                    #region Get RoamingNetwork and EVSE URI parameters
+
+                    if (!request.TryParseRoamingNetworkAndEVSE(this,
+                                                               out var roamingNetwork,
+                                                               out var evse,
+                                                               out var httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse JSON
+
+                    if (!request.TryParseJSONObjectRequestBody(out var json,
+                                                               out httpResponseBuilder,
+                                                               AllowEmptyHTTPBody: false))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    // Bypass SessionId check for remote safety admins
+                    // coming from the same ev service provider
+
+                    #region Parse SessionId         [mandatory]
+
+                    if (!json.ParseMandatory("SessionId",
+                                             "Charging session identification",
+                                             HTTPServiceName,
+                                             ChargingSession_Id.TryParse,
+                                             out ChargingSession_Id SessionId,
+                                             request,
+                                             out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse ProviderId         [optional]
+
+                    if (!json.ParseOptionalStruct2("ProviderId",
+                                                   "EV service provider identification",
+                                                   HTTPServiceName,
+                                                   EMobilityProvider_Id.TryParse,
+                                                   out EMobilityProvider_Id? ProviderId,
+                                                   request,
+                                                   out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder!;
+                    }
+
+                    #endregion
+
+                    #region Parse eMAId              [optional]
+
+                    if (!json.ParseOptionalStruct2("eMAId",
+                                                   "e-Mobility account identification",
+                                                   HTTPServiceName,
+                                                   EMobilityAccount_Id.TryParse,
+                                                   out EMobilityAccount_Id? eMAId,
+                                                   request,
+                                                   out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder!;
+                    }
+
+                    #endregion
+
+                    // ReservationHandling
+
+                    #region Parse AuthenticationPath    [optional]
+
+                    if (json.ParseOptional("authenticationPath",
+                                           "authentication path",
+                                           Auth_Path.TryParse,
+                                           out Auth_Path? AuthenticationPath,
+                                           out var errorResponse))
+                    {
+                        if (errorResponse is not null)
+                            return new HTTPResponse.Builder(request) {
+                                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                                    ContentType     = HTTPContentType.Application.JSON_UTF8,
+                                    Content         = new JObject(new JProperty("description", "Invalid authentication path: " + errorResponse)).ToUTF8Bytes()
+                                };
+                    }
+
+                    #endregion
+
+                    #endregion
+
+
+                    var result = await roamingNetwork.RemoteStop(
+                                           SessionId,
+                                           ReservationHandling.Close, // ToDo: Parse this property!
+                                           ProviderId,
+                                           RemoteAuthentication.FromRemoteIdentification(eMAId),
+                                           null,
+                                           AuthenticationPath,
+                                           null,
+
+                                           request.Timestamp,
+                                           request.EventTrackingId,
+                                           null,
+                                           request.CancellationToken
+                                       );
+
+
+                    #region Success
+
+                    if (result.Result == RemoteStopResultTypes.Success)
+                    {
+
+                        if (result.ReservationHandling.IsKeepAlive == false)
+                            return new HTTPResponse.Builder(request) {
+                                       HTTPStatusCode             = HTTPStatusCode.NoContent,
+                                       Server                     = HTTPServiceName,
+                                       Date                       = Timestamp.Now,
+                                       AccessControlAllowOrigin   = "*",
+                                       AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                       AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                   };
+
+                        else
+                            return new HTTPResponse.Builder(request) {
+                                       HTTPStatusCode             = HTTPStatusCode.OK,
+                                       Server                     = HTTPServiceName,
+                                       Date                       = Timestamp.Now,
+                                       AccessControlAllowOrigin   = "*",
+                                       AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                       AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                       ContentType                = HTTPContentType.Application.JSON_UTF8,
+                                       Content                    = new JObject(
+
+                                                                        new JProperty("keepAlive",   (Int32) result.ReservationHandling.KeepAliveTime.TotalSeconds)
+
+                                                                    ).ToUTF8Bytes()
+                                   };
+
+                    }
+
+                    #endregion
+
+                    #region ...or fail
+
+                    else
+                        return new HTTPResponse.Builder(request) {
+                                   HTTPStatusCode             = HTTPStatusCode.BadRequest,
+                                   Server                     = HTTPServiceName,
+                                   Date                       = Timestamp.Now,
+                                   AccessControlAllowOrigin   = "*",
+                                   AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                   AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                   ContentType                = HTTPContentType.Application.JSON_UTF8,
+                                   Content                    = new JObject(
+                                                                    new JProperty("description",   result.Result.ToString())
+                                                                ).ToUTF8Bytes()
+                               };
+
+                    #endregion
+
+                }, AllowReplacement: URLReplacement.Allow);
+
+            #endregion
+
+            #region SENDCDR     ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}
+
+            // -----------------------------------------------------------------------
+            // curl -v -X SENDCDR -H "Content-Type: application/json" \
+            //                    -H "Accept: application/json" \
+            //      -d "{ \"SessionId\":        \"60ce73f6-0a88-1296-3d3d-623fdd276ddc\", \
+            //            \"PartnerProductId\": \"Green Charging 11kWh\", \
+            //            \"eMAId\":            \"DE*GDF*00112233*1\" \
+            //            \"SessionStart\":     \"2014-08-18T13:12:34.641Z\", \
+            //            \"ChargeStart\":      \"2014-08-18T13:12:35.853Z\", \
+            //            \"MeterValueStart\":  1200.100, \
+            //            \"MeterValueEnd\":    1200.110, \
+            //            \"ChargeEnd\":        \"2014-08-18T14:36:11.351Z\", \
+            //            \"SessionEnd\":       \"2014-08-18T14:36:12.662Z\" }" \
+            //      http://127.0.0.1:5500/RNs/Test/EVSEs/DE*GEF*E000001*1
+            HTTPBaseAPI.AddHandler(
+
+                SENDCDR,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPRequestLogger:   SendChargeDetailRecordsHTTPRequest,
+                HTTPResponseLogger:  SendChargeDetailRecordsHTTPResponse,
+                HTTPDelegate:        async request => {
+
+                    #region Parse RoamingNetwork and EVSE
+
+                    if (!request.TryParseRoamingNetworkAndEVSE(this,
+                                                               out var roamingNetwork,
+                                                               out var evse,
+                                                               out var httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse JSON
+
+                    if (!request.TryParseJSONObjectRequestBody(out var json,
+                                                               out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #region Parse SessionId            [mandatory]
+
+                    if (!json.ParseMandatory("SessionId",
+                                             "charging session identification",
+                                             HTTPServiceName,
+                                             ChargingSession_Id.TryParse,
+                                             out ChargingSession_Id SessionId,
+                                             request,
+                                             out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse ChargingProductId    [optional]
+
+                    if (json.ParseOptionalStruct2("ChargingProductId",
+                                                  "charging product identification",
+                                                  HTTPServiceName,
+                                                  ChargingProduct_Id.TryParse,
+                                                  out ChargingProduct_Id? ChargingProductId,
+                                                  request,
+                                                  out httpResponseBuilder))
+                    {
+                        if (httpResponseBuilder is not null)
+                            return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse AuthToken or eMAId
+
+                    if (json.ParseOptional("AuthToken",
+                                           "authentication token",
+                                           HTTPServiceName,
+                                           AuthenticationToken.TryParse,
+                                           out AuthenticationToken? AuthToken,
+                                           request,
+                                           out httpResponseBuilder))
+                    {
+                        if (httpResponseBuilder is not null)
+                            return httpResponseBuilder;
+                    }
+
+                    if (json.ParseOptionalStruct2("eMAId",
+                                                  "e-mobility account identification",
+                                                  HTTPServiceName,
+                                                  EMobilityAccount_Id.TryParse,
+                                                  out EMobilityAccount_Id? eMAId,
+                                                  request,
+                                                  out httpResponseBuilder))
+                    {
+                        if (httpResponseBuilder is not null)
+                            return httpResponseBuilder;
+                    }
+
+
+                    if (AuthToken is null && eMAId is null)
+                        return new HTTPResponse.Builder(request) {
+                            HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                            Server          = HTTPServiceName,
+                            Date            = Timestamp.Now,
+                            ContentType     = HTTPContentType.Application.JSON_UTF8,
+                            Content         = new JObject(
+                                                  new JProperty("description", "Missing authentication token or eMAId!")
+                                              ).ToUTF8Bytes()
+                        };
+
+                    #endregion
+
+                    #region Parse ChargeStart/End...
+
+                    if (!json.ParseMandatory("ChargeStart",
+                                             "Charging start time",
+                                             HTTPServiceName,
+                                             out DateTimeOffset ChargingStart,
+                                             request,
+                                             out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    if (!json.ParseMandatory("ChargeEnd",
+                                             "Charging end time",
+                                             HTTPServiceName,
+                                             out DateTimeOffset ChargingEnd,
+                                             request,
+                                             out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse SessionStart/End...
+
+                    if (!json.ParseMandatory("SessionStart",
+                                             "Charging start time",
+                                             HTTPServiceName,
+                                             out DateTime SessionStart,
+                                             request,
+                                             out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    if (!json.ParseMandatory("SessionEnd",
+                                             "Charging end time",
+                                             HTTPServiceName,
+                                             out DateTime SessionEnd,
+                                             request,
+                                             out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse MeterValueStart/End...
+
+                    if (!json.ParseMandatory("MeterValueStart",
+                                             "Energy meter start value",
+                                             HTTPServiceName,
+                                             WattHour.TryParseKWh,
+                                             out WattHour MeterValueStart,
+                                             request,
+                                             out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    if (!json.ParseMandatory("MeterValueEnd",
+                                             "Energy meter end value",
+                                             HTTPServiceName,
+                                             WattHour.TryParseKWh,
+                                             out WattHour MeterValueEnd,
+                                             request,
+                                             out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #endregion
+
+
+                    var authenticationStart  = AuthToken.HasValue
+                                                   ? (AAuthentication)       LocalAuthentication. FromAuthToken           (AuthToken.Value)
+                                                   : eMAId.HasValue
+                                                         ? (AAuthentication) RemoteAuthentication.FromRemoteIdentification(eMAId.    Value)
+                                                         : null;
+
+                    var chargeDetailRecord   = new ChargeDetailRecord(
+                                                   Id:                     ChargeDetailRecord_Id.Parse(SessionId.ToString()),
+                                                   SessionId:              SessionId,
+                                                   EVSEId:                 evse.Id,
+                                                   EVSE:                   evse,
+                                                   ChargingProduct:        ChargingProductId.HasValue
+                                                                               ? new ChargingProduct(ChargingProductId.Value)
+                                                                               : null,
+                                                   SessionTime:            new StartEndDateTime(SessionStart, SessionEnd),
+                                                   AuthenticationStart:    authenticationStart,
+                                                   //ChargingTime:         new StartEndDateTime(ChargingStart.Value, ChargingEnd.Value),
+                                                   EnergyMeteringValues:   [
+                                                                               new EnergyMeteringValue(ChargingStart, MeterValueStart, EnergyMeteringValueTypes.Start),
+                                                                               new EnergyMeteringValue(ChargingEnd,   MeterValueEnd,   EnergyMeteringValueTypes.Stop)
+                                                                           ]
+                                               );
+
+                    var result               = await roamingNetwork.SendChargeDetailRecords(
+                                                         [ chargeDetailRecord ],
+                                                         TransmissionTypes.Enqueue,
+
+                                                         request.Timestamp,
+                                                         request.EventTrackingId,
+                                                         null,
+                                                         request.CancellationToken
+                                                     );
+
+
+                    #region Forwarded
+
+                    if (result.Result == SendCDRsResultTypes.Success)
+                        return new HTTPResponse.Builder(request) {
+                                   HTTPStatusCode             = HTTPStatusCode.OK,
+                                   Server                     = HTTPServiceName,
+                                   Date                       = Timestamp.Now,
+                                   AccessControlAllowOrigin   = "*",
+                                   AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                   AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                   ContentType                = HTTPContentType.Application.JSON_UTF8,
+                                   Content                    = JSONObject.Create(
+                                                                    new JProperty("status",          "forwarded"),
+                                                                    new JProperty("authorizatorId",   result.AuthorizatorId.ToString())
+                                                                ).ToUTF8Bytes()
+                               };
+
+                    #endregion
+
+                    #region NotForwared
+
+                    else if (result.Result == SendCDRsResultTypes.Error)
+                        return new HTTPResponse.Builder(request) {
+                                   HTTPStatusCode             = HTTPStatusCode.OK,
+                                   Server                     = HTTPServiceName,
+                                   Date                       = Timestamp.Now,
+                                   AccessControlAllowOrigin   = "*",
+                                   AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                   AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                   ContentType                = HTTPContentType.Application.JSON_UTF8,
+                                   Content                    = JSONObject.Create(
+                                                                    new JProperty("status",   "Not forwarded")
+                                                                ).ToUTF8Bytes()
+                               };
+
+                    #endregion
+
+                    #region ...or fail!
+
+                    else
+                        return new HTTPResponse.Builder(request) {
+                                   HTTPStatusCode             = HTTPStatusCode.NotFound,
+                                   Server                     = HTTPServiceName,
+                                   Date                       = Timestamp.Now,
+                                   AccessControlAllowOrigin   = "*",
+                                   AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                   AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                   ContentType                = HTTPContentType.Application.JSON_UTF8,
+                                   Content                    = JSONObject.Create(
+                                                                    new JProperty("sessionId",        SessionId.ToString()),
+                                                                    new JProperty("description",      result.Description),
+                                                                    new JProperty("authorizatorId",   result.AuthorizatorId.ToString())
+                                                                ).ToUTF8Bytes()
+                               };
+
+                    #endregion
+
+                },
+                AllowReplacement: URLReplacement.Allow
+            );
+
+            #endregion
+
+            #endregion
+
+            #region ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}/AdminStatus
+
+            #region OPTIONS     ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}/AdminStatus
+
+            // --------------------------------------------------------------------------------------
+            // curl -v -X OPTIONS http://127.0.0.1:5500/RNs/Test/EVSEs/DE*GEF*E000001*1/AdminStatus
+            // --------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.OPTIONS,
+                URLPathPrefix + "RNs/{RoamingNetworkId}/EVSEs/{EVSEId}/AdminStatus",
+                HTTPDelegate: Request => {
+
+                    #region Check RoamingNetworkId and EVSEId URI parameters
+
+                    if (!Request.TryParseRoamingNetworkAndEVSE(this,
+                                                               out var roamingNetwork,
+                                                               out var evse,
+                                                               out var httpResponseBuilder))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(Request) {
+                            HTTPStatusCode              = HTTPStatusCode.NoContent,
+                            Server                      = HTTPServiceName,
+                            Date                        = Timestamp.Now,
+                            AccessControlAllowOrigin    = "*",
+                            AccessControlAllowMethods   = [ "OPTIONS", "GET", "SET" ],
+                            AccessControlAllowHeaders   = [ "Content-Type", "Accept", "Authorization" ],
+                        }.AsImmutable);
+
+                },
+                AllowReplacement: URLReplacement.Allow
+            );
+
+            #endregion
+
+            #region GET         ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}/AdminStatus
+
+            // -----------------------------------------------------------------------
+            // curl -v -H "Accept:       application/json" \
+            //      http://127.0.0.1:5500/RNs/TEST/EVSEs/DE*GEF*E0001*1/AdminStatus
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.GET,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}/AdminStatus",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPDelegate: request => {
+
+                    #region Parse RoamingNetworkId and EVSEId parameters
+
+                    if (!request.TryParseRoamingNetworkAndEVSE(this,
+                                                               out var roamingNetwork,
+                                                               out var evse,
+                                                               out var httpResponseBuilder))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(request) {
+                            HTTPStatusCode              = HTTPStatusCode.OK,
+                            Server                      = HTTPServiceName,
+                            Date                        = Timestamp.Now,
+                            AccessControlAllowOrigin    = "*",
+                            AccessControlAllowMethods   = [ "GET" ],
+                            AccessControlAllowHeaders   = [ "Content-Type", "Accept", "Authorization" ],
+                            ETag                        = "1",
+                            ContentType                 = HTTPContentType.Application.JSON_UTF8,
+                            Content                     = evse.AdminStatus.
+                                                              ToJSON().
+                                                              ToUTF8Bytes(),
+                            Connection                  = ConnectionType.KeepAlive
+                        }.AsImmutable);
+
+                }
+            );
+
+            #endregion
+
+            #region SET         ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}/AdminStatus
+
+            // -----------------------------------------------------------------------
+            // curl -v -X SET -H "Content-Type: application/json" \
+            //                -H "Accept:       application/json" \
+            //      -d "{ \"CurrentStatus\":  \"OutOfService\" }" \
+            //      http://127.0.0.1:5500/RNs/EST/EVSEs/DE*GEF*E0001*1/AdminStatus
+            // -----------------------------------------------------------------------
+            // curl -v -X SET -H "Content-Type: application/json" \
+            //                -H "Accept:       application/json" \
+            //      -d "{ \"CurrentStatus\":  \"OutOfService\" }" \
+            //      http://127.0.0.1:3004/RNs/Prod/EVSEs/DE*BDO*EVSE*CI*TESTS*A*1/AdminStatus
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.SET,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}/AdminStatus",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPRequestLogger:   SetEVSEAdminStatusRequest,
+                HTTPResponseLogger:  SetEVSEAdminStatusResponse,
+                HTTPDelegate:        async request => {
+
+                    #region Parse RoamingNetwork and EVSE
+
+                    if (!request.TryParseRoamingNetworkAndEVSE(this,
+                                                               out var roamingNetwork,
+                                                               out var evse,
+                                                               out var httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse JSON
+
+                    if (!request.TryParseJSONObjectRequestBody(out var json,
+                                                               out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #region Parse CurrentStatus  [optional]
+
+                    if (json.ParseOptional("currentStatus",
+                                           "EVSE admin status",
+                                           HTTPServiceName,
+                                           out EVSEAdminStatusType? currentStatus,
+                                           request,
+                                           out httpResponseBuilder))
+                    {
+                        if (httpResponseBuilder is not null)
+                            return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse StatusList     [optional]
+
+                    var statusList = new List<Timestamped<EVSEAdminStatusType>>();
+
+                    if (json.ParseOptional("statusList",
+                                           "status list",
+                                           HTTPServiceName,
+                                           out JObject statusListJSON,
+                                           request,
+                                           out httpResponseBuilder))
+                    {
+
+                        if (httpResponseBuilder is not null)
+                            return httpResponseBuilder;
+
+                        if (statusListJSON is not null)
+                        {
+                            foreach (var jproperty in statusListJSON)
+                            {
+
+                                try
+                                {
+
+                                    if (jproperty.Value != null &&
+                                        DateTimeOffset.     TryParse(jproperty.Key,              out var timestamp) &&
+                                        EVSEAdminStatusType.TryParse(jproperty.Value.ToString(), out var evseAdminStatusType))
+                                    {
+                                        statusList.Add(
+                                            new Timestamped<EVSEAdminStatusType>(
+                                                timestamp,
+                                                evseAdminStatusType
+                                            )
+                                        );
+                                    }
+
+                                }
+                                catch
+                                {
+                                    // Will send the below BadRequest HTTP reply...
+                                }
+
+                            }
+                        }
+
+                        if (statusListJSON is null || statusList.Count == 0)
+                            return new HTTPResponse.Builder(request) {
+                                       HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                                       Server          = HTTPServiceName,
+                                       Date            = Timestamp.Now,
+                                       ContentType     = HTTPContentType.Application.JSON_UTF8,
+                                       Content         = new JObject(
+                                                           new JProperty("description", "Invalid status list!")
+                                                       ).ToUTF8Bytes()
+                                   };
+
+                    }
+
+                    #endregion
+
+                    #region Fail, if both CurrentStatus and StatusList are missing...
+
+                    if (!currentStatus.HasValue && statusList is null)
+                        return new HTTPResponse.Builder(request) {
+                                   HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                                   Server          = HTTPServiceName,
+                                   Date            = Timestamp.Now,
+                                   ContentType     = HTTPContentType.Application.JSON_UTF8,
+                                   Content         = new JObject(
+                                                         new JProperty("description", "Either a 'currentStatus' or a 'statusList' must be send!")
+                                                     ).ToUTF8Bytes()
+                               };
+
+                    #endregion
+
+                    #endregion
+
+
+                    if (currentStatus.HasValue && statusList is null)
+                        statusList = [
+                                         new Timestamped<EVSEAdminStatusType>(
+                                             request.Timestamp,
+                                             currentStatus.Value
+                                         )
+                                     ];
+
+                    if (statusList.Count > 0)
+                        roamingNetwork.SetEVSEAdminStatus(
+                            evse.Id,
+                            statusList
+                        );
+
+
+                    return new HTTPResponse.Builder(request) {
+                               HTTPStatusCode  = HTTPStatusCode.OK,
+                               Server          = HTTPServiceName,
+                               Date            = Timestamp.Now,
+                               Connection      = ConnectionType.KeepAlive
+                           };
+
+                });
+
+            #endregion
+
+            #endregion
+
+            #region ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}/Status
+
+            #region OPTIONS     ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}/Status
+
+            // --------------------------------------------------------------------------------------
+            // curl -v -X OPTIONS http://127.0.0.1:5500/RNs/Test/EVSEs/DE*GEF*E000001*1/Status
+            // --------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.OPTIONS,
+                URLPathPrefix + "RNs/{RoamingNetworkId}/EVSEs/{EVSEId}/Status",
+                HTTPDelegate: Request => {
+
+                    #region Check RoamingNetworkId and EVSEId URI parameters
+
+                    if (!Request.TryParseRoamingNetworkAndEVSE(this,
+                                                               out var roamingNetwork,
+                                                               out var evse,
+                                                               out var httpResponseBuilder))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(Request) {
+                            HTTPStatusCode              = HTTPStatusCode.NoContent,
+                            Server                      = HTTPServiceName,
+                            Date                        = Timestamp.Now,
+                            AccessControlAllowOrigin    = "*",
+                            AccessControlAllowMethods   = [ "OPTIONS", "GET", "SET" ],
+                            AccessControlAllowHeaders   = [ "Content-Type", "Accept", "Authorization" ],
+                        }.AsImmutable);
+
+                },
+                AllowReplacement: URLReplacement.Allow
+            );
+
+            #endregion
+
+            #region GET         ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}/Status
+
+            // -----------------------------------------------------------------------
+            // curl -v -H "Accept:       application/json" \
+            //      http://127.0.0.1:5500/RNs/TEST/EVSEs/DE*GEF*E0001*1/Status
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.GET,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}/Status",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPDelegate: request => {
+
+                    #region Parse RoamingNetworkId and EVSEId parameters
+
+                    if (!request.TryParseRoamingNetworkAndEVSE(this,
+                                                               out var roamingNetwork,
+                                                               out var evse,
+                                                               out var httpResponseBuilder))
+                    {
+                        return Task.FromResult(httpResponseBuilder.AsImmutable);
+                    }
+
+                    #endregion
+
+                    return Task.FromResult(
+                        new HTTPResponse.Builder(request) {
+                            HTTPStatusCode              = HTTPStatusCode.OK,
+                            Server                      = HTTPServiceName,
+                            Date                        = Timestamp.Now,
+                            AccessControlAllowOrigin    = "*",
+                            AccessControlAllowMethods   = [ "GET" ],
+                            AccessControlAllowHeaders   = [ "Content-Type", "Accept", "Authorization" ],
+                            ETag                        = "1",
+                            ContentType                 = HTTPContentType.Application.JSON_UTF8,
+                            Content                     = evse.Status.
+                                                              ToJSON().
+                                                              ToUTF8Bytes(),
+                            Connection                  = ConnectionType.KeepAlive
+                        }.AsImmutable);
+
+                }
+            );
+
+            #endregion
+
+            #region SET         ~/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}/Status
+
+            // -----------------------------------------------------------------------
+            // curl -v -X SET -H "Content-Type: application/json" \
+            //                -H "Accept:       application/json" \
+            //      -d "{ \"currentStatus\":  \"OutOfService\" }" \
+            //      http://127.0.0.1:5500/RNs/TEST/EVSEs/DE*GEF*EVSE*ALPHA*ONE*1/Status
+            // -----------------------------------------------------------------------
+            // curl -v -X SET -H "Content-Type: application/json" \
+            //                -H "Accept:       application/json" \
+            //      -d "{ \"statusList\":  { \
+            //              \"2014-10-13T22:14:01.862Z\": \"OutOfService\", \
+            //              \"2014-10-13T21:32:15.386Z\": \"Charging\"  \
+            //          }" \
+            //      http://127.0.0.1:5500/RNs/TEST/EVSEs/DE*GEF*EVSE*ALPHA*ONE*1/Status
+            // -----------------------------------------------------------------------
+            // curl -v -X SET -H "Content-Type: application/json" \
+            //                -H "Accept:       application/json" \
+            //      -d "{ \"currentStatus\":  \"Charging\" }"     \
+            //      http://127.0.0.1:3004/RNs/Prod/EVSEs/DE*BDO*EVSE*CI*TESTS*A*1/Status
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.SET,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}/Status",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPRequestLogger:   SetEVSEStatusRequest,
+                HTTPResponseLogger:  SetEVSEStatusResponse,
+                HTTPDelegate:        async request => {
+
+                    #region Check RoamingNetworkId and EVSEId URI parameters
+
+                    if (!request.TryParseRoamingNetworkAndEVSE(this,
+                                                               out var roamingNetwork,
+                                                               out var evse,
+                                                               out var httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse JSON
+
+                    if (!request.TryParseJSONObjectRequestBody(out var json,
+                                                               out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #region Parse CurrentStatus  [optional]
+
+                    if (json.ParseOptional("currentStatus",
+                                           "EVSE admin status",
+                                           HTTPServiceName,
+                                           out EVSEStatusType? currentStatus,
+                                           request,
+                                           out httpResponseBuilder))
+                    {
+                        if (httpResponseBuilder is not null)
+                            return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse StatusList     [optional]
+
+                    var statusList = new List<Timestamped<EVSEStatusType>>();
+
+                    if (json.ParseOptional("statusList",
+                                           "status list",
+                                           HTTPServiceName,
+                                           out JObject statusListJSON,
+                                           request,
+                                           out httpResponseBuilder))
+                    {
+
+                        if (httpResponseBuilder is not null)
+                            return httpResponseBuilder;
+
+                        if (statusListJSON is not null)
+                        {
+                            foreach (var jproperty in statusListJSON)
+                            {
+
+                                try
+                                {
+
+                                    if (jproperty.Value != null &&
+                                        DateTimeOffset.TryParse(jproperty.Key,              out var timestamp) &&
+                                        EVSEStatusType.TryParse(jproperty.Value.ToString(), out var evseAdminStatusType))
+                                    {
+                                        statusList.Add(
+                                            new Timestamped<EVSEStatusType>(
+                                                timestamp,
+                                                evseAdminStatusType
+                                            )
+                                        );
+                                    }
+
+                                }
+                                catch
+                                {
+                                    // Will send the below BadRequest HTTP reply...
+                                }
+
+                            }
+                        }
+
+                        if (statusListJSON is null || statusList.Count == 0)
+                            return new HTTPResponse.Builder(request) {
+                                       HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                                       Server          = HTTPServiceName,
+                                       Date            = Timestamp.Now,
+                                       ContentType     = HTTPContentType.Application.JSON_UTF8,
+                                       Content         = new JObject(
+                                                           new JProperty("description", "Invalid status list!")
+                                                       ).ToUTF8Bytes()
+                                   };
+
+                    }
+
+                    #endregion
+
+                    #region Fail, if both CurrentStatus and StatusList are missing...
+
+                    if (!currentStatus.HasValue && statusList is null)
+                        return new HTTPResponse.Builder(request) {
+                                   HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                                   Server          = HTTPServiceName,
+                                   Date            = Timestamp.Now,
+                                   ContentType     = HTTPContentType.Application.JSON_UTF8,
+                                   Content         = new JObject(
+                                                         new JProperty("description", "Either a 'currentStatus' or a 'statusList' must be send!")
+                                                     ).ToUTF8Bytes()
+                               };
+
+                    #endregion
+
+                    #endregion
+
+
+                    if (currentStatus.HasValue && statusList is null)
+                        statusList = [
+                                         new Timestamped<EVSEStatusType>(
+                                             request.Timestamp,
+                                             currentStatus.Value
+                                         )
+                                     ];
+
+                    if (statusList.Count > 0)
+                        roamingNetwork.SetEVSEStatus(
+                            evse.Id,
+                            statusList
+                        );
+
+
+                    return new HTTPResponse.Builder(request) {
+                               HTTPStatusCode  = HTTPStatusCode.OK,
+                               Server          = HTTPServiceName,
+                               Date            = Timestamp.Now,
+                               Connection      = ConnectionType.KeepAlive
+                           };
+
+                });
+
+            #endregion
+
+            #endregion
 
 
             #region GET      ~/support

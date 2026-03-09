@@ -196,7 +196,8 @@ function StartDebugLog() {
 
 
 
-        eventSource.addEventListener('OnPatchEVSERequest', (event: MessageEvent<string>) => {
+
+        eventSource.addEventListener('OnSetEVSEAdminStatusHTTPRequest', (event: MessageEvent<string>) => {
 
             try {
 
@@ -207,12 +208,12 @@ function StartDebugLog() {
                     return;
 
                 CreateLogEntry(
-                    request.timestamp        ?? Date.now(),
+                    request.timestamp ?? Date.now(),
                     request.roamingNetworkId ?? "",
-                    request.eventTrackingId  ?? "",
+                    request.eventTrackingId ?? "",
                     request.from,
                     request.to,
-                    "OnPatchEVSERequest",
+                    "OnSetEVSEAdminStatusHTTPRequest",
                     `${request.evseId} (${JSON.stringify(request.patch)}`,
                     request.from ?? "" // ConnectionColorKey
                 );
@@ -220,7 +221,7 @@ function StartDebugLog() {
             }
             catch (exception) {
                 ShowHTTPSSEError(
-                    'OnPatchEVSERequest',
+                    'OnSetEVSEAdminStatusHTTPRequest',
                     event.data,
                     exception
                 );
@@ -228,7 +229,7 @@ function StartDebugLog() {
 
         }, false);
 
-        eventSource.addEventListener('OnPatchEVSEResponse', (event: MessageEvent<string>) => {
+        eventSource.addEventListener('OnSetEVSEAdminStatusHTTPResponse', (event: MessageEvent<string>) => {
 
             try {
 
@@ -245,13 +246,419 @@ function StartDebugLog() {
             }
             catch (exception) {
                 ShowHTTPSSEError(
-                    'OnPatchEVSEResponse',
+                    'OnSetEVSEAdminStatusHTTPResponse',
                     event.data,
                     exception
                 );
             }
 
         }, false);
+
+        eventSource.addEventListener('OnSetEVSEStatusHTTPRequest', (event: MessageEvent<string>) => {
+
+            try {
+
+                const request = JSON.parse(event.data);
+
+                const entries = Object.entries(request);
+                if (entries.length === 0)
+                    return;
+
+                CreateLogEntry(
+                    request.timestamp ?? Date.now(),
+                    request.roamingNetworkId ?? "",
+                    request.eventTrackingId ?? "",
+                    request.from,
+                    request.to,
+                    "OnSetEVSEStatusHTTPRequest",
+                    `${request.evseId} (${JSON.stringify(request.patch)}`,
+                    request.from ?? "" // ConnectionColorKey
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnSetEVSEStatusHTTPRequest',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+        eventSource.addEventListener('OnSetEVSEStatusHTTPResponse', (event: MessageEvent<string>) => {
+
+            try {
+
+                const response = JSON.parse(event.data);
+
+                AppendLogEntry(
+                    response.timestamp,
+                    response.roamingNetwork,
+                    response.eventTrackingId,
+                    `⇒ !`,
+                    response.runtime
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnSetEVSEStatusHTTPResponse',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+
+        eventSource.addEventListener('OnAuthorizeHTTPRequest', (event: MessageEvent<string>) => {
+
+            try {
+
+                const request = JSON.parse(event.data);
+
+                const entries = Object.entries(request);
+                if (entries.length === 0)
+                    return;
+
+                CreateLogEntry(
+                    request.timestamp ?? Date.now(),
+                    request.roamingNetworkId ?? "",
+                    request.eventTrackingId ?? "",
+                    request.from,
+                    request.to,
+                    "OnAuthorizeHTTPRequest",
+                    `${request.evseId} (${JSON.stringify(request.patch)}`,
+                    request.from ?? "" // ConnectionColorKey
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnAuthorizeHTTPRequest',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+        eventSource.addEventListener('SendAuthorizeHTTPResponse', (event: MessageEvent<string>) => {
+
+            try {
+
+                const response = JSON.parse(event.data);
+
+                AppendLogEntry(
+                    response.timestamp,
+                    response.roamingNetwork,
+                    response.eventTrackingId,
+                    `⇒ !`,
+                    response.runtime
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'SendAuthorizeHTTPResponse',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+        eventSource.addEventListener('OnAuthorizeStartEVSEHTTPRequest', (event: MessageEvent<string>) => {
+
+            try {
+
+                const request = JSON.parse(event.data);
+
+                const entries = Object.entries(request);
+                if (entries.length === 0)
+                    return;
+
+                CreateLogEntry(
+                    request.timestamp        ?? Date.now(),
+                    request.roamingNetworkId ?? "",
+                    request.eventTrackingId  ?? "",
+                    request.from,
+                    request.to,
+                    "OnAuthorizeStartEVSEHTTPRequest",
+                    `${request.evseId} (${JSON.stringify(request.patch)}`,
+                    request.from ?? "" // ConnectionColorKey
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnAuthorizeStartEVSEHTTPRequest',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+        eventSource.addEventListener('OnAuthorizeStartEVSEHTTPResponse', (event: MessageEvent<string>) => {
+
+            try {
+
+                const response = JSON.parse(event.data);
+
+                AppendLogEntry(
+                    response.timestamp,
+                    response.roamingNetwork,
+                    response.eventTrackingId,
+                    `⇒ !`,
+                    response.runtime
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnAuthorizeStartEVSEHTTPResponse',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+        eventSource.addEventListener('OnAuthorizeStopEVSEHTTPRequest', (event: MessageEvent<string>) => {
+
+            try {
+
+                const request = JSON.parse(event.data);
+
+                const entries = Object.entries(request);
+                if (entries.length === 0)
+                    return;
+
+                CreateLogEntry(
+                    request.timestamp ?? Date.now(),
+                    request.roamingNetworkId ?? "",
+                    request.eventTrackingId ?? "",
+                    request.from,
+                    request.to,
+                    "OnAuthorizeStopEVSEHTTPRequest",
+                    `${request.evseId} (${JSON.stringify(request.patch)}`,
+                    request.from ?? "" // ConnectionColorKey
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnAuthorizeStopEVSEHTTPRequest',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+        eventSource.addEventListener('OnAuthorizeStopEVSEHTTPResponse', (event: MessageEvent<string>) => {
+
+            try {
+
+                const response = JSON.parse(event.data);
+
+                AppendLogEntry(
+                    response.timestamp,
+                    response.roamingNetwork,
+                    response.eventTrackingId,
+                    `⇒ !`,
+                    response.runtime
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnAuthorizeStopEVSEHTTPResponse',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+
+        eventSource.addEventListener('OnRemoteStartEVSEHTTPRequest', (event: MessageEvent<string>) => {
+
+            try {
+
+                const request = JSON.parse(event.data);
+
+                const entries = Object.entries(request);
+                if (entries.length === 0)
+                    return;
+
+                CreateLogEntry(
+                    request.timestamp ?? Date.now(),
+                    request.roamingNetworkId ?? "",
+                    request.eventTrackingId ?? "",
+                    request.from,
+                    request.to,
+                    "OnRemoteStartEVSEHTTPRequest",
+                    `${request.evseId} (${JSON.stringify(request.patch)}`,
+                    request.from ?? "" // ConnectionColorKey
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnRemoteStartEVSEHTTPRequest',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+        eventSource.addEventListener('OnRemoteStartEVSEHTTPResponse', (event: MessageEvent<string>) => {
+
+            try {
+
+                const response = JSON.parse(event.data);
+
+                AppendLogEntry(
+                    response.timestamp,
+                    response.roamingNetwork,
+                    response.eventTrackingId,
+                    `⇒ !`,
+                    response.runtime
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnRemoteStartEVSEHTTPResponse',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+        eventSource.addEventListener('OnRemoteStopEVSEHTTPRequest', (event: MessageEvent<string>) => {
+
+            try {
+
+                const request = JSON.parse(event.data);
+
+                const entries = Object.entries(request);
+                if (entries.length === 0)
+                    return;
+
+                CreateLogEntry(
+                    request.timestamp ?? Date.now(),
+                    request.roamingNetworkId ?? "",
+                    request.eventTrackingId ?? "",
+                    request.from,
+                    request.to,
+                    "OnRemoteStopEVSEHTTPRequest",
+                    `${request.evseId} (${JSON.stringify(request.patch)}`,
+                    request.from ?? "" // ConnectionColorKey
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnRemoteStopEVSEHTTPRequest',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+        eventSource.addEventListener('OnRemoteStopEVSEHTTPResponse', (event: MessageEvent<string>) => {
+
+            try {
+
+                const response = JSON.parse(event.data);
+
+                AppendLogEntry(
+                    response.timestamp,
+                    response.roamingNetwork,
+                    response.eventTrackingId,
+                    `⇒ !`,
+                    response.runtime
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnRemoteStopEVSEHTTPResponse',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+
+        eventSource.addEventListener('OnChargeDetailRecordsHTTPRequest', (event: MessageEvent<string>) => {
+
+            try {
+
+                const request = JSON.parse(event.data);
+
+                const entries = Object.entries(request);
+                if (entries.length === 0)
+                    return;
+
+                CreateLogEntry(
+                    request.timestamp ?? Date.now(),
+                    request.roamingNetworkId ?? "",
+                    request.eventTrackingId ?? "",
+                    request.from,
+                    request.to,
+                    "OnChargeDetailRecordsHTTPRequest",
+                    `${request.evseId} (${JSON.stringify(request.patch)}`,
+                    request.from ?? "" // ConnectionColorKey
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnChargeDetailRecordsHTTPRequest',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+        eventSource.addEventListener('OnChargeDetailRecordsHTTPResponse', (event: MessageEvent<string>) => {
+
+            try {
+
+                const response = JSON.parse(event.data);
+
+                AppendLogEntry(
+                    response.timestamp,
+                    response.roamingNetwork,
+                    response.eventTrackingId,
+                    `⇒ !`,
+                    response.runtime
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnChargeDetailRecordsHTTPResponse',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+
+
+
 
 
         eventSource.addEventListener('OnPutSessionRequest', (event: MessageEvent<string>) => {

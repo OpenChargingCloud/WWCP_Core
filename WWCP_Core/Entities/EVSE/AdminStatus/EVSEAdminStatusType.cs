@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Parse   (Text)
+        #region (static) Parse    (Text)
 
         /// <summary>
         /// Parse the given string as an EVSE admin status type.
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParse(Text)
+        #region (static) TryParse (Text)
 
         /// <summary>
         /// Try to parse the given string as an EVSE admin status type.
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParse(Text, out EVSEAdminStatusType)
+        #region (static) TryParse (Text, out EVSEAdminStatusType)
 
         /// <summary>
         /// Parse the given string as an EVSE admin status type.
