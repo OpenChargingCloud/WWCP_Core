@@ -612,6 +612,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         Task<IEnumerable<Warning>> SetEVSEStatus(EVSE_Id                                   EVSEId,
                                                  Timestamped<EVSEStatusType>               NewStatus,
+                                                 Context?                                  DataSource          = null,
 
                                                  DateTimeOffset?                           RequestTimestamp    = null,
                                                  EventTracking_Id?                         EventTrackingId     = null,
@@ -621,6 +622,7 @@ namespace cloud.charging.open.protocols.WWCP
         Task<IEnumerable<Warning>> SetEVSEStatus(EVSE_Id                                   EVSEId,
                                                  DateTimeOffset                            Timestamp,
                                                  EVSEStatusType                            NewStatus,
+                                                 Context?                                  DataSource          = null,
 
                                                  DateTimeOffset?                           RequestTimestamp    = null,
                                                  EventTracking_Id?                         EventTrackingId     = null,

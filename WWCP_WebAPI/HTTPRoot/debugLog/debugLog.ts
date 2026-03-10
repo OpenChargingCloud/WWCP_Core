@@ -232,7 +232,7 @@ function StartDebugLog() {
 
         }, false);
 
-        eventSource.addEventListener('OnAuthorizeStartResponse', (event: MessageEvent<string>) => {
+        eventSource.addEventListener('OnSetEVSEStatusResponse', (event: MessageEvent<string>) => {
 
             try
             {
@@ -250,7 +250,7 @@ function StartDebugLog() {
             }
             catch (exception) {
                 ShowHTTPSSEError(
-                    'OnAuthorizeStartResponse',
+                    'OnSetEVSEStatusResponse',
                     event.data,
                     exception
                 );

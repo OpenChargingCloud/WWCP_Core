@@ -113,5 +113,18 @@ UpgradeLog*.XML
 
 *.userprefs
 
+
+# ------------------------------------------------------------------------
+
+*.js
+*.js.map
+
+# ------------------------------------------------------------------------
+
 WWCP_WebAPI/HTTPRoot/css/*.css
 WWCP_WebAPI/HTTPRoot/css/*.min.css
+WWCP_WebAPI/HTTPRoot/css/versions
+WWCP_WebAPI/HTTPRoot/css/debugLog
+
+!WWCP_WebAPI/HTTPRoot/js/
+!WWCP_WebAPI/HTTPRoot/js/**

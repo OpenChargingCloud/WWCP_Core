@@ -5202,12 +5202,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region SetEVSEStatus (EVSEId, NewStatus, ...)
+        #region SetEVSEStatus (EVSEId,            NewStatus, DataSource = null,...)
 
         public Task<IEnumerable<Warning>>
 
             SetEVSEStatus(EVSE_Id                      EVSEId,
                           Timestamped<EVSEStatusType>  NewStatus,
+                          Context?                     DataSource          = null,
 
                           DateTimeOffset?              RequestTimestamp    = null,
                           EventTracking_Id?            EventTrackingId     = null,
@@ -5219,7 +5220,8 @@ namespace cloud.charging.open.protocols.WWCP
                        [
                            new EVSEStatus(
                                EVSEId,
-                               NewStatus
+                               NewStatus,
+                               DataSource
                            )
                        ],
 
@@ -5232,13 +5234,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region SetEVSEStatus (EVSEId, Timestamp, NewStatus, ...)
+        #region SetEVSEStatus (EVSEId, Timestamp, NewStatus, DataSource = null, ...)
 
         public Task<IEnumerable<Warning>>
 
             SetEVSEStatus(EVSE_Id            EVSEId,
                           DateTimeOffset     Timestamp,
                           EVSEStatusType     NewStatus,
+                          Context?           DataSource          = null,
 
                           DateTimeOffset?    RequestTimestamp    = null,
                           EventTracking_Id?  EventTrackingId     = null,
@@ -5250,7 +5253,8 @@ namespace cloud.charging.open.protocols.WWCP
                        [
                            new EVSEStatus(
                                EVSEId,
-                               NewStatus
+                               NewStatus,
+                               DataSource
                            )
                        ],
 
