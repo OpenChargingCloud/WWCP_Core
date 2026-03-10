@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// Indicate a remote stop of the given charging session.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Timestamp">The timestamp of the logging request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
@@ -40,7 +40,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnRemoteStopRequestDelegate(DateTimeOffset          LogTimestamp,
+    /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+    public delegate Task OnRemoteStopRequestDelegate(DateTimeOffset          Timestamp,
                                                      DateTimeOffset          RequestTimestamp,
                                                      Object                  Sender,
                                                      EventTracking_Id        EventTrackingId,
@@ -51,7 +52,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                      CSORoamingProvider_Id?  CSORoamingProviderId,
                                                      EMobilityProvider_Id?   ProviderId,
                                                      RemoteAuthentication?   RemoteAuthentication,
-                                                     TimeSpan?               RequestTimeout);
+                                                     TimeSpan?               RequestTimeout,
+                                                     CancellationToken       CancellationToken);
 
 
     /// <summary>
@@ -65,8 +67,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
+    /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
     public delegate Task<RemoteStopResult> OnRemoteStopDelegate(DateTimeOffset          Timestamp,
-                                                                CancellationToken       CancellationToken,
                                                                 EventTracking_Id        EventTrackingId,
                                                                 ReservationHandling?    ReservationHandling,
                                                                 ChargingSession_Id      SessionId,
@@ -74,13 +76,14 @@ namespace cloud.charging.open.protocols.WWCP
                                                                 CSORoamingProvider_Id?  CSORoamingProviderId,
                                                                 EMobilityProvider_Id?   ProviderId,
                                                                 RemoteAuthentication?   RemoteAuthentication,
-                                                                TimeSpan?               RequestTimeout);
+                                                                TimeSpan?               RequestTimeout,
+                                                                CancellationToken       CancellationToken);
 
 
     /// <summary>
     /// Indicate a remote stop of the given charging session.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Timestamp">The timestamp of the logging request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
@@ -91,7 +94,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote stop result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnRemoteStopResponseDelegate(DateTimeOffset          LogTimestamp,
+    /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+    public delegate Task OnRemoteStopResponseDelegate(DateTimeOffset          Timestamp,
                                                       DateTimeOffset          RequestTimestamp,
                                                       Object                  Sender,
                                                       EventTracking_Id        EventTrackingId,
@@ -104,6 +108,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                       RemoteAuthentication?   RemoteAuthentication,
                                                       TimeSpan?               RequestTimeout,
                                                       RemoteStopResult        Result,
-                                                      TimeSpan                Runtime);
+                                                      TimeSpan                Runtime,
+                                                      CancellationToken       CancellationToken);
 
 }

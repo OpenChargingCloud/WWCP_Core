@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         Task<AddRoamingNetworkResult>
 
             AddRoamingNetwork(IRoamingNetwork    RoamingNetwork,
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         Task<AddRoamingNetworkResult>
 
             AddRoamingNetworkIfNotExists(IRoamingNetwork    RoamingNetwork,
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         Task<AddOrUpdateRoamingNetworkResult>
 
             AddOrUpdateRoamingNetwork(IRoamingNetwork    RoamingNetwork,
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         Task<UpdateRoamingNetworkResult>
 
             UpdateRoamingNetwork(IRoamingNetwork    RoamingNetwork,
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         Task<DeleteRoamingNetworkResult>
 
             DeleteRoamingNetwork(IRoamingNetwork    RoamingNetwork,
@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TransmissionType">Whether to send the roaming network directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<AddRoamingNetworksResult>
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TransmissionType">Whether to send the roaming network directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<AddRoamingNetworksResult>
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         Task<AddOrUpdateRoamingNetworksResult>
 
             AddOrUpdateRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         Task<UpdateRoamingNetworksResult>
 
             UpdateRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         Task<DeleteRoamingNetworksResult>
 
             DeleteRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,

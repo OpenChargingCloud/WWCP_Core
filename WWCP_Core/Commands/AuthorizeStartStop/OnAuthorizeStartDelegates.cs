@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// An event fired whenever an authentication token will be verified for charging at the given EVSE.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Timestamp">The timestamp of the logging request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
@@ -38,7 +38,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ISendAuthorizeStartStops">The ISendAuthorizeStartStops entities to be asked.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnAuthorizeStartRequestDelegate (DateTimeOffset                         LogTimestamp,
+    /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+    public delegate Task OnAuthorizeStartRequestDelegate (DateTimeOffset                         Timestamp,
                                                           DateTimeOffset                         RequestTimestamp,
                                                           Object                                 Sender,
                                                           String                                 SenderId,
@@ -60,7 +61,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// An event fired whenever an authentication token had been verified for charging at the given EVSE.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Timestamp">The timestamp of the logging request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
@@ -73,7 +74,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize start result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnAuthorizeStartResponseDelegate(DateTimeOffset                         LogTimestamp,
+    /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+    public delegate Task OnAuthorizeStartResponseDelegate(DateTimeOffset                         Timestamp,
                                                           DateTimeOffset                         RequestTimestamp,
                                                           Object                                 Sender,
                                                           String                                 SenderId,

@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddRoamingNetworkResult>
 
             AddRoamingNetwork(IRoamingNetwork    RoamingNetwork,
@@ -502,7 +502,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddRoamingNetworkResult>
 
             AddRoamingNetworkIfNotExists(IRoamingNetwork    RoamingNetwork,
@@ -537,7 +537,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddOrUpdateRoamingNetworkResult>
 
             AddOrUpdateRoamingNetwork(IRoamingNetwork    RoamingNetwork,
@@ -576,7 +576,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<UpdateRoamingNetworkResult>
 
             UpdateRoamingNetwork(IRoamingNetwork    RoamingNetwork,
@@ -615,7 +615,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<DeleteRoamingNetworkResult>
 
             DeleteRoamingNetwork(IRoamingNetwork    RoamingNetwork,
@@ -651,7 +651,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddRoamingNetworksResult>
 
             AddRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
@@ -686,7 +686,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddRoamingNetworksResult>
 
             AddRoamingNetworksIfNotExist(IEnumerable<IRoamingNetwork>  RoamingNetworks,
@@ -721,7 +721,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddOrUpdateRoamingNetworksResult>
 
             AddOrUpdateRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
@@ -756,7 +756,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<UpdateRoamingNetworksResult>
 
             UpdateRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
@@ -791,7 +791,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<DeleteRoamingNetworksResult>
 
             DeleteRoamingNetworks(IEnumerable<IRoamingNetwork>  RoamingNetworks,
@@ -827,7 +827,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<PushRoamingNetworkAdminStatusResult>
 
             UpdateRoamingNetworkAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  RoamingNetworkAdminStatusUpdates,
@@ -860,7 +860,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<PushRoamingNetworkStatusResult>
 
             UpdateRoamingNetworkStatus(IEnumerable<RoamingNetworkStatusUpdate>  RoamingNetworkStatusUpdates,
@@ -913,7 +913,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddChargingStationOperatorResult>
 
             AddChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
@@ -948,7 +948,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddChargingStationOperatorResult>
 
             AddChargingStationOperatorIfNotExists(IChargingStationOperator  ChargingStationOperator,
@@ -983,7 +983,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddOrUpdateChargingStationOperatorResult>
 
             AddOrUpdateChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
@@ -1022,7 +1022,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<UpdateChargingStationOperatorResult>
 
             UpdateChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
@@ -1061,7 +1061,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<DeleteChargingStationOperatorResult>
 
             DeleteChargingStationOperator(IChargingStationOperator  ChargingStationOperator,
@@ -1097,7 +1097,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddChargingStationOperatorsResult>
 
             AddChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
@@ -1132,7 +1132,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddChargingStationOperatorsResult>
 
             AddChargingStationOperatorsIfNotExist(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
@@ -1167,7 +1167,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddOrUpdateChargingStationOperatorsResult>
 
             AddOrUpdateChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
@@ -1202,7 +1202,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<UpdateChargingStationOperatorsResult>
 
             UpdateChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
@@ -1237,7 +1237,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<DeleteChargingStationOperatorsResult>
 
             DeleteChargingStationOperators(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
@@ -1273,7 +1273,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<PushChargingStationOperatorAdminStatusResult>
 
             UpdateChargingStationOperatorAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  ChargingStationOperatorAdminStatusUpdates,
@@ -1306,7 +1306,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<PushChargingStationOperatorStatusResult>
 
             UpdateChargingStationOperatorStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  ChargingStationOperatorStatusUpdates,
@@ -1359,7 +1359,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddChargingPoolResult>
 
             AddChargingPool(IChargingPool      ChargingPool,
@@ -1394,7 +1394,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddChargingPoolResult>
 
             AddChargingPoolIfNotExists(IChargingPool      ChargingPool,
@@ -1429,7 +1429,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddOrUpdateChargingPoolResult>
 
             AddOrUpdateChargingPool(IChargingPool      ChargingPool,
@@ -1466,7 +1466,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public virtual Task<UpdateChargingPoolResult>
@@ -1507,7 +1507,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<DeleteChargingPoolResult>
 
             DeleteChargingPool(IChargingPool      ChargingPool,
@@ -1543,7 +1543,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddChargingPoolsResult>
 
             AddChargingPools(IEnumerable<IChargingPool>  ChargingPools,
@@ -1578,7 +1578,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddChargingPoolsResult>
 
             AddChargingPoolsIfNotExist(IEnumerable<IChargingPool>  ChargingPools,
@@ -1613,7 +1613,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddOrUpdateChargingPoolsResult>
 
             AddOrUpdateChargingPools(IEnumerable<IChargingPool>  ChargingPools,
@@ -1648,7 +1648,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<UpdateChargingPoolsResult>
 
             UpdateChargingPools(IEnumerable<IChargingPool>  ChargingPools,
@@ -1684,7 +1684,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<ReplaceChargingPoolsResult>
 
             ReplaceChargingPools(IEnumerable<IChargingPool>  ChargingPools,
@@ -1719,7 +1719,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<DeleteChargingPoolsResult>
 
             DeleteChargingPools(IEnumerable<IChargingPool>  ChargingPools,
@@ -1755,7 +1755,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<PushChargingPoolAdminStatusResult>
 
             UpdateChargingPoolAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  ChargingPoolAdminStatusUpdates,
@@ -1788,7 +1788,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<PushChargingPoolStatusResult>
 
             UpdateChargingPoolStatus(IEnumerable<ChargingPoolStatusUpdate>  ChargingPoolStatusUpdates,
@@ -1821,7 +1821,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<PushChargingPoolEnergyStatusResult>
 
             UpdateChargingPoolEnergyStatus(IEnumerable<ChargingPoolEnergyStatusUpdate>  ChargingPoolEnergyStatusUpdates,
@@ -1874,7 +1874,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddChargingStationResult>
 
             AddChargingStation(IChargingStation   ChargingStation,
@@ -1909,7 +1909,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddChargingStationResult>
 
             AddChargingStationIfNotExists(IChargingStation   ChargingStation,
@@ -1944,7 +1944,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddOrUpdateChargingStationResult>
 
             AddOrUpdateChargingStation(IChargingStation   ChargingStation,
@@ -1983,7 +1983,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<UpdateChargingStationResult>
 
             UpdateChargingStation(IChargingStation   ChargingStation,
@@ -2020,7 +2020,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public virtual Task<DeleteChargingStationResult>
@@ -2056,7 +2056,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public virtual Task<AddChargingStationsResult>
@@ -2091,7 +2091,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public virtual Task<AddChargingStationsResult>
@@ -2126,7 +2126,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public virtual Task<AddOrUpdateChargingStationsResult>
@@ -2163,7 +2163,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<UpdateChargingStationsResult>
 
             UpdateChargingStations(IEnumerable<IChargingStation>  ChargingStations,
@@ -2197,7 +2197,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public virtual Task<ReplaceChargingStationsResult>
@@ -2234,7 +2234,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<DeleteChargingStationsResult>
 
             DeleteChargingStations(IEnumerable<IChargingStation>  ChargingStations,
@@ -2270,7 +2270,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<PushChargingStationAdminStatusResult>
 
             UpdateChargingStationAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  ChargingStationAdminStatusUpdates,
@@ -2303,7 +2303,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<PushChargingStationStatusResult>
 
             UpdateChargingStationStatus(IEnumerable<ChargingStationStatusUpdate>  ChargingStationStatusUpdates,
@@ -2336,7 +2336,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<PushChargingStationEnergyStatusResult>
 
             UpdateChargingStationEnergyStatus(IEnumerable<ChargingStationEnergyStatusUpdate>  ChargingStationEnergyStatusUpdates,
@@ -2389,7 +2389,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddEVSEResult>
 
             AddEVSE(IEVSE              EVSE,
@@ -2424,7 +2424,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddEVSEResult>
 
             AddEVSEIfNotExists(IEVSE              EVSE,
@@ -2459,7 +2459,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddOrUpdateEVSEResult>
 
             AddOrUpdateEVSE(IEVSE              EVSE,
@@ -2498,7 +2498,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<UpdateEVSEResult>
 
             UpdateEVSE(IEVSE              EVSE,
@@ -2537,7 +2537,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<DeleteEVSEResult>
 
             DeleteEVSE(IEVSE              EVSE,
@@ -2573,7 +2573,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddEVSEsResult>
 
             AddEVSEs(IEnumerable<IEVSE>  EVSEs,
@@ -2608,7 +2608,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddEVSEsResult>
 
             AddEVSEsIfNotExist(IEnumerable<IEVSE>  EVSEs,
@@ -2643,7 +2643,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<AddOrUpdateEVSEsResult>
 
             AddOrUpdateEVSEs(IEnumerable<IEVSE>  EVSEs,
@@ -2678,7 +2678,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<UpdateEVSEsResult>
 
             UpdateEVSEs(IEnumerable<IEVSE>  EVSEs,
@@ -2714,7 +2714,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<ReplaceEVSEsResult>
 
             ReplaceEVSEs(IEnumerable<IEVSE>  EVSEs,
@@ -2749,7 +2749,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<DeleteEVSEsResult>
 
             DeleteEVSEs(IEnumerable<IEVSE>  EVSEs,
@@ -2785,7 +2785,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<PushEVSEAdminStatusResult>
 
             UpdateEVSEAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  EVSEAdminStatusUpdates,
@@ -2818,7 +2818,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<PushEVSEStatusResult>
 
             UpdateEVSEStatus(IEnumerable<EVSEStatusUpdate>  EVSEStatusUpdates,
@@ -2851,7 +2851,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public virtual Task<PushEVSEEnergyStatusResult>
 
             UpdateEVSEEnergyStatus(IEnumerable<EVSEEnergyStatusUpdate>  EVSEEnergyStatusUpdates,

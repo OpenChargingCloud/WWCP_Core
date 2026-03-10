@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// An event fired whenever a charge detail record will be send.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the logging.</param>
+    /// <param name="Timestamp">The timestamp of the logging request.</param>
     /// <param name="RequestTimestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="SenderId">The sender identification of the request.</param>
@@ -35,14 +35,16 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnSendCDRsRequestDelegate(DateTimeOffset                   LogTimestamp,
-                                                   DateTimeOffset                   RequestTimestamp,
-                                                   Object                           Sender,
-                                                   String                           SenderId,
-                                                   EventTracking_Id                 EventTrackingId,
-                                                   RoamingNetwork_Id                RoamingNetworkId,
-                                                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                                                   TimeSpan?                        RequestTimeout);
+    /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+    public delegate Task OnChargeDetailRecordsRequestDelegate(DateTimeOffset                   Timestamp,
+                                                              DateTimeOffset                   RequestTimestamp,
+                                                              Object                           Sender,
+                                                              String                           SenderId,
+                                                              EventTracking_Id                 EventTrackingId,
+                                                              RoamingNetwork_Id                RoamingNetworkId,
+                                                              IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                                                              TimeSpan?                        RequestTimeout,
+                                                              CancellationToken                CancellationToken);
 
 
     /// <summary>
@@ -53,17 +55,18 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<SendCDRsResult> OnChargeDetailRecordDelegate(DateTimeOffset                   Timestamp,
-                                                                      CancellationToken                CancellationToken,
-                                                                      EventTracking_Id                 EventTrackingId,
-                                                                      IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                                                                      TimeSpan?                        RequestTimeout  = null);
+    /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+    public delegate Task<SendCDRsResult> OnChargeDetailRecordsDelegate(DateTimeOffset                   Timestamp,
+                                                                       EventTracking_Id                 EventTrackingId,
+                                                                       IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                                                                       TimeSpan?                        RequestTimeout,
+                                                                       CancellationToken                CancellationToken);
 
 
     /// <summary>
     /// An event fired whenever a charge detail record had been sent.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the logging.</param>
+    /// <param name="Timestamp">The timestamp of the logging request.</param>
     /// <param name="RequestTimestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="SenderId">The sender identification of the request.</param>
@@ -73,15 +76,17 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnSendCDRsResponseDelegate(DateTimeOffset                   LogTimestamp,
-                                                    DateTimeOffset                   RequestTimestamp,
-                                                    Object                           Sender,
-                                                    String                           SenderId,
-                                                    EventTracking_Id                 EventTrackingId,
-                                                    RoamingNetwork_Id                RoamingNetworkId,
-                                                    IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                                                    TimeSpan?                        RequestTimeout,
-                                                    SendCDRsResult                   Result,
-                                                    TimeSpan                         Runtime);
+    /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+    public delegate Task OnChargeDetailRecordsResponseDelegate(DateTimeOffset                   Timestamp,
+                                                               DateTimeOffset                   RequestTimestamp,
+                                                               Object                           Sender,
+                                                               String                           SenderId,
+                                                               EventTracking_Id                 EventTrackingId,
+                                                               RoamingNetwork_Id                RoamingNetworkId,
+                                                               IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                                                               TimeSpan?                        RequestTimeout,
+                                                               SendCDRsResult                   Result,
+                                                               TimeSpan                         Runtime,
+                                                               CancellationToken                CancellationToken);
 
 }

@@ -416,7 +416,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<RemoteStartResult>
 
             RemoteStart(ChargingLocation         ChargingLocation,
@@ -465,7 +465,8 @@ namespace cloud.charging.open.protocols.WWCP
                           null,
                           null,
                           Id,
-                          RequestTimeout
+                          RequestTimeout,
+                          CancellationToken
                       )
                   );
 
@@ -558,7 +559,8 @@ namespace cloud.charging.open.protocols.WWCP
                           Id,
                           RequestTimeout,
                           result,
-                          endTime - startTime
+                          endTime - startTime,
+                          CancellationToken
                       )
                   );
 
@@ -608,7 +610,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
         /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStopResult>
@@ -656,7 +658,8 @@ namespace cloud.charging.open.protocols.WWCP
                           null,
                           Id,
                           RemoteAuthentication,
-                          RequestTimeout
+                          RequestTimeout,
+                          CancellationToken
                       )
                   );
 
@@ -727,7 +730,8 @@ namespace cloud.charging.open.protocols.WWCP
                           RemoteAuthentication,
                           RequestTimeout,
                           result,
-                          endTime - startTime
+                          endTime - startTime,
+                          CancellationToken
                       )
                   );
 

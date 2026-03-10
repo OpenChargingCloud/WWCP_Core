@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamped status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusType> TimestampedStatus
+        public Timestamped<EVSEStatusType>  TimestampedStatus
             => new (Timestamp, Status);
 
         #endregion
@@ -204,6 +204,20 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #endregion
+
+
+        public JObject ToJSON()
+
+            => JSONObject.Create(
+
+                         new JProperty("id",          Id.       ToString()),
+                         new JProperty("status",      Status.   ToString()),
+                         new JProperty("timestamp",   Timestamp.ToISO8601()),
+
+                   Context is not null
+                       ? new JProperty("context",     Context.  ToString())
+                       : null
+               );
 
 
         #region (static) Snapshot(EVSE)

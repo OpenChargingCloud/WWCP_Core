@@ -865,7 +865,7 @@
 //        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
 //        /// 
 //        /// <param name="Timestamp">The optional timestamp of the request.</param>
-//        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+//        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
 //        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
 //        /// <param name="RequestTimeout">An optional timeout for this request.</param>
 //        public Task<ReservationResult>
@@ -923,7 +923,7 @@
 //        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
 //        /// 
 //        /// <param name="Timestamp">The optional timestamp of the request.</param>
-//        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+//        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
 //        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
 //        /// <param name="RequestTimeout">An optional timeout for this request.</param>
 //        public async Task<ReservationResult>
@@ -982,7 +982,7 @@
 //        /// <param name="Reason">A reason for this cancellation.</param>
 //        /// 
 //        /// <param name="Timestamp">The optional timestamp of the request.</param>
-//        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+//        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
 //        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
 //        /// <param name="RequestTimeout">An optional timeout for this request.</param>
 //        public async Task<CancelReservationResult>
@@ -1139,7 +1139,7 @@
 //        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
 //        /// 
 //        /// <param name="Timestamp">The optional timestamp of the request.</param>
-//        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+//        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
 //        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
 //        /// <param name="RequestTimeout">An optional timeout for this request.</param>
 //        public Task<RemoteStartResult>
@@ -1183,7 +1183,7 @@
 //        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
 //        /// 
 //        /// <param name="Timestamp">The optional timestamp of the request.</param>
-//        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+//        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
 //        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
 //        /// <param name="RequestTimeout">An optional timeout for this request.</param>
 //        public async Task<RemoteStartResult>
@@ -1232,7 +1232,7 @@
 //        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
 //        /// 
 //        /// <param name="Timestamp">The optional timestamp of the request.</param>
-//        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+//        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
 //        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
 //        /// <param name="RequestTimeout">An optional timeout for this request.</param>
 //        public async Task<RemoteStopResult>

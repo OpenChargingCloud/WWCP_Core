@@ -5455,7 +5455,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public Task<ReservationResult>
 
             Reserve(DateTimeOffset?                    StartTime              = null,
@@ -5520,7 +5520,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<ReservationResult>
 
             Reserve(ChargingLocation                   ChargingLocation,
@@ -5706,7 +5706,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<CancelReservationResult>
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
@@ -6016,7 +6016,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<AuthStartResult>
 
             AuthorizeStart(LocalAuthentication          LocalAuthentication,
@@ -6165,7 +6165,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<AuthStopResult>
 
             AuthorizeStop(ChargingSession_Id           SessionId,
@@ -6211,7 +6211,8 @@ namespace cloud.charging.open.protocols.WWCP
                           SessionId,
                           CPOPartnerSessionId,
                           LocalAuthentication,
-                          RequestTimeout
+                          RequestTimeout,
+                          CancellationToken
                       )
                   );
 
@@ -6280,7 +6281,8 @@ namespace cloud.charging.open.protocols.WWCP
                           LocalAuthentication,
                           RequestTimeout,
                           result,
-                          endTime - startTime
+                          endTime - startTime,
+                          CancellationToken
                       )
                   );
 
@@ -6346,7 +6348,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<RemoteStartResult>
 
             RemoteStart(ChargingLocation         ChargingLocation,
@@ -6395,7 +6397,8 @@ namespace cloud.charging.open.protocols.WWCP
                           null,
                           null,
                           ProviderId,
-                          RequestTimeout
+                          RequestTimeout,
+                          CancellationToken
                       )
                   );
 
@@ -6496,7 +6499,8 @@ namespace cloud.charging.open.protocols.WWCP
                           ProviderId,
                           RequestTimeout,
                           result,
-                          endTime - startTime
+                          endTime - startTime,
+                          CancellationToken
                       )
                   );
 
@@ -6521,7 +6525,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<RemoteStopResult>
 
             RemoteStop(ChargingSession_Id     SessionId,
@@ -6566,7 +6570,8 @@ namespace cloud.charging.open.protocols.WWCP
                           null,
                           ProviderId,
                           RemoteAuthentication,
-                          RequestTimeout
+                          RequestTimeout,
+                          CancellationToken
                       )
                   );
 
@@ -6668,7 +6673,8 @@ namespace cloud.charging.open.protocols.WWCP
                           RemoteAuthentication,
                           RequestTimeout,
                           result,
-                          endTime - startTime
+                          endTime - startTime,
+                          CancellationToken
                       )
                   );
 

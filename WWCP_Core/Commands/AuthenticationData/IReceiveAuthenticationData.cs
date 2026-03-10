@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         ///// 
         ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         ///// <param name="RequestTimeout">An optional timeout for this request.</param>
         //Task<PushAdminStatusResult>
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// <param name="TransmissionType">Whether to send the charging station admin status updates directly or enqueue it for a while.</param>
         ///// 
         ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         ///// <param name="RequestTimeout">An optional timeout for this request.</param>
         //Task<PushAdminStatusResult>
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// <param name="TransmissionType">Whether to send the charging pool admin status updates directly or enqueue it for a while.</param>
         ///// 
         ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         ///// <param name="RequestTimeout">An optional timeout for this request.</param>
         //Task<PushAdminStatusResult>
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// <param name="TransmissionType">Whether to send the charging station operator admin status updates directly or enqueue it for a while.</param>
         ///// 
         ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         ///// <param name="RequestTimeout">An optional timeout for this request.</param>
         //Task<PushAdminStatusResult>
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// <param name="TransmissionType">Whether to send the roaming network admin status updates directly or enqueue it for a while.</param>
         ///// 
         ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         ///// <param name="RequestTimeout">An optional timeout for this request.</param>
         //Task<PushAdminStatusResult>

@@ -592,18 +592,49 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEVSEStatus
 
-        void SetEVSEStatus(IEnumerable<EVSEStatus>  EVSEStatusList);
 
-        void SetEVSEStatus(EVSE_Id                      EVSEId,
-                           Timestamped<EVSEStatusType>  NewStatus);
+        /// <summary>
+        /// An event fired whenever a SetEVSEStatus request was received.
+        /// </summary>
+        event OnSetEVSEStatusRequestDelegate?   OnSetEVSEStatusRequest;
 
-        void SetEVSEStatus(EVSE_Id         EVSEId,
-                           DateTimeOffset  Timestamp,
-                           EVSEStatusType  NewStatus);
+        /// <summary>
+        /// An event fired whenever a SetEVSEStatus response was sent.
+        /// </summary>
+        event OnSetEVSEStatusResponseDelegate?  OnSetEVSEStatusResponse;
 
-        void SetEVSEStatus(EVSE_Id                                   EVSEId,
-                           IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
-                           ChangeMethods                             ChangeMethod  = ChangeMethods.Replace);
+        Task<IEnumerable<Warning>> SetEVSEStatus(IEnumerable<EVSEStatus>                   EVSEStatusList,
+
+                                                 DateTimeOffset?                           RequestTimestamp    = null,
+                                                 EventTracking_Id?                         EventTrackingId     = null,
+                                                 TimeSpan?                                 RequestTimeout      = null,
+                                                 CancellationToken                         CancellationToken   = default);
+
+        Task<IEnumerable<Warning>> SetEVSEStatus(EVSE_Id                                   EVSEId,
+                                                 Timestamped<EVSEStatusType>               NewStatus,
+
+                                                 DateTimeOffset?                           RequestTimestamp    = null,
+                                                 EventTracking_Id?                         EventTrackingId     = null,
+                                                 TimeSpan?                                 RequestTimeout      = null,
+                                                 CancellationToken                         CancellationToken   = default);
+
+        Task<IEnumerable<Warning>> SetEVSEStatus(EVSE_Id                                   EVSEId,
+                                                 DateTimeOffset                            Timestamp,
+                                                 EVSEStatusType                            NewStatus,
+
+                                                 DateTimeOffset?                           RequestTimestamp    = null,
+                                                 EventTracking_Id?                         EventTrackingId     = null,
+                                                 TimeSpan?                                 RequestTimeout      = null,
+                                                 CancellationToken                         CancellationToken   = default);
+
+        Task<IEnumerable<Warning>> SetEVSEStatus(EVSE_Id                                   EVSEId,
+                                                 IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
+                                                 ChangeMethods                             ChangeMethod  = ChangeMethods.Replace,
+
+                                                 DateTimeOffset?                           RequestTimestamp    = null,
+                                                 EventTracking_Id?                         EventTrackingId     = null,
+                                                 TimeSpan?                                 RequestTimeout      = null,
+                                                 CancellationToken                         CancellationToken   = default);
 
         #endregion
 

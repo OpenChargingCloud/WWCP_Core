@@ -6050,6 +6050,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                        TimeSpan?                                  AuthenticationRateLimitTimeSpan              = null,
                                                        UInt16?                                    AuthenticationRateLimitPerChargingLocation   = null,
 
+                                                       TimeSpan?                                  RequestTimeout                               = null,
+
                                                        ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator            = null,
                                                        ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator               = null,
                                                        ChargingStationOperatorSignatureDelegate?  ChargingStationOperatorSignatureGenerator    = null,
@@ -6093,6 +6095,8 @@ namespace cloud.charging.open.protocols.WWCP
                                             DisableAuthenticationRateLimit,
                                             AuthenticationRateLimitTimeSpan,
                                             AuthenticationRateLimitPerChargingLocation,
+
+                                            RequestTimeout,
 
                                             ChargingStationSignatureGenerator,
                                             ChargingPoolSignatureGenerator,

@@ -196,6 +196,68 @@ function StartDebugLog() {
 
 
 
+        eventSource.addEventListener('OnSetEVSEStatusRequest', (event: MessageEvent<string>) => {
+
+            try
+            {
+                function printEVSEStatus(evseStatus: any) {
+                    return `${evseStatus.id}: ${evseStatus.status}`
+                }
+
+                const request = JSON.parse(event.data);
+
+                const entries = Object.entries(request);
+                if (entries.length === 0)
+                    return;
+
+                CreateLogEntry(
+                    request.timestamp        ?? Date.now(),
+                    request.roamingNetworkId ?? "",
+                    request.eventTrackingId  ?? "",
+                    request.from,
+                    request.to,
+                    "OnSetEVSEStatusRequest",
+                    `${request.evseStatusList.map(printEVSEStatus).join("; ") }`,
+                    request.from ?? "" // ConnectionColorKey
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnSetEVSEStatusRequest',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
+        eventSource.addEventListener('OnAuthorizeStartResponse', (event: MessageEvent<string>) => {
+
+            try
+            {
+
+                const response = JSON.parse(event.data);
+
+                AppendLogEntry(
+                    response.timestamp,
+                    response.roamingNetwork,
+                    response.eventTrackingId,
+                    `⇒ ${response.result.result}`,
+                    response.runtime
+                );
+
+            }
+            catch (exception) {
+                ShowHTTPSSEError(
+                    'OnAuthorizeStartResponse',
+                    event.data,
+                    exception
+                );
+            }
+
+        }, false);
+
 
         eventSource.addEventListener('OnSetEVSEAdminStatusHTTPRequest', (event: MessageEvent<string>) => {
 
@@ -313,6 +375,7 @@ function StartDebugLog() {
 
 
 
+
         eventSource.addEventListener('OnAuthorizeStartRequest', (event: MessageEvent<string>) => {
 
             try {
@@ -355,7 +418,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ ${response.result.result} (${response.result.sessionId ?? "-"}) @'${response.result.providerId ?? "-"} / ${response.result.authorizatorId}': ${response.result.description}`,
+                    `⇒ ${response.result.result} @'${response.result.providerId ?? "-"} / ${response.result.authorizatorId}' (${response.result.sessionId ?? "-"}): ${response.result.description.en}`,
                     response.runtime
                 );
 
@@ -369,7 +432,6 @@ function StartDebugLog() {
             }
 
         }, false);
-
 
         eventSource.addEventListener('OnAuthorizeHTTPRequest', (event: MessageEvent<string>) => {
 
@@ -485,6 +547,7 @@ function StartDebugLog() {
 
         }, false);
 
+
         eventSource.addEventListener('OnAuthorizeStopEVSEHTTPRequest', (event: MessageEvent<string>) => {
 
             try {
@@ -541,6 +604,7 @@ function StartDebugLog() {
             }
 
         }, false);
+
 
 
         eventSource.addEventListener('OnRemoteStartEVSEHTTPRequest', (event: MessageEvent<string>) => {
@@ -600,6 +664,7 @@ function StartDebugLog() {
 
         }, false);
 
+
         eventSource.addEventListener('OnRemoteStopEVSEHTTPRequest', (event: MessageEvent<string>) => {
 
             try {
@@ -656,6 +721,7 @@ function StartDebugLog() {
             }
 
         }, false);
+
 
 
         eventSource.addEventListener('OnChargeDetailRecordsHTTPRequest', (event: MessageEvent<string>) => {

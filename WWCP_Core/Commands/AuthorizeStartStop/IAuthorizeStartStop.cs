@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         Task<AuthStartResult>
 
             AuthorizeStart(LocalAuthentication          LocalAuthentication,
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         Task<AuthStopResult>
 
             AuthorizeStop(ChargingSession_Id           SessionId,
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// <param name="SessionId">An optional session identification.</param>
         ///// 
         ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         ///// <param name="RequestTimeout">An optional timeout for this request.</param>
         //Task<AuthStartResult>
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// <param name="SessionId">An optional session identification.</param>
         ///// 
         ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         ///// <param name="RequestTimeout">An optional timeout for this request.</param>
         //Task<AuthStartEVSEResult>
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// <param name="SessionId">An optional session identification.</param>
         ///// 
         ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         ///// <param name="RequestTimeout">An optional timeout for this request.</param>
         //Task<AuthStartChargingStationResult>
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// <param name="AuthToken">A (RFID) user identification.</param>
         ///// 
         ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         ///// <param name="RequestTimeout">An optional timeout for this request.</param>
         //Task<AuthStopResult>
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// <param name="AuthToken">A (RFID) user identification.</param>
         ///// 
         ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         ///// <param name="RequestTimeout">An optional timeout for this request.</param>
         //Task<AuthStopEVSEResult>
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// <param name="AuthToken">A (RFID) user identification.</param>
         ///// 
         ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         ///// <param name="RequestTimeout">An optional timeout for this request.</param>
         //Task<AuthStopChargingStationResult>

@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="ChargingSessionId">An optional unique identification for this charging session.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">The timeout for this request.</param>
         public RemoteStartRequest(ChargingLocation         ChargingLocation,

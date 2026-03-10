@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// An event fired whenever an authentication token will be verified to stop a charging process at the given EVSE.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Timestamp">The timestamp of the logging request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
@@ -36,7 +36,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="LocalAuthentication">An user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnAuthorizeStopRequestDelegate(DateTimeOffset                LogTimestamp,
+    /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+    public delegate Task OnAuthorizeStopRequestDelegate(DateTimeOffset                Timestamp,
                                                         DateTimeOffset                RequestTimestamp,
                                                         Object                        Sender,
                                                         String                        SenderId,
@@ -49,12 +50,13 @@ namespace cloud.charging.open.protocols.WWCP
                                                         ChargingSession_Id?           SessionId,
                                                         ChargingSession_Id?           CPOPartnerSessionId,
                                                         LocalAuthentication           LocalAuthentication,
-                                                        TimeSpan?                     RequestTimeout);
+                                                        TimeSpan?                     RequestTimeout,
+                                                        CancellationToken             CancellationToken);
 
     /// <summary>
     /// An event fired whenever an authentication token had been verified to stop a charging process at the given EVSE.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Timestamp">The timestamp of the logging request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
@@ -64,7 +66,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="LocalAuthentication">An user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
-    public delegate Task OnAuthorizeStopResponseDelegate(DateTimeOffset                LogTimestamp,
+    /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+    public delegate Task OnAuthorizeStopResponseDelegate(DateTimeOffset                Timestamp,
                                                          DateTimeOffset                RequestTimestamp,
                                                          Object                        Sender,
                                                          String                        SenderId,
@@ -79,6 +82,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                          LocalAuthentication           LocalAuthentication,
                                                          TimeSpan?                     RequestTimeout,
                                                          AuthStopResult                Result,
-                                                         TimeSpan                      Runtime);
+                                                         TimeSpan                      Runtime,
+                                                         CancellationToken             CancellationToken);
 
 }

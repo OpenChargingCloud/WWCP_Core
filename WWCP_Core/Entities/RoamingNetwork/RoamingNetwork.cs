@@ -30,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using cloud.charging.open.protocols.WWCP.Networking;
+using System.Diagnostics;
 
 #endregion
 
@@ -165,6 +166,8 @@ namespace cloud.charging.open.protocols.WWCP
         private readonly           ConcurrentDictionary<UInt32, IEMPRoamingProvider>  eMobilityRoamingServices               = new();
         private readonly           ConcurrentDictionary<UInt32, ICSORoamingProvider>  csoRoamingServices                     = new();
 
+        public  readonly           TimeSpan                                           DefaultRequestTimeout                  = TimeSpan.FromSeconds(10);
+
         #endregion
 
         #region Properties
@@ -230,6 +233,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
+        /// <summary>
+        /// The timeout for upstream requests.
+        /// </summary>
+        public TimeSpan                                   RequestTimeout                               { get; set; }
+
         #endregion
 
         #region Constructor(s)
@@ -273,6 +282,8 @@ namespace cloud.charging.open.protocols.WWCP
                               Boolean?                                   DisableAuthenticationRateLimit               = true,
                               TimeSpan?                                  AuthenticationRateLimitTimeSpan              = null,
                               UInt16?                                    AuthenticationRateLimitPerChargingLocation   = null,
+
+                              TimeSpan?                                  RequestTimeout                               = null,
 
                               ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator            = null,
                               ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator               = null,
@@ -337,6 +348,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.ChargingStationSignatureGenerator           = ChargingStationSignatureGenerator;
             this.ChargingPoolSignatureGenerator              = ChargingPoolSignatureGenerator;
             this.ChargingStationOperatorSignatureGenerator   = ChargingStationOperatorSignatureGenerator;
+            this.RequestTimeout                              = RequestTimeout ?? DefaultRequestTimeout;
 
             #endregion
 
@@ -5087,10 +5099,66 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region SetEVSEStatus (EVSEStatusList)
+        #region SetEVSEStatus (EVSEStatusList, ...)
 
-        public void SetEVSEStatus(IEnumerable<EVSEStatus> EVSEStatusList)
+
+        #region Events
+
+        /// <summary>
+        /// An event fired whenever a SetEVSEStatus request was received.
+        /// </summary>
+        public event OnSetEVSEStatusRequestDelegate?   OnSetEVSEStatusRequest;
+
+        /// <summary>
+        /// An event fired whenever a SetEVSEStatus response was sent.
+        /// </summary>
+        public event OnSetEVSEStatusResponseDelegate?  OnSetEVSEStatusResponse;
+
+        #endregion
+
+
+        public async Task<IEnumerable<Warning>>
+
+            SetEVSEStatus(IEnumerable<EVSEStatus>  EVSEStatusList,
+
+                          DateTimeOffset?          RequestTimestamp    = null,
+                          EventTracking_Id?        EventTrackingId     = null,
+                          TimeSpan?                RequestTimeout      = null,
+                          CancellationToken        CancellationToken   = default)
+
         {
+
+            #region Initial checks
+
+            var requestTimestamp  = RequestTimestamp ?? Timestamp.Now;
+            var eventTrackingId   = EventTrackingId  ?? EventTracking_Id.New;
+            var requestTimeout    = RequestTimeout   ?? this.RequestTimeout;
+
+            var startTime         = Timestamp.Now;
+            var stopwatch         = Stopwatch.StartNew();
+
+            #endregion
+
+            #region Send OnSetEVSEStatusRequest event
+
+            await LogEvent(
+                      OnSetEVSEStatusRequest,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          startTime,
+                          requestTimestamp,
+                          this,
+                          eventTrackingId,
+                          Id,
+                          EVSEStatusList,
+                          RequestTimeout,
+                          CancellationToken
+                      )
+                  );
+
+            //Counters.SetEVSEStatus.IncRequests_OK();
+
+            #endregion
+
 
             foreach (var evseStatus in EVSEStatusList)
             {
@@ -5100,14 +5168,51 @@ namespace cloud.charging.open.protocols.WWCP
                 }
             }
 
+            var result = new List<Warning>();
+
+
+            #region Send OnSetEVSEStatusResponse event
+
+            stopwatch.Stop();
+            var endTime = Timestamp.Now;
+
+            await LogEvent(
+                      OnSetEVSEStatusResponse,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          endTime,
+                          requestTimestamp,
+                          this,
+                          eventTrackingId,
+                          Id,
+                          EVSEStatusList,
+                          RequestTimeout,
+                          result,
+                          stopwatch.Elapsed,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+            return result;
+
+
         }
 
         #endregion
 
-        #region SetEVSEStatus (EVSEId, NewStatus)
+        #region SetEVSEStatus (EVSEId, NewStatus, ...)
 
-        public void SetEVSEStatus(EVSE_Id                      EVSEId,
-                                  Timestamped<EVSEStatusType>  NewStatus)
+        public async Task<IEnumerable<Warning>>
+
+            SetEVSEStatus(EVSE_Id                      EVSEId,
+                          Timestamped<EVSEStatusType>  NewStatus,
+
+                          DateTimeOffset?              RequestTimestamp    = null,
+                          EventTracking_Id?            EventTrackingId     = null,
+                          TimeSpan?                    RequestTimeout      = null,
+                          CancellationToken            CancellationToken   = default)
+
         {
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator))
@@ -5118,15 +5223,25 @@ namespace cloud.charging.open.protocols.WWCP
                 );
             }
 
+            return new List<Warning>();
+
         }
 
         #endregion
 
-        #region SetEVSEStatus (EVSEId, Timestamp, NewStatus)
+        #region SetEVSEStatus (EVSEId, Timestamp, NewStatus, ...)
 
-        public void SetEVSEStatus(EVSE_Id         EVSEId,
-                                  DateTimeOffset  Timestamp,
-                                  EVSEStatusType  NewStatus)
+        public async Task<IEnumerable<Warning>>
+
+            SetEVSEStatus(EVSE_Id            EVSEId,
+                          DateTimeOffset     Timestamp,
+                          EVSEStatusType     NewStatus,
+
+                          DateTimeOffset?    RequestTimestamp    = null,
+                          EventTracking_Id?  EventTrackingId     = null,
+                          TimeSpan?          RequestTimeout      = null,
+                          CancellationToken  CancellationToken   = default)
+
         {
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator))
@@ -5140,15 +5255,25 @@ namespace cloud.charging.open.protocols.WWCP
                 );
             }
 
+            return new List<Warning>();
+
         }
 
         #endregion
 
-        #region SetEVSEStatus (EVSEId, StatusList)
+        #region SetEVSEStatus (EVSEId, StatusList, ...)
 
-        public void SetEVSEStatus(EVSE_Id                                   EVSEId,
-                                  IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
-                                  ChangeMethods                             ChangeMethod  = ChangeMethods.Replace)
+        public async Task<IEnumerable<Warning>>
+
+            SetEVSEStatus(EVSE_Id                                   EVSEId,
+                          IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
+                          ChangeMethods                             ChangeMethod        = ChangeMethods.Replace,
+
+                          DateTimeOffset?                           RequestTimestamp    = null,
+                          EventTracking_Id?                         EventTrackingId     = null,
+                          TimeSpan?                                 RequestTimeout      = null,
+                          CancellationToken                         CancellationToken   = default)
+
         {
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator))
@@ -5159,6 +5284,8 @@ namespace cloud.charging.open.protocols.WWCP
                     ChangeMethod
                 );
             }
+
+            return new List<Warning>();
 
         }
 
@@ -6435,16 +6562,6 @@ namespace cloud.charging.open.protocols.WWCP
         #region Events
 
         /// <summary>
-        /// An event fired whenever a remote start EVSE command was received.
-        /// </summary>
-        public event OnRemoteStartRequestDelegate?              OnRemoteStartRequest;
-
-        /// <summary>
-        /// An event fired whenever a remote start EVSE command completed.
-        /// </summary>
-        public event OnRemoteStartResponseDelegate?             OnRemoteStartResponse;
-
-        /// <summary>
         /// An event fired whenever a new charging session was created.
         /// </summary>
         /// <summary>
@@ -6463,15 +6580,6 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
 
-        /// <summary>
-        /// An event fired whenever a remote stop command was received.
-        /// </summary>
-        public event OnRemoteStopRequestDelegate?               OnRemoteStopRequest;
-
-        /// <summary>
-        /// An event fired whenever a remote stop command completed.
-        /// </summary>
-        public event OnRemoteStopResponseDelegate?              OnRemoteStopResponse;
 
         /// <summary>
         /// An event fired whenever a new charge detail record was created.
@@ -6743,7 +6851,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<ReservationResult>
 
             Reserve(ChargingLocation                   ChargingLocation,
@@ -6960,7 +7068,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<CancelReservationResult>
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
@@ -7403,7 +7511,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<AuthStartResult>
 
             AuthorizeStart(LocalAuthentication          LocalAuthentication,
@@ -7422,9 +7530,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            RequestTimestamp ??= Timestamp.Now;
-            EventTrackingId  ??= EventTracking_Id.New;
-            RequestTimeout   ??= TimeSpan.FromSeconds(10);
+            var requestTimestamp  = RequestTimestamp ?? Timestamp.Now;
+            var eventTrackingId   = EventTrackingId  ?? EventTracking_Id.New;
+            var requestTimeout    = RequestTimeout   ?? this.RequestTimeout;
+
+            var startTime         = Timestamp.Now;
+            var stopwatch         = Stopwatch.StartNew();
 
             AuthStartResult? result = null;
 
@@ -7432,16 +7543,14 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnAuthorizeStartRequest event
 
-            var startTime = Timestamp.Now;
-
             await LogEvent(
                       OnAuthorizeStartRequest,
                       loggingDelegate => loggingDelegate.Invoke(
                           startTime,
-                          RequestTimestamp.Value,
+                          requestTimestamp,
                           this,
                           Id.ToString(),
-                          EventTrackingId,
+                          eventTrackingId,
                           Id,
                           null,
                           null,
@@ -7730,16 +7839,17 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnAuthorizeStartResponse event
 
+            stopwatch.Stop();
             var endTime = Timestamp.Now;
 
             await LogEvent(
                       OnAuthorizeStartResponse,
                       loggingDelegate => loggingDelegate.Invoke(
                           endTime,
-                          RequestTimestamp.Value,
+                          requestTimestamp,
                           this,
                           Id.ToString(),
-                          EventTrackingId,
+                          eventTrackingId,
                           Id,
                           null,
                           null,
@@ -7752,7 +7862,7 @@ namespace cloud.charging.open.protocols.WWCP
                           allSend2RemoteAuthorizeStartStop,
                           RequestTimeout,
                           result,
-                          endTime - startTime,
+                          stopwatch.Elapsed,
                           CancellationToken
                       )
                   );
@@ -7779,7 +7889,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<AuthStopResult>
 
             AuthorizeStop(ChargingSession_Id           SessionId,
@@ -7797,9 +7907,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            RequestTimestamp ??= Timestamp.Now;
-            EventTrackingId  ??= EventTracking_Id.New;
-            RequestTimeout   ??= TimeSpan.FromSeconds(10);
+            var requestTimestamp  = RequestTimestamp ?? Timestamp.Now;
+            var eventTrackingId   = EventTrackingId  ?? EventTracking_Id.New;
+            var requestTimeout    = RequestTimeout   ?? this.RequestTimeout;
+
+            var startTime         = Timestamp.Now;
+            var stopwatch         = Stopwatch.StartNew();
 
             AuthStopResult? result = null;
 
@@ -7807,16 +7920,14 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnAuthorizeStopRequest event
 
-            var startTime = Timestamp.Now;
-
             await LogEvent(
                       OnAuthorizeStopRequest,
                       loggingDelegate => loggingDelegate.Invoke(
                           startTime,
-                          RequestTimestamp.Value,
+                          requestTimestamp,
                           this,
                           Id.ToString(),
-                          EventTrackingId,
+                          eventTrackingId,
                           Id,
                           null,
                           null,
@@ -7825,7 +7936,8 @@ namespace cloud.charging.open.protocols.WWCP
                           SessionId,
                           CPOPartnerSessionId,
                           LocalAuthentication,
-                          RequestTimeout
+                          RequestTimeout,
+                          CancellationToken
                       )
                   );
 
@@ -8052,13 +8164,14 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnAuthorizeStopResponse event
 
+            stopwatch.Stop();
             var endTime = Timestamp.Now;
 
             await LogEvent(
                       OnAuthorizeStopResponse,
                       loggingDelegate => loggingDelegate.Invoke(
                           endTime,
-                          RequestTimestamp.Value,
+                          requestTimestamp,
                           this,
                           Id.ToString(),
                           EventTrackingId,
@@ -8072,7 +8185,8 @@ namespace cloud.charging.open.protocols.WWCP
                           LocalAuthentication,
                           RequestTimeout,
                           result,
-                          endTime - startTime
+                          stopwatch.Elapsed,
+                          CancellationToken
                       )
                   );
 
@@ -8105,6 +8219,32 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoteStart/-Stop
 
+        #region Events
+
+        /// <summary>
+        /// An event fired whenever a remote start EVSE command was received.
+        /// </summary>
+        public event OnRemoteStartRequestDelegate?              OnRemoteStartRequest;
+
+        /// <summary>
+        /// An event fired whenever a remote start EVSE command completed.
+        /// </summary>
+        public event OnRemoteStartResponseDelegate?             OnRemoteStartResponse;
+
+
+        /// <summary>
+        /// An event fired whenever a remote stop command was received.
+        /// </summary>
+        public event OnRemoteStopRequestDelegate?               OnRemoteStopRequest;
+
+        /// <summary>
+        /// An event fired whenever a remote stop command completed.
+        /// </summary>
+        public event OnRemoteStopResponseDelegate?              OnRemoteStopResponse;
+
+        #endregion
+
+
         #region RemoteStart (ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
@@ -8120,7 +8260,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<RemoteStartResult>
 
             RemoteStart(ChargingLocation         ChargingLocation,
@@ -8142,8 +8282,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            RequestTimestamp ??= Timestamp.Now;
-            EventTrackingId  ??= EventTracking_Id.New;
+            var requestTimestamp  = RequestTimestamp ?? Timestamp.Now;
+            var eventTrackingId   = EventTrackingId  ?? EventTracking_Id.New;
+            var requestTimeout    = RequestTimeout   ?? this.RequestTimeout;
+
+            var startTime         = Timestamp.Now;
+            var stopwatch         = Stopwatch.StartNew();
 
             RemoteStartResult? result = null;
 
@@ -8151,15 +8295,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnRemoteStartRequest event
 
-            var startTime = Timestamp.Now;
-
             await LogEvent(
                       OnRemoteStartRequest,
                       loggingDelegate => loggingDelegate.Invoke(
                           startTime,
-                          RequestTimestamp.Value,
+                          requestTimestamp,
                           this,
-                          EventTrackingId,
+                          eventTrackingId,
                           Id,
                           ChargingLocation,
                           RemoteAuthentication,
@@ -8169,7 +8311,8 @@ namespace cloud.charging.open.protocols.WWCP
                           null,
                           CSORoamingProvider?.Id,
                           ProviderId,
-                          RequestTimeout
+                          RequestTimeout,
+                          CancellationToken
                       )
                   );
 
@@ -8335,15 +8478,16 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnRemoteStartResponse event
 
+            stopwatch.Stop();
             var endTime = Timestamp.Now;
 
             await LogEvent(
                       OnRemoteStartResponse,
                       loggingDelegate => loggingDelegate.Invoke(
                           endTime,
-                          RequestTimestamp.Value,
+                          requestTimestamp,
                           this,
-                          EventTrackingId,
+                          eventTrackingId,
                           Id,
                           ChargingLocation,
                           RemoteAuthentication,
@@ -8355,7 +8499,8 @@ namespace cloud.charging.open.protocols.WWCP
                           ProviderId,
                           RequestTimeout,
                           result,
-                          endTime - startTime
+                          stopwatch.Elapsed,
+                          CancellationToken
                       )
                   );
 
@@ -8380,7 +8525,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<RemoteStopResult>
 
             RemoteStop(ChargingSession_Id     SessionId,
@@ -8400,8 +8545,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            RequestTimestamp ??= Timestamp.Now;
-            EventTrackingId  ??= EventTracking_Id.New;
+            var requestTimestamp  = RequestTimestamp ?? Timestamp.Now;
+            var eventTrackingId   = EventTrackingId  ?? EventTracking_Id.New;
+            var requestTimeout    = RequestTimeout   ?? this.RequestTimeout;
+
+            var startTime         = Timestamp.Now;
+            var stopwatch         = Stopwatch.StartNew();
 
             RemoteStopResult? result = null;
 
@@ -8409,15 +8558,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnRemoteStopRequest event
 
-            var startTime = Timestamp.Now;
-
             await LogEvent(
                       OnRemoteStopRequest,
                       loggingDelegate => loggingDelegate.Invoke(
                           startTime,
-                          RequestTimestamp.Value,
+                          requestTimestamp,
                           this,
-                          EventTrackingId,
+                          eventTrackingId,
                           Id,
                           SessionId,
                           ReservationHandling,
@@ -8425,7 +8572,8 @@ namespace cloud.charging.open.protocols.WWCP
                           CSORoamingProvider?.Id,
                           ProviderId,
                           RemoteAuthentication,
-                          RequestTimeout
+                          RequestTimeout,
+                          CancellationToken
                       )
                   );
 
@@ -8612,7 +8760,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             await SessionsStore.RemoteStop(
-                      EventTrackingId,
+                      eventTrackingId,
                       SessionId,
                       RemoteAuthentication,
                       ProviderId,
@@ -8626,15 +8774,16 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnRemoteStopResponse event
 
+            stopwatch.Stop();
             var endTime = Timestamp.Now;
 
             await LogEvent(
                       OnRemoteStopResponse,
                       loggingDelegate => loggingDelegate.Invoke(
                           endTime,
-                          RequestTimestamp.Value,
+                          requestTimestamp,
                           this,
-                          EventTrackingId,
+                          eventTrackingId,
                           Id,
                           SessionId,
                           ReservationHandling,
@@ -8644,7 +8793,8 @@ namespace cloud.charging.open.protocols.WWCP
                           RemoteAuthentication,
                           RequestTimeout,
                           result,
-                          endTime - startTime
+                          stopwatch.Elapsed,
+                          CancellationToken
                       )
                   );
 
@@ -8672,12 +8822,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a charge detail record will be send upstream.
         /// </summary>
-        public event OnSendCDRsRequestDelegate?   OnSendCDRsRequest;
+        public event OnChargeDetailRecordsRequestDelegate?   OnChargeDetailRecordsRequest;
 
         /// <summary>
         /// An event fired whenever a charge detail record had been sent upstream.
         /// </summary>
-        public event OnSendCDRsResponseDelegate?  OnSendCDRsResponse;
+        public event OnChargeDetailRecordsResponseDelegate?  OnChargeDetailRecordsResponse;
 
         #endregion
 
@@ -8796,26 +8946,29 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            RequestTimestamp ??= Timestamp.Now;
-            EventTrackingId  ??= EventTracking_Id.New;
+            var requestTimestamp  = RequestTimestamp ?? Timestamp.Now;
+            var eventTrackingId   = EventTrackingId  ?? EventTracking_Id.New;
+            var requestTimeout    = RequestTimeout   ?? this.RequestTimeout;
+
+            var startTime         = Timestamp.Now;
+            var stopwatch         = Stopwatch.StartNew();
 
             #endregion
 
             #region Send OnSendCDRsRequest event
 
-            var startTime = Timestamp.Now;
-
             await LogEvent(
-                      OnSendCDRsRequest,
+                      OnChargeDetailRecordsRequest,
                       loggingDelegate => loggingDelegate.Invoke(
                           startTime,
-                          RequestTimestamp.Value,
+                          requestTimestamp,
                           this,
                           Id.ToString(),
-                          EventTrackingId,
+                          eventTrackingId,
                           Id,
                           ChargeDetailRecords,
-                          RequestTimeout
+                          RequestTimeout,
+                          CancellationToken
                       )
                   );
 
@@ -8824,43 +8977,29 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region if SendChargeDetailRecords disabled...
 
-            DateTimeOffset   endtime;
-            TimeSpan         runtime;
-            SendCDRsResult?  result   = null;
+            SendCDRsResult? result = null;
 
             if (DisableSendChargeDetailRecords)
-            {
-
-                endtime  = Timestamp.Now;
-                runtime  = endtime - startTime;
-                result   = SendCDRsResult.AdminDown(
-                               Timestamp.Now,
-                               Id,
-                               this as ISendChargeDetailRecords,
-                               ChargeDetailRecords,
-                               Runtime: runtime
-                           );
-
-            }
+                result  = SendCDRsResult.AdminDown(
+                              Timestamp.Now,
+                              Id,
+                              this as ISendChargeDetailRecords,
+                              ChargeDetailRecords,
+                              Runtime: stopwatch.Elapsed
+                          );
 
             #endregion
 
             #region ..., or when there are no charge detail records...
 
             else if (!ChargeDetailRecords.Any())
-            {
-
-                endtime  = Timestamp.Now;
-                runtime  = endtime - startTime;
-                result   = SendCDRsResult.NoOperation(
-                               Timestamp.Now,
-                               Id,
-                               this as ISendChargeDetailRecords,
-                               ChargeDetailRecords,
-                               Runtime: runtime
-                           );
-
-            }
+                result  = SendCDRsResult.NoOperation(
+                              Timestamp.Now,
+                              Id,
+                              this as ISendChargeDetailRecords,
+                              ChargeDetailRecords,
+                              Runtime: stopwatch.Elapsed
+                          );
 
             #endregion
 
@@ -9563,37 +9702,39 @@ namespace cloud.charging.open.protocols.WWCP
 
                 }
 
-                endtime  = Timestamp.Now;
-                runtime  = endtime - startTime;
-                result   = new SendCDRsResult(
-                               Timestamp.Now,
-                               Id,
-                               this as IReceiveChargeDetailRecords,
-                               globalResults[0].Convert(),
-                               resultMap,
-                               I18NString.Empty,
-                               null,
-                               runtime
-                           );
+                result  = new SendCDRsResult(
+                              Timestamp.Now,
+                              Id,
+                              this as IReceiveChargeDetailRecords,
+                              globalResults[0].Convert(),
+                              resultMap,
+                              I18NString.Empty,
+                              null,
+                              stopwatch.Elapsed
+                          );
 
             }
 
 
             #region Send OnSendCDRsResponse event
 
+            stopwatch.Stop();
+            var endTime = Timestamp.Now;
+
             await LogEvent(
-                      OnSendCDRsResponse,
+                      OnChargeDetailRecordsResponse,
                       loggingDelegate => loggingDelegate.Invoke(
-                          endtime,
-                          RequestTimestamp.Value,
+                          endTime,
+                          requestTimestamp,
                           this,
                           Id.ToString(),
-                          EventTrackingId,
+                          eventTrackingId,
                           Id,
                           ChargeDetailRecords,
                           RequestTimeout,
                           result,
-                          runtime
+                          stopwatch.Elapsed,
+                          CancellationToken
                       )
                   );
 

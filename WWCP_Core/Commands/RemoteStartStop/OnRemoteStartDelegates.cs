@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// Indicate a remote start of the given charging session at the given EVSE
     /// and for the given provider/eMAId.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the request.</param>
+    /// <param name="Timestamp">The timestamp of the logging request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
@@ -39,7 +39,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingProduct">The chosen charging product.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnRemoteStartRequestDelegate(DateTimeOffset            LogTimestamp,
+    /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+    public delegate Task OnRemoteStartRequestDelegate(DateTimeOffset            Timestamp,
                                                       DateTimeOffset            RequestTimestamp,
                                                       Object                    Sender,
                                                       EventTracking_Id          EventTrackingId,
@@ -52,7 +53,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                       EMPRoamingProvider_Id?    EMPRoamingProviderId,
                                                       CSORoamingProvider_Id?    CSORoamingProviderId,
                                                       EMobilityProvider_Id?     ProviderId,
-                                                      TimeSpan?                 RequestTimeout);
+                                                      TimeSpan?                 RequestTimeout,
+                                                      CancellationToken         CancellationToken);
 
 
     /// <summary>
@@ -68,8 +70,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
+    /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
     public delegate Task<RemoteStartResult> OnRemoteStartDelegate(DateTimeOffset            Timestamp,
-                                                                  CancellationToken         CancellationToken,
                                                                   EventTracking_Id          EventTrackingId,
                                                                   ChargingProduct           ChargingProduct,
                                                                   ChargingReservation_Id?   ReservationId,
@@ -78,14 +80,15 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   CSORoamingProvider_Id?    CSORoamingProviderId,
                                                                   EMobilityProvider_Id?     ProviderId,
                                                                   RemoteAuthentication      RemoteAuthentication,
-                                                                  TimeSpan?                 RequestTimeout  = null);
+                                                                  TimeSpan?                 RequestTimeout,
+                                                                  CancellationToken         CancellationToken);
 
 
     /// <summary>
     /// Indicate a remote start of the given charging session at the given EVSE
     /// and for the given provider/eMAId.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Timestamp">The timestamp of the logging request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
@@ -98,7 +101,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote start result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnRemoteStartResponseDelegate(DateTimeOffset            LogTimestamp,
+    /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
+    public delegate Task OnRemoteStartResponseDelegate(DateTimeOffset            Timestamp,
                                                        DateTimeOffset            RequestTimestamp,
                                                        Object                    Sender,
                                                        EventTracking_Id          EventTrackingId,
@@ -113,6 +117,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                        EMobilityProvider_Id?     ProviderId,
                                                        TimeSpan?                 RequestTimeout,
                                                        RemoteStartResult         Result,
-                                                       TimeSpan                  Runtime);
+                                                       TimeSpan                  Runtime,
+                                                       CancellationToken         CancellationToken);
 
 }

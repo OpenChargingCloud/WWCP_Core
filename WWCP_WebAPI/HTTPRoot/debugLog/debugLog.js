@@ -116,6 +116,32 @@ function StartDebugLog() {
                 console.error(exception);
             }
         }, false);
+        eventSource.addEventListener('OnSetEVSEStatusRequest', (event) => {
+            var _a, _b, _c, _d;
+            try {
+                function printEVSEStatus(evseStatus) {
+                    return `${evseStatus.id}: ${evseStatus.status}`;
+                }
+                const request = JSON.parse(event.data);
+                const entries = Object.entries(request);
+                if (entries.length === 0)
+                    return;
+                CreateLogEntry((_a = request.timestamp) !== null && _a !== void 0 ? _a : Date.now(), (_b = request.roamingNetworkId) !== null && _b !== void 0 ? _b : "", (_c = request.eventTrackingId) !== null && _c !== void 0 ? _c : "", request.from, request.to, "OnSetEVSEStatusRequest", `${request.evseStatusList.map(printEVSEStatus).join("; ")}`, (_d = request.from) !== null && _d !== void 0 ? _d : "" // ConnectionColorKey
+                );
+            }
+            catch (exception) {
+                ShowHTTPSSEError('OnSetEVSEStatusRequest', event.data, exception);
+            }
+        }, false);
+        eventSource.addEventListener('OnAuthorizeStartResponse', (event) => {
+            try {
+                const response = JSON.parse(event.data);
+                AppendLogEntry(response.timestamp, response.roamingNetwork, response.eventTrackingId, `⇒ ${response.result.result}`, response.runtime);
+            }
+            catch (exception) {
+                ShowHTTPSSEError('OnAuthorizeStartResponse', event.data, exception);
+            }
+        }, false);
         eventSource.addEventListener('OnSetEVSEAdminStatusHTTPRequest', (event) => {
             var _a, _b, _c, _d;
             try {
@@ -180,7 +206,7 @@ function StartDebugLog() {
             var _a, _b;
             try {
                 const response = JSON.parse(event.data);
-                AppendLogEntry(response.timestamp, response.roamingNetwork, response.eventTrackingId, `⇒ ${response.result.result} (${(_a = response.result.sessionId) !== null && _a !== void 0 ? _a : "-"}) @'${(_b = response.result.providerId) !== null && _b !== void 0 ? _b : "-"} / ${response.result.authorizatorId}': ${response.result.description}`, response.runtime);
+                AppendLogEntry(response.timestamp, response.roamingNetwork, response.eventTrackingId, `⇒ ${response.result.result} @'${(_a = response.result.providerId) !== null && _a !== void 0 ? _a : "-"} / ${response.result.authorizatorId}' (${(_b = response.result.sessionId) !== null && _b !== void 0 ? _b : "-"}): ${response.result.description.en}`, response.runtime);
             }
             catch (exception) {
                 ShowHTTPSSEError('OnAuthorizeStartResponse', event.data, exception);
