@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                         EventTracking_Id         EventTrackingId,
                                                         RoamingNetwork_Id        RoamingNetworkId,
                                                         IEnumerable<EVSEStatus>  EVSEStatusList,
-                                                        TimeSpan?                RequestTimeout,
+                                                        TimeSpan                 RequestTimeout,
                                                         CancellationToken        CancellationToken);
 
 
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                          EventTracking_Id         EventTrackingId,
                                                          RoamingNetwork_Id        RoamingNetworkId,
                                                          IEnumerable<EVSEStatus>  EVSEStatusList,
-                                                         TimeSpan?                RequestTimeout,
+                                                         TimeSpan                 RequestTimeout,
                                                          List<Warning>            Result,
                                                          TimeSpan                 Runtime,
                                                          CancellationToken        CancellationToken);

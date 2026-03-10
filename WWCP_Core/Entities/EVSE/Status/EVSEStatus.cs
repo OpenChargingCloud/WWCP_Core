@@ -156,9 +156,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="Status">The current timestamped status of the EVSE.</param>
         /// <param name="Context">An optional data source or context for the EVSE status.</param>
-        public EVSEStatus(EVSE_Id                       Id,
+        public EVSEStatus(EVSE_Id                      Id,
                           Timestamped<EVSEStatusType>  Status,
-                          Context?                      Context   = null)
+                          Context?                     Context   = null)
 
             : this(Id,
                    Status.Value,

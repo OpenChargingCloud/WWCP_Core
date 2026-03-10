@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new roaming network collection.
         /// </summary>
         /// <param name="RoamingNetworks">Initial roaming networks to be added.</param>
-        public WWCPCore(params RoamingNetwork[] RoamingNetworks)
+        public WWCPCore(params IRoamingNetwork[] RoamingNetworks)
         {
 
             this.roamingNetworkAddition  = new VotingNotificator<WWCPCore, IRoamingNetwork, Boolean>(() => new VetoVote(), true);

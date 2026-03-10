@@ -5099,8 +5099,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region SetEVSEStatus (EVSEStatusList, ...)
-
+        #region SetEVSEStatus (...)
 
         #region Events
 
@@ -5116,6 +5115,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
+        #region SetEVSEStatus (EVSEStatusList, ...)
 
         public async Task<IEnumerable<Warning>>
 
@@ -5150,7 +5151,7 @@ namespace cloud.charging.open.protocols.WWCP
                           eventTrackingId,
                           Id,
                           EVSEStatusList,
-                          RequestTimeout,
+                          requestTimeout,
                           CancellationToken
                       )
                   );
@@ -5185,7 +5186,7 @@ namespace cloud.charging.open.protocols.WWCP
                           eventTrackingId,
                           Id,
                           EVSEStatusList,
-                          RequestTimeout,
+                          requestTimeout,
                           result,
                           stopwatch.Elapsed,
                           CancellationToken
@@ -5203,7 +5204,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEVSEStatus (EVSEId, NewStatus, ...)
 
-        public async Task<IEnumerable<Warning>>
+        public Task<IEnumerable<Warning>>
 
             SetEVSEStatus(EVSE_Id                      EVSEId,
                           Timestamped<EVSEStatusType>  NewStatus,
@@ -5213,25 +5214,27 @@ namespace cloud.charging.open.protocols.WWCP
                           TimeSpan?                    RequestTimeout      = null,
                           CancellationToken            CancellationToken   = default)
 
-        {
+                => SetEVSEStatus(
 
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator))
-            {
-                chargingStationOperator.SetEVSEStatus(
-                    EVSEId,
-                    NewStatus
-                );
-            }
+                       [
+                           new EVSEStatus(
+                               EVSEId,
+                               NewStatus
+                           )
+                       ],
 
-            return new List<Warning>();
+                       RequestTimestamp,
+                       EventTrackingId,
+                       RequestTimeout,
+                       CancellationToken
 
-        }
+                   );
 
         #endregion
 
         #region SetEVSEStatus (EVSEId, Timestamp, NewStatus, ...)
 
-        public async Task<IEnumerable<Warning>>
+        public Task<IEnumerable<Warning>>
 
             SetEVSEStatus(EVSE_Id            EVSEId,
                           DateTimeOffset     Timestamp,
@@ -5242,22 +5245,23 @@ namespace cloud.charging.open.protocols.WWCP
                           TimeSpan?          RequestTimeout      = null,
                           CancellationToken  CancellationToken   = default)
 
-        {
+                => SetEVSEStatus(
 
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator))
-            {
-                chargingStationOperator.SetEVSEStatus(
-                    EVSEId,
-                    new Timestamped<EVSEStatusType>(
-                        Timestamp,
-                        NewStatus
-                    )
-                );
-            }
+                       [
+                           new EVSEStatus(
+                               EVSEId,
+                               NewStatus
+                           )
+                       ],
 
-            return new List<Warning>();
+                       RequestTimestamp,
+                       EventTrackingId,
+                       RequestTimeout,
+                       CancellationToken
 
-        }
+                   );
+
+        #endregion
 
         #endregion
 
@@ -5276,6 +5280,48 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
+            #region Initial checks
+
+            var requestTimestamp  = RequestTimestamp ?? Timestamp.Now;
+            var eventTrackingId   = EventTrackingId  ?? EventTracking_Id.New;
+            var requestTimeout    = RequestTimeout   ?? this.RequestTimeout;
+
+            var startTime         = Timestamp.Now;
+            var stopwatch         = Stopwatch.StartNew();
+
+            #endregion
+
+            var evseStatusList = new List<EVSEStatus>();
+
+            foreach (var status in StatusList)
+                evseStatusList.Add(
+                    new EVSEStatus(
+                        EVSEId,
+                        status
+                    )
+                );
+
+            #region Send OnSetEVSEStatusRequest event
+
+            await LogEvent(
+                      OnSetEVSEStatusRequest,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          startTime,
+                          requestTimestamp,
+                          this,
+                          eventTrackingId,
+                          Id,
+                          evseStatusList,
+                          requestTimeout,
+                          CancellationToken
+                      )
+                  );
+
+            //Counters.SetEVSEStatus.IncRequests_OK();
+
+            #endregion
+
+
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator))
             {
                 chargingStationOperator.SetEVSEStatus(
@@ -5285,7 +5331,33 @@ namespace cloud.charging.open.protocols.WWCP
                 );
             }
 
-            return new List<Warning>();
+            var result = new List<Warning>();
+
+
+            #region Send OnSetEVSEStatusResponse event
+
+            stopwatch.Stop();
+            var endTime = Timestamp.Now;
+
+            await LogEvent(
+                      OnSetEVSEStatusResponse,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          endTime,
+                          requestTimestamp,
+                          this,
+                          eventTrackingId,
+                          Id,
+                          evseStatusList,
+                          requestTimeout,
+                          result,
+                          stopwatch.Elapsed,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+            return result;
 
         }
 

@@ -5611,6 +5611,7 @@ namespace cloud.charging.open.protocols.WWCP
                     if (json.ParseOptional("currentStatus",
                                            "EVSE admin status",
                                            HTTPServiceName,
+                                           EVSEAdminStatusType.TryParse,
                                            out EVSEAdminStatusType? currentStatus,
                                            request,
                                            out httpResponseBuilder))
@@ -5682,7 +5683,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Fail, if both CurrentStatus and StatusList are missing...
 
-                    if (!currentStatus.HasValue && statusList is null)
+                    if (!currentStatus.HasValue && statusList.Count == 0)
                         return new HTTPResponse.Builder(request) {
                                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
                                    Server          = HTTPServiceName,
@@ -5698,19 +5699,18 @@ namespace cloud.charging.open.protocols.WWCP
                     #endregion
 
 
-                    if (currentStatus.HasValue && statusList is null)
-                        statusList = [
-                                         new Timestamped<EVSEAdminStatusType>(
-                                             request.Timestamp,
-                                             currentStatus.Value
-                                         )
-                                     ];
-
-                    if (statusList.Count > 0)
+                    if (currentStatus.HasValue)
                         roamingNetwork.SetEVSEAdminStatus(
-                            evse.Id,
-                            statusList
-                        );
+                                  evse.Id,
+                                  request.Timestamp,
+                                  currentStatus.Value
+                              );
+
+                    else if (statusList.Count > 0)
+                        roamingNetwork.SetEVSEAdminStatus(
+                                  evse.Id,
+                                  statusList
+                              );
 
 
                     return new HTTPResponse.Builder(request) {
@@ -5866,6 +5866,7 @@ namespace cloud.charging.open.protocols.WWCP
                     if (json.ParseOptional("currentStatus",
                                            "EVSE admin status",
                                            HTTPServiceName,
+                                           EVSEStatusType.TryParse,
                                            out EVSEStatusType? currentStatus,
                                            request,
                                            out httpResponseBuilder))
@@ -5937,7 +5938,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Fail, if both CurrentStatus and StatusList are missing...
 
-                    if (!currentStatus.HasValue && statusList is null)
+                    if (!currentStatus.HasValue && statusList.Count == 0)
                         return new HTTPResponse.Builder(request) {
                                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
                                    Server          = HTTPServiceName,
@@ -5953,19 +5954,18 @@ namespace cloud.charging.open.protocols.WWCP
                     #endregion
 
 
-                    if (currentStatus.HasValue && statusList is null)
-                        statusList = [
-                                         new Timestamped<EVSEStatusType>(
-                                             request.Timestamp,
-                                             currentStatus.Value
-                                         )
-                                     ];
+                    if (currentStatus.HasValue)
+                        await roamingNetwork.SetEVSEStatus(
+                                  evse.Id,
+                                  request.Timestamp,
+                                  currentStatus.Value
+                              );
 
-                    if (statusList.Count > 0)
-                        roamingNetwork.SetEVSEStatus(
-                            evse.Id,
-                            statusList
-                        );
+                    else if (statusList.Count > 0)
+                        await roamingNetwork.SetEVSEStatus(
+                                  evse.Id,
+                                  statusList
+                              );
 
 
                     return new HTTPResponse.Builder(request) {
@@ -6985,8 +6985,11 @@ namespace cloud.charging.open.protocols.WWCP
                                             HTTPHostname?                             Hostname   = null)
         {
 
-            if (WWCPCores.TryGetValue         (Hostname ?? HTTPHostname.Any, out var wwcpCore) &&
-                wwcpCore. TryGetRoamingNetwork(RoamingNetworkId,             out RoamingNetwork))
+            if (!WWCPCores.TryGetValue(Hostname ?? HTTPHostname.Any, out var wwcpCore))
+                 WWCPCores.TryGetValue(            HTTPHostname.Any, out     wwcpCore);
+
+            if (wwcpCore is not null &&
+                wwcpCore.TryGetRoamingNetwork(RoamingNetworkId, out RoamingNetwork))
             {
                 return true;
             }

@@ -627,6 +627,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                  TimeSpan?                                 RequestTimeout      = null,
                                                  CancellationToken                         CancellationToken   = default);
 
+
         Task<IEnumerable<Warning>> SetEVSEStatus(EVSE_Id                                   EVSEId,
                                                  IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
                                                  ChangeMethods                             ChangeMethod  = ChangeMethods.Replace,
