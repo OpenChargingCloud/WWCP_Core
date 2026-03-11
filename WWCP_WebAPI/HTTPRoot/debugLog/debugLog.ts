@@ -11,7 +11,7 @@ function StartDebugLog() {
 
         compileFilter(streamFilterInput.value);
 
-        const allLogLines = eventsDiv.getElementsByClassName('logLine') as HTMLCollectionOf<HTMLDivElement>;
+        const allLogLines = Array.from(eventsDiv.getElementsByClassName('logLine') as HTMLCollectionOf<HTMLDivElement>);
 
         for (let i = 0; i < allLogLines.length; i++) {
             allLogLines[i].style.display =
@@ -36,7 +36,7 @@ function StartDebugLog() {
             const ch = input[i];
 
             // Skip whitespace
-            if (ch === ' ' || ch === '\\t') { i++; continue; }
+            if (ch === ' ' || ch === '\t') { i++; continue; }
 
             // Single-character operators
             if (ch === '(') { tokens.push({ type: 'LPAREN' }); i++; continue; }
@@ -83,7 +83,7 @@ function StartDebugLog() {
 
             // Bare word (unquoted substring) — everything until a special char or whitespace
             let word = '';
-            while (i < input.length && !'(&|)! \\t"'.includes(input[i])) {
+            while (i < input.length && !'(&|)! \t"'.includes(input[i])) {
                 word += input[i];
                 i++;
             }
