@@ -6,7 +6,7 @@ function StartDebugLog() {
     const eventsDiv          = document.getElementById('eventsDiv');
     const streamFilterInput  = document.getElementById('eventsFilterDiv').getElementsByTagName('input')[0] as HTMLInputElement;
 
-    // live filtering as you type...
+    // Live filtering as you type...
     streamFilterInput.oninput = () => {
 
         compileFilter(streamFilterInput.value);
@@ -21,6 +21,21 @@ function StartDebugLog() {
         }
 
     };
+
+
+    const clearButton       = document.getElementById('clearEventsButton');
+    clearButton.onclick = () => {
+        eventsDiv.innerHTML = '';
+    };
+
+    // ── Filter help button & panel ──────────────────────────────────
+
+    const filterHelpPanel   = document.getElementById('filterHelpPanel');
+    const filterHelpButton  = document.getElementById('filterHelpButton');
+    filterHelpButton.onclick = () => {
+        filterHelpPanel.classList.toggle('visible');
+    };
+
 
 
     // ── Filter expression engine ──────────────────────────────────────
@@ -105,8 +120,20 @@ function StartDebugLog() {
         if (trimmed === '')
             return { type: 'TRUE' };
 
-        const tokens = tokenizeFilter(trimmed);
         let   pos    = 0;
+        const tokens = tokenizeFilter(trimmed);
+
+        // Strip trailing binary operators (& / |) that have no right operand
+        while (tokens.length > 0 &&
+              (tokens[tokens.length - 1].type === 'AND' ||
+               tokens[tokens.length - 1].type === 'OR')) {
+            tokens.pop();
+        }
+
+        // Match everything, when stripping left us with no tokens
+        if (tokens.length === 0)
+            return { type: 'TRUE' };
+
 
         function peek() {
 
@@ -144,6 +171,7 @@ function StartDebugLog() {
             }
             return left;
         }
+
         function parseAndExpr()
         {
 
@@ -260,10 +288,7 @@ function StartDebugLog() {
 
 
 
-    const clearButton = document.getElementById('clearEventsButton');
-    clearButton.onclick = () => {
-        eventsDiv.innerHTML = '';
-    };
+
 
 
 
@@ -1056,7 +1081,7 @@ function StartDebugLog() {
                     request.from,
                     request.to,
                     "OnPutSessionRequest",
-                    `${request.id} (${request.status}, ${request.kwh}, ${request.total_cost} ${request.currency})`,
+                    `${request.id} (${request.status}, ${request.kwh} kwh, ${request.total_cost} ${request.currency})`,
                     request.from ?? "" // ConnectionColorKey
                 );
 
