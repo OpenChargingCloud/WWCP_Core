@@ -5,8 +5,12 @@
 <script type="text/javascript" src="/js/date.format.js"></script>
 
 
+<div id="buttonsDiv">
+    <button id="clearEventsButton" title="Remove all log entries"><i class="fa-regular fa-trash-can"></i></button>
+</div>
+
 <div id="eventsFilterDiv">
-    Events filter <input id="StreamFilter" />
+    <i class="fa-solid fa-filter"></i><input id="streamFilter" placeholder="filter logs..." />
 </div>
 
 <div id="response">
