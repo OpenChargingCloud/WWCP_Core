@@ -336,7 +336,7 @@ function StartDebugLog() {
                                 "<div class=\"from\">"            + (from ?? "")    + "</div>" +
                                 "<div class=\"to\">"              + (to   ?? "")    + "</div>" +
                                 "<div class=\"command\">"         + command + "</div>" +
-                                "<div class=\"message\">"         + message.reduce(function (a: string, b: string) { return a + "<br />" + b; }); + "</div>" +
+                                "<div class=\"message\">"         + message.reduce(function (a: string, b: string) { return a + "<br />" + b; }) + "</div>" +
                                 "<div class=\"runtime\"></div>";
 
         //if (div.innerHTML.indexOf(streamFilterInput.value) > -1)
