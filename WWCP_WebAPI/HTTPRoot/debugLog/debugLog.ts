@@ -777,7 +777,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ ${response.result.result} @'${response.result.providerId ?? "-"} / ${response.result.authorizatorId}' (${response.result.sessionId ?? "-"}): ${response.result.description.en}`,
+                    `⇒ ${response.result.result} @'${response.result.providerId ?? "-"} / ${response.result.authorizatorId}' (${response.result.sessionId ?? "-"}): ${response.result.description?.en ?? "-"}`,
                     response.runtime
                 );
 
@@ -892,7 +892,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ ${response.result.result} @'${response.result.providerId ?? "-"} / ${response.result.authorizatorId}' (${response.result.sessionId ?? "-"}): ${response.result.description.en}`,
+                    `⇒ ${response.result.result} @'${response.result.providerId ?? "-"} / ${response.result.authorizatorId}' (${response.result.sessionId ?? "-"}): ${response.result.description?.en ?? "-"}`,
                     response.runtime
                 );
 
@@ -1010,7 +1010,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ ${response.result.result}: ${response.result.description.en}`,
+                    `⇒ ${response.result.result}: ${response.result.description?.en ?? "-"}`,
                     response.runtime
                 );
 
@@ -1125,7 +1125,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ ${response.result.result}: ${response.result.description.en}`,
+                    `⇒ ${response.result.result}: ${response.result.description?.en ?? "-"}`,
                     response.runtime
                 );
 
@@ -1310,7 +1310,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ ${result.result}: ${result.description.en}`,
+                    `⇒ ${result.result}: ${result.description?.en ?? "-"}`,
                     response.runtime
                 );
 
