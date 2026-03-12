@@ -50,11 +50,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         ChargeDetailRecordFilterDelegate?  ChargeDetailRecordFilter          { get; }
 
+
+        #region OnSendCDRRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a charge detail record will be send upstream.
+        /// </summary>
+        event OnChargeDetailRecordsRequestDelegate?   OnChargeDetailRecordsRequest;
+
         /// <summary>
         /// An event fired whenever a charge detail record had been sent upstream.
         /// </summary>
-        event OnChargeDetailRecordsResponseDelegate   OnChargeDetailRecordsResponse;
-        // Events?
+        event OnChargeDetailRecordsResponseDelegate?  OnChargeDetailRecordsResponse;
+
+        #endregion
 
 
         /// <summary>

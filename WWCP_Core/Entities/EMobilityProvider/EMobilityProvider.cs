@@ -3606,6 +3606,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// An event fired whenever a new charge detail record was created.
         /// </summary>
         public event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
+        public event OnChargeDetailRecordsRequestDelegate? OnChargeDetailRecordsRequest;
 
         #endregion
 
