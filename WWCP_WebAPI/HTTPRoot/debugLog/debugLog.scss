@@ -389,6 +389,14 @@ body #page #workarea #bottom #right #text {
 
         }
 
+        .runtime {
+            display:                        table-cell;
+            vertical-align:                 top;
+            font-size:                      80%;
+            padding:                        4px 6px;
+            white-space:                    nowrap;
+        }
+
     }
 
 }

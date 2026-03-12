@@ -336,7 +336,8 @@ function StartDebugLog() {
                                 "<div class=\"from\">"            + (from ?? "")    + "</div>" +
                                 "<div class=\"to\">"              + (to   ?? "")    + "</div>" +
                                 "<div class=\"command\">"         + command + "</div>" +
-                                "<div class=\"message\">"         + message.reduce(function (a: string, b: string) { return a + "<br />" + b; }); + "</div>";
+                                "<div class=\"message\">"         + message.reduce(function (a: string, b: string) { return a + "<br />" + b; }); + "</div>" +
+                                "<div class=\"runtime\"></div>";
 
         //if (div.innerHTML.indexOf(streamFilterInput.value) > -1)
         //    div.style.display = 'table-row';
@@ -357,7 +358,8 @@ function StartDebugLog() {
 
         for (let i = 0; i < allLogLines.length; i++) {
             if (allLogLines[i].innerHTML.indexOf(searchPattern) > -1) {
-                allLogLines[i].getElementsByClassName("message")[0].innerHTML += `${message} [${runtime} ms]`;
+                allLogLines[i].getElementsByClassName("message")[0].innerHTML += `${message}`;
+                allLogLines[i].getElementsByClassName("runtime")[0].innerHTML += `${runtime} ms`;
                 break;
             }
         }
@@ -478,7 +480,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ ${response.result.result}`,
+                    ` ⇒ ${response.result.result}`,
                     response.runtime
                 );
 
@@ -535,7 +537,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ !`,
+                    ` ⇒ !`,
                     response.runtime
                 );
 
@@ -598,7 +600,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ ${response.result.result}`,
+                    ` ⇒ ${response.result.result}`,
                     response.runtime
                 );
 
@@ -655,7 +657,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ !`,
+                    ` ⇒ !`,
                     response.runtime
                 );
 
@@ -716,7 +718,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ ${response.result.allowed}`,
+                    ` ⇒ ${response.result.allowed}`,
                     response.runtime
                 );
 
@@ -752,7 +754,7 @@ function StartDebugLog() {
                     request.from,
                     request.to,
                     "OnAuthorizeStartRequest",
-                    `${request.localAuthentication.authToken} @'${request.chargingLocation.evseId}'`,
+                    `${request.localAuthentication.authToken} @ '${request.chargingLocation.evseId}'`,
                     request.from ?? "" // ConnectionColorKey
                 );
 
@@ -777,7 +779,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ ${response.result.result} @'${response.result.providerId ?? "-"} / ${response.result.authorizatorId}' (${response.result.sessionId ?? "-"}): ${response.result.description?.en ?? "-"}`,
+                    ` ⇒ ${response.result.result} @'${response.result.providerId ?? "-"} / ${response.result.authorizatorId}' (${response.result.sessionId ?? "-"}): ${response.result.description?.en ?? "-"}`,
                     response.runtime
                 );
 
@@ -834,7 +836,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ !`,
+                    ` ⇒ !`,
                     response.runtime
                 );
 
@@ -892,7 +894,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ ${response.result.result} @'${response.result.providerId ?? "-"} / ${response.result.authorizatorId}' (${response.result.sessionId ?? "-"}): ${response.result.description?.en ?? "-"}`,
+                    ` ⇒ ${response.result.result} @'${response.result.providerId ?? "-"} / ${response.result.authorizatorId}' (${response.result.sessionId ?? "-"}): ${response.result.description?.en ?? "-"}`,
                     response.runtime
                 );
 
@@ -949,7 +951,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ !`,
+                    ` ⇒ !`,
                     response.runtime
                 );
 
@@ -1010,7 +1012,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ ${response.result.result}: ${response.result.description?.en ?? "-"}`,
+                    ` ⇒ ${response.result.result}: ${response.result.description?.en ?? "-"}`,
                     response.runtime
                 );
 
@@ -1067,7 +1069,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ !`,
+                    ` ⇒ !`,
                     response.runtime
                 );
 
@@ -1125,7 +1127,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ ${response.result.result}: ${response.result.description?.en ?? "-"}`,
+                    ` ⇒ ${response.result.result}: ${response.result.description?.en ?? "-"}`,
                     response.runtime
                 );
 
@@ -1182,7 +1184,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ !`,
+                    ` ⇒ !`,
                     response.runtime
                 );
 
@@ -1245,7 +1247,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ !`,
+                    ` ⇒ !`,
                     response.runtime
                 );
 
@@ -1314,7 +1316,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ ${result.result}: ${result.description?.en ?? "-"}`,
+                    ` ⇒ ${result.result}: ${result.description?.en ?? "-"}`,
                     response.runtime
                 );
 
@@ -1371,7 +1373,7 @@ function StartDebugLog() {
                     response.timestamp,
                     response.roamingNetwork,
                     response.eventTrackingId,
-                    `⇒ !`,
+                    ` ⇒ !`,
                     response.runtime
                 );
 
