@@ -1274,7 +1274,9 @@ function StartDebugLog() {
                 if (entries.length === 0)
                     return;
 
-                const chargeDetailRecord = request.chargeDetailRecords.firstOrDefault();
+                const chargeDetailRecord = request.chargeDetailRecords?.length > 0
+                    ? request.chargeDetailRecords[0]
+                    : null;
 
                 CreateLogEntry(
                     request.timestamp        ?? Date.now(),
@@ -1304,7 +1306,9 @@ function StartDebugLog() {
 
                 const response = JSON.parse(event.data);
 
-                const result = response.results.firstOrDefault();
+                const result = response.results?.length > 0
+                    ? response.results[0]
+                    : null;
 
                 AppendLogEntry(
                     response.timestamp,
