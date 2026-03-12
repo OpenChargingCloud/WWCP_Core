@@ -1100,7 +1100,7 @@ function StartDebugLog() {
                     request.from,
                     request.to,
                     "OnRemoteStopRequest",
-                    `${request.remoteAuthentication.remoteIdentification ?? "-"} (${request.providerId}) @'${request.chargingLocation.evseId}' (${request.csoRoamingProviderId ?? "-"} / ${request.sessionId})`,
+                    `${request.remoteAuthentication?.remoteIdentification ?? "-"} (${request.providerId}) @'${request.chargingLocation?.evseId ?? "-"}' (${request.csoRoamingProviderId ?? "-"} / ${request.sessionId})`,
                     request.from ?? "" // ConnectionColorKey
                 );
 
@@ -1285,7 +1285,7 @@ function StartDebugLog() {
                     request.from,
                     request.to,
                     "OnChargeDetailRecordsRequest",
-                    `${chargeDetailRecord["@id"]} (${request.sessionId}, ${request.evseId}, ${request.providerIdStart}, ${request.authenticationStart})`,
+                    `Id: ${chargeDetailRecord["@id"]} (${chargeDetailRecord.providerIdStart}, ${chargeDetailRecord.sessionId}, EVSE Id: ${chargeDetailRecord.evseId}, auth: ${chargeDetailRecord.authenticationStart})`,
                     request.from ?? "" // ConnectionColorKey
                 );
 
