@@ -339,19 +339,23 @@ function StartDebugLog() {
                                 "<div class=\"message\">"         + message.reduce(function (a: string, b: string) { return a + "<br />" + b; }) + "</div>" +
                                 "<div class=\"runtime\"></div>";
 
-        //if (div.innerHTML.indexOf(streamFilterInput.value) > -1)
-        //    div.style.display = 'table-row';
-        //else
-        //    div.style.display = 'none';
+        div.style.display = matchesFilter(div.innerHTML)
+            ? 'table-row'
+            : 'none';
 
-        div.style.display = matchesFilter(div.innerHTML) ? 'table-row' : 'none';
-
-
-        eventsDiv.insertBefore(div, eventsDiv.firstChild);
+        eventsDiv.insertBefore(
+            div,
+            eventsDiv.firstChild
+        );
 
     }
 
-    function AppendLogEntry(timestamp: any, roamingNetwork: any, eventTrackingId: string, message: string, runtime: any) {
+    function AppendLogEntry(timestamp:        any,
+                            roamingNetwork:   any,
+                            eventTrackingId:  string,
+                            message:          string,
+                            runtime:          any)
+    {
 
         const searchPattern  = "\"eventTrackingId\">" + eventTrackingId;
         const allLogLines    = eventsDiv.getElementsByClassName('logLine');
