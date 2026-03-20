@@ -8417,6 +8417,23 @@ namespace cloud.charging.open.protocols.WWCP
                         chargingStationOperator is not null)
                     {
 
+                        // This is mainly for the case that we receive session related information
+                        // before a response to this remote start request was successfully received.
+                        if (SessionId.HasValue)
+                            await SessionsStore.RemoteStartRequest(
+                                      EventTrackingId,
+                                      new ChargingSession(
+                                          SessionId.Value,
+                                          eventTrackingId,
+                                          this,
+                                          CSORoamingProvider,
+                                          Timestamp: RequestTimestamp
+                                      ),
+                                      session => {
+                                          session.AddAdditionalSessionInfos(AdditionalSessionInfos);
+                                      }
+                                  );
+
                         result = await chargingStationOperator.RemoteStart(
                                            ChargingLocation,
                                            ChargingProduct,
@@ -8429,7 +8446,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            CSORoamingProvider,
 
                                            RequestTimestamp,
-                                           EventTrackingId,
+                                           eventTrackingId,
                                            requestTimeout,
                                            CancellationToken
                                        );
@@ -8441,14 +8458,14 @@ namespace cloud.charging.open.protocols.WWCP
 
                             result.Session ??= new ChargingSession(
                                                    SessionId ?? ChargingSession_Id.NewRandom(),
-                                                   EventTrackingId,
+                                                   eventTrackingId,
                                                    this,
                                                    CSORoamingProvider,
                                                    Timestamp: RequestTimestamp
                                                );
 
-                            await SessionsStore.RemoteStart(
-                                      EventTrackingId,
+                            await SessionsStore.RemoteStartResponse(
+                                      eventTrackingId,
                                       result.Session,
                                       result,
                                       session => {
@@ -8488,7 +8505,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                CSORoamingProvider,
 
                                                RequestTimestamp,
-                                               EventTrackingId,
+                                               eventTrackingId,
                                                requestTimeout,
                                                CancellationToken
                                            );
@@ -8500,15 +8517,15 @@ namespace cloud.charging.open.protocols.WWCP
 
                                 result.Session ??= new ChargingSession(
                                                        SessionId ?? ChargingSession_Id.NewRandom(),
-                                                       EventTrackingId,
+                                                       eventTrackingId,
                                                        this,
                                                        CSORoamingProvider,
                                                        empRoamingProvider,
                                                        Timestamp: RequestTimestamp
                                                    );
 
-                                await SessionsStore.RemoteStart(
-                                          EventTrackingId,
+                                await SessionsStore.RemoteStartResponse(
+                                          eventTrackingId,
                                           result.Session,
                                           result,
                                           session => {

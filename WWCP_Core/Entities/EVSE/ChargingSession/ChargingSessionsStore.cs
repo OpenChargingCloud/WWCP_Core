@@ -712,26 +712,60 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        #region RemoteStart           (EventTrackingId, NewChargingSession, Result, UpdateFunc = null)
+        #region RemoteStartRequest    (EventTrackingId, NewChargingSession,         UpdateFunc = null)
 
-        public async Task<Boolean> RemoteStart(EventTracking_Id          EventTrackingId,
-                                               ChargingSession           NewChargingSession,
-                                               RemoteStartResult         Result,
-                                               Action<ChargingSession>?  UpdateFunc = null)
+        public async Task<Boolean> RemoteStartRequest(EventTracking_Id          EventTrackingId,
+                                                      ChargingSession           NewChargingSession,
+                                                      Action<ChargingSession>?  UpdateFunc = null)
         {
 
             var now       = Timestamp.Now;
             var systemId  = System_Id.Parse(Environment.MachineName);
 
-            if (!InternalData.ContainsKey(NewChargingSession.Id))
+            NewChargingSession.SystemIdStart = systemId;
+
+            if (InternalData.TryGetValue(NewChargingSession.Id, out var existingSession))
             {
 
-                NewChargingSession.SystemIdStart = systemId;
-                InternalData.TryAdd(NewChargingSession.Id, NewChargingSession);
-                UpdateFunc?. Invoke(NewChargingSession);
+                // Session already exists, e.g. an OCPI PUT Session was faster than the RemoteStartResponse!
+                // Copy some information!
+
+                UpdateFunc?.Invoke(existingSession);
 
                 await LogIt(
-                          "remoteStart",
+                          "remoteStartRequest",
+                          existingSession.Id,
+                          "chargingSession",
+                          existingSession.ToJSON(
+                              Embedded:    true,
+                              OnlineInfos: false,
+                              CustomChargingSessionSerializer,
+                              CustomCDRReceivedInfoSerializer,
+                              CustomChargeDetailRecordSerializer,
+                              CustomSendCDRResultSerializer
+                          )
+                      );
+
+            }
+
+            else
+            {
+
+                InternalData.TryAdd(
+                    NewChargingSession.Id,
+                    NewChargingSession
+                );
+
+                OnNewChargingSession?.Invoke(
+                    now,
+                    RoamingNetworkId,
+                    NewChargingSession
+                );
+
+                UpdateFunc?.Invoke(NewChargingSession);
+
+                await LogIt(
+                          "remoteStartRequest",
                           NewChargingSession.Id,
                           "chargingSession",
                           NewChargingSession.ToJSON(
@@ -744,21 +778,89 @@ namespace cloud.charging.open.protocols.WWCP
                           )
                       );
 
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region RemoteStartResponse   (EventTrackingId, NewChargingSession, Result, UpdateFunc = null)
+
+        public async Task<Boolean> RemoteStartResponse(EventTracking_Id          EventTrackingId,
+                                                       ChargingSession           NewChargingSession,
+                                                       RemoteStartResult         Result,
+                                                       Action<ChargingSession>?  UpdateFunc = null)
+        {
+
+            var now       = Timestamp.Now;
+            var systemId  = System_Id.Parse(Environment.MachineName);
+
+            NewChargingSession.SystemIdStart = systemId;
+
+            if (InternalData.TryGetValue(NewChargingSession.Id, out var existingSession))
+            {
+
+                // Session already exists, e.g. an OCPI PUT Session was faster than the RemoteStartResponse!
+                // Copy some information!
+
+                UpdateFunc?.Invoke(existingSession);
+
+                await LogIt(
+                          "remoteStartResponse",
+                          existingSession.Id,
+                          "chargingSession",
+                          existingSession.ToJSON(
+                              Embedded:    true,
+                              OnlineInfos: false,
+                              CustomChargingSessionSerializer,
+                              CustomCDRReceivedInfoSerializer,
+                              CustomChargeDetailRecordSerializer,
+                              CustomSendCDRResultSerializer
+                          )
+                      );
+
+            }
+
+            else
+            {
+
+                InternalData.TryAdd(
+                    NewChargingSession.Id,
+                    NewChargingSession
+                );
+
                 OnNewChargingSession?.Invoke(
                     now,
                     RoamingNetworkId,
                     NewChargingSession
                 );
 
-                return true;
+                UpdateFunc?.Invoke(NewChargingSession);
+
+                await LogIt(
+                          "remoteStartResponse",
+                          NewChargingSession.Id,
+                          "chargingSession",
+                          NewChargingSession.ToJSON(
+                              Embedded:    true,
+                              OnlineInfos: false,
+                              CustomChargingSessionSerializer,
+                              CustomCDRReceivedInfoSerializer,
+                              CustomChargeDetailRecordSerializer,
+                              CustomSendCDRResultSerializer
+                          )
+                      );
 
             }
 
-            return false;
+            return true;
 
         }
 
         #endregion
+
 
         #region RemoteStop            (EventTrackingId, Id, Authentication, ProviderId = null, CSORoamingProvider = null)
 
