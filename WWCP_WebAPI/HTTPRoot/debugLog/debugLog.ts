@@ -3,8 +3,9 @@
 function StartDebugLog() {
 
     const connectionColors   = {};
-    const eventsDiv          = document.getElementById('eventsDiv');
-    const streamFilterInput  = document.getElementById('eventsFilterDiv').getElementsByTagName('input')[0] as HTMLInputElement;
+    const eventsDiv          = document.getElementById('eventsDiv')       as HTMLDivElement;
+    const filterDiv          = document.getElementById('eventsFilterDiv') as HTMLDivElement;
+    const streamFilterInput  = filterDiv.getElementsByTagName('input')[0] as HTMLInputElement;
 
     // Live filtering as you type...
     streamFilterInput.oninput = () => {
@@ -285,6 +286,271 @@ function StartDebugLog() {
     function matchesFilter(innerHTML: string) {
         return evalFilter(currentFilterAST, innerHTML);
     }
+
+
+
+
+
+
+    // ═══════════════════════════════════════════════════════════════════════
+    //  Filter History  (cross-window safe)
+    //  ─────────────────────────────────────
+    //  Arrow Up/Down : navigate previous filter expressions
+    //  Ctrl+H        : toggle history panel (last 10 entries)
+    //  Enter         : save current filter to history
+    //  Escape        : close panel / reset navigation
+    //  ⏳ icon       : click to toggle panel
+    //
+    //  Uses read-before-write on every localStorage mutation and
+    //  listens to the `storage` event so an open panel in another
+    //  browser window auto-refreshes.
+    // ═══════════════════════════════════════════════════════════════════════
+
+    const FILTER_HISTORY_KEY = 'wwcp_debug_filter_history';
+    const FILTER_HISTORY_MAX = 30;
+    const FILTER_HISTORY_SHOW = 10;
+
+    let historyNavIndex = -1;
+    let historySavedCurrent = '';
+    let historyPanelVisible = false;
+
+    // ── Read-through: always fresh from localStorage ─────────────────────
+
+    function getFilterHistory() {
+        try { return JSON.parse(localStorage.getItem(FILTER_HISTORY_KEY) || '[]'); }
+        catch { return []; }
+    }
+
+    function setFilterHistory(arr) {
+        localStorage.setItem(FILTER_HISTORY_KEY, JSON.stringify(arr));
+    }
+
+    function addToFilterHistory(value) {
+        const trimmed = value.trim();
+        if (!trimmed) return;
+        let h = getFilterHistory();
+        h = h.filter(item => item !== trimmed);
+        h.unshift(trimmed);
+        if (h.length > FILTER_HISTORY_MAX) h.length = FILTER_HISTORY_MAX;
+        setFilterHistory(h);
+    }
+
+    // ── History panel DOM ────────────────────────────────────────────────
+
+    filterDiv.style.position = 'relative';
+
+    const filterHistoryPanel = document.createElement('div');
+    filterHistoryPanel.id = 'filterHistoryPanel';
+    filterHistoryPanel.style.cssText = [
+        'display:none',
+        'position:absolute',
+        'top:100%',
+        'left:0',
+        'right:0',
+        'background:#1e1e2e',
+        'border:1px solid #444',
+        'border-top:none',
+        'border-radius:0 0 6px 6px',
+        'box-shadow:0 4px 12px rgba(0,0,0,0.3)',
+        'z-index:9999',
+        'max-height:320px',
+        'overflow-y:auto',
+        "font-family:'Consolas','Fira Code',monospace",
+        'font-size:13px'
+    ].join(';');
+    filterDiv.appendChild(filterHistoryPanel);
+
+    function renderFilterHistoryPanel() {
+
+        const history = getFilterHistory();
+        filterHistoryPanel.innerHTML = '';
+        const shown = history.slice(0, FILTER_HISTORY_SHOW);
+
+        if (shown.length === 0) {
+            filterHistoryPanel.innerHTML =
+                '<div style="padding:8px 12px;color:#888;font-style:italic;">' +
+                'No filter history yet</div>';
+            return;
+        }
+
+        // Header
+        const header = document.createElement('div');
+        header.style.cssText =
+            'padding:6px 12px;color:#888;font-size:11px;border-bottom:1px solid #333;' +
+            'display:flex;justify-content:space-between;align-items:center;';
+        header.innerHTML =
+            '<span>Filter History (Ctrl+H)</span>' +
+            '<span id="fh_clear" style="cursor:pointer;color:#666;font-size:10px;">CLEAR ALL</span>';
+        filterHistoryPanel.appendChild(header);
+
+        // Entries
+        shown.forEach(function (entry, i) {
+
+            const row = document.createElement('div');
+            row.style.cssText =
+                'padding:6px 12px;cursor:pointer;color:#ccc;border-bottom:1px solid #2a2a3a;' +
+                'transition:background 0.1s;display:flex;align-items:center;gap:8px;';
+            row.onmouseenter = function () { row.style.background = '#2a2a4a'; };
+            row.onmouseleave = function () { row.style.background = 'transparent'; };
+
+            const num = document.createElement('span');
+            num.style.cssText = 'color:#555;font-size:11px;min-width:18px;text-align:right;';
+            num.textContent = String(i + 1);
+
+            const text = document.createElement('span');
+            text.style.cssText = 'flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+            text.textContent = entry;
+
+            const del = document.createElement('span');
+            del.style.cssText = 'color:#555;font-size:14px;padding:0 4px;cursor:pointer;';
+            del.textContent = '\u00D7';
+            del.title = 'Remove';
+            del.onclick = function (e) {
+                e.stopPropagation();
+                let h = getFilterHistory();
+                h = h.filter(item => item !== entry);
+                setFilterHistory(h);
+                renderFilterHistoryPanel();
+            };
+
+            row.appendChild(num);
+            row.appendChild(text);
+            row.appendChild(del);
+
+            row.onclick = function () {
+                streamFilterInput.value = entry;
+                streamFilterInput.dispatchEvent(new Event('input'));
+                hideFilterHistoryPanel();
+                streamFilterInput.focus();
+            };
+
+            filterHistoryPanel.appendChild(row);
+        });
+
+        // Wire clear button
+        const clearBtn = document.getElementById('fh_clear');
+        if (clearBtn) {
+            clearBtn.onclick = function () {
+                setFilterHistory([]);
+                renderFilterHistoryPanel();
+            };
+        }
+
+    }
+
+    function showFilterHistoryPanel() { renderFilterHistoryPanel(); filterHistoryPanel.style.display = 'block'; historyPanelVisible = true; }
+    function hideFilterHistoryPanel() { filterHistoryPanel.style.display = 'none'; historyPanelVisible = false; }
+    function toggleFilterHistoryPanel() { historyPanelVisible ? hideFilterHistoryPanel() : showFilterHistoryPanel(); }
+
+    // ── Cross-window sync via storage event ──────────────────────────────
+
+    window.addEventListener('storage', function (e) {
+        if (e.key === FILTER_HISTORY_KEY && historyPanelVisible) {
+            renderFilterHistoryPanel();
+        }
+    });
+
+    // ── Keyboard: history navigation + panel toggle ──────────────────────
+
+    streamFilterInput.addEventListener('keydown', function (e) {
+
+        // Ctrl+H → toggle history panel
+        if (e.ctrlKey && e.key === 'h') {
+            e.preventDefault();
+            toggleFilterHistoryPanel();
+            return;
+        }
+
+        // Escape → close panel / reset navigation
+        if (e.key === 'Escape') {
+            if (historyPanelVisible) {
+                hideFilterHistoryPanel();
+                e.preventDefault();
+                return;
+            }
+            if (historyNavIndex !== -1) {
+                streamFilterInput.value = historySavedCurrent;
+                streamFilterInput.dispatchEvent(new Event('input'));
+                historyNavIndex = -1;
+                e.preventDefault();
+                return;
+            }
+        }
+
+        // Enter → commit current filter to history
+        if (e.key === 'Enter') {
+            addToFilterHistory(streamFilterInput.value);
+            historyNavIndex = -1;
+            if (historyPanelVisible) hideFilterHistoryPanel();
+            return;
+        }
+
+        // Arrow Up → navigate history backwards
+        if (e.key === 'ArrowUp') {
+            const history = getFilterHistory();
+            if (history.length === 0) return;
+            e.preventDefault();
+            if (historyNavIndex === -1) historySavedCurrent = streamFilterInput.value;
+            historyNavIndex = Math.min(historyNavIndex + 1, history.length - 1);
+            streamFilterInput.value = history[historyNavIndex];
+            streamFilterInput.dispatchEvent(new Event('input'));
+            streamFilterInput.setSelectionRange(streamFilterInput.value.length, streamFilterInput.value.length);
+            return;
+        }
+
+        // Arrow Down → navigate history forwards
+        if (e.key === 'ArrowDown') {
+            if (historyNavIndex === -1) return;
+            e.preventDefault();
+            historyNavIndex--;
+            if (historyNavIndex < 0) {
+                historyNavIndex = -1;
+                streamFilterInput.value = historySavedCurrent;
+            } else {
+                streamFilterInput.value = getFilterHistory()[historyNavIndex];
+            }
+            streamFilterInput.dispatchEvent(new Event('input'));
+            streamFilterInput.setSelectionRange(streamFilterInput.value.length, streamFilterInput.value.length);
+            return;
+        }
+
+        // Any printable key resets navigation index
+        if (!e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1) {
+            historyNavIndex = -1;
+        }
+
+    });
+
+    // ── Close panel on outside click ─────────────────────────────────────
+
+    document.addEventListener('click', function (e) {
+        if (historyPanelVisible && !filterDiv.contains(e.target as Node))
+            hideFilterHistoryPanel();
+    });
+
+    // ── Visual indicator (⏳ icon) ───────────────────────────────────────
+
+    const filterHistoryIndicator = document.createElement('span');
+    filterHistoryIndicator.style.cssText =
+        'position:absolute;right:8px;top:50%;transform:translateY(-50%);' +
+        'color:#666;font-size:12px;cursor:pointer;z-index:10;';
+    filterHistoryIndicator.title = 'Filter History (Ctrl+H)';
+    filterHistoryIndicator.textContent = '\u29D6';
+    filterHistoryIndicator.onclick = toggleFilterHistoryPanel;
+    filterDiv.appendChild(filterHistoryIndicator);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
