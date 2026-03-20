@@ -8428,7 +8428,19 @@ namespace cloud.charging.open.protocols.WWCP
                                           this,
                                           CSORoamingProvider,
                                           Timestamp: RequestTimestamp
-                                      ),
+                                      )
+                                      {
+                                          ChargingStationOperatorId = ChargingLocation.ChargingStationOperatorId,
+                                          ChargingPoolId            = ChargingLocation.ChargingPoolId,
+                                          ChargingStationId         = ChargingLocation.ChargingStationId,
+                                          EVSEId                    = ChargingLocation.EVSEId,
+
+                                          ProviderIdStart           = ProviderId,
+                                          ReservationId             = ReservationId,
+                                          AuthenticationStart       = RemoteAuthentication,
+                                          AuthenticationStartPath   = AuthenticationPath,
+                                          ChargingProduct           = ChargingProduct
+                                      },
                                       session => {
                                           session.AddAdditionalSessionInfos(AdditionalSessionInfos);
                                       }
@@ -8469,8 +8481,21 @@ namespace cloud.charging.open.protocols.WWCP
                                       result.Session,
                                       result,
                                       session => {
-                                          session.CSORoamingProviderStart ??= CSORoamingProvider;
+
+                                          session.CSORoamingProviderStart  ??= CSORoamingProvider;
+
+                                          session.ChargingPoolId           ??= ChargingLocation.ChargingPoolId;
+                                          session.ChargingStationId        ??= ChargingLocation.ChargingStationId;
+                                          session.EVSEId                   ??= ChargingLocation.EVSEId;
+
+                                          session.ProviderIdStart          ??= ProviderId;
+                                          session.ReservationId            ??= ReservationId;
+                                          session.AuthenticationStart      ??= RemoteAuthentication;
+                                          session.AuthenticationStartPath  ??= AuthenticationPath;
+                                          session.ChargingProduct          ??= ChargingProduct;
+
                                           session.AddAdditionalSessionInfos(AdditionalSessionInfos);
+
                                       }
                                   );
 
@@ -8529,9 +8554,22 @@ namespace cloud.charging.open.protocols.WWCP
                                           result.Session,
                                           result,
                                           session => {
-                                              session.CSORoamingProviderStart ??= CSORoamingProvider;
-                                              session.EMPRoamingProviderStart ??= empRoamingProvider;
+
+                                              session.CSORoamingProviderStart   ??= CSORoamingProvider;
+                                              session.EMPRoamingProviderStart   ??= empRoamingProvider;
+
+                                              session.ChargingPoolId            ??= ChargingLocation.ChargingPoolId;
+                                              session.ChargingStationId         ??= ChargingLocation.ChargingStationId;
+                                              session.EVSEId                    ??= ChargingLocation.EVSEId;
+
+                                              session.ProviderIdStart           ??= ProviderId;
+                                              session.ReservationId             ??= ReservationId;
+                                              session.AuthenticationStart       ??= RemoteAuthentication;
+                                              session.AuthenticationStartPath   ??= AuthenticationPath;
+                                              session.ChargingProduct           ??= ChargingProduct;
+
                                               session.AddAdditionalSessionInfos(AdditionalSessionInfos);
+
                                           }
                                       );
 

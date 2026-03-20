@@ -836,7 +836,12 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         public IId? AuthorizatorIdStart { get; set; }
+
         public IId? AuthorizatorIdStop  { get; set; }
+
+        public Auth_Path? AuthenticationStartPath   { get; set; }
+        public Auth_Path? AuthenticationStopPath    { get; set; }
+
 
         #region CSORoamingProviderStart
 
@@ -1470,30 +1475,34 @@ namespace cloud.charging.open.protocols.WWCP
                            SessionTime is not null
                                ? new JProperty("start", JSONObject.Create(
 
-                                           new JProperty("timestamp",              SessionTime.StartTime.    ToISO8601()),
+                                           new JProperty("timestamp",              SessionTime.StartTime.       ToISO8601()),
 
                                      SystemIdStart.HasValue
-                                         ? new JProperty("systemId",               SystemIdStart.            ToString())
+                                         ? new JProperty("systemId",               SystemIdStart.               ToString())
                                          : null,
 
                                      CSORoamingProviderIdStart.HasValue
-                                         ? new JProperty("CSORoamingProviderId",   CSORoamingProviderIdStart.ToString())
+                                         ? new JProperty("CSORoamingProviderId",   CSORoamingProviderIdStart.   ToString())
                                          : null,
 
                                      EMPRoamingProviderIdStart.HasValue
-                                         ? new JProperty("EMPRoamingProviderId",   EMPRoamingProviderIdStart.ToString())
+                                         ? new JProperty("EMPRoamingProviderId",   EMPRoamingProviderIdStart.   ToString())
                                          : null,
 
                                      AuthorizatorIdStart is not null
-                                         ? new JProperty("authorizatorId",         AuthorizatorIdStart.      ToString())
+                                         ? new JProperty("authorizatorId",         AuthorizatorIdStart.         ToString())
                                          : null,
 
                                      ProviderIdStart     is not null
-                                         ? new JProperty("providerId",             ProviderIdStart.          ToString())
+                                         ? new JProperty("providerId",             ProviderIdStart.             ToString())
                                          : null,
 
                                      AuthenticationStart?.IsDefined() == true
-                                         ? new JProperty("authentication",         AuthenticationStart.      ToJSON())
+                                         ? new JProperty("authentication",         AuthenticationStart.         ToJSON())
+                                         : null,
+
+                                     AuthenticationStartPath.HasValue
+                                         ? new JProperty("authenticationPath",    AuthenticationStartPath.Value.ToString())
                                          : null
 
                                  ))
@@ -1509,31 +1518,35 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("stop", JSONObject.Create(
 
                                      SessionTime.EndTime.HasValue
-                                         ? new JProperty("timestamp",             SessionTime.EndTime.Value.ToISO8601())
+                                         ? new JProperty("timestamp",             SessionTime.EndTime.   Value.ToISO8601())
                                          : null,
 
                                      SystemIdStop.HasValue
-                                         ? new JProperty("systemId",              SystemIdStop.             ToString())
+                                         ? new JProperty("systemId",              SystemIdStop.                ToString())
                                          : null,
 
                                      CSORoamingProviderIdStop.HasValue
-                                         ? new JProperty("CSORoamingProviderId",  CSORoamingProviderIdStop. ToString())
+                                         ? new JProperty("CSORoamingProviderId",  CSORoamingProviderIdStop.    ToString())
                                          : null,
 
                                      EMPRoamingProviderIdStop.HasValue
-                                         ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStop. ToString())
+                                         ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStop.    ToString())
                                          : null,
 
                                      AuthorizatorIdStop is not null
-                                         ? new JProperty("authorizatorId",        AuthorizatorIdStop.       ToString())
+                                         ? new JProperty("authorizatorId",        AuthorizatorIdStop.          ToString())
                                          : null,
 
                                      ProviderIdStop     is not null
-                                         ? new JProperty("providerId",            ProviderIdStop.           ToString())
+                                         ? new JProperty("providerId",            ProviderIdStop.              ToString())
                                          : null,
 
                                      AuthenticationStop?.IsDefined() == true
-                                         ? new JProperty("authentication",        AuthenticationStop.       ToJSON())
+                                         ? new JProperty("authentication",        AuthenticationStop.          ToJSON())
+                                         : null,
+
+                                     AuthenticationStopPath.HasValue
+                                         ? new JProperty("authenticationPath",    AuthenticationStopPath.Value.ToString())
                                          : null
 
                                  ))
