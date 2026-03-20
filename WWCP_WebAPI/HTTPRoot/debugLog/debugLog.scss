@@ -7,11 +7,45 @@ body #page #workarea #bottom #right #text {
 }
 
 #eventsFilterDiv {
+
     display:            flex;
     align-items:        center;
     gap:                10px;
     margin:             5px 10px 5px 14px;
     font-size:          14px;
+
+    #filterHistoryPanel {
+        display:            none;
+        position:           absolute;
+        top:                100%;
+        left:               0px;
+        right:              0px;
+        background:         rgb(30, 30, 46);
+        border-right:       1px solid rgb(68, 68, 68);
+        border-bottom:      1px solid rgb(68, 68, 68);
+        border-left:        1px solid rgb(68, 68, 68);
+        border-image:       initial;
+        border-top:         none;
+        border-radius:      0px 0px 6px 6px;
+        box-shadow:         rgba(0, 0, 0, 0.3) 0px 4px 12px;
+        z-index:            9999;
+        max-height:         320px;
+        overflow-y:         auto;
+        font-family:        Consolas, "Fira Code", monospace;
+        font-size:          13px;
+    }
+
+    #filterHistoryIndicator {
+        position:           absolute;
+        right:              8px;
+        top:                50%;
+        transform:          translateY(-50%);
+        color:              rgb(102, 102, 102);
+        font-size:          12px;
+        cursor:             pointer;
+        z-index:            10;
+    }
+
 }
 
 #eventsFilterDiv > i.fa-filter {

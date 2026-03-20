@@ -338,27 +338,7 @@ function StartDebugLog() {
     // ── History panel DOM ────────────────────────────────────────────────
 
     filterDiv.style.position = 'relative';
-
-    const filterHistoryPanel = document.createElement('div');
-    filterHistoryPanel.id = 'filterHistoryPanel';
-    filterHistoryPanel.style.cssText = [
-        'display:none',
-        'position:absolute',
-        'top:100%',
-        'left:0',
-        'right:0',
-        'background:#1e1e2e',
-        'border:1px solid #444',
-        'border-top:none',
-        'border-radius:0 0 6px 6px',
-        'box-shadow:0 4px 12px rgba(0,0,0,0.3)',
-        'z-index:9999',
-        'max-height:320px',
-        'overflow-y:auto',
-        "font-family:'Consolas','Fira Code',monospace",
-        'font-size:13px'
-    ].join(';');
-    filterDiv.appendChild(filterHistoryPanel);
+    const filterHistoryPanel = document.getElementById('filterHistoryPanel') as HTMLDivElement;
 
     function renderFilterHistoryPanel() {
 
@@ -530,12 +510,7 @@ function StartDebugLog() {
 
     // ── Visual indicator (⏳ icon) ───────────────────────────────────────
 
-    const filterHistoryIndicator = document.createElement('span');
-    filterHistoryIndicator.style.cssText =
-        'position:absolute;right:8px;top:50%;transform:translateY(-50%);' +
-        'color:#666;font-size:12px;cursor:pointer;z-index:10;';
-    filterHistoryIndicator.title = 'Filter History (Ctrl+H)';
-    filterHistoryIndicator.textContent = '\u29D6';
+    const filterHistoryIndicator = document.getElementById('filterHistoryIndicator') as HTMLDivElement;
     filterHistoryIndicator.onclick = toggleFilterHistoryPanel;
     filterDiv.appendChild(filterHistoryIndicator);
 
