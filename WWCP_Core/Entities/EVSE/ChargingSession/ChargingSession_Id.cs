@@ -17,8 +17,8 @@
 
 #region Usings
 
-using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The regular expression for parsing a charging session identification.
         /// </summary>
-        public static readonly Regex ChargingSessionId_RegEx = new (@"^([A-Z]{2}[\*\-]?[A-Z0-9]{3})[\*\-]?N([A-Za-z0-9][A-Za-z0-9\*\-]{0,250})$",
+        public static readonly Regex ChargingSessionId_RegEx = new (@"^([A-Z]{2}[\*\-]?[A-Z0-9]{3})([\*\-])N([A-Za-z0-9][A-Za-z0-9\*\-]{0,250})$",
                                                                     RegexOptions.IgnorePatternWhitespace);
 
         #endregion
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingStationOperator_Id?  OperatorId    { get; }
 
         /// <summary>
-        /// The charging station operator identification.
+        /// The e-mobility provider identification.
         /// </summary>
         public EMobilityProvider_Id?        ProviderId    { get; }
 
@@ -89,20 +89,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Indicates whether this charging session identification is null or empty.
         /// </summary>
-        public Boolean IsNullOrEmpty
+        public Boolean  IsNullOrEmpty
             => Suffix.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this charging session identification is NOT null or empty.
         /// </summary>
-        public Boolean IsNotNullOrEmpty
+        public Boolean  IsNotNullOrEmpty
             => Suffix.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the charging session identifier.
         /// </summary>
-        public UInt64 Length
-            => (OperatorId?.Length ?? ProviderId?.Length ?? 0) + 2 + ((UInt64) (Suffix?.Length ?? 0));
+        public UInt64   Length
+            =>  (OperatorId?.Length  ?? ProviderId?.Length ?? 0) +
+               ((OperatorId.HasValue || ProviderId.HasValue) ? 2UL : 0UL) +
+               (UInt64) (Suffix?.Length ?? 0);
 
         #endregion
 
@@ -169,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) NewRandom(            Length = 30)
+        #region (static) NewRandom (            Length = 30)
 
         /// <summary>
         /// Create a new random charging session identification.
@@ -181,7 +183,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) NewRandom(OperatorId, Length = 20)
+        #region (static) NewRandom (OperatorId, Length = 20)
 
         /// <summary>
         /// Create a new random charging session identification using the given charging station operator identification.
@@ -196,7 +198,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) NewRandom(ProviderId, Length = 20)
+        #region (static) NewRandom (ProviderId, Length = 20)
 
         /// <summary>
         /// Create a new random charging session identification using the given e-mobility provider identification.
@@ -268,7 +270,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(ProviderId, Suffix, out var chargingSessionId))
                 return chargingSessionId;
 
-            throw new ArgumentException($"Invalid text representation of a charging session identification: '{ProviderId}*N{Suffix}'!",
+            throw new ArgumentException($"Invalid text representation of a charging session identification: '{ProviderId}-N{Suffix}'!",
                                         nameof(Suffix));
 
         }
@@ -311,36 +313,40 @@ namespace cloud.charging.open.protocols.WWCP
                 try
                 {
 
-                    var matchCollection = ChargingSessionId_RegEx.Matches(Text);
+                    var match = ChargingSessionId_RegEx.Match(Text);
 
-                    if (matchCollection.Count == 1)
+                    if (match.Success)
                     {
 
-                        // OperatorId (with '*' as separator)
-                        if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value,
-                                                                out var chargingStationOperatorId))
+                        var idText     = match.Groups[1].Value;
+                        var separator  = match.Groups[2].Value;
+                        var suffix     = match.Groups[3].Value;
+
+                        if (separator == "*")
                         {
 
-                            ChargingSessionId = new ChargingSession_Id(
-                                                    chargingStationOperatorId,
-                                                    matchCollection[0].Groups[2].Value
-                                                );
+                            if (ChargingStationOperator_Id.TryParse(idText, out var operatorId))
+                            {
+                                ChargingSessionId = new ChargingSession_Id(operatorId, suffix);
+                                return true;
+                            }
 
-                            return true;
+                            ChargingSessionId = default;
+                            return false;
 
                         }
 
-                        // ProviderId (with '-' as separator)
-                        if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[1].Value,
-                                                          out var eMobilityProviderId))
+                        if (separator == "-")
                         {
 
-                            ChargingSessionId = new ChargingSession_Id(
-                                                    eMobilityProviderId,
-                                                    matchCollection[0].Groups[2].Value
-                                                );
+                            if (EMobilityProvider_Id.TryParse(idText, out var providerId))
+                            {
+                                ChargingSessionId = new ChargingSession_Id(providerId, suffix);
+                                return true;
+                            }
 
-                            return true;
+                            ChargingSessionId = default;
+                            return false;
 
                         }
 
@@ -393,7 +399,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        String                  Suffix,
                                        out ChargingSession_Id  ChargingSessionId)
 
-            => TryParse($"{ProviderId}*N{Suffix.Trim()}",
+            => TryParse($"{ProviderId}-N{Suffix.Trim()}",
                         out ChargingSessionId);
 
         #endregion
@@ -546,19 +552,25 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ChargingSession_Id ChargingSessionId)
         {
 
-            var c = OperatorId.HasValue && ChargingSessionId.OperatorId.HasValue
-                        ? OperatorId.Value.CompareTo(ChargingSessionId.OperatorId.Value)
-                        : 0;
+            // 1. First sort by type of the Id (important for consistency with Equals!)
+            var typeA =                   OperatorId.HasValue ? 1 :                   ProviderId.HasValue ? 2 : 0;
+            var typeB = ChargingSessionId.OperatorId.HasValue ? 1 : ChargingSessionId.ProviderId.HasValue ? 2 : 0;
 
-            if (c == 0)
-                c = ProviderId.HasValue && ChargingSessionId.ProviderId.HasValue
-                        ? ProviderId.Value.CompareTo(ChargingSessionId.ProviderId.Value)
-                        : 0;
+            var c = typeA.CompareTo(typeB);
+            if (c != 0)
+                return c;
+
+            // 2. Same type → now compare the actual values
+            if (OperatorId.HasValue)
+                c = OperatorId.Value.CompareTo(ChargingSessionId.OperatorId!.Value);
+
+            else if (ProviderId.HasValue)
+                c = ProviderId.Value.CompareTo(ChargingSessionId.ProviderId!.Value);
 
             if (c == 0)
                 c = String.Compare(Suffix,
                                    ChargingSessionId.Suffix,
-                                   StringComparison.Ordinal);
+                                   StringComparison.OrdinalIgnoreCase);
 
             return c;
 
@@ -592,6 +604,10 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ChargingSession_Id ChargingSessionId)
         {
 
+            if (OperatorId.HasValue != ChargingSessionId.OperatorId.HasValue ||
+                ProviderId.HasValue != ChargingSessionId.ProviderId.HasValue)
+                return false;
+
             if (OperatorId.HasValue && ChargingSessionId.OperatorId.HasValue && OperatorId != ChargingSessionId.OperatorId)
                 return false;
 
@@ -617,9 +633,9 @@ namespace cloud.charging.open.protocols.WWCP
         {
             unchecked
             {
-                return (OperatorId?.GetHashCode() ?? 0) * 5 ^
-                       (ProviderId?.GetHashCode() ?? 0) * 3 ^
-                       (Suffix?.    GetHashCode() ?? 0);
+                return (OperatorId?.GetHashCode()                                   ?? 0) * 5 ^
+                       (ProviderId?.GetHashCode()                                   ?? 0) * 3 ^
+                       (Suffix?.    GetHashCode(StringComparison.OrdinalIgnoreCase) ?? 0);
             }
         }
 
