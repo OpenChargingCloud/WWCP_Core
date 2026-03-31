@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data licenses
 
-        private ReactiveSet<DataLicense> dataLicenses;
+        private readonly ReactiveSet<DataLicense> dataLicenses;
 
         /// <summary>
         /// The license of the roaming network data.
@@ -526,7 +526,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (EMPRoamingProvider.Name.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(EMPRoamingProvider) + ".Name", "The given e-mobility provider roaming provider name must not be null or empty!");
 
-            if (EMPRoamingProvider.RoamingNetwork.Id != this.Id)
+            if (EMPRoamingProvider.RoamingNetwork?.Id != this.Id)
                 throw new ArgumentException("The given e-mobility provider roaming provider is not part of this roaming network!", nameof(EMPRoamingProvider));
 
             #endregion
@@ -554,7 +554,7 @@ namespace cloud.charging.open.protocols.WWCP
                     EMPRoamingProviderAddition.SendNotification(EventTracking_Id.New, this, EMPRoamingProvider);
 
                     SetRoamingProviderPriority(EMPRoamingProvider,
-                                               eMobilityRoamingServices.Count > 0
+                                               !eMobilityRoamingServices.IsEmpty
                                                    ? eMobilityRoamingServices.Keys.Max() + 1
                                                    : 10);
 
@@ -754,7 +754,7 @@ namespace cloud.charging.open.protocols.WWCP
                     try
                     {
 
-                        return eMobilityProviders.ToArray();
+                        return [.. eMobilityProviders];
 
                     }
                     finally
@@ -768,7 +768,7 @@ namespace cloud.charging.open.protocols.WWCP
                     }
                 }
 
-                return Array.Empty<IEMobilityProvider>();
+                return [];
 
             }
         }
@@ -1309,14 +1309,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemoveEMobilityProvider (EMobilityProviderId, out EMobilityProvider)
 
-        public Boolean TryRemoveEMobilityProvider(EMobilityProvider_Id EMobilityProviderId, out IEMobilityProvider? EMobilityProvider)
+        public Boolean TryRemoveEMobilityProvider(EMobilityProvider_Id                         EMobilityProviderId,
+                                                  [NotNullWhen(true)] out IEMobilityProvider?  EMobilityProvider)
 
             => eMobilityProviders.TryRemove(EMobilityProviderId,
                                             out EMobilityProvider,
                                             EventTracking_Id.New,
                                             null);
 
-        public Boolean TryRemoveEMobilityProvider(EMobilityProvider_Id? EMobilityProviderId, out IEMobilityProvider? EMobilityProvider)
+        public Boolean TryRemoveEMobilityProvider(EMobilityProvider_Id?                        EMobilityProviderId,
+                                                  [NotNullWhen(true)] out IEMobilityProvider?  EMobilityProvider)
 
         {
 
@@ -1326,10 +1328,12 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
             }
 
-            return eMobilityProviders.TryRemove(EMobilityProviderId.Value,
-                                                out EMobilityProvider,
-                                                EventTracking_Id.New,
-                                                null);
+            return eMobilityProviders.TryRemove(
+                       EMobilityProviderId.Value,
+                       out EMobilityProvider,
+                       EventTracking_Id.New,
+                       null
+                   );
 
         }
 
@@ -3715,8 +3719,8 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean ContainsChargingPool(IChargingPool ChargingPool)
         {
 
-            if (TryGetChargingStationOperatorById(ChargingPool.Operator.Id, out var chargingStationOperator) &&
-                chargingStationOperator is not null)
+            if (ChargingPool.Operator is not null &&
+                TryGetChargingStationOperatorById(ChargingPool.Operator.Id, out var chargingStationOperator))
             {
                 return chargingStationOperator.ChargingPoolExists(ChargingPool.Id);
             }
@@ -3736,8 +3740,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId)
         {
 
-            if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out var chargingStationOperator) &&
-                chargingStationOperator is not null)
+            if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out var chargingStationOperator))
             {
                 return chargingStationOperator.ChargingPoolExists(ChargingPoolId);
             }
@@ -3783,11 +3786,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool)
 
-        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolById(ChargingPool_Id                         ChargingPoolId,
+                                              [NotNullWhen(true)] out IChargingPool?  ChargingPool)
         {
 
-            if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out var chargingStationOperator) &&
-                chargingStationOperator is not null)
+            if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out var chargingStationOperator))
             {
                 return chargingStationOperator.TryGetChargingPoolById(ChargingPoolId, out ChargingPool);
             }
@@ -3797,12 +3800,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public Boolean TryGetChargingPoolById(ChargingPool_Id? ChargingPoolId, out IChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolById(ChargingPool_Id?                        ChargingPoolId,
+                                              [NotNullWhen(true)] out IChargingPool?  ChargingPool)
         {
 
             if (ChargingPoolId.HasValue &&
-                TryGetChargingStationOperatorById(ChargingPoolId.Value.OperatorId, out var chargingStationOperator) &&
-                chargingStationOperator is not null)
+                TryGetChargingStationOperatorById(ChargingPoolId.Value.OperatorId, out var chargingStationOperator))
             {
                 return chargingStationOperator.TryGetChargingPoolById(ChargingPoolId.Value, out ChargingPool);
             }
@@ -4294,12 +4297,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetChargingStationbyId     (ChargingStationId, out ChargingStation)
 
-        public Boolean TryGetChargingStationById(ChargingStation_Id     ChargingStationId,
-                                                 out IChargingStation?  ChargingStation)
+        public Boolean TryGetChargingStationById(ChargingStation_Id                         ChargingStationId,
+                                                 [NotNullWhen(true)] out IChargingStation?  ChargingStation)
         {
 
-            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator) &&
-                chargingStationOperator is not null)
+            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator))
             {
                 return chargingStationOperator.TryGetChargingStationById(ChargingStationId, out ChargingStation);
             }
@@ -4309,13 +4311,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public Boolean TryGetChargingStationById(ChargingStation_Id?    ChargingStationId,
-                                                 out IChargingStation?  ChargingStation)
+        public Boolean TryGetChargingStationById(ChargingStation_Id?                        ChargingStationId,
+                                                 [NotNullWhen(true)] out IChargingStation?  ChargingStation)
         {
 
-            if (ChargingStationId.HasValue                                                                             &&
-                TryGetChargingStationOperatorById(ChargingStationId.Value.OperatorId, out var chargingStationOperator) &&
-                chargingStationOperator is not null)
+            if (ChargingStationId.HasValue &&
+                TryGetChargingStationOperatorById(ChargingStationId.Value.OperatorId, out var chargingStationOperator))
             {
                 return chargingStationOperator.TryGetChargingStationById(ChargingStationId.Value, out ChargingStation);
             }
@@ -6015,7 +6016,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetParkingOperatorById(ParkingOperatorId)
 
-        public ParkingOperator GetParkingOperatorById(ParkingOperator_Id ParkingOperatorId)
+        public ParkingOperator? GetParkingOperatorById(ParkingOperator_Id ParkingOperatorId)
 
             => parkingOperators.GetById(ParkingOperatorId);
 
@@ -6023,7 +6024,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetParkingOperatorById(ParkingOperatorId, out ParkingOperator)
 
-        public Boolean TryGetParkingOperatorById(ParkingOperator_Id ParkingOperatorId, out ParkingOperator ParkingOperator)
+        public Boolean TryGetParkingOperatorById(ParkingOperator_Id                        ParkingOperatorId,
+                                                 [NotNullWhen(true)] out ParkingOperator?  ParkingOperator)
 
             => parkingOperators.TryGet(ParkingOperatorId, out ParkingOperator);
 
@@ -6031,15 +6033,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoveParkingOperator(ParkingOperatorId)
 
-        public ParkingOperator RemoveParkingOperator(ParkingOperator_Id ParkingOperatorId)
+        public ParkingOperator? RemoveParkingOperator(ParkingOperator_Id ParkingOperatorId)
         {
 
             if (parkingOperators.TryRemove(ParkingOperatorId,
-                                           out var _ParkingOperator,
+                                           out var parkingOperator,
                                            EventTracking_Id.New,
                                            null))
             {
-                return _ParkingOperator;
+                return parkingOperator;
             }
 
             return null;
@@ -6050,12 +6052,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemoveParkingOperator(RemoveParkingOperatorId, out RemoveParkingOperator)
 
-        public Boolean TryRemoveParkingOperator(ParkingOperator_Id ParkingOperatorId, out ParkingOperator ParkingOperator)
+        public Boolean TryRemoveParkingOperator(ParkingOperator_Id                        ParkingOperatorId,
+                                                [NotNullWhen(true)] out ParkingOperator?  ParkingOperator)
 
-            => parkingOperators.TryRemove(ParkingOperatorId,
-                                          out ParkingOperator,
-                                          EventTracking_Id.New,
-                                          null);
+            => parkingOperators.TryRemove(
+                   ParkingOperatorId,
+                   out ParkingOperator,
+                   EventTracking_Id.New,
+                   null
+               );
 
         #endregion
 
@@ -6354,7 +6359,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetSmartCityById(SmartCityId)
 
-        public SmartCityProxy GetSmartCityById(SmartCity_Id SmartCityId)
+        public SmartCityProxy? GetSmartCityById(SmartCity_Id SmartCityId)
 
             => smartCities.GetById(SmartCityId);
 
@@ -7285,27 +7290,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region ...or fail!
 
-                    if (result is null)
-                    {
-
-                        result = CancelReservationResult.UnknownReservationId(ReservationId,
-                                                                              Reason);
-
-                        //SendReservationCanceled(Timestamp.Now,
-                        //                        this,
-                        //                           EventTrackingId,
-                        //                           Id,
-                        //                           ProviderId,
-                        //                           ReservationId,
-                        //                           null,
-                        //                           Reason,
-                        //                           result,
-                        //                           result.Runtime.HasValue
-                        //                               ? result.Runtime.Value
-                        //                               : TimeSpan.FromMilliseconds(5),
-                        //                           RequestTimeout);
-
-                    }
+                    result ??= CancelReservationResult.UnknownReservationId(
+                                   ReservationId,
+                                   Reason
+                               );
 
                     #endregion
 
@@ -7510,8 +7498,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public UInt32                                     MaxAuthStopResultCacheElements               { get; set; }
 
-        public HashSet<AuthenticationToken>               InvalidAuthenticationTokens                  { get; }       = new HashSet<AuthenticationToken>();
-        public HashSet<AuthenticationToken>               DoNotCacheAuthenticationTokens               { get; }       = new HashSet<AuthenticationToken>();
+        public HashSet<AuthenticationToken>               InvalidAuthenticationTokens                  { get; }       = [];
+        public HashSet<AuthenticationToken>               DoNotCacheAuthenticationTokens               { get; }       = [];
 
         #endregion
 
@@ -7889,7 +7877,7 @@ namespace cloud.charging.open.protocols.WWCP
                 await SessionsStore.AuthStart(
                           new ChargingSession(
                               result.SessionId!.Value,
-                              EventTrackingId
+                              eventTrackingId
                           ) {
                               RoamingNetwork             = this,
                               CSORoamingProviderStart    = result.ISendAuthorizeStartStop as ICSORoamingProvider,
@@ -8059,10 +8047,10 @@ namespace cloud.charging.open.protocols.WWCP
                             if (locationInfo.First() < Timestamp.Now - AuthenticationRateLimitTimeSpan)
                                 locationInfo.Remove(locationInfo.First());
 
-                        } while (locationInfo.Any() && locationInfo.First() < Timestamp.Now - AuthenticationRateLimitTimeSpan);
+                        } while (locationInfo.Count > 0 && locationInfo.First() < Timestamp.Now - AuthenticationRateLimitTimeSpan);
 
 
-                        if (locationInfo.Any())
+                        if (locationInfo.Count > 0)
                         {
 
                             if (locationInfo.First() > Timestamp.Now - AuthenticationRateLimitTimeSpan)
@@ -8421,13 +8409,13 @@ namespace cloud.charging.open.protocols.WWCP
                         // before a response to this remote start request was successfully received.
                         if (SessionId.HasValue)
                             await SessionsStore.RemoteStartRequest(
-                                      EventTrackingId,
+                                      eventTrackingId,
                                       new ChargingSession(
                                           SessionId.Value,
                                           eventTrackingId,
                                           this,
                                           CSORoamingProvider,
-                                          Timestamp: RequestTimestamp
+                                          Timestamp: requestTimestamp
                                       )
                                       {
                                           ChargingStationOperatorId = ChargingLocation.ChargingStationOperatorId,
@@ -8457,7 +8445,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            AuthenticationPath,
                                            CSORoamingProvider,
 
-                                           RequestTimestamp,
+                                           requestTimestamp,
                                            eventTrackingId,
                                            requestTimeout,
                                            CancellationToken
@@ -8473,7 +8461,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                    eventTrackingId,
                                                    this,
                                                    CSORoamingProvider,
-                                                   Timestamp: RequestTimestamp
+                                                   Timestamp: requestTimestamp
                                                );
 
                             await SessionsStore.RemoteStartResponse(
@@ -8529,7 +8517,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                AuthenticationPath,
                                                CSORoamingProvider,
 
-                                               RequestTimestamp,
+                                               requestTimestamp,
                                                eventTrackingId,
                                                requestTimeout,
                                                CancellationToken
@@ -8546,7 +8534,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                        this,
                                                        CSORoamingProvider,
                                                        empRoamingProvider,
-                                                       Timestamp: RequestTimestamp
+                                                       Timestamp: requestTimestamp
                                                    );
 
                                 await SessionsStore.RemoteStartResponse(
@@ -8745,8 +8733,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                AuthenticationPath,
                                                CSORoamingProvider,
 
-                                               RequestTimestamp,
-                                               EventTrackingId,
+                                               requestTimestamp,
+                                               eventTrackingId,
                                                requestTimeout,
                                                CancellationToken
                                            );
@@ -8771,8 +8759,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                    AuthenticationPath,
                                                    CSORoamingProvider,
 
-                                                   RequestTimestamp,
-                                                   EventTrackingId,
+                                                   requestTimestamp,
+                                                   eventTrackingId,
                                                    requestTimeout,
                                                    CancellationToken
                                                );
@@ -8811,8 +8799,8 @@ namespace cloud.charging.open.protocols.WWCP
                                            AuthenticationPath,
                                            CSORoamingProvider,
 
-                                           RequestTimestamp,
-                                           EventTrackingId,
+                                           requestTimestamp,
+                                           eventTrackingId,
                                            requestTimeout,
                                            CancellationToken
                                        );
@@ -8850,8 +8838,8 @@ namespace cloud.charging.open.protocols.WWCP
                                            AuthenticationPath,
                                            CSORoamingProvider,
 
-                                           RequestTimestamp,
-                                           EventTrackingId,
+                                           requestTimestamp,
+                                           eventTrackingId,
                                            requestTimeout,
                                            CancellationToken
                                        );
@@ -9286,7 +9274,7 @@ namespace cloud.charging.open.protocols.WWCP
                             chargeDetailRecordsToProcess.Remove(cdr);
 
                             await SessionsStore.CDRReceived(
-                                      EventTrackingId,
+                                      eventTrackingId,
                                       cdr.SessionId,
                                       cdr
                                   );
@@ -9328,7 +9316,7 @@ namespace cloud.charging.open.protocols.WWCP
                             chargeDetailRecordsToProcess.Remove(cdr);
 
                             await SessionsStore.CDRReceived(
-                                      EventTrackingId,
+                                      eventTrackingId,
                                       cdr.SessionId,
                                       cdr
                                   );
@@ -9347,7 +9335,7 @@ namespace cloud.charging.open.protocols.WWCP
                         chargeDetailRecordsToProcess.Remove(cdr);
 
                         await SessionsStore.CDRReceived(
-                                  EventTrackingId,
+                                  eventTrackingId,
                                   cdr.SessionId,
                                   cdr
                               );
@@ -9750,13 +9738,15 @@ namespace cloud.charging.open.protocols.WWCP
                 foreach (var sendCDR in cdrTargets.Where(kvp => kvp.Value.Count > 0))
                 {
 
-                    partResults = await sendCDR.Key.SendChargeDetailRecords(sendCDR.Value,
-                                                                            TransmissionTypes.Enqueue,
+                    partResults = await sendCDR.Key.SendChargeDetailRecords(
+                                            sendCDR.Value,
+                                            TransmissionTypes.Enqueue,
 
-                                                                            RequestTimestamp,
-                                                                            EventTrackingId,
-                                                                            requestTimeout,
-                                                                            CancellationToken);
+                                            requestTimestamp,
+                                            eventTrackingId,
+                                            requestTimeout,
+                                            CancellationToken
+                                        );
 
                     if (partResults is null)
                     {
@@ -9789,7 +9779,10 @@ namespace cloud.charging.open.protocols.WWCP
                 #region Check if we really received a response for every charge detail record!
 
                 foreach (var cdrresult in resultMap)
-                    expectedChargeDetailRecords.Remove(cdrresult.ChargeDetailRecord);
+                {
+                    if (cdrresult.ChargeDetailRecord is not null)
+                        expectedChargeDetailRecords.Remove(cdrresult.ChargeDetailRecord);
+                }
 
                 if (expectedChargeDetailRecords.Count > 0)
                 {
