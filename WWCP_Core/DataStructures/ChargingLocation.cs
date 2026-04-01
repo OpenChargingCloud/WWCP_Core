@@ -85,7 +85,22 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region FromEVSEId                   (EVSEId)
+        #region FromEVSE                      (EVSE)
+
+        public static ChargingLocation? FromEVSE(IEVSE EVSE)
+
+            => EVSE is not null
+                   ? new ChargingLocation(
+                         EVSEId:                      EVSE.                 Id,
+                         ChargingStationId:           EVSE.ChargingStation?.Id,
+                         ChargingPoolId:              EVSE.ChargingPool?.   Id,
+                         ChargingStationOperatorId:   EVSE.Operator?.       Id
+                     )
+                   : null;
+
+        #endregion
+
+        #region FromEVSEId                    (EVSEId)
 
         public static ChargingLocation FromEVSEId(EVSE_Id EVSEId)
 
@@ -123,7 +138,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region FromChargingStationId        (ChargingStationId)
+        #region FromChargingStation           (ChargingStation)
+
+        public static ChargingLocation? FromChargingStation(IChargingStation ChargingStation)
+
+            => ChargingStation is not null
+                   ? new ChargingLocation(
+                         ChargingStationId:           ChargingStation.              Id,
+                         ChargingPoolId:              ChargingStation.ChargingPool?.Id,
+                         ChargingStationOperatorId:   ChargingStation.Operator?.    Id
+                     )
+                   : null;
+
+        #endregion
+
+        #region FromChargingStationId         (ChargingStationId)
 
         public static ChargingLocation FromChargingStationId(ChargingStation_Id ChargingStationId)
 
@@ -137,7 +166,20 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region FromChargingPoolId           (ChargingPoolId)
+        #region FromChargingPool              (ChargingPool)
+
+        public static ChargingLocation? FromChargingPool(IChargingPool ChargingPool)
+
+            => ChargingPool is not null
+                   ? new ChargingLocation(
+                         ChargingPoolId:              ChargingPool.          Id,
+                         ChargingStationOperatorId:   ChargingPool.Operator?.Id
+                     )
+                   : null;
+
+        #endregion
+
+        #region FromChargingPoolId            (ChargingPoolId)
 
         public static ChargingLocation FromChargingPoolId(ChargingPool_Id ChargingPoolId)
 
@@ -151,7 +193,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region FromChargingStationOperatorId(ChargingStationOperatorId)
+        #region FromChargingStationOperator   (ChargingStationOperator)
+
+        public static ChargingLocation? FromChargingStationOperator(IChargingStationOperator ChargingStationOperator)
+
+            => ChargingStationOperator is not null
+                   ? new ChargingLocation(
+                         ChargingStationOperatorId:   ChargingStationOperator.Id
+                     )
+                   : null;
+
+        #endregion
+
+        #region FromChargingStationOperatorId (ChargingStationOperatorId)
 
         public static ChargingLocation FromChargingStationOperatorId(ChargingStationOperator_Id ChargingStationOperatorId)
 
