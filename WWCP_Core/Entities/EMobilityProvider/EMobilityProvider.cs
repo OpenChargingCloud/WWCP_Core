@@ -2798,7 +2798,8 @@ namespace cloud.charging.open.protocols.WWCP
                            ChargingProduct?             ChargingProduct       = null,
                            ChargingSession_Id?          SessionId             = null,
                            ChargingSession_Id?          CPOPartnerSessionId   = null,
-                           ChargingStationOperator_Id?  OperatorId            = null,
+                           //ChargingStationOperator_Id?  OperatorId            = null,
+                           EMobilityProvider_Id?        EMobilityProviderId   = null,
 
                            DateTimeOffset?              RequestTimestamp      = null,
                            EventTracking_Id?            EventTrackingId       = null,
@@ -2832,8 +2833,9 @@ namespace cloud.charging.open.protocols.WWCP
                           RoamingNetwork.Id,
                           null,
                           null,
-                          OperatorId,
+                          //OperatorId,
                           LocalAuthentication,
+                          EMobilityProviderId,
                           ChargingLocation,
                           ChargingProduct,
                           SessionId,
@@ -2854,7 +2856,8 @@ namespace cloud.charging.open.protocols.WWCP
                                    ChargingProduct,
                                    SessionId,
                                    CPOPartnerSessionId,
-                                   OperatorId,
+                                   //OperatorId,
+                                   EMobilityProviderId,
 
                                    RequestTimestamp,
                                    EventTrackingId,
@@ -2886,8 +2889,9 @@ namespace cloud.charging.open.protocols.WWCP
                           RoamingNetwork.Id,
                           null,
                           null,
-                          OperatorId,
+                          //OperatorId,
                           LocalAuthentication,
+                          EMobilityProviderId,
                           ChargingLocation,
                           ChargingProduct,
                           SessionId,
@@ -2934,9 +2938,10 @@ namespace cloud.charging.open.protocols.WWCP
                           LocalAuthentication          LocalAuthentication,
                           ChargingLocation?            ChargingLocation      = null,
                           ChargingSession_Id?          CPOPartnerSessionId   = null,
-                          ChargingStationOperator_Id?  OperatorId            = null,
+                          //ChargingStationOperator_Id?  OperatorId            = null,
+                          EMobilityProvider_Id?        EMobilityProviderId   = null,
 
-                          DateTimeOffset?              Timestamp             = null,
+                          DateTimeOffset?              RequestTimestamp      = null,
                           EventTracking_Id?            EventTrackingId       = null,
                           TimeSpan?                    RequestTimeout        = null,
                           CancellationToken            CancellationToken     = default)
@@ -2944,9 +2949,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            Timestamp       ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            EventTrackingId ??= EventTracking_Id.New;
-            RequestTimeout  ??= this.RequestTimeout;
+            RequestTimestamp ??= Timestamp.Now;
+            EventTrackingId  ??= EventTracking_Id.New;
+            RequestTimeout   ??= this.RequestTimeout;
 
             AuthStopResult? result = null;
 
@@ -2954,86 +2959,84 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnAuthorizeStopRequest event
 
-            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = Timestamp.Now;
 
-            try
-            {
-
-                OnAuthorizeStopRequest?.Invoke(StartTime,
-                                               Timestamp.Value,
-                                               this,
-                                               Id.ToString(),
-                                               EventTrackingId,
-                                               RoamingNetwork.Id,
-                                               null,
-                                               null,
-                                               OperatorId,
-                                               ChargingLocation,
-                                               SessionId,
-                                               CPOPartnerSessionId,
-                                               LocalAuthentication,
-                                               RequestTimeout,
-                                               CancellationToken);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.LogException(e, nameof(EMobilityProvider) + "." + nameof(OnAuthorizeStopRequest));
-            }
+            await LogEvent(
+                      OnAuthorizeStopRequest,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          startTime,
+                          RequestTimestamp.Value,
+                          this,
+                          Id.ToString(),
+                          EventTrackingId,
+                          RoamingNetwork.Id,
+                          null,
+                          null,
+                          //OperatorId,
+                          ChargingLocation,
+                          SessionId,
+                          CPOPartnerSessionId,
+                          LocalAuthentication,
+                          EMobilityProviderId,
+                          RequestTimeout,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
 
             if (!DisableAuthorization && RemoteEMobilityProvider is not null)
-                result = await RemoteEMobilityProvider.AuthorizeStop(SessionId,
-                                                                     LocalAuthentication,
-                                                                     ChargingLocation,
-                                                                     CPOPartnerSessionId,
-                                                                     OperatorId,
+                result = await RemoteEMobilityProvider.AuthorizeStop(
+                                   SessionId,
+                                   LocalAuthentication,
+                                   ChargingLocation,
+                                   CPOPartnerSessionId,
+                                   //OperatorId,
+                                   EMobilityProviderId,
 
-                                                                     Timestamp,
-                                                                     EventTrackingId,
-                                                                     RequestTimeout,
-                                                                     CancellationToken);
+                                   RequestTimestamp,
+                                   EventTrackingId,
+                                   RequestTimeout,
+                                   CancellationToken
+                               );
 
             else
-                result = AuthStopResult.OutOfService(Id,
-                                                     this,
-                                                     SessionId:  SessionId,
-                                                     Runtime:    TimeSpan.Zero);
-
-            var Endtime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            var Runtime = Endtime - StartTime;
+                result = AuthStopResult.OutOfService(
+                             Id,
+                             this,
+                             SessionId:  SessionId,
+                             Runtime:    TimeSpan.Zero
+                         );
 
 
             #region Send OnAuthorizeStopResponse event
 
-            try
-            {
+            var endTime = Timestamp.Now;
 
-                OnAuthorizeStopResponse?.Invoke(Endtime,
-                                                Timestamp.Value,
-                                                this,
-                                                Id.ToString(),
-                                                EventTrackingId,
-                                                RoamingNetwork.Id,
-                                                null,
-                                                null,
-                                                OperatorId,
-                                                ChargingLocation,
-                                                SessionId,
-                                                CPOPartnerSessionId,
-                                                LocalAuthentication,
-                                                RequestTimeout,
-                                                result,
-                                                Runtime,
-                                                CancellationToken);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.LogException(e, nameof(EMobilityProvider) + "." + nameof(OnAuthorizeStopResponse));
-            }
+            await LogEvent(
+                      OnAuthorizeStopResponse,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          endTime,
+                          RequestTimestamp.Value,
+                          this,
+                          Id.ToString(),
+                          EventTrackingId,
+                          RoamingNetwork.Id,
+                          null,
+                          null,
+                          //OperatorId,
+                          ChargingLocation,
+                          SessionId,
+                          CPOPartnerSessionId,
+                          LocalAuthentication,
+                          EMobilityProviderId,
+                          RequestTimeout,
+                          result,
+                          endTime - startTime,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 

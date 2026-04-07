@@ -226,7 +226,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                           ChargingProduct?             ChargingProduct       = null,
                                                           ChargingSession_Id?          SessionId             = null,
                                                           ChargingSession_Id?          CPOPartnerSessionId   = null,
-                                                          ChargingStationOperator_Id?  OperatorId            = null,
+                                                          //ChargingStationOperator_Id?  OperatorId            = null,
+                                                          EMobilityProvider_Id?        EMobilityProviderId   = null,
 
                                                           DateTimeOffset?              Timestamp             = null,
                                                           EventTracking_Id?            EventTrackingId       = null,
@@ -240,15 +241,17 @@ namespace cloud.charging.open.protocols.WWCP
                 return authStartResult;
             }
 
-            return AuthStartResult.NotAuthorized(AuthorizatorId:            AuthId,
-                                                 ISendAuthorizeStartStop:   null,
-                                                 SessionId:                 null,
+            return AuthStartResult.NotAuthorized(
+                       AuthorizatorId:            AuthId,
+                       ISendAuthorizeStartStop:   null,
+                       SessionId:                 null,
 
-                                                 ProviderId:                null,
-                                                 Description:               null,
-                                                 AdditionalInfo:            null,
-                                                 NumberOfRetries:           0,
-                                                 Runtime:                   null);
+                       ProviderId:                null,
+                       Description:               null,
+                       AdditionalInfo:            null,
+                       NumberOfRetries:           0,
+                       Runtime:                   null
+                   );
 
         }
 
@@ -260,9 +263,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                         LocalAuthentication          LocalAuthentication,
                                                         ChargingLocation?            ChargingLocation      = null,
                                                         ChargingSession_Id?          CPOPartnerSessionId   = null,
-                                                        ChargingStationOperator_Id?  OperatorId            = null,
+                                                        //ChargingStationOperator_Id?  OperatorId            = null,
+                                                        EMobilityProvider_Id?        EMobilityProviderId   = null,
 
-                                                        DateTimeOffset?              Timestamp             = null,
+                                                        DateTimeOffset?              RequestTimestamp      = null,
                                                         EventTracking_Id?            EventTrackingId       = null,
                                                         TimeSpan?                    RequestTimeout        = null,
                                                         CancellationToken            CancellationToken     = default)
@@ -273,38 +277,44 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (authStartResult.Result == AuthStartResultTypes.Authorized)
-                    return AuthStopResult.Authorized(authStartResult.AuthorizatorId,
-                                                     authStartResult.ISendAuthorizeStartStop,
-                                                     authStartResult.CachedResultEndOfLifeTime,
-                                                     authStartResult.SessionId,
-                                                     authStartResult.ProviderId,
-                                                     authStartResult.Description,
-                                                     authStartResult.AdditionalInfo,
-                                                     authStartResult.NumberOfRetries,
-                                                     authStartResult.Runtime);
+                    return AuthStopResult.Authorized(
+                               authStartResult.AuthorizatorId,
+                               authStartResult.ISendAuthorizeStartStop,
+                               authStartResult.CachedResultEndOfLifeTime,
+                               authStartResult.SessionId,
+                               authStartResult.ProviderId,
+                               authStartResult.Description,
+                               authStartResult.AdditionalInfo,
+                               authStartResult.NumberOfRetries,
+                               authStartResult.Runtime
+                           );
 
                 if (authStartResult.Result == AuthStartResultTypes.NotAuthorized)
-                    return AuthStopResult.NotAuthorized(authStartResult.AuthorizatorId,
-                                                        authStartResult.ISendAuthorizeStartStop,
-                                                        authStartResult.CachedResultEndOfLifeTime,
-                                                        authStartResult.SessionId,
-                                                        authStartResult.ProviderId,
-                                                        authStartResult.Description,
-                                                        authStartResult.AdditionalInfo,
-                                                        authStartResult.NumberOfRetries,
-                                                        authStartResult.Runtime);
+                    return AuthStopResult.NotAuthorized(
+                               authStartResult.AuthorizatorId,
+                               authStartResult.ISendAuthorizeStartStop,
+                               authStartResult.CachedResultEndOfLifeTime,
+                               authStartResult.SessionId,
+                               authStartResult.ProviderId,
+                               authStartResult.Description,
+                               authStartResult.AdditionalInfo,
+                               authStartResult.NumberOfRetries,
+                               authStartResult.Runtime
+                           );
 
             }
 
-            return AuthStopResult.NotAuthorized(AuthorizatorId:            AuthId,
-                                                ISendAuthorizeStartStop:   null,
-                                                SessionId:                 null,
+            return AuthStopResult.NotAuthorized(
+                       AuthorizatorId:            AuthId,
+                       ISendAuthorizeStartStop:   null,
+                       SessionId:                 null,
 
-                                                ProviderId:                null,
-                                                Description:               null,
-                                                AdditionalInfo:            null,
-                                                NumberOfRetries:           0,
-                                                Runtime:                   null);
+                       ProviderId:                null,
+                       Description:               null,
+                       AdditionalInfo:            null,
+                       NumberOfRetries:           0,
+                       Runtime:                   null
+                   );
 
         }
 

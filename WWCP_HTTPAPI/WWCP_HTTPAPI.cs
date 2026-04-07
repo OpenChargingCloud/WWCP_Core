@@ -4547,7 +4547,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                 : null,
                                             sessionId,
                                             cpoPartnerSessionId,
-                                            operatorId,
+                                            //operatorId,
+                                            null,
 
                                             request.Timestamp,
                                             request.EventTrackingId,
@@ -4715,7 +4716,8 @@ namespace cloud.charging.open.protocols.WWCP
                                            LocalAuthentication.FromAuthToken(AuthToken),
                                            ChargingLocation.   FromEVSEId    (evse.Id),
                                            CPOPartnerSessionId,
-                                           chargingStationOperatorId,
+                                           //chargingStationOperatorId,
+                                           null,
 
                                            request.Timestamp,
                                            request.EventTrackingId,

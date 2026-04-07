@@ -56,9 +56,10 @@ namespace cloud.charging.open.protocols.WWCP
                            ChargingProduct?             ChargingProduct       = null,
                            ChargingSession_Id?          SessionId             = null,
                            ChargingSession_Id?          CPOPartnerSessionId   = null,
-                           ChargingStationOperator_Id?  OperatorId            = null,
+                           //ChargingStationOperator_Id?  OperatorId            = null,
+                           EMobilityProvider_Id?        EMobilityProviderId   = null,
 
-                           DateTimeOffset?              Timestamp             = null,
+                           DateTimeOffset?              RequestTimestamp      = null,
                            EventTracking_Id?            EventTrackingId       = null,
                            TimeSpan?                    RequestTimeout        = null,
                            CancellationToken            CancellationToken     = default);
@@ -86,9 +87,10 @@ namespace cloud.charging.open.protocols.WWCP
                           LocalAuthentication          LocalAuthentication,
                           ChargingLocation?            ChargingLocation      = null,
                           ChargingSession_Id?          CPOPartnerSessionId   = null,
-                          ChargingStationOperator_Id?  OperatorId            = null,
+                          //ChargingStationOperator_Id?  OperatorId            = null,
+                          EMobilityProvider_Id?        EMobilityProviderId   = null,
 
-                          DateTimeOffset?              Timestamp             = null,
+                          DateTimeOffset?              RequestTimestamp      = null,
                           EventTracking_Id?            EventTrackingId       = null,
                           TimeSpan?                    RequestTimeout        = null,
                           CancellationToken            CancellationToken     = default);
@@ -146,7 +148,7 @@ namespace cloud.charging.open.protocols.WWCP
         //                   ChargingProduct_Id?         ChargingProductId  = null,
         //                   ChargingSession_Id?         SessionId          = null,
 
-        //                   DateTime?                   Timestamp          = null,
+        //                   DateTime?                   RequestTimestamp   = null,
         //                   CancellationToken?          CancellationToken  = null,
         //                   EventTracking_Id            EventTrackingId    = null,
         //                   TimeSpan?                   RequestTimeout     = null);
@@ -172,7 +174,7 @@ namespace cloud.charging.open.protocols.WWCP
         //                   ChargingProduct_Id?         ChargingProductId  = null,
         //                   ChargingSession_Id?         SessionId          = null,
 
-        //                   DateTime?                   Timestamp          = null,
+        //                   DateTime?                   RequestTimestamp   = null,
         //                   CancellationToken?          CancellationToken  = null,
         //                   EventTracking_Id            EventTrackingId    = null,
         //                   TimeSpan?                   RequestTimeout     = null);
@@ -198,7 +200,7 @@ namespace cloud.charging.open.protocols.WWCP
         //                   ChargingProduct_Id?          ChargingProductId  = null,
         //                   ChargingSession_Id?          SessionId          = null,
 
-        //                   DateTime?                    Timestamp          = null,
+        //                   DateTime?                    RequestTimestamp   = null,
         //                   CancellationToken?           CancellationToken  = null,
         //                   EventTracking_Id             EventTrackingId    = null,
         //                   TimeSpan?                    RequestTimeout     = null);
@@ -224,7 +226,7 @@ namespace cloud.charging.open.protocols.WWCP
         //                  ChargingSession_Id          SessionId,
         //                  AuthenticationToken                  AuthToken,
 
-        //                  DateTime?                   Timestamp           = null,
+        //                  DateTime?                   RequestTimestamp    = null,
         //                  CancellationToken           CancellationToken   = default,
         //                  EventTracking_Id            EventTrackingId     = null,
         //                  TimeSpan?                   RequestTimeout      = null);
@@ -248,7 +250,7 @@ namespace cloud.charging.open.protocols.WWCP
         //                  ChargingSession_Id          SessionId,
         //                  AuthenticationToken                  AuthToken,
 
-        //                  DateTime?                   Timestamp           = null,
+        //                  DateTime?                   RequestTimestamp    = null,
         //                  CancellationToken           CancellationToken   = default,
         //                  EventTracking_Id            EventTrackingId     = null,
         //                  TimeSpan?                   RequestTimeout      = null);
@@ -272,7 +274,7 @@ namespace cloud.charging.open.protocols.WWCP
         //                  ChargingSession_Id          SessionId,
         //                  AuthenticationToken                  AuthToken,
 
-        //                  DateTime?                   Timestamp           = null,
+        //                  DateTime?                   RequestTimestamp    = null,
         //                  CancellationToken           CancellationToken   = default,
         //                  EventTracking_Id            EventTrackingId     = null,
         //                  TimeSpan?                   RequestTimeout      = null);
