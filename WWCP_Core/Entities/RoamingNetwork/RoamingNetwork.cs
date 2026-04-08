@@ -7852,6 +7852,7 @@ namespace cloud.charging.open.protocols.WWCP
                                       ? ChargingSession_Id.NewRandom(result.ProviderId.Value)
                                       : ChargingSession_Id.NewRandom(),
                                   result.EMPPartnerSessionId,
+                                  result.AuthorizationReference,
                                   result.ContractId,
                                   result.PrintedNumber,
                                   result.UILanguage,

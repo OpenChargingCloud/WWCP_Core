@@ -88,9 +88,14 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingSession_Id?               SessionId                        { get; }
 
         /// <summary>
-        /// The optional EMP partner charging session identification, when the authorize start operation was successful.
+        /// An optional EMP partner charging session identification, when the authorize start operation was successful.
         /// </summary>
         public ChargingSession_Id?               EMPPartnerSessionId              { get; }
+
+        /// <summary>
+        /// An optional authorization reference.
+        /// </summary>
+        public AuthorizationReference?           AuthorizationReference           { get; }
 
         /// <summary>
         /// An optional contract identification.
@@ -209,6 +214,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                 ChargingSession_Id?                SessionId                    = null,
                                 ChargingSession_Id?                EMPPartnerSessionId          = null,
+                                AuthorizationReference?            AuthorizationReference       = null,
                                 String?                            ContractId                   = null,
                                 String?                            PrintedNumber                = null,
                                 Languages?                         UILanguage                   = null,
@@ -237,6 +243,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.SessionId                   = SessionId;
             this.EMPPartnerSessionId         = EMPPartnerSessionId;
+            this.AuthorizationReference      = AuthorizationReference;
             this.ContractId                  = ContractId;
             this.PrintedNumber               = PrintedNumber;
             this.UILanguage                  = UILanguage;
@@ -292,6 +299,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                ChargingSession_Id?                SessionId                   = null,
                                ChargingSession_Id?                EMPPartnerSessionId         = null,
+                               AuthorizationReference?            AuthorizationReference      = null,
                                String?                            ContractId                  = null,
                                String?                            PrintedNumber               = null,
                                Languages?                         UILanguage                  = null,
@@ -318,6 +326,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                    SessionId,
                    EMPPartnerSessionId,
+                   AuthorizationReference,
                    ContractId,
                    PrintedNumber,
                    UILanguage,
@@ -373,6 +382,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                ChargingSession_Id?                SessionId                   = null,
                                ChargingSession_Id?                EMPPartnerSessionId         = null,
+                               AuthorizationReference?            AuthorizationReference      = null,
                                String?                            ContractId                  = null,
                                String?                            PrintedNumber               = null,
                                Languages?                         UILanguage                  = null,
@@ -399,6 +409,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                    SessionId,
                    EMPPartnerSessionId,
+                   AuthorizationReference,
                    ContractId,
                    PrintedNumber,
                    UILanguage,
@@ -922,6 +933,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                        ChargingSession_Id?                SessionId                   = null,
                        ChargingSession_Id?                EMPPartnerSessionId         = null,
+                       AuthorizationReference?            AuthorizationReference      = null,
                        String?                            ContractId                  = null,
                        String?                            PrintedNumber               = null,
                        Languages?                         UILanguage                  = null,
@@ -947,6 +959,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         SessionId,
                         EMPPartnerSessionId,
+                        AuthorizationReference,
                         ContractId,
                         PrintedNumber,
                         UILanguage,
@@ -997,6 +1010,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                        ChargingSession_Id?                SessionId                   = null,
                        ChargingSession_Id?                EMPPartnerSessionId         = null,
+                       AuthorizationReference?            AuthorizationReference      = null,
                        String?                            ContractId                  = null,
                        String?                            PrintedNumber               = null,
                        Languages?                         UILanguage                  = null,
@@ -1022,6 +1036,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         SessionId,
                         EMPPartnerSessionId,
+                        AuthorizationReference,
                         ContractId,
                         PrintedNumber,
                         UILanguage,
