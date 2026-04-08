@@ -7578,18 +7578,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<AuthStartResult>
 
-            AuthorizeStart(LocalAuthentication          LocalAuthentication,
-                           ChargingLocation?            ChargingLocation      = null,
-                           ChargingProduct?             ChargingProduct       = null,
-                           ChargingSession_Id?          SessionId             = null,
-                           ChargingSession_Id?          CPOPartnerSessionId   = null,
-                           //ChargingStationOperator_Id?  OperatorId            = null,
-                           EMobilityProvider_Id?        EMobilityProviderId   = null,
+            AuthorizeStart(LocalAuthentication    LocalAuthentication,
+                           ChargingLocation?      ChargingLocation      = null,
+                           ChargingProduct?       ChargingProduct       = null,
+                           ChargingSession_Id?    SessionId             = null,
+                           ChargingSession_Id?    CPOPartnerSessionId   = null,
+                           EMobilityProvider_Id?  EMobilityProviderId   = null,
 
-                           DateTimeOffset?              RequestTimestamp      = null,
-                           EventTracking_Id?            EventTrackingId       = null,
-                           TimeSpan?                    RequestTimeout        = null,
-                           CancellationToken            CancellationToken     = default)
+                           DateTimeOffset?        RequestTimestamp      = null,
+                           EventTracking_Id?      EventTrackingId       = null,
+                           TimeSpan?              RequestTimeout        = null,
+                           CancellationToken      CancellationToken     = default)
 
         {
 
@@ -7855,6 +7854,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   result.EMPPartnerSessionId,
                                   result.ContractId,
                                   result.PrintedNumber,
+                                  result.UILanguage,
                                   result.ExpiryDate,
                                   result.MaxkW,
                                   result.MaxkWh,
@@ -7962,17 +7962,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         public async Task<AuthStopResult>
 
-            AuthorizeStop(ChargingSession_Id           SessionId,
-                          LocalAuthentication          LocalAuthentication,
-                          ChargingLocation?            ChargingLocation      = null,
-                          ChargingSession_Id?          CPOPartnerSessionId   = null,
-                          //ChargingStationOperator_Id?  OperatorId            = null,
-                          EMobilityProvider_Id?        EMobilityProviderId   = null,
+            AuthorizeStop(ChargingSession_Id     SessionId,
+                          LocalAuthentication    LocalAuthentication,
+                          ChargingLocation?      ChargingLocation      = null,
+                          ChargingSession_Id?    CPOPartnerSessionId   = null,
+                          EMobilityProvider_Id?  EMobilityProviderId   = null,
 
-                          DateTimeOffset?              RequestTimestamp      = null,
-                          EventTracking_Id?            EventTrackingId       = null,
-                          TimeSpan?                    RequestTimeout        = null,
-                          CancellationToken            CancellationToken     = default)
+                          DateTimeOffset?        RequestTimestamp      = null,
+                          EventTracking_Id?      EventTrackingId       = null,
+                          TimeSpan?              RequestTimeout        = null,
+                          CancellationToken      CancellationToken     = default)
 
         {
 

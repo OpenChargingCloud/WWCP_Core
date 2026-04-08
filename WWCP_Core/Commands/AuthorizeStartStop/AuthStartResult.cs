@@ -103,6 +103,11 @@ namespace cloud.charging.open.protocols.WWCP
         public String?                           PrintedNumber                    { get; }
 
         /// <summary>
+        /// The optional user interface language to be used for further interactions with the user.
+        /// </summary>
+        public Languages?                        UILanguage                       { get; }
+
+        /// <summary>
         /// The timestamp when this authorization expires.
         /// </summary>
         public DateTimeOffset?                   ExpiryDate                       { get; }
@@ -206,6 +211,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 ChargingSession_Id?                EMPPartnerSessionId          = null,
                                 String?                            ContractId                   = null,
                                 String?                            PrintedNumber                = null,
+                                Languages?                         UILanguage                   = null,
                                 DateTimeOffset?                    ExpiryDate                   = null,
                                 Single?                            MaxkW                        = null,
                                 Single?                            MaxkWh                       = null,
@@ -233,6 +239,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.EMPPartnerSessionId         = EMPPartnerSessionId;
             this.ContractId                  = ContractId;
             this.PrintedNumber               = PrintedNumber;
+            this.UILanguage                  = UILanguage;
             this.ExpiryDate                  = ExpiryDate;
             this.MaxkW                       = MaxkW;
             this.MaxkWh                      = MaxkWh;
@@ -287,6 +294,7 @@ namespace cloud.charging.open.protocols.WWCP
                                ChargingSession_Id?                EMPPartnerSessionId         = null,
                                String?                            ContractId                  = null,
                                String?                            PrintedNumber               = null,
+                               Languages?                         UILanguage                  = null,
                                DateTimeOffset?                    ExpiryDate                  = null,
                                Single?                            MaxkW                       = null,
                                Single?                            MaxkWh                      = null,
@@ -312,6 +320,7 @@ namespace cloud.charging.open.protocols.WWCP
                    EMPPartnerSessionId,
                    ContractId,
                    PrintedNumber,
+                   UILanguage,
                    ExpiryDate,
                    MaxkW,
                    MaxkWh,
@@ -366,6 +375,7 @@ namespace cloud.charging.open.protocols.WWCP
                                ChargingSession_Id?                EMPPartnerSessionId         = null,
                                String?                            ContractId                  = null,
                                String?                            PrintedNumber               = null,
+                               Languages?                         UILanguage                  = null,
                                DateTimeOffset?                    ExpiryDate                  = null,
                                Single?                            MaxkW                       = null,
                                Single?                            MaxkWh                      = null,
@@ -391,6 +401,7 @@ namespace cloud.charging.open.protocols.WWCP
                    EMPPartnerSessionId,
                    ContractId,
                    PrintedNumber,
+                   UILanguage,
                    ExpiryDate,
                    MaxkW,
                    MaxkWh,
@@ -913,6 +924,7 @@ namespace cloud.charging.open.protocols.WWCP
                        ChargingSession_Id?                EMPPartnerSessionId         = null,
                        String?                            ContractId                  = null,
                        String?                            PrintedNumber               = null,
+                       Languages?                         UILanguage                  = null,
                        DateTimeOffset?                    ExpiryDate                  = null,
                        Single?                            MaxkW                       = null,
                        Single?                            MaxkWh                      = null,
@@ -937,6 +949,7 @@ namespace cloud.charging.open.protocols.WWCP
                         EMPPartnerSessionId,
                         ContractId,
                         PrintedNumber,
+                        UILanguage,
                         ExpiryDate,
                         MaxkW,
                         MaxkWh,
@@ -986,6 +999,7 @@ namespace cloud.charging.open.protocols.WWCP
                        ChargingSession_Id?                EMPPartnerSessionId         = null,
                        String?                            ContractId                  = null,
                        String?                            PrintedNumber               = null,
+                       Languages?                         UILanguage                  = null,
                        DateTimeOffset?                    ExpiryDate                  = null,
                        Single?                            MaxkW                       = null,
                        Single?                            MaxkWh                      = null,
@@ -1010,6 +1024,7 @@ namespace cloud.charging.open.protocols.WWCP
                         EMPPartnerSessionId,
                         ContractId,
                         PrintedNumber,
+                        UILanguage,
                         ExpiryDate,
                         MaxkW,
                         MaxkWh,
