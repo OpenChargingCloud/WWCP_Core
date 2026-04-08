@@ -51,34 +51,34 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The country code.
         /// </summary>
-        public Country            CountryCode   { get; }
+        public Country                     CountryCode    { get; }
 
         /// <summary>
         /// The identifier suffix.
         /// </summary>
-        public String             Suffix        { get; }
+        public String                      Suffix         { get; }
 
         /// <summary>
         /// The format of the e-mobility provider identification.
         /// </summary>
-        public ProviderIdFormats  Format        { get; }
+        public EMobilityProviderIdFormats  Format         { get; }
 
         /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
-        public Boolean IsNullOrEmpty
+        public Boolean  IsNullOrEmpty
             => Suffix.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
-        public Boolean IsNotNullOrEmpty
+        public Boolean  IsNotNullOrEmpty
             => Suffix.IsNotNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.
         /// </summary>
-        public UInt64 Length
+        public UInt64   Length
         {
             get
             {
@@ -86,10 +86,10 @@ namespace cloud.charging.open.protocols.WWCP
                 switch (Format)
                 {
 
-                    case ProviderIdFormats.DIN_STAR:
+                    case EMobilityProviderIdFormats.DIN_STAR:
                         return (UInt64) (CountryCode.Alpha2Code.Length + 1 + Suffix.Length);
 
-                    case ProviderIdFormats.ISO:
+                    case EMobilityProviderIdFormats.ISO:
                         return (UInt64) (CountryCode.Alpha2Code.Length     + Suffix.Length);
 
                     default: // ISO_HYPHEN
@@ -110,9 +110,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CountryCode">The country code.</param>
         /// <param name="Suffix">The suffix of the e-mobility provider identification.</param>
         /// <param name="Format">The format of the e-mobility provider identification.</param>
-        private NavigationProvider_Id(Country            CountryCode,
-                                     String             Suffix,
-                                     ProviderIdFormats  Format = ProviderIdFormats.ISO_HYPHEN)
+        private NavigationProvider_Id(Country                     CountryCode,
+                                      String                      Suffix,
+                                      EMobilityProviderIdFormats  Format = EMobilityProviderIdFormats.ISO_HYPHEN)
         {
 
             #region Initial checks
@@ -157,28 +157,31 @@ namespace cloud.charging.open.protocols.WWCP
             if (Country.TryParseAlpha2Code(MatchCollection[0].Groups[1].Value, out _CountryCode))
             {
 
-                var Separator = ProviderIdFormats.ISO;
+                var Separator = EMobilityProviderIdFormats.ISO;
 
                 switch (MatchCollection[0].Groups[2].Value)
                 {
 
                     case "-" :
-                        Separator = ProviderIdFormats.ISO_HYPHEN;
+                        Separator = EMobilityProviderIdFormats.ISO_HYPHEN;
                         break;
 
                     case "*" :
-                        Separator = ProviderIdFormats.DIN_STAR;
+                        Separator = EMobilityProviderIdFormats.DIN_STAR;
                         break;
 
                     default:
-                        Separator = ProviderIdFormats.ISO;
+                        Separator = EMobilityProviderIdFormats.ISO;
                         break;
 
                 }
 
-                return new NavigationProvider_Id(_CountryCode,
-                                                MatchCollection[0].Groups[3].Value,
-                                                Separator);
+                return new NavigationProvider_Id(
+                           _CountryCode,
+                           MatchCollection[0].Groups[3].Value,
+                           Separator
+                       );
+
             }
 
             throw new ArgumentException("Unknown country code in the given text representation of an e-mobility provider identification: '{Text}'!", nameof(Text));
@@ -195,9 +198,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CountryCode">A country code.</param>
         /// <param name="Suffix">The suffix of an e-mobility provider identification.</param>
         /// <param name="IdFormat">The optional format of the e-mobility provider identification.</param>
-        public static NavigationProvider_Id Parse(Country            CountryCode,
-                                                 String             Suffix,
-                                                 ProviderIdFormats  IdFormat = ProviderIdFormats.ISO_HYPHEN)
+        public static NavigationProvider_Id Parse(Country                     CountryCode,
+                                                  String                      Suffix,
+                                                  EMobilityProviderIdFormats  IdFormat = EMobilityProviderIdFormats.ISO_HYPHEN)
         {
 
             #region Initial checks
@@ -213,10 +216,10 @@ namespace cloud.charging.open.protocols.WWCP
             switch (IdFormat)
             {
 
-                case ProviderIdFormats.DIN_STAR:
+                case EMobilityProviderIdFormats.DIN_STAR:
                     return Parse(CountryCode.Alpha2Code + "*" + Suffix);
 
-                case ProviderIdFormats.ISO:
+                case EMobilityProviderIdFormats.ISO:
                     return Parse(CountryCode.Alpha2Code +       Suffix);
 
                 default: // ISO_HYPHEN:
@@ -256,7 +259,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (MatchCollection.Count != 1)
                 {
-                    ProviderId = default(NavigationProvider_Id);
+                    ProviderId = default;
                     return false;
                 }
 
@@ -265,21 +268,21 @@ namespace cloud.charging.open.protocols.WWCP
                 if (Country.TryParseAlpha2Code(MatchCollection[0].Groups[1].Value, out _CountryCode))
                 {
 
-                    var Separator = ProviderIdFormats.ISO;
+                    var Separator = EMobilityProviderIdFormats.ISO;
 
                     switch (MatchCollection[0].Groups[2].Value)
                     {
 
                         case "-":
-                            Separator = ProviderIdFormats.ISO_HYPHEN;
+                            Separator = EMobilityProviderIdFormats.ISO_HYPHEN;
                             break;
 
                         case "*":
-                            Separator = ProviderIdFormats.DIN_STAR;
+                            Separator = EMobilityProviderIdFormats.DIN_STAR;
                             break;
 
                         default:
-                            Separator = ProviderIdFormats.ISO;
+                            Separator = EMobilityProviderIdFormats.ISO;
                             break;
 
                     }
@@ -301,7 +304,7 @@ namespace cloud.charging.open.protocols.WWCP
 #pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }
 
-            ProviderId = default(NavigationProvider_Id);
+            ProviderId = default;
             return false;
 
         }
@@ -317,10 +320,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Suffix">The suffix of an e-mobility provider identification.</param>
         /// <param name="ProviderId">The parsed e-mobility provider identification.</param>
         /// <param name="IdFormat">The optional format of the e-mobility provider identification.</param>
-        public static Boolean TryParse(Country                   CountryCode,
-                                       String                    Suffix,
-                                       out NavigationProvider_Id  ProviderId,
-                                       ProviderIdFormats         IdFormat = ProviderIdFormats.ISO_HYPHEN)
+        public static Boolean TryParse(Country                     CountryCode,
+                                       String                      Suffix,
+                                       out NavigationProvider_Id   ProviderId,
+                                       EMobilityProviderIdFormats  IdFormat = EMobilityProviderIdFormats.ISO_HYPHEN)
         {
 
             #region Initial checks
@@ -336,11 +339,11 @@ namespace cloud.charging.open.protocols.WWCP
             switch (IdFormat)
             {
 
-                case ProviderIdFormats.DIN_STAR:
+                case EMobilityProviderIdFormats.DIN_STAR:
                     return TryParse(CountryCode.Alpha2Code + "*" + Suffix,
                                     out ProviderId);
 
-                case ProviderIdFormats.ISO:
+                case EMobilityProviderIdFormats.ISO:
                     return TryParse(CountryCode.Alpha2Code +       Suffix,
                                     out ProviderId);
 
@@ -360,11 +363,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a new e-mobility provider identification in the given format.
         /// </summary>
         /// <param name="NewFormat">The new e-mobility provider identification format.</param>
-        public NavigationProvider_Id ChangeFormat(ProviderIdFormats NewFormat)
+        public NavigationProvider_Id ChangeFormat(EMobilityProviderIdFormats NewFormat)
 
-            => new NavigationProvider_Id(CountryCode,
-                                        Suffix,
-                                        NewFormat);
+            => new (
+                   CountryCode,
+                   Suffix,
+                   NewFormat
+               );
 
         #endregion
 
@@ -615,10 +620,10 @@ namespace cloud.charging.open.protocols.WWCP
             switch (Format)
             {
 
-                case ProviderIdFormats.DIN_STAR:
+                case EMobilityProviderIdFormats.DIN_STAR:
                     return "+" + CountryCode.TelefonCode.ToString() + "*" + Suffix;
 
-                case ProviderIdFormats.ISO:
+                case EMobilityProviderIdFormats.ISO:
                     return CountryCode.Alpha2Code +       Suffix;
 
                 default: // ISO_HYPHEN
@@ -636,18 +641,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return the identification in the given format.
         /// </summary>
         /// <param name="Format">The format of the identification.</param>
-        public String ToString(ProviderIdFormats Format)
+        public String ToString(EMobilityProviderIdFormats Format)
         {
 
             switch (Format)
             {
 
-                case ProviderIdFormats.DIN_STAR:
+                case EMobilityProviderIdFormats.DIN_STAR:
                     return String.Concat(CountryCode.Alpha2Code,
                                          "*",
                                          Suffix);
 
-                case ProviderIdFormats.ISO:
+                case EMobilityProviderIdFormats.ISO:
                     return String.Concat(CountryCode.Alpha2Code,
                                          Suffix);
 

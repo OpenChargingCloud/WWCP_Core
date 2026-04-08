@@ -192,20 +192,20 @@ namespace cloud.charging.open.protocols.WWCP
             switch (ProviderId.Format)
             {
 
-                case ProviderIdFormats.DIN:
+                case EMobilityProviderIdFormats.DIN:
                     return Parse(ProviderId +       Suffix);
 
-                case ProviderIdFormats.DIN_STAR:
+                case EMobilityProviderIdFormats.DIN_STAR:
                     return Parse(ProviderId + "*" + Suffix);
 
-                case ProviderIdFormats.DIN_HYPHEN:
+                case EMobilityProviderIdFormats.DIN_HYPHEN:
                     return Parse(ProviderId + "-" + Suffix);
 
 
-                case ProviderIdFormats.ISO:
+                case EMobilityProviderIdFormats.ISO:
                     return Parse(ProviderId +       Suffix);
 
-                case ProviderIdFormats.ISO_HYPHEN:
+                case EMobilityProviderIdFormats.ISO_HYPHEN:
                     return Parse(ProviderId + "-" + Suffix);
 
                 default:
@@ -286,12 +286,12 @@ namespace cloud.charging.open.protocols.WWCP
                     if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[4].Value,  out providerId))
                     {
 
-                        if (providerId.Format == ProviderIdFormats.ISO_HYPHEN)
-                            providerId = providerId.ChangeFormat(ProviderIdFormats.DIN_HYPHEN);
+                        if (providerId.Format == EMobilityProviderIdFormats.ISO_HYPHEN)
+                            providerId = providerId.ChangeFormat(EMobilityProviderIdFormats.DIN_HYPHEN);
 
                         eMobilityAccountId = new EMobilityAccount_Id(
                                                      Text,
-                                                     providerId.ChangeFormat(ProviderIdFormats.DIN_HYPHEN),
+                                                     providerId.ChangeFormat(EMobilityProviderIdFormats.DIN_HYPHEN),
                                                      matchCollection[0].Groups[5].Value,
                                                      matchCollection[0].Groups[6].Value[0]
                                                  );
