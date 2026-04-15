@@ -335,16 +335,16 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                     var now = Timestamp.Now;
 
-                    DE_GEF_E1234_5678_1.MaxPower           = Watt.ParseKW(123.45m);
-                    DE_GEF_E1234_5678_1.MaxPower           = Watt.ParseKW(234.56m);
+                    DE_GEF_E1234_5678_1.MaxPower           = Watt.FromKW(123.45m);
+                    DE_GEF_E1234_5678_1.MaxPower           = Watt.FromKW(234.56m);
 
-                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = Watt.ParseKW(345.67m);
-                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = Watt.ParseKW(456.78m);
+                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = Watt.FromKW(345.67m);
+                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = Watt.FromKW(456.78m);
 
                     DE_GEF_E1234_5678_1.MaxPowerPrognoses.Replace([
-                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(1), Watt.ParseKW(567.89m)),
-                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(2), Watt.ParseKW(678.91m)),
-                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(3), Watt.ParseKW(789.12m))
+                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(1), Watt.FromKW(567.89m)),
+                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(2), Watt.FromKW(678.91m)),
+                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(3), Watt.FromKW(789.12m))
                                                                   ]);
 
                     ClassicAssert.AreEqual(7, evseDataChanges.                       Count);
@@ -357,12 +357,12 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     DE_GEF_E1234_5678_1.Name.       Set(Languages.it, "namelalala");
                     DE_GEF_E1234_5678_1.Description.Set(Languages.it, "desclalala");
 
-                    DE_GEF_E1234_5678_1.MaxPower           = Watt.ParseKW(234.56m);
-                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = Watt.ParseKW(456.78m);
+                    DE_GEF_E1234_5678_1.MaxPower           = Watt.FromKW(234.56m);
+                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = Watt.FromKW(456.78m);
                     DE_GEF_E1234_5678_1.MaxPowerPrognoses.Replace([
-                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(1), Watt.ParseKW(567.89m)),
-                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(2), Watt.ParseKW(678.91m)),
-                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(3), Watt.ParseKW(789.12m))
+                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(1), Watt.FromKW(567.89m)),
+                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(2), Watt.FromKW(678.91m)),
+                                                                      new Timestamped<Watt>(now + TimeSpan.FromMinutes(3), Watt.FromKW(789.12m))
                                                                   ]);
 
                     ClassicAssert.AreEqual(7, evseDataChanges.                       Count);

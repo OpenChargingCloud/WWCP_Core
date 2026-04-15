@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <param name="PacketLoss">The optional error rate between this node and the destination node.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public VirtualNetworkLinkInformation(UInt16                     Distance,
-                                             StdDev<BitsPerSecond>?     Capacity     = null,
+                                             StdDev<BitPerSecond>?     Capacity     = null,
                                              StdDev<TimeSpan>?          Latency      = null,
                                              StdDev<PercentageDouble>?  PacketLoss   = null,
                                              CustomData?                CustomData   = null)
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                 #region Capacity      [optional]
 
-                StdDev<BitsPerSecond>? Capacity = null;
+                StdDev<BitPerSecond>? Capacity = null;
 
                 var capacityArray = JSON["capacity"] as JArray;
 
@@ -189,7 +189,10 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                     var v = capacityArray[0].Value<Decimal>();
                     var s = capacityArray[1].Value<Decimal>();
 
-                    Capacity = BitsPerSecond.ParseBPS(v, s);
+                    Capacity = StdDev<BitPerSecond>.From(
+                                   BitPerSecond.FromBPS(v),
+                                   BitPerSecond.FromBPS(s)
+                               );
 
                 }
 
@@ -325,7 +328,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                            Capacity. HasValue
                                ? new JProperty("capacity",     new JArray(
-                                                                   Capacity.  Value.Value.            Value,
+                                                                   Capacity.  Value.Mean.            Value,
                                                                    Capacity.  Value.StandardDeviation.Value,
                                                                    "bit/s"
                                                                ))
@@ -333,7 +336,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                            Latency.  HasValue
                                ? new JProperty("latency",      new JArray(
-                                                                   Latency.   Value.Value.            TotalMilliseconds,
+                                                                   Latency.   Value.Mean.            TotalMilliseconds,
                                                                    Latency.   Value.StandardDeviation.TotalMilliseconds,
                                                                    "ms"
                                                                ))
@@ -341,7 +344,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                            PacketLoss.HasValue
                                ? new JProperty("packetLoss",   new JArray(
-                                                                   PacketLoss.Value.Value.            Value,
+                                                                   PacketLoss.Value.Mean.            Value,
                                                                    PacketLoss.Value.StandardDeviation.Value,
                                                                    "%"
                                                                ))
@@ -511,7 +514,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// The optional capacity of the network link.
         /// </summary>
         [Optional]
-        public StdDev<BitsPerSecond>?     Capacity               { get; }
+        public StdDev<BitPerSecond>?     Capacity               { get; }
 
         /// <summary>
         /// The optional latency of the network link.
@@ -536,7 +539,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <param name="Latency">The optional latency of the network link.</param>
         /// <param name="PacketLoss">The optional error rate of the network link.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public NetworkLinkInformation(StdDev<BitsPerSecond>?     Capacity    = null,
+        public NetworkLinkInformation(StdDev<BitPerSecond>?     Capacity    = null,
                                       StdDev<TimeSpan>?          Latency      = null,
                                       StdDev<PercentageDouble>?  PacketLoss   = null,
                                       CustomData?                CustomData   = null)
@@ -637,7 +640,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                 #region Capacity      [optional]
 
-                StdDev<BitsPerSecond>? Capacity = null;
+                StdDev<BitPerSecond>? Capacity = null;
 
                 var capacityArray = JSON["capacity"] as JArray;
 
@@ -647,7 +650,10 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                     var v = capacityArray[0].Value<Decimal>();
                     var s = capacityArray[1].Value<Decimal>();
 
-                    Capacity = BitsPerSecond.ParseBPS(v, s);
+                    Capacity = StdDev<BitPerSecond>.From(
+                                   BitPerSecond.FromBPS(v),
+                                   BitPerSecond.FromBPS(s)
+                               );
 
                 }
 
@@ -780,21 +786,21 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                            Capacity. HasValue
                                ? new JProperty("capacity",     new JArray(
-                                                                   Capacity.  Value.Value.            Value,
+                                                                   Capacity.  Value.Mean.            Value,
                                                                    Capacity.  Value.StandardDeviation.Value
                                                                ))
                                : null,
 
                            Latency.  HasValue
                                ? new JProperty("latency",      new JArray(
-                                                                   Latency.   Value.Value.            TotalMilliseconds,
+                                                                   Latency.   Value.Mean.            TotalMilliseconds,
                                                                    Latency.   Value.StandardDeviation.TotalMilliseconds
                                                                ))
                                : null,
 
                            PacketLoss.HasValue
                                ? new JProperty("packetLoss",   new JArray(
-                                                                   PacketLoss.Value.Value.            Value,
+                                                                   PacketLoss.Value.Mean.            Value,
                                                                    PacketLoss.Value.StandardDeviation.Value
                                                                ))
                                : null

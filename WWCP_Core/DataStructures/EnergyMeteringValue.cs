@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (!JSON.ParseMandatory("timestamp",
                                          "timestamp",
-                                         out DateTime Timestamp,
+                                         out DateTime timestamp,
                                          out ErrorResponse))
                 {
                     return false;
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 var valueDecimal = JSON["value"]?.Value<Decimal>() ?? 0.0M;
 
-                if (!WattHour.TryParseKWh(valueDecimal, out var Value))
+                if (!WattHour.TryFromKWh(valueDecimal, out var value))
                 {
                     ErrorResponse = $"Invalid energy metering value '{valueDecimal}'!";
                     return false;
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (JSON.ParseOptional("type",
                                        "type",
                                        EnergyMeteringValueTypesExtensions.TryParse,
-                                       out EnergyMeteringValueTypes? Type,
+                                       out EnergyMeteringValueTypes? type,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -161,23 +161,23 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse SignedData    [optional]
 
-                var SignedData = JSON["signedData"]?.Value<String>() ?? "";
+                var signedData = JSON["signedData"]?.Value<String>() ?? "";
 
                 #endregion
 
                 #region Parse Signature     [optional]
 
-                var Signature  = JSON["signature"]?.Value<String>() ?? "";
+                var signature  = JSON["signature"]?.Value<String>() ?? "";
 
                 #endregion
 
 
                 EnergyMeteringValue = new EnergyMeteringValue(
-                                          Timestamp,
-                                          Value,
-                                          Type,
-                                          SignedData,
-                                          Signature
+                                          timestamp,
+                                          value,
+                                          type,
+                                          signedData,
+                                          signature
                                       );
 
                 return true;
