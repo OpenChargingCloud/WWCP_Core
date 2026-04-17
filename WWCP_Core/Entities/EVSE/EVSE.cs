@@ -1138,8 +1138,8 @@ namespace cloud.charging.open.protocols.WWCP
                 this.RemoteEVSE.OnAdminStatusChanged    += (timestamp, eventTrackingId, remoteEVSE, newStatus, oldStatus, dataSource) => { adminStatusSchedule.Insert(newStatus, dataSource); return Task.CompletedTask; };
                 this.RemoteEVSE.OnStatusChanged         += (timestamp, eventTrackingId, remoteEVSE, newStatus, oldStatus, dataSource) => { statusSchedule.     Insert(newStatus, dataSource); return Task.CompletedTask; };
 
-                this.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation)         => OnNewReservation.     Invoke(Timestamp, RemoteEVSE, Reservation);
-                this.RemoteEVSE.OnReservationCanceled   += (Timestamp, RemoteEVSE, Reservation, Reason) => OnReservationCanceled.Invoke(Timestamp, RemoteEVSE, Reservation, Reason);
+                this.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation)         => OnNewReservation?.     Invoke(Timestamp, RemoteEVSE, Reservation);
+                this.RemoteEVSE.OnReservationCanceled   += (Timestamp, RemoteEVSE, Reservation, Reason) => OnReservationCanceled?.Invoke(Timestamp, RemoteEVSE, Reservation, Reason);
 
                 this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession) => {
 

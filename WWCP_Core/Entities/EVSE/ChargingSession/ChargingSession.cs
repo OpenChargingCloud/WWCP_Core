@@ -113,9 +113,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public JObject ToJSON(Boolean                                               Embedded                             = true,
                               CustomJObjectSerializerDelegate<ReceivedCDRInfo>?     CustomCDRReceivedInfoSerializer      = null,
-                              CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   = null,
-                              CustomJObjectSerializerDelegate<SendCDRResult>?       CustomSendCDRResultSerializer        = null,
-                              CustomJObjectSerializerDelegate<Warning>?             CustomWarningSerializer              = null)
+                              CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   = null)
 
         {
 
@@ -131,13 +129,6 @@ namespace cloud.charging.open.protocols.WWCP
 
                                  new JProperty("cdr",               ChargeDetailRecord.ToJSON(Embedded:                             true,
                                                                                               CustomChargeDetailRecordSerializer:   CustomChargeDetailRecordSerializer))
-
-                                 //new JProperty("result",            Result.         ToJSON(Embedded:                             true,
-                                 //                                                          IncludeCDR:                           false,
-                                 //                                                          CustomChargeDetailRecordSerializer:   CustomChargeDetailRecordSerializer,
-                                 //                                                          CustomSendCDRResultSerializer:        CustomSendCDRResultSerializer,
-                                 //                                                          CustomWarningSerializer:              CustomWarningSerializer))
-
                        );
 
             return CustomCDRReceivedInfoSerializer is not null
@@ -217,31 +208,12 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Parse SendCDRResult         [optional]
-
-                //if (JSON.ParseOptionalJSON("sendCDRResult",
-                //                           "send charge detail record result",
-                //                           WWCP.SendCDRResult.TryParse,
-                //                           out SendCDRResult? SendCDRResult,
-                //                           out ErrorResponse))
-                //{
-                //    if (ErrorResponse is not null)
-                //        return false;
-                //}
-
-                #endregion
-
 
                 ReceivedCDRInfo = new ReceivedCDRInfo(
                                       Timestamp,
                                       SystemId,
                                       EventTrackingId,
                                       ChargeDetailRecord
-                                      //SendCDRResult ?? SendCDRResult.Success(
-                                      //                     Timestamp,
-                                      //                     SystemId,
-                                      //                     ChargeDetailRecord
-                                      //                 )
                                   );
 
                 return true;
@@ -835,12 +807,12 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        public IId? AuthorizatorIdStart { get; set; }
+        public IId?        AuthorizatorIdStart        { get; set; }
 
-        public IId? AuthorizatorIdStop  { get; set; }
+        public IId?        AuthorizatorIdStop         { get; set; }
 
-        public Auth_Path? AuthenticationStartPath   { get; set; }
-        public Auth_Path? AuthenticationStopPath    { get; set; }
+        public Auth_Path?  AuthenticationStartPath    { get; set; }
+        public Auth_Path?  AuthenticationStopPath     { get; set; }
 
 
         #region CSORoamingProviderStart
@@ -1041,12 +1013,6 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        //public DateTimeOffset?                CDRReceivedTimestamp          { get; set; }
-        //public ChargeDetailRecord?            CDR                           { get; set; }
-
-
-
-
         private readonly List<ReceivedCDRInfo> receivedCDRInfos = [];
 
         public IEnumerable<ReceivedCDRInfo>   ReceivedCDRInfos
@@ -1080,23 +1046,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         public IEnumerable<String> Signatures
                    => signatures;
-
-        #endregion
-
-        #region Events
-
-        /// <summary>
-        /// An event sent whenever a new energy meter value was received.
-        /// </summary>
-        /// <param name="Timestamp">The current timestamp.</param>
-        /// <param name="ChargingSession">The unique charging session identification.</param>
-        /// <param name="EnergyMeterValue">A timestamped energy meter value.</param>
-        public delegate void OnNewEnergyMeterValueDelegate(DateTime Timestamp, ChargingSession ChargingSession, EnergyMeteringValue EnergyMeterValue);
-
-        /// <summary>
-        /// An event sent whenever a new energy meter value was received.
-        /// </summary>
-        public event OnNewEnergyMeterValueDelegate? OnNewEnergyMeterValue;
 
         #endregion
 
@@ -1589,9 +1538,7 @@ namespace cloud.charging.open.protocols.WWCP
                            receivedCDRInfos.Count != 0
                                ? new JProperty("receivedCDRInfos",            new JArray(receivedCDRInfos.Select(cdrReceivedInfo   => cdrReceivedInfo.ToJSON(Embedded:                            true,
                                                                                                                                                              CustomCDRReceivedInfoSerializer:     CustomCDRReceivedInfoSerializer,
-                                                                                                                                                             CustomChargeDetailRecordSerializer:  CustomChargeDetailRecordSerializer,
-                                                                                                                                                             CustomSendCDRResultSerializer:       CustomSendCDRResultSerializer,
-                                                                                                                                                             CustomWarningSerializer:             CustomWarningSerializer))))
+                                                                                                                                                             CustomChargeDetailRecordSerializer:  CustomChargeDetailRecordSerializer))))
                                : null,
 
 
