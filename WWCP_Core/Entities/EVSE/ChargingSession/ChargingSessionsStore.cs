@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -1224,6 +1226,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var startTime                = Timestamp.Now;
+            var stopWatch                = Stopwatch.StartNew();
             var listOfFilenames          = new List<Tuple<String, UInt64>>();
             var numberOfCommands         = 0UL;
             var numberOfSkippedCommands  = 0UL;
@@ -1314,17 +1317,37 @@ namespace cloud.charging.open.protocols.WWCP
                                                 switch (command)
                                                 {
 
-                                                    #region "remoteStart"
+                                                    #region "remoteStartRequest/Response"
 
                                                     case "remoteStart":
+                                                    case "remoteStartRequest":
+                                                    case "remoteStartResponse":
 
                                                         if (InternalData.TryAdd(chargingSession.Id, chargingSession))
                                                         {
+
                                                             if (chargingSession.EVSEId.HasValue)
                                                                 chargingSession.EVSE ??= RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
 
-                                                            if (chargingSession.EVSE is not null)
-                                                                chargingSession.EVSE.ChargingSession = chargingSession;
+                                                            chargingSession.EVSE?.ChargingSession = chargingSession;
+
+                                                        }
+                                                        break;
+
+                                                    #endregion
+
+                                                    #region "sessionReceived"
+
+                                                    case "sessionReceived":
+
+                                                        if (InternalData.TryAdd(chargingSession.Id, chargingSession))
+                                                        {
+
+                                                            if (chargingSession.EVSEId.HasValue)
+                                                                chargingSession.EVSE ??= RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
+
+                                                            chargingSession.EVSE?.ChargingSession = chargingSession;
+
                                                         }
                                                         break;
 
@@ -1340,8 +1363,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                         if (chargingSession.EVSEId.HasValue)
                                                             chargingSession.EVSE ??= RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
 
-                                                        if (chargingSession.EVSE is not null)
-                                                            chargingSession.EVSE.ChargingSession = null;
+                                                        chargingSession.EVSE?.ChargingSession = null;
 
                                                         break;
 
@@ -1353,11 +1375,12 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                         if (InternalData.TryAdd(chargingSession.Id, chargingSession))
                                                         {
+
                                                             if (chargingSession.EVSEId.HasValue)
                                                                 chargingSession.EVSE ??= RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
 
-                                                            if (chargingSession.EVSE is not null)
-                                                                chargingSession.EVSE.ChargingSession = chargingSession;
+                                                            chargingSession.EVSE?.ChargingSession = chargingSession;
+
                                                         }
                                                         break;
 
@@ -1373,8 +1396,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                         if (chargingSession.EVSEId.HasValue)
                                                             chargingSession.EVSE ??= RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
 
-                                                        if (chargingSession.EVSE is not null)
-                                                            chargingSession.EVSE.ChargingSession = null;
+                                                        chargingSession.EVSE?.ChargingSession = null;
 
                                                         break;
 
@@ -1390,8 +1412,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                         if (chargingSession.EVSEId.HasValue)
                                                             chargingSession.EVSE ??= RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
 
-                                                        if (chargingSession.EVSE is not null)
-                                                            chargingSession.EVSE.ChargingSession = null;
+                                                        chargingSession.EVSE?.ChargingSession = null;
 
                                                         break;
 
@@ -1407,19 +1428,28 @@ namespace cloud.charging.open.protocols.WWCP
                                                         if (chargingSession.EVSEId.HasValue)
                                                             chargingSession.EVSE ??= RoamingNetwork.GetEVSEById(chargingSession.EVSEId.Value);
 
-                                                        if (chargingSession.EVSE is not null)
-                                                            chargingSession.EVSE.ChargingSession = null;
+                                                        chargingSession.EVSE?.ChargingSession = null;
 
                                                         break;
 
                                                     #endregion
+
+                                                    case "new":
+                                                        break;
+
+                                                    case "update":
+                                                        break;
+
+                                                    default:
+                                                        DebugX.Log($"Found unknown command in {filename} line {lineNumber}: '{command}'!");
+                                                        break;
 
                                                 }
 
                                             }
                                             else
                                             {
-                                                DebugX.Log($"Could not parse charging session in {filename} line {totalNumberOfLines-lineNumber}:" + errorResponse);
+                                                DebugX.Log($"Could not parse charging session in {filename} line {lineNumber}:" + errorResponse);
                                             }
 
                                         }
@@ -1458,12 +1488,14 @@ namespace cloud.charging.open.protocols.WWCP
             }
 
 
+            stopWatch.Stop();
+
             var statistics = new ReloadStatistics(
                                  LogfileSearchPattern,
                                  listOfFilenames,
                                  numberOfCommands,
                                  listOfErrors,
-                                 Timestamp.Now - startTime
+                                 stopWatch.Elapsed
                              );
 
             if (listOfFilenames.Count > 0 && numberOfCommands > 0)
