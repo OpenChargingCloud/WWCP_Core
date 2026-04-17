@@ -163,6 +163,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public I18NString                        AdditionalInfo                   { get; }
 
+
+        public JObject?                          AdditionalContext                { get; }
+
+
         /// <summary>
         /// Number of transmission retries.
         /// </summary>
@@ -229,6 +233,9 @@ namespace cloud.charging.open.protocols.WWCP
                                 EMobilityProvider_Id?              ProviderId                   = null,
                                 I18NString?                        Description                  = null,
                                 I18NString?                        AdditionalInfo               = null,
+
+                                JObject?                           AdditionalContext            = null,
+
                                 Byte                               NumberOfRetries              = 0,
                                 TimeSpan?                          Runtime                      = null)
 
@@ -258,6 +265,9 @@ namespace cloud.charging.open.protocols.WWCP
             this.ProviderId                  = ProviderId           ?? new EMobilityProvider_Id?();
             this.Description                 = Description          ?? I18NString.Empty;
             this.AdditionalInfo              = AdditionalInfo       ?? I18NString.Empty;
+
+            this.AdditionalContext           = AdditionalContext;
+
             this.NumberOfRetries             = NumberOfRetries;
             this.Runtime                     = Runtime              ?? TimeSpan.FromSeconds(0);
 
@@ -314,6 +324,9 @@ namespace cloud.charging.open.protocols.WWCP
                                EMobilityProvider_Id?              ProviderId                  = null,
                                I18NString?                        Description                 = null,
                                I18NString?                        AdditionalInfo              = null,
+
+                               JObject?                           AdditionalContext           = null,
+
                                Byte                               NumberOfRetries             = 0,
                                TimeSpan?                          Runtime                     = null)
 
@@ -341,6 +354,9 @@ namespace cloud.charging.open.protocols.WWCP
                    ProviderId,
                    Description,
                    AdditionalInfo,
+
+                   AdditionalContext,
+
                    NumberOfRetries,
                    Runtime)
 
@@ -397,6 +413,9 @@ namespace cloud.charging.open.protocols.WWCP
                                EMobilityProvider_Id?              ProviderId                  = null,
                                I18NString?                        Description                 = null,
                                I18NString?                        AdditionalInfo              = null,
+
+                               JObject?                           AdditionalContext           = null,
+
                                Byte                               NumberOfRetries             = 0,
                                TimeSpan?                          Runtime                     = null)
 
@@ -424,6 +443,9 @@ namespace cloud.charging.open.protocols.WWCP
                    ProviderId,
                    Description,
                    AdditionalInfo,
+
+                   AdditionalContext,
+
                    NumberOfRetries,
                    Runtime)
 
@@ -948,6 +970,9 @@ namespace cloud.charging.open.protocols.WWCP
                        EMobilityProvider_Id?              ProviderId                  = null,
                        I18NString?                        Description                 = null,
                        I18NString?                        AdditionalInfo              = null,
+
+                       JObject?                           AdditionalContext           = null,
+
                        Byte                               NumberOfRetries             = 0,
                        TimeSpan?                          Runtime                     = null)
 
@@ -974,6 +999,9 @@ namespace cloud.charging.open.protocols.WWCP
                         ProviderId,
                         Description ?? I18NString.Create("Success!"),
                         AdditionalInfo,
+
+                        AdditionalContext,
+
                         NumberOfRetries,
                         Runtime);
 
@@ -1025,6 +1053,9 @@ namespace cloud.charging.open.protocols.WWCP
                        EMobilityProvider_Id?              ProviderId                  = null,
                        I18NString?                        Description                 = null,
                        I18NString?                        AdditionalInfo              = null,
+
+                       JObject?                           AdditionalContext           = null,
+
                        Byte                               NumberOfRetries             = 0,
                        TimeSpan?                          Runtime                     = null)
 
@@ -1051,6 +1082,9 @@ namespace cloud.charging.open.protocols.WWCP
                         ProviderId,
                         Description ?? I18NString.Create("Success!"),
                         AdditionalInfo,
+
+                        AdditionalContext,
+
                         NumberOfRetries,
                         Runtime);
 

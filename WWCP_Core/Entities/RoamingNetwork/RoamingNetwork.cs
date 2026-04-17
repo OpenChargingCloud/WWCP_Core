@@ -7796,15 +7796,17 @@ namespace cloud.charging.open.protocols.WWCP
                     !authStartResultCache.          ContainsKey(LocalAuthentication.AuthToken.Value))
                 {
 
-                    authStartResultCache.TryAdd(LocalAuthentication.AuthToken.Value,
-                                                new AuthStartResult(
-                                                    AuthorizatorId:             result.AuthorizatorId,
-                                                    ISendAuthorizeStartStop:    result.ISendAuthorizeStartStop,
-                                                    Result:                     result.Result,
-                                                    CachedResultEndOfLifeTime:  Timestamp.Now + AuthenticationCacheTimeout,
-                                                    ProviderId:                 result.ProviderId,
-                                                    Runtime:                    TimeSpan.Zero
-                                                ));
+                    authStartResultCache.TryAdd(
+                        LocalAuthentication.AuthToken.Value,
+                        new AuthStartResult(
+                            AuthorizatorId:             result.AuthorizatorId,
+                            ISendAuthorizeStartStop:    result.ISendAuthorizeStartStop,
+                            Result:                     result.Result,
+                            CachedResultEndOfLifeTime:  Timestamp.Now + AuthenticationCacheTimeout,
+                            ProviderId:                 result.ProviderId,
+                            Runtime:                    TimeSpan.Zero
+                        )
+                    );
 
                 }
 
@@ -7822,6 +7824,7 @@ namespace cloud.charging.open.protocols.WWCP
                 }
 
                 #endregion
+
 
             }
             catch (Exception e)
@@ -7866,6 +7869,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   result.ProviderId,
                                   result.Description,
                                   result.AdditionalInfo,
+                                  result.AdditionalContext,
                                   result.NumberOfRetries,
                                   result.Runtime
                               );
@@ -7881,7 +7885,8 @@ namespace cloud.charging.open.protocols.WWCP
                 await SessionsStore.AuthStart(
                           new ChargingSession(
                               result.SessionId!.Value,
-                              eventTrackingId
+                              eventTrackingId,
+                              CustomData: result.AdditionalContext
                           ) {
                               RoamingNetwork             = this,
                               CSORoamingProviderStart    = result.ISendAuthorizeStartStop as ICSORoamingProvider,
