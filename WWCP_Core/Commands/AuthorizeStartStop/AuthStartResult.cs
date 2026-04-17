@@ -18,7 +18,7 @@
 #region Usings
 
 using Newtonsoft.Json.Linq;
-
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.WWCP
         public IReceiveAuthorizeStartStop?       IReceiveAuthorizeStartStop       { get; }
 
         /// <summary>
-        /// The result of the authorize start request.
+        /// The result of the AuthorizeStart request.
         /// </summary>
         public AuthStartResultTypes              Result                           { get; }
 
@@ -83,12 +83,12 @@ namespace cloud.charging.open.protocols.WWCP
                    : null;
 
         /// <summary>
-        /// The optional charging session identification, when the authorize start operation was successful.
+        /// The optional charging session identification, when the AuthorizeStart operation was successful.
         /// </summary>
         public ChargingSession_Id?               SessionId                        { get; }
 
         /// <summary>
-        /// An optional EMP partner charging session identification, when the authorize start operation was successful.
+        /// An optional EMP partner charging session identification, when the AuthorizeStart operation was successful.
         /// </summary>
         public ChargingSession_Id?               EMPPartnerSessionId              { get; }
 
@@ -120,12 +120,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The optional maximum allowed charging current.
         /// </summary>
-        public Single?                           MaxkW                            { get;}
+        public Watt?                             MaxPower                            { get;}
 
         /// <summary>
         /// The optional maximum allowed charging energy.
         /// </summary>
-        public Single?                           MaxkWh                           { get;}
+        public WattHour?                         MaxEnergy                           { get;}
 
         /// <summary>
         /// The optional maximum allowed charging duration.
@@ -154,7 +154,12 @@ namespace cloud.charging.open.protocols.WWCP
         public EMobilityProvider_Id?             ProviderId                       { get; }
 
         /// <summary>
-        /// A optional description of the authorize start result, e.g. in case of an error.
+        /// The optional name of the e-mobility provider.
+        /// </summary>
+        public String?                           ProviderName                     { get; }
+
+        /// <summary>
+        /// A optional description of the AuthorizeStart result, e.g. in case of an error.
         /// </summary>
         public I18NString                        Description                      { get; }
 
@@ -175,46 +180,53 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?                         Runtime                          { get; }
+        public TimeSpan                          Runtime                          { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region (private) AuthStartResult(AuthorizatorId,                             Result, ...)
+        #region (private) AuthStartResult (AuthorizatorId,                             Result, ...)
 
         /// <summary>
         /// Create a new authorize start result.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
-        /// <param name="Result">The authorize start result type.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response.</param>
+        /// <param name="Result">The AuthorizeStart result type.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="EMPPartnerSessionId">An optional EMP partner charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="EMPPartnerSessionId">An optional EMP partner charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="AuthorizationReference">An optional authorization reference.</param>
         /// <param name="ContractId">An optional contract identification.</param>
         /// <param name="PrintedNumber">An optional printed number.</param>
+        /// <param name="UILanguage">An optional user interface language to be used for further interactions with the user.</param>
         /// <param name="ExpiryDate">The timestamp when this authorization expires.</param>
-        /// <param name="MaxkW">The optional maximum allowed charging current.</param>
-        /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
+        /// <param name="MaxPower">The optional maximum allowed charging current.</param>
+        /// <param name="MaxEnergy">The optional maximum allowed charging energy.</param>
         /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
         /// <param name="ChargingTariffs">Optional charging tariff information.</param>
         /// <param name="ListOfAuthStopTokens">An optional enumeration of authorize stop tokens.</param>
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
         /// 
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
+        /// <param name="ProviderName">An optional e-mobility provider name.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="AdditionalContext">Optional additional context information.</param>
+        /// 
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         private AuthStartResult(IId                                AuthorizatorId,
+                                DateTimeOffset                     ResponseTimestamp,
                                 AuthStartResultTypes               Result,
-                                DateTimeOffset?                    ResponseTimestamp            = null,
-                                DateTimeOffset?                    CachedResultEndOfLifeTime    = null,
+                                TimeSpan                           Runtime,
                                 ISendAuthorizeStartStop?           ISendAuthorizeStartStop      = null,
                                 IReceiveAuthorizeStartStop?        IReceiveAuthorizeStartStop   = null,
+                                DateTimeOffset?                    CachedResultEndOfLifeTime    = null,
 
                                 ChargingSession_Id?                SessionId                    = null,
                                 ChargingSession_Id?                EMPPartnerSessionId          = null,
@@ -223,29 +235,29 @@ namespace cloud.charging.open.protocols.WWCP
                                 String?                            PrintedNumber                = null,
                                 Languages?                         UILanguage                   = null,
                                 DateTimeOffset?                    ExpiryDate                   = null,
-                                Single?                            MaxkW                        = null,
-                                Single?                            MaxkWh                       = null,
+                                Watt?                              MaxPower                        = null,
+                                WattHour?                          MaxEnergy                       = null,
                                 TimeSpan?                          MaxDuration                  = null,
                                 IEnumerable<ChargingTariff>?       ChargingTariffs              = null,
                                 IEnumerable<AuthenticationToken>?  ListOfAuthStopTokens         = null,
                                 IEnumerable<UInt32>?               ListOfAuthStopPINs           = null,
 
                                 EMobilityProvider_Id?              ProviderId                   = null,
+                                String?                            ProviderName                 = null,
                                 I18NString?                        Description                  = null,
                                 I18NString?                        AdditionalInfo               = null,
-
                                 JObject?                           AdditionalContext            = null,
 
-                                Byte                               NumberOfRetries              = 0,
-                                TimeSpan?                          Runtime                      = null)
+                                Byte                               NumberOfRetries              = 0)
 
         {
 
             this.AuthorizatorId              = AuthorizatorId       ?? throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
+            this.ResponseTimestamp           = ResponseTimestamp;
+            this.Result                      = Result;
+            this.Runtime                     = Runtime;
             this.ISendAuthorizeStartStop     = ISendAuthorizeStartStop;
             this.IReceiveAuthorizeStartStop  = IReceiveAuthorizeStartStop;
-            this.Result                      = Result;
-            this.ResponseTimestamp           = ResponseTimestamp    ?? Timestamp.Now;
             this.CachedResultEndOfLifeTime   = CachedResultEndOfLifeTime;
 
             this.SessionId                   = SessionId;
@@ -255,56 +267,63 @@ namespace cloud.charging.open.protocols.WWCP
             this.PrintedNumber               = PrintedNumber;
             this.UILanguage                  = UILanguage;
             this.ExpiryDate                  = ExpiryDate;
-            this.MaxkW                       = MaxkW;
-            this.MaxkWh                      = MaxkWh;
+            this.MaxPower                       = MaxPower;
+            this.MaxEnergy                      = MaxEnergy;
             this.MaxDuration                 = MaxDuration;
             this.ChargingTariffs             = ChargingTariffs      ?? [];
             this.ListOfAuthStopTokens        = ListOfAuthStopTokens ?? [];
             this.ListOfAuthStopPINs          = ListOfAuthStopPINs   ?? [];
 
             this.ProviderId                  = ProviderId           ?? new EMobilityProvider_Id?();
+            this.ProviderName                = ProviderName;
             this.Description                 = Description          ?? I18NString.Empty;
             this.AdditionalInfo              = AdditionalInfo       ?? I18NString.Empty;
-
             this.AdditionalContext           = AdditionalContext;
 
             this.NumberOfRetries             = NumberOfRetries;
-            this.Runtime                     = Runtime              ?? TimeSpan.FromSeconds(0);
 
         }
 
         #endregion
 
-        #region (public)  AuthStartResult(AuthorizatorId, ISendAuthorizeStartStop,    Result, ...)
+        #region (public)  AuthStartResult (AuthorizatorId, ISendAuthorizeStartStop,    Result, ...)
 
         /// <summary>
         /// Create a new authorize start result.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
-        /// <param name="Result">The authorize start result type.</param>
+        /// <param name="Result">The AuthorizeStart result type.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="EMPPartnerSessionId">An optional EMP partner charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="EMPPartnerSessionId">An optional EMP partner charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="AuthorizationReference">An optional authorization reference.</param>
         /// <param name="ContractId">An optional contract identification.</param>
         /// <param name="PrintedNumber">An optional printed number.</param>
+        /// <param name="UILanguage">An optional user interface language to be used for further interactions with the user.</param>
         /// <param name="ExpiryDate">The timestamp when this authorization expires.</param>
-        /// <param name="MaxkW">The optional maximum allowed charging current.</param>
-        /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
+        /// <param name="MaxPower">The optional maximum allowed charging current.</param>
+        /// <param name="MaxEnergy">The optional maximum allowed charging energy.</param>
         /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
         /// <param name="ChargingTariffs">Optional charging tariff information.</param>
         /// <param name="ListOfAuthStopTokens">An optional enumeration of authorize stop tokens.</param>
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
         /// 
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
+        /// <param name="ProviderName">An optional e-mobility provider name.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="AdditionalContext">Optional additional context information.</param>
+        /// 
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public AuthStartResult(IId                                AuthorizatorId,
                                ISendAuthorizeStartStop            ISendAuthorizeStartStop,
                                AuthStartResultTypes               Result,
+                               TimeSpan                           Runtime,
+                               DateTimeOffset?                    ResponseTimestamp           = null,
                                DateTimeOffset?                    CachedResultEndOfLifeTime   = null,
 
                                ChargingSession_Id?                SessionId                   = null,
@@ -314,28 +333,29 @@ namespace cloud.charging.open.protocols.WWCP
                                String?                            PrintedNumber               = null,
                                Languages?                         UILanguage                  = null,
                                DateTimeOffset?                    ExpiryDate                  = null,
-                               Single?                            MaxkW                       = null,
-                               Single?                            MaxkWh                      = null,
+                               Watt?                              MaxPower                    = null,
+                               WattHour?                          MaxEnergy                   = null,
                                TimeSpan?                          MaxDuration                 = null,
                                IEnumerable<ChargingTariff>?       ChargingTariffs             = null,
                                IEnumerable<AuthenticationToken>?  ListOfAuthStopTokens        = null,
                                IEnumerable<UInt32>?               ListOfAuthStopPINs          = null,
 
                                EMobilityProvider_Id?              ProviderId                  = null,
+                               String?                            ProviderName                = null,
                                I18NString?                        Description                 = null,
                                I18NString?                        AdditionalInfo              = null,
 
                                JObject?                           AdditionalContext           = null,
 
-                               Byte                               NumberOfRetries             = 0,
-                               TimeSpan?                          Runtime                     = null)
+                               Byte                               NumberOfRetries             = 0)
 
-            : this(AuthorizatorId,
+            : this (AuthorizatorId,
+                   ResponseTimestamp ?? Timestamp.Now,
                    Result,
-                   null,
-                   CachedResultEndOfLifeTime,
+                   Runtime,
                    ISendAuthorizeStartStop,
                    null,
+                   CachedResultEndOfLifeTime,
 
                    SessionId,
                    EMPPartnerSessionId,
@@ -344,56 +364,63 @@ namespace cloud.charging.open.protocols.WWCP
                    PrintedNumber,
                    UILanguage,
                    ExpiryDate,
-                   MaxkW,
-                   MaxkWh,
+                   MaxPower,
+                   MaxEnergy,
                    MaxDuration,
                    ChargingTariffs,
                    ListOfAuthStopTokens,
                    ListOfAuthStopPINs,
 
                    ProviderId,
+                   ProviderName,
                    Description,
                    AdditionalInfo,
-
                    AdditionalContext,
 
-                   NumberOfRetries,
-                   Runtime)
+                   NumberOfRetries)
 
         { }
 
         #endregion
 
-        #region (public)  AuthStartResult(AuthorizatorId, IReceiveAuthorizeStartStop, Result, ...)
+        #region (public)  AuthStartResult (AuthorizatorId, IReceiveAuthorizeStartStop, Result, ...)
 
         /// <summary>
         /// Create a new authorize start result.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
-        /// <param name="Result">The authorize start result type.</param>
+        /// <param name="Result">The AuthorizeStart result type.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="EMPPartnerSessionId">An optional EMP partner charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="EMPPartnerSessionId">An optional EMP partner charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="AuthorizationReference">An optional authorization reference.</param>
         /// <param name="ContractId">An optional contract identification.</param>
         /// <param name="PrintedNumber">An optional printed number.</param>
+        /// <param name="UILanguage">An optional user interface language to be used for further interactions with the user.</param>
         /// <param name="ExpiryDate">The timestamp when this authorization expires.</param>
-        /// <param name="MaxkW">The optional maximum allowed charging current.</param>
-        /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
+        /// <param name="MaxPower">The optional maximum allowed charging current.</param>
+        /// <param name="MaxEnergy">The optional maximum allowed charging energy.</param>
         /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
         /// <param name="ChargingTariffs">Optional charging tariff information.</param>
         /// <param name="ListOfAuthStopTokens">An optional enumeration of authorize stop tokens.</param>
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
         /// 
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
+        /// <param name="ProviderName">An optional e-mobility provider name.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="AdditionalContext">Optional additional context information.</param>
+        /// 
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public AuthStartResult(IId                                AuthorizatorId,
                                IReceiveAuthorizeStartStop         IReceiveAuthorizeStartStop,
                                AuthStartResultTypes               Result,
+                               TimeSpan                           Runtime,
+                               DateTimeOffset?                    ResponseTimestamp           = null,
                                DateTimeOffset?                    CachedResultEndOfLifeTime   = null,
 
                                ChargingSession_Id?                SessionId                   = null,
@@ -403,28 +430,28 @@ namespace cloud.charging.open.protocols.WWCP
                                String?                            PrintedNumber               = null,
                                Languages?                         UILanguage                  = null,
                                DateTimeOffset?                    ExpiryDate                  = null,
-                               Single?                            MaxkW                       = null,
-                               Single?                            MaxkWh                      = null,
+                               Watt?                              MaxPower                    = null,
+                               WattHour?                          MaxEnergy                   = null,
                                TimeSpan?                          MaxDuration                 = null,
                                IEnumerable<ChargingTariff>?       ChargingTariffs             = null,
                                IEnumerable<AuthenticationToken>?  ListOfAuthStopTokens        = null,
                                IEnumerable<UInt32>?               ListOfAuthStopPINs          = null,
 
                                EMobilityProvider_Id?              ProviderId                  = null,
+                               String?                            ProviderName                = null,
                                I18NString?                        Description                 = null,
                                I18NString?                        AdditionalInfo              = null,
-
                                JObject?                           AdditionalContext           = null,
 
-                               Byte                               NumberOfRetries             = 0,
-                               TimeSpan?                          Runtime                     = null)
+                               Byte                               NumberOfRetries             = 0)
 
-            : this(AuthorizatorId,
+            : this (AuthorizatorId,
+                   ResponseTimestamp ?? Timestamp.Now,
                    Result,
-                   null,
-                   CachedResultEndOfLifeTime,
+                   Runtime,
                    null,
                    IReceiveAuthorizeStartStop,
+                   CachedResultEndOfLifeTime,
 
                    SessionId,
                    EMPPartnerSessionId,
@@ -433,21 +460,21 @@ namespace cloud.charging.open.protocols.WWCP
                    PrintedNumber,
                    UILanguage,
                    ExpiryDate,
-                   MaxkW,
-                   MaxkWh,
+                   MaxPower,
+                   MaxEnergy,
                    MaxDuration,
                    ChargingTariffs,
                    ListOfAuthStopTokens,
                    ListOfAuthStopPINs,
 
                    ProviderId,
+                   ProviderName,
                    Description,
                    AdditionalInfo,
 
                    AdditionalContext,
 
-                   NumberOfRetries,
-                   Runtime)
+                   NumberOfRetries)
 
         {
 
@@ -460,37 +487,41 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Unspecified         (AuthorizatorId, SessionId = null, Runtime = null)
+        #region (static) Unspecified          (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The result is unknown and/or should be ignored.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
-        /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         public static AuthStartResult
 
             Unspecified(IId                      AuthorizatorId,
                         ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                        TimeSpan                 Runtime,
+
+                        DateTimeOffset?          ResponseTimestamp           = null,
                         DateTimeOffset?          CachedResultEndOfLifeTime   = null,
-
                         ChargingSession_Id?      SessionId                   = null,
-                        I18NString?              Description                 = null,
-                        TimeSpan?                Runtime                     = null)
+                        I18NString?              Description                 = null)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.Unspecified,
+                        Runtime,
+                        ISendAuthorizeStartStop,
+                        null,
                         CachedResultEndOfLifeTime,
 
                         SessionId,
-                        Description:  Description,
-                        Runtime:      Runtime);
+                        Description:  Description);
 
 
 
@@ -499,64 +530,73 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
-        /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// 
         public static AuthStartResult
 
             Unspecified(IId                         AuthorizatorId,
                         IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                        TimeSpan                    Runtime,
+
+                        DateTimeOffset?             ResponseTimestamp           = null,
                         DateTimeOffset?             CachedResultEndOfLifeTime   = null,
-
                         ChargingSession_Id?         SessionId                   = null,
-                        I18NString?                 Description                 = null,
-                        TimeSpan?                   Runtime                     = null)
+                        I18NString?                 Description                 = null)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.Unspecified,
+                        Runtime,
+                        null,
+                        IReceiveAuthorizeStartStop,
                         CachedResultEndOfLifeTime,
 
                         SessionId,
-                        Description:  Description,
-                        Runtime:      Runtime);
+                        Description:  Description);
 
         #endregion
 
-        #region (static) AdminDown           (AuthorizatorId, SessionId = null, Runtime = null)
+        #region (static) AdminDown            (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The authentication service was disabled by the administrator.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
-        /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         public static AuthStartResult
 
             AdminDown(IId                      AuthorizatorId,
                       ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                      TimeSpan                 Runtime,
+
+                      DateTimeOffset?          ResponseTimestamp           = null,
                       DateTimeOffset?          CachedResultEndOfLifeTime   = null,
-
                       ChargingSession_Id?      SessionId                   = null,
-                      I18NString?              Description                 = null,
-                      TimeSpan?                Runtime                     = null)
+                      I18NString?              Description                 = null)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.AdminDown,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        ISendAuthorizeStartStop,
+                        null,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("The authentication service was disabled by the administrator!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("The authentication service was disabled by the administrator!"));
 
 
 
@@ -565,64 +605,72 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
-        /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         public static AuthStartResult
 
             AdminDown(IId                         AuthorizatorId,
                       IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                      TimeSpan                    Runtime,
+
+                      DateTimeOffset?             ResponseTimestamp           = null,
                       DateTimeOffset?             CachedResultEndOfLifeTime   = null,
-
                       ChargingSession_Id?         SessionId                   = null,
-                      I18NString?                 Description                 = null,
-                      TimeSpan?                   Runtime                     = null)
+                      I18NString?                 Description                 = null)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.AdminDown,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        null,
+                        IReceiveAuthorizeStartStop,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("The authentication service was disabled by the administrator!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("The authentication service was disabled by the administrator!"));
 
         #endregion
 
-        #region (static) UnknownLocation     (AuthorizatorId, SessionId = null, Runtime = null)
+        #region (static) UnknownLocation      (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The given charging location is unknown.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
-        /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         public static AuthStartResult
 
             UnknownLocation(IId                      AuthorizatorId,
                             ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                            TimeSpan                 Runtime,
+
+                            DateTimeOffset?          ResponseTimestamp           = null,
                             DateTimeOffset?          CachedResultEndOfLifeTime   = null,
-
                             ChargingSession_Id?      SessionId                   = null,
-                            I18NString?              Description                 = null,
-                            TimeSpan?                Runtime                     = null)
+                            I18NString?              Description                 = null)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.UnknownLocation,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        ISendAuthorizeStartStop,
+                        null,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Unknown location!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Unknown location!"));
 
 
 
@@ -631,64 +679,72 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
-        /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         public static AuthStartResult
 
             UnknownLocation(IId                         AuthorizatorId,
                             IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                            TimeSpan                    Runtime,
+
+                            DateTimeOffset?             ResponseTimestamp           = null,
                             DateTimeOffset?             CachedResultEndOfLifeTime   = null,
-
                             ChargingSession_Id?         SessionId                   = null,
-                            I18NString?                 Description                 = null,
-                            TimeSpan?                   Runtime                     = null)
+                            I18NString?                 Description                 = null)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.UnknownLocation,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        null,
+                        IReceiveAuthorizeStartStop,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Unknown location!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Unknown location!"));
 
         #endregion
 
-        #region (static) InvalidToken        (AuthorizatorId, SessionId = null, Runtime = null)
+        #region (static) InvalidToken         (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The given token is unknown or invalid.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
-        /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         public static AuthStartResult
 
             InvalidToken(IId                      AuthorizatorId,
                          ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                         TimeSpan                 Runtime,
+
+                         DateTimeOffset?          ResponseTimestamp           = null,
                          DateTimeOffset?          CachedResultEndOfLifeTime   = null,
-
                          ChargingSession_Id?      SessionId                   = null,
-                         I18NString?              Description                 = null,
-                         TimeSpan?                Runtime                     = null)
+                         I18NString?              Description                 = null)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.InvalidToken,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        ISendAuthorizeStartStop,
+                        null,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Invalid token!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Invalid token!"));
 
 
 
@@ -697,64 +753,72 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
-        /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         public static AuthStartResult
 
             InvalidToken(IId                         AuthorizatorId,
                          IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                         TimeSpan                    Runtime,
+
+                         DateTimeOffset?             ResponseTimestamp           = null,
                          DateTimeOffset?             CachedResultEndOfLifeTime   = null,
-
                          ChargingSession_Id?         SessionId                   = null,
-                         I18NString?                 Description                 = null,
-                         TimeSpan?                   Runtime                     = null)
+                         I18NString?                 Description                 = null)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.InvalidToken,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        null,
+                        IReceiveAuthorizeStartStop,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Invalid token!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Invalid token!"));
 
         #endregion
 
-        #region (static) InvalidSessionId    (AuthorizatorId, SessionId = null, Runtime = null)
+        #region (static) InvalidSessionId     (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The given charging session identification is unknown or invalid.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
-        /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>        /// 
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         public static AuthStartResult
 
             InvalidSessionId(IId                      AuthorizatorId,
                              ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                             TimeSpan                 Runtime,
+
+                             DateTimeOffset?          ResponseTimestamp           = null,
                              DateTimeOffset?          CachedResultEndOfLifeTime   = null,
-
                              ChargingSession_Id?      SessionId                   = null,
-                             I18NString?              Description                 = null,
-                             TimeSpan?                Runtime                     = null)
+                             I18NString?              Description                 = null)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.InvalidSessionId,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        ISendAuthorizeStartStop,
+                        null,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Invalid session identification!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Invalid session identification!"));
 
 
 
@@ -763,64 +827,72 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
-        /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         public static AuthStartResult
 
             InvalidSessionId(IId                         AuthorizatorId,
                              IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                             TimeSpan                    Runtime,
+
+                             DateTimeOffset?             ResponseTimestamp           = null,
                              DateTimeOffset?             CachedResultEndOfLifeTime   = null,
-
                              ChargingSession_Id?         SessionId                   = null,
-                             I18NString?                 Description                 = null,
-                             TimeSpan?                   Runtime                     = null)
+                             I18NString?                 Description                 = null)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.InvalidSessionId,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        null,
+                        IReceiveAuthorizeStartStop,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Invalid session identification!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Invalid session identification!"));
 
         #endregion
 
-        #region (static) Reserved            (AuthorizatorId, SessionId = null, Runtime = null)
+        #region (static) Reserved             (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The EVSE is already reserved.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
-        /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         public static AuthStartResult
 
             Reserved(IId                      AuthorizatorId,
                      ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                     TimeSpan                 Runtime,
+
+                     DateTimeOffset?          ResponseTimestamp           = null,
                      DateTimeOffset?          CachedResultEndOfLifeTime   = null,
-
                      ChargingSession_Id?      SessionId                   = null,
-                     I18NString?              Description                 = null,
-                     TimeSpan?                Runtime                     = null)
+                     I18NString?              Description                 = null)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.Reserved,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        ISendAuthorizeStartStop,
+                        null,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Reserved!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Reserved!"));
 
 
 
@@ -829,64 +901,72 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
-        /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         public static AuthStartResult
 
             Reserved(IId                         AuthorizatorId,
                      IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                     TimeSpan                    Runtime,
+
+                     DateTimeOffset?             ResponseTimestamp           = null,
                      DateTimeOffset?             CachedResultEndOfLifeTime   = null,
-
                      ChargingSession_Id?         SessionId                   = null,
-                     I18NString?                 Description                 = null,
-                     TimeSpan?                   Runtime                     = null)
+                     I18NString?                 Description                 = null)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.Reserved,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        null,
+                        IReceiveAuthorizeStartStop,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Reserved!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Reserved!"));
 
         #endregion
 
-        #region (static) OutOfService        (AuthorizatorId, SessionId = null, Runtime = null)
+        #region (static) OutOfService         (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The EVSE or charging station is out of service.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
-        /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         public static AuthStartResult
 
             OutOfService(IId                      AuthorizatorId,
                          ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                         TimeSpan                 Runtime,
+
+                         DateTimeOffset?          ResponseTimestamp           = null,
                          DateTimeOffset?          CachedResultEndOfLifeTime   = null,
-
                          ChargingSession_Id?      SessionId                   = null,
-                         I18NString?              Description                 = null,
-                         TimeSpan?                Runtime                     = null)
+                         I18NString?              Description                 = null)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.OutOfService,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        ISendAuthorizeStartStop,
+                        null,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Out of service!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Out of service!"));
 
 
 
@@ -895,62 +975,74 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
-        /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         public static AuthStartResult
 
             OutOfService(IId                         AuthorizatorId,
                          IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                         TimeSpan                    Runtime,
+
+                         DateTimeOffset?             ResponseTimestamp           = null,
                          DateTimeOffset?             CachedResultEndOfLifeTime   = null,
-
                          ChargingSession_Id?         SessionId                   = null,
-                         I18NString?                 Description                 = null,
-                         TimeSpan?                   Runtime                     = null)
+                         I18NString?                 Description                 = null)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.OutOfService,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        null,
+                        IReceiveAuthorizeStartStop,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Out of service!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Out of service!"));
 
         #endregion
 
-        #region (static) Authorized          (AuthorizatorId, SessionId = null, ListOfAuthStopTokens = null, ListOfAuthStopPINs = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) Authorized           (AuthorizatorId, SessionId = null, ListOfAuthStopTokens = null, ListOfAuthStopPINs = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
-        /// The authorize start was successful.
+        /// The AuthorizeStart was successful.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="AuthorizationReference">An optional authorization reference.</param>
         /// <param name="ContractId">An optional contract identification.</param>
         /// <param name="PrintedNumber">An optional printed number.</param>
+        /// <param name="UILanguage">An optional user interface language to be used for further interactions with the user.</param>
         /// <param name="ExpiryDate">The timestamp when this authorization expires.</param>
-        /// <param name="MaxkW">The optional maximum allowed charging current.</param>
-        /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
+        /// <param name="MaxPower">The optional maximum allowed charging current.</param>
+        /// <param name="MaxEnergy">The optional maximum allowed charging energy.</param>
         /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
         /// <param name="ChargingTariffs">Optional charging tariff information.</param>
         /// <param name="ListOfAuthStopTokens">An optional enumeration of authorize stop tokens.</param>
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
         /// 
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
+        /// <param name="ProviderName">An optional e-mobility provider name.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="AdditionalContext">Optional additional context information.</param>
+        /// 
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             Authorized(IId                                AuthorizatorId,
                        ISendAuthorizeStartStop            ISendAuthorizeStartStop,
+                       TimeSpan                           Runtime,
+                       DateTimeOffset?                    ResponseTimestamp           = null,
                        DateTimeOffset?                    CachedResultEndOfLifeTime   = null,
 
                        ChargingSession_Id?                SessionId                   = null,
@@ -960,26 +1052,28 @@ namespace cloud.charging.open.protocols.WWCP
                        String?                            PrintedNumber               = null,
                        Languages?                         UILanguage                  = null,
                        DateTimeOffset?                    ExpiryDate                  = null,
-                       Single?                            MaxkW                       = null,
-                       Single?                            MaxkWh                      = null,
+                       Watt?                              MaxPower                    = null,
+                       WattHour?                          MaxEnergy                   = null,
                        TimeSpan?                          MaxDuration                 = null,
                        IEnumerable<ChargingTariff>?       ChargingTariffs             = null,
                        IEnumerable<AuthenticationToken>?  ListOfAuthStopTokens        = null,
                        IEnumerable<UInt32>?               ListOfAuthStopPINs          = null,
 
                        EMobilityProvider_Id?              ProviderId                  = null,
+                       String?                            ProviderName                = null,
                        I18NString?                        Description                 = null,
                        I18NString?                        AdditionalInfo              = null,
-
                        JObject?                           AdditionalContext           = null,
 
-                       Byte                               NumberOfRetries             = 0,
-                       TimeSpan?                          Runtime                     = null)
+                       Byte                               NumberOfRetries             = 0)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.Authorized,
+                        Runtime,
+                        ISendAuthorizeStartStop,
+                        null,
                         CachedResultEndOfLifeTime,
 
                         SessionId,
@@ -989,51 +1083,59 @@ namespace cloud.charging.open.protocols.WWCP
                         PrintedNumber,
                         UILanguage,
                         ExpiryDate,
-                        MaxkW,
-                        MaxkWh,
+                        MaxPower,
+                        MaxEnergy,
                         MaxDuration,
                         ChargingTariffs,
                         ListOfAuthStopTokens,
                         ListOfAuthStopPINs,
 
                         ProviderId,
+                        ProviderName,
                         Description ?? I18NString.Create("Success!"),
                         AdditionalInfo,
 
                         AdditionalContext,
 
-                        NumberOfRetries,
-                        Runtime);
+                        NumberOfRetries);
 
 
 
         /// <summary>
-        /// The authorize start was successful.
+        /// The AuthorizeStart was successful.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// 
-        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
+        /// <param name="AuthorizationReference">An optional authorization reference.</param>
         /// <param name="ContractId">An optional contract identification.</param>
         /// <param name="PrintedNumber">An optional printed number.</param>
+        /// <param name="UILanguage">An optional user interface language to be used for further interactions with the user.</param>
         /// <param name="ExpiryDate">The timestamp when this authorization expires.</param>
-        /// <param name="MaxkW">The optional maximum allowed charging current.</param>
-        /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
+        /// <param name="MaxPower">The optional maximum allowed charging current.</param>
+        /// <param name="MaxEnergy">The optional maximum allowed charging energy.</param>
         /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
         /// <param name="ChargingTariffs">Optional charging tariff information.</param>
         /// <param name="ListOfAuthStopTokens">An optional enumeration of authorize stop tokens.</param>
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
         /// 
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
+        /// <param name="ProviderName">An optional e-mobility provider name.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="AdditionalContext">Optional additional context information.</param>
+        /// 
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             Authorized(IId                                AuthorizatorId,
                        IReceiveAuthorizeStartStop         IReceiveAuthorizeStartStop,
+                       TimeSpan                           Runtime,
+                       DateTimeOffset?                    ResponseTimestamp           = null,
                        DateTimeOffset?                    CachedResultEndOfLifeTime   = null,
 
                        ChargingSession_Id?                SessionId                   = null,
@@ -1043,28 +1145,30 @@ namespace cloud.charging.open.protocols.WWCP
                        String?                            PrintedNumber               = null,
                        Languages?                         UILanguage                  = null,
                        DateTimeOffset?                    ExpiryDate                  = null,
-                       Single?                            MaxkW                       = null,
-                       Single?                            MaxkWh                      = null,
+                       Watt?                              MaxPower                    = null,
+                       WattHour?                          MaxEnergy                   = null,
                        TimeSpan?                          MaxDuration                 = null,
                        IEnumerable<ChargingTariff>?       ChargingTariffs             = null,
                        IEnumerable<AuthenticationToken>?  ListOfAuthStopTokens        = null,
                        IEnumerable<UInt32>?               ListOfAuthStopPINs          = null,
 
                        EMobilityProvider_Id?              ProviderId                  = null,
+                       String?                            ProviderName                = null,
                        I18NString?                        Description                 = null,
                        I18NString?                        AdditionalInfo              = null,
-
                        JObject?                           AdditionalContext           = null,
 
-                       Byte                               NumberOfRetries             = 0,
-                       TimeSpan?                          Runtime                     = null)
+                       Byte                               NumberOfRetries             = 0)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.Authorized,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        null,
+                        IReceiveAuthorizeStartStop,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
                         EMPPartnerSessionId,
                         AuthorizationReference,
@@ -1072,201 +1176,219 @@ namespace cloud.charging.open.protocols.WWCP
                         PrintedNumber,
                         UILanguage,
                         ExpiryDate,
-                        MaxkW,
-                        MaxkWh,
+                        MaxPower,
+                        MaxEnergy,
                         MaxDuration,
                         ChargingTariffs,
                         ListOfAuthStopTokens,
                         ListOfAuthStopPINs,
 
                         ProviderId,
+                        ProviderName,
                         Description ?? I18NString.Create("Success!"),
                         AdditionalInfo,
 
                         AdditionalContext,
 
-                        NumberOfRetries,
-                        Runtime);
+                        NumberOfRetries);
 
         #endregion
 
-        #region (static) NotAuthorized       (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) NotAuthorized        (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
-        /// The authorize start was not successful (e.g. ev customer is unknown).
+        /// The AuthorizeStart was not successful (e.g. ev customer is unknown).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             NotAuthorized(IId                      AuthorizatorId,
                           ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                          DateTimeOffset?          CachedResultEndOfLifeTime   = null,
+                          TimeSpan                 Runtime,
 
+                          DateTimeOffset?          ResponseTimestamp           = null,
+                          DateTimeOffset?          CachedResultEndOfLifeTime   = null,
                           ChargingSession_Id?      SessionId                   = null,
                           EMobilityProvider_Id?    ProviderId                  = null,
                           I18NString?              Description                 = null,
                           I18NString?              AdditionalInfo              = null,
-                          Byte                     NumberOfRetries             = 0,
-                          TimeSpan?                Runtime                     = null)
+                          Byte                     NumberOfRetries             = 0)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.NotAuthorized,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        ISendAuthorizeStartStop,
+                        null,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
                         ProviderId:       ProviderId,
                         Description:      Description ?? I18NString.Create("Not authorized!"),
                         AdditionalInfo:   AdditionalInfo,
-                        NumberOfRetries:  NumberOfRetries,
-                        Runtime:          Runtime);
+                        NumberOfRetries:  NumberOfRetries);
 
 
 
         /// <summary>
-        /// The authorize start was not successful (e.g. ev customer is unknown).
+        /// The AuthorizeStart was not successful (e.g. ev customer is unknown).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             NotAuthorized(IId                         AuthorizatorId,
                           IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                          DateTimeOffset?             CachedResultEndOfLifeTime   = null,
+                          TimeSpan                    Runtime,
 
+                          DateTimeOffset?             ResponseTimestamp           = null,
+                          DateTimeOffset?             CachedResultEndOfLifeTime   = null,
                           ChargingSession_Id?         SessionId                   = null,
                           EMobilityProvider_Id?       ProviderId                  = null,
                           I18NString?                 Description                 = null,
                           I18NString?                 AdditionalInfo              = null,
-                          Byte                        NumberOfRetries             = 0,
-                          TimeSpan?                   Runtime                     = null)
+                          Byte                        NumberOfRetries             = 0)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.NotAuthorized,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        null,
+                        IReceiveAuthorizeStartStop,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
                         ProviderId:       ProviderId,
                         Description:      Description ?? I18NString.Create("Not authorized!"),
                         AdditionalInfo:   AdditionalInfo,
-                        NumberOfRetries:  NumberOfRetries,
-                        Runtime:          Runtime);
+                        NumberOfRetries:  NumberOfRetries);
 
         #endregion
 
-        #region (static) Blocked             (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) Blocked              (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
-        /// The authorize start operation is not allowed (ev customer is blocked).
+        /// The AuthorizeStart operation is not allowed (ev customer is blocked).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             Blocked(IId                      AuthorizatorId,
                     ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                    DateTimeOffset?          CachedResultEndOfLifeTime   = null,
+                    TimeSpan                 Runtime,
 
+                    DateTimeOffset?          ResponseTimestamp           = null,
+                    DateTimeOffset?          CachedResultEndOfLifeTime   = null,
                     ChargingSession_Id?      SessionId                   = null,
                     EMobilityProvider_Id?    ProviderId                  = null,
                     I18NString?              Description                 = null,
                     I18NString?              AdditionalInfo              = null,
-                    Byte                     NumberOfRetries             = 0,
-                    TimeSpan?                Runtime                     = null)
+                    Byte                     NumberOfRetries             = 0)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.Blocked,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        ISendAuthorizeStartStop,
+                        null,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
                         ProviderId:       ProviderId,
                         Description:      Description ?? I18NString.Create("Blocked!"),
                         AdditionalInfo:   AdditionalInfo,
-                        NumberOfRetries:  NumberOfRetries,
-                        Runtime:          Runtime);
+                        NumberOfRetries:  NumberOfRetries);
 
 
 
         /// <summary>
-        /// The authorize start operation is not allowed (ev customer is blocked).
+        /// The AuthorizeStart operation is not allowed (ev customer is blocked).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             Blocked(IId                         AuthorizatorId,
                     IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                    DateTimeOffset?             CachedResultEndOfLifeTime   = null,
+                    TimeSpan                    Runtime,
 
+                    DateTimeOffset?             ResponseTimestamp           = null,
+                    DateTimeOffset?             CachedResultEndOfLifeTime   = null,
                     ChargingSession_Id?         SessionId                   = null,
                     EMobilityProvider_Id?       ProviderId                  = null,
                     I18NString?                 Description                 = null,
                     I18NString?                 AdditionalInfo              = null,
-                    Byte                        NumberOfRetries             = 0,
-                    TimeSpan?                   Runtime                     = null)
+                    Byte                        NumberOfRetries             = 0)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.Blocked,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        null,
+                        IReceiveAuthorizeStartStop,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
                         ProviderId:       ProviderId,
                         Description:      Description ?? I18NString.Create("Blocked!"),
                         AdditionalInfo:   AdditionalInfo,
-                        NumberOfRetries:  NumberOfRetries,
-                        Runtime:          Runtime);
+                        NumberOfRetries:  NumberOfRetries);
 
         #endregion
 
-        #region (static) Expired             (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) Expired              (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
-        /// The authorize start operation is not allowed (ev customer contract is expired).
+        /// The AuthorizeStart operation is not allowed (ev customer contract is expired).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
@@ -1277,37 +1399,42 @@ namespace cloud.charging.open.protocols.WWCP
 
             Expired(IId                      AuthorizatorId,
                     ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                    DateTimeOffset?          CachedResultEndOfLifeTime   = null,
+                    TimeSpan                 Runtime,
 
+                    DateTimeOffset?          ResponseTimestamp           = null,
+                    DateTimeOffset?          CachedResultEndOfLifeTime   = null,
                     ChargingSession_Id?      SessionId                   = null,
                     EMobilityProvider_Id?    ProviderId                  = null,
                     I18NString?              Description                 = null,
                     I18NString?              AdditionalInfo              = null,
-                    Byte                     NumberOfRetries             = 0,
-                    TimeSpan?                Runtime                     = null)
+                    Byte                     NumberOfRetries             = 0)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.Expired,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        ISendAuthorizeStartStop,
+                        null,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
                         ProviderId:       ProviderId,
                         Description:      Description ?? I18NString.Create("Expired!"),
                         AdditionalInfo:   AdditionalInfo,
-                        NumberOfRetries:  NumberOfRetries,
-                        Runtime:          Runtime);
+                        NumberOfRetries:  NumberOfRetries);
 
 
 
         /// <summary>
-        /// The authorize start operation is not allowed (ev customer contract is expired).
+        /// The AuthorizeStart operation is not allowed (ev customer contract is expired).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
@@ -1318,39 +1445,44 @@ namespace cloud.charging.open.protocols.WWCP
 
             Expired(IId                         AuthorizatorId,
                     IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                    DateTimeOffset?             CachedResultEndOfLifeTime   = null,
+                    TimeSpan                    Runtime,
 
+                    DateTimeOffset?             ResponseTimestamp           = null,
+                    DateTimeOffset?             CachedResultEndOfLifeTime   = null,
                     ChargingSession_Id?         SessionId                   = null,
                     EMobilityProvider_Id?       ProviderId                  = null,
                     I18NString?                 Description                 = null,
                     I18NString?                 AdditionalInfo              = null,
-                    Byte                        NumberOfRetries             = 0,
-                    TimeSpan?                   Runtime                     = null)
+                    Byte                        NumberOfRetries             = 0)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.Expired,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        null,
+                        IReceiveAuthorizeStartStop,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
                         ProviderId:       ProviderId,
                         Description:      Description ?? I18NString.Create("Expired!"),
                         AdditionalInfo:   AdditionalInfo,
-                        NumberOfRetries:  NumberOfRetries,
-                        Runtime:          Runtime);
+                        NumberOfRetries:  NumberOfRetries);
 
         #endregion
 
-        #region (static) NoCredit            (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) NoCredit             (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
-        /// The authorize start operation is not allowed (ev customer has no credit).
+        /// The AuthorizeStart operation is not allowed (ev customer has no credit).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
@@ -1361,100 +1493,111 @@ namespace cloud.charging.open.protocols.WWCP
 
             NoCredit(IId                      AuthorizatorId,
                      ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                     DateTimeOffset?          CachedResultEndOfLifeTime   = null,
+                     TimeSpan                 Runtime,
 
+                     DateTimeOffset?          ResponseTimestamp           = null,
+                     DateTimeOffset?          CachedResultEndOfLifeTime   = null,
                      ChargingSession_Id?      SessionId                   = null,
                      EMobilityProvider_Id?    ProviderId                  = null,
                      I18NString?              Description                 = null,
                      I18NString?              AdditionalInfo              = null,
-                     Byte                     NumberOfRetries             = 0,
-                     TimeSpan?                Runtime                     = null)
+                     Byte                     NumberOfRetries             = 0)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.NoCredit,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        ISendAuthorizeStartStop,
+                        null,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
                         ProviderId:       ProviderId,
                         Description:      Description ?? I18NString.Create("No credit!"),
                         AdditionalInfo:   AdditionalInfo,
-                        NumberOfRetries:  NumberOfRetries,
-                        Runtime:          Runtime);
+                        NumberOfRetries:  NumberOfRetries);
 
 
 
         /// <summary>
-        /// The authorize start operation is not allowed (ev customer has no credit).
+        /// The AuthorizeStart operation is not allowed (ev customer has no credit).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             NoCredit(IId                         AuthorizatorId,
                      IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                     DateTimeOffset?             CachedResultEndOfLifeTime   = null,
+                     TimeSpan                    Runtime,
 
+                     DateTimeOffset?             ResponseTimestamp           = null,
+                     DateTimeOffset?             CachedResultEndOfLifeTime   = null,
                      ChargingSession_Id?         SessionId                   = null,
                      EMobilityProvider_Id?       ProviderId                  = null,
                      I18NString?                 Description                 = null,
                      I18NString?                 AdditionalInfo              = null,
-                     Byte                        NumberOfRetries             = 0,
-                     TimeSpan?                   Runtime                     = null)
+                     Byte                        NumberOfRetries             = 0)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.NoCredit,
-                        CachedResultEndOfLifeTime,
+                        Runtime,
+                        null,
+                        IReceiveAuthorizeStartStop,
 
+                        CachedResultEndOfLifeTime,
                         SessionId,
                         ProviderId:       ProviderId,
                         Description:      Description ?? I18NString.Create("No credit!"),
                         AdditionalInfo:   AdditionalInfo,
-                        NumberOfRetries:  NumberOfRetries,
-                        Runtime:          Runtime);
+                        NumberOfRetries:  NumberOfRetries);
 
         #endregion
 
-        #region (static) CommunicationTimeout(AuthorizatorId, SessionId = null, Runtime = null)
+        #region (static) CommunicationTimeout (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The authorize stop ran into a timeout between evse operator backend and charging station.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             CommunicationTimeout(IId                      AuthorizatorId,
                                  ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                                 TimeSpan                 Runtime,
 
-                                 ChargingSession_Id?      SessionId     = null,
-                                 I18NString?              Description   = null,
-                                 TimeSpan?                Runtime       = null)
+                                 DateTimeOffset?          ResponseTimestamp   = null,
+                                 ChargingSession_Id?      SessionId           = null,
+                                 I18NString?              Description         = null)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.CommunicationTimeout,
+                        Runtime,
+                        ISendAuthorizeStartStop,
                         null,
 
+                        null,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Communication timeout!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Communication timeout!"));
 
 
 
@@ -1463,60 +1606,68 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             CommunicationTimeout(IId                         AuthorizatorId,
                                  IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                                 TimeSpan                    Runtime,
 
-                                 ChargingSession_Id?         SessionId     = null,
-                                 I18NString?                 Description   = null,
-                                 TimeSpan?                   Runtime       = null)
+                                 DateTimeOffset?             ResponseTimestamp   = null,
+                                 ChargingSession_Id?         SessionId           = null,
+                                 I18NString?                 Description         = null)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.CommunicationTimeout,
+                        Runtime,
                         null,
+                        IReceiveAuthorizeStartStop,
 
+                        null,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Communication timeout!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Communication timeout!"));
 
         #endregion
 
-        #region (static) StartChargingTimeout(AuthorizatorId, SessionId = null, Runtime = null)
+        #region (static) StartChargingTimeout (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The authorize stop ran into a timeout between charging station and ev.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             StartChargingTimeout(IId                      AuthorizatorId,
                                  ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                                 TimeSpan                 Runtime,
 
-                                 ChargingSession_Id?      SessionId     = null,
-                                 I18NString?              Description   = null,
-                                 TimeSpan?                Runtime       = null)
+                                 DateTimeOffset?          ResponseTimestamp   = null,
+                                 ChargingSession_Id?      SessionId           = null,
+                                 I18NString?              Description         = null)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.StartChargingTimeout,
+                        Runtime,
+                        ISendAuthorizeStartStop,
                         null,
 
+                        null,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Start charging timeout!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Start charging timeout!"));
 
 
 
@@ -1525,7 +1676,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -1533,142 +1686,161 @@ namespace cloud.charging.open.protocols.WWCP
 
             StartChargingTimeout(IId                         AuthorizatorId,
                                  IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                                 TimeSpan                    Runtime,
 
-                                 ChargingSession_Id?         SessionId     = null,
-                                 I18NString?                 Description   = null,
-                                 TimeSpan?                   Runtime       = null)
+                                 DateTimeOffset?             ResponseTimestamp   = null,
+                                 ChargingSession_Id?         SessionId           = null,
+                                 I18NString?                 Description         = null)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.StartChargingTimeout,
+                        Runtime,
                         null,
+                        IReceiveAuthorizeStartStop,
 
+                        null,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Start charging timeout!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Start charging timeout!"));
 
         #endregion
 
-        #region (static) RateLimitReached    (AuthorizatorId, SessionId = null, Description = null, Runtime = null)
+        #region (static) RateLimitReached     (AuthorizatorId, SessionId = null, Description = null, Runtime = null)
 
         /// <summary>
-        /// The authorize start operation reached a rate limit.
+        /// The AuthorizeStart operation reached a rate limit.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             RateLimitReached(IId                      AuthorizatorId,
                              ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                             TimeSpan                 Runtime,
 
-                             ChargingSession_Id?      SessionId     = null,
-                             I18NString?              Description   = null,
-                             TimeSpan?                Runtime       = null)
+                             DateTimeOffset?          ResponseTimestamp   = null,
+                             ChargingSession_Id?      SessionId           = null,
+                             I18NString?              Description         = null)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.RateLimitReached,
+                        Runtime,
+                        ISendAuthorizeStartStop,
                         null,
 
+                        null,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("Rate limit reached!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Rate limit reached!"));
 
 
 
         /// <summary>
-        /// The authorize start operation reached a rate limit.
+        /// The AuthorizeStart operation reached a rate limit.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             RateLimitReached(IId                         AuthorizatorId,
                              IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                             TimeSpan                    Runtime,
 
-                             ChargingSession_Id?         SessionId     = null,
-                             I18NString?                 Description   = null,
-                             TimeSpan?                   Runtime       = null)
+                             DateTimeOffset?             ResponseTimestamp   = null,
+                             ChargingSession_Id?         SessionId           = null,
+                             I18NString?                 Description         = null)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.RateLimitReached,
+                        Runtime,
                         null,
+                        IReceiveAuthorizeStartStop,
 
+                        null,
                         SessionId,
-                        Description:  Description ?? I18NString.Create("RateLimitReached!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("RateLimitReached!"));
 
         #endregion
 
-        #region (static) Error               (AuthorizatorId, SessionId = null, Description = null, Runtime = null)
+        #region (static) Error                (AuthorizatorId, SessionId = null, Description = null, Runtime = null)
 
         /// <summary>
-        /// The authorize start operation led to an error.
+        /// The AuthorizeStart operation led to an error.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             Error(IId                      AuthorizatorId,
                   ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                  TimeSpan                 Runtime,
 
-                  ChargingSession_Id?      SessionId     = null,
-                  I18NString?              Description   = null,
-                  TimeSpan?                Runtime       = null)
+                  DateTimeOffset?          ResponseTimestamp   = null,
+                  ChargingSession_Id?      SessionId           = null,
+                  I18NString?              Description         = null)
 
 
-                => new (AuthorizatorId,
-                        ISendAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.Error,
+                        Runtime,
+                        ISendAuthorizeStartStop,
+                        null,
 
                         SessionId:    SessionId,
-                        Description:  Description ?? I18NString.Create("Error!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Error!"));
 
 
 
         /// <summary>
-        /// The authorize start operation led to an error.
+        /// The AuthorizeStart operation led to an error.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         /// 
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             Error(IId                         AuthorizatorId,
                   IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                  TimeSpan                    Runtime,
 
-                  ChargingSession_Id?         SessionId     = null,
-                  I18NString?                 Description   = null,
-                  TimeSpan?                   Runtime       = null)
+                  DateTimeOffset?             ResponseTimestamp   = null,
+                  ChargingSession_Id?         SessionId           = null,
+                  I18NString?                 Description         = null)
 
 
-                => new (AuthorizatorId,
-                        IReceiveAuthorizeStartStop,
+                => new  (AuthorizatorId,
+                        ResponseTimestamp ?? Timestamp.Now,
                         AuthStartResultTypes.Error,
+                        Runtime,
+                        null,
+                        IReceiveAuthorizeStartStop,
 
                         SessionId:    SessionId,
-                        Description:  Description ?? I18NString.Create("Error!"),
-                        Runtime:      Runtime);
+                        Description:  Description ?? I18NString.Create("Error!"));
 
         #endregion
 
@@ -1681,7 +1853,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
         /// <param name="CustomAuthStartResultSerializer">A delegate to serialize custom AuthStartResult JSON objects.</param>
         public JObject ToJSON(Boolean                                            Embedded                          = false,
-                              CustomJObjectSerializerDelegate<AuthStartResult>?  CustomAuthStartResultSerializer   = null)
+                              CustomJObjectSerializerDelegate<AuthStartResult>?  CustomAuthStartResultSerializer   = null,
+                              InfoStatus                                         ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandEVSEIds                     = InfoStatus.Expanded,
+                              InfoStatus                                         ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandDataLicenses                = InfoStatus.ShowIdOnly)
         {
 
             var json = JSONObject.Create(
@@ -1690,30 +1868,100 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("@context",                    JSONLDContext)
                                : null,
 
-                                 new JProperty("result",                      Result.                         ToString()),
+                                 new JProperty("authorizatorId",              AuthorizatorId.                 ToString()),
                                  new JProperty("timestamp",                   ResponseTimestamp.              ToISO8601()),
+                                 new JProperty("result",                      Result.                         ToString()),
+                                 new JProperty("runtime",                     Runtime.TotalMilliseconds),
+
 
                            CachedResultEndOfLifeTime.HasValue
                                ? new JProperty("cachedResultEndOfLifeTime",   CachedResultEndOfLifeTime.Value.ToISO8601())
                                : null,
 
-                           SessionId.HasValue
-                               ? new JProperty("sessionId",                   SessionId.                      ToString())
+                           SessionId.                HasValue
+                               ? new JProperty("sessionId",                   SessionId.                Value.ToString())
                                : null,
+
+                           EMPPartnerSessionId.      HasValue
+                               ? new JProperty("empPartnerSessionId",         EMPPartnerSessionId.      Value.ToString())
+                               : null,
+
+                           AuthorizationReference.   HasValue
+                               ? new JProperty("authorizationReference",      AuthorizationReference.   Value.ToString())
+                               : null,
+
+                           ContractId.    IsNotNullOrEmpty()
+                               ? new JProperty("contractId",                  ContractId.                     ToString())
+                               : null,
+
+                           PrintedNumber. IsNotNullOrEmpty()
+                               ? new JProperty("printedNumber",               PrintedNumber.                  ToString())
+                               : null,
+
+                           UILanguage.               HasValue
+                               ? new JProperty("uiLanguage",                  UILanguage.               Value.ToString())
+                               : null,
+
+                           ExpiryDate.               HasValue
+                               ? new JProperty("expiryDate",                  ExpiryDate.               Value.ToString())
+                               : null,
+
+                           MaxPower.                 HasValue
+                               ? new JProperty("maxPower",                    MaxPower.                 Value.Value)
+                               : null,
+
+                           MaxEnergy.                HasValue
+                               ? new JProperty("maxEnergy",                   MaxEnergy.                Value.Value)
+                               : null,
+
+                           MaxDuration.              HasValue
+                               ? new JProperty("maxDuration",                 MaxDuration.              Value.TotalMinutes)
+                               : null,
+
+
+                           ChargingTariffs.     Any()
+                               ? new JProperty("chargingTariffs",             new JArray(ChargingTariffs.     Select(chargingTariff      => chargingTariff.ToJSON(
+                                                                                                                                                true,
+                                                                                                                                                ExpandRoamingNetworkId,
+                                                                                                                                                ExpandChargingStationOperatorId,
+                                                                                                                                                ExpandChargingPoolId,
+                                                                                                                                                ExpandEVSEIds,
+                                                                                                                                                ExpandBrandIds,
+                                                                                                                                                ExpandDataLicenses
+                                                                                                                                            ))))
+                               : null,
+
+                           ListOfAuthStopTokens.Any()
+                               ? new JProperty("listOfAuthStopTokens",        new JArray(ListOfAuthStopTokens.Select(authenticationToken => authenticationToken.ToString())))
+                               : null,
+
+                           ListOfAuthStopPINs.Any()
+                               ? new JProperty("listOfAuthStopPINs",          new JArray(ListOfAuthStopPINs.  Select(pin                 => pin)))
+                               : null,
+
 
                            ProviderId.HasValue
                                ? new JProperty("providerId",                  ProviderId.                     ToString())
                                : null,
 
-                                 new JProperty("authorizatorId",              AuthorizatorId.                 ToString()),
+                           ProviderName.  IsNotNullOrEmpty()
+                               ? new JProperty("providerName",                ProviderName)
+                               : null,
 
-                           Description.IsNotNullOrEmpty()
+                           Description.   IsNotNullOrEmpty()
                                ? new JProperty("description",                 Description.                    ToJSON())
                                : null,
 
-                           Runtime.HasValue
-                               ? new JProperty("runtime",                     Runtime.Value.TotalMilliseconds)
-                               : null
+                           AdditionalInfo.IsNotNullOrEmpty()
+                               ? new JProperty("additionalInfo",              AdditionalInfo.                 ToJSON())
+                               : null,
+
+                           AdditionalContext is not null
+                               ? new JProperty("additionalContext",           AdditionalContext)
+                               : null,
+
+
+                                 new JProperty("numberOfRetries",             NumberOfRetries)
 
                        );
 
@@ -1781,37 +2029,37 @@ namespace cloud.charging.open.protocols.WWCP
         OutOfService,
 
         /// <summary>
-        /// The authorize start was successful.
+        /// The AuthorizeStart was successful.
         /// </summary>
         Authorized,
 
         /// <summary>
-        /// The authorize start was not successful (e.g. ev customer is unknown).
+        /// The AuthorizeStart was not successful (e.g. ev customer is unknown).
         /// </summary>
         NotAuthorized,
 
         /// <summary>
-        /// The authorize start operation is not allowed (ev customer is blocked).
+        /// The AuthorizeStart operation is not allowed (ev customer is blocked).
         /// </summary>
         Blocked,
 
         /// <summary>
-        /// The authorize start operation is not allowed (ev customer contract is expired).
+        /// The AuthorizeStart operation is not allowed (ev customer contract is expired).
         /// </summary>
         Expired,
 
         /// <summary>
-        /// The authorize start operation is not allowed (ev customer has no credit).
+        /// The AuthorizeStart operation is not allowed (ev customer has no credit).
         /// </summary>
         NoCredit,
 
         /// <summary>
-        /// The authorize start ran into a timeout between evse operator backend and the charging location.
+        /// The AuthorizeStart ran into a timeout between evse operator backend and the charging location.
         /// </summary>
         CommunicationTimeout,
 
         /// <summary>
-        /// The authorize start ran into a timeout between the charging location and the EV.
+        /// The AuthorizeStart ran into a timeout between the charging location and the EV.
         /// </summary>
         StartChargingTimeout,
 

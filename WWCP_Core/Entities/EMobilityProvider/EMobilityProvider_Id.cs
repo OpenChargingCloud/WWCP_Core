@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static EMobilityProvider_Id? TryParse(String? Text)
         {
 
-            if (Text is not null && TryParse(Text, out var eMobilityProviderId))
+            if (TryParse(Text, out var eMobilityProviderId))
                 return eMobilityProviderId;
 
             return default;
@@ -221,10 +221,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             EMobilityProviderId = default;
 
+            Text = Text?.Trim();
+
             if (Text.IsNullOrWhiteSpace())
                 return false;
-
-            Text = Text.Trim();
 
             #endregion
 
