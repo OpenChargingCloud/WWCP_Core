@@ -1409,7 +1409,7 @@ namespace cloud.charging.open.protocols.WWCP
                             if (SendCDRResult.TryParse(sendCDRResultJSON, out var sendCDRResult, out var err2))
                                 ChargingSession.sendCDRResults.Add(sendCDRResult);
                             else
-                                DebugX.Log(nameof(ChargingSession) + ".ReceivedCDRInfo.TryParse(...) failed: " + err2);
+                                DebugX.Log(nameof(ChargingSession) + ".sendCDRResults.TryParse(...) failed: " + err2);
                         }
                     }
 

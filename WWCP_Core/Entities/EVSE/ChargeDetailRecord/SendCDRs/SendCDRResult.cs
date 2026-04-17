@@ -743,7 +743,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (!JSONObject.ParseMandatory("timestamp",
                                                "timestamp",
-                                               out DateTime Timestamp,
+                                               out DateTime timestamp,
                                                out ErrorResponse))
                 {
                     return false;
@@ -756,7 +756,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (!JSONObject.ParseMandatory("authorizatorId",
                                                "authorizator ídentification",
                                                Authorizator_Id.TryParse,
-                                               out Authorizator_Id AuthorizatorId,
+                                               out Authorizator_Id authorizatorId,
                                                out ErrorResponse))
                 {
                     return false;
@@ -768,7 +768,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (!JSONObject.ParseMandatoryEnum("result",
                                                    "result",
-                                                   out SendCDRResultTypes Result,
+                                                   out SendCDRResultTypes result,
                                                    out ErrorResponse))
                 {
                     return false;
@@ -781,7 +781,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (JSONObject.ParseOptionalJSON("chargeDetailRecord",
                                                  "charge detail record",
                                                  WWCP.ChargeDetailRecord.TryParse,
-                                                 out ChargeDetailRecord? ChargeDetailRecord,
+                                                 out ChargeDetailRecord? chargeDetailRecord,
                                                  out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -794,7 +794,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (JSONObject.ParseOptional("description",
                                              "description",
-                                             out I18NString? Description,
+                                             out I18NString? description,
                                              out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -808,7 +808,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (JSONObject.ParseOptionalJSON("warnings",
                                                  "description or warnings",
                                                  Warning.TryParse,
-                                                 out IEnumerable<Warning> Warnings,
+                                                 out IEnumerable<Warning> warnings,
                                                  out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -822,7 +822,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (JSONObject.ParseOptional("location",
                                              "location URL",
                                              org.GraphDefined.Vanaheimr.Hermod.HTTP.Location.TryParse,
-                                             out Location? Location,
+                                             out Location? location,
                                              out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -835,7 +835,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (JSONObject.ParseOptional("runtime",
                                              "runtime",
-                                             out TimeSpan? Runtime,
+                                             TimeSpanExtensions.TryParseMilliseconds,
+                                             out TimeSpan? runtime,
                                              out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -846,14 +847,14 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 SendCDRResult = new SendCDRResult(
-                                    Timestamp,
-                                    AuthorizatorId,
-                                    Result,
-                                    ChargeDetailRecord,
-                                    Description,
-                                    Warnings,
-                                    Location,
-                                    Runtime
+                                    timestamp,
+                                    authorizatorId,
+                                    result,
+                                    chargeDetailRecord,
+                                    description,
+                                    warnings,
+                                    location,
+                                    runtime
                                 );
 
                 ErrorResponse = null;
