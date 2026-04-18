@@ -17,9 +17,12 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
-using org.GraphDefined.Vanaheimr.Hermod;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -27,7 +30,7 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The result of an authorize start request.
+    /// The result of an AuthorizeStart request.
     /// </summary>
     public class AuthStartResult
     {
@@ -189,7 +192,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (private) AuthStartResult (AuthorizatorId,                             Result, ...)
 
         /// <summary>
-        /// Create a new authorize start result.
+        /// Create a new AuthorizeStart result.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
         /// <param name="ResponseTimestamp">The timestamp of the response.</param>
@@ -235,8 +238,8 @@ namespace cloud.charging.open.protocols.WWCP
                                 String?                            PrintedNumber                = null,
                                 Languages?                         UILanguage                   = null,
                                 DateTimeOffset?                    ExpiryDate                   = null,
-                                Watt?                              MaxPower                        = null,
-                                WattHour?                          MaxEnergy                       = null,
+                                Watt?                              MaxPower                     = null,
+                                WattHour?                          MaxEnergy                    = null,
                                 TimeSpan?                          MaxDuration                  = null,
                                 IEnumerable<ChargingTariff>?       ChargingTariffs              = null,
                                 IEnumerable<AuthenticationToken>?  ListOfAuthStopTokens         = null,
@@ -289,7 +292,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (public)  AuthStartResult (AuthorizatorId, ISendAuthorizeStartStop,    Result, ...)
 
         /// <summary>
-        /// Create a new authorize start result.
+        /// Create a new AuthorizeStart result.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
@@ -386,7 +389,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (public)  AuthStartResult (AuthorizatorId, IReceiveAuthorizeStartStop, Result, ...)
 
         /// <summary>
-        /// Create a new authorize start result.
+        /// Create a new AuthorizeStart result.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
@@ -486,6 +489,519 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
+        #region (static) Parse   (JSON, CustomAuthStartResultParser = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of an AuthStartResult.
+        /// </summary>
+        /// <param name="JSON">The JSON to parse.</param>
+        /// <param name="CustomAuthStartResultParser">A delegate to parse custom AuthStartResult JSON objects.</param>
+        public static AuthStartResult Parse(JObject                                        JSON,
+                                            ISendAuthorizeStartStop?                       ISendAuthorizeStartStop       = null,
+                                            IReceiveAuthorizeStartStop?                    IReceiveAuthorizeStartStop    = null,
+                                            CustomJObjectParserDelegate<AuthStartResult>?  CustomAuthStartResultParser   = null)
+        {
+
+            if (TryParse(JSON,
+                         out var authStartResult,
+                         out var errorResponse,
+                         ISendAuthorizeStartStop,
+                         IReceiveAuthorizeStartStop,
+                         CustomAuthStartResultParser))
+            {
+                return authStartResult;
+            }
+
+            throw new ArgumentException("The given JSON representation of an AuthStartResult is invalid: " + errorResponse,
+                                        nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(JSON, out AuthStartResult, out ErrorResponse, CustomAuthStartResultParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
+        /// <summary>
+        /// Try to parse the given JSON representation of an AuthStartResult.
+        /// </summary>
+        /// <param name="JSON">The JSON to parse.</param>
+        /// <param name="AuthStartResult">The parsed AuthStartResult.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                                    JSON,
+                                       [NotNullWhen(true)]  out AuthStartResult?  AuthStartResult,
+                                       [NotNullWhen(false)] out String?           ErrorResponse,
+                                       ISendAuthorizeStartStop?                   ISendAuthorizeStartStop       = null,
+                                       IReceiveAuthorizeStartStop?                IReceiveAuthorizeStartStop    = null)
+
+            => TryParse(JSON,
+                        out AuthStartResult,
+                        out ErrorResponse,
+                        ISendAuthorizeStartStop,
+                        IReceiveAuthorizeStartStop,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of an AuthStartResult.
+        /// </summary>
+        /// <param name="JSON">The JSON to parse.</param>
+        /// <param name="AuthStartResult">The parsed AuthStartResult.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAuthStartResultParser">A delegate to parse custom AuthStartResult JSON objects.</param>
+        public static Boolean TryParse(JObject                                        JSON,
+                                       [NotNullWhen(true)]  out AuthStartResult?      AuthStartResult,
+                                       [NotNullWhen(false)] out String?               ErrorResponse,
+                                       ISendAuthorizeStartStop?                       ISendAuthorizeStartStop       = null,
+                                       IReceiveAuthorizeStartStop?                    IReceiveAuthorizeStartStop    = null,
+                                       CustomJObjectParserDelegate<AuthStartResult>?  CustomAuthStartResultParser   = null)
+        {
+
+            try
+            {
+
+                AuthStartResult = default;
+
+                if (JSON?.HasValues != true)
+                {
+                    ErrorResponse = "The given JSON object must not be null or empty!";
+                    return false;
+                }
+
+                #region Parse AuthorizatorId               [mandatory]
+
+                if (!JSON.ParseMandatory("authorizatorId",
+                                         "authorizator identification",
+                                         Authorizator_Id.TryParse,
+                                         out Authorizator_Id authorizatorId,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse ResponseTimestamp            [mandatory]
+
+                if (!JSON.ParseMandatory("responseTimestamp",
+                                         "response timestamp",
+                                         out DateTimeOffset responseTimestamp,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse Result                       [mandatory]
+
+                if (!JSON.ParseMandatoryEnum("result",
+                                             "result",
+                                             out AuthStartResultTypes result,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse Runtime                      [mandatory]
+
+                if (!JSON.ParseMandatory("result",
+                                         "result",
+                                         TimeSpanExtensions.TryParseMilliseconds,
+                                         out TimeSpan runtime,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                #region Parse CachedResultEndOfLifeTime    [optional]
+
+                if (!JSON.ParseOptional("cachedResultEndOfLifeTime",
+                                        "cached result end-of-life-time",
+                                        out DateTimeOffset? cachedResultEndOfLifeTime,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse SessionId                    [optional]
+
+                if (!JSON.ParseOptional("sessionId",
+                                        "session identification",
+                                        ChargingSession_Id.TryParse,
+                                        out ChargingSession_Id? sessionId,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse EMPPartnerSessionId          [optional]
+
+                if (!JSON.ParseOptional("empPartnerSessionId",
+                                        "EMP partner session identification",
+                                        ChargingSession_Id.TryParse,
+                                        out ChargingSession_Id? empPartnerSessionId,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse AuthorizationReference       [optional]
+
+                if (!JSON.ParseOptional("authorizationReference",
+                                        "authorization reference",
+                                        WWCP.AuthorizationReference.TryParse,
+                                        out AuthorizationReference? authorizationReference,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse ContractId                   [optional]
+
+                var contractId = JSON.GetString("contractId");
+
+                #endregion
+
+                #region Parse PrintedNumber                [optional]
+
+                var printedNumber = JSON.GetString("printedNumber");
+
+                #endregion
+
+                #region Parse UILanguage                   [optional]
+
+                if (!JSON.ParseOptionalEnum("uiLanguage",
+                                            "UI language",
+                                            out Languages? uiLanguage,
+                                            out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse ExpiryDate                   [optional]
+
+                if (!JSON.ParseOptional("expiryDate",
+                                        "expiry date",
+                                        out DateTimeOffset? expiryDate,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse MaxPower                     [optional]
+
+                if (!JSON.ParseOptional("maxPower",
+                                        "max power",
+                                        Watt.TryParse,
+                                        out Watt? maxPower,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse MaxEnergy                    [optional]
+
+                if (!JSON.ParseOptional("maxEnergy",
+                                        "max energy",
+                                        WattHour.TryParse,
+                                        out WattHour? maxEnergy,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse MaxDuration                  [optional]
+
+                if (!JSON.ParseOptional("maxDuration",
+                                        "max duration",
+                                        TimeSpanExtensions.TryParseMinutes,
+                                        out TimeSpan? maxDuration,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+
+                #region Parse ProviderId                   [optional]
+
+                if (!JSON.ParseOptional("providerId",
+                                        "provider identification",
+                                        EMobilityProvider_Id.TryParse,
+                                        out EMobilityProvider_Id? providerId,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse ProviderName                 [optional]
+
+                var providerName = JSON.GetString("providerName");
+
+                #endregion
+
+                #region Parse Description                  [optional]
+
+                if (!JSON.ParseOptional("description",
+                                        "description",
+                                        I18NString.TryParse,
+                                        out I18NString? description,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse AdditionalInfo               [optional]
+
+                if (!JSON.ParseOptional("additionalInfo",
+                                        "additional info",
+                                        I18NString.TryParse,
+                                        out I18NString? additionalInfo,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse AdditionalContext            [optional]
+
+                var additionalContext = JSON["additionalContext"] as JObject;
+
+                #endregion
+
+
+                #region Parse ProviderName                 [optional]
+
+                var numberOfRetries = JSON["numberOfRetries"]?.Value<Byte>() ?? 0;
+
+                #endregion
+
+
+                AuthStartResult = new AuthStartResult(
+
+                                      authorizatorId,
+                                      responseTimestamp,
+                                      result,
+                                      runtime,
+                                      ISendAuthorizeStartStop,
+                                      IReceiveAuthorizeStartStop,
+
+                                      cachedResultEndOfLifeTime,
+                                      sessionId,
+                                      empPartnerSessionId,
+                                      authorizationReference,
+                                      contractId,
+                                      printedNumber,
+                                      uiLanguage,
+                                      expiryDate,
+                                      maxPower,
+                                      maxEnergy,
+                                      maxDuration,
+                                      null, //chargingTariffs,
+                                      null, //listOfAuthStopTokens,
+                                      null, //listOfAuthStopPINs,
+
+                                      providerId,
+                                      providerName,
+                                      description,
+                                      additionalInfo,
+                                      additionalContext,
+
+                                      numberOfRetries
+
+                                  );
+
+                if (CustomAuthStartResultParser is not null)
+                    AuthStartResult = CustomAuthStartResultParser(JSON,
+                                                                  AuthStartResult);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                AuthStartResult  = default;
+                ErrorResponse    = "The given JSON representation of an AuthStartResult is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToJSON(Embedded = false, CustomAuthStartResultSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
+        /// <param name="CustomAuthStartResultSerializer">A delegate to serialize custom AuthStartResult JSON objects.</param>
+        public JObject ToJSON(Boolean                                            Embedded                          = false,
+                              CustomJObjectSerializerDelegate<AuthStartResult>?  CustomAuthStartResultSerializer   = null,
+                              InfoStatus                                         ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandEVSEIds                     = InfoStatus.Expanded,
+                              InfoStatus                                         ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandDataLicenses                = InfoStatus.ShowIdOnly)
+        {
+
+            var json = JSONObject.Create(
+
+                           !Embedded
+                               ? new JProperty("@context",                    JSONLDContext)
+                               : null,
+
+                                 new JProperty("authorizatorId",              AuthorizatorId.                 ToString()),
+                                 new JProperty("timestamp",                   ResponseTimestamp.              ToISO8601()),
+                                 new JProperty("result",                      Result.                         ToString()),
+                                 new JProperty("runtime",                     Runtime.TotalMilliseconds),
+
+
+                           CachedResultEndOfLifeTime.HasValue
+                               ? new JProperty("cachedResultEndOfLifeTime",   CachedResultEndOfLifeTime.Value.ToISO8601())
+                               : null,
+
+                           SessionId.                HasValue
+                               ? new JProperty("sessionId",                   SessionId.                Value.ToString())
+                               : null,
+
+                           EMPPartnerSessionId.      HasValue
+                               ? new JProperty("empPartnerSessionId",         EMPPartnerSessionId.      Value.ToString())
+                               : null,
+
+                           AuthorizationReference.   HasValue
+                               ? new JProperty("authorizationReference",      AuthorizationReference.   Value.ToString())
+                               : null,
+
+                           ContractId.    IsNotNullOrEmpty()
+                               ? new JProperty("contractId",                  ContractId.                     ToString())
+                               : null,
+
+                           PrintedNumber. IsNotNullOrEmpty()
+                               ? new JProperty("printedNumber",               PrintedNumber.                  ToString())
+                               : null,
+
+                           UILanguage.               HasValue
+                               ? new JProperty("uiLanguage",                  UILanguage.               Value.ToString())
+                               : null,
+
+                           ExpiryDate.               HasValue
+                               ? new JProperty("expiryDate",                  ExpiryDate.               Value.ToString())
+                               : null,
+
+                           MaxPower.                 HasValue
+                               ? new JProperty("maxPower",                    MaxPower.                 Value.Value)
+                               : null,
+
+                           MaxEnergy.                HasValue
+                               ? new JProperty("maxEnergy",                   MaxEnergy.                Value.Value)
+                               : null,
+
+                           MaxDuration.              HasValue
+                               ? new JProperty("maxDuration",                 MaxDuration.              Value.TotalMinutes)
+                               : null,
+
+
+                           ChargingTariffs.     Any()
+                               ? new JProperty("chargingTariffs",             new JArray(ChargingTariffs.     Select(chargingTariff      => chargingTariff.ToJSON(
+                                                                                                                                                true,
+                                                                                                                                                ExpandRoamingNetworkId,
+                                                                                                                                                ExpandChargingStationOperatorId,
+                                                                                                                                                ExpandChargingPoolId,
+                                                                                                                                                ExpandEVSEIds,
+                                                                                                                                                ExpandBrandIds,
+                                                                                                                                                ExpandDataLicenses
+                                                                                                                                            ))))
+                               : null,
+
+                           ListOfAuthStopTokens.Any()
+                               ? new JProperty("listOfAuthStopTokens",        new JArray(ListOfAuthStopTokens.Select(authenticationToken => authenticationToken.ToString())))
+                               : null,
+
+                           ListOfAuthStopPINs.Any()
+                               ? new JProperty("listOfAuthStopPINs",          new JArray(ListOfAuthStopPINs.  Select(pin                 => pin)))
+                               : null,
+
+
+                           ProviderId.HasValue
+                               ? new JProperty("providerId",                  ProviderId.                     ToString())
+                               : null,
+
+                           ProviderName.  IsNotNullOrEmpty()
+                               ? new JProperty("providerName",                ProviderName)
+                               : null,
+
+                           Description.   IsNotNullOrEmpty()
+                               ? new JProperty("description",                 Description.                    ToJSON())
+                               : null,
+
+                           AdditionalInfo.IsNotNullOrEmpty()
+                               ? new JProperty("additionalInfo",              AdditionalInfo.                 ToJSON())
+                               : null,
+
+                           AdditionalContext is not null
+                               ? new JProperty("additionalContext",           AdditionalContext)
+                               : null,
+
+
+                                 new JProperty("numberOfRetries",             NumberOfRetries)
+
+                       );
+
+            return CustomAuthStartResultSerializer is not null
+                       ? CustomAuthStartResultSerializer(this, json)
+                       : json;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
 
         #region (static) Unspecified          (AuthorizatorId, SessionId = null, Runtime = null)
 
@@ -1844,134 +2360,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region ToJSON(Embedded = false, CustomAuthStartResultSerializer = null)
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
-        /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
-        /// <param name="CustomAuthStartResultSerializer">A delegate to serialize custom AuthStartResult JSON objects.</param>
-        public JObject ToJSON(Boolean                                            Embedded                          = false,
-                              CustomJObjectSerializerDelegate<AuthStartResult>?  CustomAuthStartResultSerializer   = null,
-                              InfoStatus                                         ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                              InfoStatus                                         ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                              InfoStatus                                         ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                              InfoStatus                                         ExpandEVSEIds                     = InfoStatus.Expanded,
-                              InfoStatus                                         ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                              InfoStatus                                         ExpandDataLicenses                = InfoStatus.ShowIdOnly)
-        {
-
-            var json = JSONObject.Create(
-
-                           !Embedded
-                               ? new JProperty("@context",                    JSONLDContext)
-                               : null,
-
-                                 new JProperty("authorizatorId",              AuthorizatorId.                 ToString()),
-                                 new JProperty("timestamp",                   ResponseTimestamp.              ToISO8601()),
-                                 new JProperty("result",                      Result.                         ToString()),
-                                 new JProperty("runtime",                     Runtime.TotalMilliseconds),
-
-
-                           CachedResultEndOfLifeTime.HasValue
-                               ? new JProperty("cachedResultEndOfLifeTime",   CachedResultEndOfLifeTime.Value.ToISO8601())
-                               : null,
-
-                           SessionId.                HasValue
-                               ? new JProperty("sessionId",                   SessionId.                Value.ToString())
-                               : null,
-
-                           EMPPartnerSessionId.      HasValue
-                               ? new JProperty("empPartnerSessionId",         EMPPartnerSessionId.      Value.ToString())
-                               : null,
-
-                           AuthorizationReference.   HasValue
-                               ? new JProperty("authorizationReference",      AuthorizationReference.   Value.ToString())
-                               : null,
-
-                           ContractId.    IsNotNullOrEmpty()
-                               ? new JProperty("contractId",                  ContractId.                     ToString())
-                               : null,
-
-                           PrintedNumber. IsNotNullOrEmpty()
-                               ? new JProperty("printedNumber",               PrintedNumber.                  ToString())
-                               : null,
-
-                           UILanguage.               HasValue
-                               ? new JProperty("uiLanguage",                  UILanguage.               Value.ToString())
-                               : null,
-
-                           ExpiryDate.               HasValue
-                               ? new JProperty("expiryDate",                  ExpiryDate.               Value.ToString())
-                               : null,
-
-                           MaxPower.                 HasValue
-                               ? new JProperty("maxPower",                    MaxPower.                 Value.Value)
-                               : null,
-
-                           MaxEnergy.                HasValue
-                               ? new JProperty("maxEnergy",                   MaxEnergy.                Value.Value)
-                               : null,
-
-                           MaxDuration.              HasValue
-                               ? new JProperty("maxDuration",                 MaxDuration.              Value.TotalMinutes)
-                               : null,
-
-
-                           ChargingTariffs.     Any()
-                               ? new JProperty("chargingTariffs",             new JArray(ChargingTariffs.     Select(chargingTariff      => chargingTariff.ToJSON(
-                                                                                                                                                true,
-                                                                                                                                                ExpandRoamingNetworkId,
-                                                                                                                                                ExpandChargingStationOperatorId,
-                                                                                                                                                ExpandChargingPoolId,
-                                                                                                                                                ExpandEVSEIds,
-                                                                                                                                                ExpandBrandIds,
-                                                                                                                                                ExpandDataLicenses
-                                                                                                                                            ))))
-                               : null,
-
-                           ListOfAuthStopTokens.Any()
-                               ? new JProperty("listOfAuthStopTokens",        new JArray(ListOfAuthStopTokens.Select(authenticationToken => authenticationToken.ToString())))
-                               : null,
-
-                           ListOfAuthStopPINs.Any()
-                               ? new JProperty("listOfAuthStopPINs",          new JArray(ListOfAuthStopPINs.  Select(pin                 => pin)))
-                               : null,
-
-
-                           ProviderId.HasValue
-                               ? new JProperty("providerId",                  ProviderId.                     ToString())
-                               : null,
-
-                           ProviderName.  IsNotNullOrEmpty()
-                               ? new JProperty("providerName",                ProviderName)
-                               : null,
-
-                           Description.   IsNotNullOrEmpty()
-                               ? new JProperty("description",                 Description.                    ToJSON())
-                               : null,
-
-                           AdditionalInfo.IsNotNullOrEmpty()
-                               ? new JProperty("additionalInfo",              AdditionalInfo.                 ToJSON())
-                               : null,
-
-                           AdditionalContext is not null
-                               ? new JProperty("additionalContext",           AdditionalContext)
-                               : null,
-
-
-                                 new JProperty("numberOfRetries",             NumberOfRetries)
-
-                       );
-
-            return CustomAuthStartResultSerializer is not null
-                       ? CustomAuthStartResultSerializer(this, json)
-                       : json;
-
-        }
-
         #endregion
+
 
         #region (override) ToString()
 
@@ -1980,7 +2370,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => $"{Result}{(ProviderId is not null ? ", " + ProviderId : "")}";
+            => $"{Result}{(ProviderId is not null
+                               ? $" ({ProviderId})"
+                               : "")} via {AuthorizatorId}";
 
         #endregion
 
@@ -1988,7 +2380,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// The result of an authorize start request.
+    /// The result of an AuthorizeStart request.
     /// </summary>
     public enum AuthStartResultTypes
     {
