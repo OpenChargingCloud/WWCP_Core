@@ -7646,10 +7646,11 @@ namespace cloud.charging.open.protocols.WWCP
                     result = AuthStartResult.InvalidToken(
                                  Id,
                                  this,
+                                 TimeSpan.Zero,
                                  Timestamp.Now + AuthenticationCacheTimeout,
+                                 null,
                                  SessionId,
-                                 I18NString.Create($"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
-                                 TimeSpan.Zero
+                                 I18NString.Create($"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!")
                              );
 
                 }
@@ -7724,9 +7725,10 @@ namespace cloud.charging.open.protocols.WWCP
                                 result = AuthStartResult.RateLimitReached(
                                              Id,
                                              this,
+                                             TimeSpan.Zero,
+                                             null,
                                              SessionId,
-                                             I18NString.Create($"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
-                                             TimeSpan.Zero
+                                             I18NString.Create($"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!")
                                          );
 
                             }
@@ -7850,6 +7852,8 @@ namespace cloud.charging.open.protocols.WWCP
                     result  = AuthStartResult.Authorized(
                                   result.AuthorizatorId,
                                   result.ISendAuthorizeStartStop,
+                                  result.Runtime,
+                                  result.ResponseTimestamp,
                                   null,
                                   result.ProviderId.HasValue
                                       ? ChargingSession_Id.NewRandom(result.ProviderId.Value)
@@ -7860,18 +7864,18 @@ namespace cloud.charging.open.protocols.WWCP
                                   result.PrintedNumber,
                                   result.UILanguage,
                                   result.ExpiryDate,
-                                  result.MaxkW,
-                                  result.MaxkWh,
+                                  result.MaxPower,
+                                  result.MaxEnergy,
                                   result.MaxDuration,
                                   result.ChargingTariffs,
                                   result.ListOfAuthStopTokens,
                                   result.ListOfAuthStopPINs,
                                   result.ProviderId,
+                                  result.ProviderName,
                                   result.Description,
                                   result.AdditionalInfo,
                                   result.AdditionalContext,
-                                  result.NumberOfRetries,
-                                  result.Runtime
+                                  result.NumberOfRetries
                               );
 
 

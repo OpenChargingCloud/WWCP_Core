@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.WWCP
                        Description:               null,
                        AdditionalInfo:            null,
                        NumberOfRetries:           0,
-                       Runtime:                   null
+                       Runtime:                   TimeSpan.Zero
                    );
 
         }
