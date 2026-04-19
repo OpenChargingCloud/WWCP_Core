@@ -1,0 +1,59 @@
+﻿
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <title>Charging Sessions</title>
+    <link href="{{basePath}}/webapi/css/chargingSessions/chargingSessions.min.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+
+    <h1>Charging Sessions<small> JSON viewer — search, highlight &amp; path API</small></h1>
+
+    <div class="toolbars">
+
+        <!-- ── Session toolbar ─────────────────────────────────────── -->
+        <div class="toolbar">
+            <span class="label">session</span>
+            <input type="text" id="sessionIdInput" placeholder="session id">
+            <button class="primary" id="btnLoadSession" title="Load / refresh">load</button>
+        </div>
+
+        <!-- ── Search toolbar ──────────────────────────────────────── -->
+        <div class="toolbar">
+            <span class="label">search</span>
+            <input type="text" id="searchInput"
+                   placeholder="Keys &amp; values… (Enter = next, Shift+Enter = prev, Esc = clear)">
+            <button id="btnCaseSensitive" title="Case sensitive">Aa</button>
+            <button id="btnRegex"         title="Regular expression">.*</button>
+            <span class="sep"></span>
+            <button id="btnPrevMatch"   title="Previous match (Shift+Enter)">↑</button>
+            <button id="btnNextMatch"   title="Next match (Enter)">↓</button>
+            <button id="btnClearSearch" title="Clear search (Esc)">×</button>
+            <span class="counter" id="matchCounter">no search</span>
+        </div>
+
+        <!-- ── Path / expand toolbar ───────────────────────────────── -->
+        <div class="toolbar">
+            <span class="label">path</span>
+            <input type="text" id="pathInput"
+                   placeholder='e.g. evses[0].connectors  or  $.security'
+                   value="evses[0].connectors">
+            <button class="primary" id="btnExpand">expand()</button>
+            <button class="primary" id="btnExpandRec">expandRecursive()</button>
+            <span class="sep"></span>
+            <button id="btnExpandAll">expand all</button>
+            <button id="btnCollapseAll">collapse all</button>
+            <div class="hint">
+                path formats <code>users.0.name</code> · <code>users[0].name</code> · <code>$.users[0].name</code>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="viewer" class="viewer"></div>
+
+    <script type="module" src="{{basePath}}/webapi/chargingSessions/chargingSessions.js"></script>
+
+</body>
+</html>

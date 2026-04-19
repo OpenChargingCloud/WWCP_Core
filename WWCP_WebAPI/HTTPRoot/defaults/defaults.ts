@@ -181,7 +181,7 @@ async function WWCPGetAsync(RessourceURI: string): Promise<[IWWCPResponse, (key:
 
                     }
                     catch (exception) {
-                        reject(new Error(exception));
+                        reject(new Error(exception instanceof Error ? exception.message : String(exception)));
                     }
                 } else {
                     reject(new Error(`HTTP Status Code ${this.status}: ${ajax.responseText}`));

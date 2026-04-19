@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="HTTPRoot\chargingSessions\chargingSessions.js" />
+    <None Remove="HTTPRoot\chargingSessions\chargingSessions.js.map" />
+    <None Remove="HTTPRoot\css\chargingSessions\chargingSessions.css" />
+    <None Remove="HTTPRoot\css\chargingSessions\chargingSessions.min.css" />
     <None Remove="HTTPRoot\css\debugLog\debugLog.css" />
     <None Remove="HTTPRoot\css\debugLog\debugLog.min.css" />
     <None Remove="HTTPRoot\css\index.css" />
@@ -18,6 +22,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="HTTPRoot\chargingSessions\chargingSessions - Copy (2).shtml" />
+    <EmbeddedResource Include="HTTPRoot\chargingSessions\chargingSessions.js" />
+    <EmbeddedResource Include="HTTPRoot\chargingSessions\chargingSessions.js.map" />
+    <EmbeddedResource Include="HTTPRoot\chargingSessions\chargingSessions.scss" />
+    <EmbeddedResource Include="HTTPRoot\chargingSessions\chargingSessions.shtml" />
+    <EmbeddedResource Include="HTTPRoot\chargingSessions\chargingSessions.ts" />
+    <EmbeddedResource Include="HTTPRoot\css\chargingSessions\chargingSessions.css" />
+    <EmbeddedResource Include="HTTPRoot\css\chargingSessions\chargingSessions.min.css" />
     <EmbeddedResource Include="HTTPRoot\css\debugLog\debugLog.css" />
     <EmbeddedResource Include="HTTPRoot\css\debugLog\debugLog.min.css" />
     <EmbeddedResource Include="HTTPRoot\css\index.css" />

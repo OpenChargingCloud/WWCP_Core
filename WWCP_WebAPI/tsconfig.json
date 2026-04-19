@@ -1,17 +1,35 @@
 ﻿{
   "compileOnSave": true,
   "compilerOptions": {
-    "module": "system",
-    "noImplicitAny": false,
-    "sourceMap": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "lib": [ "ES2022", "DOM", "DOM.Iterable" ],
+
+    //"strict": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    //"noUnusedLocals": true,
+    //"noUnusedParameters": true,
+    //"exactOptionalPropertyTypes": true,
+    "useUnknownInCatchVariables": true,
+    //"forceConsistentCasingInFileNames": true,
+
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "allowJs": false,
-    "target": "ES2018"
+    "skipLibCheck": true,
+
+    "sourceMap": true,
+    "removeComments": false,
+    "newLine": "lf"
   },
   "files": [
 
     "HTTPRoot/defaults/defaults.ts",
 
-    "HTTPRoot/debugLog/debugLog.ts"
+    "HTTPRoot/debugLog/debugLog.ts",
+    "HTTPRoot/chargingSessions/chargingSessions.ts"
 
   ]
 }

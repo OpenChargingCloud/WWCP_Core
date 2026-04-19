@@ -272,7 +272,11 @@ function StartDebugLog() {
 
         } catch (e) {
 
-            console.warn('Invalid filter expression:', e.message);
+            const error = e instanceof Error
+                              ? e
+                              : new Error(String(e));
+
+            console.warn('Invalid filter expression:', error.message);
 
             // On syntax error, fall back to simple substring match
             const val = filterString.trim().toLowerCase();

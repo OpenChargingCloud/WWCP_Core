@@ -10,5 +10,9 @@
   {
     "outputFile": "HTTPRoot/css/debugLog/debugLog.css",
     "inputFile": "HTTPRoot/debugLog/debugLog.scss"
+  },
+  {
+    "outputFile": "HTTPRoot/css/chargingSessions/chargingSessions.css",
+    "inputFile": "HTTPRoot/chargingSessions/chargingSessions.scss"
   }
 ]

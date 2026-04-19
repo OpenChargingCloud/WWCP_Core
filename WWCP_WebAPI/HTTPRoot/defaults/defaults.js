@@ -43,9 +43,9 @@ function WWCPGet(RessourceURI, OnSuccess, OnError) {
         // 0 UNSENT | 1 OPENED | 2 HEADERS_RECEIVED | 3 LOADING | 4 DONE
         if (this.readyState == 4) {
             if (this.status >= 100 && this.status < 300)
-                OnSuccess === null || OnSuccess === void 0 ? void 0 : OnSuccess(this.status, ajax.responseText, (key) => ajax.getResponseHeader(key));
+                OnSuccess?.(this.status, ajax.responseText, (key) => ajax.getResponseHeader(key));
             else
-                OnError === null || OnError === void 0 ? void 0 : OnError(this.status, ajax.responseText, (key) => ajax.getResponseHeader(key));
+                OnError?.(this.status, ajax.responseText, (key) => ajax.getResponseHeader(key));
         }
     };
     ajax.send();
@@ -74,7 +74,7 @@ async function WWCPGetAsync(RessourceURI) {
                             reject(new Error(ocpiResponse.status_code + (ocpiResponse.status_message ? ": " + ocpiResponse.status_message : "")));
                     }
                     catch (exception) {
-                        reject(new Error(exception));
+                        reject(new Error(exception instanceof Error ? exception.message : String(exception)));
                     }
                 }
                 else {
@@ -112,8 +112,8 @@ function WWCPStartSearch2(requestURL, searchFilters, doStartUp, nameOfItem, idOf
     const leftButton = controlsDiv.querySelector("#leftButton");
     const rightButton = controlsDiv.querySelector("#rightButton");
     const dateFilters = controlsDiv.querySelector("#dateFilters");
-    const dateFrom = dateFilters === null || dateFilters === void 0 ? void 0 : dateFilters.querySelector("#dateFromText");
-    const dateTo = dateFilters === null || dateFilters === void 0 ? void 0 : dateFilters.querySelector("#dateToText");
+    const dateFrom = dateFilters?.querySelector("#dateFromText");
+    const dateTo = dateFilters?.querySelector("#dateToText");
     //const datepicker               = dateFilters !== null ? new DatePicker() : null;
     const listViewButton = controlsDiv.querySelector("#listView");
     const tableViewButton = controlsDiv.querySelector("#tableView");
@@ -150,7 +150,7 @@ function WWCPStartSearch2(requestURL, searchFilters, doStartUp, nameOfItem, idOf
                     const ocpiResponse = JSON.parse(response);
                     if (ocpiResponse.status_code >= 1000 &&
                         ocpiResponse.status_code < 2000) {
-                        if ((ocpiResponse === null || ocpiResponse === void 0 ? void 0 : ocpiResponse.data) &&
+                        if (ocpiResponse?.data &&
                             Array.isArray(ocpiResponse.data)) {
                             const searchResults = ocpiResponse.data;
                             numberOfResults = searchResults.length;

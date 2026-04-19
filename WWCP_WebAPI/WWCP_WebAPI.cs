@@ -458,6 +458,7 @@ namespace cloud.charging.open.protocols.WWCP
                 #region HTML
 
                 WWCP_HTTPAPI.HTTPBaseAPI.AddHandler(
+
                     HTTPMethod.GET,
                     OverlayURLPathPrefix.Value,
                     HTTPContentType.Text.HTML_UTF8,
@@ -530,15 +531,17 @@ namespace cloud.charging.open.protocols.WWCP
                         RequireAuthentication:  UseHTTPSSE == ServiceSettings.RequiresAuthentication
                     );
 
+
                     WWCP_HTTPAPI.HTTPBaseAPI.AddHandler(
+
                         HTTPMethod.GET,
                         OverlayURLPathPrefix.Value + "debug",
                         HTTPContentType.Text.HTML_UTF8,
-                        HTTPDelegate: async request => {
+                        async request => {
 
                             #region Check authentication
 
-                            if (request.User == null &&
+                            if (request.User is null &&
                                 UseHTTPSSE == ServiceSettings.RequiresAuthentication)
                             {
 
@@ -581,9 +584,71 @@ namespace cloud.charging.open.protocols.WWCP
                 #endregion
 
 
+
+                // Charging Sessions
+
+                #region ~/RNs/{RoamingNetworkId}/ChargingSessions
+
+                #region GET         ~/RNs/{RoamingNetworkId}/ChargingSessions/{ChargingSessionId}
+
+                // -----------------------------------------------------------------------------------------------------------
+                // curl -v -H "Accept: application/json" http://127.0.0.1:5500/RNs/Test/ChargingSessions/{ChargingSessionId}
+                // -----------------------------------------------------------------------------------------------------------
+                WWCP_HTTPAPI.HTTPBaseAPI.AddHandler(
+
+                    HTTPMethod.GET,
+                    OverlayURLPathPrefix.Value + "RNs/{RoamingNetworkId}/ChargingSessions/{ChargingSessionId}",
+                    HTTPContentType.Text.HTML_UTF8,
+                    async request => {
+
+                        #region Check authentication
+
+                        if (request.User is null)
+                        {
+
+                            //ToDo: Maybe redirect to a login page instead of sending a 401?
+                            return new HTTPResponse.Builder(request) {
+                                       HTTPStatusCode             = HTTPStatusCode.Unauthorized,
+                                       Server                     = HTTPServerName,
+                                       Date                       = Timestamp.Now,
+                                       AccessControlAllowOrigin   = "*",
+                                       AccessControlAllowMethods  = [ "GET" ],
+                                       AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                       Connection                 = ConnectionType.Close,
+                                       Vary                       = "Accept"
+                                   }.AsImmutable;
+
+                        }
+
+                        #endregion
+
+
+                        return new HTTPResponse.Builder(request) {
+                                   HTTPStatusCode             = HTTPStatusCode.OK,
+                                   Server                     = HTTPServerName,
+                                   Date                       = Timestamp.Now,
+                                   AccessControlAllowOrigin   = "*",
+                                   AccessControlAllowMethods  = [ "GET" ],
+                                   AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                   ContentType                = HTTPContentType.Text.HTML_UTF8,
+                                   Content                    = MixWithHTMLTemplate("chargingSessions.chargingSessions.shtml").ToUTF8Bytes(),
+                                   Connection                 = ConnectionType.KeepAlive,
+                                   Vary                       = "Accept"
+                               }.AsImmutable;
+
+                    }
+
+                );
+
+                #endregion
+
+                #endregion
+
+
                 #region GET ~/support
 
                 WWCP_HTTPAPI.HTTPBaseAPI.AddHandler(
+
                     HTTPMethod.GET,
                     OverlayURLPathPrefix.Value + "/support",
                     HTTPContentType.Text.HTML_UTF8,
@@ -611,6 +676,7 @@ namespace cloud.charging.open.protocols.WWCP
                 #region GET ~/favicon.png
 
                 WWCP_HTTPAPI.HTTPBaseAPI.AddHandler(
+
                     HTTPMethod.GET,
                     OverlayURLPathPrefix.Value + "/favicon.png",
                     //HTTPContentType.Image.PNG,
