@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="HTTPRoot\chargingSessions\chargingSessions - Copy (2).shtml" />
     <EmbeddedResource Include="HTTPRoot\chargingSessions\chargingSessions.js" />
     <EmbeddedResource Include="HTTPRoot\chargingSessions\chargingSessions.js.map" />
     <EmbeddedResource Include="HTTPRoot\chargingSessions\chargingSessions.scss" />

@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using org.GraphDefined.Vanaheimr.Hermod.HTTPTest;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.WWCP
                             IEnumerable<CryptoKeyInfo>?  IdentityGroups   = null,
 
                             HTTPTestServerX?             HTTPTestServer   = null,
-                            HTTPExtAPIX?                 DefaultHTTPAPI   = null,
+                            HTTPExtAPI?                  DefaultHTTPAPI   = null,
 
                             IDNSClient?                  DNSClient        = null)
 
@@ -82,7 +82,6 @@ namespace cloud.charging.open.protocols.WWCP
                    IdentityGroups,
 
                    HTTPTestServer,
-                   null, //DefaultHTTPAPI,
                    DefaultHTTPAPI,
 
                    DNSClient)
@@ -90,7 +89,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             this.HTTPAPI = new WWCP_HTTPAPI(
-                               this.DefaultHTTPAPIX
+                               this.DefaultHTTPAPI
                            );
 
         }

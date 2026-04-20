@@ -23,7 +23,6 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.HTTPTest;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 #endregion
@@ -44,7 +43,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A HTTP API providing advanced WWCP data structures.
     /// </summary>
-    public class WWCP_WebAPI : AHTTPExtAPIXExtension2<WWCP_HTTPAPI, HTTPExtAPIX>
+    public class WWCP_WebAPI : AHTTPExtAPIExtension2<WWCP_HTTPAPI, HTTPExtAPI>
     {
 
         #region Data

@@ -28,7 +28,6 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.HTTPTest;
 
 using cloud.charging.open.protocols.WWCP.Networking;
 
@@ -1080,13 +1079,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                  Action<HTTPRequest.Builder>?  RequestBuilder   = null,
                                                  IHTTPAuthentication?          Authentication   = null)
 
-            => HTTPClient.Execute(
-                   client => client.CreateRequest(
-                                 WWCP_HTTPAPI.RESERVE,
-                                 Path,
-                                 Authentication:  Authentication,
-                                 RequestBuilder:  RequestBuilder
-                             )
+            => HTTPClient.RunRequest(
+                   WWCP_HTTPAPI.RESERVE,
+                   Path,
+                   Authentication:  Authentication,
+                   RequestBuilder:  RequestBuilder
                );
 
         #endregion
@@ -1105,13 +1102,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                     Action<HTTPRequest.Builder>?  RequestBuilder   = null,
                                                     IHTTPAuthentication?          Authentication   = null)
 
-            => HTTPClient.Execute(
-                   client => client.CreateRequest(
-                                 WWCP_HTTPAPI.SETEXPIRED,
-                                 Path,
-                                 Authentication:  Authentication,
-                                 RequestBuilder:  RequestBuilder
-                             )
+            => HTTPClient.RunRequest(
+                   WWCP_HTTPAPI.SETEXPIRED,
+                   Path,
+                   Authentication:  Authentication,
+                   RequestBuilder:  RequestBuilder
                );
 
         #endregion
@@ -1130,13 +1125,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                    Action<HTTPRequest.Builder>?  RequestBuilder   = null,
                                                    IHTTPAuthentication?          Authentication   = null)
 
-            => HTTPClient.Execute(
-                   client => client.CreateRequest(
-                                 WWCP_HTTPAPI.AUTHSTART,
-                                 Path,
-                                 Authentication:  Authentication,
-                                 RequestBuilder:  RequestBuilder
-                             )
+            => HTTPClient.RunRequest(
+                   WWCP_HTTPAPI.AUTHSTART,
+                   Path,
+                   Authentication:  Authentication,
+                   RequestBuilder:  RequestBuilder
                );
 
         #endregion
@@ -1155,13 +1148,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                   Action<HTTPRequest.Builder>?  RequestBuilder   = null,
                                                   IHTTPAuthentication?          Authentication   = null)
 
-            => HTTPClient.Execute(
-                   client => client.CreateRequest(
-                                 WWCP_HTTPAPI.AUTHSTOP,
-                                 Path,
-                                 Authentication:  Authentication,
-                                 RequestBuilder:  RequestBuilder
-                             )
+            => HTTPClient.RunRequest(
+                   WWCP_HTTPAPI.AUTHSTOP,
+                   Path,
+                   Authentication:  Authentication,
+                   RequestBuilder:  RequestBuilder
                );
 
         #endregion
@@ -1180,13 +1171,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                      Action<HTTPRequest.Builder>?  RequestBuilder   = null,
                                                      IHTTPAuthentication?          Authentication   = null)
 
-            => HTTPClient.Execute(
-                   client => client.CreateRequest(
-                                 WWCP_HTTPAPI.REMOTESTART,
-                                 Path,
-                                 Authentication:  Authentication,
-                                 RequestBuilder:  RequestBuilder
-                             )
+            => HTTPClient.RunRequest(
+                   WWCP_HTTPAPI.REMOTESTART,
+                   Path,
+                   Authentication:  Authentication,
+                   RequestBuilder:  RequestBuilder
                );
 
         #endregion
@@ -1205,13 +1194,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                     Action<HTTPRequest.Builder>?  RequestBuilder   = null,
                                                     IHTTPAuthentication?          Authentication   = null)
 
-            => HTTPClient.Execute(
-                   client => client.CreateRequest(
-                                 WWCP_HTTPAPI.REMOTESTOP,
-                                 Path,
-                                 Authentication:  Authentication,
-                                 RequestBuilder:  RequestBuilder
-                             )
+            => HTTPClient.RunRequest(
+                   WWCP_HTTPAPI.REMOTESTOP,
+                   Path,
+                   Authentication:  Authentication,
+                   RequestBuilder:  RequestBuilder
                );
 
         #endregion
@@ -1230,13 +1217,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                  Action<HTTPRequest.Builder>?  RequestBuilder   = null,
                                                  IHTTPAuthentication?          Authentication   = null)
 
-            => HTTPClient.Execute(
-                   client => client.CreateRequest(
-                                 WWCP_HTTPAPI.SENDCDR,
-                                 Path,
-                                 Authentication:  Authentication,
-                                 RequestBuilder:  RequestBuilder
-                             )
+            => HTTPClient.RunRequest(
+                   WWCP_HTTPAPI.SENDCDR,
+                   Path,
+                   Authentication:  Authentication,
+                   RequestBuilder:  RequestBuilder
                );
 
         #endregion
@@ -1248,7 +1233,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The WWCP HTTP API.
     /// </summary>
-    public class WWCP_HTTPAPI : AHTTPExtAPIXExtension<HTTPExtAPIX>
+    public class WWCP_HTTPAPI : AHTTPExtAPIExtension1<HTTPExtAPI>
     {
 
         #region Data
@@ -1323,7 +1308,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a GET / request was received.
         /// </summary>
-        public HTTPRequestLogEventX OnGetRootRequest = new();
+        public HTTPRequestLogEvent OnGetRootRequest = new();
 
         /// <summary>
         /// An event sent whenever a GET / request was received.
@@ -1332,7 +1317,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="API">The Common API.</param>
         /// <param name="Request">A HTTP request.</param>
         protected internal Task GetRootRequest(DateTimeOffset     Timestamp,
-                                               HTTPAPIX           API,
+                                               HTTPAPI           API,
                                                HTTPRequest        Request,
                                                CancellationToken  CancellationToken)
 
@@ -1350,7 +1335,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a GET / response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnGetRootResponse = new();
+        public HTTPResponseLogEvent OnGetRootResponse = new();
 
         /// <summary>
         /// An event sent whenever a GET / response was sent.
@@ -1360,7 +1345,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Request">A HTTP request.</param>
         /// <param name="Response">A HTTP response.</param>
         protected internal Task GetRootResponse(DateTimeOffset     Timestamp,
-                                                HTTPAPIX           API,
+                                                HTTPAPI           API,
                                                 HTTPRequest        Request,
                                                 HTTPResponse       Response,
                                                 CancellationToken  CancellationToken)
@@ -1381,7 +1366,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a authenticate start EVSE request was received.
         /// </summary>
-        public HTTPRequestLogEventX OnCreateRoamingNetworkRequest = new();
+        public HTTPRequestLogEvent OnCreateRoamingNetworkRequest = new();
 
         /// <summary>
         /// An event sent whenever a authenticate start EVSE request was received.
@@ -1390,7 +1375,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="API">The HTTP API.</param>
         /// <param name="Request">A HTTP request.</param>
         protected internal Task CreateRoamingNetworkRequest(DateTimeOffset     Timestamp,
-                                                            HTTPAPIX           API,
+                                                            HTTPAPI           API,
                                                             HTTPRequest        Request,
                                                             CancellationToken  CancellationToken)
 
@@ -1408,7 +1393,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a authenticate start EVSE response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnCreateRoamingNetworkResponse = new();
+        public HTTPResponseLogEvent OnCreateRoamingNetworkResponse = new();
 
         /// <summary>
         /// An event sent whenever a authenticate start EVSE response was sent.
@@ -1418,7 +1403,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Request">A HTTP request.</param>
         /// <param name="Response">A HTTP response.</param>
         protected internal Task CreateRoamingNetworkResponse(DateTimeOffset     Timestamp,
-                                                             HTTPAPIX           API,
+                                                             HTTPAPI           API,
                                                              HTTPRequest        Request,
                                                              HTTPResponse       Response,
                                                              CancellationToken  CancellationToken)
@@ -1439,7 +1424,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a authenticate start EVSE request was received.
         /// </summary>
-        public HTTPRequestLogEventX OnDeleteRoamingNetworkRequest = new();
+        public HTTPRequestLogEvent OnDeleteRoamingNetworkRequest = new();
 
         /// <summary>
         /// An event sent whenever a authenticate start EVSE request was received.
@@ -1448,7 +1433,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="API">The HTTP API.</param>
         /// <param name="Request">A HTTP request.</param>
         protected internal Task DeleteRoamingNetworkRequest(DateTimeOffset     Timestamp,
-                                                            HTTPAPIX           API,
+                                                            HTTPAPI           API,
                                                             HTTPRequest        Request,
                                                             CancellationToken  CancellationToken)
 
@@ -1466,7 +1451,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a authenticate start EVSE response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnDeleteRoamingNetworkResponse = new();
+        public HTTPResponseLogEvent OnDeleteRoamingNetworkResponse = new();
 
         /// <summary>
         /// An event sent whenever a authenticate start EVSE response was sent.
@@ -1476,7 +1461,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Request">A HTTP request.</param>
         /// <param name="Response">A HTTP response.</param>
         protected internal Task DeleteRoamingNetworkResponse(DateTimeOffset     Timestamp,
-                                                             HTTPAPIX           API,
+                                                             HTTPAPI           API,
                                                              HTTPRequest        Request,
                                                              HTTPResponse       Response,
                                                              CancellationToken  CancellationToken)
@@ -1500,7 +1485,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetChargingStationOperatorAdminStatus HTTP was received.
         /// </summary>
-        public HTTPRequestLogEventX OnSetChargingStationOperatorAdminStatusHTTPRequest = new();
+        public HTTPRequestLogEvent OnSetChargingStationOperatorAdminStatusHTTPRequest = new();
 
         /// <summary>
         /// An event sent whenever a SetChargingStationOperatorAdminStatus HTTP was received.
@@ -1510,7 +1495,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPRequest">The HTTP request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetChargingStationOperatorAdminStatusRequest(DateTimeOffset     Timestamp,
-                                                                             HTTPAPIX           HTTPAPI,
+                                                                             HTTPAPI           HTTPAPI,
                                                                              HTTPRequest        HTTPRequest,
                                                                              CancellationToken  CancellationToken)
 
@@ -1528,7 +1513,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetChargingStationOperatorAdminStatus HTTP response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnSetChargingStationOperatorAdminStatusHTTPResponse = new();
+        public HTTPResponseLogEvent OnSetChargingStationOperatorAdminStatusHTTPResponse = new();
 
         /// <summary>
         /// An event sent whenever a SetChargingStationOperatorAdminStatus HTTP response was sent.
@@ -1539,7 +1524,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPResponse">The HTTP response.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetChargingStationOperatorAdminStatusResponse(DateTimeOffset     Timestamp,
-                                                                              HTTPAPIX           HTTPAPI,
+                                                                              HTTPAPI           HTTPAPI,
                                                                               HTTPRequest        HTTPRequest,
                                                                               HTTPResponse       HTTPResponse,
                                                                               CancellationToken  CancellationToken)
@@ -1560,7 +1545,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetChargingStationOperatorStatus HTTP was received.
         /// </summary>
-        public HTTPRequestLogEventX OnSetChargingStationOperatorStatusHTTPRequest = new();
+        public HTTPRequestLogEvent OnSetChargingStationOperatorStatusHTTPRequest = new();
 
         /// <summary>
         /// An event sent whenever a SetChargingStationOperatorStatus HTTP was received.
@@ -1570,7 +1555,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPRequest">The HTTP request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetChargingStationOperatorStatusRequest(DateTimeOffset     Timestamp,
-                                                                        HTTPAPIX           HTTPAPI,
+                                                                        HTTPAPI           HTTPAPI,
                                                                         HTTPRequest        HTTPRequest,
                                                                         CancellationToken  CancellationToken)
 
@@ -1588,7 +1573,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetChargingStationOperatorStatus HTTP response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnSetChargingStationOperatorStatusHTTPResponse = new();
+        public HTTPResponseLogEvent OnSetChargingStationOperatorStatusHTTPResponse = new();
 
         /// <summary>
         /// An event sent whenever a SetChargingStationOperatorStatus HTTP response was sent.
@@ -1599,7 +1584,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPResponse">The HTTP response.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetChargingStationOperatorStatusResponse(DateTimeOffset     Timestamp,
-                                                                         HTTPAPIX           HTTPAPI,
+                                                                         HTTPAPI           HTTPAPI,
                                                                          HTTPRequest        HTTPRequest,
                                                                          HTTPResponse       HTTPResponse,
                                                                          CancellationToken  CancellationToken)
@@ -1622,7 +1607,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a GetChargingPools request was received.
         /// </summary>
-        public HTTPRequestLogEventX OnGetChargingPoolsRequest = new();
+        public HTTPRequestLogEvent OnGetChargingPoolsRequest = new();
 
         /// <summary>
         /// An event sent whenever a GetChargingPools request was received.
@@ -1631,7 +1616,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="API">The HTTP API.</param>
         /// <param name="Request">A HTTP request.</param>
         protected internal Task GetChargingPoolsRequest(DateTimeOffset     Timestamp,
-                                                        HTTPAPIX           API,
+                                                        HTTPAPI           API,
                                                         HTTPRequest        Request,
                                                         CancellationToken  CancellationToken)
 
@@ -1649,7 +1634,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a GetChargingPools response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnGetChargingPoolsResponse = new();
+        public HTTPResponseLogEvent OnGetChargingPoolsResponse = new();
 
         /// <summary>
         /// An event sent whenever a GetChargingPools response was sent.
@@ -1659,7 +1644,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Request">A HTTP request.</param>
         /// <param name="Response">A HTTP response.</param>
         protected internal Task GetChargingPoolsResponse(DateTimeOffset     Timestamp,
-                                                         HTTPAPIX           API,
+                                                         HTTPAPI           API,
                                                          HTTPRequest        Request,
                                                          HTTPResponse       Response,
                                                          CancellationToken  CancellationToken)
@@ -1680,7 +1665,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetChargingPoolAdminStatus HTTP was received.
         /// </summary>
-        public HTTPRequestLogEventX OnSetChargingPoolAdminStatusHTTPRequest = new();
+        public HTTPRequestLogEvent OnSetChargingPoolAdminStatusHTTPRequest = new();
 
         /// <summary>
         /// An event sent whenever a SetChargingPoolAdminStatus HTTP was received.
@@ -1690,7 +1675,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPRequest">The HTTP request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetChargingPoolAdminStatusRequest(DateTimeOffset     Timestamp,
-                                                                  HTTPAPIX           HTTPAPI,
+                                                                  HTTPAPI           HTTPAPI,
                                                                   HTTPRequest        HTTPRequest,
                                                                   CancellationToken  CancellationToken)
 
@@ -1708,7 +1693,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetChargingPoolAdminStatus HTTP response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnSetChargingPoolAdminStatusHTTPResponse = new();
+        public HTTPResponseLogEvent OnSetChargingPoolAdminStatusHTTPResponse = new();
 
         /// <summary>
         /// An event sent whenever a SetChargingPoolAdminStatus HTTP response was sent.
@@ -1719,7 +1704,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPResponse">The HTTP response.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetChargingPoolAdminStatusResponse(DateTimeOffset     Timestamp,
-                                                                   HTTPAPIX           HTTPAPI,
+                                                                   HTTPAPI           HTTPAPI,
                                                                    HTTPRequest        HTTPRequest,
                                                                    HTTPResponse       HTTPResponse,
                                                                    CancellationToken  CancellationToken)
@@ -1740,7 +1725,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetChargingPoolStatus HTTP was received.
         /// </summary>
-        public HTTPRequestLogEventX OnSetChargingPoolStatusHTTPRequest = new();
+        public HTTPRequestLogEvent OnSetChargingPoolStatusHTTPRequest = new();
 
         /// <summary>
         /// An event sent whenever a SetChargingPoolStatus HTTP was received.
@@ -1750,7 +1735,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPRequest">The HTTP request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetChargingPoolStatusRequest(DateTimeOffset     Timestamp,
-                                                             HTTPAPIX           HTTPAPI,
+                                                             HTTPAPI           HTTPAPI,
                                                              HTTPRequest        HTTPRequest,
                                                              CancellationToken  CancellationToken)
 
@@ -1768,7 +1753,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetChargingPoolStatus HTTP response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnSetChargingPoolStatusHTTPResponse = new();
+        public HTTPResponseLogEvent OnSetChargingPoolStatusHTTPResponse = new();
 
         /// <summary>
         /// An event sent whenever a SetChargingPoolStatus HTTP response was sent.
@@ -1779,7 +1764,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPResponse">The HTTP response.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetChargingPoolStatusResponse(DateTimeOffset     Timestamp,
-                                                              HTTPAPIX           HTTPAPI,
+                                                              HTTPAPI           HTTPAPI,
                                                               HTTPRequest        HTTPRequest,
                                                               HTTPResponse       HTTPResponse,
                                                               CancellationToken  CancellationToken)
@@ -1802,7 +1787,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a GetChargingStations request was received.
         /// </summary>
-        public HTTPRequestLogEventX OnGetChargingStationsRequest = new();
+        public HTTPRequestLogEvent OnGetChargingStationsRequest = new();
 
         /// <summary>
         /// An event sent whenever a GetChargingStations request was received.
@@ -1811,7 +1796,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="API">The HTTP API.</param>
         /// <param name="Request">A HTTP request.</param>
         protected internal Task GetChargingStationsRequest(DateTimeOffset     Timestamp,
-                                                           HTTPAPIX           API,
+                                                           HTTPAPI           API,
                                                            HTTPRequest        Request,
                                                            CancellationToken  CancellationToken)
 
@@ -1829,7 +1814,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a GetChargingStations response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnGetChargingStationsResponse = new();
+        public HTTPResponseLogEvent OnGetChargingStationsResponse = new();
 
         /// <summary>
         /// An event sent whenever a GetChargingStations response was sent.
@@ -1839,7 +1824,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Request">A HTTP request.</param>
         /// <param name="Response">A HTTP response.</param>
         protected internal Task GetChargingStationsResponse(DateTimeOffset     Timestamp,
-                                                            HTTPAPIX           API,
+                                                            HTTPAPI           API,
                                                             HTTPRequest        Request,
                                                             HTTPResponse       Response,
                                                             CancellationToken  CancellationToken)
@@ -1860,7 +1845,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetChargingStationAdminStatus HTTP was received.
         /// </summary>
-        public HTTPRequestLogEventX OnSetChargingStationAdminStatusHTTPRequest = new();
+        public HTTPRequestLogEvent OnSetChargingStationAdminStatusHTTPRequest = new();
 
         /// <summary>
         /// An event sent whenever a SetChargingStationAdminStatus HTTP was received.
@@ -1870,7 +1855,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPRequest">The HTTP request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetChargingStationAdminStatusRequest(DateTimeOffset     Timestamp,
-                                                                     HTTPAPIX           HTTPAPI,
+                                                                     HTTPAPI           HTTPAPI,
                                                                      HTTPRequest        HTTPRequest,
                                                                      CancellationToken  CancellationToken)
 
@@ -1888,7 +1873,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetChargingStationAdminStatus HTTP response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnSetChargingStationAdminStatusHTTPResponse = new();
+        public HTTPResponseLogEvent OnSetChargingStationAdminStatusHTTPResponse = new();
 
         /// <summary>
         /// An event sent whenever a SetChargingStationAdminStatus HTTP response was sent.
@@ -1899,7 +1884,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPResponse">The HTTP response.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetChargingStationAdminStatusResponse(DateTimeOffset     Timestamp,
-                                                                      HTTPAPIX           HTTPAPI,
+                                                                      HTTPAPI           HTTPAPI,
                                                                       HTTPRequest        HTTPRequest,
                                                                       HTTPResponse       HTTPResponse,
                                                                       CancellationToken  CancellationToken)
@@ -1920,7 +1905,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetChargingStationStatus HTTP was received.
         /// </summary>
-        public HTTPRequestLogEventX OnSetChargingStationStatusHTTPRequest = new();
+        public HTTPRequestLogEvent OnSetChargingStationStatusHTTPRequest = new();
 
         /// <summary>
         /// An event sent whenever a SetChargingStationStatus HTTP was received.
@@ -1930,7 +1915,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPRequest">The HTTP request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetChargingStationStatusRequest(DateTimeOffset     Timestamp,
-                                                                HTTPAPIX           HTTPAPI,
+                                                                HTTPAPI           HTTPAPI,
                                                                 HTTPRequest        HTTPRequest,
                                                                 CancellationToken  CancellationToken)
 
@@ -1948,7 +1933,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetChargingStationStatus HTTP response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnSetChargingStationStatusHTTPResponse = new();
+        public HTTPResponseLogEvent OnSetChargingStationStatusHTTPResponse = new();
 
         /// <summary>
         /// An event sent whenever a SetChargingStationStatus HTTP response was sent.
@@ -1959,7 +1944,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPResponse">The HTTP response.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetChargingStationStatusResponse(DateTimeOffset     Timestamp,
-                                                                 HTTPAPIX           HTTPAPI,
+                                                                 HTTPAPI           HTTPAPI,
                                                                  HTTPRequest        HTTPRequest,
                                                                  HTTPResponse       HTTPResponse,
                                                                  CancellationToken  CancellationToken)
@@ -1981,7 +1966,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetEVSEAdminStatus HTTP was received.
         /// </summary>
-        public HTTPRequestLogEventX OnSetEVSEAdminStatusHTTPRequest = new();
+        public HTTPRequestLogEvent OnSetEVSEAdminStatusHTTPRequest = new();
 
         /// <summary>
         /// An event sent whenever a SetEVSEAdminStatus HTTP was received.
@@ -1991,7 +1976,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPRequest">The HTTP request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetEVSEAdminStatusRequest(DateTimeOffset     Timestamp,
-                                                          HTTPAPIX           HTTPAPI,
+                                                          HTTPAPI           HTTPAPI,
                                                           HTTPRequest        HTTPRequest,
                                                           CancellationToken  CancellationToken)
 
@@ -2009,7 +1994,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetEVSEAdminStatus HTTP response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnSetEVSEAdminStatusHTTPResponse = new();
+        public HTTPResponseLogEvent OnSetEVSEAdminStatusHTTPResponse = new();
 
         /// <summary>
         /// An event sent whenever a SetEVSEAdminStatus HTTP response was sent.
@@ -2020,7 +2005,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPResponse">The HTTP response.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetEVSEAdminStatusResponse(DateTimeOffset     Timestamp,
-                                                           HTTPAPIX           HTTPAPI,
+                                                           HTTPAPI           HTTPAPI,
                                                            HTTPRequest        HTTPRequest,
                                                            HTTPResponse       HTTPResponse,
                                                            CancellationToken  CancellationToken)
@@ -2041,7 +2026,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetEVSEStatus HTTP was received.
         /// </summary>
-        public HTTPRequestLogEventX OnSetEVSEStatusHTTPRequest = new();
+        public HTTPRequestLogEvent OnSetEVSEStatusHTTPRequest = new();
 
         /// <summary>
         /// An event sent whenever a SetEVSEStatus HTTP was received.
@@ -2051,7 +2036,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPRequest">The HTTP request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetEVSEStatusRequest(DateTimeOffset     Timestamp,
-                                                     HTTPAPIX           HTTPAPI,
+                                                     HTTPAPI           HTTPAPI,
                                                      HTTPRequest        HTTPRequest,
                                                      CancellationToken  CancellationToken)
 
@@ -2069,7 +2054,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a SetEVSEStatus HTTP response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnSetEVSEStatusHTTPResponse = new();
+        public HTTPResponseLogEvent OnSetEVSEStatusHTTPResponse = new();
 
         /// <summary>
         /// An event sent whenever a SetEVSEStatus HTTP response was sent.
@@ -2080,7 +2065,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPResponse">The HTTP response.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SetEVSEStatusResponse(DateTimeOffset     Timestamp,
-                                                      HTTPAPIX           HTTPAPI,
+                                                      HTTPAPI           HTTPAPI,
                                                       HTTPRequest        HTTPRequest,
                                                       HTTPResponse       HTTPResponse,
                                                       CancellationToken  CancellationToken)
@@ -2102,7 +2087,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever an Authorize HTTP request was received.
         /// </summary>
-        public HTTPRequestLogEventX OnAuthorizeHTTPRequest = new();
+        public HTTPRequestLogEvent OnAuthorizeHTTPRequest = new();
 
         /// <summary>
         /// An event sent whenever an Authorize HTTP request was received.
@@ -2112,7 +2097,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPRequest">The HTTP request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SendAuthorizeHTTPRequest(DateTimeOffset     Timestamp,
-                                                         HTTPAPIX           HTTPAPI,
+                                                         HTTPAPI           HTTPAPI,
                                                          HTTPRequest        HTTPRequest,
                                                          CancellationToken  CancellationToken)
 
@@ -2130,7 +2115,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever an Authorize HTTP response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnAuthorizeHTTPResponse = new();
+        public HTTPResponseLogEvent OnAuthorizeHTTPResponse = new();
 
         /// <summary>
         /// An event sent whenever an Authorize HTTP response was sent.
@@ -2141,7 +2126,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPResponse">The HTTP response.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SendAuthorizeHTTPResponse(DateTimeOffset     Timestamp,
-                                                          HTTPAPIX           HTTPAPI,
+                                                          HTTPAPI           HTTPAPI,
                                                           HTTPRequest        HTTPRequest,
                                                           HTTPResponse       HTTPResponse,
                                                           CancellationToken  CancellationToken)
@@ -2162,7 +2147,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever an AuthorizeStartEVSE HTTP request was received.
         /// </summary>
-        public HTTPRequestLogEventX OnAuthorizeStartEVSEHTTPRequest = new();
+        public HTTPRequestLogEvent OnAuthorizeStartEVSEHTTPRequest = new();
 
         /// <summary>
         /// An event sent whenever an AuthorizeStartEVSE HTTP request was received.
@@ -2172,7 +2157,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPRequest">The HTTP request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SendAuthorizeStartEVSEHTTPRequest(DateTimeOffset     Timestamp,
-                                                                  HTTPAPIX           HTTPAPI,
+                                                                  HTTPAPI           HTTPAPI,
                                                                   HTTPRequest        HTTPRequest,
                                                                   CancellationToken  CancellationToken)
 
@@ -2190,7 +2175,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever an AuthorizeStartEVSE HTTP response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnAuthorizeStartEVSEHTTPResponse = new();
+        public HTTPResponseLogEvent OnAuthorizeStartEVSEHTTPResponse = new();
 
         /// <summary>
         /// An event sent whenever an AuthorizeStartEVSE HTTP response was sent.
@@ -2201,7 +2186,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPResponse">The HTTP response.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SendAuthorizeStartEVSEHTTPResponse(DateTimeOffset     Timestamp,
-                                                                   HTTPAPIX           HTTPAPI,
+                                                                   HTTPAPI           HTTPAPI,
                                                                    HTTPRequest        HTTPRequest,
                                                                    HTTPResponse       HTTPResponse,
                                                                    CancellationToken  CancellationToken)
@@ -2222,7 +2207,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever an AuthorizeStopEVSE HTTP request was received.
         /// </summary>
-        public HTTPRequestLogEventX OnAuthorizeStopEVSEHTTPRequest = new();
+        public HTTPRequestLogEvent OnAuthorizeStopEVSEHTTPRequest = new();
 
         /// <summary>
         /// An event sent whenever an AuthorizeStopEVSE HTTP request was received.
@@ -2232,7 +2217,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPRequest">The HTTP request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SendAuthorizeStopEVSEHTTPRequest(DateTimeOffset     Timestamp,
-                                                                 HTTPAPIX           HTTPAPI,
+                                                                 HTTPAPI           HTTPAPI,
                                                                  HTTPRequest        HTTPRequest,
                                                                  CancellationToken  CancellationToken)
 
@@ -2250,7 +2235,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever an AuthorizeStopEVSE HTTP response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnAuthorizeStopEVSEHTTPResponse = new();
+        public HTTPResponseLogEvent OnAuthorizeStopEVSEHTTPResponse = new();
 
         /// <summary>
         /// An event sent whenever an AuthorizeStopEVSE HTTP response was sent.
@@ -2261,7 +2246,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPResponse">The HTTP response.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SendAuthorizeStopEVSEHTTPResponse(DateTimeOffset     Timestamp,
-                                                                  HTTPAPIX           HTTPAPI,
+                                                                  HTTPAPI           HTTPAPI,
                                                                   HTTPRequest        HTTPRequest,
                                                                   HTTPResponse       HTTPResponse,
                                                                   CancellationToken  CancellationToken)
@@ -2283,7 +2268,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a RemoteStartEVSE HTTP request was received.
         /// </summary>
-        public HTTPRequestLogEventX OnRemoteStartEVSEHTTPRequest = new();
+        public HTTPRequestLogEvent OnRemoteStartEVSEHTTPRequest = new();
 
         /// <summary>
         /// An event sent whenever a RemoteStartEVSE HTTP request was received.
@@ -2293,7 +2278,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPRequest">The HTTP request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SendRemoteStartEVSERequest(DateTimeOffset     Timestamp,
-                                                           HTTPAPIX           HTTPAPI,
+                                                           HTTPAPI           HTTPAPI,
                                                            HTTPRequest        HTTPRequest,
                                                            CancellationToken  CancellationToken)
 
@@ -2311,7 +2296,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a RemoteStartEVSE HTTP response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnRemoteStartEVSEHTTPResponse = new();
+        public HTTPResponseLogEvent OnRemoteStartEVSEHTTPResponse = new();
 
         /// <summary>
         /// An event sent whenever a RemoteStartEVSE HTTP response was sent.
@@ -2322,7 +2307,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPResponse">The HTTP response.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SendRemoteStartEVSEResponse(DateTimeOffset     Timestamp,
-                                                            HTTPAPIX           HTTPAPI,
+                                                            HTTPAPI           HTTPAPI,
                                                             HTTPRequest        HTTPRequest,
                                                             HTTPResponse       HTTPResponse,
                                                             CancellationToken  CancellationToken)
@@ -2343,7 +2328,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a RemoteStopEVSE HTTP request was received.
         /// </summary>
-        public HTTPRequestLogEventX OnRemoteStopEVSEHTTPRequest = new();
+        public HTTPRequestLogEvent OnRemoteStopEVSEHTTPRequest = new();
 
         /// <summary>
         /// An event sent whenever a RemoteStopEVSE HTTP request was received.
@@ -2353,7 +2338,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPRequest">The HTTP request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SendRemoteStopEVSEHTTPRequest(DateTimeOffset     Timestamp,
-                                                              HTTPAPIX           HTTPAPI,
+                                                              HTTPAPI           HTTPAPI,
                                                               HTTPRequest        HTTPRequest,
                                                               CancellationToken  CancellationToken)
 
@@ -2371,7 +2356,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a RemoteStopEVSE HTTP response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnRemoteStopEVSEHTTPResponse = new();
+        public HTTPResponseLogEvent OnRemoteStopEVSEHTTPResponse = new();
 
         /// <summary>
         /// An event sent whenever a RemoteStopEVSE HTTP response was sent.
@@ -2382,7 +2367,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPResponse">The HTTP response.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SendRemoteStopEVSEHTTPResponse(DateTimeOffset     Timestamp,
-                                                               HTTPAPIX           HTTPAPI,
+                                                               HTTPAPI           HTTPAPI,
                                                                HTTPRequest        HTTPRequest,
                                                                HTTPResponse       HTTPResponse,
                                                                CancellationToken  CancellationToken)
@@ -2404,7 +2389,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a ChargeDetailRecords HTTP request was received.
         /// </summary>
-        public HTTPRequestLogEventX OnChargeDetailRecordsHTTPRequest = new();
+        public HTTPRequestLogEvent OnChargeDetailRecordsHTTPRequest = new();
 
         /// <summary>
         /// An event sent whenever a ChargeDetailRecords HTTP request was received.
@@ -2414,7 +2399,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPRequest">The HTTP request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SendChargeDetailRecordsHTTPRequest(DateTimeOffset     Timestamp,
-                                                                   HTTPAPIX           HTTPAPI,
+                                                                   HTTPAPI           HTTPAPI,
                                                                    HTTPRequest        HTTPRequest,
                                                                    CancellationToken  CancellationToken)
 
@@ -2432,7 +2417,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a ChargeDetailRecords HTTP response was sent.
         /// </summary>
-        public HTTPResponseLogEventX OnChargeDetailRecordsHTTPResponse = new();
+        public HTTPResponseLogEvent OnChargeDetailRecordsHTTPResponse = new();
 
         /// <summary>
         /// An event sent whenever a ChargeDetailRecords HTTP response was sent.
@@ -2443,7 +2428,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="HTTPResponse">The HTTP response.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
         protected internal Task SendChargeDetailRecordsHTTPResponse(DateTimeOffset     Timestamp,
-                                                                    HTTPAPIX           HTTPAPI,
+                                                                    HTTPAPI           HTTPAPI,
                                                                     HTTPRequest        HTTPRequest,
                                                                     HTTPResponse       HTTPResponse,
                                                                     CancellationToken  CancellationToken)
@@ -2510,7 +2495,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="LoggingPath">The path for all logfiles.</param>
         /// <param name="LogfileName">The name of the logfile.</param>
         /// <param name="LogfileCreator">A delegate for creating the name of the logfile for this API.</param>
-        public WWCP_HTTPAPI(HTTPExtAPIX                    HTTPAPI,
+        public WWCP_HTTPAPI(HTTPExtAPI                    HTTPAPI,
                             //IWWCPCore                      WWCPCore,
                             //URL                            OurBaseURL,
                             //URL                            OurVersionsURL,

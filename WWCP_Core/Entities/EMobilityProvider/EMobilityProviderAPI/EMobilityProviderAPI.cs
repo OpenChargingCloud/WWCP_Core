@@ -28,13 +28,14 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
+using Newtonsoft.Json;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 {
 
-    public class EMobilityProviderAPI : HTTPAPI
+    public class EMobilityProviderAPI : AHTTPExtAPIExtension1<HTTPExtAPI>
     {
 
 
@@ -150,13 +151,17 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="API">The EMSP API.</param>
         /// <param name="Request">An HTTP request.</param>
-        protected internal Task GetLocationsRequest(DateTimeOffset  Timestamp,
-                                                    HTTPAPI         API,
-                                                    HTTPRequest     Request)
+        protected internal Task GetLocationsRequest(DateTimeOffset     Timestamp,
+                                                    HTTPAPI            API,
+                                                    HTTPRequest        Request,
+                                                    CancellationToken  CancellationToken)
 
-            => OnGetLocationsRequest.WhenAll(Timestamp,
-                                             API ?? this,
-                                             Request);
+            => OnGetLocationsRequest.WhenAll(
+                   Timestamp,
+                   API,
+                   Request,
+                   CancellationToken
+               );
 
         #endregion
 
@@ -174,15 +179,19 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="API">The EMSP API.</param>
         /// <param name="Request">An HTTP request.</param>
         /// <param name="Response">An HTTP response.</param>
-        protected internal Task GetLocationsResponse(DateTimeOffset  Timestamp,
-                                                     HTTPAPI         API,
-                                                     HTTPRequest     Request,
-                                                     HTTPResponse    Response)
+        protected internal Task GetLocationsResponse(DateTimeOffset     Timestamp,
+                                                     HTTPAPI            API,
+                                                     HTTPRequest        Request,
+                                                     HTTPResponse       Response,
+                                                     CancellationToken  CancellationToken)
 
-            => OnGetLocationsResponse.WhenAll(Timestamp,
-                                              API ?? this,
-                                              Request,
-                                              Response);
+            => OnGetLocationsResponse.WhenAll(
+                   Timestamp,
+                   API,
+                   Request,
+                   Response,
+                   CancellationToken
+               );
 
         #endregion
 
@@ -190,93 +199,65 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
         #region Constructor(s)
 
-        public EMobilityProviderAPI(VirtualEMobilityProvider                                   EMobilityProvider,
+        public EMobilityProviderAPI(VirtualEMobilityProvider       EMobilityProvider,
+                                    HTTPExtAPI                     HTTPAPI,
+                                    IEnumerable<HTTPHostname>?     Hostnames                 = null,
+                                    HTTPPath?                      RootPath                  = null,
+                                    IEnumerable<HTTPContentType>?  HTTPContentTypes          = null,
+                                    I18NString?                    Description               = null,
 
-                                    HTTPHostname?                                              HTTPHostname                 = null,
-                                    String?                                                    ExternalDNSName              = null,
-                                    IPPort?                                                    HTTPServerPort               = null,
-                                    HTTPPath?                                                  BasePath                     = null,
-                                    String?                                                    HTTPServerName               = DefaultHTTPServerName,
+                                    String?                        ExternalDNSName           = null,
+                                    HTTPPath?                      BasePath                  = null,
 
-                                    HTTPPath?                                                  URLPathPrefix                = null,
-                                    String?                                                    HTTPServiceName              = DefaultHTTPServiceName,
-                                    String?                                                    HTMLTemplate                 = null,
-                                    JObject?                                                   APIVersionHashes             = null,
+                                    String?                        HTTPServerName            = DefaultHTTPServerName,
+                                    String?                        HTTPServiceName           = DefaultHTTPServiceName,
+                                    String?                        APIVersionHash            = null,
+                                    JObject?                       APIVersionHashes          = null,
 
-                                    ServerCertificateSelectorDelegate?                         ServerCertificateSelector    = null,
-                                    RemoteTLSClientCertificateValidationHandler<IHTTPServer>?  ClientCertificateValidator   = null,
-                                    LocalCertificateSelectionHandler?                          LocalCertificateSelector     = null,
-                                    SslProtocols?                                              AllowedTLSProtocols          = null,
-                                    Boolean?                                                   ClientCertificateRequired    = null,
-                                    Boolean?                                                   CheckCertificateRevocation   = null,
+                                    Boolean                        RegisterRootService       = true,
+                                    HTTPPath?                      URLPathPrefix             = null,
+                                    Formatting?                    JSONFormatting            = null,
+                                    ConnectionType?                Connection                = null,
 
-                                    ServerThreadNameCreatorDelegate?                           ServerThreadNameCreator      = null,
-                                    ServerThreadPriorityDelegate?                              ServerThreadPrioritySetter   = null,
-                                    Boolean?                                                   ServerThreadIsBackground     = null,
-                                    ConnectionIdBuilder?                                       ConnectionIdBuilder          = null,
-                                    TimeSpan?                                                  ConnectionTimeout            = null,
-                                    UInt32?                                                    MaxClientConnections         = null,
+                                    ServiceCheckKeys?              ServiceCheckKeys          = null,
 
-                                    Boolean?                                                   DisableMaintenanceTasks      = null,
-                                    TimeSpan?                                                  MaintenanceInitialDelay      = null,
-                                    TimeSpan?                                                  MaintenanceEvery             = null,
+                                    Boolean?                       IsDevelopment             = null,
+                                    IEnumerable<String>?           DevelopmentServers        = null,
+                                    Boolean                        DisableLogging            = false,
+                                    String                         LoggingPath               = DefaultHTTPAPI_LoggingPath,
+                                    String                         LoggingContext            = DefaultLoggingContext,
+                                    String                         LogfileName               = DefaultHTTPAPI_LogfileName,
+                                    LogfileCreatorDelegate?        LogfileCreator            = null)
 
-                                    Boolean?                                                   DisableWardenTasks           = null,
-                                    TimeSpan?                                                  WardenInitialDelay           = null,
-                                    TimeSpan?                                                  WardenCheckEvery             = null,
-
-                                    Boolean?                                                   IsDevelopment                = null,
-                                    IEnumerable<String>?                                       DevelopmentServers           = null,
-                                    Boolean?                                                   DisableLogging               = null,
-                                    String?                                                    LoggingPath                  = null,
-                                    String?                                                    LogfileName                  = DefaultLogfileName,
-                                    LogfileCreatorDelegate?                                    LogfileCreator               = null,
-                                    DNSClient?                                                 DNSClient                    = null,
-                                    String?                                                    Description                  = null,
-                                    Boolean                                                    AutoStart                    = false)
-
-            : base(HTTPHostname,
-                   ExternalDNSName,
-                   HTTPServerPort,
+            : base(Description ?? I18NString.Create("E-Mobility Provider API"),
+                   HTTPAPI,
+                   RootPath,
                    BasePath,
+
+                   ExternalDNSName,
                    HTTPServerName,
-
-                   URLPathPrefix   ?? DefaultURLPathPrefix,
-                   HTTPServiceName ?? DefaultHTTPServiceName,
-                   HTMLTemplate,
+                   HTTPServiceName,
+                   APIVersionHash,
                    APIVersionHashes,
-
-                   ServerCertificateSelector,
-                   ClientCertificateValidator,
-                   LocalCertificateSelector,
-                   AllowedTLSProtocols,
-                   ClientCertificateRequired,
-                   CheckCertificateRevocation,
-
-                   ServerThreadNameCreator,
-                   ServerThreadPrioritySetter,
-                   ServerThreadIsBackground,
-                   ConnectionIdBuilder,
-                   ConnectionTimeout,
-                   MaxClientConnections,
-
-                   DisableMaintenanceTasks,
-                   MaintenanceInitialDelay,
-                   MaintenanceEvery,
-
-                   DisableWardenTasks,
-                   WardenInitialDelay,
-                   WardenCheckEvery,
 
                    IsDevelopment,
                    DevelopmentServers,
                    DisableLogging,
                    LoggingPath,
                    LogfileName,
-                   LogfileCreator,
-                   DNSClient,
-                   Description,
-                   AutoStart)
+                   LogfileCreator is not null
+                       ? (loggingPath, context, logfileName) => LogfileCreator(loggingPath, context, logfileName)
+                       : (loggingPath, context, logfileName) => String.Concat(
+                                                                    loggingPath + Path.DirectorySeparatorChar,
+                                                                 //   remoteParty is not null
+                                                                 //       ? remoteParty.Id.ToString() + Path.DirectorySeparatorChar
+                                                                 //       : null,
+                                                                    context is not null ? context + "_" : "",
+                                                                    logfileName, "_",
+                                                                    Timestamp.Now.Year, "-",
+                                                                    Timestamp.Now.Month.ToString("D2"),
+                                                                    ".log"
+                                                                ))
 
         {
 
@@ -284,7 +265,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
             this.Counters           = new APICounters();
 
-            this.JSONFormatting     = Newtonsoft.Json.Formatting.None;
+            this.JSONFormatting     = Formatting.None;
 
             //base.HTTPLogger         = this.DisableLogging == false
             //                              ? new HTTP_Logger(this,
@@ -301,9 +282,6 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
             //                              : null;
 
             RegisterURLTemplates();
-
-            if (AutoStart)
-                Start();
 
         }
 
@@ -354,7 +332,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
             #region OPTIONS  ~/locations
 
-            AddMethodCallback(HTTPHostname.Any,
+            HTTPBaseAPI.AddHandler(
                               HTTPMethod.OPTIONS,
                               URLPathPrefix + "locations",
                               HTTPDelegate: Request => {
@@ -376,7 +354,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
             #region GET      ~/locations
 
-            AddMethodCallback(HTTPHostname.Any,
+            HTTPBaseAPI.AddHandler(
                               HTTPMethod.GET,
                               URLPathPrefix + "locations",
                               HTTPContentType.Application.JSON_UTF8,
@@ -515,7 +493,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
             #region POST      ~/remoteStart
 
-            AddMethodCallback(HTTPHostname.Any,
+            HTTPBaseAPI.AddHandler(
                               HTTPMethod.POST,
                               URLPathPrefix + "remoteStart",
                               HTTPContentType.Application.JSON_UTF8,

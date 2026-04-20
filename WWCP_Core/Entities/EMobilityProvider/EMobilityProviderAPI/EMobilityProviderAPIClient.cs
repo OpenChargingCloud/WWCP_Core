@@ -114,6 +114,16 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         #region Data
 
         /// <summary>
+        /// The HTTP client.
+        /// </summary>
+        protected HTTPClient  newHTTPClient;
+
+        /// <summary>
+        /// A HTTP client pool for low-latency HTTP requests.
+        /// </summary>
+        protected HTTPClientPool  httpClientPool;
+
+        /// <summary>
         /// The default HTTP user agent.
         /// </summary>
         public new const        String    DefaultHTTPUserAgent        = $"GraphDefined E-Mobility Provider HTTP Client";
@@ -294,52 +304,79 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
         public EMobilityProviderAPIClient(URL                                                        RemoteURL,
-                                          HTTPHostname?                                              VirtualHostname              = null,
-                                          I18NString?                                                Description                  = null,
-                                          IPVersionPreference?                                       PreferIPv4                   = null,
-                                          RemoteTLSServerCertificateValidationHandler<IHTTPClient>?  RemoteCertificateValidator   = null,
-                                          LocalCertificateSelectionHandler?                          LocalCertificateSelector     = null,
-                                          IEnumerable<X509Certificate2>?                             ClientCertificates           = null,
-                                          SslStreamCertificateContext?                               ClientCertificateContext     = null,
-                                          IEnumerable<X509Certificate2>?                             ClientCertificateChain       = null,
-                                          SslProtocols?                                              TLSProtocol                  = null,
-                                          HTTPContentType?                                           ContentType                  = null,
-                                          AcceptTypes?                                               Accept                       = null,
-                                          IHTTPAuthentication?                                       Authentication               = null,
-                                          String?                                                    HTTPUserAgent                = DefaultHTTPUserAgent,
-                                          TimeSpan?                                                  RequestTimeout               = null,
-                                          TransmissionRetryDelayDelegate?                            TransmissionRetryDelay       = null,
-                                          UInt16?                                                    MaxNumberOfRetries           = null,
-                                          UInt32?                                                    InternalBufferSize           = null,
-                                          Boolean?                                                   DisableLogging               = false,
-                                          String?                                                    LoggingPath                  = null,
-                                          String                                                     LoggingContext               = "",//EMobilityProviderAPIClientLogger.DefaultContext,
-                                          LogfileCreatorDelegate?                                    LogfileCreator               = null,
-                                          DNSClient?                                                 DNSClient                    = null)
+                                          HTTPHostname?                                              VirtualHostname                      = null,
+                                          I18NString?                                                Description                          = null,
+                                          IPVersionPreference?                                       PreferIPv4                           = null,
+                                          RemoteTLSServerCertificateValidationHandler<IHTTPClient>?  RemoteCertificateValidationHandler   = null,
+                                          LocalCertificateSelectionHandler?                          LocalCertificateSelector             = null,
+                                          IEnumerable<X509Certificate2>?                             ClientCertificates                   = null,
+                                          SslStreamCertificateContext?                               ClientCertificateContext             = null,
+                                          IEnumerable<X509Certificate2>?                             ClientCertificateChain               = null,
+                                          SslProtocols?                                              TLSProtocols                         = null,
+                                          HTTPContentType?                                           ContentType                          = null,
+                                          AcceptTypes?                                               Accept                               = null,
+                                          IHTTPAuthentication?                                       Authentication                       = null,
+                                          String?                                                    HTTPUserAgent                        = DefaultHTTPUserAgent,
+                                          TimeSpan?                                                  RequestTimeout                       = null,
+                                          TransmissionRetryDelayDelegate?                            TransmissionRetryDelay               = null,
+                                          UInt16?                                                    MaxNumberOfRetries                   = null,
+                                          UInt32?                                                    InternalBufferSize                   = null,
+
+                                          String?                                                    LoggingPath                          = null,
+                                          String                                                     LoggingContext                       = "",//EMobilityProviderAPIClientLogger.DefaultContext,
+                                          LogfileCreatorDelegate?                                    LogfileCreator                       = null,
+
+                                          Boolean?                                                   DisableLogging                       = false,
+                                          DNSClient?                                                 DNSClient                            = null)
 
             : base(RemoteURL,
-                   VirtualHostname,
                    Description,
-                   PreferIPv4,
-                   RemoteCertificateValidator,
+                   HTTPUserAgent ?? DefaultHTTPUserAgent,
+                   null,  // Accept
+                   null,  // ContentType
+                   null,  // Connection
+                   null,  // DefaultRequestBuilder
+
+                   RemoteCertificateValidationHandler is not null
+                       ? (sender,
+                          certificate,
+                          certificateChain,
+                          aHTTPTestClient,
+                          policyErrors) => RemoteCertificateValidationHandler.Invoke(
+                                               sender,
+                                               certificate,
+                                               certificateChain,
+                                               aHTTPTestClient as IHTTPClient,
+                                               policyErrors
+                                           )
+                       : null,
                    LocalCertificateSelector,
                    ClientCertificates,
                    ClientCertificateContext,
                    ClientCertificateChain,
-                   TLSProtocol,
-                   ContentType,
-                   Accept,
-                   Authentication,
+                   TLSProtocols,
+                   null,  // CipherSuitesPolicy,
+                   null,  // CertificateChainPolicy,
+                   null,  // CertificateRevocationCheckMode,
+                   null,  // ApplicationProtocols
+                   null,  // AllowRenegotiation,
+                   null,  // AllowTLSResume,
                    null,  // TOTPConfig
-                   HTTPUserAgent ?? DefaultHTTPUserAgent,
-                   ConnectionType.Close,
-                   RequestTimeout,
+
+                   null,
+
+                   PreferIPv4,
+                   null,  // ConnectTimeout,
+                   null,  // ReceiveTimeout,
+                   null,  // SendTimeout,
                    TransmissionRetryDelay,
                    MaxNumberOfRetries,
-                   InternalBufferSize,
-                   false,
+                   null,  // BufferSize  ?? 512,
+
+                   true,  // ConsumeRequestChunkedTEImmediately
+                   true,  // ConsumeResponseChunkedTEImmediately
+
                    DisableLogging,
-                   null,
                    DNSClient)
 
         {
@@ -361,6 +398,55 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
             //                                                 LoggingContext,
             //                                                 LogfileCreator)
             //                           : null;
+
+            this.httpClientPool  = new HTTPClientPool(
+
+                                       URL:                              base.RemoteURL,
+                                       Description:                      Description,
+
+                                       HTTPUserAgent:                    HTTPUserAgent,
+                                       DefaultRequestBuilder:            (httpClient) => new HTTPRequest.Builder(this, CancellationToken.None) {
+                                                                                             Host         = this.RemoteURL.Hostname,
+                                                                                             Accept       = AcceptTypes.FromHTTPContentTypes(HTTPContentType.Application.JSON_UTF8),
+                                                                                             ContentType  = HTTPContentType.Application.JSON_UTF8,
+                                                                                             UserAgent    = httpClient.HTTPUserAgent,
+                                                                                             Connection   = ConnectionType.KeepAlive
+                                                                                         },
+
+                                       RemoteCertificateValidator:       RemoteCertificateValidator is not null
+                                                                             ? (sender,
+                                                                                certificate,
+                                                                                certificateChain,
+                                                                                httpTestClient,
+                                                                                policyErrors) => RemoteCertificateValidator.Invoke(
+                                                                                                     sender,
+                                                                                                     certificate,
+                                                                                                     certificateChain,
+                                                                                                     this,
+                                                                                                     policyErrors
+                                                                                                 )
+                                                                             :  null,
+                                       LocalCertificateSelector:         LocalCertificateSelector,
+                                       ClientCertificates:               ClientCertificates,
+                                       ClientCertificateContext:         ClientCertificateContext,
+                                       ClientCertificateChain:           ClientCertificateChain,
+                                       TLSProtocols:                     base.TLSProtocols,
+                                       CertificateRevocationCheckMode:   X509RevocationMode.NoCheck,
+                                       ApplicationProtocols:             null,
+                                       AllowRenegotiation:               null,
+                                       AllowTLSResume:                   null,
+
+                                       MaxNumberOfClients:               6, //MaxNumberOfPooledClients ?? 6,
+
+                                       PreferIPv4:                       PreferIPv4,
+                                       ConnectTimeout:                   null,
+                                       ReceiveTimeout:                   null,
+                                       SendTimeout:                      null,
+                                       BufferSize:                       null,
+
+                                       DNSClient:                        DNSClient
+
+                                   );
 
         }
 
@@ -422,48 +508,25 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                     #region Upstream HTTP request...
 
-                    var httpResponse = await HTTPClientFactory.Create(RemoteURL,
-                                                                      VirtualHostname,
-                                                                      Description,
-                                                                      PreferIPv4,
-                                                                      RemoteCertificateValidator,
-                                                                      LocalCertificateSelector,
-                                                                      ClientCertificates,
-                                                                      ClientCertificateContext,
-                                                                      ClientCertificateChain,
-                                                                      TLSProtocols,
-                                                                      ContentType,
-                                                                      Accept,
-                                                                      HTTPAuthentication,
-                                                                      null,  // TOTPConfig
-                                                                      HTTPUserAgent,
-                                                                      Connection,
-                                                                      RequestTimeout,
-                                                                      TransmissionRetryDelay,
-                                                                      MaxNumberOfRetries,
-                                                                      InternalBufferSize,
-                                                                      UseHTTPPipelining,
-                                                                      DisableLogging,
-                                                                      null,
-                                                                      DNSClient).
+                    var httpResponse = await newHTTPClient.POST(
+                                                 Path:                 RemoteURL.Path + "remoteStart",
+                                                 Content:              Request.ToJSON(CustomRemoteStartRequestSerializer).
+                                                                                      ToString(JSONFormatting).
+                                                                                      ToUTF8Bytes(),
+                                                 ContentType:          HTTPContentType.Application.JSON_UTF8,
+                                                 Accept:               AcceptTypes.FromHTTPContentTypes(HTTPContentType.Application.JSON_UTF8),
+                                                 EventTrackingId:      Request.EventTrackingId,
+                                                 RequestTimeout:       Request.RequestTimeout ?? RequestTimeout,
+                                                 RequestLogDelegate:   OnRemoteStartHTTPRequest,
+                                                 ResponseLogDelegate:  OnRemoteStartHTTPResponse,
+                                                 Connection:           ConnectionType.Close,
+                                                 CancellationToken:    Request.CancellationToken,
+                                                 RequestBuilder:       requestBuilder => {
+                                                                           //requestBuilder.Set("Process-ID", processId.ToString());
+                                                                       }
+                                             ).
 
-                                              Execute(client => client.POSTRequest(RemoteURL.Path + "remoteStart",
-                                                                                   RequestBuilder: requestBuilder => {
-                                                                                       requestBuilder.Accept.Add(HTTPContentType.Application.JSON_UTF8);
-                                                                                       requestBuilder.ContentType  = HTTPContentType.Application.JSON_UTF8;
-                                                                                       requestBuilder.Content      = Request.ToJSON(CustomRemoteStartRequestSerializer).
-                                                                                                                             ToString(JSONFormatting).
-                                                                                                                             ToUTF8Bytes();
-                                                                                       requestBuilder.Connection   = ConnectionType.Close;
-                                                                                   }),
-
-                                                      RequestLogDelegate:   OnRemoteStartHTTPRequest,
-                                                      ResponseLogDelegate:  OnRemoteStartHTTPResponse,
-                                                      CancellationToken:    Request.CancellationToken,
-                                                      EventTrackingId:      Request.EventTrackingId,
-                                                      RequestTimeout:       Request.RequestTimeout ?? RequestTimeout).
-
-                                              ConfigureAwait(false);
+                                             ConfigureAwait(false);
 
                     #endregion
 
@@ -819,48 +882,25 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                     #region Upstream HTTP request...
 
-                    var httpResponse = await HTTPClientFactory.Create(RemoteURL,
-                                                                      VirtualHostname,
-                                                                      Description,
-                                                                      PreferIPv4,
-                                                                      RemoteCertificateValidator,
-                                                                      LocalCertificateSelector,
-                                                                      ClientCertificates,
-                                                                      ClientCertificateContext,
-                                                                      ClientCertificateChain,
-                                                                      TLSProtocols,
-                                                                      ContentType,
-                                                                      Accept,
-                                                                      HTTPAuthentication,
-                                                                      null,  // TOTPConfig
-                                                                      HTTPUserAgent,
-                                                                      Connection,
-                                                                      RequestTimeout,
-                                                                      TransmissionRetryDelay,
-                                                                      MaxNumberOfRetries,
-                                                                      InternalBufferSize,
-                                                                      UseHTTPPipelining,
-                                                                      DisableLogging,
-                                                                      null,
-                                                                      DNSClient).
+                    var httpResponse = await newHTTPClient.POST(
+                                                 Path:                 RemoteURL.Path + "remoteStop",
+                                                 Content:              Request.ToJSON(CustomRemoteStopRequestSerializer).
+                                                                                      ToString(JSONFormatting).
+                                                                                      ToUTF8Bytes(),
+                                                 ContentType:          HTTPContentType.Application.JSON_UTF8,
+                                                 Accept:               AcceptTypes.FromHTTPContentTypes(HTTPContentType.Application.JSON_UTF8),
+                                                 EventTrackingId:      Request.EventTrackingId,
+                                                 RequestTimeout:       Request.RequestTimeout ?? RequestTimeout,
+                                                 RequestLogDelegate:   OnRemoteStartHTTPRequest,
+                                                 ResponseLogDelegate:  OnRemoteStartHTTPResponse,
+                                                 Connection:           ConnectionType.Close,
+                                                 CancellationToken:    Request.CancellationToken,
+                                                 RequestBuilder:       requestBuilder => {
+                                                                           //requestBuilder.Set("Process-ID", processId.ToString());
+                                                                       }
+                                             ).
 
-                                              Execute(client => client.POSTRequest(RemoteURL.Path + "remoteStop",
-                                                                                   RequestBuilder: requestBuilder => {
-                                                                                       requestBuilder.Accept.Add(HTTPContentType.Application.JSON_UTF8);
-                                                                                       requestBuilder.ContentType  = HTTPContentType.Application.JSON_UTF8;
-                                                                                       requestBuilder.Content      = Request.ToJSON(CustomRemoteStopRequestSerializer).
-                                                                                                                             ToString(JSONFormatting).
-                                                                                                                             ToUTF8Bytes();
-                                                                                       requestBuilder.Connection   = ConnectionType.Close;
-                                                                                   }),
-
-                                                      RequestLogDelegate:   OnRemoteStopHTTPRequest,
-                                                      ResponseLogDelegate:  OnRemoteStopHTTPResponse,
-                                                      CancellationToken:    Request.CancellationToken,
-                                                      EventTrackingId:      Request.EventTrackingId,
-                                                      RequestTimeout:       Request.RequestTimeout ?? RequestTimeout).
-
-                                              ConfigureAwait(false);
+                                             ConfigureAwait(false);
 
                     #endregion
 

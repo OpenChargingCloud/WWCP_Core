@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.WWCP.Networking;
 using cloud.charging.open.protocols.WWCP.MobilityProvider;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -68,7 +69,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        public EMobilityProviderAPI?  HTTPAPI { get; private set; }
+        public EMobilityProviderAPI?  eMobilityProviderAPI { get; private set; }
 
 
 
@@ -756,25 +757,18 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        public EMobilityProviderAPI StartAPI(IPPort? HTTPServerPort = null)
+        public EMobilityProviderAPI StartAPI(HTTPExtAPI HTTPExtAPI)
         {
 
-            HTTPAPI = new EMobilityProviderAPI(
-                          this,
-                          HTTPServerPort:  HTTPServerPort,
-                          AutoStart:       true
-                      );
+            eMobilityProviderAPI = new EMobilityProviderAPI(
+                                       this,
+                                       HTTPExtAPI
+                                   );
 
-            return HTTPAPI;
+            return eMobilityProviderAPI;
 
         }
 
-        public void ShutdownAPI()
-        {
-
-            HTTPAPI?.Shutdown(Wait: true);
-
-        }
 
         public Task<AddRoamingNetworkResult> AddRoamingNetwork(IRoamingNetwork RoamingNetwork, DateTimeOffset? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
         {

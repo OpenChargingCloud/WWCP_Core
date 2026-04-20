@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// <summary>
         /// The HTTP server of the WWCP tracker.
         /// </summary>
-        public HTTPServer   HTTPServer      { get; }
+        public HTTPTestServerX  HTTPServer      { get; }
 
         /// <summary>
         /// The common URI prefix of the HTTP server of the WWCP tracker.
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 
         public Tracker(Tracker_Id  Id,
                        I18NString  Description,
-                       HTTPServer  HTTPServer,
+                       HTTPTestServerX  HTTPServer,
                        HTTPPath?   URLPrefix   = null,
                        DNSClient?  DNSClient   = null)
         {
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                              return Task.FromResult<HTTPResponse>(
                                                  new HTTPResponse.Builder(Request) {
                                                      HTTPStatusCode  = HTTPStatusCode.OK,
-                                                     Server          = HTTPServer.DefaultServerName,
+                                                     Server          = HTTPServer.HTTPServerName,
                                                      Date            = DateTime.Now,
                                                      ContentType     = HTTPContentType.Application.JSON_UTF8,
                                                      Content         = JSONObject.Create(
@@ -314,7 +314,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                              return Task.FromResult<HTTPResponse>(// SendEVSEDoorNotClosedNotifiedLog(
                                                  new HTTPResponse.Builder(Request) {
                                                      HTTPStatusCode  = HTTPStatusCode.OK,
-                                                     Server          = HTTPServer.DefaultServerName,
+                                                     Server          = HTTPServer.HTTPServerName,
                                                      Date            = DateTime.Now,
                                                      Connection      = ConnectionType.Close
                                                  });
