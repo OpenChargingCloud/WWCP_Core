@@ -30,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 
 using cloud.charging.open.protocols.WWCP.Networking;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -470,40 +471,35 @@ namespace cloud.charging.open.protocols.WWCP
                             do
                             {
 
-                                //ToDo: Use persistent TCPClients!
-
                                 TCPClient? client = null;
 
                                 if (networkInfo.IPAddress is not null)
                                     client = new TCPClient(
-                                                 IPAddress:          networkInfo.IPAddress,
-                                                 RemotePort:         networkInfo.port,
-                                                 UseTLS:             TLSUsage.NoTLS,
-                                                 ConnectionTimeout:  TimeSpan.FromSeconds(5)
+                                                 IPAddress:       networkInfo.IPAddress,
+                                                 TCPPort:         networkInfo.port,
+                                                 ConnectTimeout:  TimeSpan.FromSeconds(5)
                                              );
 
                                 else if (networkInfo.hostname.IsNotNullOrEmpty())
                                     client = new TCPClient(
-                                                 RemoteHost:         networkInfo.hostname,
-                                                 RemotePort:         networkInfo.port,
-                                                 UseTLS:             TLSUsage.NoTLS,
-                                                 ConnectionTimeout:  TimeSpan.FromSeconds(5),
-                                                 DNSClient:          DNSClient
+                                                 URL:             URL.Parse($"{networkInfo.hostname}:{networkInfo.port}"),
+                                                 ConnectTimeout:  TimeSpan.FromSeconds(5),
+                                                 DNSClient:       DNSClient
                                              );
 
                                 if (client is not null)
                                 {
 
-                                    client.Connect();
+                                    await client.ConnectAsync();
 
-                                    if (client.TCPStream is not null)
+                                    if (client.IsConnected)
                                     {
 
                                         try
                                         {
 
-                                            if (client.TCPStream.CanWrite)
-                                                client.TCPStream.Write((logData + Environment.NewLine).ToUTF8Bytes());
+                                            //if (client.TCPStream.CanWrite)
+                                            //    client.TCPStream.Write((logData + Environment.NewLine).ToUTF8Bytes());
 
                                             //if (client.TCPStream.CanRead)
                                             //{
