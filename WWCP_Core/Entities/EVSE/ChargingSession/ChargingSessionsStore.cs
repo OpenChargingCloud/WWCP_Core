@@ -1309,7 +1309,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                             if (ChargingSession.TryParse(chargingSessionJSON,
                                                                          out var chargingSession,
-                                                                         out var errorResponse))
+                                                                         out var errorResponse,
+                                                                         RoamingNetwork))
                                             {
 
                                                 chargingSession.RoamingNetwork ??= RoamingNetwork;
