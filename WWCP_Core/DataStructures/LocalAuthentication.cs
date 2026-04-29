@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           publicKey                   is not null ? WWCP.ECCPublicKey.  ParseASN1(publicKey)               : null,
                                           certificate                 is not null ? WWCP.Certificate.   Parse(certificate)                 : null,
 
-                                          authMethod                  is not null ? null : null,
+                                          authMethod                  is not null ? WWCP.AuthMethod.    Parse(authMethod)                  : null,
                                           description                 is not null ? I18NString.         Parse(description)                 : I18NString.Empty
                                       );
 
