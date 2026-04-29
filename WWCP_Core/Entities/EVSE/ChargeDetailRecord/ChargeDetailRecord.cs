@@ -592,9 +592,11 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+
         public static Boolean TryParse(JObject                                       JSON,
                                        [NotNullWhen(true)]  out ChargeDetailRecord?  ChargeDetailRecord,
-                                       [NotNullWhen(false)] out String?              ErrorResponse)
+                                       [NotNullWhen(false)] out String?              ErrorResponse,
+                                       RoamingNetwork?                               RoamingNetwork = null)
         {
 
             ChargeDetailRecord  = null;
@@ -950,13 +952,21 @@ namespace cloud.charging.open.protocols.WWCP
 
                                          null, //chargingConnector,
                                          chargingConnectorId,
-                                         null, //evse,
+                                         evseId.HasValue
+                                             ? RoamingNetwork?.GetEVSEById                   (evseId.                   Value)
+                                             : null,
                                          evseId,
-                                         null, //chargingStation,
+                                         chargingStationId.HasValue
+                                             ? RoamingNetwork?.GetChargingStationById        (chargingStationId.        Value)
+                                             : null,
                                          chargingStationId,
-                                         null, //chargingPool,
+                                         chargingPoolId.HasValue
+                                             ? RoamingNetwork?.GetChargingPoolById           (chargingPoolId.           Value)
+                                             : null,
                                          chargingPoolId,
-                                         null, //chargingStationOperator,
+                                         chargingStationOperatorId.HasValue
+                                             ? RoamingNetwork?.GetChargingStationOperatorById(chargingStationOperatorId.Value)
+                                             : null,
                                          chargingStationOperatorId,
 
                                          chargingProductId,
@@ -966,14 +976,22 @@ namespace cloud.charging.open.protocols.WWCP
                                          authenticationStart,
                                          authenticationStop,
 
-                                         null, //providerStart,
+                                         providerIdStart.HasValue
+                                             ? RoamingNetwork?.GetEMobilityProviderById      (providerIdStart.          Value)
+                                             : null,
                                          providerIdStart,
-                                         null, //providerStop,
+                                         providerIdStop.HasValue
+                                             ? RoamingNetwork?.GetEMobilityProviderById      (providerIdStop.           Value)
+                                             : null,
                                          providerIdStop,
 
-                                         null, //roamingProviderStart,
+                                         roamingProviderIdStart.HasValue
+                                             ? RoamingNetwork?.GetCSORoamingProviderById     (roamingProviderIdStart.   Value)
+                                             : null,
                                          roamingProviderIdStart,
-                                         null, //roamingProviderStop,
+                                         roamingProviderIdStop.HasValue
+                                             ? RoamingNetwork?.GetCSORoamingProviderById     (roamingProviderIdStop.    Value)
+                                             : null,
                                          roamingProviderIdStop,
 
                                          null, //reservation,

@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                DateTime                                          ResponseTimestamp,
                                                TimeSpan                                          Runtime,
                                                HTTPResponse?                                     HTTPResponse                     = null,
+                                               RoamingNetwork?                                   RoamingNetwork                   = null,
                                                CustomJObjectParserDelegate<RemoteStopResponse>?  CustomRemoteStopResponseParser   = null)
         {
 
@@ -188,6 +190,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                          out var remoteStopResponse,
                          out var errorResponse,
                          HTTPResponse,
+                         RoamingNetwork,
                          CustomRemoteStopResponseParser))
             {
                 return remoteStopResponse!;
@@ -208,7 +211,6 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="Request">The request leading to this response.</param>
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="ResponseTimestamp">The timestamp of the response creation.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this response with other events.</param>
         /// <param name="Runtime">The runtime of the request/response.</param>
         /// <param name="RemoteStopResponse">The parsed RemoteStop response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -221,6 +223,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                        out RemoteStopResponse?                           RemoteStopResponse,
                                        out String?                                       ErrorResponse,
                                        HTTPResponse?                                     HTTPResponse                     = null,
+                                       RoamingNetwork?                                   RoamingNetwork                   = null,
                                        CustomJObjectParserDelegate<RemoteStopResponse>?  CustomRemoteStopResponseParser   = null)
         {
 
@@ -262,12 +265,12 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                 #endregion
 
 
-                #region Parse ChargingSession        [mandatory]
+                #region Parse ChargingSessionId      [mandatory]
 
                 if (!JSON.ParseMandatory("chargingSessionId",
                                          "charging session identification",
                                          ChargingSession_Id.TryParse,
-                                         out ChargingSession_Id ChargingSessionId,
+                                         out ChargingSession_Id chargingSessionId,
                                          out ErrorResponse))
                 {
                     return false;
@@ -279,8 +282,11 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                 if (JSON.ParseOptionalJSON("chargingSession",
                                            "remote start result",
-                                           WWCP.ChargingSession.TryParse,
-                                           out ChargingSession? ChargingSession,
+                                           (json,
+                                            [NotNullWhen(true)]  out chargingSession,
+                                            [NotNullWhen(false)] out errorResponse)
+                                                => ChargingSession.TryParse(json, out chargingSession, out errorResponse, RoamingNetwork),
+                                           out ChargingSession? chargingSession,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -294,7 +300,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                 if (JSON.ParseOptional("reservationId",
                                        "charging reservation identification",
                                        ChargingReservation_Id.TryParse,
-                                       out ChargingReservation_Id? ReservationId,
+                                       out ChargingReservation_Id? reservationId,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -307,8 +313,8 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                 if (JSON.ParseOptionalJSON("reservationHandling",
                                            "charging reservation handling",
-                                           WWCP.ReservationHandling.TryParse,
-                                           out ReservationHandling? ReservationHandling,
+                                           ReservationHandling.TryParse,
+                                           out ReservationHandling? reservationHandling,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -321,8 +327,11 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                 if (JSON.ParseOptionalJSON("chargeDetailRecord",
                                            "charge detail record",
-                                           WWCP.ChargeDetailRecord.TryParse,
-                                           out ChargeDetailRecord? ChargeDetailRecord,
+                                           (json,
+                                            [NotNullWhen(true)]  out chargeDetailRecord,
+                                            [NotNullWhen(false)] out errorResponse)
+                                                => ChargeDetailRecord.TryParse(json, out chargeDetailRecord, out errorResponse, RoamingNetwork),
+                                           out ChargeDetailRecord? chargeDetailRecord,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -373,28 +382,30 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                 #endregion
 
 
-                RemoteStopResponse = new RemoteStopResponse(Request,
-                                                            Result,
-                                                            EventTrackingId,
-                                                            ResponseTimestamp,
+                RemoteStopResponse = new RemoteStopResponse(
+                                         Request,
+                                         Result,
+                                         EventTrackingId,
+                                         ResponseTimestamp,
 
-                                                            ChargingSessionId,
-                                                            ChargingSession,
-                                                            ReservationId,
-                                                            ReservationHandling,
-                                                            ChargeDetailRecord,
+                                         chargingSessionId,
+                                         chargingSession,
+                                         reservationId,
+                                         reservationHandling,
+                                         chargeDetailRecord,
 
-                                                            Description,
-                                                            AdditionalInfo,
-                                                            Warnings,
-                                                            customData,
+                                         Description,
+                                         AdditionalInfo,
+                                         Warnings,
+                                         customData,
 
-                                                            Runtime,
-                                                            HTTPResponse);
+                                         Runtime,
+                                         HTTPResponse
+                                     );
 
                 if (CustomRemoteStopResponseParser is not null)
                     RemoteStopResponse = CustomRemoteStopResponseParser(JSON,
-                                                                          RemoteStopResponse);
+                                                                        RemoteStopResponse);
 
                 return true;
 

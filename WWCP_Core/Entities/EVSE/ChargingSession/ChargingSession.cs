@@ -143,7 +143,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static Boolean TryParse(JObject                                    JSON,
                                        [NotNullWhen(true)]  out ReceivedCDRInfo?  ReceivedCDRInfo,
-                                       [NotNullWhen(false)] out String?           ErrorResponse)
+                                       [NotNullWhen(false)] out String?           ErrorResponse,
+                                       RoamingNetwork?                            RoamingNetwork = null)
         {
 
             ReceivedCDRInfo = null;
@@ -161,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (!JSON.ParseMandatory("timestamp",
                                          "timestamp",
-                                         out DateTime Timestamp,
+                                         out DateTimeOffset timestamp,
                                          out ErrorResponse))
                 {
                     return false;
@@ -174,7 +175,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (!JSON.ParseMandatory("systemId",
                                          "system identification",
                                          System_Id.TryParse,
-                                         out System_Id SystemId,
+                                         out System_Id systemId,
                                          out ErrorResponse))
                 {
                     return false;
@@ -187,7 +188,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (!JSON.ParseMandatory("eventTrackingId",
                                         "event tracking identification",
                                         EventTracking_Id.TryParse,
-                                        out EventTracking_Id? EventTrackingId,
+                                        out EventTracking_Id? eventTrackingId,
                                         out ErrorResponse))
                 {
                     return false;
@@ -199,8 +200,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (!JSON.ParseMandatoryJSON("cdr",
                                              "charge detail record",
-                                             WWCP.ChargeDetailRecord.TryParse,
-                                             out ChargeDetailRecord? ChargeDetailRecord,
+                                             (json,
+                                              [NotNullWhen(true)]  out chargeDetailRecord,
+                                              [NotNullWhen(false)] out errorResponse)
+                                                  => ChargeDetailRecord.TryParse(json, out chargeDetailRecord, out errorResponse, RoamingNetwork),
+                                             out ChargeDetailRecord? chargeDetailRecord,
                                              out ErrorResponse))
                 {
                     return false;
@@ -210,10 +214,10 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 ReceivedCDRInfo = new ReceivedCDRInfo(
-                                      Timestamp,
-                                      SystemId,
-                                      EventTrackingId,
-                                      ChargeDetailRecord
+                                      timestamp,
+                                      systemId,
+                                      eventTrackingId,
+                                      chargeDetailRecord
                                   );
 
                 return true;
@@ -1142,7 +1146,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static Boolean TryParse(JObject                                    JSON,
                                        [NotNullWhen(true)]  out ChargingSession?  ChargingSession,
-                                       [NotNullWhen(false)] out String?           ErrorResponse)
+                                       [NotNullWhen(false)] out String?           ErrorResponse,
+                                       RoamingNetwork?                            RoamingNetwork = null)
         {
 
             ErrorResponse    = null;
@@ -1273,6 +1278,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        EventTrackingId:  JSON["eventTrackingId"]?.Value<String>() is String eventTrackingId
                                                              ? EventTracking_Id.Parse(eventTrackingId)
                                                              : EventTracking_Id.New,
+                                       RoamingNetwork:   RoamingNetwork,
                                        CustomData:       JSON["customData"] as JObject
                                    ) {
 
@@ -1332,7 +1338,7 @@ namespace cloud.charging.open.protocols.WWCP
                     {
                         foreach (var receivedCDRInfoJSON in receivedCDRInfosJSON.Cast<JObject>())
                         {
-                            if (ReceivedCDRInfo.TryParse(receivedCDRInfoJSON, out var receivedCDRInfo, out var err1))
+                            if (ReceivedCDRInfo.TryParse(receivedCDRInfoJSON, out var receivedCDRInfo, out var err1, RoamingNetwork))
                             {
 
                                 // Temporary fix for missing AuthenticationStart in received CDRs!
@@ -1355,7 +1361,7 @@ namespace cloud.charging.open.protocols.WWCP
                     {
                         foreach (var sendCDRResultJSON in sendCDRResultsJSON.Cast<JObject>())
                         {
-                            if (SendCDRResult.TryParse(sendCDRResultJSON, out var sendCDRResult, out var err2))
+                            if (SendCDRResult.TryParse(sendCDRResultJSON, out var sendCDRResult, out var err2, RoamingNetwork: RoamingNetwork))
                                 ChargingSession.sendCDRResults.Add(sendCDRResult);
                             else
                                 DebugX.Log(nameof(ChargingSession) + ".sendCDRResults.TryParse(...) failed: " + err2);

@@ -691,17 +691,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) TryParse(JSONObject, ..., out SendCDRResult, out ErrorResponse, VerifyContext = false)
 
-        //public static Boolean TryParse(JObject                                  JSONObject,
-        //                               [NotNullWhen(true)]  out SendCDRResult?  SendCDRResult,
-        //                               [NotNullWhen(false)] out String?         ErrorResponse)
-        //    => TryParse(JSONObject,
-        //                out SendCDRResult,
-        //                out ErrorResponse);
-
         public static Boolean TryParse(JObject                                  JSONObject,
                                        [NotNullWhen(true)]  out SendCDRResult?  SendCDRResult,
                                        [NotNullWhen(false)] out String?         ErrorResponse,
-                                       Boolean                                  VerifyContext = false)
+                                       Boolean                                  VerifyContext    = false,
+                                       RoamingNetwork?                          RoamingNetwork   = null)
         {
 
             try
@@ -780,7 +774,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (JSONObject.ParseOptionalJSON("chargeDetailRecord",
                                                  "charge detail record",
-                                                 WWCP.ChargeDetailRecord.TryParse,
+                                                 (json,
+                                                  [NotNullWhen(true)]  out chargeDetailRecord,
+                                                  [NotNullWhen(false)] out errorResponse)
+                                                      => ChargeDetailRecord.TryParse(json, out chargeDetailRecord, out errorResponse, RoamingNetwork),
                                                  out ChargeDetailRecord? chargeDetailRecord,
                                                  out ErrorResponse))
                 {

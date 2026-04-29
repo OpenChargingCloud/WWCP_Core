@@ -9184,14 +9184,14 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Some charge detail records should perhaps be filtered...
 
-                var OnFilterCDRRecordsLocal = OnFilterCDRRecords;
-                if (OnFilterCDRRecordsLocal is not null)
+                var onFilterCDRRecords = OnFilterCDRRecords;
+                if (onFilterCDRRecords is not null)
                 {
 
                     foreach (var chargeDetailRecord in ChargeDetailRecords)
                     {
 
-                        var filterResult = OnFilterCDRRecordsLocal(Id, chargeDetailRecord);
+                        var filterResult = onFilterCDRRecords(Id, chargeDetailRecord);
                         if (filterResult.IsNeitherNullNorEmpty())
                         {
 

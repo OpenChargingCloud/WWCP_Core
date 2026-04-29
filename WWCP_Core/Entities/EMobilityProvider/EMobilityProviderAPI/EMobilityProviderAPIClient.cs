@@ -549,8 +549,8 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                  out response,
                                                                  out var errorResponse,
                                                                  httpResponse,
-                                                                 CustomRemoteStartResponseParser) &&
-                                    response is not null)
+                                                                 null, //RoamingNetwork,
+                                                                 CustomRemoteStartResponseParser))
                                 {
 
                                     Counters.RemoteStart.IncResponses_OK();
@@ -922,8 +922,8 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                 out response,
                                                                 out var errorResponse,
                                                                 httpResponse,
-                                                                CustomRemoteStopResponseParser) &&
-                                    response is not null)
+                                                                null, //RoamingNetwork,
+                                                                CustomRemoteStopResponseParser))
                                 {
 
                                     Counters.RemoteStop.IncResponses_OK();
