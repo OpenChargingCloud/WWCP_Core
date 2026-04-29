@@ -8661,7 +8661,8 @@ namespace cloud.charging.open.protocols.WWCP
                     var missingCDRResponses  = roamingNetwork.ChargingSessions.
                                                    Where  (session => session.ReceivedCDRInfos.Any() &&
                                                                       session.SendCDRResults.  Any() &&
-                                                                      session.SendCDRResults.  All(sendCDRResult => sendCDRResult.Result != SendCDRResultTypes.Success) &&
+                                                                      session.SendCDRResults.  All(sendCDRResult => sendCDRResult.Result != SendCDRResultTypes.Success           &&
+                                                                                                                    sendCDRResult.Result != SendCDRResultTypes.InvalidSessionId) &&
                                                                      (!from.HasValue ||                                                                                   session.SessionTime.StartTime     >= from.Value) &&
                                                                      (!to.  HasValue || !session.SessionTime.EndTime.HasValue || (session.SessionTime.EndTime.HasValue && session.SessionTime.EndTime.Value <= to.  Value))).
                                                    ToArray();

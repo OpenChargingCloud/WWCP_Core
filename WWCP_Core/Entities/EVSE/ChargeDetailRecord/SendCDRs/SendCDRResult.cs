@@ -506,7 +506,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -514,10 +514,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             Error(DateTimeOffset         Timestamp,
                   IId                    AuthorizatorId,
-                  ChargeDetailRecord     ChargeDetailRecord,
-                  I18NString?            Description   = null,
-                  IEnumerable<Warning>?  Warnings      = null,
-                  TimeSpan?              Runtime       = null)
+                  ChargeDetailRecord?    ChargeDetailRecord   = null,
+                  I18NString?            Description          = null,
+                  IEnumerable<Warning>?  Warnings             = null,
+                  TimeSpan?              Runtime              = null)
 
                 => new (Timestamp,
                         AuthorizatorId,
