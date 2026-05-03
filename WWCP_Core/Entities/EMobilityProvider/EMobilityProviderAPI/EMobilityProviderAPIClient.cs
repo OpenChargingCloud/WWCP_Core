@@ -438,7 +438,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                                        MaxNumberOfClients:               6, //MaxNumberOfPooledClients ?? 6,
 
-                                       PreferIPv4:                       PreferIPv4,
+                                       IPVersionPreference:                       PreferIPv4,
                                        ConnectTimeout:                   null,
                                        ReceiveTimeout:                   null,
                                        SendTimeout:                      null,
