@@ -3004,9 +3004,9 @@ namespace cloud.charging.open.protocols.WWCP
             else
                 result = AuthStopResult.OutOfService(
                              Id,
+                             Timestamp.Now - startTime,
                              this,
-                             SessionId:  SessionId,
-                             Runtime:    TimeSpan.Zero
+                             SessionId:  SessionId
                          );
 
 

@@ -244,14 +244,14 @@ namespace cloud.charging.open.protocols.WWCP
 
             return AuthStartResult.NotAuthorized(
                        AuthorizatorId:            AuthId,
+                       Runtime:                   TimeSpan.Zero,
                        ISendAuthorizeStartStop:   null,
                        SessionId:                 null,
 
                        ProviderId:                null,
                        Description:               null,
                        AdditionalInfo:            null,
-                       NumberOfRetries:           0,
-                       Runtime:                   TimeSpan.Zero
+                       NumberOfRetries:           0
                    );
 
         }
@@ -280,41 +280,43 @@ namespace cloud.charging.open.protocols.WWCP
                 if (authStartResult.Result == AuthStartResultTypes.Authorized)
                     return AuthStopResult.Authorized(
                                authStartResult.AuthorizatorId,
+                               authStartResult.Runtime,
                                authStartResult.ISendAuthorizeStartStop,
                                authStartResult.CachedResultEndOfLifeTime,
                                authStartResult.SessionId,
                                authStartResult.ProviderId,
                                authStartResult.Description,
                                authStartResult.AdditionalInfo,
-                               authStartResult.NumberOfRetries,
-                               authStartResult.Runtime
+                               authStartResult.AdditionalContext,
+                               authStartResult.NumberOfRetries
                            );
 
                 if (authStartResult.Result == AuthStartResultTypes.NotAuthorized)
                     return AuthStopResult.NotAuthorized(
                                authStartResult.AuthorizatorId,
+                               authStartResult.Runtime,
                                authStartResult.ISendAuthorizeStartStop,
                                authStartResult.CachedResultEndOfLifeTime,
                                authStartResult.SessionId,
                                authStartResult.ProviderId,
                                authStartResult.Description,
                                authStartResult.AdditionalInfo,
-                               authStartResult.NumberOfRetries,
-                               authStartResult.Runtime
+                               authStartResult.AdditionalContext,
+                               authStartResult.NumberOfRetries
                            );
 
             }
 
             return AuthStopResult.NotAuthorized(
                        AuthorizatorId:            AuthId,
+                       Runtime:                   TimeSpan.Zero,
                        ISendAuthorizeStartStop:   null,
                        SessionId:                 null,
 
                        ProviderId:                null,
                        Description:               null,
                        AdditionalInfo:            null,
-                       NumberOfRetries:           0,
-                       Runtime:                   null
+                       NumberOfRetries:           0
                    );
 
         }

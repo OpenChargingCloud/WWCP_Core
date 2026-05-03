@@ -2858,9 +2858,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                              : AuthStopResult.OutOfService(
                                    Id,
+                                   Timestamp.Now - startTime,
                                    this,
-                                   SessionId: SessionId,
-                                   Runtime: Timestamp.Now - startTime
+                                   SessionId: SessionId
                                );
 
             }
@@ -2869,10 +2869,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                 result = AuthStopResult.Error(
                              SessionId,
+                             Timestamp.Now - startTime,
                              this,
                              SessionId,
-                             I18NString.Create(e.Message),
-                             Timestamp.Now - startTime
+                             I18NString.Create(e.Message)
                          );
 
             }

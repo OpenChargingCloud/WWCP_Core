@@ -8038,10 +8038,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     result = AuthStopResult.InvalidToken(
                                  Id,
+                                 TimeSpan.Zero,
                                  this,
                                  SessionId:    SessionId,
-                                 Description:  I18NString.Create($"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!"),
-                                 Runtime:      TimeSpan.Zero
+                                 Description:  I18NString.Create($"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!")
                              );
 
                 }
@@ -8078,10 +8078,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                                 result = AuthStopResult.RateLimitReached(
                                              Id,
+                                             TimeSpan.Zero,
                                              this,
                                              SessionId,
-                                             I18NString.Create($"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!"),
-                                             TimeSpan.Zero
+                                             I18NString.Create($"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!")
                                          );
 
                             }
@@ -8107,10 +8107,12 @@ namespace cloud.charging.open.protocols.WWCP
 
                     //ToDo: Add a --useForce Option to overwrite!
                     if (chargingSession.SessionTime.EndTime.HasValue)
-                        result = AuthStopResult.AlreadyStopped(SessionId,
-                                                               this,
-                                                               SessionId:  SessionId,
-                                                               Runtime:    Timestamp.Now - startTime);
+                        result = AuthStopResult.AlreadyStopped(
+                                     SessionId,
+                                     Timestamp.Now - startTime,
+                                     this,
+                                     SessionId:  SessionId
+                                 );
 
                     else
                     {
@@ -8219,10 +8221,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                                      DefaultResult:          runtime => AuthStopResult.NotAuthorized(
                                                                             Id,
+                                                                            runtime,
                                                                             this,
                                                                             SessionId:    SessionId,
-                                                                            Description:  I18NString.Create("No authorization service returned a positiv result!"),
-                                                                            Runtime:      runtime
+                                                                            Description:  I18NString.Create("No authorization service returned a positiv result!")
                                                                         ),
 
                                      ExternalCancellation:   CancellationToken).
@@ -8237,10 +8239,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                 result = AuthStopResult.Error(
                              SessionId,
+                             Timestamp.Now - startTime,
                              this,
                              SessionId,
-                             I18NString.Create(e.Message),
-                             Timestamp.Now - startTime
+                             I18NString.Create(e.Message)
                          );
 
             }

@@ -171,7 +171,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public I18NString                        AdditionalInfo                   { get; }
 
-
+        /// <summary>
+        /// Optional additional context information.
+        /// </summary>
         public JObject?                          AdditionalContext                { get; }
 
 
@@ -189,7 +191,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region (private) AuthStartResult (AuthorizatorId,                             Result, ...)
+        #region (private) AuthStartResult (AuthorizatorId,                             Result, Runtime, ...)
 
         /// <summary>
         /// Create a new AuthorizeStart result.
@@ -198,10 +200,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ResponseTimestamp">The timestamp of the response.</param>
         /// <param name="Result">The AuthorizeStart result type.</param>
         /// <param name="Runtime">The runtime of the request.</param>
+        /// 
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity asking for an authorization.</param>
-        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// 
+        /// <param name="CachedResultEndOfLifeTime">An optional timestamp until the result may be cached.</param>
         /// <param name="SessionId">The optional charging session identification, when the AuthorizeStart operation was successful.</param>
         /// <param name="EMPPartnerSessionId">An optional EMP partner charging session identification, when the AuthorizeStart operation was successful.</param>
         /// <param name="AuthorizationReference">An optional authorization reference.</param>
@@ -227,10 +230,11 @@ namespace cloud.charging.open.protocols.WWCP
                                 DateTimeOffset                     ResponseTimestamp,
                                 AuthStartResultTypes               Result,
                                 TimeSpan                           Runtime,
+
                                 ISendAuthorizeStartStop?           ISendAuthorizeStartStop      = null,
                                 IReceiveAuthorizeStartStop?        IReceiveAuthorizeStartStop   = null,
-                                DateTimeOffset?                    CachedResultEndOfLifeTime    = null,
 
+                                DateTimeOffset?                    CachedResultEndOfLifeTime    = null,
                                 ChargingSession_Id?                SessionId                    = null,
                                 ChargingSession_Id?                EMPPartnerSessionId          = null,
                                 AuthorizationReference?            AuthorizationReference       = null,
@@ -259,10 +263,11 @@ namespace cloud.charging.open.protocols.WWCP
             this.ResponseTimestamp           = ResponseTimestamp;
             this.Result                      = Result;
             this.Runtime                     = Runtime;
+
             this.ISendAuthorizeStartStop     = ISendAuthorizeStartStop;
             this.IReceiveAuthorizeStartStop  = IReceiveAuthorizeStartStop;
-            this.CachedResultEndOfLifeTime   = CachedResultEndOfLifeTime;
 
+            this.CachedResultEndOfLifeTime   = CachedResultEndOfLifeTime;
             this.SessionId                   = SessionId;
             this.EMPPartnerSessionId         = EMPPartnerSessionId;
             this.AuthorizationReference      = AuthorizationReference;
@@ -270,8 +275,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.PrintedNumber               = PrintedNumber;
             this.UILanguage                  = UILanguage;
             this.ExpiryDate                  = ExpiryDate;
-            this.MaxPower                       = MaxPower;
-            this.MaxEnergy                      = MaxEnergy;
+            this.MaxPower                    = MaxPower;
+            this.MaxEnergy                   = MaxEnergy;
             this.MaxDuration                 = MaxDuration;
             this.ChargingTariffs             = ChargingTariffs      ?? [];
             this.ListOfAuthStopTokens        = ListOfAuthStopTokens ?? [];
@@ -289,7 +294,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (public)  AuthStartResult (AuthorizatorId, ISendAuthorizeStartStop,    Result, ...)
+        #region (public)  AuthStartResult (AuthorizatorId, ISendAuthorizeStartStop,    Result, Runtime, ...)
 
         /// <summary>
         /// Create a new AuthorizeStart result.
@@ -386,7 +391,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (public)  AuthStartResult (AuthorizatorId, IReceiveAuthorizeStartStop, Result, ...)
+        #region (public)  AuthStartResult (AuthorizatorId, IReceiveAuthorizeStartStop, Result, Runtime, ...)
 
         /// <summary>
         /// Create a new AuthorizeStart result.
