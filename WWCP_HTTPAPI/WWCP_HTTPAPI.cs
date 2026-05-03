@@ -1317,7 +1317,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="API">The Common API.</param>
         /// <param name="Request">A HTTP request.</param>
         protected internal Task GetRootRequest(DateTimeOffset     Timestamp,
-                                               HTTPAPI           API,
+                                               HTTPAPI            API,
                                                HTTPRequest        Request,
                                                CancellationToken  CancellationToken)
 
@@ -1345,7 +1345,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Request">A HTTP request.</param>
         /// <param name="Response">A HTTP response.</param>
         protected internal Task GetRootResponse(DateTimeOffset     Timestamp,
-                                                HTTPAPI           API,
+                                                HTTPAPI            API,
                                                 HTTPRequest        Request,
                                                 HTTPResponse       Response,
                                                 CancellationToken  CancellationToken)
@@ -1375,7 +1375,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="API">The HTTP API.</param>
         /// <param name="Request">A HTTP request.</param>
         protected internal Task CreateRoamingNetworkRequest(DateTimeOffset     Timestamp,
-                                                            HTTPAPI           API,
+                                                            HTTPAPI            API,
                                                             HTTPRequest        Request,
                                                             CancellationToken  CancellationToken)
 
@@ -1403,7 +1403,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Request">A HTTP request.</param>
         /// <param name="Response">A HTTP response.</param>
         protected internal Task CreateRoamingNetworkResponse(DateTimeOffset     Timestamp,
-                                                             HTTPAPI           API,
+                                                             HTTPAPI            API,
                                                              HTTPRequest        Request,
                                                              HTTPResponse       Response,
                                                              CancellationToken  CancellationToken)
@@ -1433,7 +1433,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="API">The HTTP API.</param>
         /// <param name="Request">A HTTP request.</param>
         protected internal Task DeleteRoamingNetworkRequest(DateTimeOffset     Timestamp,
-                                                            HTTPAPI           API,
+                                                            HTTPAPI            API,
                                                             HTTPRequest        Request,
                                                             CancellationToken  CancellationToken)
 
@@ -1461,7 +1461,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Request">A HTTP request.</param>
         /// <param name="Response">A HTTP response.</param>
         protected internal Task DeleteRoamingNetworkResponse(DateTimeOffset     Timestamp,
-                                                             HTTPAPI           API,
+                                                             HTTPAPI            API,
                                                              HTTPRequest        Request,
                                                              HTTPResponse       Response,
                                                              CancellationToken  CancellationToken)
@@ -1616,7 +1616,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="API">The HTTP API.</param>
         /// <param name="Request">A HTTP request.</param>
         protected internal Task GetChargingPoolsRequest(DateTimeOffset     Timestamp,
-                                                        HTTPAPI           API,
+                                                        HTTPAPI            API,
                                                         HTTPRequest        Request,
                                                         CancellationToken  CancellationToken)
 
@@ -1644,7 +1644,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Request">A HTTP request.</param>
         /// <param name="Response">A HTTP response.</param>
         protected internal Task GetChargingPoolsResponse(DateTimeOffset     Timestamp,
-                                                         HTTPAPI           API,
+                                                         HTTPAPI            API,
                                                          HTTPRequest        Request,
                                                          HTTPResponse       Response,
                                                          CancellationToken  CancellationToken)
@@ -1796,7 +1796,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="API">The HTTP API.</param>
         /// <param name="Request">A HTTP request.</param>
         protected internal Task GetChargingStationsRequest(DateTimeOffset     Timestamp,
-                                                           HTTPAPI           API,
+                                                           HTTPAPI            API,
                                                            HTTPRequest        Request,
                                                            CancellationToken  CancellationToken)
 
@@ -1824,7 +1824,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Request">A HTTP request.</param>
         /// <param name="Response">A HTTP response.</param>
         protected internal Task GetChargingStationsResponse(DateTimeOffset     Timestamp,
-                                                            HTTPAPI           API,
+                                                            HTTPAPI            API,
                                                             HTTPRequest        Request,
                                                             HTTPResponse       Response,
                                                             CancellationToken  CancellationToken)
