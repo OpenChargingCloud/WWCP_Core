@@ -121,8 +121,8 @@ UpgradeLog*.XML
 
 # ------------------------------------------------------------------------
 
-WWCP_WebAPI/HTTPRoot/css/*.css
-WWCP_WebAPI/HTTPRoot/css/*.min.css
+WWCP_WebAPI/HTTPRoot/css/**/*.css
+WWCP_WebAPI/HTTPRoot/css/**/*.min.css
 WWCP_WebAPI/HTTPRoot/css/versions
 WWCP_WebAPI/HTTPRoot/css/debugLog
 
