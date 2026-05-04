@@ -952,27 +952,59 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region AuthStart             (NewChargingSession, UpdateFunc = null)
+        #region AuthStartResult       (AuthStartResult, UpdateFunc = null)
 
-        public async Task<Boolean> AuthStart(ChargingSession           NewChargingSession,
-                                             Action<ChargingSession>?  UpdateFunc   = null)
+        public async Task<Boolean> AuthStartResult(LocalAuthentication       LocalAuthentication,
+                                                   AuthStartResult           AuthStartResult,
+                                                   EventTracking_Id          EventTrackingId,
+                                                   RoamingNetwork            RoamingNetwork,
+                                                   ChargingLocation?         ChargingLocation   = null,
+                                                   ChargingProduct?          ChargingProduct    = null,
+                                                   Action<ChargingSession>?  UpdateFunc         = null)
         {
 
-            if (!InternalData.ContainsKey(NewChargingSession.Id))
+            var evse                     = ChargingLocation?.EVSEId.                   HasValue == true ? RoamingNetwork.GetEVSEById                   (ChargingLocation.EVSEId.                   Value) : null;
+            var chargingStation          = ChargingLocation?.ChargingStationId.        HasValue == true ? RoamingNetwork.GetChargingStationById        (ChargingLocation.ChargingStationId.        Value) : evse?.           ChargingStation;
+            var chargingPool             = ChargingLocation?.ChargingPoolId.           HasValue == true ? RoamingNetwork.GetChargingPoolById           (ChargingLocation.ChargingPoolId.           Value) : chargingStation?.ChargingPool;
+            var chargingStationOperator  = ChargingLocation?.ChargingStationOperatorId.HasValue == true ? RoamingNetwork.GetChargingStationOperatorById(ChargingLocation.ChargingStationOperatorId.Value) : chargingPool?.   Operator;
+
+            var newChargingSession       = new ChargingSession(
+                                               AuthStartResult.SessionId!.Value,
+                                               EventTrackingId,
+                                               CustomData: AuthStartResult.AdditionalContext
+                                           ) {
+                              RoamingNetwork             = RoamingNetwork,
+                              CSORoamingProviderStart    = AuthStartResult.ISendAuthorizeStartStop as ICSORoamingProvider,
+                              AuthorizatorIdStart        = AuthStartResult.AuthorizatorId,
+                              ProviderIdStart            = AuthStartResult.ProviderId,
+                              AuthStartResult            = AuthStartResult,
+                              ChargingStationOperatorId  = ChargingLocation?.ChargingStationOperatorId,
+                              EVSEId                     = ChargingLocation?.EVSEId,
+                              ChargingStationId          = ChargingLocation?.ChargingStationId,
+                              ChargingPoolId             = ChargingLocation?.ChargingPoolId,
+                              EVSE                       = evse,
+                              ChargingStation            = chargingStation,
+                              ChargingPool               = chargingPool,
+                              ChargingStationOperator    = chargingStationOperator,
+                              AuthenticationStart        = LocalAuthentication,
+                              ChargingProduct            = ChargingProduct
+                          };
+
+            if (!InternalData.ContainsKey(newChargingSession.Id))
             {
 
                 var now       = Timestamp.Now;
                 var systemId  = System_Id.Parse(Environment.MachineName);
 
-                NewChargingSession.SystemIdStart = systemId;
-                InternalData.TryAdd(NewChargingSession.Id, NewChargingSession);
-                UpdateFunc?.Invoke(NewChargingSession);
+                newChargingSession.SystemIdStart = systemId;
+                InternalData.TryAdd(newChargingSession.Id, newChargingSession);
+                UpdateFunc?.Invoke(newChargingSession);
 
                 await LogIt(
                           "authStart",
-                          NewChargingSession.Id,
+                          newChargingSession.Id,
                           "chargingSession",
-                          NewChargingSession.ToJSON(
+                          newChargingSession.ToJSON(
                               Embedded:    true,
                               OnlineInfos: false,
                               CustomChargingSessionSerializer,
@@ -985,7 +1017,7 @@ namespace cloud.charging.open.protocols.WWCP
                 OnNewChargingSession?.Invoke(
                     now,
                     RoamingNetworkId,
-                    NewChargingSession
+                    newChargingSession
                 );
 
                 return true;
@@ -995,6 +1027,48 @@ namespace cloud.charging.open.protocols.WWCP
             return false;
 
         }
+
+        //public async Task<Boolean> AuthStart(ChargingSession           NewChargingSession,
+        //                                     Action<ChargingSession>?  UpdateFunc   = null)
+        //{
+
+        //    if (!InternalData.ContainsKey(NewChargingSession.Id))
+        //    {
+
+        //        var now       = Timestamp.Now;
+        //        var systemId  = System_Id.Parse(Environment.MachineName);
+
+        //        NewChargingSession.SystemIdStart = systemId;
+        //        InternalData.TryAdd(NewChargingSession.Id, NewChargingSession);
+        //        UpdateFunc?.Invoke(NewChargingSession);
+
+        //        await LogIt(
+        //                  "authStart",
+        //                  NewChargingSession.Id,
+        //                  "chargingSession",
+        //                  NewChargingSession.ToJSON(
+        //                      Embedded:    true,
+        //                      OnlineInfos: false,
+        //                      CustomChargingSessionSerializer,
+        //                      CustomCDRReceivedInfoSerializer,
+        //                      CustomChargeDetailRecordSerializer,
+        //                      CustomSendCDRResultSerializer
+        //                  )
+        //              );
+
+        //        OnNewChargingSession?.Invoke(
+        //            now,
+        //            RoamingNetworkId,
+        //            NewChargingSession
+        //        );
+
+        //        return true;
+
+        //    }
+
+        //    return false;
+
+        //}
 
         #endregion
 

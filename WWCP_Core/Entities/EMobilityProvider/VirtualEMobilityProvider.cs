@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                           //ChargingStationOperator_Id?  OperatorId            = null,
                                                           EMobilityProvider_Id?        EMobilityProviderId   = null,
 
-                                                          DateTimeOffset?              Timestamp             = null,
+                                                          DateTimeOffset?              RequestTimestamp      = null,
                                                           EventTracking_Id?            EventTrackingId       = null,
                                                           TimeSpan?                    RequestTimeout        = null,
                                                           CancellationToken            CancellationToken     = default)
@@ -244,8 +244,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             return AuthStartResult.NotAuthorized(
                        AuthorizatorId:            AuthId,
-                       Runtime:                   TimeSpan.Zero,
                        ISendAuthorizeStartStop:   null,
+                       ResponseTimestamp:         Timestamp.Now,
+                       Runtime:                   TimeSpan.Zero,
                        SessionId:                 null,
 
                        ProviderId:                null,
@@ -280,11 +281,13 @@ namespace cloud.charging.open.protocols.WWCP
                 if (authStartResult.Result == AuthStartResultTypes.Authorized)
                     return AuthStopResult.Authorized(
                                authStartResult.AuthorizatorId,
-                               authStartResult.Runtime,
                                authStartResult.ISendAuthorizeStartStop,
+                               authStartResult.ResponseTimestamp,
+                               authStartResult.Runtime,
                                authStartResult.CachedResultEndOfLifeTime,
                                authStartResult.SessionId,
                                authStartResult.ProviderId,
+                               authStartResult.ProviderName,
                                authStartResult.Description,
                                authStartResult.AdditionalInfo,
                                authStartResult.AdditionalContext,
@@ -294,11 +297,13 @@ namespace cloud.charging.open.protocols.WWCP
                 if (authStartResult.Result == AuthStartResultTypes.NotAuthorized)
                     return AuthStopResult.NotAuthorized(
                                authStartResult.AuthorizatorId,
-                               authStartResult.Runtime,
                                authStartResult.ISendAuthorizeStartStop,
+                               authStartResult.ResponseTimestamp,
+                               authStartResult.Runtime,
                                authStartResult.CachedResultEndOfLifeTime,
                                authStartResult.SessionId,
                                authStartResult.ProviderId,
+                               authStartResult.ProviderName,
                                authStartResult.Description,
                                authStartResult.AdditionalInfo,
                                authStartResult.AdditionalContext,
@@ -309,8 +314,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             return AuthStopResult.NotAuthorized(
                        AuthorizatorId:            AuthId,
-                       Runtime:                   TimeSpan.Zero,
                        ISendAuthorizeStartStop:   null,
+                       ResponseTimestamp:         Timestamp.Now,
+                       Runtime:                   TimeSpan.Zero,
                        SessionId:                 null,
 
                        ProviderId:                null,

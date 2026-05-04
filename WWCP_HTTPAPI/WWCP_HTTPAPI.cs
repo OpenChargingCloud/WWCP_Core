@@ -8718,9 +8718,405 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
+            #region ~/RNs/{RoamingNetworkId}/AuthStartCache
+
+            //ToDo: OPTIONS
+
+            #region GET    ~/RNs/{RoamingNetworkId}/AuthStartCache
+
+            // -------------------------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:3004/RNs/Test/AuthStartCache
+            // -------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.GET,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/AuthStartCache",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPDelegate: async request => {
+
+                    #region Get HTTP user and its organizations
+
+                    // Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    if (!HTTPBaseAPI.TryGetHTTPUser(request,
+                                                    out var httpUser,
+                                                    out var httpOrganizations,
+                                                    out var httpResponseBuilder,
+                                                    Recursive: true))
+                    {
+                        return httpResponseBuilder.AsImmutable;
+                    }
+
+                    #endregion
+
+                    #region Check parameters
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out     httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
 
 
+                    var withMetadata              = request.QueryString.GetBoolean("withMetadata", false);
 
+                    var includeFilter             = request.QueryString.CreateStringFilter<AuthenticationToken>("match", (authenticationToken, include) => authenticationToken.ToString().Contains(include));
+
+                    var allAuthStartResults       = roamingNetwork.CachedAuthStartResults.
+                                                        ToArray();
+
+                    var totalCount                = allAuthStartResults.ULongLength();
+
+                    var filteredAuthStartResults  = allAuthStartResults.
+                                                        Where            (authStartResultKeyValuePair => includeFilter(authStartResultKeyValuePair.Key)).
+                                                        OrderByDescending(authStartResultKeyValuePair => authStartResultKeyValuePair.Value.CachedResultEndOfLifeTime).
+                                                        Skip             (request.QueryString.GetUInt64("skip")).
+                                                        Take             (request.QueryString.GetUInt32("take")).
+                                                        Select           (authStartResultKeyValuePair => {
+                                                                            var authStartResultInfo = authStartResultKeyValuePair.Value.ToJSON(Embedded: true);
+                                                                            authStartResultInfo.Add("authenticationToken", authStartResultKeyValuePair.Key.ToString());
+                                                                            return authStartResultInfo;
+                                                                        }).
+                                                        ToArray          ();
+
+                    var filteredCount             = filteredAuthStartResults.ULongLength();
+
+                    var jsonResults               = new JArray(filteredAuthStartResults);
+
+
+                    return new HTTPResponse.Builder(request) {
+                                HTTPStatusCode                = HTTPStatusCode.OK,
+                                Server                        = HTTPServiceName,
+                                Date                          = Timestamp.Now,
+                                AccessControlAllowOrigin      = "*",
+                                AccessControlAllowMethods     = [ "GET", "COUNT", "CLEAR" ],
+                                AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
+                                ContentType                   = HTTPContentType.Application.JSON_UTF8,
+                                Content                       = withMetadata
+                                                                    ? JSONObject.Create(
+                                                                        new JProperty("totalCount",        totalCount),
+                                                                        new JProperty("filteredCount",     filteredCount),
+                                                                        new JProperty("authStartResults",  jsonResults)
+                                                                    ).ToUTF8Bytes()
+                                                                    : jsonResults.ToUTF8Bytes(),
+                                X_ExpectedTotalNumberOfItems  = filteredCount,
+                                Connection                    = ConnectionType.KeepAlive,
+                                Vary                          = "Accept"
+                            };
+
+                });
+
+            #endregion
+
+            #region COUNT  ~/RNs/{RoamingNetworkId}/AuthStartCache
+
+            // -------------------------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:3004/RNs/Test/AuthStartCache
+            // -------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.COUNT,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/AuthStartCache",
+                HTTPContentType.Text.PLAIN,
+                HTTPDelegate:  async request => {
+
+                    #region Get HTTP user and its organizations
+
+                    // Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    if (!HTTPBaseAPI.TryGetHTTPUser(request,
+                                                    out var httpUser,
+                                                    out var httpOrganizations,
+                                                    out var httpResponseBuilder,
+                                                    Recursive: true))
+                    {
+                        return httpResponseBuilder.AsImmutable;
+                    }
+
+                    #endregion
+
+                    #region Check parameters
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out     httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+
+                    return new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.OK,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "GET", "COUNT", "CLEAR" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                ContentType                = HTTPContentType.Text.PLAIN,
+                                Content                    = roamingNetwork.CachedAuthStartResults.Count().ToString().ToUTF8Bytes()
+                            };
+
+                });
+
+            #endregion
+
+            #region CLEAR  ~/RNs/{RoamingNetworkId}/AuthStartCache
+
+            // -------------------------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:3004/RNs/Test/AuthStartCache
+            // -------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.CLEAR,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/AuthStartCache",
+                HTTPDelegate: async request => {
+
+                    #region Get HTTP user and its organizations
+
+                    // Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    if (!HTTPBaseAPI.TryGetHTTPUser(request,
+                                                    out var httpUser,
+                                                    out var httpOrganizations,
+                                                    out var httpResponseBuilder,
+                                                    Recursive: true))
+                    {
+                        return httpResponseBuilder.AsImmutable;
+                    }
+
+                    #endregion
+
+                    #region Check parameters
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out     httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+
+                    await roamingNetwork.ClearAuthStartResultCache();
+
+
+                    return new HTTPResponse.Builder(request) {
+                               HTTPStatusCode             = HTTPStatusCode.OK,
+                               Server                     = HTTPServiceName,
+                               Date                       = Timestamp.Now,
+                               AccessControlAllowOrigin   = "*",
+                               AccessControlAllowMethods  = [ "GET", "COUNT", "CLEAR" ],
+                               AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                           };
+
+                });
+
+            #endregion
+
+            #endregion
+
+            #region ~/RNs/{RoamingNetworkId}/AuthStopCache
+
+            //ToDo: OPTIONS
+
+            #region GET    ~/RNs/{RoamingNetworkId}/AuthStopCache
+
+            // ------------------------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:3004/RNs/Test/AuthStopCache
+            // ------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.GET,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/AuthStopCache",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPDelegate: async request => {
+
+                    #region Get HTTP user and its organizations
+
+                    // Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    if (!HTTPBaseAPI.TryGetHTTPUser(request,
+                                                    out var httpUser,
+                                                    out var httpOrganizations,
+                                                    out var httpResponseBuilder,
+                                                    Recursive: true))
+                    {
+                        return httpResponseBuilder.AsImmutable;
+                    }
+
+                    #endregion
+
+                    #region Check parameters
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out     httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+
+                    var withMetadata             = request.QueryString.GetBoolean("withMetadata", false);
+
+                    var includeFilter            = request.QueryString.CreateStringFilter<AuthenticationToken>("match", (authenticationToken, include) => authenticationToken.ToString().Contains(include));
+
+                    var allAuthStopResults       = roamingNetwork.CachedAuthStopResults.
+                                                       ToArray();
+
+                    var totalCount               = allAuthStopResults.ULongLength();
+
+                    var filteredAuthStopResults  = allAuthStopResults.
+                                                        Where            (authStopResultKeyValuePair => includeFilter(authStopResultKeyValuePair.Key)).
+                                                        OrderByDescending(authStopResultKeyValuePair => authStopResultKeyValuePair.Value.CachedResultEndOfLifeTime).
+                                                        Skip             (request.QueryString.GetUInt64("skip")).
+                                                        Take             (request.QueryString.GetUInt32("take")).
+                                                        Select           (authStopResultKeyValuePair => {
+                                                                             var authStopResultInfo = authStopResultKeyValuePair.Value.ToJSON(Embedded: true);
+                                                                             authStopResultInfo.Add("authenticationToken", authStopResultKeyValuePair.Key.ToString());
+                                                                             return authStopResultInfo;
+                                                                         }).
+                                                        ToArray          ();
+
+                    var filteredCount            = filteredAuthStopResults.ULongLength();
+
+                    var jsonResults              = new JArray(filteredAuthStopResults);
+
+
+                    return new HTTPResponse.Builder(request) {
+                                HTTPStatusCode                = HTTPStatusCode.OK,
+                                Server                        = HTTPServiceName,
+                                Date                          = Timestamp.Now,
+                                AccessControlAllowOrigin      = "*",
+                                AccessControlAllowMethods     = [ "GET", "COUNT", "CLEAR" ],
+                                AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
+                                ContentType                   = HTTPContentType.Application.JSON_UTF8,
+                                Content                       = withMetadata
+                                                                    ? JSONObject.Create(
+                                                                        new JProperty("totalCount",        totalCount),
+                                                                        new JProperty("filteredCount",     filteredCount),
+                                                                        new JProperty("authStopResults",  jsonResults)
+                                                                    ).ToUTF8Bytes()
+                                                                    : jsonResults.ToUTF8Bytes(),
+                                X_ExpectedTotalNumberOfItems  = filteredCount,
+                                Connection                    = ConnectionType.KeepAlive,
+                                Vary                          = "Accept"
+                            };
+
+                });
+
+            #endregion
+
+            #region COUNT  ~/RNs/{RoamingNetworkId}/AuthStopCache
+
+            // -------------------------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:3004/RNs/Test/AuthStopCache
+            // -------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.COUNT,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/AuthStopCache",
+                HTTPContentType.Text.PLAIN,
+                HTTPDelegate:  async request => {
+
+                    #region Get HTTP user and its organizations
+
+                    // Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    if (!HTTPBaseAPI.TryGetHTTPUser(request,
+                                                    out var httpUser,
+                                                    out var httpOrganizations,
+                                                    out var httpResponseBuilder,
+                                                    Recursive: true))
+                    {
+                        return httpResponseBuilder.AsImmutable;
+                    }
+
+                    #endregion
+
+                    #region Check parameters
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out     httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+
+                    return new HTTPResponse.Builder(request) {
+                                HTTPStatusCode             = HTTPStatusCode.OK,
+                                Server                     = HTTPServiceName,
+                                Date                       = Timestamp.Now,
+                                AccessControlAllowOrigin   = "*",
+                                AccessControlAllowMethods  = [ "GET", "COUNT", "CLEAR" ],
+                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                ContentType                = HTTPContentType.Text.PLAIN,
+                                Content                    = roamingNetwork.CachedAuthStopResults.Count().ToString().ToUTF8Bytes()
+                            };
+
+                });
+
+            #endregion
+
+            #region CLEAR  ~/RNs/{RoamingNetworkId}/AuthStopCache
+
+            // -------------------------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:3004/RNs/Test/AuthStopCache
+            // -------------------------------------------------------------------------------------
+            HTTPBaseAPI.AddHandler(
+
+                HTTPMethod.CLEAR,
+                URLPathPrefix + "/RNs/{RoamingNetworkId}/AuthStopCache",
+                HTTPDelegate: async request => {
+
+                    #region Get HTTP user and its organizations
+
+                    // Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    if (!HTTPBaseAPI.TryGetHTTPUser(request,
+                                                    out var httpUser,
+                                                    out var httpOrganizations,
+                                                    out var httpResponseBuilder,
+                                                    Recursive: true))
+                    {
+                        return httpResponseBuilder.AsImmutable;
+                    }
+
+                    #endregion
+
+                    #region Check parameters
+
+                    if (!request.TryParseRoamingNetwork(this,
+                                                        out var roamingNetwork,
+                                                        out     httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+
+                    await roamingNetwork.ClearAuthStopResultCache();
+
+
+                    return new HTTPResponse.Builder(request) {
+                               HTTPStatusCode             = HTTPStatusCode.OK,
+                               Server                     = HTTPServiceName,
+                               Date                       = Timestamp.Now,
+                               AccessControlAllowOrigin   = "*",
+                               AccessControlAllowMethods  = [ "GET", "COUNT", "CLEAR" ],
+                               AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                           };
+
+                });
+
+            #endregion
+
+            #endregion
 
 
             #region GET      ~/support

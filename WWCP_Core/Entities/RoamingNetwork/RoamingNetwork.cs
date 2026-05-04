@@ -7560,7 +7560,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region AuthorizeStart (           LocalAuthentication, ChargingLocation = null, ChargingProduct = null, SessionId = null, OperatorId = null, ...)
+        #region AuthorizeStart (           LocalAuthentication, ChargingLocation = null, ChargingProduct = null, SessionId = null, ...)
 
         /// <summary>
         /// Create an authorize start request at the given EVSE.
@@ -7570,7 +7570,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="CPOPartnerSessionId">An optional session identification of the CPO.</param>
-        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// <param name="EMobilityProviderId">An optional E-Mobility service provider identification.</param>
         /// 
         /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -7646,9 +7646,9 @@ namespace cloud.charging.open.protocols.WWCP
                     result = AuthStartResult.InvalidToken(
                                  Id,
                                  this,
-                                 TimeSpan.Zero,
+                                 Timestamp.Now,
+                                 stopwatch.Elapsed,
                                  Timestamp.Now + AuthenticationCacheTimeout,
-                                 null,
                                  SessionId,
                                  I18NString.Create($"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!")
                              );
@@ -7674,6 +7674,7 @@ namespace cloud.charging.open.protocols.WWCP
                                      ? new AuthStartResult(
                                            cachedAuthStartResult.AuthorizatorId,
                                            cachedAuthStartResult.ISendAuthorizeStartStop,
+                                           cachedAuthStartResult.ResponseTimestamp,
                                            AuthStartResultTypes.Authorized,
                                            CachedResultEndOfLifeTime:  cachedAuthStartResult.CachedResultEndOfLifeTime,
                                            SessionId:                  SessionId,
@@ -7725,8 +7726,8 @@ namespace cloud.charging.open.protocols.WWCP
                                 result = AuthStartResult.RateLimitReached(
                                              Id,
                                              this,
-                                             TimeSpan.Zero,
-                                             null,
+                                             Timestamp.Now,
+                                             stopwatch.Elapsed,
                                              SessionId,
                                              I18NString.Create($"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!")
                                          );
@@ -7776,9 +7777,10 @@ namespace cloud.charging.open.protocols.WWCP
                                       DefaultResult:          runtime  => AuthStartResult.NotAuthorized(
                                                                               Id,
                                                                               this,
+                                                                              Timestamp.Now,
+                                                                              runtime,
                                                                               SessionId:    SessionId,
-                                                                              Description:  I18NString.Create("No authorization service returned a positiv result!"),
-                                                                              Runtime:      runtime
+                                                                              Description:  I18NString.Create("No authorization service returned a positiv result!")
                                                                           ),
 
                                       ExternalCancellation:   CancellationToken
@@ -7801,12 +7803,13 @@ namespace cloud.charging.open.protocols.WWCP
                     authStartResultCache.TryAdd(
                         LocalAuthentication.AuthToken.Value,
                         new AuthStartResult(
-                            AuthorizatorId:             result.AuthorizatorId,
-                            ISendAuthorizeStartStop:    result.ISendAuthorizeStartStop,
-                            Result:                     result.Result,
+                            result.AuthorizatorId,
+                            result.ISendAuthorizeStartStop,
+                            result.ResponseTimestamp,
+                            result.Result,
+                            result.Runtime,
                             CachedResultEndOfLifeTime:  Timestamp.Now + AuthenticationCacheTimeout,
-                            ProviderId:                 result.ProviderId,
-                            Runtime:                    TimeSpan.Zero
+                            ProviderId:                 result.ProviderId
                         )
                     );
 
@@ -7835,9 +7838,10 @@ namespace cloud.charging.open.protocols.WWCP
                 result = AuthStartResult.Error(
                              Id,
                              this,
+                             Timestamp.Now,
+                             stopwatch.Elapsed,
                              SessionId:    SessionId,
-                             Description:  I18NString.Create(e.Message),
-                             Runtime:      Timestamp.Now - startTime
+                             Description:  I18NString.Create(e.Message)
                          );
 
             }
@@ -7852,8 +7856,9 @@ namespace cloud.charging.open.protocols.WWCP
                     result  = AuthStartResult.Authorized(
                                   result.AuthorizatorId,
                                   result.ISendAuthorizeStartStop,
-                                  result.Runtime,
                                   result.ResponseTimestamp,
+                                  result.Runtime,
+
                                   null,
                                   result.ProviderId.HasValue
                                       ? ChargingSession_Id.NewRandom(result.ProviderId.Value)
@@ -7882,34 +7887,43 @@ namespace cloud.charging.open.protocols.WWCP
                 // Store the upstream session id in order to contact the right authenticator at later requests!
                 // Will be deleted when the charge detail record was sent!
 
-                var evse             = ChargingLocation?.EVSEId.           HasValue == true ? GetEVSEById           (ChargingLocation.EVSEId.           Value) : null;
-                var chargingStation  = ChargingLocation?.ChargingStationId.HasValue == true ? GetChargingStationById(ChargingLocation.ChargingStationId.Value) : evse?.           ChargingStation;
-                var chargingPool     = ChargingLocation?.ChargingPoolId.   HasValue == true ? GetChargingPoolById   (ChargingLocation.ChargingPoolId.   Value) : chargingStation?.ChargingPool;
-
-                await SessionsStore.AuthStart(
-                          new ChargingSession(
-                              result.SessionId!.Value,
-                              eventTrackingId,
-                              CustomData: result.AdditionalContext
-                          ) {
-                              RoamingNetwork             = this,
-                              CSORoamingProviderStart    = result.ISendAuthorizeStartStop as ICSORoamingProvider,
-                              AuthorizatorIdStart        = result.AuthorizatorId,
-                              ProviderIdStart            = result.ProviderId,
-                              ChargingStationOperatorId  = ChargingLocation?.ChargingStationOperatorId,
-                              EVSEId                     = ChargingLocation?.EVSEId,
-                              ChargingStationId          = ChargingLocation?.ChargingStationId,
-                              ChargingPoolId             = ChargingLocation?.ChargingPoolId,
-                              EVSE                       = evse,
-                              ChargingStation            = chargingStation,
-                              ChargingPool               = chargingPool,
-                              ChargingStationOperator    = ChargingLocation?.ChargingStationOperatorId.HasValue == true
-                                                               ? GetChargingStationOperatorById(ChargingLocation.ChargingStationOperatorId.Value)
-                                                               : null,
-                              AuthenticationStart        = LocalAuthentication,
-                              ChargingProduct            = ChargingProduct
-                          }
+                await SessionsStore.AuthStartResult(
+                          LocalAuthentication,
+                          result,
+                          eventTrackingId,
+                          this,
+                          ChargingLocation,
+                          ChargingProduct
                       );
+
+                //var evse             = ChargingLocation?.EVSEId.           HasValue == true ? GetEVSEById           (ChargingLocation.EVSEId.           Value) : null;
+                //var chargingStation  = ChargingLocation?.ChargingStationId.HasValue == true ? GetChargingStationById(ChargingLocation.ChargingStationId.Value) : evse?.           ChargingStation;
+                //var chargingPool     = ChargingLocation?.ChargingPoolId.   HasValue == true ? GetChargingPoolById   (ChargingLocation.ChargingPoolId.   Value) : chargingStation?.ChargingPool;
+
+                //await SessionsStore.AuthStart(
+                //          new ChargingSession(
+                //              result.SessionId!.Value,
+                //              eventTrackingId,
+                //              CustomData: result.AdditionalContext
+                //          ) {
+                //              RoamingNetwork             = this,
+                //              CSORoamingProviderStart    = result.ISendAuthorizeStartStop as ICSORoamingProvider,
+                //              AuthorizatorIdStart        = result.AuthorizatorId,
+                //              ProviderIdStart            = result.ProviderId,
+                //              ChargingStationOperatorId  = ChargingLocation?.ChargingStationOperatorId,
+                //              EVSEId                     = ChargingLocation?.EVSEId,
+                //              ChargingStationId          = ChargingLocation?.ChargingStationId,
+                //              ChargingPoolId             = ChargingLocation?.ChargingPoolId,
+                //              EVSE                       = evse,
+                //              ChargingStation            = chargingStation,
+                //              ChargingPool               = chargingPool,
+                //              ChargingStationOperator    = ChargingLocation?.ChargingStationOperatorId.HasValue == true
+                //                                               ? GetChargingStationOperatorById(ChargingLocation.ChargingStationOperatorId.Value)
+                //                                               : null,
+                //              AuthenticationStart        = LocalAuthentication,
+                //              ChargingProduct            = ChargingProduct
+                //          }
+                //      );
 
             }
 
@@ -7955,7 +7969,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AuthorizeStop  (SessionId, LocalAuthentication, ChargingLocation = null,                                           OperatorId = null, ...)
+        #region AuthorizeStop  (SessionId, LocalAuthentication, ChargingLocation = null, ...)
 
         /// <summary>
         /// Create an authorize stop request at the given location.
@@ -7964,7 +7978,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="LocalAuthentication">An user identification.</param>
         /// <param name="ChargingLocation">The charging location.</param>
         /// <param name="CPOPartnerSessionId">An optional session identification of the CPO.</param>
-        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// <param name="EMobilityProviderId">An optional E-Mobility service provider identification.</param>
         /// 
         /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -8038,8 +8052,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                     result = AuthStopResult.InvalidToken(
                                  Id,
-                                 TimeSpan.Zero,
                                  this,
+                                 Timestamp.Now,
+                                 stopwatch.Elapsed,
                                  SessionId:    SessionId,
                                  Description:  I18NString.Create($"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!")
                              );
@@ -8078,8 +8093,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                                 result = AuthStopResult.RateLimitReached(
                                              Id,
-                                             TimeSpan.Zero,
                                              this,
+                                             Timestamp.Now,
+                                             stopwatch.Elapsed,
                                              SessionId,
                                              I18NString.Create($"Rate limit of {AuthenticationRateLimitPerChargingLocation} request per charging location per {AuthenticationRateLimitTimeSpan.TotalMinutes} minutes reached!")
                                          );
@@ -8109,8 +8125,9 @@ namespace cloud.charging.open.protocols.WWCP
                     if (chargingSession.SessionTime.EndTime.HasValue)
                         result = AuthStopResult.AlreadyStopped(
                                      SessionId,
-                                     Timestamp.Now - startTime,
                                      this,
+                                     Timestamp.Now,
+                                     stopwatch.Elapsed,
                                      SessionId:  SessionId
                                  );
 
@@ -8221,8 +8238,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                                      DefaultResult:          runtime => AuthStopResult.NotAuthorized(
                                                                             Id,
-                                                                            runtime,
                                                                             this,
+                                                                            Timestamp.Now,
+                                                                            runtime,
                                                                             SessionId:    SessionId,
                                                                             Description:  I18NString.Create("No authorization service returned a positiv result!")
                                                                         ),
@@ -8239,8 +8257,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                 result = AuthStopResult.Error(
                              SessionId,
-                             Timestamp.Now - startTime,
                              this,
+                             Timestamp.Now,
+                             stopwatch.Elapsed,
                              SessionId,
                              I18NString.Create(e.Message)
                          );
@@ -8287,6 +8306,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         #region ClearAuthStartResultCache()
+
         public async Task ClearAuthStartResultCache()
         {
             authStartResultCache.Clear();
@@ -8295,6 +8315,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #region ClearAuthStopResultCache()
+
         public async Task ClearAuthStopResultCache()
         {
             authStopResultCache.Clear();

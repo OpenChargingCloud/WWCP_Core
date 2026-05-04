@@ -2167,8 +2167,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                              : AuthStartResult.OutOfService(
                                    Id,
                                    this,
-                                   SessionId:  SessionId,
-                                   Runtime:    Timestamp.Now - startTime
+                                   Timestamp.Now,
+                                   Timestamp.Now - startTime,
+                                   SessionId:  SessionId
                                );
 
             }
@@ -2178,9 +2179,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 result = AuthStartResult.Error(
                              Id,
                              this,
+                             Timestamp.Now,
+                             Timestamp.Now - startTime,
                              SessionId:    SessionId,
-                             Description:  I18NString.Create(e.Message),
-                             Runtime:      Timestamp.Now - startTime
+                             Description:  I18NString.Create(e.Message)
                          );
 
             }
@@ -2315,8 +2317,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                              : AuthStopResult.OutOfService(
                                    Id,
-                                   Timestamp.Now - startTime,
                                    this,
+                                   Timestamp.Now,
+                                   Timestamp.Now - startTime,
                                    SessionId:  SessionId
                                );
 
@@ -2326,8 +2329,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                 result = AuthStopResult.Error(
                              SessionId,
-                             Timestamp.Now - startTime,
                              this,
+                             Timestamp.Now,
+                             Timestamp.Now - startTime,
                              SessionId,
                              I18NString.Create(e.Message)
                          );

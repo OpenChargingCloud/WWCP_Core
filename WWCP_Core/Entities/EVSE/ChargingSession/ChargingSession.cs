@@ -720,6 +720,11 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+
+        public AuthStartResult?  AuthStartResult    { get; set; }
+        public AuthStopResult?   AuthStopResult     { get; set; }
+
+
         #region ProviderStart
 
         private EMobilityProvider_Id? providerIdStart;
@@ -1307,10 +1312,13 @@ namespace cloud.charging.open.protocols.WWCP
                         ChargingSession.SessionTime                = new StartEndDateTime(startTime.Value);
 
                         ChargingSession.SystemIdStart              = sessionStartJSON["systemId"]?.            Value<String>() is String  systemId             ? System_Id.            Parse(systemId)             : null;
-                        ChargingSession.EMPRoamingProviderIdStart  = sessionStartJSON["EMPRoamingProviderId"]?.Value<String>() is String  empRoamingProviderId ? EMPRoamingProvider_Id.Parse(empRoamingProviderId) : null;
-                        ChargingSession.CSORoamingProviderIdStart  = sessionStartJSON["CSORoamingProviderId"]?.Value<String>() is String  csoRoamingProviderId ? CSORoamingProvider_Id.Parse(csoRoamingProviderId) : null;
-                        ChargingSession.ProviderIdStart            = sessionStartJSON["providerId"]?.          Value<String>() is String  providerId           ? EMobilityProvider_Id. Parse(providerId)           : null;
                         ChargingSession.AuthenticationStart        = sessionStartJSON["authentication"]                        is JObject authenticationStart  ? AAuthentication.      Parse(authenticationStart)  : null;
+                        ChargingSession.CSORoamingProviderIdStart  = sessionStartJSON["CSORoamingProviderId"]?.Value<String>() is String  csoRoamingProviderId ? CSORoamingProvider_Id.Parse(csoRoamingProviderId) : null;
+                        ChargingSession.EMPRoamingProviderIdStart  = sessionStartJSON["EMPRoamingProviderId"]?.Value<String>() is String  empRoamingProviderId ? EMPRoamingProvider_Id.Parse(empRoamingProviderId) : null;
+                        ChargingSession.AuthorizatorIdStart        = sessionStartJSON["authorizatorId"]?.      Value<String>() is String  authorizatorId       ? Authorizator_Id.      Parse(authorizatorId)       : null;
+                        ChargingSession.AuthenticationStartPath    = sessionStartJSON["authenticationPath"]?.  Value<String>() is String  authenticationPath   ? Auth_Path.            Parse(authenticationPath)   : null;
+                        ChargingSession.ProviderIdStart            = sessionStartJSON["providerId"]?.          Value<String>() is String  providerId           ? EMobilityProvider_Id. Parse(providerId)           : null;
+                        ChargingSession.AuthStartResult            = sessionStartJSON["authStartResult"]                       is JObject authStartResult      ? AuthStartResult.      Parse(authStartResult)      : null;
 
                     }
 
@@ -1325,10 +1333,13 @@ namespace cloud.charging.open.protocols.WWCP
                             ChargingSession.SessionTime                = new StartEndDateTime(startTime.Value, stopTime);
 
                             ChargingSession.SystemIdStop               = sessionStopJSON["systemId"]?.            Value<String>() is String  systemId             ? System_Id.            Parse(systemId)             : null;
-                            ChargingSession.EMPRoamingProviderIdStop   = sessionStopJSON["EMPRoamingProviderId"]?.Value<String>() is String  EMPRoamingProviderId ? EMPRoamingProvider_Id.Parse(EMPRoamingProviderId) : null;
-                            ChargingSession.CSORoamingProviderIdStop   = sessionStopJSON["CSORoamingProviderId"]?.Value<String>() is String  CSORoamingProviderId ? CSORoamingProvider_Id.Parse(CSORoamingProviderId) : null;
-                            ChargingSession.ProviderIdStop             = sessionStopJSON["providerId"]?.          Value<String>() is String  providerId           ? EMobilityProvider_Id. Parse(providerId)           : null;
                             ChargingSession.AuthenticationStop         = sessionStopJSON["authentication"]                        is JObject authenticationStop   ? LocalAuthentication.  Parse(authenticationStop)   : null;
+                            ChargingSession.CSORoamingProviderIdStop   = sessionStopJSON["CSORoamingProviderId"]?.Value<String>() is String  CSORoamingProviderId ? CSORoamingProvider_Id.Parse(CSORoamingProviderId) : null;
+                            ChargingSession.EMPRoamingProviderIdStop   = sessionStopJSON["EMPRoamingProviderId"]?.Value<String>() is String  EMPRoamingProviderId ? EMPRoamingProvider_Id.Parse(EMPRoamingProviderId) : null;
+                            ChargingSession.AuthorizatorIdStop         = sessionStopJSON["authorizatorId"]?.      Value<String>() is String  authorizatorId       ? Authorizator_Id.      Parse(authorizatorId)       : null;
+                            ChargingSession.AuthenticationStopPath     = sessionStopJSON["authenticationPath"]?.  Value<String>() is String  authenticationPath   ? Auth_Path.            Parse(authenticationPath)   : null;
+                            ChargingSession.ProviderIdStop             = sessionStopJSON["providerId"]?.          Value<String>() is String  providerId           ? EMobilityProvider_Id. Parse(providerId)           : null;
+                            ChargingSession.AuthStopResult             = sessionStopJSON["authStopResult"]                        is JObject authStopResult       ? AuthStopResult.       Parse(authStopResult)      : null;
 
                         }
 
@@ -1458,6 +1469,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                                      AuthenticationStartPath.HasValue
                                          ? new JProperty("authenticationPath",    AuthenticationStartPath.Value.ToString())
+                                         : null,
+
+                                     AuthStartResult     is not null
+                                         ? new JProperty("authStartResult",       AuthStartResult.              ToJSON())
                                          : null
 
                                  ))
@@ -1502,6 +1517,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                                      AuthenticationStopPath.HasValue
                                          ? new JProperty("authenticationPath",    AuthenticationStopPath.Value.ToString())
+                                         : null,
+
+                                     AuthStopResult      is not null
+                                         ? new JProperty("authStopResult",        AuthStopResult.              ToJSON())
                                          : null
 
                                  ))
