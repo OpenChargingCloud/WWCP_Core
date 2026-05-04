@@ -307,7 +307,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Parse   (JSON, CustomAuthStopResultParser = null)
+        #region (static) Parse    (JSON, CustomAuthStopResultParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an AuthStopResult.
@@ -337,7 +337,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParse(JSON, out AuthStopResult, out ErrorResponse, CustomAuthStopResultParser = null)
+        #region (static) TryParse (JSON, out AuthStopResult, out ErrorResponse, CustomAuthStopResultParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -465,115 +465,6 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                #region Parse EMPPartnerSessionId          [optional]
-
-                if (!JSON.ParseOptional("empPartnerSessionId",
-                                        "EMP partner session identification",
-                                        ChargingSession_Id.TryParse,
-                                        out ChargingSession_Id? empPartnerSessionId,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region Parse AuthorizationReference       [optional]
-
-                if (!JSON.ParseOptional("authorizationReference",
-                                        "authorization reference",
-                                        WWCP.AuthorizationReference.TryParse,
-                                        out AuthorizationReference? authorizationReference,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region Parse ContractId                   [optional]
-
-                var contractId = JSON.GetString("contractId");
-
-                #endregion
-
-                #region Parse PrintedNumber                [optional]
-
-                var printedNumber = JSON.GetString("printedNumber");
-
-                #endregion
-
-                #region Parse UILanguage                   [optional]
-
-                if (!JSON.ParseOptionalEnum("uiLanguage",
-                                            "UI language",
-                                            out Languages? uiLanguage,
-                                            out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region Parse ExpiryDate                   [optional]
-
-                if (!JSON.ParseOptional("expiryDate",
-                                        "expiry date",
-                                        out DateTimeOffset? expiryDate,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region Parse MaxPower                     [optional]
-
-                if (!JSON.ParseOptional("maxPower",
-                                        "max power",
-                                        Watt.TryParse,
-                                        out Watt? maxPower,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region Parse MaxEnergy                    [optional]
-
-                if (!JSON.ParseOptional("maxEnergy",
-                                        "max energy",
-                                        WattHour.TryParse,
-                                        out WattHour? maxEnergy,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region Parse MaxDuration                  [optional]
-
-                if (!JSON.ParseOptional("maxDuration",
-                                        "max duration",
-                                        TimeSpanExtensions.TryParseMinutes,
-                                        out TimeSpan? maxDuration,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-
 
                 #region Parse ProviderId                   [optional]
 
@@ -648,20 +539,6 @@ namespace cloud.charging.open.protocols.WWCP
 
                                      cachedResultEndOfLifeTime,
                                      sessionId,
-                                     //empPartnerSessionId,
-                                     //authorizationReference,
-                                     //contractId,
-                                     //printedNumber,
-                                     //uiLanguage,
-                                     //expiryDate,
-
-                                     //maxPower,
-                                     //maxEnergy,
-                                     //maxDuration,
-                                     //null, //chargingTariffs,
-                                     //null, //listOfAuthStopTokens,
-                                     //null, //listOfAuthStopPINs,
-
                                      providerId,
                                      providerName,
                                      description,
@@ -682,7 +559,7 @@ namespace cloud.charging.open.protocols.WWCP
             catch (Exception e)
             {
                 AuthStopResult  = default;
-                ErrorResponse    = "The given JSON representation of an AuthStopResult is invalid: " + e.Message;
+                ErrorResponse   = "The given JSON representation of an AuthStopResult is invalid: " + e.Message;
                 return false;
             }
 
@@ -707,36 +584,139 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("@context",                    JSONLDContext)
                                : null,
 
-                                 new JProperty("result",                      Result.        ToString()),
-                                 new JProperty("runtime",                     Runtime.       TotalMilliseconds),
+                                 new JProperty("authorizatorId",              AuthorizatorId.                 ToString()),
+                                 new JProperty("responseTimestamp",           ResponseTimestamp.              ToISO8601()),
+                                 new JProperty("result",                      Result.                         ToString()),
+                                 new JProperty("runtime",                     Runtime.TotalMilliseconds),
+
 
                            CachedResultEndOfLifeTime.HasValue
                                ? new JProperty("cachedResultEndOfLifeTime",   CachedResultEndOfLifeTime.Value.ToISO8601())
                                : null,
 
-                           SessionId.HasValue
-                               ? new JProperty("sessionId",                   SessionId.     ToString())
+                           SessionId.                HasValue
+                               ? new JProperty("sessionId",                   SessionId.                Value.ToString())
                                : null,
+
+                           //EMPPartnerSessionId.      HasValue
+                           //    ? new JProperty("empPartnerSessionId",         EMPPartnerSessionId.      Value.ToString())
+                           //    : null,
+
+                           //AuthorizationReference.   HasValue
+                           //    ? new JProperty("authorizationReference",      AuthorizationReference.   Value.ToString())
+                           //    : null,
+
+                           //ContractId.    IsNotNullOrEmpty()
+                           //    ? new JProperty("contractId",                  ContractId.                     ToString())
+                           //    : null,
+
+                           //PrintedNumber. IsNotNullOrEmpty()
+                           //    ? new JProperty("printedNumber",               PrintedNumber.                  ToString())
+                           //    : null,
+
+                           //UILanguage.               HasValue
+                           //    ? new JProperty("uiLanguage",                  UILanguage.               Value.ToString())
+                           //    : null,
+
+                           //ExpiryDate.               HasValue
+                           //    ? new JProperty("expiryDate",                  ExpiryDate.               Value.ToString())
+                           //    : null,
+
+                           //MaxPower.                 HasValue
+                           //    ? new JProperty("maxPower",                    MaxPower.                 Value.Value)
+                           //    : null,
+
+                           //MaxEnergy.                HasValue
+                           //    ? new JProperty("maxEnergy",                   MaxEnergy.                Value.Value)
+                           //    : null,
+
+                           //MaxDuration.              HasValue
+                           //    ? new JProperty("maxDuration",                 MaxDuration.              Value.TotalMinutes)
+                           //    : null,
+
+
+                           //ChargingTariffs.     Any()
+                           //    ? new JProperty("chargingTariffs",             new JArray(ChargingTariffs.     Select(chargingTariff      => chargingTariff.ToJSON(
+                           //                                                                                                                     true,
+                           //                                                                                                                     ExpandRoamingNetworkId,
+                           //                                                                                                                     ExpandChargingStationOperatorId,
+                           //                                                                                                                     ExpandChargingPoolId,
+                           //                                                                                                                     ExpandEVSEIds,
+                           //                                                                                                                     ExpandBrandIds,
+                           //                                                                                                                     ExpandDataLicenses
+                           //                                                                                                                 ))))
+                           //    : null,
+
+                           //ListOfAuthStopTokens.Any()
+                           //    ? new JProperty("listOfAuthStopTokens",        new JArray(ListOfAuthStopTokens.Select(authenticationToken => authenticationToken.ToString())))
+                           //    : null,
+
+                           //ListOfAuthStopPINs.Any()
+                           //    ? new JProperty("listOfAuthStopPINs",          new JArray(ListOfAuthStopPINs.  Select(pin                 => pin)))
+                           //    : null,
+
 
                            ProviderId.HasValue
-                               ? new JProperty("providerId",                  ProviderId.    ToString())
+                               ? new JProperty("providerId",                  ProviderId.                     ToString())
                                : null,
 
-                                 new JProperty("authorizatorId",              AuthorizatorId.ToString()),
-
-                           Description.IsNotNullOrEmpty()
-                               ? new JProperty("description",                 Description.   ToJSON())
+                           ProviderName.  IsNotNullOrEmpty()
+                               ? new JProperty("providerName",                ProviderName)
                                : null,
 
-                           AdditionalInfo is not null && AdditionalInfo.IsNotNullOrEmpty()
-                               ? new JProperty("additionalInfo",              AdditionalInfo.ToJSON())
+                           Description.   IsNotNullOrEmpty()
+                               ? new JProperty("description",                 Description.                    ToJSON())
+                               : null,
+
+                           AdditionalInfo.IsNotNullOrEmpty()
+                               ? new JProperty("additionalInfo",              AdditionalInfo.                 ToJSON())
                                : null,
 
                            AdditionalContext is not null
                                ? new JProperty("additionalContext",           AdditionalContext)
-                               : null
+                               : null,
+
+
+                                 new JProperty("numberOfRetries",             NumberOfRetries)
 
                        );
+
+            //var json = JSONObject.Create(
+
+            //               !Embedded
+            //                   ? new JProperty("@context",                    JSONLDContext)
+            //                   : null,
+
+            //                     new JProperty("result",                      Result.        ToString()),
+            //                     new JProperty("runtime",                     Runtime.       TotalMilliseconds),
+
+            //               CachedResultEndOfLifeTime.HasValue
+            //                   ? new JProperty("cachedResultEndOfLifeTime",   CachedResultEndOfLifeTime.Value.ToISO8601())
+            //                   : null,
+
+            //               SessionId.HasValue
+            //                   ? new JProperty("sessionId",                   SessionId.     ToString())
+            //                   : null,
+
+            //               ProviderId.HasValue
+            //                   ? new JProperty("providerId",                  ProviderId.    ToString())
+            //                   : null,
+
+            //                     new JProperty("authorizatorId",              AuthorizatorId.ToString()),
+
+            //               Description.IsNotNullOrEmpty()
+            //                   ? new JProperty("description",                 Description.   ToJSON())
+            //                   : null,
+
+            //               AdditionalInfo is not null && AdditionalInfo.IsNotNullOrEmpty()
+            //                   ? new JProperty("additionalInfo",              AdditionalInfo.ToJSON())
+            //                   : null,
+
+            //               AdditionalContext is not null
+            //                   ? new JProperty("additionalContext",           AdditionalContext)
+            //                   : null
+
+            //           );
 
             return CustomAuthStopResultSerializer is not null
                        ? CustomAuthStopResultSerializer(this, json)

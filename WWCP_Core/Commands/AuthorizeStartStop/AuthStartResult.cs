@@ -901,7 +901,7 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
                                  new JProperty("authorizatorId",              AuthorizatorId.                 ToString()),
-                                 new JProperty("timestamp",                   ResponseTimestamp.              ToISO8601()),
+                                 new JProperty("responseTimestamp",           ResponseTimestamp.              ToISO8601()),
                                  new JProperty("result",                      Result.                         ToString()),
                                  new JProperty("runtime",                     Runtime.TotalMilliseconds),
 
