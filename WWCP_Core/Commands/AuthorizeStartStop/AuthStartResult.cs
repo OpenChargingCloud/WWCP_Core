@@ -614,8 +614,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse Runtime                      [mandatory]
 
-                if (!JSON.ParseMandatory("result",
-                                         "result",
+                if (!JSON.ParseMandatory("runtime",
+                                         "runtime",
                                          TimeSpanExtensions.TryParseMilliseconds,
                                          out TimeSpan runtime,
                                          out ErrorResponse))
