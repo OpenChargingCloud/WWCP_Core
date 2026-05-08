@@ -1123,6 +1123,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                    ChargingSession   NewChargingSession)
         {
 
+            return true;
+
             var now       = Timestamp.Now;
             var systemId  = System_Id.Parse(Environment.MachineName);
 
