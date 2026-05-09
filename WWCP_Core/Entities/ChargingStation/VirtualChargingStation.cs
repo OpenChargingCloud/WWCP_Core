@@ -1559,7 +1559,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                             }
 
-                            var newReservations = results.Where (_result => _result.Result == ReservationResultType.Success).
+                            var newReservations = results.Where (_result => _result.Result == ReservationResultTypes.Success).
                                                           Select(_result => _result.Reservation).
                                                           ToArray();
 
@@ -1614,7 +1614,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 }
 
 
-                if (result.Result == ReservationResultType.Success &&
+                if (result.Result == ReservationResultTypes.Success &&
                     newReservation is not null)
                 {
 

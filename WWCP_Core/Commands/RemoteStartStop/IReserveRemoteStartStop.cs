@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<UInt32>?               PINs                   = null,
                     ICSORoamingProvider?               CSORoamingProvider     = null,
 
-                    DateTimeOffset?                    Timestamp              = null,
+                    DateTimeOffset?                    RequestTimestamp       = null,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null,
                     CancellationToken                  CancellationToken      = default);
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="RequestTimestamp">The optional timestamp of the request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="CancellationToken">A cancellation token to cancel the operation.</param>
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.WWCP
                               ChargingReservationCancellationReason  Reason,
                               ICSORoamingProvider?                   CSORoamingProvider   = null,
 
-                              DateTimeOffset?                        Timestamp            = null,
+                              DateTimeOffset?                        RequestTimestamp     = null,
                               EventTracking_Id?                      EventTrackingId      = null,
                               TimeSpan?                              RequestTimeout       = null,
                               CancellationToken                      CancellationToken    = default);

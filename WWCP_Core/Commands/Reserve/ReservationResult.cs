@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The result of a reserve operation.
         /// </summary>
-        public ReservationResultType  Result            { get; }
+        public ReservationResultTypes  Result            { get; }
 
         /// <summary>
         /// The reservation for the reserve operation.
@@ -69,8 +69,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.Reservation  = Reservation;
             this.Result       = Reservation is not null
-                                    ? ReservationResultType.Success
-                                    : ReservationResultType.Error;
+                                    ? ReservationResultTypes.Success
+                                    : ReservationResultTypes.Error;
             this.Runtime      = Runtime ?? TimeSpan.Zero;
 
         }
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Message">An optional message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The optional runtime of this request.</param>
-        private ReservationResult(ReservationResultType  Result,
+        private ReservationResult(ReservationResultTypes  Result,
                                   String?                Message          = null,
                                   Object?                AdditionalInfo   = null,
                                   TimeSpan?              Runtime          = null)
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult UnknownChargingStationOperator
 
-            => new (ReservationResultType.UnknownChargingStationOperator);
+            => new (ReservationResultTypes.UnknownChargingStationOperator);
 
         #endregion
 
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult UnknownChargingReservationId
 
-            => new (ReservationResultType.UnknownChargingReservationId);
+            => new (ReservationResultTypes.UnknownChargingReservationId);
 
         #endregion
 
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult UnknownChargingPool
 
-            => new (ReservationResultType.UnknownChargingPool);
+            => new (ReservationResultTypes.UnknownChargingPool);
 
         #endregion
 
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult UnknownChargingStation
 
-            => new (ReservationResultType.UnknownChargingStation);
+            => new (ReservationResultTypes.UnknownChargingStation);
 
         #endregion
 
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult UnknownLocation
 
-            => new (ReservationResultType.UnknownLocation);
+            => new (ReservationResultTypes.UnknownLocation);
 
         #endregion
 
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult AlreadyInUse
 
-            => new (ReservationResultType.AlreadyInUse);
+            => new (ReservationResultTypes.AlreadyInUse);
 
         #endregion
 
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult AlreadyReserved
 
-            => new (ReservationResultType.AlreadyReserved);
+            => new (ReservationResultTypes.AlreadyReserved);
 
         #endregion
 
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult InvalidCredentials
 
-            => new (ReservationResultType.InvalidCredentials);
+            => new (ReservationResultTypes.InvalidCredentials);
 
         #endregion
 
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult InternalUse
 
-            => new (ReservationResultType.InternalUse);
+            => new (ReservationResultTypes.InternalUse);
 
         #endregion
 
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult OutOfService
 
-            => new (ReservationResultType.OutOfService);
+            => new (ReservationResultTypes.OutOfService);
 
         #endregion
 
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult Offline
 
-            => new (ReservationResultType.Offline);
+            => new (ReservationResultTypes.Offline);
 
         #endregion
 
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult NoEVSEsAvailable
 
-            => new (ReservationResultType.NoEVSEsAvailable);
+            => new (ReservationResultTypes.NoEVSEsAvailable);
 
         #endregion
 
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult Success()
 
-            => new (ReservationResultType.Success);
+            => new (ReservationResultTypes.Success);
 
         #endregion
 
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static ReservationResult Timeout
 
-            => new (ReservationResultType.Timeout);
+            => new (ReservationResultTypes.Timeout);
 
         #endregion
 
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                            Object? AdditionalInfo   = null)
 
             => new (
-                   ReservationResultType.CommunicationError,
+                   ReservationResultTypes.CommunicationError,
                    Message,
                    AdditionalInfo
                );
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               Object? AdditionalInfo   = null)
 
             => new (
-                   ReservationResultType.Error,
+                   ReservationResultTypes.Error,
                    Message,
                    AdditionalInfo
                );
@@ -314,7 +314,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Message">An optional message.</param>
         public static ReservationResult NoOperation(String? Message = null)
 
-            => new (ReservationResultType.NoOperation,
+            => new (ReservationResultTypes.NoOperation,
                     Message);
 
         #endregion
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The result types of a reservation operation.
     /// </summary>
-    public enum ReservationResultType
+    public enum ReservationResultTypes
     {
 
         /// <summary>

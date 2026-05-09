@@ -1699,7 +1699,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            CancellationToken
                                        );
 
-                        if (result.Result == ReservationResultType.Success)
+                        if (result.Result == ReservationResultTypes.Success)
                         {
 
                             OnNewReservation?.Invoke(

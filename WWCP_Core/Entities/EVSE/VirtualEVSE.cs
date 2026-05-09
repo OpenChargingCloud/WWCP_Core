@@ -2205,7 +2205,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 }
 
 
-                if (result.Result  == ReservationResultType.Success &&
+                if (result.Result  == ReservationResultTypes.Success &&
                     newReservation is not null)
                 {
 

@@ -7031,7 +7031,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        CancellationToken
                                    );
 
-                    if (result.Result == ReservationResultType.Success)
+                    if (result.Result == ReservationResultTypes.Success)
                     {
                         if (result.Reservation is not null)
                         {
@@ -7044,7 +7044,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (result        is     null ||
                    (result        is not null &&
-                   (result.Result == ReservationResultType.UnknownLocation)))
+                   (result.Result == ReservationResultTypes.UnknownLocation)))
                 {
 
                     foreach (var empRoamingService in empRoamingProviders.
@@ -7075,7 +7075,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        );
 
 
-                        if (result.Result == ReservationResultType.Success)
+                        if (result.Result == ReservationResultTypes.Success)
                         {
                             if (result.Reservation is not null)
                             {
