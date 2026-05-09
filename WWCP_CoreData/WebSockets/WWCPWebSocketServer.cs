@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                    TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
                                    Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
-                                   RemoteTLSClientCertificateValidationHandler<IWebSocketServer>?  ClientCertificateValidator   = null,
+                                   RemoteTLSClientCertificateValidationHandler<AWebSocketServer>?  ClientCertificateValidator   = null,
                                    LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
                                    SslProtocols?                                                   AllowedTLSProtocols          = null,
                                    Boolean?                                                        ClientCertificateRequired    = null,
@@ -243,13 +243,13 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             //                                                                                LoggingContext,
             //                                                                                LogfileCreator);
 
-            base.OnValidateTCPConnection        += ValidateTCPConnection;
-            base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
-            base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
-            base.OnCloseMessageReceived         += ProcessCloseMessage;
+            //base.OnValidateTCPConnection        += ValidateTCPConnection;
+            //base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
+            //base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
+            //base.OnCloseMessageReceived         += ProcessCloseMessage;
 
-            base.OnTextMessageReceived          += ProcessTextMessage;
-            base.OnBinaryMessageReceived        += ProcessBinaryMessage;
+            //base.OnTextMessageReceived          += ProcessTextMessage;
+            //base.OnBinaryMessageReceived        += ProcessBinaryMessage;
 
             base.OnPingMessageReceived          += (timestamp, server, connection, frame, eventTrackingId, pingMessage, ct) => {
                                                        DebugX.Log($"HTTP WebSocket Server '{connection.RemoteSocket}' Ping received:   '{frame.Payload.ToUTF8String()}'");
