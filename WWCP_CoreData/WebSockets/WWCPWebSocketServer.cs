@@ -325,11 +325,12 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #endregion
 
-        #region (protected) ValidateWebSocketConnection   (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
+        #region (protected) ValidateWebSocketConnection   (LogTimestamp, Server, Connection, HTTPRequest, EventTrackingId, CancellationToken)
 
         private Task<HTTPResponse?> ValidateWebSocketConnection(DateTimeOffset             LogTimestamp,
                                                                 IWebSocketServer           Server,
                                                                 WebSocketServerConnection  Connection,
+                                                                HTTPRequest                HTTPRequest,
                                                                 EventTracking_Id           EventTrackingId,
                                                                 CancellationToken          CancellationToken)
         {
@@ -343,7 +344,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket}: Missing 'Sec-WebSocket-Protocol' HTTP header!");
 
                 return Task.FromResult<HTTPResponse?>(
-                           new HTTPResponse.Builder() {
+                           new HTTPResponse.Builder(HTTPRequest) {
                                HTTPStatusCode  = HTTPStatusCode.BadRequest,
                                Server          = HTTPServiceName,
                                Date            = Timestamp.Now,
@@ -365,7 +366,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket}: {error}");
 
                 return Task.FromResult<HTTPResponse?>(
-                           new HTTPResponse.Builder() {
+                           new HTTPResponse.Builder(HTTPRequest) {
                                HTTPStatusCode  = HTTPStatusCode.BadRequest,
                                Server          = HTTPServiceName,
                                Date            = Timestamp.Now,
@@ -512,7 +513,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
 
                 return Task.FromResult<HTTPResponse?>(
-                           new HTTPResponse.Builder() {
+                           new HTTPResponse.Builder(HTTPRequest) {
                                HTTPStatusCode  = HTTPStatusCode.Unauthorized,
                                Server          = HTTPServiceName,
                                Date            = Timestamp.Now,
