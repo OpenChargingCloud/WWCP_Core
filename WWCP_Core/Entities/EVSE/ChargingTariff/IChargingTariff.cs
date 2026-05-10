@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                         station.Address.City.                FirstText(),
                                                         station.Address.Country.CountryName. FirstText(),
                                                         evse.MaxPower.                       ToString() + " kW",
-                                                        evse.ChargingConnectors.First().Plug.ToString(),
+                                                        evse.ChargingConnectors.First().Type.ToString(),
                                                         group.Tariff.Name.                   FirstText()
                                                     });
 
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                          station.Address.City.                FirstText(),
                                                          station.Address.Country.CountryName. FirstText(),
                                                          evse.MaxPower.                       ToString() + " kW",
-                                                         evse.ChargingConnectors.First().Plug.ToString(),
+                                                         evse.ChargingConnectors.First().Type.ToString(),
                                                          group.Tariff.Name.                   FirstText()
                                                      });
 
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                      station.Address.City.                FirstText(),
                                                      station.Address.Country.CountryName. FirstText(),
                                                      evse.MaxPower.                       ToString() + " kW",
-                                                     evse.ChargingConnectors.First().Plug.ToString(),
+                                                     evse.ChargingConnectors.First().Type.ToString(),
                                                      "-"
                                                  });
 

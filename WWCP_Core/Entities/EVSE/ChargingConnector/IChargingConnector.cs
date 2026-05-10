@@ -18,7 +18,7 @@
 #region Usings
 
 using Newtonsoft.Json.Linq;
-
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -68,22 +68,49 @@ namespace cloud.charging.open.protocols.WWCP
     {
 
         /// <summary>
-        /// The EVSE of this charging connector.
+        /// The parent EVSE of this charging connector.
         /// </summary>
         [InternalUseOnly]
-        IEVSE?                          EVSE             { get; set; }
+        IEVSE?                          EVSE                  { get; set; }
 
-        ChargingConnector_Id            Id               { get; }
-        Boolean                         CableAttached    { get; }
-        Meter?                          CableLength      { get; }
-        Boolean?                        Lockable         { get; }
-        ChargingPlugTypes               Plug             { get; }
-        Boolean                         IsDC             { get; }
+        /// <summary>
+        /// The optional charging connector identification.
+        /// </summary>
+        ChargingConnector_Id            Id                    { get; }
 
-        IEnumerable<ChargingTariff_Id>  Tariffs          { get; }
+        /// <summary>
+        /// The type of the charging connector.
+        /// </summary>
+        ChargingConnectorType           Type                  { get; }
+
+        //Boolean                         IsDC                  { get; }
+
+        /// <summary>
+        /// Whether the charging connector is lockable or not.
+        /// </summary>
+        Boolean?                        Lockable              { get; }
+
+        /// <summary>
+        /// The optional charging cable attached.
+        /// </summary>
+        ChargingCable?                  ChargingCable         { get; }
+
+        /// <summary>
+        /// Optional tariff identifications that can be used with this charging connector.
+        /// </summary>
+        IEnumerable<ChargingTariff_Id>  TariffIds             { get; }
+
+        /// <summary>
+        /// URL to the operator’s terms and conditions.
+        /// </summary>
+        /// <remarks>Ask OCPI why this is here!</remarks>
+        [Optional]
+        URL?                            TermsAndConditions    { get; }
+
 
         JObject? ToJSON(Boolean                                              Embedded                            = false,
-                        CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null);
+                        CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null,
+                        CustomJObjectSerializerDelegate<ChargingCable>?      CustomChargingCableSerializer       = null);
 
     }
 
