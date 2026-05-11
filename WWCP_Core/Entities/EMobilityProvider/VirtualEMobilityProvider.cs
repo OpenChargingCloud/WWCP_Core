@@ -236,8 +236,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                           CancellationToken            CancellationToken     = default)
         {
 
-            if (LocalAuthentication.AuthToken.HasValue &&
-                authCache.TryGetValue(LocalAuthentication.AuthToken.Value, out var authStartResult))
+            if (LocalAuthentication.AuthToken is not null &&
+                authCache.TryGetValue(LocalAuthentication.AuthToken, out var authStartResult))
             {
                 return authStartResult;
             }
@@ -274,8 +274,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                         CancellationToken            CancellationToken     = default)
         {
 
-            if (LocalAuthentication.AuthToken.HasValue &&
-                authCache.TryGetValue(LocalAuthentication.AuthToken.Value, out var authStartResult))
+            if (LocalAuthentication.AuthToken is not null &&
+                authCache.TryGetValue(LocalAuthentication.AuthToken, out var authStartResult))
             {
 
                 if (authStartResult.Result == AuthStartResultTypes.Authorized)

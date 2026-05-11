@@ -30,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP.Networking;
+using System.Net.WebSockets;
 
 #endregion
 
@@ -6465,23 +6466,47 @@ namespace cloud.charging.open.protocols.WWCP
             // -----------------------------------------------------------------------
             // curl -v -X AUTHSTART -H "Content-Type: application/json" \
             //                      -H "Accept:       application/json" \
-            //      -d "{ \"AuthToken\":  \"00112233\" }" \
+            //      -d "{ \"authToken\":  \"00112233\" }" \
+            //      http://127.0.0.1:5500/RNs/Test/EVSEs/DE*GEF*E000001*1
+            //
+            // curl -v -X AUTHSTART -H "Content-Type: application/json" \
+            //                      -H "Accept:       application/json" \
+            //      -d "{ \"authToken\":  \"00112233\", \"authTokenType\":  \"rfid\" }" \
             //      http://127.0.0.1:5500/RNs/Test/EVSEs/DE*GEF*E000001*1
             HTTPBaseAPI.AddHandler(
+
+                //RESENDCDR,
+                //URLPathPrefix + "RNs/{RoamingNetworkId}/ChargingSessions/{ChargingSessionId}",
+                //HTTPContentType.Application.JSON_UTF8,
+                //async request => {
 
                 AUTHSTART,
                 URLPathPrefix + "/RNs/{RoamingNetworkId}/EVSEs/{EVSEId}",
                 HTTPContentType.Application.JSON_UTF8,
-                HTTPRequestLogger:   SendAuthorizeStartEVSEHTTPRequest,
-                HTTPResponseLogger:  SendAuthorizeStartEVSEHTTPResponse,
-                HTTPDelegate:        async request => {
+                HTTPRequestLogger:  SendAuthorizeStartEVSEHTTPRequest,
+                HTTPResponseLogger: SendAuthorizeStartEVSEHTTPResponse,
+                HTTPDelegate:       async request => {
+
+                    #region Get HTTP user and its organizations
+
+                    // Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    if (!HTTPBaseAPI.TryGetHTTPUser(request,
+                                                    out var httpUser,
+                                                    out var httpOrganizations,
+                                                    out var httpResponseBuilder,
+                                                    Recursive: true))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
 
                     #region Parse RoamingNetworkId and EVSEId URI parameters
 
                     if (!request.TryParseRoamingNetworkAndEVSE(this,
                                                                out var roamingNetwork,
                                                                out var evse,
-                                                               out var httpResponseBuilder))
+                                                               out httpResponseBuilder))
                     {
                         return httpResponseBuilder;
                     }
@@ -6513,16 +6538,41 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Parse AuthToken              [mandatory]
 
-                    if (!json.ParseMandatory("AuthToken",
+                    if (!json.ParseMandatory("authToken",
                                              "authentication token",
                                              HTTPServiceName,
-                                             AuthenticationToken.TryParse,
-                                             out AuthenticationToken authToken,
+                                             AuthenticationToken2.TryParse,
+                                             out AuthenticationToken2 authenticationToken2,
                                              request,
                                              out httpResponseBuilder))
                     {
                         return httpResponseBuilder;
                     }
+
+                    var authenticationToken = new AuthenticationToken(
+                                                  authenticationToken2
+                                              );
+
+                    #endregion
+
+                    #region Parse AuthTokenType          [optional]
+
+                    if (!json.ParseOptional("authTokenType",
+                                            "authentication token type",
+                                            HTTPServiceName,
+                                            AuthTokenType.TryParse,
+                                            out AuthTokenType? authTokenType,
+                                            request,
+                                            out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    if (authTokenType.HasValue)
+                        authenticationToken = new AuthenticationToken(
+                                                  authenticationToken2,
+                                                  authTokenType.Value
+                                              );
 
                     #endregion
 
@@ -6575,8 +6625,8 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                     var result  = await roamingNetwork.AuthorizeStart(
-                                            LocalAuthentication.FromAuthToken(authToken),
-                                            ChargingLocation.FromEVSEId(evse.Id),
+                                            LocalAuthentication.FromAuthToken(authenticationToken),
+                                            ChargingLocation.   FromEVSEId   (evse.Id),
                                             chargingProductId.HasValue
                                                 ? new ChargingProduct(chargingProductId.Value)
                                                 : null,
@@ -6663,12 +6713,26 @@ namespace cloud.charging.open.protocols.WWCP
                 HTTPResponseLogger: SendAuthorizeStopEVSEHTTPResponse,
                 HTTPDelegate:       async request => {
 
+                    #region Get HTTP user and its organizations
+
+                    // Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    if (!HTTPBaseAPI.TryGetHTTPUser(request,
+                                                    out var httpUser,
+                                                    out var httpOrganizations,
+                                                    out var httpResponseBuilder,
+                                                    Recursive: true))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
                     #region Parse RoamingNetworkId and EVSEId URI parameters
 
                     if (!request.TryParseRoamingNetworkAndEVSE(this,
                                                                out var roamingNetwork,
                                                                out var evse,
-                                                               out var httpResponseBuilder))
+                                                               out httpResponseBuilder))
                     {
                         return httpResponseBuilder;
                     }
@@ -6703,13 +6767,38 @@ namespace cloud.charging.open.protocols.WWCP
                     if (!JSON.ParseMandatory("AuthToken",
                                              "Authentication token",
                                              HTTPServiceName,
-                                             AuthenticationToken.TryParse,
-                                             out AuthenticationToken AuthToken,
+                                             AuthenticationToken2.TryParse,
+                                             out AuthenticationToken2 authenticationToken2,
                                              request,
                                              out httpResponseBuilder))
                     {
                         return httpResponseBuilder;
                     }
+
+                    var authenticationToken = new AuthenticationToken(
+                                                  authenticationToken2
+                                              );
+
+                    #endregion
+
+                    #region Parse AuthTokenType          [optional]
+
+                    if (!JSON.ParseOptional("authTokenType",
+                                            "authentication token type",
+                                            HTTPServiceName,
+                                            AuthTokenType.TryParse,
+                                            out AuthTokenType? authTokenType,
+                                            request,
+                                            out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    if (authTokenType.HasValue)
+                        authenticationToken = new AuthenticationToken(
+                                                  authenticationToken2,
+                                                  authTokenType.Value
+                                              );
 
                     #endregion
 
@@ -6748,8 +6837,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                     var result = await roamingNetwork.AuthorizeStop(
                                            sessionId,
-                                           LocalAuthentication.FromAuthToken(AuthToken),
-                                           ChargingLocation.   FromEVSEId    (evse.Id),
+                                           LocalAuthentication.FromAuthToken(authenticationToken),
+                                           ChargingLocation.   FromEVSEId   (evse.Id),
                                            CPOPartnerSessionId,
                                            //chargingStationOperatorId,
                                            null,
@@ -6831,12 +6920,26 @@ namespace cloud.charging.open.protocols.WWCP
                 HTTPResponseLogger:  SendRemoteStartEVSEResponse,
                 HTTPDelegate:        async request => {
 
+                    #region Get HTTP user and its organizations
+
+                    // Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    if (!HTTPBaseAPI.TryGetHTTPUser(request,
+                                                    out var httpUser,
+                                                    out var httpOrganizations,
+                                                    out var httpResponseBuilder,
+                                                    Recursive: true))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
                     #region Get RoamingNetwork and EVSE URI parameters
 
                     if (!request.TryParseRoamingNetworkAndEVSE(this,
                                                                out var roamingNetwork,
                                                                out var evse,
-                                                               out var httpResponseBuilder))
+                                                               out httpResponseBuilder))
                     {
                         return httpResponseBuilder;
                     }
@@ -7060,12 +7163,26 @@ namespace cloud.charging.open.protocols.WWCP
                 HTTPResponseLogger:  SendRemoteStopEVSEHTTPResponse,
                 HTTPDelegate:        async request => {
 
+                    #region Get HTTP user and its organizations
+
+                    // Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    if (!HTTPBaseAPI.TryGetHTTPUser(request,
+                                                    out var httpUser,
+                                                    out var httpOrganizations,
+                                                    out var httpResponseBuilder,
+                                                    Recursive: true))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
                     #region Get RoamingNetwork and EVSE URI parameters
 
                     if (!request.TryParseRoamingNetworkAndEVSE(this,
                                                                out var roamingNetwork,
                                                                out var evse,
-                                                               out var httpResponseBuilder))
+                                                               out httpResponseBuilder))
                     {
                         return httpResponseBuilder;
                     }
@@ -7249,12 +7366,26 @@ namespace cloud.charging.open.protocols.WWCP
                 HTTPResponseLogger:  SendChargeDetailRecordsHTTPResponse,
                 HTTPDelegate:        async request => {
 
+                    #region Get HTTP user and its organizations
+
+                    // Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    if (!HTTPBaseAPI.TryGetHTTPUser(request,
+                                                    out var httpUser,
+                                                    out var httpOrganizations,
+                                                    out var httpResponseBuilder,
+                                                    Recursive: true))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
+
                     #region Parse RoamingNetwork and EVSE
 
                     if (!request.TryParseRoamingNetworkAndEVSE(this,
                                                                out var roamingNetwork,
                                                                out var evse,
-                                                               out var httpResponseBuilder))
+                                                               out httpResponseBuilder))
                     {
                         return httpResponseBuilder;
                     }
@@ -7305,14 +7436,29 @@ namespace cloud.charging.open.protocols.WWCP
                     if (json.ParseOptional("AuthToken",
                                            "authentication token",
                                            HTTPServiceName,
-                                           AuthenticationToken.TryParse,
-                                           out AuthenticationToken? AuthToken,
+                                           AuthenticationToken2.TryParse,
+                                           out AuthenticationToken2? authenticationToken2,
                                            request,
                                            out httpResponseBuilder))
                     {
                         if (httpResponseBuilder is not null)
                             return httpResponseBuilder;
                     }
+
+                    #region Parse AuthTokenType          [optional]
+
+                    if (!json.ParseOptional("authTokenType",
+                                            "authentication token type",
+                                            HTTPServiceName,
+                                            AuthTokenType.TryParse,
+                                            out AuthTokenType? authTokenType,
+                                            request,
+                                            out httpResponseBuilder))
+                    {
+                        return httpResponseBuilder;
+                    }
+
+                    #endregion
 
                     if (json.ParseOptionalStruct2("eMAId",
                                                   "e-mobility account identification",
@@ -7327,7 +7473,7 @@ namespace cloud.charging.open.protocols.WWCP
                     }
 
 
-                    if (AuthToken is null && eMAId is null)
+                    if (authenticationToken2 is null && eMAId is null)
                         return new HTTPResponse.Builder(request) {
                             HTTPStatusCode  = HTTPStatusCode.BadRequest,
                             Server          = HTTPServiceName,
@@ -7416,9 +7562,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #endregion
 
+             //      if (authTokenType.HasValue)
+             //          authenticationToken = ;
 
-                    var authenticationStart  = AuthToken.HasValue
-                                                   ? (AAuthentication)       LocalAuthentication. FromAuthToken           (AuthToken.Value)
+                    var authenticationStart  = authenticationToken2.HasValue
+                                                   ? (AAuthentication)       LocalAuthentication. FromAuthToken(
+                                                                                 new AuthenticationToken(
+                                                                                     authenticationToken2.Value,
+                                                                                     authTokenType
+                                                                                 )
+                                                                             )
                                                    : eMAId.HasValue
                                                          ? (AAuthentication) RemoteAuthentication.FromRemoteIdentification(eMAId.    Value)
                                                          : null;

@@ -154,16 +154,16 @@ namespace cloud.charging.open.protocols.WWCP
                 var description                  = JSON["description"] as JObject;
 
                 RemoteAuthentication = new (
-                                           authToken                   is not null ? AuthenticationToken.Parse(authToken) : null,
+                                           authToken                   is not null ? new AuthenticationToken(AuthenticationToken2.Parse(authToken)) : null,
                                            null, //JSON["QRCodeIdentification"]        is not null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
-                                           plugAndChargeIdentification is not null ? EMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
-                                           remoteIdentification        is not null ? EMobilityAccount_Id.Parse(remoteIdentification)        : null,
-                                           pin                         is not null ? WWCP.PIN.           Parse(pin)                         : null,
-                                           publicKey                   is not null ? WWCP.ECCPublicKey.  ParseASN1(publicKey)               : null,
-                                           certificate                 is not null ? WWCP.Certificate.   Parse(certificate)                 : null,
+                                           plugAndChargeIdentification is not null ? EMobilityAccount_Id.Parse(plugAndChargeIdentification)         : null,
+                                           remoteIdentification        is not null ? EMobilityAccount_Id.Parse(remoteIdentification)                : null,
+                                           pin                         is not null ? WWCP.PIN.           Parse(pin)                                 : null,
+                                           publicKey                   is not null ? WWCP.ECCPublicKey.  ParseASN1(publicKey)                       : null,
+                                           certificate                 is not null ? WWCP.Certificate.   Parse(certificate)                         : null,
 
                                            authMethod                  is not null ? null : null,
-                                           description                 is not null ? I18NString.         Parse(description)                 : I18NString.Empty
+                                           description                 is not null ? I18NString.         Parse(description)                         : I18NString.Empty
                                        );
 
                 if (CustomRemoteAuthenticationParser is not null)

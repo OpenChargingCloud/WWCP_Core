@@ -7639,8 +7639,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Fail when AuthToken is invalid (e.g. "00000000", "00000000000000", ...)
 
-                if (LocalAuthentication.AuthToken.HasValue &&
-                    InvalidAuthenticationTokens.Contains(LocalAuthentication.AuthToken.Value))
+                if (LocalAuthentication.AuthToken is not null &&
+                    InvalidAuthenticationTokens.Contains(LocalAuthentication.AuthToken))
                 {
 
                     result = AuthStartResult.InvalidToken(
@@ -7650,7 +7650,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  stopwatch.Elapsed,
                                  Timestamp.Now + AuthenticationCacheTimeout,
                                  SessionId,
-                                 I18NString.Create($"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!")
+                                 I18NString.Create($"Invalid authentication token '{LocalAuthentication.AuthToken}'!")
                              );
 
                 }
@@ -7661,9 +7661,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (result is null &&
                    !DisableAuthenticationCache &&
-                    LocalAuthentication.AuthToken.HasValue &&
-                    authStartResultCache.TryGetValue(LocalAuthentication.AuthToken.Value, out var cachedAuthStartResult) &&
-                    cachedAuthStartResult is not null)
+                    LocalAuthentication.AuthToken is not null &&
+                    authStartResultCache.TryGetValue(LocalAuthentication.AuthToken, out var cachedAuthStartResult))
                 {
 
                     if (cachedAuthStartResult.CachedResultEndOfLifeTime > Timestamp.Now)
@@ -7688,7 +7687,7 @@ namespace cloud.charging.open.protocols.WWCP
                                      : cachedAuthStartResult;
                     }
                     else
-                        authStartResultCache.Remove(LocalAuthentication.AuthToken.Value, out _);
+                        authStartResultCache.Remove(LocalAuthentication.AuthToken, out _);
 
                 }
 
@@ -7794,14 +7793,14 @@ namespace cloud.charging.open.protocols.WWCP
                 #region Maybe store the result within the cache
 
                 if (!DisableAuthenticationCache &&
-                     LocalAuthentication.AuthToken.HasValue &&
+                     LocalAuthentication.AuthToken is not null &&
                      result.Result != AuthStartResultTypes.RateLimitReached &&
-                    !DoNotCacheAuthenticationTokens.Contains   (LocalAuthentication.AuthToken.Value) &&
-                    !authStartResultCache.          ContainsKey(LocalAuthentication.AuthToken.Value))
+                    !DoNotCacheAuthenticationTokens.Contains   (LocalAuthentication.AuthToken) &&
+                    !authStartResultCache.          ContainsKey(LocalAuthentication.AuthToken))
                 {
 
                     authStartResultCache.TryAdd(
-                        LocalAuthentication.AuthToken.Value,
+                        LocalAuthentication.AuthToken,
                         new AuthStartResult(
                             result.AuthorizatorId,
                             result.ISendAuthorizeStartStop,
@@ -8046,8 +8045,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Fail when AuthToken is invalid (e.g. "00000000", "00000000000000", ...)
 
-                if (LocalAuthentication.AuthToken.HasValue &&
-                    InvalidAuthenticationTokens.Contains(LocalAuthentication.AuthToken.Value))
+                if (LocalAuthentication.AuthToken is not null &&
+                    InvalidAuthenticationTokens.Contains(LocalAuthentication.AuthToken))
                 {
 
                     result = AuthStopResult.InvalidToken(
@@ -8056,7 +8055,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  Timestamp.Now,
                                  stopwatch.Elapsed,
                                  SessionId:    SessionId,
-                                 Description:  I18NString.Create($"Invalid authentication token '{LocalAuthentication.AuthToken.Value}'!")
+                                 Description:  I18NString.Create($"Invalid authentication token '{LocalAuthentication.AuthToken}'!")
                              );
 
                 }
@@ -9420,7 +9419,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (start) AuthToken/RFID identification
 
-                    else if (chargeDetailRecord.AuthenticationStart?.AuthToken.HasValue == true)
+                    else if (chargeDetailRecord.AuthenticationStart?.AuthToken is not null)
                     {
 
                         // Use a lookup...
@@ -9463,7 +9462,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (stop)  AuthToken/RFID identification
 
-                    else if (chargeDetailRecord.AuthenticationStop?.AuthToken.HasValue == true)
+                    else if (chargeDetailRecord.AuthenticationStop?.AuthToken is not null)
                     {
 
                         // Use a lookup...

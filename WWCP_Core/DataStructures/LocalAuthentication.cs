@@ -154,16 +154,16 @@ namespace cloud.charging.open.protocols.WWCP
                 var description                  = JSON["description"] as JObject;
 
                 LocalAuthentication = new (
-                                          authToken                   is not null ? AuthenticationToken.Parse(authToken) : null,
+                                          authToken                   is not null ? new AuthenticationToken(AuthenticationToken2.Parse(authToken)) : null,
                                           null, //JSON["QRCodeIdentification"]        is not null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
-                                          plugAndChargeIdentification is not null ? EMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
-                                          remoteIdentification        is not null ? EMobilityAccount_Id.Parse(remoteIdentification)        : null,
-                                          pin                         is not null ? WWCP.PIN.           Parse(pin)                         : null,
-                                          publicKey                   is not null ? WWCP.ECCPublicKey.  ParseASN1(publicKey)               : null,
-                                          certificate                 is not null ? WWCP.Certificate.   Parse(certificate)                 : null,
+                                          plugAndChargeIdentification is not null ? EMobilityAccount_Id.Parse(plugAndChargeIdentification)         : null,
+                                          remoteIdentification        is not null ? EMobilityAccount_Id.Parse(remoteIdentification)                : null,
+                                          pin                         is not null ? WWCP.PIN.           Parse(pin)                                 : null,
+                                          publicKey                   is not null ? WWCP.ECCPublicKey.  ParseASN1(publicKey)                       : null,
+                                          certificate                 is not null ? WWCP.Certificate.   Parse(certificate)                         : null,
 
-                                          authMethod                  is not null ? WWCP.AuthMethod.    Parse(authMethod)                  : null,
-                                          description                 is not null ? I18NString.         Parse(description)                 : I18NString.Empty
+                                          authMethod                  is not null ? WWCP.AuthMethod.    Parse(authMethod)                          : null,
+                                          description                 is not null ? I18NString.         Parse(description)                         : I18NString.Empty
                                       );
 
                 if (CustomLocalAuthenticationParser is not null)
@@ -219,6 +219,23 @@ namespace cloud.charging.open.protocols.WWCP
                                                         I18NString?          Description   = null)
 
             => new (AuthToken:    AuthToken,
+                    AuthMethod:   AuthMethod,
+                    Description:  Description);
+
+        #endregion
+
+        #region (static) FromAuthToken                   (AuthToken,                              Description = null)
+
+        /// <summary>
+        /// Create a new authentication info based on the given authentication token.
+        /// </summary>
+        /// <param name="AuthToken">An authentication token.</param>
+        /// <param name="Description">An optional multilingual description.</param>
+        public static LocalAuthentication FromAuthToken(AuthenticationToken2 AuthToken,
+                                                        AuthMethod?          AuthMethod    = null,
+                                                        I18NString?          Description   = null)
+
+            => new (AuthToken:    new AuthenticationToken(AuthToken),
                     AuthMethod:   AuthMethod,
                     Description:  Description);
 

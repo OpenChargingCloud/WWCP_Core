@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean IsDefined(this AAuthentication Authentication)
 
             => Authentication is not null &&
-              (Authentication.AuthToken.                  HasValue ||
+              (Authentication.AuthToken                is not null ||
                Authentication.QRCodeIdentification.       HasValue ||
                Authentication.PlugAndChargeIdentification.HasValue ||
                Authentication.RemoteIdentification.       HasValue ||
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional multilingual description.
         /// </summary>
-        public I18NString?          Description                     { get; }
+        public I18NString?           Description                    { get; }
 
         #endregion
 
@@ -332,8 +332,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                  new JProperty("authenticationType",            AuthenticationType.               AsText()),
 
-                           AuthToken.HasValue
-                               ? new JProperty("authToken",                     AuthToken.                        ToString())
+                           AuthToken is not null
+                               ? new JProperty("authToken",                     AuthToken.                        Token.ToString())
                                : null,
 
                            QRCodeIdentification.HasValue
@@ -517,8 +517,8 @@ namespace cloud.charging.open.protocols.WWCP
             if (AAuthentication is null)
                 throw new ArgumentNullException(nameof(AAuthentication),  "The given abstract authentication must not be null!");
 
-            if (AuthToken.                  HasValue && AAuthentication.AuthToken.                  HasValue)
-                return AuthToken.                  Value.CompareTo(AAuthentication.AuthToken.                  Value);
+            if (AuthToken                   is not null && AAuthentication.AuthToken                is not null)
+                return AuthToken.                        CompareTo(AAuthentication.AuthToken);
 
             if (QRCodeIdentification.       HasValue && AAuthentication.QRCodeIdentification.       HasValue)
                 return QRCodeIdentification.       Value.CompareTo(AAuthentication.QRCodeIdentification.       Value);
@@ -571,8 +571,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             => AAuthentication is not null &&
 
-            ((!AuthToken.                  HasValue && !AAuthentication.AuthToken.                  HasValue) ||
-              (AuthToken.                  HasValue &&  AAuthentication.AuthToken.                  HasValue && AuthToken.                  Value.Equals(AAuthentication.AuthToken.                  Value))) &&
+             ((AuthToken   is null                  &&  AAuthentication.AuthToken is null)                    ||
+              (AuthToken   is not null              &&  AAuthentication.AuthToken is not null                && AuthToken.                        Equals(AAuthentication.AuthToken                        ))) &&
 
             ((!QRCodeIdentification.       HasValue && !AAuthentication.QRCodeIdentification.       HasValue) ||
               (QRCodeIdentification.       HasValue &&  AAuthentication.QRCodeIdentification.       HasValue && QRCodeIdentification.       Value.Equals(AAuthentication.QRCodeIdentification.       Value))) &&
@@ -623,8 +623,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             => new String[] {
 
-                   AuthToken.HasValue
-                       ? $"authToken: {AuthToken.Value}"
+                   AuthToken is not null
+                       ? $"authToken: {AuthToken.Token}"
                        : String.Empty,
 
                    QRCodeIdentification.HasValue
