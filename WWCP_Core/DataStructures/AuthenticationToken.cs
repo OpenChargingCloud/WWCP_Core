@@ -405,7 +405,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => Token.ToString();
+            => String.Concat(
+
+                   Token.ToString(),
+
+                   Type.HasValue
+                       ? $" ({Type.Value})"
+                       : ""
+
+               );
 
         #endregion
 

@@ -6489,24 +6489,24 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Get HTTP user and its organizations
 
-                    // Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
-                    if (!HTTPBaseAPI.TryGetHTTPUser(request,
-                                                    out var httpUser,
-                                                    out var httpOrganizations,
-                                                    out var httpResponseBuilder,
-                                                    Recursive: true))
-                    {
-                        return httpResponseBuilder;
-                    }
+                    //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    //if (!HTTPBaseAPI.TryGetHTTPUser(request,
+                    //                                out var httpUser,
+                    //                                out var httpOrganizations,
+                    //                                out var httpResponseBuilder,
+                    //                                Recursive: true))
+                    //{
+                    //    return httpResponseBuilder;
+                    //}
 
                     #endregion
 
-                    #region Parse RoamingNetworkId and EVSEId URI parameters
+                    #region Parse RoamingNetworkId and EVSEId URL parameters
 
                     if (!request.TryParseRoamingNetworkAndEVSE(this,
                                                                out var roamingNetwork,
                                                                out var evse,
-                                                               out httpResponseBuilder))
+                                                               out var httpResponseBuilder))
                     {
                         return httpResponseBuilder;
                     }
@@ -6515,23 +6515,56 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Parse JSON
 
-                    if (!request.TryParseJSONObjectRequestBody(out var json,
-                                                               out httpResponseBuilder))
+                    if (!request.TryParseJSONObjectRequestBody(out var json, out httpResponseBuilder) ||
+                         json is null)
                     {
-                        return httpResponseBuilder;
+                        return httpResponseBuilder!;
                     }
 
-                    #region Parse OperatorId             [optional]
+                    #region Parse SessionId                [optional]
 
-                    if (!json.ParseOptional("OperatorId",
-                                            "Charging Station Operator identification",
-                                            HTTPServiceName,
-                                            ChargingStationOperator_Id.TryParse,
-                                            out ChargingStationOperator_Id operatorId,
-                                            request,
-                                            out httpResponseBuilder))
+                    //if (json.ParseOptional("@id",
+                    //                       "charging session identification",
+                    //                       HTTPServiceName,
+                    //                       ChargingSession_Id.TryParse,
+                    //                       out ChargingSession_Id? SessionId,
+                    //                       request,
+                    //                       out httpResponseBuilder))
+                    //{
+                    //    if (httpResponseBuilder is not null)
+                    //        return httpResponseBuilder;
+                    //}
+
+                    #endregion
+
+                    #region Parse CPOPartnerSessionId      [optional]
+
+                    if (json.ParseOptional("CPOPartnerSessionId",
+                                           "CPO partner charging session identification",
+                                           HTTPServiceName,
+                                           ChargingSession_Id.TryParse,
+                                           out ChargingSession_Id? cpoPartnerSessionId,
+                                           request,
+                                           out httpResponseBuilder))
                     {
-                        return httpResponseBuilder;
+                        if (httpResponseBuilder is not null)
+                            return httpResponseBuilder;
+                    }
+
+                    #endregion
+
+                    #region Parse ChargingProductId        [optional]
+
+                    if (json.ParseOptional("ChargingProductId",
+                                           "Charging product identification",
+                                           HTTPServiceName,
+                                           ChargingProduct_Id.TryParse,
+                                           out ChargingProduct_Id? chargingProductId,
+                                           request,
+                                           out httpResponseBuilder))
+                    {
+                        if (httpResponseBuilder is not null)
+                            return httpResponseBuilder;
                     }
 
                     #endregion
@@ -6565,7 +6598,8 @@ namespace cloud.charging.open.protocols.WWCP
                                             request,
                                             out httpResponseBuilder))
                     {
-                        return httpResponseBuilder;
+                        if (httpResponseBuilder is not null)
+                            return httpResponseBuilder;
                     }
 
                     if (authTokenType.HasValue)
@@ -6576,48 +6610,20 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #endregion
 
-                    #region Parse SessionId              [optional]
 
-                    if (!json.ParseOptionalStruct2("SessionId",
-                                                   "Charging session identification",
-                                                   HTTPServiceName,
-                                                   ChargingSession_Id.TryParse,
-                                                   out ChargingSession_Id? sessionId,
-                                                   request,
-                                                   out httpResponseBuilder))
-                    {
-                        return httpResponseBuilder;
-                    }
+                    #region Parse OperatorId             [optional]
 
-                    #endregion
-
-                    #region Parse CPOPartnerSessionId    [optional]
-
-                    if (!json.ParseOptionalStruct2("CPOPartnerSessionId",
-                                                   "CPO partner charging session identification",
-                                                   HTTPServiceName,
-                                                   ChargingSession_Id.TryParse,
-                                                   out ChargingSession_Id? cpoPartnerSessionId,
-                                                   request,
-                                                   out httpResponseBuilder))
-                    {
-                        return httpResponseBuilder;
-                    }
-
-                    #endregion
-
-                    #region Parse ChargingProductId      [optional]
-
-                    if (!json.ParseOptionalStruct2("ChargingProductId",
-                                                   "Charging product identification",
-                                                   HTTPServiceName,
-                                                   ChargingProduct_Id.TryParse,
-                                                   out ChargingProduct_Id? chargingProductId,
-                                                   request,
-                                                   out httpResponseBuilder))
-                    {
-                        return httpResponseBuilder;
-                    }
+                    //if (!json.ParseOptional("OperatorId",
+                    //                        "Charging Station Operator identification",
+                    //                        HTTPServiceName,
+                    //                        ChargingStationOperator_Id.TryParse,
+                    //                        out ChargingStationOperator_Id operatorId,
+                    //                        request,
+                    //                        out httpResponseBuilder))
+                    //{
+                    //    if (httpResponseBuilder is not null)
+                    //        return httpResponseBuilder;
+                    //}
 
                     #endregion
 
@@ -6630,7 +6636,7 @@ namespace cloud.charging.open.protocols.WWCP
                                             chargingProductId.HasValue
                                                 ? new ChargingProduct(chargingProductId.Value)
                                                 : null,
-                                            sessionId,
+                                            null,
                                             cpoPartnerSessionId,
                                             //operatorId,
                                             null,
