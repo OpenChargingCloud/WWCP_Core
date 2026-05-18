@@ -232,6 +232,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                    MaxClientConnections,
 
                    DNSClient,
+                   null,
                    false)
 
         {
