@@ -110,41 +110,50 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Parse       (Text)
+        #region (static) Parse       (Text                           Type = null)
 
         /// <summary>
         /// Parse the given string as an authentication token.
         /// </summary>
         /// <param name="Text">A text representation of an authentication token.</param>
+        /// <param name="Type">An optional authentication token type.</param>
         public static AuthenticationToken Parse(String          Text,
                                                 AuthTokenType?  Type = null)
         {
 
-            if (TryParse(Text, out var authenticationToken))
+            if (TryParse(Text, out var authenticationToken, Type))
                 return authenticationToken;
 
-            throw new ArgumentException($"Invalid text representation of an authentication token: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of an authentication token: '{Text}'!",
                                         nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse    (Text, out AuthenticationToken2)
+        #region (static) TryParse    (Text, out AuthenticationToken, Type = null)
 
         /// <summary>
         /// Try to parse the given string as an authentication token.
         /// </summary>
         /// <param name="Text">A text representation of an authentication token.</param>
-        /// <param name="AuthenticationToken2">The parsed authentication token.</param>
+        /// <param name="AuthenticationToken">The parsed authentication token.</param>
+        /// <param name="Type">An optional authentication token type.</param>
         public static Boolean TryParse(String                                        Text,
-                                       [NotNullWhen(true)] out AuthenticationToken?  AuthenticationToken)
+                                       [NotNullWhen(true)] out AuthenticationToken?  AuthenticationToken,
+                                       AuthTokenType?                                Type = null)
         {
 
             if (AuthenticationToken2.TryParse(Text, out var token))
             {
-                AuthenticationToken = new AuthenticationToken(token);
+
+                AuthenticationToken = new AuthenticationToken(
+                                          token,
+                                          Type
+                                      );
+
                 return true;
+
             }
 
             AuthenticationToken = null;
@@ -155,12 +164,13 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) ParseHEX    (HEX)
+        #region (static) ParseHEX    (HEX,                           Type = null)
 
         /// <summary>
         /// Parse the given hexadecimal string as an authentication token.
         /// </summary>
         /// <param name="HEX">A hexadecimal representation of an authentication token.</param>
+        /// <param name="Type">An optional authentication token type.</param>
         public static AuthenticationToken ParseHEX(String          HEX,
                                                    AuthTokenType?  Type = null)
         {
@@ -175,19 +185,20 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParseHEX (HEX,  out AuthenticationToken2)
+        #region (static) TryParseHEX (HEX,  out AuthenticationToken, Type = null)
 
         /// <summary>
         /// Try to parse the given hexadecimal string as an authentication token.
         /// </summary>
         /// <param name="HEX">A hexadecimal representation of an authentication token.</param>
-        /// <param name="AuthenticationToken2">The parsed authentication token.</param>
+        /// <param name="AuthenticationToken">The parsed authentication token.</param>
+        /// <param name="Type">An optional authentication token type.</param>
         public static Boolean TryParseHEX(String                                        HEX,
                                           [NotNullWhen(true)] out AuthenticationToken?  AuthenticationToken,
                                           AuthTokenType?                                Type = null)
         {
 
-            if (AuthenticationToken2.TryParse(HEX, out var authenticationToken))
+            if (AuthenticationToken2.TryParseHEX(HEX, out var authenticationToken))
                 AuthenticationToken = new AuthenticationToken(
                                           authenticationToken,
                                           Type
@@ -649,21 +660,23 @@ namespace cloud.charging.open.protocols.WWCP
                                           out AuthenticationToken2  AuthenticationToken2)
         {
 
-            if (!HEX.IsNullOrEmpty())
+            if (!HEX.IsNullOrWhiteSpace())
             {
 
-                HEX = HEX.Trim().Replace("-", "").Replace(":", "").ToUpper();
+                HEX = HEX.Trim().
+                          Replace("-", "").
+                          Replace(":", "").
+                          ToUpperInvariant();
 
-                //if (AuthenticationToken2_RegEx.IsMatch(HEX))
-                //{
-                    try
-                    {
-                        AuthenticationToken2 = new AuthenticationToken2(HEX);
-                        return true;
-                    }
-                    catch
-                    { }
-                //}
+                if (HEX.All(c => (c >= '0' && c <= '9') ||
+                                 (c >= 'A' && c <= 'F')))
+                {
+
+                    AuthenticationToken2 = new AuthenticationToken2(HEX);
+
+                    return true;
+
+                }
 
             }
 
