@@ -133,6 +133,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (static) TryParse    (Text, out AuthenticationToken, Type = null)
 
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
+        /// <summary>
+        /// Try to parse the given string as an authentication token.
+        /// </summary>
+        /// <param name="Text">A text representation of an authentication token.</param>
+        /// <param name="AuthenticationToken">The parsed authentication token.</param>
+        public static Boolean TryParse(String                                        Text,
+                                       [NotNullWhen(true)] out AuthenticationToken?  AuthenticationToken)
+
+            => TryParse(Text,
+                        out AuthenticationToken,
+                        null);
+
+
         /// <summary>
         /// Try to parse the given string as an authentication token.
         /// </summary>
@@ -186,6 +201,21 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #region (static) TryParseHEX (HEX,  out AuthenticationToken, Type = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
+        /// <summary>
+        /// Try to parse the given hexadecimal string as an authentication token.
+        /// </summary>
+        /// <param name="HEX">A hexadecimal representation of an authentication token.</param>
+        /// <param name="AuthenticationToken">The parsed authentication token.</param>
+        public static Boolean TryParseHEX(String                                        HEX,
+                                          [NotNullWhen(true)] out AuthenticationToken?  AuthenticationToken)
+
+            => TryParseHEX(HEX,
+                           out AuthenticationToken,
+                           null);
+
 
         /// <summary>
         /// Try to parse the given hexadecimal string as an authentication token.
