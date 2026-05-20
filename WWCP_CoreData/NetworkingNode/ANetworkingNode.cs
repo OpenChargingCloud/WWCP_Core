@@ -30,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
+using Microsoft.Extensions.Logging;
 
 #endregion
 
@@ -371,66 +372,75 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #region ConnectWebSocketClient(...)
 
         public async Task<HTTPResponse> ConnectWebSocketClient(URL                                                             RemoteURL,
-                                                               HTTPHostname?                                                   VirtualHostname              = null,
-                                                               I18NString?                                                     Description                  = null,
-                                                               IPVersionPreference?                                            PreferIPv4                   = null,
-                                                               RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
-                                                               LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
-                                                               IEnumerable<X509Certificate2>?                                  ClientCertificates           = null,
-                                                               SslStreamCertificateContext?                                    ClientCertificateContext     = null,
-                                                               IEnumerable<X509Certificate2>?                                  ClientCertificateChain       = null,
-                                                               SslProtocols?                                                   TLSProtocol                  = null,
-                                                               String?                                                         HTTPUserAgent                = null,
-                                                               IHTTPAuthentication?                                            HTTPAuthentication           = null,
-                                                               TimeSpan?                                                       RequestTimeout               = null,
-                                                               TransmissionRetryDelayDelegate?                                 TransmissionRetryDelay       = null,
-                                                               UInt16?                                                         MaxNumberOfRetries           = 3,
-                                                               UInt32?                                                         InternalBufferSize           = null,
+                                                               I18NString?                                                     Description                      = null,
 
-                                                               IEnumerable<String>?                                            SecWebSocketProtocols        = null,
-                                                               NetworkingMode?                                                 NetworkingMode               = null,
-                                                               NetworkingNode_Id?                                              NextHopNetworkingNodeId      = null,
-                                                               IEnumerable<NetworkingNode_Id>?                                 RoutingNetworkingNodeIds     = null,
+                                                               NetworkingMode?                                                 NetworkingMode                   = null,
+                                                               NetworkingNode_Id?                                              NextHopNetworkingNodeId          = null,
+                                                               IEnumerable<NetworkingNode_Id>?                                 RoutingNetworkingNodeIds         = null,
 
-                                                               Boolean                                                         DisableWebSocketPings        = false,
-                                                               TimeSpan?                                                       WebSocketPingEvery           = null,
-                                                               TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
+                                                               HTTPHostname?                                                   VirtualHostname                  = null,
+                                                               String?                                                         HTTPUserAgent                    = null,
+                                                               IHTTPAuthentication?                                            HTTPAuthentication               = null,
+                                                               IEnumerable<String>?                                            SecWebSocketProtocols            = null,
+                                                               TimeSpan?                                                       RequestTimeout                   = null,
 
-                                                               Boolean                                                         DisableMaintenanceTasks      = false,
-                                                               TimeSpan?                                                       MaintenanceEvery             = null,
+                                                               Boolean                                                         DisableWebSocketPings            = false,
+                                                               TimeSpan?                                                       WebSocketPingEvery               = null,
+                                                               TimeSpan?                                                       SlowNetworkSimulationDelay       = null,
 
-                                                               String?                                                         LoggingPath                  = null,
-                                                               String                                                          LoggingContext               = null, //CPClientLogger.DefaultContext,
-                                                               LogfileCreatorDelegate?                                         LogfileCreator               = null,
-                                                               HTTPClientLogger?                                               HTTPLogger                   = null,
-                                                               DNSClient?                                                      DNSClient                    = null,
+                                                               Boolean                                                         DisableMaintenanceTasks          = false,
+                                                               TimeSpan?                                                       MaintenanceEvery                 = null,
 
-                                                               EventTracking_Id?                                               EventTrackingId              = null,
-                                                               CancellationToken                                               CancellationToken            = default)
+                                                               RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator       = null,
+                                                               LocalCertificateSelectionHandler?                               LocalCertificateSelector         = null,
+                                                               IEnumerable<X509Certificate2>?                                  ClientCertificates               = null,
+                                                               SslStreamCertificateContext?                                    ClientCertificateContext         = null,
+                                                               IEnumerable<X509Certificate2>?                                  ClientCertificateChain           = null,
+                                                               SslProtocols?                                                   TLSProtocols                     = null,
+                                                               CipherSuitesPolicy?                                             CipherSuitesPolicy               = null,
+                                                               X509ChainPolicy?                                                CertificateChainPolicy           = null,
+                                                               X509RevocationMode?                                             CertificateRevocationCheckMode   = null,
+                                                               Boolean?                                                        EnforceTLS                       = null,
+                                                               IEnumerable<SslApplicationProtocol>?                            ApplicationProtocols             = null,
+                                                               Boolean?                                                        AllowRenegotiation               = null,
+                                                               Boolean?                                                        AllowTLSResume                   = null,
+                                                               TOTPConfig?                                                     TOTPConfig                       = null,
+
+                                                               IPVersionPreference?                                            IPVersionPreference              = null,
+                                                               TimeSpan?                                                       ConnectTimeout                   = null,
+                                                               TimeSpan?                                                       ReceiveTimeout                   = null,
+                                                               TimeSpan?                                                       SendTimeout                      = null,
+                                                               TransmissionRetryDelayDelegate?                                 TransmissionRetryDelay           = null,
+                                                               UInt16?                                                         MaxNumberOfRetries               = null,
+                                                               UInt32?                                                         InternalBufferSize               = null,
+
+                                                               Boolean?                                                        DisableLogging                   = null,
+                                                               String?                                                         LoggingPath                      = null,
+                                                               String                                                          LoggingContext                   = "logcontext", //CPClientLogger.DefaultContext,
+                                                               LogfileCreatorDelegate?                                         LogfileCreator                   = null,
+                                                               HTTPClientLogger?                                               HTTPLogger                       = null,
+
+                                                               IDNSClient?                                                     DNSClient                        = null,
+                                                               ILogger<ATLSClient>?                                            Logger                           = null,
+                                                               ILoggerFactory?                                                 LoggerFactory                    = null,
+
+                                                               EventTracking_Id?                                               EventTrackingId                  = null,
+                                                               CancellationToken                                               CancellationToken                = default)
 
             => await ConnectWebSocketClient(
                          new WWCPWebSocketClient(
 
                              this,
                              RemoteURL,
-                             VirtualHostname,
                              Description,
-                             PreferIPv4,
-                             RemoteCertificateValidator,
-                             LocalCertificateSelector,
-                             ClientCertificates,
-                             ClientCertificateContext,
-                             ClientCertificateChain,
-                             TLSProtocol,
+
+                             NetworkingMode,
+
+                             VirtualHostname,
                              HTTPUserAgent,
                              HTTPAuthentication,
-                             RequestTimeout,
-                             TransmissionRetryDelay,
-                             MaxNumberOfRetries,
-                             InternalBufferSize,
-
                              SecWebSocketProtocols,
-                             NetworkingMode,
+                             RequestTimeout,
 
                              DisableWebSocketPings,
                              WebSocketPingEvery,
@@ -439,11 +449,38 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                              DisableMaintenanceTasks,
                              MaintenanceEvery,
 
+                             RemoteCertificateValidator,
+                             LocalCertificateSelector,
+                             ClientCertificates,
+                             ClientCertificateContext,
+                             ClientCertificateChain,
+                             TLSProtocols,
+                             CipherSuitesPolicy,
+                             CertificateChainPolicy,
+                             CertificateRevocationCheckMode,
+                             EnforceTLS,
+                             ApplicationProtocols,
+                             AllowRenegotiation,
+                             AllowTLSResume,
+                             TOTPConfig,
+
+                             IPVersionPreference,
+                             ConnectTimeout,
+                             ReceiveTimeout,
+                             SendTimeout,
+                             TransmissionRetryDelay,
+                             MaxNumberOfRetries,
+                             InternalBufferSize,
+
+                             DisableLogging,
                              LoggingPath,
                              LoggingContext,
                              LogfileCreator,
                              HTTPLogger,
-                             DNSClient
+
+                             DNSClient,
+                             Logger,
+                             LoggerFactory
 
                          ),
 
@@ -856,20 +893,20 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
 
 
-        #region Shutdown(Message = null, Wait = true)
+        #region Shutdown(EventTrackingId = null, Message = true)
 
         /// <summary>
-        /// Shutdown the HTTP WebSocket listener thread.
+        /// Stop the ATCPTestServer and close all active client connections.
         /// </summary>
-        /// <param name="Message">An optional shutdown message.</param>
-        /// <param name="Wait">Wait until the server finally shutted down.</param>
-        public async Task Shutdown(String?  Message   = null,
-                                   Boolean  Wait      = true)
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="Message">An optional message to include in the TCP server stopped event.</param>
+        public async Task Stop(EventTracking_Id?  EventTrackingId   = null,
+                               String?            Message           = null)
         {
 
-            await Task.WhenAll(wwcpWebSocketServers.
-                                   Select (ocppWebSocketServer => ocppWebSocketServer.Shutdown(Message, Wait)).
-                                   ToArray());
+            await Task.WhenAll(
+                      [.. wwcpWebSocketServers.Select(ocppWebSocketServer => ocppWebSocketServer.Stop(EventTrackingId, Message))]
+                  );
 
         }
 

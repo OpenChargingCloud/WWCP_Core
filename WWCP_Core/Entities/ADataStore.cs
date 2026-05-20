@@ -279,100 +279,100 @@ namespace cloud.charging.open.protocols.WWCP
                 {
 
                     this.Server = new TCPServer(
-                                      Port:               RoamingNetworkInfo.port,
-                                      ConnectionTimeout:  TimeSpan.FromSeconds(20),
+                                      TCPPort:            RoamingNetworkInfo.port,
+                                     // ConnectionTimeout:  TimeSpan.FromSeconds(20),
                                       AutoStart:          true
                                   );
 
-                    this.Server.OnNotification += (eventTrackingId, connection) => {
+                    //        this.Server.OnNotification += (eventTrackingId, connection) => {
 
-                        try
-                        {
+                    //            try
+                    //            {
 
-                            var LastDataReceivedAt = Timestamp.Now;
+                    //                var LastDataReceivedAt = Timestamp.Now;
 
-                            do
-                            {
+                    //                do
+                    //                {
 
-                                try
-                                {
+                    //                    try
+                    //                    {
 
-                                    var data = connection.ReadLine(MaxInitialWaitingTime:  TimeSpan.FromSeconds(5),
-                                                                   __ReadTimeout:          TimeSpan.FromSeconds(10));
+                    //                        var data = connection.ReadLine(MaxInitialWaitingTime:  TimeSpan.FromSeconds(5),
+                    //                                                       __ReadTimeout:          TimeSpan.FromSeconds(10));
 
-                                    if (data.IsNotNullOrEmpty())
-                                    {
+                    //                        if (data.IsNotNullOrEmpty())
+                    //                        {
 
-                                        DebugX.Log($"{Name}: Received '{data}' from '{connection.RemoteSocket}'!");
+                    //                            DebugX.Log($"{Name}: Received '{data}' from '{connection.RemoteSocket}'!");
 
-                                        LastDataReceivedAt = Timestamp.Now;
+                    //                            LastDataReceivedAt = Timestamp.Now;
 
-                                        if (data == "BYE!")
-                                            connection.Close();
+                    //                            if (data == "BYE!")
+                    //                                connection.Close();
 
-                                        else
-                                        {
+                    //                            else
+                    //                            {
 
-                                            try
-                                            {
+                    //                                try
+                    //                                {
 
-                                                var json       = JObject.Parse(data);
+                    //                                    var json       = JObject.Parse(data);
 
-                                                var timestamp  =                     json["timestamp"]?.Value<DateTime>();
-                                                var id         = this.StringIdParser(json["id"]?.       Value<String>() ?? "");
-                                                var command    =                     json["command"]?.  Value<String>();
+                    //                                    var timestamp  =                     json["timestamp"]?.Value<DateTime>();
+                    //                                    var id         = this.StringIdParser(json["id"]?.       Value<String>() ?? "");
+                    //                                    var command    =                     json["command"]?.  Value<String>();
 
-                                                if (timestamp.HasValue    &&
-                                                    id        is not null &&
-                                                    command.  IsNotNullOrEmpty())
-                                                {
+                    //                                    if (timestamp.HasValue    &&
+                    //                                        id        is not null &&
+                    //                                        command.  IsNotNullOrEmpty())
+                    //                                    {
 
-                                                    if (CommandProcessor(null,
-                                                                         0,
-                                                                         connection.RemoteSocket,
-                                                                         timestamp.Value,
-                                                                         (TId) id,
-                                                                         command,
-                                                                         json,
-                                                                         InternalData))
-                                                    {
-                                                        LogToDisc(data).Wait();
-                                                    }
+                    //                                        if (CommandProcessor(null,
+                    //                                                             0,
+                    //                                                             connection.RemoteSocket,
+                    //                                                             timestamp.Value,
+                    //                                                             (TId) id,
+                    //                                                             command,
+                    //                                                             json,
+                    //                                                             InternalData))
+                    //                                        {
+                    //                                            LogToDisc(data).Wait();
+                    //                                        }
 
-                                                    connection.WriteLineToResponseStream("ack");
+                    //                                        connection.WriteLineToResponseStream("ack");
 
-                                                }
+                    //                                    }
 
-                                            }
-                                            catch
-                                            { }
+                    //                                }
+                    //                                catch
+                    //                                { }
 
-                                        }
+                    //                            }
 
-                                    }
+                    //                        }
 
-                                }
-                                catch
-                                { }
+                    //                    }
+                    //                    catch
+                    //                    { }
 
-                            } while (!connection.IsClosed && Timestamp.Now - LastDataReceivedAt < TimeSpan.FromSeconds(10));
+                    //                } while (!connection.IsClosed && Timestamp.Now - LastDataReceivedAt < TimeSpan.FromSeconds(10));
 
-                        }
-                        catch
-                        { }
+                    //            }
+                    //            catch
+                    //            { }
 
-                        try
-                        {
+                    //            try
+                    //            {
 
-                            if (!connection.IsClosed)
-                                connection.Close();
+                    //                if (!connection.IsClosed)
+                    //                    connection.Close();
 
-                        } catch
-                        { }
+                    //            } catch
+                    //            { }
 
-                        Console.WriteLine($"{Name}: Connection '{connection.RemoteSocket}' closed!");
+                    //            Console.WriteLine($"{Name}: Connection '{connection.RemoteSocket}' closed!");
 
-                    };
+                    //        };
 
                 }
                 catch (Exception e)

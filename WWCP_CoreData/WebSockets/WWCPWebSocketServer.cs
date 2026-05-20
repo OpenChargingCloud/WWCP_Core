@@ -34,6 +34,8 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using org.GraphDefined.Vanaheimr.Hermod.TCP;
+using Microsoft.Extensions.Logging;
 
 #endregion
 
@@ -174,40 +176,50 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// 
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public WWCPWebSocketServer(INetworkingNode                                                 NetworkingNode,
+        public WWCPWebSocketServer(INetworkingNode                                           NetworkingNode,
 
-                                   String?                                                         HTTPServiceName              = DefaultHTTPServiceName,
-                                   IIPAddress?                                                     IPAddress                    = null,
-                                   IPPort?                                                         TCPPort                      = null,
-                                   I18NString?                                                     Description                  = null,
+                                   IIPAddress?                                               IPAddress                    = null,
+                                   IPPort?                                                   HTTPPort                     = null,
+                                   String?                                                   HTTPServerName               = null,
+                                   I18NString?                                               Description                  = null,
 
-                                   Boolean?                                                        RequireAuthentication        = true,
-                                   IEnumerable<String>?                                            SecWebSocketProtocols        = null,
-                                   SubprotocolSelectorDelegate?                                    SubprotocolSelector          = null,
-                                   Boolean                                                         DisableWebSocketPings        = false,
-                                   TimeSpan?                                                       WebSocketPingEvery           = null,
-                                   TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
+                                   Boolean?                                                  RequireAuthentication        = true,
+                                   IEnumerable<String>?                                      SecWebSocketProtocols        = null,
+                                   SubprotocolSelectorDelegate?                              SubprotocolSelector          = null,
+                                   Boolean                                                   DisableWebSocketPings        = false,
+                                   TimeSpan?                                                 WebSocketPingEvery           = null,
+                                   TimeSpan?                                                 SlowNetworkSimulationDelay   = null,
 
-                                   Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
-                                   RemoteTLSClientCertificateValidationHandler<AWebSocketServer>?  ClientCertificateValidator   = null,
-                                   LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
-                                   SslProtocols?                                                   AllowedTLSProtocols          = null,
-                                   Boolean?                                                        ClientCertificateRequired    = null,
-                                   Boolean?                                                        CheckCertificateRevocation   = null,
+                                   UInt32?                                                   BufferSize                   = null,
+                                   TimeSpan?                                                 ReceiveTimeout               = null,
+                                   TimeSpan?                                                 SendTimeout                  = null,
+                                   TCPEchoLoggingDelegate?                                   LoggingHandler               = null,
 
-                                   ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
-                                   ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
-                                   Boolean?                                                        ServerThreadIsBackground     = null,
-                                   ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
-                                   TimeSpan?                                                       ConnectionTimeout            = null,
-                                   UInt32?                                                         MaxClientConnections         = null,
+                                   ServerCertificateSelectorDelegate?                        ServerCertificateSelector    = null,
+                                   RemoteTLSClientCertificateValidationHandler<ITCPServer>?  ClientCertificateValidator   = null,
+                                   LocalCertificateSelectionHandler?                         LocalCertificateSelector     = null,
+                                   SslProtocols?                                             AllowedTLSProtocols          = null,
+                                   Boolean?                                                  ClientCertificateRequired    = null,
+                                   Boolean?                                                  CheckCertificateRevocation   = null,
 
-                                   DNSClient?                                                      DNSClient                    = null,
-                                   Boolean                                                         AutoStart                    = true)
+                                   ConnectionIdBuilder?                                      ConnectionIdBuilder          = null,
+                                   UInt32?                                                   MaxClientConnections         = null,
+                                   IDNSClient?                                               DNSClient                    = null,
+
+                                   Boolean?                                                  DisableMaintenanceTasks      = false,
+                                   TimeSpan?                                                 MaintenanceInitialDelay      = null,
+                                   TimeSpan?                                                 MaintenanceEvery             = null,
+
+                                   Boolean?                                                  DisableWardenTasks           = false,
+                                   TimeSpan?                                                 WardenInitialDelay           = null,
+                                   TimeSpan?                                                 WardenCheckEvery             = null,
+
+                                   ILoggerFactory?                                           LoggerFactory                = null,
+                                   Boolean?                                                  AutoStart                    = false)
 
             : base(IPAddress,
-                   TCPPort         ?? IPPort.Auto,
-                   HTTPServiceName ?? DefaultHTTPServiceName,
+                   HTTPPort,
+                   HTTPServerName,
                    Description,
 
                    RequireAuthentication,
@@ -217,6 +229,11 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
 
+                   BufferSize,
+                   ReceiveTimeout,
+                   SendTimeout,
+                   LoggingHandler,
+
                    ServerCertificateSelector,
                    ClientCertificateValidator,
                    LocalCertificateSelector,
@@ -224,16 +241,20 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                    ClientCertificateRequired,
                    CheckCertificateRevocation,
 
-                   ServerThreadNameCreator,
-                   ServerThreadPrioritySetter,
-                   ServerThreadIsBackground,
                    ConnectionIdBuilder,
-                   ConnectionTimeout,
                    MaxClientConnections,
-
                    DNSClient,
-                   null,
-                   false)
+
+                   DisableMaintenanceTasks,
+                   MaintenanceInitialDelay,
+                   MaintenanceEvery,
+
+                   DisableWardenTasks,
+                   WardenInitialDelay,
+                   WardenCheckEvery,
+
+                   LoggerFactory,
+                   AutoStart: false)
 
         {
 
@@ -267,8 +288,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                                        return Task.CompletedTask;
                                                    };
 
-            if (AutoStart)
-                Start();
+            if (AutoStart ?? false)
+                Start().GetAwaiter().GetResult();
 
         }
 

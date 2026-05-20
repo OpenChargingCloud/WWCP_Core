@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// <summary>
         /// The HTTP server of the WWCP tracker.
         /// </summary>
-        public HTTPTestServerX  HTTPServer      { get; }
+        public HTTPServer  HTTPServer      { get; }
 
         /// <summary>
         /// The common URI prefix of the HTTP server of the WWCP tracker.
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 
         public Tracker(Tracker_Id  Id,
                        I18NString  Description,
-                       HTTPTestServerX  HTTPServer,
+                       HTTPServer  HTTPServer,
                        HTTPPath?   URLPrefix   = null,
                        DNSClient?  DNSClient   = null)
         {

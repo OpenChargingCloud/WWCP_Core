@@ -1,4 +1,4 @@
-﻿///<reference path="../../../../Hermod/Hermod/Hermod/HTTP/HTTPAPI/HTTPRoot/ts/date.format.ts" />
+﻿///<reference path="../../../../Hermod/Hermod/HTTP/HTTPAPI/HTTPRoot/ts/date.format.ts" />
 
 function StartDebugLog() {
 

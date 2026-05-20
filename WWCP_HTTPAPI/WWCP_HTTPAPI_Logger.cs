@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A WWCP HTTP API logger.
     /// </summary>
-    public class WWCP_HTTPAPI_Logger : HTTPServerLoggerX
+    public class WWCP_HTTPAPI_Logger : HTTPServerLogger
     {
 
         #region Data

@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
+using Microsoft.Extensions.Logging;
 
 #endregion
 
@@ -303,81 +304,97 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="LoggingContext">An optional context for logging.</param>
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public EMobilityProviderAPIClient(URL                                                        RemoteURL,
-                                          HTTPHostname?                                              VirtualHostname                      = null,
-                                          I18NString?                                                Description                          = null,
-                                          IPVersionPreference?                                       PreferIPv4                           = null,
-                                          RemoteTLSServerCertificateValidationHandler<IHTTPClient>?  RemoteCertificateValidationHandler   = null,
-                                          LocalCertificateSelectionHandler?                          LocalCertificateSelector             = null,
-                                          IEnumerable<X509Certificate2>?                             ClientCertificates                   = null,
-                                          SslStreamCertificateContext?                               ClientCertificateContext             = null,
-                                          IEnumerable<X509Certificate2>?                             ClientCertificateChain               = null,
-                                          SslProtocols?                                              TLSProtocols                         = null,
-                                          HTTPContentType?                                           ContentType                          = null,
-                                          AcceptTypes?                                               Accept                               = null,
-                                          IHTTPAuthentication?                                       Authentication                       = null,
-                                          String?                                                    HTTPUserAgent                        = DefaultHTTPUserAgent,
-                                          TimeSpan?                                                  RequestTimeout                       = null,
-                                          TransmissionRetryDelayDelegate?                            TransmissionRetryDelay               = null,
-                                          UInt16?                                                    MaxNumberOfRetries                   = null,
-                                          UInt32?                                                    InternalBufferSize                   = null,
+        public EMobilityProviderAPIClient(URL                                                        URL,
+                                          I18NString?                                                Description                           = null,
+                                          String?                                                    HTTPUserAgent                         = null,
+                                          IHTTPAuthentication?                                       HTTPAuthentication                    = null,
+                                          AcceptTypes?                                               Accept                                = null,
+                                          HTTPContentType?                                           ContentType                           = null,
+                                          ConnectionType?                                            Connection                            = null,
+                                          DefaultRequestBuilderDelegate?                             DefaultRequestBuilder                 = null,
 
-                                          String?                                                    LoggingPath                          = null,
-                                          String                                                     LoggingContext                       = "",//EMobilityProviderAPIClientLogger.DefaultContext,
-                                          LogfileCreatorDelegate?                                    LogfileCreator                       = null,
+                                          RemoteTLSServerCertificateValidationHandler<IHTTPClient>?  RemoteCertificateValidator            = null,
+                                          LocalCertificateSelectionHandler?                          LocalCertificateSelector              = null,
+                                          IEnumerable<X509Certificate2>?                             ClientCertificates                    = null,
+                                          SslStreamCertificateContext?                               ClientCertificateContext              = null,
+                                          IEnumerable<X509Certificate2>?                             ClientCertificateChain                = null,
+                                          SslProtocols?                                              TLSProtocols                          = null,
+                                          CipherSuitesPolicy?                                        CipherSuitesPolicy                    = null,
+                                          X509ChainPolicy?                                           CertificateChainPolicy                = null,
+                                          X509RevocationMode?                                        CertificateRevocationCheckMode        = null,
+                                          IEnumerable<SslApplicationProtocol>?                       ApplicationProtocols                  = null,
+                                          Boolean?                                                   AllowRenegotiation                    = null,
+                                          Boolean?                                                   AllowTLSResume                        = null,
+                                          TOTPConfig?                                                TOTPConfig                            = null,
 
-                                          Boolean?                                                   DisableLogging                       = false,
-                                          DNSClient?                                                 DNSClient                            = null)
+                                          IPVersionPreference?                                       IPVersionPreference                   = null,
+                                          TimeSpan?                                                  ConnectTimeout                        = null,
+                                          TimeSpan?                                                  ReceiveTimeout                        = null,
+                                          TimeSpan?                                                  SendTimeout                           = null,
+                                          TransmissionRetryDelayDelegate?                            TransmissionRetryDelay                = null,
+                                          UInt16?                                                    MaxNumberOfRetries                    = null,
+                                          UInt32?                                                    InternalBufferSize                    = null,
 
-            : base(RemoteURL,
+                                          Boolean?                                                   ConsumeRequestChunkedTEImmediately    = null,
+                                          Boolean?                                                   ConsumeResponseChunkedTEImmediately   = null,
+
+                                          Boolean?                                                   DisableLogging                        = null,
+                                          IDNSClient?                                                DNSClient                             = null,
+                                          ILogger<AHTTPClient>?                                      Logger                                = null,
+                                          ILoggerFactory?                                            LoggerFactory                         = null)
+
+            : base(URL,
                    Description,
-                   HTTPUserAgent ?? DefaultHTTPUserAgent,
-                   null,  // Accept
-                   null,  // ContentType
-                   null,  // Connection
-                   null,  // DefaultRequestBuilder
+                   HTTPUserAgent,
+                   HTTPAuthentication,
+                   Accept,
+                   ContentType,
+                   Connection,
+                   DefaultRequestBuilder,
 
-                   RemoteCertificateValidationHandler is not null
-                       ? (sender,
-                          certificate,
-                          certificateChain,
-                          aHTTPTestClient,
-                          policyErrors) => RemoteCertificateValidationHandler.Invoke(
-                                               sender,
-                                               certificate,
-                                               certificateChain,
-                                               aHTTPTestClient as IHTTPClient,
-                                               policyErrors
-                                           )
-                       : null,
+                   RemoteCertificateValidator,
+                   //RemoteCertificateValidationHandler is not null
+                   //    ? (sender,
+                   //       certificate,
+                   //       certificateChain,
+                   //       aHTTPTestClient,
+                   //       policyErrors) => RemoteCertificateValidationHandler.Invoke(
+                   //                            sender,
+                   //                            certificate,
+                   //                            certificateChain,
+                   //                            aHTTPTestClient as IHTTPClient,
+                   //                            policyErrors
+                   //                        )
+                   //    : null,
+
                    LocalCertificateSelector,
                    ClientCertificates,
                    ClientCertificateContext,
                    ClientCertificateChain,
                    TLSProtocols,
-                   null,  // CipherSuitesPolicy,
-                   null,  // CertificateChainPolicy,
-                   null,  // CertificateRevocationCheckMode,
-                   null,  // ApplicationProtocols
-                   null,  // AllowRenegotiation,
-                   null,  // AllowTLSResume,
-                   null,  // TOTPConfig
+                   CipherSuitesPolicy,
+                   CertificateChainPolicy,
+                   CertificateRevocationCheckMode,
+                   ApplicationProtocols,
+                   AllowRenegotiation,
+                   AllowTLSResume,
+                   TOTPConfig,
 
-                   null,
-
-                   PreferIPv4,
-                   null,  // ConnectTimeout,
-                   null,  // ReceiveTimeout,
-                   null,  // SendTimeout,
+                   IPVersionPreference,
+                   ConnectTimeout,
+                   ReceiveTimeout,
+                   SendTimeout,
                    TransmissionRetryDelay,
                    MaxNumberOfRetries,
-                   null,  // BufferSize  ?? 512,
+                   InternalBufferSize,
 
-                   true,  // ConsumeRequestChunkedTEImmediately
-                   true,  // ConsumeResponseChunkedTEImmediately
+                   ConsumeRequestChunkedTEImmediately,
+                   ConsumeResponseChunkedTEImmediately,
 
                    DisableLogging,
-                   DNSClient)
+                   DNSClient,
+                   null,
+                   LoggerFactory)
 
         {
 
@@ -438,7 +455,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                                        MaxNumberOfClients:               6, //MaxNumberOfPooledClients ?? 6,
 
-                                       IPVersionPreference:                       PreferIPv4,
+                                       IPVersionPreference:              IPVersionPreference,
                                        ConnectTimeout:                   null,
                                        ReceiveTimeout:                   null,
                                        SendTimeout:                      null,
