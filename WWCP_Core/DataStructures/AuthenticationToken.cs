@@ -229,10 +229,16 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             if (AuthenticationToken2.TryParseHEX(HEX, out var authenticationToken))
+            {
+
                 AuthenticationToken = new AuthenticationToken(
                                           authenticationToken,
                                           Type
                                       );
+
+                return true;
+
+            }
 
             AuthenticationToken = null;
             return false;

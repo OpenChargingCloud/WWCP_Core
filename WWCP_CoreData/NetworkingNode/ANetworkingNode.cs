@@ -391,6 +391,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                                                Boolean                                                         DisableMaintenanceTasks          = false,
                                                                TimeSpan?                                                       MaintenanceEvery                 = null,
 
+                                                               String?                                                         TLSHostname                      = null,
                                                                RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator       = null,
                                                                LocalCertificateSelectionHandler?                               LocalCertificateSelector         = null,
                                                                IEnumerable<X509Certificate2>?                                  ClientCertificates               = null,
@@ -449,6 +450,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                              DisableMaintenanceTasks,
                              MaintenanceEvery,
 
+                             TLSHostname,
                              RemoteCertificateValidator,
                              LocalCertificateSelector,
                              ClientCertificates,

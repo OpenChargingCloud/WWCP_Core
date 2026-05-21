@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.WWCP
                             IEnumerable<CryptoKeyInfo>?  Identities       = null,
                             IEnumerable<CryptoKeyInfo>?  IdentityGroups   = null,
 
-                            HTTPTestServerX?             HTTPTestServer   = null,
+                            HTTPServer?                  HTTPServer       = null,
                             HTTPExtAPI?                  DefaultHTTPAPI   = null,
 
                             IDNSClient?                  DNSClient        = null)
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.WWCP
                    Identities,
                    IdentityGroups,
 
-                   HTTPTestServer,
+                   HTTPServer,
                    DefaultHTTPAPI,
 
                    DNSClient)
