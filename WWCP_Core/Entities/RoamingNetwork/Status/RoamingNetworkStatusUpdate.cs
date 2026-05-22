@@ -41,12 +41,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The new timestamped status of the roaming network.
         /// </summary>
-        public Timestamped<RoamingNetworkStatusTypes>   NewStatus     { get; }
+        public Timestamped<RoamingNetworkStatusType>   NewStatus     { get; }
 
         /// <summary>
         /// The optional old timestamped status of the roaming network.
         /// </summary>
-        public Timestamped<RoamingNetworkStatusTypes>?  OldStatus     { get; }
+        public Timestamped<RoamingNetworkStatusType>?  OldStatus     { get; }
 
         /// <summary>
         /// An optional data source or context for this roaming network status update.
@@ -65,8 +65,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OldStatus">The optional old timestamped admin status of the roaming network.</param>
         /// <param name="DataSource">An optional data source or context for the roaming network status update.</param>
         public RoamingNetworkStatusUpdate(RoamingNetwork_Id                        Id,
-                                          Timestamped<RoamingNetworkStatusTypes>   NewStatus,
-                                          Timestamped<RoamingNetworkStatusTypes>?  OldStatus    = null,
+                                          Timestamped<RoamingNetworkStatusType>   NewStatus,
+                                          Timestamped<RoamingNetworkStatusType>?  OldStatus    = null,
                                           String?                                  DataSource   = null)
 
         {

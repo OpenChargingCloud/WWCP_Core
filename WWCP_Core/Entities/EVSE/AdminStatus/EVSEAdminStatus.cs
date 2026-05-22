@@ -32,78 +32,22 @@ namespace cloud.charging.open.protocols.WWCP
     public static class EVSEAdminStatusExtensions
     {
 
-        #region ToJSON(this EVSEAdminStatus, Skip = null, Take = null)
+        public static IEnumerable<IStatus<EVSE_Id, EVSEAdminStatusType>> ToStatusList(this EVSEAdminStatus[] StatusList)
+            => StatusList.Select(status => status as IStatus<EVSE_Id, EVSEAdminStatusType>);
 
-        public static JObject ToJSON(this IEnumerable<EVSEAdminStatus>  EVSEAdminStatus,
+        public static JObject ToJSON(this EVSEAdminStatus[] StatusList)
+            => StatusList.ToStatusList().ToJSON();
+
+
+        public static JObject ToJSON(this IEnumerable<EVSEAdminStatus>  StatusList,
                                      UInt64?                            Skip   = null,
                                      UInt64?                            Take   = null)
-        {
 
-            #region Initial checks
+            => StatusList.ToJSON(
+                   Skip,
+                   Take
+               );
 
-            if (EVSEAdminStatus is null || !EVSEAdminStatus.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate EVSE identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<EVSE_Id, EVSEAdminStatus>();
-
-            foreach (var status in EVSEAdminStatus)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].Timestamp >= status.Timestamp)
-                    filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
-
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Timestamp.ToISO8601(),
-                                                                          kvp.Value.Status.   ToString())
-                                                              )));
-
-        }
-
-        #endregion
-
-        #region Contains(this EVSEAdminStatus, Id, Status)
-
-        /// <summary>
-        /// Check if the given enumeration of EVSEs and their current admin status
-        /// contains the given pair of EVSE identification and admin status.
-        /// </summary>
-        /// <param name="EVSEAdminStatus">An enumeration of EVSEs and their current admin status.</param>
-        /// <param name="Id">An EVSE identification.</param>
-        /// <param name="AdminStatus">An EVSE admin status.</param>
-        public static Boolean Contains(this IEnumerable<EVSEAdminStatus>  EVSEAdminStatus,
-                                       EVSE_Id                            Id,
-                                       EVSEAdminStatusType               AdminStatus)
-        {
-
-            foreach (var status in EVSEAdminStatus)
-            {
-                if (status.Id     == Id &&
-                    status.Status == AdminStatus)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-
-        }
-
-        #endregion
 
     }
 
@@ -111,7 +55,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The current admin status of an EVSE.
     /// </summary>
-    public readonly struct EVSEAdminStatus : IEquatable<EVSEAdminStatus>,
+    public readonly struct EVSEAdminStatus : IStatus<EVSE_Id, EVSEAdminStatusType>,
+                                             IEquatable<EVSEAdminStatus>,
                                              IComparable<EVSEAdminStatus>,
                                              IComparable
     {
@@ -138,17 +83,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Context?             Context      { get; }
 
-        /// <summary>
-        /// The timestamped admin status of the EVSE.
-        /// </summary>
-        public Timestamped<EVSEAdminStatusType> TimestampedAdminStatus
-            => new (Timestamp, Status);
-
         #endregion
 
         #region Constructor(s)
 
-        #region EVSEAdminStatus(Id,            Status, Context = null)
+        #region EVSEAdminStatus(Id, Status,            Context = null)
 
         /// <summary>
         /// Create a new EVSE admin status.

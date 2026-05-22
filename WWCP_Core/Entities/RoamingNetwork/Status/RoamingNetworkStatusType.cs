@@ -34,14 +34,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// Indicates whether this roaming network status types is null or empty.
         /// </summary>
         /// <param name="RoamingNetworkStatusType">A roaming network status type.</param>
-        public static Boolean IsNullOrEmpty(this RoamingNetworkStatusTypes? RoamingNetworkStatusType)
+        public static Boolean IsNullOrEmpty(this RoamingNetworkStatusType? RoamingNetworkStatusType)
             => !RoamingNetworkStatusType.HasValue || RoamingNetworkStatusType.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this roaming network status types is null or empty.
         /// </summary>
         /// <param name="RoamingNetworkStatusType">A roaming network status type.</param>
-        public static Boolean IsNotNullOrEmpty(this RoamingNetworkStatusTypes? RoamingNetworkStatusType)
+        public static Boolean IsNotNullOrEmpty(this RoamingNetworkStatusType? RoamingNetworkStatusType)
             => RoamingNetworkStatusType.HasValue && RoamingNetworkStatusType.Value.IsNotNullOrEmpty;
 
     }
@@ -50,9 +50,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The status type of a roaming network.
     /// </summary>
-    public readonly struct RoamingNetworkStatusTypes : IId,
-                                                       IEquatable<RoamingNetworkStatusTypes>,
-                                                       IComparable<RoamingNetworkStatusTypes>
+    public readonly struct RoamingNetworkStatusType : IId,
+                                                      IEquatable<RoamingNetworkStatusType>,
+                                                      IComparable<RoamingNetworkStatusType>
     {
 
         #region Data
@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new roaming network status types based on the given string.
         /// </summary>
-        private RoamingNetworkStatusTypes(String Text)
+        private RoamingNetworkStatusType(String Text)
         {
             InternalId = Text;
         }
@@ -105,10 +105,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given string as a roaming network status type.
         /// </summary>
         /// <param name="Text">A text representation of a roaming network status type.</param>
-        public static RoamingNetworkStatusTypes Parse(String Text)
+        public static RoamingNetworkStatusType Parse(String Text)
         {
 
-            if (TryParse(Text, out RoamingNetworkStatusTypes roamingNetworkStatusType))
+            if (TryParse(Text, out RoamingNetworkStatusType roamingNetworkStatusType))
                 return roamingNetworkStatusType;
 
             throw new ArgumentException($"Invalid text representation of a roaming network status type: '" + Text + "'!",
@@ -124,10 +124,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Try to parse the given string as a roaming network status type.
         /// </summary>
         /// <param name="Text">A text representation of a roaming network status type.</param>
-        public static RoamingNetworkStatusTypes? TryParse(String Text)
+        public static RoamingNetworkStatusType? TryParse(String Text)
         {
 
-            if (TryParse(Text, out RoamingNetworkStatusTypes roamingNetworkStatusType))
+            if (TryParse(Text, out RoamingNetworkStatusType roamingNetworkStatusType))
                 return roamingNetworkStatusType;
 
             return null;
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Text">A text representation of a roaming network status type.</param>
         /// <param name="RoamingNetworkStatusType">The parsed roaming network status type.</param>
-        public static Boolean TryParse(String Text, out RoamingNetworkStatusTypes RoamingNetworkStatusType)
+        public static Boolean TryParse(String Text, out RoamingNetworkStatusType RoamingNetworkStatusType)
         {
 
             Text = Text.Trim();
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 try
                 {
-                    RoamingNetworkStatusType = new RoamingNetworkStatusTypes(Text);
+                    RoamingNetworkStatusType = new RoamingNetworkStatusType(Text);
                     return true;
                 }
                 catch
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Clone this roaming network status type.
         /// </summary>
-        public RoamingNetworkStatusTypes Clone()
+        public RoamingNetworkStatusType Clone()
 
             => new (
                    InternalId.CloneString()
@@ -185,32 +185,38 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Unknown status of the roaming network.
         /// </summary>
-        public static readonly RoamingNetworkStatusTypes Unknown       = new("unknown");
+        public static RoamingNetworkStatusType  Unknown         { get; }
+            = new ("unknown");
 
         /// <summary>
         /// Unclear status of the roaming network.
         /// </summary>
-        public static readonly RoamingNetworkStatusTypes Unspecified   = new("unspecified");
+        public static RoamingNetworkStatusType  Unspecified     { get; }
+            = new ("unspecified");
 
         /// <summary>
         /// The roaming network is currently offline.
         /// </summary>
-        public static readonly RoamingNetworkStatusTypes Offline       = new("offline");
+        public static RoamingNetworkStatusType  Offline         { get; }
+            = new ("offline");
 
         /// <summary>
         /// The roaming network is not fully operational yet.
         /// </summary>
-        public static readonly RoamingNetworkStatusTypes InDeployment  = new("inDeployment");
+        public static RoamingNetworkStatusType  InDeployment    { get; }
+            = new ("inDeployment");
 
         /// <summary>
         /// The roaming network is available.
         /// </summary>
-        public static readonly RoamingNetworkStatusTypes Available     = new("available");
+        public static RoamingNetworkStatusType  Available       { get; }
+            = new ("available");
 
         /// <summary>
         /// A fatal error has occurred within the roaming network.
         /// </summary>
-        public static readonly RoamingNetworkStatusTypes Error         = new("error");
+        public static RoamingNetworkStatusType  Error           { get; }
+            = new ("error");
 
         #endregion
 
@@ -225,8 +231,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
         /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
-                                           RoamingNetworkStatusTypes RoamingNetworkStatusType2)
+        public static Boolean operator == (RoamingNetworkStatusType RoamingNetworkStatusType1,
+                                           RoamingNetworkStatusType RoamingNetworkStatusType2)
 
             => RoamingNetworkStatusType1.Equals(RoamingNetworkStatusType2);
 
@@ -240,8 +246,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
         /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
-                                           RoamingNetworkStatusTypes RoamingNetworkStatusType2)
+        public static Boolean operator != (RoamingNetworkStatusType RoamingNetworkStatusType1,
+                                           RoamingNetworkStatusType RoamingNetworkStatusType2)
 
             => !RoamingNetworkStatusType1.Equals(RoamingNetworkStatusType2);
 
@@ -255,8 +261,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
         /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator < (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
-                                          RoamingNetworkStatusTypes RoamingNetworkStatusType2)
+        public static Boolean operator < (RoamingNetworkStatusType RoamingNetworkStatusType1,
+                                          RoamingNetworkStatusType RoamingNetworkStatusType2)
 
             => RoamingNetworkStatusType1.CompareTo(RoamingNetworkStatusType2) < 0;
 
@@ -270,8 +276,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
         /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator <= (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
-                                           RoamingNetworkStatusTypes RoamingNetworkStatusType2)
+        public static Boolean operator <= (RoamingNetworkStatusType RoamingNetworkStatusType1,
+                                           RoamingNetworkStatusType RoamingNetworkStatusType2)
 
             => RoamingNetworkStatusType1.CompareTo(RoamingNetworkStatusType2) <= 0;
 
@@ -285,8 +291,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
         /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator > (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
-                                          RoamingNetworkStatusTypes RoamingNetworkStatusType2)
+        public static Boolean operator > (RoamingNetworkStatusType RoamingNetworkStatusType1,
+                                          RoamingNetworkStatusType RoamingNetworkStatusType2)
 
             => RoamingNetworkStatusType1.CompareTo(RoamingNetworkStatusType2) > 0;
 
@@ -300,8 +306,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
         /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator >= (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
-                                           RoamingNetworkStatusTypes RoamingNetworkStatusType2)
+        public static Boolean operator >= (RoamingNetworkStatusType RoamingNetworkStatusType1,
+                                           RoamingNetworkStatusType RoamingNetworkStatusType2)
 
             => RoamingNetworkStatusType1.CompareTo(RoamingNetworkStatusType2) >= 0;
 
@@ -319,7 +325,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">A roaming network status type to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is RoamingNetworkStatusTypes roamingNetworkStatusType
+            => Object is RoamingNetworkStatusType roamingNetworkStatusType
                    ? CompareTo(roamingNetworkStatusType)
                    : throw new ArgumentException("The given object is not a roaming network status type!",
                                                  nameof(Object));
@@ -332,7 +338,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two roaming network status types.
         /// </summary>
         /// <param name="RoamingNetworkStatusType">A roaming network status type to compare with.</param>
-        public Int32 CompareTo(RoamingNetworkStatusTypes RoamingNetworkStatusType)
+        public Int32 CompareTo(RoamingNetworkStatusType RoamingNetworkStatusType)
 
             => String.Compare(InternalId,
                               RoamingNetworkStatusType.InternalId,
@@ -352,7 +358,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">A roaming network status type to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is RoamingNetworkStatusTypes roamingNetworkStatusType &&
+            => Object is RoamingNetworkStatusType roamingNetworkStatusType &&
                    Equals(roamingNetworkStatusType);
 
         #endregion
@@ -363,7 +369,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two roaming network status types for equality.
         /// </summary>
         /// <param name="RoamingNetworkStatusType">A roaming network status type to compare with.</param>
-        public Boolean Equals(RoamingNetworkStatusTypes RoamingNetworkStatusType)
+        public Boolean Equals(RoamingNetworkStatusType RoamingNetworkStatusType)
 
             => String.Equals(InternalId,
                              RoamingNetworkStatusType.InternalId,

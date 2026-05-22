@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A roaming network admin status report.
     /// </summary>
-    public class RoamingNetworkAdminStatusReport : StatusReport<IRoamingNetwork, RoamingNetworkAdminStatusTypes>
+    public class RoamingNetworkAdminStatusReport : StatusReport<IRoamingNetwork, RoamingNetworkAdminStatusType>
     {
 
         /// <summary>

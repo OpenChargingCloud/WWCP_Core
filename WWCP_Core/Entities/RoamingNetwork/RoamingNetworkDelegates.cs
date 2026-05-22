@@ -54,8 +54,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnRoamingNetworkAdminStatusChangedDelegate(DateTimeOffset                                Timestamp,
                                                                     EventTracking_Id                              EventTrackingId,
                                                                     IRoamingNetwork                               RoamingNetwork,
-                                                                    Timestamped<RoamingNetworkAdminStatusTypes>   NewStatus,
-                                                                    Timestamped<RoamingNetworkAdminStatusTypes>?  OldStatus    = null,
+                                                                    Timestamped<RoamingNetworkAdminStatusType>   NewStatus,
+                                                                    Timestamped<RoamingNetworkAdminStatusType>?  OldStatus    = null,
                                                                     Context?                                      DataSource   = null);
 
 
@@ -71,8 +71,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnRoamingNetworkStatusChangedDelegate(DateTimeOffset                           Timestamp,
                                                                EventTracking_Id                         EventTrackingId,
                                                                IRoamingNetwork                          RoamingNetwork,
-                                                               Timestamped<RoamingNetworkStatusTypes>   NewStatus,
-                                                               Timestamped<RoamingNetworkStatusTypes>?  OldStatus    = null,
+                                                               Timestamped<RoamingNetworkStatusType>   NewStatus,
+                                                               Timestamped<RoamingNetworkStatusType>?  OldStatus    = null,
                                                                Context?                                 DataSource   = null);
 
 }

@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A roaming network status report.
     /// </summary>
-    public class RoamingNetworkStatusReport : StatusReport<IRoamingNetwork, RoamingNetworkStatusTypes>
+    public class RoamingNetworkStatusReport : StatusReport<IRoamingNetwork, RoamingNetworkStatusType>
     {
 
         /// <summary>

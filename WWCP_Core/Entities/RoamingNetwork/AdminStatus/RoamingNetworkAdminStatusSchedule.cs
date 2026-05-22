@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamped admin status of the roaming network.
         /// </summary>
-        public StatusSchedule<RoamingNetworkAdminStatusTypes>  StatusSchedule    { get; }
+        public StatusSchedule<RoamingNetworkAdminStatusType>  StatusSchedule    { get; }
 
         #endregion
 
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="StatusSchedule">The timestamped admin status of the roaming network.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public RoamingNetworkAdminStatusSchedule(RoamingNetwork_Id                               Id,
-                                                 StatusSchedule<RoamingNetworkAdminStatusTypes>  StatusSchedule,
+                                                 StatusSchedule<RoamingNetworkAdminStatusType>  StatusSchedule,
                                                  JObject?                                        CustomData     = null,
                                                  UserDefinedDictionary?                          InternalData   = null)
 

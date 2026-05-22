@@ -52,10 +52,10 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 ClassicAssert.AreEqual ("PRODUCTION",                                 roamingNetwork.Name.       FirstText());
                 ClassicAssert.AreEqual ("The main production roaming network",        roamingNetwork.Description.FirstText());
 
-                ClassicAssert.AreEqual (RoamingNetworkAdminStatusTypes.OutOfService,  roamingNetwork.AdminStatus);
+                ClassicAssert.AreEqual (RoamingNetworkAdminStatusType.OutOfService,  roamingNetwork.AdminStatus);
                 ClassicAssert.AreEqual (1,                                            roamingNetwork.AdminStatusSchedule().Count());
 
-                ClassicAssert.AreEqual (RoamingNetworkStatusTypes.Offline,            roamingNetwork.Status);
+                ClassicAssert.AreEqual (RoamingNetworkStatusType.Offline,            roamingNetwork.Status);
                 ClassicAssert.AreEqual (1,                                            roamingNetwork.StatusSchedule().     Count());
 
 
@@ -97,8 +97,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     ClassicAssert.AreEqual ("TESTNET",                                   roamingNetwork.Name.       FirstText());
                     ClassicAssert.AreEqual ("A roaming network for testing",             roamingNetwork.Description.FirstText());
 
-                    ClassicAssert.AreEqual (RoamingNetworkAdminStatusTypes.Operational,  roamingNetwork.AdminStatus);
-                    ClassicAssert.AreEqual (RoamingNetworkStatusTypes.Available,         roamingNetwork.Status);
+                    ClassicAssert.AreEqual (RoamingNetworkAdminStatusType.Operational,  roamingNetwork.AdminStatus);
+                    ClassicAssert.AreEqual (RoamingNetworkStatusType.Available,         roamingNetwork.Status);
 
                 }
 
@@ -125,15 +125,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 // Status entries are compared by their ISO 8601 timestamps!
                 Thread.Sleep(1000);
 
-                roamingNetwork.AdminStatus = RoamingNetworkAdminStatusTypes.InternalUse;
-                ClassicAssert.AreEqual(RoamingNetworkAdminStatusTypes.InternalUse,  roamingNetwork.AdminStatus);
+                roamingNetwork.AdminStatus = RoamingNetworkAdminStatusType.InternalUse;
+                ClassicAssert.AreEqual(RoamingNetworkAdminStatusType.InternalUse,  roamingNetwork.AdminStatus);
                 ClassicAssert.AreEqual("internalUse, outOfService",                 roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 ClassicAssert.AreEqual(2,                                           roamingNetwork.AdminStatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
-                roamingNetwork.AdminStatus = RoamingNetworkAdminStatusTypes.Operational;
-                ClassicAssert.AreEqual(RoamingNetworkAdminStatusTypes.Operational,  roamingNetwork.AdminStatus);
+                roamingNetwork.AdminStatus = RoamingNetworkAdminStatusType.Operational;
+                ClassicAssert.AreEqual(RoamingNetworkAdminStatusType.Operational,  roamingNetwork.AdminStatus);
                 ClassicAssert.AreEqual("operational, internalUse, outOfService",    roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 ClassicAssert.AreEqual(3,                                           roamingNetwork.AdminStatusSchedule().Count());
 
@@ -170,15 +170,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 // Status entries are compared by their ISO 8601 timestamp!
                 Thread.Sleep(1000);
 
-                roamingNetwork.Status = RoamingNetworkStatusTypes.Error;
-                ClassicAssert.AreEqual(RoamingNetworkStatusTypes.Error,      roamingNetwork.Status);
+                roamingNetwork.Status = RoamingNetworkStatusType.Error;
+                ClassicAssert.AreEqual(RoamingNetworkStatusType.Error,      roamingNetwork.Status);
                 ClassicAssert.AreEqual("error, offline",                     roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 ClassicAssert.AreEqual(2,                                    roamingNetwork.StatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
-                roamingNetwork.Status = RoamingNetworkStatusTypes.Available;
-                ClassicAssert.AreEqual(RoamingNetworkStatusTypes.Available,  roamingNetwork.Status);
+                roamingNetwork.Status = RoamingNetworkStatusType.Available;
+                ClassicAssert.AreEqual(RoamingNetworkStatusType.Available,  roamingNetwork.Status);
                 ClassicAssert.AreEqual("available, error, offline",          roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 ClassicAssert.AreEqual(3,                                    roamingNetwork.StatusSchedule().Count());
 

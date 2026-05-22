@@ -121,6 +121,43 @@ namespace cloud.charging.open.protocols.WWCP
     public static partial class IRoamingNetworkExtensions
     {
 
+        #region AllAdminStatus (IncludeRoamingNetworks = null)
+
+        /// <summary>
+        /// Return the admin status of all charging pools registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeRoamingNetworks">An optional delegate for filtering roaming networks.</param>
+        public static IEnumerable<RoamingNetworkAdminStatus> AllAdminStatus(this IEnumerable<IRoamingNetwork>  RoamingNetworks,
+                                                                            IncludeRoamingNetworkDelegate?     IncludeRoamingNetworks = null)
+
+            => RoamingNetworks.
+                   Where (roamingNetwork => IncludeRoamingNetworks is null || IncludeRoamingNetworks(roamingNetwork)).
+                   Select(roamingNetwork => new RoamingNetworkAdminStatus(
+                                                roamingNetwork.Id,
+                                                roamingNetwork.AdminStatus
+                                            ));
+
+        #endregion
+
+        #region AllStatus      (IncludeRoamingNetworks = null)
+
+        /// <summary>
+        /// Return the status of all charging pools registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeRoamingNetworks">An optional delegate for filtering roaming networks.</param>
+        public static IEnumerable<RoamingNetworkStatus> AllStatus(this IEnumerable<IRoamingNetwork>  RoamingNetworks,
+                                                                  IncludeRoamingNetworkDelegate?     IncludeRoamingNetworks = null)
+
+            => RoamingNetworks.
+                   Where (roamingNetwork => IncludeRoamingNetworks is null || IncludeRoamingNetworks(roamingNetwork)).
+                   Select(roamingNetwork => new RoamingNetworkStatus(
+                                                roamingNetwork.Id,
+                                                roamingNetwork.Status
+                                            ));
+
+        #endregion
+
+
         #region ToJSON(this RoamingNetworks, Skip = null, Take = null, Embedded = false, ...)
 
         /// <summary>
@@ -288,8 +325,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// The common interface of all roaming networks.
     /// </summary>
     public interface IRoamingNetwork : IEntity<RoamingNetwork_Id>,
-                                       IAdminStatus<RoamingNetworkAdminStatusTypes>,
-                                       IStatus<RoamingNetworkStatusTypes>,
+                                       IAdminStatus<RoamingNetworkAdminStatusType>,
+                                       IStatus<RoamingNetworkStatusType>,
                                        ISendAuthorizeStartStop,
                                        IAuthorizeStartStopCache,
                                        IRemoteStartStop,

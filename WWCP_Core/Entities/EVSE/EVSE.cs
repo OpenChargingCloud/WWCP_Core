@@ -3088,7 +3088,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            : null,
 
                                        !Embedded && ChargingStation is not null && ChargingPool is not null && (ChargingStation.Address is not null  || ChargingPool.Address is not null)
-                                           ? new JProperty("address",              (ChargingStation.Address ?? ChargingPool.Address)?.ToJSON())
+                                           ? new JProperty("address",              (ChargingStation.Address ?? ChargingPool.Address)?.ToJSON(Embedded: true))
                                            : null,
 
                                        !Embedded && ChargingStation is not null && ChargingStation.AuthenticationModes.Any()
@@ -3103,7 +3103,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            ? new JProperty("chargingModes",         new JArray(ChargingModes.SafeSelect(chargingMode => chargingMode.ToText())))
                                            : null,
 
-                                       new JProperty("currentType", CurrentType.ToText()),
+                                             new JProperty("currentType",           CurrentType.ToText()),
 
                                        MaxVoltage.HasValue && MaxVoltage.Value.Value > 0
                                            ? new JProperty("averageVoltage",        Math.Round(MaxVoltage.Value.Value, 2))
@@ -3127,7 +3127,7 @@ namespace cloud.charging.open.protocols.WWCP
                                            : null,
 
                                        EnergyMeter is not null
-                                           ? new JProperty("energyMeter",           EnergyMeter.ToJSON())
+                                           ? new JProperty("energyMeter",           EnergyMeter.ToJSON(Embedded: true))
                                            : null,
 
                                        !Embedded && ChargingStation?.OpeningTimes is not null

@@ -3585,6 +3585,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                               InfoStatus                                           ExpandEVSEIds                       = InfoStatus.Hidden,
                               InfoStatus                                           ExpandBrandIds                      = InfoStatus.ShowIdOnly,
                               InfoStatus                                           ExpandDataLicenses                  = InfoStatus.ShowIdOnly,
+                              IncludeChargingStationDelegate?                      IncludeChargingStations             = null,
                               Boolean?                                             IncludeRemovedChargingStations      = false,
                               Boolean?                                             IncludeCustomData                   = null,
                               CustomJObjectSerializerDelegate<IChargingPool>?      CustomChargingPoolSerializer        = null,

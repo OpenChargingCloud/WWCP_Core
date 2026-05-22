@@ -4340,6 +4340,7 @@ namespace cloud.charging.open.protocols.WWCP
                               InfoStatus                                           ExpandEVSEIds                       = InfoStatus.Hidden,
                               InfoStatus                                           ExpandBrandIds                      = InfoStatus.ShowIdOnly,
                               InfoStatus                                           ExpandDataLicenses                  = InfoStatus.ShowIdOnly,
+                              IncludeChargingStationDelegate?                      IncludeChargingStations             = null,
                               Boolean?                                             IncludeRemovedChargingStations      = false,
                               Boolean?                                             IncludeCustomData                   = null,
                               CustomJObjectSerializerDelegate<IChargingPool>?      CustomChargingPoolSerializer        = null,
@@ -4347,6 +4348,8 @@ namespace cloud.charging.open.protocols.WWCP
                               CustomJObjectSerializerDelegate<IEVSE>?              CustomEVSESerializer                = null,
                               CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null)
         {
+
+            IncludeChargingStations ??= station => true;
 
             try
             {
@@ -4407,7 +4410,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    : null,
 
                                Address is not null
-                                   ? new JProperty("address",              Address.            ToJSON())
+                                   ? new JProperty("address",              Address.            ToJSON(Embedded: true))
                                    : null,
 
                                ParkingType.IsNotNullOrEmpty()
@@ -4434,12 +4437,14 @@ namespace cloud.charging.open.protocols.WWCP
                                ExpandChargingStationIds != InfoStatus.Hidden && ChargingStations.Any()
                                    ? ExpandChargingStationIds.Switch(
 
-                                         () => new JProperty("chargingStationIds",  ChargingStationIds().
-                                                                                                 OrderBy(chargingStationId => chargingStationId).
-                                                                                                 Select (chargingStationId => chargingStationId.ToString())),
+                                         () => new JProperty("chargingStationIds",  ChargingStations.
+                                                                                                 Where  (chargingStation => IncludeChargingStations(chargingStation)).
+                                                                                                 OrderBy(chargingStation => chargingStation).
+                                                                                                 Select (chargingStation => chargingStation.Id.ToString())),
 
                                          () => new JProperty("chargingStations",    ChargingStations.
-                                                                                                 OrderBy(chargingStation   => chargingStation.Id).
+                                                                                                 Where  (chargingStation => IncludeChargingStations(chargingStation)).
+                                                                                                 OrderBy(chargingStation => chargingStation.Id).
                                                                                                  ToJSON (Embedded:                           true,
                                                                                                          IncludeRemoved:                     IncludeRemovedChargingStations,
                                                                                                          ExpandRoamingNetworkId:             InfoStatus.Hidden,

@@ -32,78 +32,22 @@ namespace cloud.charging.open.protocols.WWCP
     public static class EVSEStatusExtensions
     {
 
-        #region ToJSON(this EVSEStatus, Skip = null, Take = null)
+        public static IEnumerable<IStatus<EVSE_Id, EVSEStatusType>> ToStatusList(this EVSEStatus[] StatusList)
+            => StatusList.Select(status => status as IStatus<EVSE_Id, EVSEStatusType>);
 
-        public static JObject ToJSON(this IEnumerable<EVSEStatus>  EVSEStatus,
+        public static JObject ToJSON(this EVSEStatus[] StatusList)
+            => StatusList.ToStatusList().ToJSON();
+
+
+        public static JObject ToJSON(this IEnumerable<EVSEStatus>  StatusList,
                                      UInt64?                       Skip   = null,
                                      UInt64?                       Take   = null)
-        {
 
-            #region Initial checks
+            => StatusList.ToJSON(
+                   Skip,
+                   Take
+               );
 
-            if (EVSEStatus is null || !EVSEStatus.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate EVSE identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<EVSE_Id, EVSEStatus>();
-
-            foreach (var status in EVSEStatus)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].Timestamp >= status.Timestamp)
-                    filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
-
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Timestamp.  ToISO8601(),
-                                                                          kvp.Value.Status.ToString())
-                                                              )));
-
-        }
-
-        #endregion
-
-        #region Contains(this EVSEStatus, Id, Status)
-
-        /// <summary>
-        /// Check if the given enumeration of EVSEs and their current status
-        /// contains the given pair of EVSE identification and status.
-        /// </summary>
-        /// <param name="EVSEStatus">An enumeration of EVSEs and their current status.</param>
-        /// <param name="Id">An EVSE identification.</param>
-        /// <param name="Status">An EVSE status.</param>
-        public static Boolean Contains(this IEnumerable<EVSEStatus>  EVSEStatus,
-                                       EVSE_Id                       Id,
-                                       EVSEStatusType               Status)
-        {
-
-            foreach (var status in EVSEStatus)
-            {
-                if (status.Id     == Id &&
-                    status.Status == Status)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-
-        }
-
-        #endregion
 
     }
 
@@ -111,7 +55,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The current status of an EVSE.
     /// </summary>
-    public readonly struct EVSEStatus : IEquatable <EVSEStatus>,
+    public readonly struct EVSEStatus : IStatus<EVSE_Id, EVSEStatusType>,
+                                        IEquatable <EVSEStatus>,
                                         IComparable<EVSEStatus>,
                                         IComparable
     {
@@ -137,12 +82,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// An optional data source or context for this EVSE status.
         /// </summary>
         public Context?        Context      { get; }
-
-        /// <summary>
-        /// The timestamped status of the EVSE.
-        /// </summary>
-        public Timestamped<EVSEStatusType>  TimestampedStatus
-            => new (Timestamp, Status);
 
         #endregion
 
@@ -204,20 +143,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #endregion
-
-
-        public JObject ToJSON()
-
-            => JSONObject.Create(
-
-                         new JProperty("id",          Id.       ToString()),
-                         new JProperty("status",      Status.   ToString()),
-                         new JProperty("timestamp",   Timestamp.ToISO8601()),
-
-                   Context is not null
-                       ? new JProperty("context",     Context.  ToString())
-                       : null
-               );
 
 
         #region (static) Snapshot(EVSE)

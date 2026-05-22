@@ -32,78 +32,21 @@ namespace cloud.charging.open.protocols.WWCP
     public static class ChargingStationAdminStatusExtensions
     {
 
-        #region ToJSON(this ChargingStationAdminStatus, Skip = null, Take = null)
+        public static IEnumerable<IStatus<ChargingStation_Id, ChargingStationAdminStatusType>> ToStatusList(this ChargingStationAdminStatus[] StatusList)
+            => StatusList.Select(status => status as IStatus<ChargingStation_Id, ChargingStationAdminStatusType>);
 
-        public static JObject ToJSON(this IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus,
+        public static JObject ToJSON(this ChargingStationAdminStatus[] StatusList)
+            => StatusList.ToStatusList().ToJSON();
+
+        public static JObject ToJSON(this IEnumerable<ChargingStationAdminStatus>  StatusList,
                                      UInt64?                                       Skip   = null,
                                      UInt64?                                       Take   = null)
-        {
 
-            #region Initial checks
+            => StatusList.ToJSON(
+                   Skip,
+                   Take
+               );
 
-            if (ChargingStationAdminStatus is null || !ChargingStationAdminStatus.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<ChargingStation_Id, ChargingStationAdminStatus>();
-
-            foreach (var status in ChargingStationAdminStatus)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].Timestamp >= status.Timestamp)
-                    filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
-
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Timestamp.  ToISO8601(),
-                                                                          kvp.Value.AdminStatus.ToString())
-                                                              )));
-
-        }
-
-        #endregion
-
-        #region Contains(this ChargingStationAdminStatus, Id, Status)
-
-        /// <summary>
-        /// Check if the given enumeration of charging stations and their current admin status
-        /// contains the given pair of charging station identification and admin status.
-        /// </summary>
-        /// <param name="ChargingStationAdminStatus">An enumeration of charging stations and their current admin status.</param>
-        /// <param name="Id">A charging station identification.</param>
-        /// <param name="AdminStatus">A charging station admin status.</param>
-        public static Boolean Contains(this IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus,
-                                       ChargingStation_Id                            Id,
-                                       ChargingStationAdminStatusType               AdminStatus)
-        {
-
-            foreach (var status in ChargingStationAdminStatus)
-            {
-                if (status.Id          == Id &&
-                    status.AdminStatus == AdminStatus)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-
-        }
-
-        #endregion
 
     }
 
@@ -111,9 +54,10 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The current admin status of a charging station.
     /// </summary>
-    public class ChargingStationAdminStatus : AInternalData,
-                                                      IEquatable<ChargingStationAdminStatus>,
-                                                      IComparable<ChargingStationAdminStatus>
+    public readonly struct ChargingStationAdminStatus : IStatus<ChargingStation_Id, ChargingStationAdminStatusType>,
+                                                        IEquatable<ChargingStationAdminStatus>,
+                                                        IComparable<ChargingStationAdminStatus>,
+                                                        IComparable
     {
 
         #region Properties
@@ -121,97 +65,81 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the charging station.
         /// </summary>
-        public ChargingStation_Id               Id             { get; }
+        public ChargingStation_Id              Id           { get; }
 
         /// <summary>
         /// The current admin status of the charging station.
         /// </summary>
-        public ChargingStationAdminStatusType  AdminStatus    { get; }
+        public ChargingStationAdminStatusType  Status       { get; }
 
         /// <summary>
         /// The timestamp of the current admin status of the charging station.
         /// </summary>
-        public DateTimeOffset                   Timestamp      { get; }
+        public DateTimeOffset                  Timestamp    { get; }
 
         /// <summary>
-        /// The timestamped admin status of the charging station.
+        /// An optional data source or context for this charging station admin status.
         /// </summary>
-        public Timestamped<ChargingStationAdminStatusType> TimestampedAdminStatus
-            => new (Timestamp, AdminStatus);
+        public Context?                        Context      { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region ChargingStationAdminStatus(Id, AdminStatus,            CustomData = null, InternalData = null)
+        #region ChargingStationAdminStatus(Id, Status,            Context = null)
 
         /// <summary>
         /// Create a new charging station admin status.
         /// </summary>
         /// <param name="Id">The unique identification of the charging station.</param>
-        /// <param name="AdminStatus">The current timestamped adminstatus of the charging station.</param>
-        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public ChargingStationAdminStatus(ChargingStation_Id                            Id,
-                                          Timestamped<ChargingStationAdminStatusType>  AdminStatus,
-                                          JObject?                                      CustomData     = null,
-                                          UserDefinedDictionary?                        InternalData   = null)
+        /// <param name="Status">The current timestamped admin status of the charging station.</param>
+        /// <param name="Context">An optional data source or context for the charging station admin status.</param>
+        public ChargingStationAdminStatus(ChargingStation_Id                           Id,
+                                          Timestamped<ChargingStationAdminStatusType>  Status,
+                                          Context?                                     Context   = null)
 
-            : base(CustomData,
-                   InternalData,
-                   org.GraphDefined.Vanaheimr.Illias.Timestamp.Now)
+            : this(Id,
+                   Status.Value,
+                   Status.Timestamp,
+                   Context)
 
-        {
-
-            this.Id           = Id;
-            this.AdminStatus  = AdminStatus.Value;
-            this.Timestamp    = AdminStatus.Timestamp;
-
-        }
+        { }
 
         #endregion
 
-        #region ChargingStationAdminStatus(Id, AdminStatus, Timestamp, CustomData = null, InternalData = null)
+        #region ChargingStationAdminStatus(Id, Status, Timestamp, Context = null)
 
         /// <summary>
         /// Create a new charging station admin status.
         /// </summary>
         /// <param name="Id">The unique identification of the charging station.</param>
         /// <param name="Status">The current admin status of the charging station.</param>
-        /// <param name="Timestamp">The timestamp of the status change of the charging station.</param>
-        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public ChargingStationAdminStatus(ChargingStation_Id               Id,
-                                          ChargingStationAdminStatusType  AdminStatus,
-                                          DateTime                         Timestamp,
-                                          JObject?                         CustomData     = null,
-                                          UserDefinedDictionary?           InternalData   = null)
-
-            : base(CustomData,
-                   InternalData,
-                   org.GraphDefined.Vanaheimr.Illias.Timestamp.Now)
-
+        /// <param name="Timestamp">The timestamp of the admin status of the charging station.</param>
+        /// <param name="Context">An optional data source or context for the charging station admin status.</param>
+        public ChargingStationAdminStatus(ChargingStation_Id              Id,
+                                          ChargingStationAdminStatusType  Status,
+                                          DateTimeOffset                  Timestamp,
+                                          Context?                        Context   = null)
         {
 
-            this.Id           = Id;
-            this.AdminStatus  = AdminStatus;
-            this.Timestamp    = Timestamp;
+            this.Id         = Id;
+            this.Status     = Status;
+            this.Timestamp  = Timestamp;
+            this.Context    = Context;
+
+            unchecked
+            {
+
+                hashCode = Id.       GetHashCode() * 7 ^
+                           Status.   GetHashCode() * 5 ^
+                           Timestamp.GetHashCode() * 3 ^
+                          (Context?. GetHashCode() ?? 0);
+
+            }
 
         }
 
         #endregion
-
-        #endregion
-
-
-        #region (static) Snapshot(ChargingStation)
-
-        /// <summary>
-        /// Take a snapshot of the current charging station admin status.
-        /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        public static ChargingStationAdminStatus Snapshot(ChargingStation ChargingStation)
-
-            => new (ChargingStation.Id,
-                    ChargingStation.AdminStatus);
 
         #endregion
 
@@ -228,19 +156,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingStationAdminStatus ChargingStationAdminStatus1,
                                            ChargingStationAdminStatus ChargingStationAdminStatus2)
-        {
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingStationAdminStatus1, ChargingStationAdminStatus2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (ChargingStationAdminStatus1 is null || ChargingStationAdminStatus2 is null)
-                return false;
-
-            return ChargingStationAdminStatus1.Equals(ChargingStationAdminStatus2);
-
-        }
+            => ChargingStationAdminStatus1.Equals(ChargingStationAdminStatus2);
 
         #endregion
 
@@ -255,7 +172,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator != (ChargingStationAdminStatus ChargingStationAdminStatus1,
                                            ChargingStationAdminStatus ChargingStationAdminStatus2)
 
-            => !(ChargingStationAdminStatus1 == ChargingStationAdminStatus2);
+            => !ChargingStationAdminStatus1.Equals(ChargingStationAdminStatus2);
 
         #endregion
 
@@ -269,14 +186,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator < (ChargingStationAdminStatus ChargingStationAdminStatus1,
                                           ChargingStationAdminStatus ChargingStationAdminStatus2)
-        {
 
-            if (ChargingStationAdminStatus1 is null)
-                throw new ArgumentNullException(nameof(ChargingStationAdminStatus1), "The given ChargingStationAdminStatus1 must not be null!");
-
-            return ChargingStationAdminStatus1.CompareTo(ChargingStationAdminStatus2) < 0;
-
-        }
+            => ChargingStationAdminStatus1.CompareTo(ChargingStationAdminStatus2) < 0;
 
         #endregion
 
@@ -291,7 +202,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator <= (ChargingStationAdminStatus ChargingStationAdminStatus1,
                                            ChargingStationAdminStatus ChargingStationAdminStatus2)
 
-            => !(ChargingStationAdminStatus1 > ChargingStationAdminStatus2);
+            => ChargingStationAdminStatus1.CompareTo(ChargingStationAdminStatus2) <= 0;
 
         #endregion
 
@@ -305,14 +216,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator > (ChargingStationAdminStatus ChargingStationAdminStatus1,
                                           ChargingStationAdminStatus ChargingStationAdminStatus2)
-        {
 
-            if (ChargingStationAdminStatus1 is null)
-                throw new ArgumentNullException(nameof(ChargingStationAdminStatus1), "The given ChargingStationAdminStatus1 must not be null!");
-
-            return ChargingStationAdminStatus1.CompareTo(ChargingStationAdminStatus2) > 0;
-
-        }
+            => ChargingStationAdminStatus1.CompareTo(ChargingStationAdminStatus2) > 0;
 
         #endregion
 
@@ -327,7 +232,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator >= (ChargingStationAdminStatus ChargingStationAdminStatus1,
                                            ChargingStationAdminStatus ChargingStationAdminStatus2)
 
-            => !(ChargingStationAdminStatus1 < ChargingStationAdminStatus2);
+            => ChargingStationAdminStatus1.CompareTo(ChargingStationAdminStatus2) >= 0;
 
         #endregion
 
@@ -338,9 +243,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station admin status.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A charging station admin status to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is ChargingStationAdminStatus chargingStationAdminStatus
@@ -353,22 +258,22 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(ChargingStationAdminStatus)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station admin status.
         /// </summary>
-        /// <param name="ChargingStationAdminStatus">An object to compare with.</param>
-        public Int32 CompareTo(ChargingStationAdminStatus? ChargingStationAdminStatus)
+        /// <param name="ChargingStationAdminStatus">A charging station admin status to compare with.</param>
+        public Int32 CompareTo(ChargingStationAdminStatus ChargingStationAdminStatus)
         {
 
-            if (ChargingStationAdminStatus is null)
-                throw new ArgumentNullException(nameof(ChargingStationAdminStatus), "The given charging station admin status must not be null!");
-
-            var c = Id.         CompareTo(ChargingStationAdminStatus.Id);
+            var c = Id.                   CompareTo(ChargingStationAdminStatus.Id);
 
             if (c == 0)
-                c = AdminStatus.CompareTo(ChargingStationAdminStatus.AdminStatus);
+                c = Status.               CompareTo(ChargingStationAdminStatus.Status);
 
             if (c == 0)
-                c = Timestamp.  CompareTo(ChargingStationAdminStatus.Timestamp);
+                c = Timestamp.ToISO8601().CompareTo(ChargingStationAdminStatus.Timestamp.ToISO8601());
+
+            if (c == 0 && Context is not null && ChargingStationAdminStatus.Context is not null)
+                c = Context.              CompareTo(ChargingStationAdminStatus.Context);
 
             return c;
 
@@ -383,10 +288,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station admin status for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="Object">A charging station admin status to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingStationAdminStatus chargingStationAdminStatus &&
@@ -397,16 +301,17 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(ChargingStationAdminStatus)
 
         /// <summary>
-        /// Compares two ChargingStation identifications for equality.
+        /// Compares two charging station admin status for equality.
         /// </summary>
-        /// <param name="ChargingStationAdminStatus">A charging station identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingStationAdminStatus? ChargingStationAdminStatus)
+        /// <param name="ChargingStationAdminStatus">A charging station admin status to compare with.</param>
+        public Boolean Equals(ChargingStationAdminStatus ChargingStationAdminStatus)
 
-            => ChargingStationAdminStatus is not null                     &&
-               Id.         Equals(ChargingStationAdminStatus.Id)          &&
-               AdminStatus.Equals(ChargingStationAdminStatus.AdminStatus) &&
-               Timestamp.  Equals(ChargingStationAdminStatus.Timestamp);
+            => Id.                   Equals(ChargingStationAdminStatus.Id)                    &&
+               Status.               Equals(ChargingStationAdminStatus.Status)                &&
+               Timestamp.ToISO8601().Equals(ChargingStationAdminStatus.Timestamp.ToISO8601()) &&
+
+             ((Context is null     && ChargingStationAdminStatus.Context is null) ||
+              (Context is not null && ChargingStationAdminStatus.Context is not null && Context.Equals(ChargingStationAdminStatus.Context)));
 
         #endregion
 
@@ -414,20 +319,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Id.         GetHashCode() * 5 ^
-                       AdminStatus.GetHashCode() * 3 ^
-                       Timestamp.  GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -438,10 +336,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Id, " -> ",
-                             AdminStatus,
-                             " since ",
-                             Timestamp.ToISO8601());
+            => $"{Id} -> '{Status}' since {Timestamp.ToISO8601()}";
 
         #endregion
 

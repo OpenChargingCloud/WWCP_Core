@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamped status of the roaming network.
         /// </summary>
-        public StatusSchedule<RoamingNetworkStatusTypes>  StatusSchedule    { get; }
+        public StatusSchedule<RoamingNetworkStatusType>  StatusSchedule    { get; }
 
         #endregion
 
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="StatusSchedule">The timestamped status of the roaming network.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public RoamingNetworkStatusSchedule(RoamingNetwork_Id                          Id,
-                                            StatusSchedule<RoamingNetworkStatusTypes>  StatusSchedule,
+                                            StatusSchedule<RoamingNetworkStatusType>  StatusSchedule,
                                             JObject?                                   CustomData     = null,
                                             UserDefinedDictionary?                     InternalData   = null)
 

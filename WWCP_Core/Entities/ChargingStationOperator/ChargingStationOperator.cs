@@ -3217,7 +3217,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (TryGetEVSEById(NewAdminStatus.Id, out var evse))
             {
-                evse.AdminStatus = NewAdminStatus.TimestampedAdminStatus;
+                evse.AdminStatus = NewAdminStatus.AsTimestampedStatus();
             }
 
         }
