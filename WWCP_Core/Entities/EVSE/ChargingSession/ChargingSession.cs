@@ -1073,7 +1073,7 @@ namespace cloud.charging.open.protocols.WWCP
                                IEMPRoamingProvider?    EMPRoamingProviderStart   = null,
 
                                DateTimeOffset?         Timestamp                 = null,
-                               JObject?                CustomData                = null,
+                               CustomDataNew?          CustomData                = null,
                                UserDefinedDictionary?  InternalData              = null)
 
             : base(CustomData,
@@ -1103,10 +1103,13 @@ namespace cloud.charging.open.protocols.WWCP
         {
             if (AdditionalSessionInfos is not null)
             {
-                foreach (var property in AdditionalSessionInfos.Properties())
-                {
-                    this.CustomData[property.Name] = property.Value;
-                }
+                //foreach (var property in AdditionalSessionInfos.Properties())
+                //{
+                //    this.CustomData.Set(property.Name, property.Value);
+                //}
+
+                this.CustomData.Merge(AdditionalSessionInfos);
+
             }
         }
 
@@ -1275,8 +1278,10 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var sessionId  = (JSON["@id"]?.Value<String>())
-                                     ?? throw new Exception("The session identification must not be null!");
+                var sessionId    = (JSON["@id"]?.Value<String>())
+                                       ?? throw new Exception("The session identification must not be null!");
+
+                var customData   = JSON["customData"] as JObject;
 
                 ChargingSession  = new ChargingSession(
                                        ChargingSession_Id.Parse(sessionId),
@@ -1284,7 +1289,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                              ? EventTracking_Id.Parse(eventTrackingId)
                                                              : EventTracking_Id.New,
                                        RoamingNetwork:   RoamingNetwork,
-                                       CustomData:       JSON["customData"] as JObject
+                                       CustomData:       customData is not null
+                                                             ? CustomDataNew.ParseJSON(customData.ToString(Newtonsoft.Json.Formatting.None))
+                                                             : null
                                    ) {
 
                                        EVSEId                     = JSON["EVSEId"]?.                   Value<String>() is String EVSEId                    ? EVSE_Id.                   Parse(EVSEId)                    : null,
