@@ -62,6 +62,60 @@ namespace cloud.charging.open.protocols.WWCP
         [Mandatory]
         public ChargingConnector_Id            Id                    { get; }
 
+
+        [Obsolete("The 'plug' property is deprecated. Please use the 'type' property instead!")]
+        public ChargingPlugTypes               Plug                  {
+            get
+            {
+
+                if (Type == ChargingConnectorType.IEC_62196_T2)
+                    return ChargingPlugTypes.Type2Outlet;
+
+                if (Type == ChargingConnectorType.DOMESTIC_F_SchuKo)
+                    return ChargingPlugTypes.TypeFSchuko;
+
+                if (Type == ChargingConnectorType.CHAdeMO)
+                    return ChargingPlugTypes.CHAdeMO;
+
+                if (Type == ChargingConnectorType.IEC_62196_T2_COMBO)
+                    return ChargingPlugTypes.CCSCombo2Plug_CableAttached;
+
+                if (Type == ChargingConnectorType.IEC_62196_T1_COMBO)
+                    return ChargingPlugTypes.CCSCombo1Plug_CableAttached;
+
+                // SmallPaddleInductive,
+                // LargePaddleInductive,
+                // AVCONConnector,
+                // 
+                // TeslaConnector,
+                // TESLA_Roadster,
+                // TESLA_ModelS,
+                // 
+                // IEC60309SinglePhase,
+                // IEC60309ThreePhase,
+                // 
+                // NEMA5_20,
+                // TypeEFrenchStandard,
+                // TypeGBritishStandard,
+                // TypeJSwissStandard,
+                //
+                // Type1Connector_CableAttached,
+                // Type2Outlet,
+                // Type2Connector_CableAttached,
+                // Type3Outlet,
+                // 
+                // CCSCombo1Plug_CableAttached,
+                // CCSCombo2Plug_CableAttached,
+                // 
+                // CEE3,
+                // CEE5
+
+                return ChargingPlugTypes.Unspecified;
+
+            }
+        }
+
+
         /// <summary>
         /// The type of the charging connector.
         /// </summary>
@@ -294,7 +348,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParse (JSON, out ChargingConnector, out ErrorResponse, CustomChargingConnectorParser = null)
+        #region (static) TryParse (JSON, out ChargingConnector, out ErrorResponse, ...)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -368,7 +422,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (JSON.ParseOptionalJSON("cable",
                                            "charging cable",
-                                           WWCP.ChargingCable.TryParse,
+                                           ChargingCable.TryParse,
                                            out ChargingCable? chargingCable,
                                            out ErrorResponse))
                 {
@@ -447,7 +501,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ToJSON(this ChargingConnector, Embedded = false, CustomChargingConnectorSerializer = null)
+        #region ToJSON(Embedded = false, CustomChargingConnectorSerializer = null)
 
         public JObject? ToJSON(Boolean                                              Embedded                            = false,
                                CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null,
@@ -459,29 +513,75 @@ namespace cloud.charging.open.protocols.WWCP
 
                 var json = JSONObject.Create(
 
-                                 new JProperty("@id",                  Id.ToString()),
+                                     new JProperty("@id",                  Id.ToString()),
 
-                           !Embedded
-                               ? new JProperty("@context",             JSONLDContext)
-                               : null,
+                               !Embedded
+                                   ? new JProperty("@context",             JSONLDContext)
+                                   : null,
 
-                                 //new JProperty("plug",                 Type.         ToString()), // legacy!!!
-                                 new JProperty("type",                 Type.         ToString()),
+                                     //new JProperty("plug",                 Type.         ToString()), // legacy!!!
+                                     new JProperty("type",                 Type.         ToString()),
 
-                           ChargingCable is not null
-                               ? new JProperty("cable",                ChargingCable.ToJSON(Embedded:  true,
-                                                                                            CustomChargingCableSerializer))
-                               : null,
+                               ChargingCable is not null
+                                   ? new JProperty("cable",                ChargingCable.ToJSON(Embedded:  true,
+                                                                                                CustomChargingCableSerializer))
+                                   : null,
 
-                           TariffIds.Any()
-                               ? new JProperty("tariffIds",            new JArray(TariffIds.Select(tariffId => tariffId.ToString())))
-                               : null,
+                               TariffIds.Any()
+                                   ? new JProperty("tariffIds",            new JArray(TariffIds.Select(tariffId => tariffId.ToString())))
+                                   : null,
 
-                           TermsAndConditions.HasValue
-                               ? new JProperty("termsAndConditions",   TermsAndConditions.Value.ToString())
-                               : null
+                               TermsAndConditions.HasValue
+                                   ? new JProperty("termsAndConditions",   TermsAndConditions.Value.ToString())
+                                   : null
 
                            );
+
+                return CustomChargingConnectorSerializer is not null
+                           ? CustomChargingConnectorSerializer(this, json)
+                           : json;
+
+            }
+            catch (Exception e)
+            {
+                return new JObject(
+                           new JProperty("@id",         Id.ToString()),
+                           new JProperty("@context",    JSONLDContext),
+                           new JProperty("exception",   e.Message),
+                           new JProperty("stackTrace",  e.StackTrace)
+                       );
+            }
+
+        }
+
+        #endregion
+
+        #region ToObsoleteJSON(Embedded = false, ...)
+
+        [Obsolete("The 'plug' property is deprecated. Please use the 'type' property instead!")]
+        public JObject? ToObsoleteJSON(Boolean                                              Embedded                            = false,
+                                       CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null)
+        {
+
+            try
+            {
+
+                var json = JSONObject.Create(
+
+                                     new JProperty("@id",             Id.ToString()),
+
+                               !Embedded
+                                   ? new JProperty("@context",        JSONLDContext)
+                                   : null,
+
+                                     new JProperty("plug",            Plug.                       ToString()),
+                                     new JProperty("cableAttached",   (ChargingCable is not null).ToString())
+
+                               //CableLength.HasValue
+                               //    ? new JProperty("cableLength",     CableLength.Value)
+                               //    : null
+
+                               );
 
                 return CustomChargingConnectorSerializer is not null
                            ? CustomChargingConnectorSerializer(this, json)

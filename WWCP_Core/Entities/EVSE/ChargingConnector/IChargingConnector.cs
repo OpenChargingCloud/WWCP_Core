@@ -29,8 +29,16 @@ namespace cloud.charging.open.protocols.WWCP
     public static class ChargingConnectorExtensions
     {
 
-        #region ToJSON(this ChargingConnectors, IncludeParentIds = true)
+        #region ToJSON(this ChargingConnectors, Skip = null, Take = null, Embedded = false, ...)
 
+        /// <summary>
+        /// Serialize an enumeration of charging connectors to a JSON array.
+        /// </summary>
+        /// <param name="ChargingConnectors">The enumeration of charging connectors.</param>
+        /// <param name="Skip">An optional number of charging connectors to skip.</param>
+        /// <param name="Take">An optional number of charging connectors to take.</param>
+        /// <param name="Embedded">Whether the charging connectors should be embedded into another JSON structure or not.</param>
+        /// <param name="CustomChargingConnectorSerializer">An optional delegate to serialize custom charging connector JSON objects.</param>
         public static JArray ToJSON(this IEnumerable<IChargingConnector>                 ChargingConnectors,
                                     UInt64?                                              Skip                                = null,
                                     UInt64?                                              Take                                = null,
@@ -44,7 +52,7 @@ namespace cloud.charging.open.protocols.WWCP
                              Where          (chargingConnector => chargingConnector is not null).
                              OrderBy        (chargingConnector => chargingConnector.Id).
                              SkipTakeFilter (Skip, Take).
-                             SafeSelect     (chargingConnector => chargingConnector.ToJSON(Embedded,
+                             Select         (chargingConnector => chargingConnector.ToJSON(Embedded,
                                                                                            //ExpandRoamingNetworkId,
                                                                                            //ExpandChargingStationOperatorId,
                                                                                            //ExpandChargingPoolId,
