@@ -1,4 +1,4 @@
-﻿{
+{
   "compileOnSave": true,
   "compilerOptions": {
     "target": "ES2022",
@@ -6,17 +6,16 @@
     "moduleResolution": "bundler",
     "lib": [ "ES2022", "DOM", "DOM.Iterable" ],
 
-    //"strict": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,
-    //"noUnusedLocals": true,
-    //"noUnusedParameters": true,
-    //"exactOptionalPropertyTypes": true,
     "useUnknownInCatchVariables": true,
-    //"forceConsistentCasingInFileNames": true,
 
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true,
+    "isolatedModules": false,
+    "verbatimModuleSyntax": false,
     "allowJs": false,
     "skipLibCheck": true,
 
