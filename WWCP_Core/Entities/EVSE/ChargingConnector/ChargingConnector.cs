@@ -501,11 +501,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ToJSON(Embedded = false, CustomChargingConnectorSerializer = null)
+        #region ToJSONNew(Embedded = false, CustomChargingConnectorSerializer = null)
 
-        public JObject? ToJSON(Boolean                                              Embedded                            = false,
-                               CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null,
-                               CustomJObjectSerializerDelegate<ChargingCable>?      CustomChargingCableSerializer       = null)
+        public JObject? ToJSONNew(Boolean                                              Embedded                            = false,
+                                  CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null,
+                                  CustomJObjectSerializerDelegate<ChargingCable>?      CustomChargingCableSerializer       = null)
         {
 
             try
@@ -556,11 +556,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ToObsoleteJSON(Embedded = false, ...)
+        #region ToJSON(Embedded = false, ...)  [Obsolete!]
 
         [Obsolete("The 'plug' property is deprecated. Please use the 'type' property instead!")]
-        public JObject? ToObsoleteJSON(Boolean                                              Embedded                            = false,
-                                       CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null)
+        public JObject? ToJSON(Boolean                                              Embedded                            = false,
+                               CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null,
+                               CustomJObjectSerializerDelegate<ChargingCable>?      CustomChargingCableSerializer       = null)
         {
 
             try

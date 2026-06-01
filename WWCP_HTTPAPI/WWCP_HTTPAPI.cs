@@ -4103,9 +4103,15 @@ namespace cloud.charging.open.protocols.WWCP
                                                               ExpandEVSEIds:                       InfoStatusExtensions.Max(showEVSEIds,        expandEVSEs),
                                                               ExpandBrandIds:                      InfoStatusExtensions.Max(showBrandIds,       expandBrands),
                                                               ExpandDataLicenses:                  InfoStatusExtensions.Max(showDataLicenseIds, expandDataLicenses),
-                                                              IncludeChargingStations:             HTTPBaseAPI.IsMember(request.User, rootGroupId)
-                                                                                                       ? chargingStation => true
-                                                                                                       : chargingStation => !(chargingStation?.Published == true),
+                                                              IncludeChargingStations:             chargingStation => {
+
+                                                                                                       if (HTTPBaseAPI.IsMember(request.User, rootGroupId))
+                                                                                                           return true;
+
+                                                                                                       return chargingStation.Published == true;
+
+                                                                                                   },
+                                                              IncludeRemovedChargingStations:      HTTPBaseAPI.IsMember(request.User, rootGroupId),
                                                               IncludeCustomData:                   includeCustomData,
                                                               CustomChargingPoolSerializer:        null,
                                                               CustomChargingStationSerializer:     null,
