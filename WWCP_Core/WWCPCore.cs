@@ -56,8 +56,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                               I18NString                                 Name,
                                                               I18NString?                                Description                                  = null,
                                                               Action<RoamingNetwork>?                    Configurator                                 = null,
-                                                              RoamingNetworkAdminStatusType?            InitialAdminStatus                           = null,
-                                                              RoamingNetworkStatusType?                 InitialStatus                                = null,
+                                                              RoamingNetworkAdminStatusType?             InitialAdminStatus                           = null,
+                                                              RoamingNetworkStatusType?                  InitialStatus                                = null,
                                                               UInt16?                                    MaxAdminStatusScheduleSize                   = null,
                                                               UInt16?                                    MaxStatusScheduleSize                        = null,
 

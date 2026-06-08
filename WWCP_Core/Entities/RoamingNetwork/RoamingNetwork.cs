@@ -269,8 +269,8 @@ namespace cloud.charging.open.protocols.WWCP
         public RoamingNetwork(RoamingNetwork_Id                          Id,
                               I18NString?                                Name                                         = null,
                               I18NString?                                Description                                  = null,
-                              RoamingNetworkAdminStatusType?            InitialAdminStatus                           = null,
-                              RoamingNetworkStatusType?                 InitialStatus                                = null,
+                              RoamingNetworkAdminStatusType?             InitialAdminStatus                           = null,
+                              RoamingNetworkStatusType?                  InitialStatus                                = null,
                               UInt16?                                    MaxAdminStatusScheduleSize                   = null,
                               UInt16?                                    MaxStatusScheduleSize                        = null,
 
@@ -335,15 +335,19 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.DisableNetworkSync                          = DisableNetworkSync;
 
-            this.ReservationsStore                           = new ChargingReservationsStore(this.Id,
-                                                                                             DisableNetworkSync:   true,
-                                                                                             LoggingPath:          this.LoggingPath);
+            this.ReservationsStore                           = new ChargingReservationsStore(
+                                                                   this.Id,
+                                                                   DisableNetworkSync:   true,
+                                                                   LoggingPath:          this.LoggingPath
+                                                               );
 
-            this.SessionsStore                               = new ChargingSessionsStore    (this,
-                                                                                             ReloadDataOnStart:    false,
-                                                                                             RoamingNetworkInfos:  RoamingNetworkInfos,
-                                                                                             DisableNetworkSync:   DisableNetworkSync,
-                                                                                             LoggingPath:          this.LoggingPath);
+            this.SessionsStore                               = new ChargingSessionsStore(
+                                                                   this,
+                                                                   ReloadDataOnStart:    false,
+                                                                   RoamingNetworkInfos:  RoamingNetworkInfos,
+                                                                   DisableNetworkSync:   DisableNetworkSync,
+                                                                   LoggingPath:          this.LoggingPath
+                                                               );
 
             this.ChargingStationSignatureGenerator           = ChargingStationSignatureGenerator;
             this.ChargingPoolSignatureGenerator              = ChargingPoolSignatureGenerator;
@@ -354,10 +358,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init authentication cache
 
-            this.DisableAuthenticationCache                  = DisableAuthenticationCache                 ?? false;
-            this.AuthenticationCacheTimeout                  = AuthenticationCacheTimeout                 ?? TimeSpan.FromHours(1);
-            this.MaxAuthStartResultCacheElements             = MaxAuthStartResultCacheElements            ?? 2000;
-            this.MaxAuthStopResultCacheElements              = MaxAuthStopResultCacheElements             ?? 1000;
+            this.DisableAuthenticationCache       = DisableAuthenticationCache      ?? false;
+            this.AuthenticationCacheTimeout       = AuthenticationCacheTimeout      ?? TimeSpan.FromHours(1);
+            this.MaxAuthStartResultCacheElements  = MaxAuthStartResultCacheElements ?? 2000;
+            this.MaxAuthStopResultCacheElements   = MaxAuthStopResultCacheElements  ?? 1000;
 
             this.InvalidAuthenticationTokens.Add(AuthenticationToken.Parse("00000000"));
             this.InvalidAuthenticationTokens.Add(AuthenticationToken.Parse("00000000000000"));
