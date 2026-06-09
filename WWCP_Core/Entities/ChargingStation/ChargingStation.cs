@@ -4266,7 +4266,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    : null,
 
                                CustomData.HasValues && IncludeCustomData == true
-                                   ? new JProperty("customData",            CustomData)
+                                   ? new JProperty("customData",            CustomData.ToJObject())
                                    : null
 
                          );

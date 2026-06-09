@@ -3834,7 +3834,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                    : null,
 
                                CustomData.HasValues
-                                   ? new JProperty("customData",   CustomData)
+                                   ? new JProperty("customData",   CustomData.ToJObject())
                                    : null
 
                          );

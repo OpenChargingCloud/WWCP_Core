@@ -6892,7 +6892,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    : null,
 
                                CustomData.HasValues
-                                   ? new JProperty("customData",            CustomData)
+                                   ? new JProperty("customData",            CustomData.ToJObject())
                                    : null
 
                                );
