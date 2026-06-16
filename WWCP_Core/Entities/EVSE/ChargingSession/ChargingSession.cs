@@ -1108,7 +1108,7 @@ namespace cloud.charging.open.protocols.WWCP
                 //    this.CustomData.Set(property.Name, property.Value);
                 //}
 
-                this.CustomData.Merge(AdditionalSessionInfos);
+                this.CustomData = this.CustomData.Merge(AdditionalSessionInfos);
 
             }
         }
