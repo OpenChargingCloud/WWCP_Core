@@ -4592,7 +4592,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Content                       = chargingPool.ChargingStations.
                                                                 Where  (HTTPBaseAPI.IsMember(request.User, rootGroupId)
                                                                             ? chargingStation => true
-                                                                            : chargingStation => !(chargingStation?.Published == true)).
+                                                                            : chargingStation => chargingStation?.Published == true).
                                                                 OrderBy(station => station.Id).
                                                                 ToJSON (Skip:                                skip,
                                                                         Take:                                take,
@@ -4661,7 +4661,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Content                       = chargingPool.ChargingStationAdminStatus(
                                                                 HTTPBaseAPI.IsMember(request.User, rootGroupId)
                                                                     ? chargingStation => true
-                                                                    : chargingStation => !(chargingStation?.Published == true)
+                                                                    : chargingStation => chargingStation?.Published == true
                                                             ).ToJSON(skip, take).
                                                               ToUTF8Bytes(),
                             X_ExpectedTotalNumberOfItems  = expectedCount
@@ -4715,7 +4715,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Content                       = chargingPool.ChargingStationStatus(
                                                                 HTTPBaseAPI.IsMember(request.User, rootGroupId)
                                                                     ? chargingStation => true
-                                                                    : chargingStation => !(chargingStation?.Published == true)
+                                                                    : chargingStation => chargingStation?.Published == true
                                                             ).ToJSON(skip, take).
                                                               ToUTF8Bytes(),
                             X_ExpectedTotalNumberOfItems  = expectedCount
@@ -5216,7 +5216,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     var allResults              = HTTPBaseAPI.IsMember(request.User, rootGroupId)
                                                       ? roamingNetwork.ChargingStations.ToArray()
-                                                      : roamingNetwork.ChargingStations.Where(chargingStation => !(chargingStation?.Published == true)).ToArray();
+                                                      : roamingNetwork.ChargingStations.Where(chargingStation => chargingStation?.Published == true).ToArray();
                     var totalCount              = allResults.ULongCount();
 
                     var filteredResults         = allResults.Where(matchFilter).ToArray();
@@ -5326,7 +5326,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     var allResults              = HTTPBaseAPI.IsMember(request.User, rootGroupId)
                                                       ? roamingNetwork.ChargingStations.ToArray()
-                                                      : roamingNetwork.ChargingStations.Where(chargingStation => !(chargingStation?.Published == true)).ToArray();
+                                                      : roamingNetwork.ChargingStations.Where(chargingStation => chargingStation?.Published == true).ToArray();
                     var totalCount              = allResults.ULongCount();
 
                     var filteredResults         = allResults.Where(matchFilter).ToArray();
@@ -5468,7 +5468,7 @@ namespace cloud.charging.open.protocols.WWCP
                     var statusList    = roamingNetwork.ChargingStationAdminStatus(
                                             HTTPBaseAPI.IsMember(request.User, rootGroupId)
                                                 ? chargingStation => true
-                                                : chargingStation => !(chargingStation?.Published == true)
+                                                : chargingStation => chargingStation?.Published == true
                                         ).
                                         Where (beforeFilter).
                                         Where (afterFilter).
@@ -5547,7 +5547,7 @@ namespace cloud.charging.open.protocols.WWCP
                     var statusList    = roamingNetwork.ChargingStationStatus(
                                             HTTPBaseAPI.IsMember(request.User, rootGroupId)
                                                 ? chargingStation => true
-                                                : chargingStation => !(chargingStation?.Published == true)
+                                                : chargingStation => chargingStation?.Published == true
                                         ).
                                         Where (beforeFilter).
                                         Where (afterFilter).
@@ -6012,7 +6012,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     IncludeChargingStationDelegate accessFilter  = HTTPBaseAPI.IsMember(request.User, rootGroupId)
                                                                        ? chargingStation => true
-                                                                       : chargingStation => !(chargingStation?.Published == true);
+                                                                       : chargingStation => chargingStation?.Published == true;
 
                     var expectedCount                   = roamingNetwork.ChargingStationStatus(accessFilter).ULongCount();
 
@@ -6277,7 +6277,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     var allResults              = HTTPBaseAPI.IsMember(request.User, rootGroupId)
                                                       ? roamingNetwork.EVSEs.ToArray()
-                                                      : roamingNetwork.EVSEs.Where(evse => !(evse.ChargingStation?.Published == true)).ToArray();
+                                                      : roamingNetwork.EVSEs.Where(evse => evse.ChargingStation?.Published == true).ToArray();
                     var totalCount              = allResults.ULongCount();
 
                     var filteredResults         = allResults.Where(matchFilter).ToArray();
@@ -6384,7 +6384,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     var allResults       = HTTPBaseAPI.IsMember(request.User, rootGroupId)
                                                ? roamingNetwork.EVSEs.ToArray()
-                                               : roamingNetwork.EVSEs.Where(evse => !(evse.ChargingStation?.Published == true)).ToArray();
+                                               : roamingNetwork.EVSEs.Where(evse => evse.ChargingStation?.Published == true).ToArray();
                     var totalCount       = allResults.ULongCount();
 
                     var matchingResults  = allResults.Where(matchFilter).ToArray();
@@ -6466,7 +6466,7 @@ namespace cloud.charging.open.protocols.WWCP
                     var statusList    = roamingNetwork.EVSEAdminStatus(
                                             HTTPBaseAPI.IsMember(request.User, rootGroupId)
                                                 ? evse => true
-                                                : evse => !(evse.ChargingStation?.Published == true)
+                                                : evse => evse.ChargingStation?.Published == true
                                         ).
                                         Where (beforeFilter).
                                         Where (afterFilter).
@@ -6543,7 +6543,7 @@ namespace cloud.charging.open.protocols.WWCP
                     var expectedCount          = roamingNetwork.EVSEAdminStatus(
                                                      evse => HTTPBaseAPI.IsMember(request.User, rootGroupId)
                                                                  ? true
-                                                                 : !(evse.ChargingStation?.Published == true)
+                                                                 : evse.ChargingStation?.Published == true
                                                  ).ULongCount();
 
                     var matchingEVSEs          = (matchFilter is not null
@@ -6640,7 +6640,7 @@ namespace cloud.charging.open.protocols.WWCP
                     var statusList    = roamingNetwork.EVSEStatus(
                                             HTTPBaseAPI.IsMember(request.User, rootGroupId)
                                                 ? evse => true
-                                                : evse => !(evse.ChargingStation?.Published == true)
+                                                : evse => evse.ChargingStation?.Published == true
                                         ).
                                         Where (beforeFilter).
                                         Where (afterFilter).
@@ -6717,7 +6717,7 @@ namespace cloud.charging.open.protocols.WWCP
                     var expectedCount     = roamingNetwork.EVSEStatus(
                                                 evse => HTTPBaseAPI.IsMember(request.User, rootGroupId)
                                                             ? true
-                                                            : !(evse.ChargingStation?.Published == true)
+                                                            : evse.ChargingStation?.Published == true
                                             ).ULongCount();
 
                     var matchingEVSEs     = (matchFilter is not null
