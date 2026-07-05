@@ -3000,30 +3000,43 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var geoLocation  = GeoLocation;
+                var geoLocation = GeoLocation;
 
-                if (geoLocation.HasValue && ChargingStation?.GeoLocation.HasValue == true && geoLocation.Value == ChargingStation.GeoLocation.Value)
-                    geoLocation  = null;
+                // When embedded, do not include the geolocation if it is the same as the charging station or pool!
+                if (Embedded)
+                {
 
-                if (geoLocation.HasValue && ChargingPool?.   GeoLocation.HasValue == true && geoLocation.Value == ChargingPool.   GeoLocation.Value)
-                    geoLocation  = null;
+                    if (geoLocation.HasValue && ChargingStation?.GeoLocation.HasValue == true && geoLocation.Value == ChargingStation.GeoLocation.Value)
+                        geoLocation  = null;
+
+                    if (geoLocation.HasValue && ChargingPool?.   GeoLocation.HasValue == true && geoLocation.Value == ChargingPool.   GeoLocation.Value)
+                        geoLocation  = null;
+
+                }
+
+                // Not embedded and no geolocation given, try to get it from the charging station or pool!
+                else if (!geoLocation.HasValue)
+                {
+                    geoLocation ??= ChargingStation?.GeoLocation;
+                    geoLocation ??= ChargingPool?.   GeoLocation;
+                }
 
                 var json         = JSONObject.Create(
 
-                                             new JProperty("@id",               Id.ToString()),
+                                             new JProperty("@id",                 Id.ToString()),
 
                                        !Embedded
-                                           ? new JProperty("@context",          JSONLDContext)
+                                           ? new JProperty("@context",            JSONLDContext)
                                            : null,
 
                                        Description.IsNotNullOrEmpty()
-                                           ? new JProperty("description",       Description.ToJSON())
+                                           ? new JProperty("description",         Description.ToJSON())
                                            : null,
 
                                        Brands.SafeAny()
                                            ? ExpandBrandIds.Switch(
-                                                 () => new JProperty("brandId", Brands.Select(brand => brand.Id.ToString())),
-                                                 () => new JProperty("brand",   Brands.ToJSON()))
+                                                 () => new JProperty("brandId",   Brands.Select(brand => brand.Id.ToString())),
+                                                 () => new JProperty("brand",     Brands.ToJSON()))
                                            : null,
 
                                        !Embedded && DataSource != ChargingStation?.DataSource
@@ -3083,8 +3096,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                             ExpandDataLicenses:                ExpandDataLicenses)))
                                            : null,
 
-                                       !Embedded && geoLocation.HasValue
-                                           ? new JProperty("geoLocation",          geoLocation.Value.ToJSON(Embedded: true))
+                                       geoLocation.HasValue
+                                           ? new JProperty("geoLocation",           geoLocation.Value.ToJSON(Embedded: true))
                                            : null,
 
                                        !Embedded && ChargingStation is not null && ChargingPool is not null && (ChargingStation.Address is not null  || ChargingPool.Address is not null)
