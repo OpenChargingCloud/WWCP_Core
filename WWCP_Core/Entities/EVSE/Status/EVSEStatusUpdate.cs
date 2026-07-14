@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id                        Id           { get; }
+        public EVSE_Id                       Id           { get; }
 
         /// <summary>
         /// The new timestamped status of the EVSE.
@@ -52,11 +52,41 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional data source or context for this EVSE status update.
         /// </summary>
-        public Context?                       Context      { get; }
+        public Context?                      Context      { get; }
 
         #endregion
 
         #region Constructor(s)
+
+        #region EVSEStatusUpdate (Id, NewStatus, Timestamp,        Context = null)
+
+        /// <summary>
+        /// Create a new EVSE status update.
+        /// </summary>
+        /// <param name="Id">The unique identification of the EVSE.</param>
+        /// <param name="NewStatus">The new status of the EVSE.</param>
+        /// <param name="Timestamp">The timestamp of the new status.</param>
+        /// <param name="Context">An optional data source or context for the EVSE status update.</param>
+        public EVSEStatusUpdate(EVSE_Id         Id,
+                                EVSEStatusType  NewStatus,
+                                DateTimeOffset  Timestamp,
+                                Context?        Context   = null)
+
+            : this(
+                  Id,
+                  new Timestamped<EVSEStatusType>(
+                      Timestamp,
+                      NewStatus
+                  ),
+                  null,
+                  Context
+              )
+
+        { }
+
+        #endregion
+
+        #region EVSEStatusUpdate (Id, NewStatus, OldStatus = null, Context = null)
 
         /// <summary>
         /// Create a new EVSE status update.
@@ -65,10 +95,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new timestamped status of the EVSE.</param>
         /// <param name="OldStatus">The optional old timestamped status of the EVSE.</param>
         /// <param name="Context">An optional data source or context for the EVSE status update.</param>
-        public EVSEStatusUpdate(EVSE_Id                        Id,
+        public EVSEStatusUpdate(EVSE_Id                       Id,
                                 Timestamped<EVSEStatusType>   NewStatus,
                                 Timestamped<EVSEStatusType>?  OldStatus   = null,
-                                Context?                       Context     = null)
+                                Context?                      Context     = null)
 
         {
 
@@ -88,6 +118,8 @@ namespace cloud.charging.open.protocols.WWCP
             }
 
         }
+
+        #endregion
 
         #endregion
 

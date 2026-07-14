@@ -62,11 +62,6 @@ namespace cloud.charging.open.protocols.WWCP
         public  readonly static TimeSpan                                                         DefaultFlushEVSEFastStatusEvery         = TimeSpan.FromSeconds(3);
 
         /// <summary>
-        /// The default EVSe status refresh interval.
-        /// </summary>
-        public  readonly static TimeSpan                                                         DefaultEVSEStatusRefreshEvery           = TimeSpan.FromHours(6);
-
-        /// <summary>
         /// The default CDR check interval.
         /// </summary>
         public  readonly static TimeSpan                                                         DefaultFlushChargeDetailRecordsEvery    = TimeSpan.FromSeconds(15);
@@ -189,14 +184,20 @@ namespace cloud.charging.open.protocols.WWCP
         public TimeSpan                                  FlushEVSEFastStatusEvery             { get; set; }
 
         /// <summary>
-        /// The EVSE status refresh interval.
-        /// </summary>
-        public TimeSpan                                  EVSEStatusRefreshEvery               { get; set; }
-
-        /// <summary>
         /// The charge detail record transmission interval.
         /// </summary>
         public TimeSpan                                  FlushChargeDetailRecordsEvery        { get; set; }
+
+
+
+
+        /// <summary>
+        /// The EVSE status refresh interval.
+        /// </summary>
+        public TimeSpan?                                 EVSEStatusRefreshEvery               { get; set; }
+
+        protected static readonly  SemaphoreSlim         EVSEStatusRefreshLock  = new (1,1);
+        protected readonly         Timer                 EVSEStatusRefreshTimer;
 
         #endregion
 
@@ -377,8 +378,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.FlushEVSEDataAndStatusEvery                     = FlushEVSEDataAndStatusEvery       ?? DefaultFlushEVSEDataAndStatusEvery;
             this.FlushEVSEFastStatusEvery                        = FlushEVSEFastStatusEvery          ?? DefaultFlushEVSEFastStatusEvery;
-            this.EVSEStatusRefreshEvery                          = EVSEStatusRefreshEvery            ?? DefaultEVSEStatusRefreshEvery;
             this.FlushChargeDetailRecordsEvery                   = FlushChargeDetailRecordsEvery     ?? DefaultFlushChargeDetailRecordsEvery;
+
+            this.EVSEStatusRefreshEvery                          = EVSEStatusRefreshEvery;
+            this.EVSEStatusRefreshTimer                          = this.EVSEStatusRefreshEvery.HasValue
+                                                                       ? new Timer(EVSEStatusRefresh, null, this.EVSEStatusRefreshEvery.Value, this.EVSEStatusRefreshEvery.Value)
+                                                                       : null;
 
             this.FlushEVSEDataAndStatusTimer                     = new Timer(FlushEVSEDataAndStatus);
             this.FlushEVSEFastStatusTimer                        = new Timer(FlushEVSEFastStatus);
@@ -3152,6 +3157,42 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
+
+        private void EVSEStatusRefresh(Object State)
+        {
+
+            if (!DisableSendStatus && !DisableEVSEStatusRefresh)
+            {
+
+                try
+                {
+
+                    RefreshEVSEStatus().Wait();
+
+                }
+                catch (Exception e)
+                {
+
+                    while (e.InnerException is not null)
+                        e = e.InnerException;
+
+                    DebugX.Log("A exception occurred during EVSEStatusRefresh: " + e.Message + Environment.NewLine + e.StackTrace);
+
+                }
+
+            }
+
+        }
+
+        protected virtual Task<PushEVSEStatusResult> RefreshEVSEStatus()
+
+            => Task.FromResult(
+                   PushEVSEStatusResult.NoOperation(
+                       Id,
+                       this
+                   )
+               );
 
 
         protected void SendOnWarnings(DateTimeOffset        Timestamp,
