@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics;
+
 using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -67,9 +69,9 @@ namespace cloud.charging.open.protocols.WWCP
         public  readonly static TimeSpan                                                         DefaultFlushChargeDetailRecordsEvery    = TimeSpan.FromSeconds(15);
 
 
-        protected               UInt64                                                           _FlushEVSEDataRunId                     = 1;
-        protected               UInt64                                                           _StatusRunId                            = 1;
-        protected               UInt64                                                           _CDRRunId                               = 1;
+        protected               UInt64                                                           flushEVSEDataRunId                      = 1;
+        protected               UInt64                                                           flushEVSEStatusRunId                    = 1;
+        protected               UInt64                                                           flushCDRsRunId                          = 1;
 
         protected readonly      SemaphoreSlim                                                    DataAndStatusLock                       = new (1, 1);
         protected readonly      Object                                                           DataAndStatusLockOld                    = new();
@@ -2997,27 +2999,28 @@ namespace cloud.charging.open.protocols.WWCP
 #pragma warning restore IDE0060 // Remove unused parameter
         {
 
-            var LockTaken = await FlushEVSEDataAndStatusLock.WaitAsync(0);
+            var lockTaken = await FlushEVSEDataAndStatusLock.WaitAsync(0);
 
             try
             {
 
-                if (LockTaken)
+                if (lockTaken)
                 {
-
-                    //DebugX.LogT("FlushEVSEDataAndStatusLock entered!");
 
                     if (SkipFlushEVSEDataAndStatusQueues())
                         return;
 
                     #region Send StartEvent...
 
-                    var StartTime = Timestamp.Now;
+                    var startTime  = Timestamp.Now;
+                    var sw         = Stopwatch.StartNew();
 
-                    FlushEVSEDataAndStatusQueuesStartedEvent?.Invoke(this,
-                                                                     StartTime,
-                                                                     FlushEVSEDataAndStatusEvery,
-                                                                     _FlushEVSEDataRunId);
+                    FlushEVSEDataAndStatusQueuesStartedEvent?.Invoke(
+                        this,
+                        startTime,
+                        flushEVSEDataAndStatusEvery,
+                        flushEVSEDataRunId
+                    );
 
                     #endregion
 
@@ -3025,18 +3028,18 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Send Finished Event...
 
-                    var EndTime = Timestamp.Now;
-
-                    FlushEVSEDataAndStatusQueuesFinishedEvent?.Invoke(this,
-                                                                      StartTime,
-                                                                      EndTime,
-                                                                      EndTime - StartTime,
-                                                                      FlushEVSEDataAndStatusEvery,
-                                                                      _FlushEVSEDataRunId);
+                    FlushEVSEDataAndStatusQueuesFinishedEvent?.Invoke(
+                        this,
+                        startTime,
+                        Timestamp.Now,
+                        sw.Elapsed,
+                        flushEVSEDataAndStatusEvery,
+                        flushEVSEDataRunId
+                    );
 
                     #endregion
 
-                    _FlushEVSEDataRunId++;
+                    flushEVSEDataRunId++;
 
                 }
 
@@ -3047,26 +3050,20 @@ namespace cloud.charging.open.protocols.WWCP
                 while (e.InnerException is not null)
                     e = e.InnerException;
 
-                DebugX.LogT(GetType().Name + ".FlushEVSEDataAndStatus '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+                DebugX.LogT($"{GetType().Name}.FlushEVSEDataAndStatus '{Id}' led to an exception: {e.Message}{Environment.NewLine}{e.StackTrace}");
 
-                OnWWCPCPOAdapterException?.Invoke(Timestamp.Now,
-                                                  this,
-                                                  e);
+                OnWWCPCPOAdapterException?.Invoke(
+                    Timestamp.Now,
+                    this,
+                    e
+                );
 
             }
 
             finally
             {
-
-                if (LockTaken)
-                {
+                if (lockTaken)
                     FlushEVSEDataAndStatusLock.Release();
-               //     DebugX.LogT("FlushEVSEDataAndStatusLock released!");
-                }
-
-                else
-                    DebugX.LogT("FlushEVSEDataAndStatusLock exited!");
-
             }
 
         }
@@ -3090,27 +3087,28 @@ namespace cloud.charging.open.protocols.WWCP
 #pragma warning restore IDE0060 // Remove unused parameter
         {
 
-            var LockTaken = await FlushEVSEFastStatusLock.WaitAsync(0);
+            var lockTaken = await FlushEVSEFastStatusLock.WaitAsync(0);
 
             try
             {
 
-                if (LockTaken)
+                if (lockTaken)
                 {
-
-                    //DebugX.LogT("FlushEVSEFastStatusLock entered!");
 
                     if (SkipFlushEVSEFastStatusQueues())
                         return;
 
                     #region Send StartEvent...
 
-                    var StartTime = Timestamp.Now;
+                    var startTime  = Timestamp.Now;
+                    var sw         = Stopwatch.StartNew();
 
-                    FlushEVSEFastStatusQueuesStartedEvent?.Invoke(this,
-                                                                  StartTime,
-                                                                  FlushEVSEFastStatusEvery,
-                                                                  _StatusRunId);
+                    FlushEVSEFastStatusQueuesStartedEvent?.Invoke(
+                        this,
+                        startTime,
+                        flushEVSEFastStatusEvery,
+                        flushEVSEStatusRunId
+                    );
 
                     #endregion
 
@@ -3118,18 +3116,18 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Send Finished Event...
 
-                    var EndTime = Timestamp.Now;
-
-                    FlushEVSEFastStatusQueuesFinishedEvent?.Invoke(this,
-                                                                   StartTime,
-                                                                   EndTime,
-                                                                   EndTime - StartTime,
-                                                                   FlushEVSEFastStatusEvery,
-                                                                   _StatusRunId);
+                    FlushEVSEFastStatusQueuesFinishedEvent?.Invoke(
+                        this,
+                        startTime,
+                        Timestamp.Now,
+                        sw.Elapsed,
+                        flushEVSEFastStatusEvery,
+                        flushEVSEStatusRunId
+                    );
 
                     #endregion
 
-                    _StatusRunId++;
+                    flushEVSEStatusRunId++;
 
                 }
 
@@ -3140,26 +3138,20 @@ namespace cloud.charging.open.protocols.WWCP
                 while (e.InnerException is not null)
                     e = e.InnerException;
 
-                DebugX.LogT(GetType().Name + ".FlushEVSEFastStatus '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+                DebugX.LogT($"{GetType().Name}.FlushEVSEFastStatus '{Id}' led to an exception: {e.Message}{Environment.NewLine}{e.StackTrace}");
 
-                OnWWCPCPOAdapterException?.Invoke(Timestamp.Now,
-                                                  this,
-                                                  e);
+                OnWWCPCPOAdapterException?.Invoke(
+                    Timestamp.Now,
+                    this,
+                    e
+                );
 
             }
 
             finally
             {
-
-                if (LockTaken)
-                {
+                if (lockTaken)
                     FlushEVSEFastStatusLock.Release();
-                 //   DebugX.LogT("FlushEVSEFastStatusLock released!");
-                }
-
-                else
-                    DebugX.LogT("FlushEVSEFastStatusLock exited!");
-
             }
 
         }
@@ -3183,27 +3175,28 @@ namespace cloud.charging.open.protocols.WWCP
 #pragma warning restore IDE0060 // Remove unused parameter
         {
 
-            var LockTaken = await FlushChargeDetailRecordsLock.WaitAsync(0);
+            var lockTaken = await FlushChargeDetailRecordsLock.WaitAsync(0);
 
             try
             {
 
-                if (LockTaken)
+                if (lockTaken)
                 {
-
-                    //DebugX.LogT("FlushChargeDetailRecordsLock entered!");
 
                     if (SkipFlushChargeDetailRecordsQueues())
                         return;
 
                     #region Send StartEvent...
 
-                    var StartTime = Timestamp.Now;
+                    var startTime  = Timestamp.Now;
+                    var sw         = Stopwatch.StartNew();
 
-                    FlushChargeDetailRecordsQueuesStartedEvent?.Invoke(this,
-                                                                       StartTime,
-                                                                       FlushEVSEFastStatusEvery,
-                                                                       _CDRRunId);
+                    FlushChargeDetailRecordsQueuesStartedEvent?.Invoke(
+                        this,
+                        startTime,
+                        flushChargeDetailRecordsEvery,
+                        flushCDRsRunId
+                    );
 
                     #endregion
 
@@ -3214,18 +3207,18 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Send Finished Event...
 
-                    var EndTime = Timestamp.Now;
-
-                    FlushChargeDetailRecordsQueuesFinishedEvent?.Invoke(this,
-                                                                        StartTime,
-                                                                        EndTime,
-                                                                        EndTime - StartTime,
-                                                                        FlushEVSEFastStatusEvery,
-                                                                        _CDRRunId);
+                    FlushChargeDetailRecordsQueuesFinishedEvent?.Invoke(
+                        this,
+                        startTime,
+                        Timestamp.Now,
+                        sw.Elapsed,
+                        flushChargeDetailRecordsEvery,
+                        flushCDRsRunId
+                    );
 
                     #endregion
 
-                    _CDRRunId++;
+                    flushCDRsRunId++;
 
                 }
 
@@ -3236,7 +3229,7 @@ namespace cloud.charging.open.protocols.WWCP
                 while (e.InnerException is not null)
                     e = e.InnerException;
 
-                DebugX.LogT(GetType().Name + ".FlushChargeDetailRecords '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+                DebugX.LogT($"{GetType().Name}.FlushChargeDetailRecords '{Id}' led to an exception: {e.Message}{Environment.NewLine}{e.StackTrace}");
 
                 OnWWCPCPOAdapterException?.Invoke(Timestamp.Now,
                                                   this,
@@ -3246,16 +3239,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             finally
             {
-
-                if (LockTaken)
-                {
+                if (lockTaken)
                     FlushChargeDetailRecordsLock.Release();
-                    DebugX.LogT("FlushChargeDetailRecordsLock released!");
-                }
-
-                else
-                    DebugX.LogT("FlushChargeDetailRecordsLock exited!");
-
             }
 
         }
@@ -3283,7 +3268,7 @@ namespace cloud.charging.open.protocols.WWCP
                     while (e.InnerException is not null)
                         e = e.InnerException;
 
-                    DebugX.Log("A exception occurred during EVSEStatusRefresh: " + e.Message + Environment.NewLine + e.StackTrace);
+                    DebugX.Log($"A exception occurred during EVSEStatusRefresh: {e.Message}{Environment.NewLine}{e.StackTrace}");
 
                 }
 
