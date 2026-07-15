@@ -150,21 +150,21 @@ namespace cloud.charging.open.protocols.WWCP
         protected static readonly  Byte                                               MinChargingStationOperatorNameLength   = 5;
 
 
-        private readonly           PriorityList<ISendRoamingNetworkData>              allSendRoamingNetworkData              = new();
-        private readonly           PriorityList<ISendChargingStationOperatorData>     allSendChargingStationOperatorData     = new();
-        private readonly           PriorityList<ISendChargingPoolData>                allSendChargingPoolData                = new();
-        private readonly           PriorityList<ISendChargingStationData>             allSendChargingStationData             = new();
-        private readonly           PriorityList<ISendEVSEData>                        allSendEVSEData                        = new();
+        private readonly           PriorityList<ISendRoamingNetworkData>              allSendRoamingNetworkData              = [];
+        private readonly           PriorityList<ISendChargingStationOperatorData>     allSendChargingStationOperatorData     = [];
+        private readonly           PriorityList<ISendChargingPoolData>                allSendChargingPoolData                = [];
+        private readonly           PriorityList<ISendChargingStationData>             allSendChargingStationData             = [];
+        private readonly           PriorityList<ISendEVSEData>                        allSendEVSEData                        = [];
 
-        private readonly           PriorityList<ISendAdminStatus>                     allSendAdminStatus                     = new();
-        private readonly           PriorityList<ISendStatus>                          allSendStatus                          = new();
-        private readonly           PriorityList<ISendEnergyStatus>                    allSendEnergyStatus                    = new();
+        private readonly           PriorityList<ISendAdminStatus>                     allSendAdminStatus                     = [];
+        private readonly           PriorityList<ISendStatus>                          allSendStatus                          = [];
+        private readonly           PriorityList<ISendEnergyStatus>                    allSendEnergyStatus                    = [];
 
-        private readonly           PriorityList<ISendAuthorizeStartStop>              allSend2RemoteAuthorizeStartStop       = new();
-        private readonly           PriorityList<ISendChargeDetailRecords>             allRemoteSendChargeDetailRecord        = new();
+        private readonly           PriorityList<ISendAuthorizeStartStop>              allSend2RemoteAuthorizeStartStop       = [];
+        private readonly           PriorityList<ISendChargeDetailRecords>             allRemoteSendChargeDetailRecord        = [];
 
-        private readonly           ConcurrentDictionary<UInt32, IEMPRoamingProvider>  eMobilityRoamingServices               = new();
-        private readonly           ConcurrentDictionary<UInt32, ICSORoamingProvider>  csoRoamingServices                     = new();
+        private readonly           ConcurrentDictionary<UInt32, IEMPRoamingProvider>  eMobilityRoamingServices               = [];
+        private readonly           ConcurrentDictionary<UInt32, ICSORoamingProvider>  csoRoamingServices                     = [];
 
         public  readonly           TimeSpan                                           DefaultRequestTimeout                  = TimeSpan.FromSeconds(10);
 
@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this.dataLicenses                                = new ReactiveSet<DataLicense>();
+            this.dataLicenses                                = [];
 
             this.eMobilityProviders                          = new EntityHashSet       <IRoamingNetwork,       EMobilityProvider_Id,       IEMobilityProvider>      (this);
             this.chargingStationOperators                    = new EntityHashSet       <IRoamingNetwork,       ChargingStationOperator_Id, IChargingStationOperator>(this);

@@ -83,6 +83,10 @@ namespace cloud.charging.open.protocols.WWCP
         protected readonly      SemaphoreSlim                                                    FlushChargeDetailRecordsLock            = new (1, 1);
         protected readonly      Timer                                                            FlushChargeDetailRecordsTimer;
 
+        protected readonly      SemaphoreSlim                                                    EVSEStatusRefreshLock                   = new (1,1);
+        protected readonly      Timer                                                            EVSEStatusRefreshTimer;
+
+
         protected readonly      Dictionary<IRoamingNetwork,         List<PropertyUpdateInfo>>    roamingNetworksUpdateLog;
         protected readonly      Dictionary<ChargingStationOperator, List<PropertyUpdateInfo>>    chargingStationOperatorsUpdateLog;
 
@@ -189,15 +193,32 @@ namespace cloud.charging.open.protocols.WWCP
         public TimeSpan                                  FlushChargeDetailRecordsEvery        { get; set; }
 
 
-
+        private TimeSpan? evseStatusRefreshEvery;
 
         /// <summary>
         /// The EVSE status refresh interval.
         /// </summary>
-        public TimeSpan?                                 EVSEStatusRefreshEvery               { get; set; }
+        public TimeSpan?                                 EVSEStatusRefreshEvery
+        {
 
-        protected static readonly  SemaphoreSlim         EVSEStatusRefreshLock  = new (1,1);
-        protected readonly         Timer                 EVSEStatusRefreshTimer;
+            get
+            {
+                return evseStatusRefreshEvery;
+            }
+
+            set
+            {
+
+                evseStatusRefreshEvery = value;
+
+                EVSEStatusRefreshTimer.Change(
+                    value ?? TimeSpan.MaxValue,
+                    value ?? TimeSpan.MaxValue
+                );
+
+            }
+
+        }
 
         #endregion
 
@@ -217,7 +238,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        public IDNSClient?  DNSClient    { get; }
+        public IDNSClient?                                DNSClient                { get; }
 
         #endregion
 
@@ -229,7 +250,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                AWWCPCSOAdapter<TChargeDetailRecords>  Sender,
                                                                Exception                              Exception);
 
-        public event OnWWCPCPOAdapterExceptionDelegate OnWWCPCPOAdapterException;
+        public event OnWWCPCPOAdapterExceptionDelegate? OnWWCPCPOAdapterException;
 
         #endregion
 
@@ -239,6 +260,7 @@ namespace cloud.charging.open.protocols.WWCP
         public delegate void FlushEVSEDataAndStatusQueuesStartedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTimeOffset StartTime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEDataAndStatusQueuesStartedDelegate? FlushEVSEDataAndStatusQueuesStartedEvent;
+
 
         public delegate void FlushEVSEDataAndStatusQueuesFinishedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTimeOffset StartTime, DateTimeOffset EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
@@ -252,6 +274,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public event FlushEVSEFastStatusQueuesStartedDelegate? FlushEVSEFastStatusQueuesStartedEvent;
 
+
         public delegate void FlushEVSEFastStatusQueuesFinishedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTimeOffset StartTime, DateTimeOffset EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEFastStatusQueuesFinishedDelegate? FlushEVSEFastStatusQueuesFinishedEvent;
@@ -263,6 +286,7 @@ namespace cloud.charging.open.protocols.WWCP
         public delegate void FlushChargeDetailRecordsQueuesStartedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTimeOffset StartTime, TimeSpan Every, UInt64 RunId);
 
         public event FlushChargeDetailRecordsQueuesStartedDelegate? FlushChargeDetailRecordsQueuesStartedEvent;
+
 
         public delegate void FlushChargeDetailRecordsQueuesFinishedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTimeOffset StartTime, DateTimeOffset EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
@@ -316,12 +340,15 @@ namespace cloud.charging.open.protocols.WWCP
                                   IncludeChargingPoolDelegate?               IncludeChargingPools                = null,
                                   IncludeChargingStationOperatorIdDelegate?  IncludeChargingStationOperatorIds   = null,
                                   IncludeChargingStationOperatorDelegate?    IncludeChargingStationOperators     = null,
+                                  IncludeRoamingNetworkIdDelegate?           IncludeRoamingNetworkIds            = null,
+                                  IncludeRoamingNetworkDelegate?             IncludeRoamingNetworks              = null,
                                   ChargeDetailRecordFilterDelegate?          ChargeDetailRecordFilter            = null,
 
                                   TimeSpan?                                  FlushEVSEDataAndStatusEvery         = null,
                                   TimeSpan?                                  FlushEVSEFastStatusEvery            = null,
-                                  TimeSpan?                                  EVSEStatusRefreshEvery              = null,
                                   TimeSpan?                                  FlushChargeDetailRecordsEvery       = null,
+
+                                  TimeSpan?                                  EVSEStatusRefreshEvery              = null,
 
                                   Boolean                                    DisablePushData                     = false,
                                   Boolean                                    DisablePushAdminStatus              = false,
@@ -366,6 +393,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.IncludeChargingPools                            = IncludeChargingPools              ?? (chargingPool       => true);
             this.IncludeChargingStationOperatorIds               = IncludeChargingStationOperatorIds ?? (chargingStationId  => true);
             this.IncludeChargingStationOperators                 = IncludeChargingStationOperators   ?? (chargingStation    => true);
+            this.IncludeRoamingNetworkIds                        = IncludeRoamingNetworkIds          ?? (roamingNetworkId   => true);
+            this.IncludeRoamingNetworks                          = IncludeRoamingNetworks            ?? (roamingNetwork     => true);
             this.ChargeDetailRecordFilter                        = ChargeDetailRecordFilter          ?? (chargeDetailRecord => ChargeDetailRecordFilters.forward);
 
             this.DisablePushData                                 = DisablePushData;
@@ -383,45 +412,49 @@ namespace cloud.charging.open.protocols.WWCP
             this.EVSEStatusRefreshEvery                          = EVSEStatusRefreshEvery;
             this.EVSEStatusRefreshTimer                          = this.EVSEStatusRefreshEvery.HasValue
                                                                        ? new Timer(EVSEStatusRefresh, null, this.EVSEStatusRefreshEvery.Value, this.EVSEStatusRefreshEvery.Value)
-                                                                       : null;
+                                                                       : new Timer(EVSEStatusRefresh);
 
             this.FlushEVSEDataAndStatusTimer                     = new Timer(FlushEVSEDataAndStatus);
             this.FlushEVSEFastStatusTimer                        = new Timer(FlushEVSEFastStatus);
             this.FlushChargeDetailRecordsTimer                   = new Timer(FlushChargeDetailRecords);
 
-            this.chargingPoolsToAddQueue                         = new HashSet<IChargingPool>();
-            this.chargingPoolsToUpdateQueue                      = new HashSet<IChargingPool>();
-            this.chargingPoolsToRemoveQueue                      = new HashSet<IChargingPool>();
-            this.chargingPoolAdminStatusChangesFastQueue         = new List<ChargingPoolAdminStatusUpdate>();
-            this.chargingPoolAdminStatusChangesDelayedQueue      = new List<ChargingPoolAdminStatusUpdate>();
-            this.chargingPoolStatusChangesFastQueue              = new List<ChargingPoolStatusUpdate>();
-            this.chargingPoolStatusChangesDelayedQueue           = new List<ChargingPoolStatusUpdate>();
-            this.chargingPoolsUpdateLog                          = new Dictionary<IChargingPool,    List<PropertyUpdateInfo>>();
+            this.roamingNetworksUpdateLog                        = [];
 
-            this.chargingStationsToAddQueue                      = new HashSet<IChargingStation>();
-            this.chargingStationsToUpdateQueue                   = new HashSet<IChargingStation>();
-            this.chargingStationsToRemoveQueue                   = new HashSet<IChargingStation>();
-            this.chargingStationAdminStatusChangesFastQueue      = new List<ChargingStationAdminStatusUpdate>();
-            this.chargingStationAdminStatusChangesDelayedQueue   = new List<ChargingStationAdminStatusUpdate>();
-            this.chargingStationStatusChangesFastQueue           = new List<ChargingStationStatusUpdate>();
-            this.chargingStationStatusChangesDelayedQueue        = new List<ChargingStationStatusUpdate>();
-            this.chargingStationsUpdateLog                       = new Dictionary<IChargingStation, List<PropertyUpdateInfo>>();
+            this.chargingStationOperatorsUpdateLog               = [];
 
-            this.evsesToAddQueue                                 = new HashSet<IEVSE>();
-            this.evsesToUpdateQueue                              = new HashSet<IEVSE>();
-            this.evsesToRemoveQueue                              = new HashSet<IEVSE>();
-            this.evseAdminStatusChangesFastQueue                 = new List<EVSEAdminStatusUpdate>();
-            this.evseAdminStatusChangesDelayedQueue              = new List<EVSEAdminStatusUpdate>();
-            this.evseStatusChangesFastQueue                      = new List<EVSEStatusUpdate>();
-            this.evseStatusChangesDelayedQueue                   = new List<EVSEStatusUpdate>();
-            this.evsesUpdateLog                                  = new Dictionary<IEVSE,            List<PropertyUpdateInfo>>();
+            this.chargingPoolsToAddQueue                         = [];
+            this.chargingPoolsToUpdateQueue                      = [];
+            this.chargingPoolsToRemoveQueue                      = [];
+            this.chargingPoolAdminStatusChangesFastQueue         = [];
+            this.chargingPoolAdminStatusChangesDelayedQueue      = [];
+            this.chargingPoolStatusChangesFastQueue              = [];
+            this.chargingPoolStatusChangesDelayedQueue           = [];
+            this.chargingPoolsUpdateLog                          = [];
 
-            this.chargeDetailRecordsQueue                        = new List<TChargeDetailRecords>();
+            this.chargingStationsToAddQueue                      = [];
+            this.chargingStationsToUpdateQueue                   = [];
+            this.chargingStationsToRemoveQueue                   = [];
+            this.chargingStationAdminStatusChangesFastQueue      = [];
+            this.chargingStationAdminStatusChangesDelayedQueue   = [];
+            this.chargingStationStatusChangesFastQueue           = [];
+            this.chargingStationStatusChangesDelayedQueue        = [];
+            this.chargingStationsUpdateLog                       = [];
+
+            this.evsesToAddQueue                                 = [];
+            this.evsesToUpdateQueue                              = [];
+            this.evsesToRemoveQueue                              = [];
+            this.evseAdminStatusChangesFastQueue                 = [];
+            this.evseAdminStatusChangesDelayedQueue              = [];
+            this.evseStatusChangesFastQueue                      = [];
+            this.evseStatusChangesDelayedQueue                   = [];
+            this.evsesUpdateLog                                  = [];
+
+            this.chargeDetailRecordsQueue                        = [];
 
             this.IsDevelopment                                   = IsDevelopment;
             this.DevelopmentServers                              = DevelopmentServers;
             this.DisableLogging                                  = DisableLogging;
-            this.LoggingPath                                     = LoggingPath              ?? Path.Combine(AppContext.BaseDirectory, Default_LoggingPath);
+            this.LoggingPath                                     = LoggingPath        ?? Path.Combine(AppContext.BaseDirectory, Default_LoggingPath);
             this.LoggingContext                                  = LoggingContext;
             this.LogfileName                                     = LogfileName;
             this.LogfileCreator                                  = LogfileCreator;
@@ -429,7 +462,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (this.LoggingPath[^1]        != Path.DirectorySeparatorChar)
                 this.LoggingPath            += Path.DirectorySeparatorChar;
 
-            this.ClientsLoggingPath                              = ClientsLoggingPath       ?? this.LoggingPath;
+            this.ClientsLoggingPath                              = ClientsLoggingPath ?? this.LoggingPath;
             this.ClientsLoggingContext                           = ClientsLoggingContext;
             this.ClientsLogfileCreator                           = ClientsLogfileCreator;
 
@@ -2881,19 +2914,21 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (timer) FlushEVSEDataAndStatus(State)
+        #region (timer) FlushEVSEDataAndStatus   (State)
 
         protected abstract Boolean  SkipFlushEVSEDataAndStatusQueues();
 
         protected abstract Task     FlushEVSEDataAndStatusQueues();
 
-        private void FlushEVSEDataAndStatus(Object State)
+        private void FlushEVSEDataAndStatus(Object? State)
         {
             if (!DisablePushData)
                 FlushEVSEDataAndStatus2(State).Wait();
         }
 
-        private async Task FlushEVSEDataAndStatus2(Object State)
+#pragma warning disable IDE0060 // Remove unused parameter
+        private async Task FlushEVSEDataAndStatus2(Object? State)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
 
             var LockTaken = await FlushEVSEDataAndStatusLock.WaitAsync(0);
@@ -2972,19 +3007,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (timer) FlushEVSEFastStatus(State)
+        #region (timer) FlushEVSEFastStatus      (State)
 
         protected abstract Boolean  SkipFlushEVSEFastStatusQueues();
 
         protected abstract Task     FlushEVSEFastStatusQueues();
 
-        private void FlushEVSEFastStatus(Object State)
+        private void FlushEVSEFastStatus(Object? State)
         {
             if (!DisableSendStatus)
                 FlushEVSEFastStatus2(State).Wait();
         }
 
-        private async Task FlushEVSEFastStatus2(Object State)
+#pragma warning disable IDE0060 // Remove unused parameter
+        private async Task FlushEVSEFastStatus2(Object? State)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
 
             var LockTaken = await FlushEVSEFastStatusLock.WaitAsync(0);
@@ -3063,19 +3100,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (timer) FlushChargeDetailRecords(State)
+        #region (timer) FlushChargeDetailRecords (State)
 
         protected abstract Boolean  SkipFlushChargeDetailRecordsQueues();
 
         protected abstract Task     FlushChargeDetailRecordsQueues(IEnumerable<TChargeDetailRecords> ChargeDetailsRecords);
 
-        private void FlushChargeDetailRecords(Object State)
+        private void FlushChargeDetailRecords(Object? State)
         {
             if (!DisableSendChargeDetailRecords)
                 FlushChargeDetailRecords2(State).Wait();
         }
 
-        private async Task FlushChargeDetailRecords2(Object State)
+#pragma warning disable IDE0060 // Remove unused parameter
+        private async Task FlushChargeDetailRecords2(Object? State)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
 
             var LockTaken = await FlushChargeDetailRecordsLock.WaitAsync(0);
@@ -3158,8 +3197,9 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region (timer) EVSEStatusRefresh        (State)
 
-        private void EVSEStatusRefresh(Object State)
+        private void EVSEStatusRefresh(Object? State)
         {
 
             if (!DisableSendStatus && !DisableEVSEStatusRefresh)
@@ -3193,6 +3233,8 @@ namespace cloud.charging.open.protocols.WWCP
                        this
                    )
                );
+
+        #endregion
 
 
         protected void SendOnWarnings(DateTimeOffset        Timestamp,
