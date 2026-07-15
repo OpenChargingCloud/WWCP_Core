@@ -177,20 +177,88 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Flush...Every
 
+        private TimeSpan flushEVSEDataAndStatusEvery;
+
         /// <summary>
         /// The EVSE data updates transmission interval.
         /// </summary>
-        public TimeSpan                                  FlushEVSEDataAndStatusEvery          { get; set; }
+        public TimeSpan FlushEVSEDataAndStatusEvery
+        {
+
+            get
+            {
+                return flushEVSEDataAndStatusEvery;
+            }
+
+            set
+            {
+
+                flushEVSEDataAndStatusEvery = value;
+
+                FlushEVSEDataAndStatusTimer.Change(
+                    value,
+                    value
+                );
+
+            }
+
+        }
+
+
+        private TimeSpan flushEVSEFastStatusEvery;
 
         /// <summary>
         /// The EVSE status updates transmission interval.
         /// </summary>
-        public TimeSpan                                  FlushEVSEFastStatusEvery             { get; set; }
+        public TimeSpan FlushEVSEFastStatusEvery
+        {
+
+            get
+            {
+                return flushEVSEFastStatusEvery;
+            }
+
+            set
+            {
+
+                flushEVSEFastStatusEvery = value;
+
+                FlushEVSEFastStatusTimer.Change(
+                    value,
+                    value
+                );
+
+            }
+
+        }
+
+
+        private TimeSpan flushChargeDetailRecordsEvery;
 
         /// <summary>
         /// The charge detail record transmission interval.
         /// </summary>
-        public TimeSpan                                  FlushChargeDetailRecordsEvery        { get; set; }
+        public TimeSpan FlushChargeDetailRecordsEvery
+        {
+
+            get
+            {
+                return flushChargeDetailRecordsEvery;
+            }
+
+            set
+            {
+
+                flushChargeDetailRecordsEvery = value;
+
+                FlushChargeDetailRecordsTimer.Change(
+                    value,
+                    value
+                );
+
+            }
+
+        }
 
 
         private TimeSpan? evseStatusRefreshEvery;
@@ -198,7 +266,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The EVSE status refresh interval.
         /// </summary>
-        public TimeSpan?                                 EVSEStatusRefreshEvery
+        public TimeSpan? EVSEStatusRefreshEvery
         {
 
             get
@@ -238,7 +306,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        public IDNSClient?                                DNSClient                { get; }
+        public IDNSClient?  DNSClient    { get; }
 
         #endregion
 
@@ -405,18 +473,16 @@ namespace cloud.charging.open.protocols.WWCP
             this.DisableAuthorization                            = DisableAuthorization;
             this.DisableSendChargeDetailRecords                  = DisableSendChargeDetailRecords;
 
-            this.FlushEVSEDataAndStatusEvery                     = FlushEVSEDataAndStatusEvery       ?? DefaultFlushEVSEDataAndStatusEvery;
-            this.FlushEVSEFastStatusEvery                        = FlushEVSEFastStatusEvery          ?? DefaultFlushEVSEFastStatusEvery;
-            this.FlushChargeDetailRecordsEvery                   = FlushChargeDetailRecordsEvery     ?? DefaultFlushChargeDetailRecordsEvery;
-
-            this.EVSEStatusRefreshEvery                          = EVSEStatusRefreshEvery;
-            this.EVSEStatusRefreshTimer                          = this.EVSEStatusRefreshEvery.HasValue
-                                                                       ? new Timer(EVSEStatusRefresh, null, this.EVSEStatusRefreshEvery.Value, this.EVSEStatusRefreshEvery.Value)
-                                                                       : new Timer(EVSEStatusRefresh);
-
             this.FlushEVSEDataAndStatusTimer                     = new Timer(FlushEVSEDataAndStatus);
             this.FlushEVSEFastStatusTimer                        = new Timer(FlushEVSEFastStatus);
             this.FlushChargeDetailRecordsTimer                   = new Timer(FlushChargeDetailRecords);
+            this.EVSEStatusRefreshTimer                          = new Timer(EVSEStatusRefresh);
+
+                                                                   // Those will set the timer intervals!
+            this.FlushEVSEDataAndStatusEvery                     = FlushEVSEDataAndStatusEvery       ?? DefaultFlushEVSEDataAndStatusEvery;
+            this.FlushEVSEFastStatusEvery                        = FlushEVSEFastStatusEvery          ?? DefaultFlushEVSEFastStatusEvery;
+            this.FlushChargeDetailRecordsEvery                   = FlushChargeDetailRecordsEvery     ?? DefaultFlushChargeDetailRecordsEvery;
+            this.EVSEStatusRefreshEvery                          = EVSEStatusRefreshEvery;
 
             this.roamingNetworksUpdateLog                        = [];
 
