@@ -280,8 +280,8 @@ namespace cloud.charging.open.protocols.WWCP
                 evseStatusRefreshEvery = value;
 
                 EVSEStatusRefreshTimer.Change(
-                    value ?? TimeSpan.MaxValue,
-                    value ?? TimeSpan.MaxValue
+                    value ?? Timeout.InfiniteTimeSpan,
+                    value ?? Timeout.InfiniteTimeSpan
                 );
 
             }
