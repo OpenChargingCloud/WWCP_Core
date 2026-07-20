@@ -442,10 +442,10 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                             Boolean?                                                        ClientCertificateRequired    = null,
                                                             Boolean?                                                        CheckCertificateRevocation   = null,
 
-                                                            ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
-                                                            ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
+                                                            //ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
+                                                            //ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
                                                             Boolean?                                                        ServerThreadIsBackground     = null,
-                                                            ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
+                                                            //ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
                                                             TimeSpan?                                                       ConnectionTimeout            = null,
                                                             UInt32?                                                         MaxClientConnections         = null,
 
@@ -475,15 +475,15 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                           ClientCertificateRequired,
                                           CheckCertificateRevocation,
 
-                                          ServerThreadNameCreator,
-                                          ServerThreadPrioritySetter,
-                                          ServerThreadIsBackground,
-                                          ConnectionIdBuilder,
-                                          ConnectionTimeout,
-                                          MaxClientConnections,
+                                          //ServerThreadNameCreator,
+                                          //ServerThreadPrioritySetter,
+                                          //ServerThreadIsBackground,
+                                          //ConnectionIdBuilder,
+                                          //ConnectionTimeout,
+                                          //MaxClientConnections,
 
-                                          DNSClient,
-                                          AutoStart: false
+                                          DNSClient:  DNSClient,
+                                          AutoStart:  false
 
                                       );
 
