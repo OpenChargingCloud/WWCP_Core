@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public EnergyMeterStatus(EnergyMeter_Id                       Id,
                                  Timestamped<EnergyMeterStatusTypes>  Status,
-                                 JObject?                             CustomData     = null,
+                                 CustomDataNew?                       CustomData     = null,
                                  UserDefinedDictionary?               InternalData   = null)
 
             : base(CustomData,
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.WWCP
         public EnergyMeterStatus(EnergyMeter_Id          Id,
                                      EnergyMeterStatusTypes  Status,
                                      DateTime                    Timestamp,
-                                     JObject?                    CustomData     = null,
+                                     CustomDataNew?              CustomData     = null,
                                      UserDefinedDictionary?      InternalData   = null)
 
             : base(CustomData,

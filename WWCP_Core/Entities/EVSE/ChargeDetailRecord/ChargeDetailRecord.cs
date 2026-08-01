@@ -512,7 +512,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   WattHour?                          ConsumedEnergy              = null,
                                   Price?                             ConsumedEnergyFee           = null,
 
-                                  JObject?                           CustomData                  = null,
+                                  CustomDataNew?                     CustomData                  = null,
                                   UserDefinedDictionary?             InternalData                = null,
 
                                   ECPublicKeyParameters?             PublicKey                   = null,

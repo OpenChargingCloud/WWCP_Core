@@ -1183,7 +1183,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                    DateTimeOffset?                            Created                      = null,
                                    DateTimeOffset?                            LastChange                   = null,
 
-                                   JObject?                                   CustomData                   = null,
+                                   CustomDataNew?                             CustomData                   = null,
                                    UserDefinedDictionary?                     InternalData                 = null)
 
             : base(Id,

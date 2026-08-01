@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public RoamingNetworkStatusSchedule(RoamingNetwork_Id                          Id,
                                             StatusSchedule<RoamingNetworkStatusType>  StatusSchedule,
-                                            JObject?                                   CustomData     = null,
+                                            CustomDataNew?                             CustomData     = null,
                                             UserDefinedDictionary?                     InternalData   = null)
 
             : base(CustomData,

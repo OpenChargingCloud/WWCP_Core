@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public EMobilityProviderAdminStatus(EMobilityProvider_Id                            Id,
                                             Timestamped<EMobilityProviderAdminStatusTypes>  AdminStatus,
-                                            JObject?                                        CustomData     = null,
+                                            CustomDataNew?                                  CustomData     = null,
                                             UserDefinedDictionary?                          InternalData   = null)
 
             : base(CustomData,
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.WWCP
         public EMobilityProviderAdminStatus(EMobilityProvider_Id               Id,
                                             EMobilityProviderAdminStatusTypes  AdminStatus,
                                             DateTimeOffset                     Timestamp,
-                                            JObject?                           CustomData     = null,
+                                            CustomDataNew?                     CustomData     = null,
                                             UserDefinedDictionary?             InternalData   = null)
 
             : base(CustomData,

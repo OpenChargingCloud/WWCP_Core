@@ -2495,14 +2495,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Additional HTTP methods
 
-        public readonly static HTTPMethod RESERVE      = HTTPMethod.TryParse("RESERVE",     IsSafe: false, IsIdempotent: true)!;
-        public readonly static HTTPMethod SETEXPIRED   = HTTPMethod.TryParse("SETEXPIRED",  IsSafe: false, IsIdempotent: true)!;
-        public readonly static HTTPMethod AUTHSTART    = HTTPMethod.TryParse("AUTHSTART",   IsSafe: false, IsIdempotent: true)!;
-        public readonly static HTTPMethod AUTHSTOP     = HTTPMethod.TryParse("AUTHSTOP",    IsSafe: false, IsIdempotent: true)!;
-        public readonly static HTTPMethod REMOTESTART  = HTTPMethod.TryParse("REMOTESTART", IsSafe: false, IsIdempotent: true)!;
-        public readonly static HTTPMethod REMOTESTOP   = HTTPMethod.TryParse("REMOTESTOP",  IsSafe: false, IsIdempotent: true)!;
-        public readonly static HTTPMethod SENDCDR      = HTTPMethod.TryParse("SENDCDR",     IsSafe: false, IsIdempotent: true)!;
-        public readonly static HTTPMethod RESENDCDR    = HTTPMethod.TryParse("RESENDCDR",   IsSafe: false, IsIdempotent: true)!;
+        public readonly static HTTPMethod RESERVE      = HTTPMethod.Register("RESERVE",     IsSafe: false, IsIdempotent: true);
+        public readonly static HTTPMethod SETEXPIRED   = HTTPMethod.Register("SETEXPIRED",  IsSafe: false, IsIdempotent: true);
+        public readonly static HTTPMethod AUTHSTART    = HTTPMethod.Register("AUTHSTART",   IsSafe: false, IsIdempotent: true);
+        public readonly static HTTPMethod AUTHSTOP     = HTTPMethod.Register("AUTHSTOP",    IsSafe: false, IsIdempotent: true);
+        public readonly static HTTPMethod REMOTESTART  = HTTPMethod.Register("REMOTESTART", IsSafe: false, IsIdempotent: true);
+        public readonly static HTTPMethod REMOTESTOP   = HTTPMethod.Register("REMOTESTOP",  IsSafe: false, IsIdempotent: true);
+        public readonly static HTTPMethod SENDCDR      = HTTPMethod.Register("SENDCDR",     IsSafe: false, IsIdempotent: true);
+        public readonly static HTTPMethod RESENDCDR    = HTTPMethod.Register("RESENDCDR",   IsSafe: false, IsIdempotent: true);
 
         #endregion
 

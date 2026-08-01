@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.WWCP
                               String?                             DataSource     = null,
                               DateTimeOffset?                     LastChange     = null,
 
-                              JObject?                            CustomData     = null,
+                              CustomDataNew?                      CustomData     = null,
                               UserDefinedDictionary?              InternalData   = null)
 
             : base(Id,

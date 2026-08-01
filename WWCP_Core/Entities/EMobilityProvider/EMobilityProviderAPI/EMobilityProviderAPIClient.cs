@@ -424,7 +424,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                                        HTTPUserAgent:                    HTTPUserAgent,
                                        DefaultRequestBuilder:            (httpClient) => new HTTPRequest.Builder(this, CancellationToken.None) {
-                                                                                             Host         = this.RemoteURL.Hostname,
+                                                                                             Host         = this.RemoteURL.HostHeader,
                                                                                              Accept       = AcceptTypes.FromHTTPContentTypes(HTTPContentType.Application.JSON_UTF8),
                                                                                              ContentType  = HTTPContentType.Application.JSON_UTF8,
                                                                                              UserAgent    = httpClient.HTTPUserAgent,

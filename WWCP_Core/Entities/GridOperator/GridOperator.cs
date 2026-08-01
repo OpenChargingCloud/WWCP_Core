@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.WWCP
                               DateTime?                           Created                      = null,
                               DateTime?                           LastChange                   = null,
 
-                              JObject?                            CustomData                   = null,
+                              CustomDataNew?                      CustomData                   = null,
                               UserDefinedDictionary?              InternalData                 = null)
 
             : base(Id,
