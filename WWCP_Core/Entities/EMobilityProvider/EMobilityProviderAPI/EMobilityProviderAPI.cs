@@ -340,7 +340,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                   return Task.FromResult(
                                       new HTTPResponse.Builder(Request) {
                                              HTTPStatusCode             = HTTPStatusCode.OK,
-                                             AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                                             AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET ],
                                              Allow                      = new[] {
                                                                               HTTPMethod.OPTIONS,
                                                                               HTTPMethod.GET
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                   //            StatusMessage        = "Invalid or blocked access token!",
                                   //            HTTPResponseBuilder  = new HTTPResponse.Builder(Request.HTTPRequest) {
                                   //                HTTPStatusCode             = HTTPStatusCode.Forbidden,
-                                  //                AccessControlAllowMethods  = [ "OPTIONS", "GET", "DELETE" ],
+                                  //                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET, HTTPMethod.DELETE ],
                                   //                AccessControlAllowHeaders  = [ "Authorization" ]
                                   //            }
                                   //        });
@@ -401,7 +401,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                   //                               HTTPStatusCode             = HTTPStatusCode.OK,
                                   //                               Server                     = DefaultHTTPServerName,
                                   //                               Date                       = Timestamp.Now,
-                                  //                               AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                                  //                               AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET ],
                                   //                               AccessControlAllowHeaders  = [ "Authorization" ]
                                   //                           }.
 
@@ -475,7 +475,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                   return Task.FromResult(
                                       new HTTPResponse.Builder(Request) {
                                              HTTPStatusCode             = HTTPStatusCode.OK,
-                                             AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                                             AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET ],
                                              Allow                      = new[] {
                                                                               HTTPMethod.OPTIONS,
                                                                               HTTPMethod.GET
@@ -634,7 +634,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                                       return new HTTPResponse.Builder(Request) {
                                                  HTTPStatusCode             = HTTPStatusCode.OK,
-                                                 AccessControlAllowMethods  = [ "OPTIONS", "POST" ],
+                                                 AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.POST ],
                                                  Allow                      = new[] {
                                                                                   HTTPMethod.OPTIONS,
                                                                                   HTTPMethod.POST
@@ -658,7 +658,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                                       return new HTTPResponse.Builder(Request) {
                                                  HTTPStatusCode             = HTTPStatusCode.Forbidden,
-                                                 AccessControlAllowMethods  = [ "OPTIONS", "POST" ],
+                                                 AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.POST ],
                                                  Allow                      = new[] {
                                                                                   HTTPMethod.OPTIONS,
                                                                                   HTTPMethod.POST

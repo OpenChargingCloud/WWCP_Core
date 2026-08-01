@@ -2562,7 +2562,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                             EMailAddress?                  APIRobotEMailAddress        = null,
                             String?                        APIRobotGPGPassphrase       = null,
-                            ISMTPClient?                   SMTPClient                  = null,
+                            ISMTPSubmissionClient?                   SMTPClient                  = null,
 
                             HTTPPath?                      AdditionalURLPathPrefix     = null,
                             Boolean?                       AllowAnonymousReadAccesss   = null,
@@ -2651,7 +2651,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET ],
                             Allow                      = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET ],
                             AccessControlAllowHeaders  = [ "Authorization" ],
                             Connection                 = ConnectionType.KeepAlive
@@ -2678,7 +2678,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET ],
                             AccessControlAllowHeaders  = [ "Authorization" ],
                             Connection                 = ConnectionType.KeepAlive,
                             Vary                       = "Accept"
@@ -2700,7 +2700,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET ],
                             AccessControlAllowHeaders  = [ "Authorization" ],
                             Connection                 = ConnectionType.KeepAlive,
                             Vary                       = "Accept"
@@ -2729,7 +2729,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET ],
                             AccessControlAllowHeaders  = [ "Authorization" ],
                             ContentType                = HTTPContentType.Text.PLAIN,
                             Content                    = "This is a World Wide Charging Protocol HTTP service!".ToUTF8Bytes(),
@@ -2753,7 +2753,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET ],
                             AccessControlAllowHeaders  = [ "Authorization" ],
                             ContentType                = HTTPContentType.Application.JSON_UTF8,
                             Content                    = JSONObject.Create(
@@ -2797,7 +2797,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -2812,7 +2812,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                             Connection                 = ConnectionType.KeepAlive
                         }.AsImmutable);
@@ -2842,7 +2842,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -2857,7 +2857,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "GET", "COUNT", "OPTIONS" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                       = "1",
                             Connection                 = ConnectionType.KeepAlive
@@ -2888,7 +2888,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -2962,7 +2962,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    HTTPStatusCode                = HTTPStatusCode.OK,
                                    Server                        = DefaultHTTPServerName,
                                    Date                          = Timestamp.Now,
-                                   AccessControlAllowMethods     = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                   AccessControlAllowMethods     = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                    AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                                    Content                       = withMetadata
                                                                        ? JSONObject.Create(
@@ -3003,7 +3003,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -3043,7 +3043,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                       = HTTPServiceName,
                             Date                         = Timestamp.Now,
                             AccessControlAllowOrigin     = "*",
-                            AccessControlAllowMethods    = [ "GET", "COUNT", "OPTIONS" ],
+                            AccessControlAllowMethods    = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders    = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                         = "1",
                             ContentType                  = HTTPContentType.Application.JSON_UTF8,
@@ -3080,7 +3080,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "GET", "HEAD" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET, HTTPMethod.HEAD ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -3098,7 +3098,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                         = HTTPServiceName,
                             Date                           = Timestamp.Now,
                             AccessControlAllowOrigin       = "*",
-                            AccessControlAllowMethods      = [ "GET" ],
+                            AccessControlAllowMethods      = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders      = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                           = "1",
                             ContentType                    = HTTPContentType.Application.JSON_UTF8,
@@ -3137,7 +3137,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "GET", "HEAD" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET, HTTPMethod.HEAD ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -3158,7 +3158,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -3200,7 +3200,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -3234,7 +3234,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                         = HTTPServiceName,
                             Date                           = Timestamp.Now,
                             AccessControlAllowOrigin       = "*",
-                            AccessControlAllowMethods      = [ "GET" ],
+                            AccessControlAllowMethods      = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders      = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                           = "1",
                             ContentType                    = HTTPContentType.Application.JSON_UTF8,
@@ -3271,7 +3271,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -3297,7 +3297,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "GET", "COUNT", "OPTIONS" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                             Connection                 = ConnectionType.KeepAlive
                         }.AsImmutable);
@@ -3327,7 +3327,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -3353,7 +3353,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "GET", "CREATE", "DELETE" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.CREATE, HTTPMethod.DELETE ],
                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                       = roamingNetwork.GetHashCode().ToString(),
                             Connection                 = ConnectionType.KeepAlive
@@ -3384,7 +3384,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -3421,7 +3421,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "GET", "CREATE", "DELETE" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.CREATE, HTTPMethod.DELETE ],
                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                       = roamingNetwork.GetHashCode().ToString(),
                             ContentType                = HTTPContentType.Application.JSON_UTF8,
@@ -3538,7 +3538,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "GET", "CREATE", "DELETE" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.CREATE, HTTPMethod.DELETE ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 Connection                 = ConnectionType.KeepAlive
                             }.AsImmutable);
@@ -3561,7 +3561,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET", "CREATE", "DELETE" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.CREATE, HTTPMethod.DELETE ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ETag                       = "1",
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
@@ -3627,7 +3627,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "GET", "CREATE", "DELETE" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.CREATE, HTTPMethod.DELETE ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 ETag                       = "1",
                                 ContentType                = HTTPContentType.Application.JSON_UTF8,
@@ -3659,7 +3659,7 @@ namespace cloud.charging.open.protocols.WWCP
             //                                  Server                     = HTTPTestServer?.HTTPServerName,
             //                                  Date                       = Timestamp.Now,
             //                                  AccessControlAllowOrigin   = "*",
-            //                                  AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+            //                                  AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
             //                                  AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
             //                                  WWWAuthenticate            = WWWAuthenticateDefaults,
             //                                  Connection                 = ConnectionType.KeepAlive
@@ -3707,7 +3707,7 @@ namespace cloud.charging.open.protocols.WWCP
             //                                  Server                     = HTTPTestServer?.HTTPServerName,
             //                                  Date                       = Timestamp.Now,
             //                                  AccessControlAllowOrigin   = "*",
-            //                                  AccessControlAllowMethods  = [ "GET", "SET" ],
+            //                                  AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.SET ],
             //                                  AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
             //                                  ETag                       = "1",
             //                                  Connection                 = ConnectionType.KeepAlive
@@ -3720,7 +3720,7 @@ namespace cloud.charging.open.protocols.WWCP
             //                              Server                     = HTTPTestServer?.HTTPServerName,
             //                              Date                       = Timestamp.Now,
             //                              AccessControlAllowOrigin   = "*",
-            //                              AccessControlAllowMethods  = [ "GET", "SET" ],
+            //                              AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.SET ],
             //                              AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
             //                              ETag                       = "1",
             //                              ContentType                = HTTPContentType.Application.JSON_UTF8,
@@ -3871,7 +3871,7 @@ namespace cloud.charging.open.protocols.WWCP
             //                              Server                     = HTTPTestServer?.HTTPServerName,
             //                              Date                       = Timestamp.Now,
             //                              AccessControlAllowOrigin   = "*",
-            //                              AccessControlAllowMethods  = [ "GET", "SET" ],
+            //                              AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.SET ],
             //                              AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
             //                              ETag                       = "1",
             //                              ContentType                = HTTPContentType.Application.JSON_UTF8,
@@ -3914,7 +3914,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -3940,7 +3940,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                             Connection                 = ConnectionType.KeepAlive
                         }.AsImmutable);
@@ -3970,7 +3970,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -3996,7 +3996,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             Connection                    = ConnectionType.KeepAlive
@@ -4029,7 +4029,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -4123,7 +4123,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    HTTPStatusCode                = HTTPStatusCode.OK,
                                    Server                        = DefaultHTTPServerName,
                                    Date                          = Timestamp.Now,
-                                   AccessControlAllowMethods     = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                   AccessControlAllowMethods     = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                    AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                                    Content                       = withMetadata
                                                                        ? JSONObject.Create(
@@ -4165,7 +4165,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -4216,7 +4216,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                       = HTTPServiceName,
                             Date                         = Timestamp.Now,
                             AccessControlAllowOrigin     = "*",
-                            AccessControlAllowMethods    = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                            AccessControlAllowMethods    = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                             AccessControlAllowHeaders    = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                         = "1",
                             ContentType                  = HTTPContentType.Application.JSON_UTF8,
@@ -4261,7 +4261,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -4299,7 +4299,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -4344,7 +4344,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                         = HTTPServiceName,
                             Date                           = Timestamp.Now,
                             AccessControlAllowOrigin       = "*",
-                            AccessControlAllowMethods      = [ "GET" ],
+                            AccessControlAllowMethods      = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders      = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                           = "1",
                             ContentType                    = HTTPContentType.Application.JSON_UTF8,
@@ -4378,7 +4378,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -4423,7 +4423,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                         = HTTPServiceName,
                             Date                           = Timestamp.Now,
                             AccessControlAllowOrigin       = "*",
-                            AccessControlAllowMethods      = [ "GET" ],
+                            AccessControlAllowMethods      = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders      = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                           = "1",
                             ContentType                    = HTTPContentType.Application.JSON_UTF8,
@@ -4466,7 +4466,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                       = HTTPServiceName,
                             Date                         = Timestamp.Now,
                             AccessControlAllowOrigin     = "*",
-                            AccessControlAllowMethods    = [ "GET", "COUNT", "OPTIONS" ],
+                            AccessControlAllowMethods    = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders    = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                         = "1",
                             ContentType                  = HTTPContentType.Application.JSON_UTF8,
@@ -4521,7 +4521,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "GET", "SET" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.SET ],
                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                       = "1",
                             ContentType                = HTTPContentType.Application.JSON_UTF8,
@@ -4585,7 +4585,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET", "COUNT", "OPTIONS" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -4654,7 +4654,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -4708,7 +4708,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -4770,7 +4770,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET", "COUNT", "OPTIONS" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -4828,7 +4828,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "GET" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                       = "1",
                             ContentType                = HTTPContentType.Application.JSON_UTF8,
@@ -4885,7 +4885,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET", "COUNT", "OPTIONS" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -4946,7 +4946,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -4998,7 +4998,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -5040,7 +5040,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -5066,7 +5066,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                       = HTTPServiceName,
                             Date                         = Timestamp.Now,
                             AccessControlAllowOrigin     = "*",
-                            AccessControlAllowMethods    = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                            AccessControlAllowMethods    = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                             AccessControlAllowHeaders    = [ "Content-Type", "Accept", "Authorization" ],
                             Connection                   = ConnectionType.KeepAlive
                         }.AsImmutable);
@@ -5096,7 +5096,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -5122,7 +5122,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                       = "1",
                             Connection                 = ConnectionType.KeepAlive
@@ -5155,7 +5155,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -5243,7 +5243,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    HTTPStatusCode                = HTTPStatusCode.OK,
                                    Server                        = DefaultHTTPServerName,
                                    Date                          = Timestamp.Now,
-                                   AccessControlAllowMethods     = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                   AccessControlAllowMethods     = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                    AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                                    Content                       = withMetadata
                                                                        ? JSONObject.Create(
@@ -5284,7 +5284,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -5338,7 +5338,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                       = HTTPServiceName,
                             Date                         = Timestamp.Now,
                             AccessControlAllowOrigin     = "*",
-                            AccessControlAllowMethods    = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                            AccessControlAllowMethods    = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                             AccessControlAllowHeaders    = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                         = "1",
                             ContentType                  = HTTPContentType.Application.JSON_UTF8,
@@ -5375,7 +5375,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -5400,7 +5400,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -5438,7 +5438,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -5483,7 +5483,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                         = HTTPServiceName,
                             Date                           = Timestamp.Now,
                             AccessControlAllowOrigin       = "*",
-                            AccessControlAllowMethods      = [ "GET" ],
+                            AccessControlAllowMethods      = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders      = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                           = "1",
                             ContentType                    = HTTPContentType.Application.JSON_UTF8,
@@ -5517,7 +5517,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -5562,7 +5562,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                         = HTTPServiceName,
                             Date                           = Timestamp.Now,
                             AccessControlAllowOrigin       = "*",
-                            AccessControlAllowMethods      = [ "GET" ],
+                            AccessControlAllowMethods      = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders      = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                           = "1",
                             ContentType                    = HTTPContentType.Application.JSON_UTF8,
@@ -5597,7 +5597,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -5622,7 +5622,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                       = HTTPServiceName,
                             Date                         = Timestamp.Now,
                             AccessControlAllowOrigin     = "*",
-                            AccessControlAllowMethods    = [ "GET", "COUNT", "OPTIONS" ],
+                            AccessControlAllowMethods    = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders    = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                         = "1",
                             ContentType                  = HTTPContentType.Application.JSON_UTF8,
@@ -5682,7 +5682,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        Server                     = HTTPServiceName,
                                        Date                       = Timestamp.Now,
                                        AccessControlAllowOrigin   = "*",
-                                       AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                       AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                        AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                        Connection                 = ConnectionType.KeepAlive
                                    }.AsImmutable
@@ -5698,7 +5698,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "GET", "SET" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.SET ],
                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                       = "1",
                             ContentType                = HTTPContentType.Application.JSON_UTF8,
@@ -5735,7 +5735,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        Server                     = HTTPServiceName,
                                        Date                       = Timestamp.Now,
                                        AccessControlAllowOrigin   = "*",
-                                       AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                       AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                        AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                        WWWAuthenticate            = WWWAuthenticateDefaults,
                                        Connection                 = ConnectionType.KeepAlive
@@ -5767,7 +5767,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        Server                     = HTTPServiceName,
                                        Date                       = Timestamp.Now,
                                        AccessControlAllowOrigin   = "*",
-                                       AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                       AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                        AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                        Connection                 = ConnectionType.KeepAlive
                                    }.AsImmutable
@@ -5796,7 +5796,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET", "COUNT", "OPTIONS" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -5841,7 +5841,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -5872,7 +5872,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        Server                     = HTTPServiceName,
                                        Date                       = Timestamp.Now,
                                        AccessControlAllowOrigin   = "*",
-                                       AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                       AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                        AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                        Connection                 = ConnectionType.KeepAlive
                                    }.AsImmutable
@@ -5930,7 +5930,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -5964,7 +5964,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -5995,7 +5995,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        Server                     = HTTPServiceName,
                                        Date                       = Timestamp.Now,
                                        AccessControlAllowOrigin   = "*",
-                                       AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                       AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                        AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                        Connection                 = ConnectionType.KeepAlive
                                    }.AsImmutable
@@ -6063,7 +6063,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -6103,7 +6103,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -6129,7 +6129,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                             Connection                 = ConnectionType.KeepAlive
                         }.AsImmutable);
@@ -6159,7 +6159,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -6185,7 +6185,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServiceName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                       = "1",
                             Connection                 = ConnectionType.KeepAlive
@@ -6218,7 +6218,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -6303,7 +6303,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    HTTPStatusCode                = HTTPStatusCode.OK,
                                    Server                        = DefaultHTTPServerName,
                                    Date                          = Timestamp.Now,
-                                   AccessControlAllowMethods     = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                   AccessControlAllowMethods     = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                    AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                                    Content                       = withMetadata
                                                                        ? JSONObject.Create(
@@ -6344,7 +6344,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -6397,7 +6397,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                       = HTTPServiceName,
                             Date                         = Timestamp.Now,
                             AccessControlAllowOrigin     = "*",
-                            AccessControlAllowMethods    = [ "OPTIONS", "HEAD", "GET", "COUNT" ],
+                            AccessControlAllowMethods    = [ HTTPMethod.OPTIONS, HTTPMethod.HEAD, HTTPMethod.GET, HTTPMethod.COUNT ],
                             AccessControlAllowHeaders    = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                         = "1",
                             ContentType                  = HTTPContentType.Application.JSON_UTF8,
@@ -6436,7 +6436,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "GET", "HEAD", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET, HTTPMethod.HEAD, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -6481,7 +6481,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -6515,7 +6515,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "GET", "HEAD", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET, HTTPMethod.HEAD, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -6560,7 +6560,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                       = HTTPServiceName,
                             Date                         = Timestamp.Now,
                             AccessControlAllowOrigin     = "*",
-                            AccessControlAllowMethods    = [ "GET", "OPTIONS" ],
+                            AccessControlAllowMethods    = [ HTTPMethod.GET, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders    = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                         = "1",
                             ContentType                  = HTTPContentType.Application.JSON_UTF8,
@@ -6610,7 +6610,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "GET", "HEAD", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET, HTTPMethod.HEAD, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -6655,7 +6655,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -6689,7 +6689,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "OPTIONS", "GET", "HEAD", "COUNT" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET, HTTPMethod.HEAD, HTTPMethod.COUNT ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 WWWAuthenticate            = WWWAuthenticateDefaults,
                                 Connection                 = ConnectionType.KeepAlive
@@ -6734,7 +6734,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                       = HTTPServiceName,
                             Date                         = Timestamp.Now,
                             AccessControlAllowOrigin     = "*",
-                            AccessControlAllowMethods    = [ "GET", "OPTIONS" ],
+                            AccessControlAllowMethods    = [ HTTPMethod.GET, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders    = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                         = "1",
                             ContentType                  = HTTPContentType.Application.JSON_UTF8,
@@ -6794,7 +6794,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                      = HTTPServiceName,
                             Date                        = Timestamp.Now,
                             AccessControlAllowOrigin    = "*",
-                            AccessControlAllowMethods   = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR", "OPTIONS" ],
+                            AccessControlAllowMethods   = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders   = [ "Content-Type", "Accept", "Authorization" ],
                         }.AsImmutable);
 
@@ -6834,7 +6834,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                      = HTTPServiceName,
                             Date                        = Timestamp.Now,
                             AccessControlAllowOrigin    = "*",
-                            AccessControlAllowMethods   = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                            AccessControlAllowMethods   = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                             AccessControlAllowHeaders   = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                        = "1",
                             ContentType                 = HTTPContentType.Application.JSON_UTF8,
@@ -7043,7 +7043,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 ContentType                = HTTPContentType.Application.JSON_UTF8,
                                 Content                    = result.ToJSON().ToUTF8Bytes()
@@ -7059,7 +7059,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 ContentType                = HTTPContentType.Application.JSON_UTF8,
                                 Content                    = result.ToJSON().ToUTF8Bytes()
@@ -7075,7 +7075,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 ContentType                = HTTPContentType.Application.JSON_UTF8,
                                 Content                    = result.ToJSON().ToUTF8Bytes()
@@ -7251,7 +7251,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = result.ToJSON().ToUTF8Bytes()
@@ -7267,7 +7267,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = result.ToJSON().ToUTF8Bytes()
@@ -7282,7 +7282,7 @@ namespace cloud.charging.open.protocols.WWCP
                                Server                     = HTTPServiceName,
                                Date                       = Timestamp.Now,
                                AccessControlAllowOrigin   = "*",
-                               AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                               AccessControlAllowMethods  = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                ContentType                = HTTPContentType.Application.JSON_UTF8,
                                Content                    = result.ToJSON().ToUTF8Bytes()
@@ -7491,7 +7491,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 ContentType                = HTTPContentType.Application.JSON_UTF8,
                                 Content                    = JSONObject.Create(
@@ -7514,7 +7514,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 ContentType                = HTTPContentType.Application.JSON_UTF8,
                                 Content                    = JSONObject.Create(
@@ -7689,7 +7689,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        Server                     = HTTPServiceName,
                                        Date                       = Timestamp.Now,
                                        AccessControlAllowOrigin   = "*",
-                                       AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                       AccessControlAllowMethods  = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                                        AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    };
 
@@ -7699,7 +7699,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        Server                     = HTTPServiceName,
                                        Date                       = Timestamp.Now,
                                        AccessControlAllowOrigin   = "*",
-                                       AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                       AccessControlAllowMethods  = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                                        AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                        ContentType                = HTTPContentType.Application.JSON_UTF8,
                                        Content                    = new JObject(
@@ -7721,7 +7721,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = new JObject(
@@ -8005,7 +8005,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = JSONObject.Create(
@@ -8024,7 +8024,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = JSONObject.Create(
@@ -8042,7 +8042,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET", "RESERVE", "AUTHSTART", "AUTHSTOP", "REMOTESTART", "REMOTESTOP", "SENDCDR" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET, RESERVE, AUTHSTART, AUTHSTOP, REMOTESTART, REMOTESTOP, SENDCDR ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = JSONObject.Create(
@@ -8093,7 +8093,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                      = HTTPServiceName,
                             Date                        = Timestamp.Now,
                             AccessControlAllowOrigin    = "*",
-                            AccessControlAllowMethods   = [ "OPTIONS", "GET", "SET" ],
+                            AccessControlAllowMethods   = [ HTTPMethod.OPTIONS, HTTPMethod.GET, HTTPMethod.SET ],
                             AccessControlAllowHeaders   = [ "Content-Type", "Accept", "Authorization" ],
                         }.AsImmutable);
 
@@ -8133,7 +8133,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                      = HTTPServiceName,
                             Date                        = Timestamp.Now,
                             AccessControlAllowOrigin    = "*",
-                            AccessControlAllowMethods   = [ "GET" ],
+                            AccessControlAllowMethods   = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders   = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                        = "1",
                             ContentType                 = HTTPContentType.Application.JSON_UTF8,
@@ -8340,7 +8340,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                      = HTTPServiceName,
                             Date                        = Timestamp.Now,
                             AccessControlAllowOrigin    = "*",
-                            AccessControlAllowMethods   = [ "OPTIONS", "GET", "SET" ],
+                            AccessControlAllowMethods   = [ HTTPMethod.OPTIONS, HTTPMethod.GET, HTTPMethod.SET ],
                             AccessControlAllowHeaders   = [ "Content-Type", "Accept", "Authorization" ],
                         }.AsImmutable);
 
@@ -8380,7 +8380,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                      = HTTPServiceName,
                             Date                        = Timestamp.Now,
                             AccessControlAllowOrigin    = "*",
-                            AccessControlAllowMethods   = [ "GET" ],
+                            AccessControlAllowMethods   = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders   = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                        = "1",
                             ContentType                 = HTTPContentType.Application.JSON_UTF8,
@@ -8619,7 +8619,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET", "COUNT", "OPTIONS" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -8686,7 +8686,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET", "COUNT", "OPTIONS" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Text.PLAIN,
@@ -8746,7 +8746,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET", "COUNT", "OPTIONS" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.OPTIONS ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ETag                          = "1",
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
@@ -8824,7 +8824,7 @@ namespace cloud.charging.open.protocols.WWCP
                                Server                        = HTTPServiceName,
                                Date                          = Timestamp.Now,
                                AccessControlAllowOrigin      = "*",
-                               AccessControlAllowMethods     = [ "GET", "COUNT", "OPTIONS", "RESENDCDR" ],
+                               AccessControlAllowMethods     = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.OPTIONS, RESENDCDR ],
                                AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                                Connection                    = ConnectionType.Close
                            };
@@ -8923,7 +8923,7 @@ namespace cloud.charging.open.protocols.WWCP
                                      Server                     = HTTPServiceName,
                                      Date                       = Timestamp.Now,
                                      AccessControlAllowOrigin   = "*",
-                                     AccessControlAllowMethods  = [ "SET" ],
+                                     AccessControlAllowMethods  = [ HTTPMethod.SET ],
                                      AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                      ContentType                = HTTPContentType.Application.JSON_UTF8,
                                      Content                    = chargingSession.
@@ -8938,7 +8938,7 @@ namespace cloud.charging.open.protocols.WWCP
                                      Server                     = HTTPServiceName,
                                      Date                       = Timestamp.Now,
                                      AccessControlAllowOrigin   = "*",
-                                     AccessControlAllowMethods  = [ "SET" ],
+                                     AccessControlAllowMethods  = [ HTTPMethod.SET ],
                                      AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                      //ContentType                = HTTPContentType.Application.JSON_UTF8,
                                      //Content                    = chargingSession.
@@ -9042,7 +9042,7 @@ namespace cloud.charging.open.protocols.WWCP
                                      Server                     = HTTPServiceName,
                                      Date                       = Timestamp.Now,
                                      AccessControlAllowOrigin   = "*",
-                                     AccessControlAllowMethods  = [ "SET" ],
+                                     AccessControlAllowMethods  = [ HTTPMethod.SET ],
                                      AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                      ContentType                = HTTPContentType.Application.JSON_UTF8,
                                      Content                    = chargingSession.
@@ -9057,7 +9057,7 @@ namespace cloud.charging.open.protocols.WWCP
                                      Server                     = HTTPServiceName,
                                      Date                       = Timestamp.Now,
                                      AccessControlAllowOrigin   = "*",
-                                     AccessControlAllowMethods  = [ "SET" ],
+                                     AccessControlAllowMethods  = [ HTTPMethod.SET ],
                                      AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                      //ContentType                = HTTPContentType.Application.JSON_UTF8,
                                      //Content                    = chargingSession.
@@ -9132,7 +9132,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
                             Content                       = new JArray(
@@ -9220,7 +9220,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
                             Content                       = new JArray(
@@ -9322,7 +9322,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
                             Content                       = new JArray(
@@ -9425,7 +9425,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                        = HTTPServiceName,
                             Date                          = Timestamp.Now,
                             AccessControlAllowOrigin      = "*",
-                            AccessControlAllowMethods     = [ "GET" ],
+                            AccessControlAllowMethods     = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                             ContentType                   = HTTPContentType.Application.JSON_UTF8,
                             Content                       = new JArray(
@@ -9542,7 +9542,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                        = HTTPServiceName,
                                 Date                          = Timestamp.Now,
                                 AccessControlAllowOrigin      = "*",
-                                AccessControlAllowMethods     = [ "GET", "COUNT", "CLEAR" ],
+                                AccessControlAllowMethods     = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.CLEAR ],
                                 AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                                 ContentType                   = HTTPContentType.Application.JSON_UTF8,
                                 Content                       = withMetadata
@@ -9604,7 +9604,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "GET", "COUNT", "CLEAR" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.CLEAR ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 ContentType                = HTTPContentType.Text.PLAIN,
                                 Content                    = roamingNetwork.CachedAuthStartResults.Count().ToString().ToUTF8Bytes()
@@ -9659,7 +9659,7 @@ namespace cloud.charging.open.protocols.WWCP
                                Server                     = HTTPServiceName,
                                Date                       = Timestamp.Now,
                                AccessControlAllowOrigin   = "*",
-                               AccessControlAllowMethods  = [ "GET", "COUNT", "CLEAR" ],
+                               AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.CLEAR ],
                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                            };
 
@@ -9742,7 +9742,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                        = HTTPServiceName,
                                 Date                          = Timestamp.Now,
                                 AccessControlAllowOrigin      = "*",
-                                AccessControlAllowMethods     = [ "GET", "COUNT", "CLEAR" ],
+                                AccessControlAllowMethods     = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.CLEAR ],
                                 AccessControlAllowHeaders     = [ "Content-Type", "Accept", "Authorization" ],
                                 ContentType                   = HTTPContentType.Application.JSON_UTF8,
                                 Content                       = withMetadata
@@ -9804,7 +9804,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Server                     = HTTPServiceName,
                                 Date                       = Timestamp.Now,
                                 AccessControlAllowOrigin   = "*",
-                                AccessControlAllowMethods  = [ "GET", "COUNT", "CLEAR" ],
+                                AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.CLEAR ],
                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                 ContentType                = HTTPContentType.Text.PLAIN,
                                 Content                    = roamingNetwork.CachedAuthStopResults.Count().ToString().ToUTF8Bytes()
@@ -9859,7 +9859,7 @@ namespace cloud.charging.open.protocols.WWCP
                                Server                     = HTTPServiceName,
                                Date                       = Timestamp.Now,
                                AccessControlAllowOrigin   = "*",
-                               AccessControlAllowMethods  = [ "GET", "COUNT", "CLEAR" ],
+                               AccessControlAllowMethods  = [ HTTPMethod.GET, HTTPMethod.COUNT, HTTPMethod.CLEAR ],
                                AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                            };
 
@@ -9884,7 +9884,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Server                     = HTTPServerName,
                             Date                       = Timestamp.Now,
                             AccessControlAllowOrigin   = "*",
-                            AccessControlAllowMethods  = [ "GET" ],
+                            AccessControlAllowMethods  = [ HTTPMethod.GET ],
                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                             ContentType                = HTTPContentType.Text.PLAIN,
                             Content                    = "https://github.com/OpenChargingCloud/WWCP_Core".ToUTF8Bytes(),
