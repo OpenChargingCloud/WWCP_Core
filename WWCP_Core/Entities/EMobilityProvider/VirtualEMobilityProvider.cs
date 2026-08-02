@@ -400,7 +400,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                    ChargingProduct?         ChargingProduct,
                                                    ChargingReservation_Id?  ReservationId,
                                                    ChargingSession_Id?      SessionId,
-                                                   JObject?                 AdditionalSessionInfos,
+                                                   CustomDataNew?           AdditionalSessionInfos,
                                                    Auth_Path?               AuthenticationPath,
 
                                                    DateTimeOffset?          RequestTimestamp,
@@ -443,7 +443,7 @@ namespace cloud.charging.open.protocols.WWCP
                         ChargingProduct?         ChargingProduct          = null,
                         ChargingReservation_Id?  ReservationId            = null,
                         ChargingSession_Id?      SessionId                = null,
-                        JObject?                 AdditionalSessionInfos   = null,
+                        CustomDataNew?           AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
                         ICSORoamingProvider?     CSORoamingProvider       = null,
 
@@ -598,7 +598,7 @@ namespace cloud.charging.open.protocols.WWCP
             IRemoteEMobilityProviderUI.RemoteStop(ChargingSession_Id     SessionId,
                                                   ReservationHandling?   ReservationHandling,
                                                   RemoteAuthentication?  RemoteAuthentication,
-                                                  JObject?               AdditionalSessionInfos,
+                                                  CustomDataNew?         AdditionalSessionInfos,
                                                   Auth_Path?             AuthenticationPath,
 
                                                   DateTimeOffset?        RequestTimestamp,
@@ -637,7 +637,7 @@ namespace cloud.charging.open.protocols.WWCP
             RemoteStop(ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling      = null,
                        RemoteAuthentication?  RemoteAuthentication     = null,
-                       JObject?               AdditionalSessionInfos   = null,
+                       CustomDataNew?         AdditionalSessionInfos   = null,
                        Auth_Path?             AuthenticationPath       = null,
                        ICSORoamingProvider?   CSORoamingProvider       = null,
 

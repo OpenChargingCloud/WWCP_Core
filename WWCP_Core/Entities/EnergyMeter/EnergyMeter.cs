@@ -626,7 +626,7 @@ namespace cloud.charging.open.protocols.WWCP
                    Created,
                    LastChangeDate,
 
-                   JObject.Parse(CustomData.ToString()),
+                   CustomData,
                    InternalData
 
                );

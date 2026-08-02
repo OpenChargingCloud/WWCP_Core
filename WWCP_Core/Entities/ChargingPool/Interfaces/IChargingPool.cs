@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.WWCP
                        Created,
                        LastChange,
 
-                       CustomData,
+                       null,//CustomData,
                        InternalData,
 
                        Configurator,
@@ -223,8 +223,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                    URL?                                                            CertificationInfo              = null,
                                                                                    URL?                                                            CalibrationInfo                = null,
 
-                                                                                   Timestamped<ChargingStationAdminStatusType>?                   InitialAdminStatus             = null,
-                                                                                   Timestamped<ChargingStationStatusType>?                        InitialStatus                  = null,
+                                                                                   Timestamped<ChargingStationAdminStatusType>?                    InitialAdminStatus             = null,
+                                                                                   Timestamped<ChargingStationStatusType>?                         InitialStatus                  = null,
                                                                                    UInt16?                                                         MaxAdminStatusScheduleSize     = null,
                                                                                    UInt16?                                                         MaxStatusScheduleSize          = null,
 
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                    DateTimeOffset?                                                 Created                        = null,
                                                                                    DateTimeOffset?                                                 LastChange                     = null,
 
-                                                                                   JObject?                                                        CustomData                     = null,
+                                                                                   CustomDataNew?                                                  CustomData                     = null,
                                                                                    UserDefinedDictionary?                                          InternalData                   = null,
 
                                                                                    Action<IChargingStation>?                                       Configurator                   = null,
@@ -424,7 +424,7 @@ namespace cloud.charging.open.protocols.WWCP
                        Created,
                        LastChange,
 
-                       CustomData,
+                       null,//CustomData,
                        InternalData,
 
                        Configurator,
@@ -491,8 +491,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                               URL?                                                            CertificationInfo              = null,
                                                                               URL?                                                            CalibrationInfo                = null,
 
-                                                                              Timestamped<ChargingStationAdminStatusType>?                   InitialAdminStatus             = null,
-                                                                              Timestamped<ChargingStationStatusType>?                        InitialStatus                  = null,
+                                                                              Timestamped<ChargingStationAdminStatusType>?                    InitialAdminStatus             = null,
+                                                                              Timestamped<ChargingStationStatusType>?                         InitialStatus                  = null,
                                                                               UInt16?                                                         MaxAdminStatusScheduleSize     = null,
                                                                               UInt16?                                                         MaxStatusScheduleSize          = null,
 
@@ -500,7 +500,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                               DateTimeOffset?                                                 Created                        = null,
                                                                               DateTimeOffset?                                                 LastChange                     = null,
 
-                                                                              JObject?                                                        CustomData                     = null,
+                                                                              CustomDataNew?                                                  CustomData                     = null,
                                                                               UserDefinedDictionary?                                          InternalData                   = null,
 
                                                                               Action<IChargingStation>?                                       Configurator                   = null,

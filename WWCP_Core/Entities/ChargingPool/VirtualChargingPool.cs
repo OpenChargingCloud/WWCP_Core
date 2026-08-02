@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          DateTime?                                                           Created                           = null,
                                                                          DateTime?                                                           LastChange                        = null,
 
-                                                                         JObject?                                                            CustomData                        = null,
+                                                                         CustomDataNew?                                                      CustomData                        = null,
                                                                          UserDefinedDictionary?                                              InternalData                      = null,
 
                                                                          Action<IChargingPool>?                                              ChargingPoolConfigurator          = null,
@@ -2753,7 +2753,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         ChargingSession_Id?      SessionId                = null,
                         EMobilityProvider_Id?    ProviderId               = null,
                         RemoteAuthentication?    RemoteAuthentication     = null,
-                        JObject?                 AdditionalSessionInfos   = null,
+                        CustomDataNew?           AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
                         ICSORoamingProvider?     CSORoamingProvider       = null,
 
@@ -2804,7 +2804,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         ChargingSession_Id?      SessionId                = null,
                         EMobilityProvider_Id?    ProviderId               = null,
                         RemoteAuthentication?    RemoteAuthentication     = null,
-                        JObject?                 AdditionalSessionInfos   = null,
+                        CustomDataNew?           AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
                         ICSORoamingProvider?     CSORoamingProvider       = null,
 
@@ -2967,7 +2967,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                        ReservationHandling?   ReservationHandling      = null,
                        EMobilityProvider_Id?  ProviderId               = null,
                        RemoteAuthentication?  RemoteAuthentication     = null,
-                       JObject?               AdditionalSessionInfos   = null,
+                       CustomDataNew?         AdditionalSessionInfos   = null,
                        Auth_Path?             AuthenticationPath       = null,
                        ICSORoamingProvider?   CSORoamingProvider       = null,
 

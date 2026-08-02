@@ -1099,7 +1099,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        public void AddAdditionalSessionInfos(JObject? AdditionalSessionInfos)
+        public void AddAdditionalSessionInfos(CustomDataNew? AdditionalSessionInfos)
         {
             if (AdditionalSessionInfos is not null)
             {

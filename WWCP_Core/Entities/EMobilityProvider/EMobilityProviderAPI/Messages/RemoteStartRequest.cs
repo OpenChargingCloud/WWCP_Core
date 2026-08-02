@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
 
         [Optional]
-        public JObject?                 AdditionalSessionInfos    { get; }
+        public CustomDataNew?           AdditionalSessionInfos    { get; }
 
 
         [Optional]
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="RequestTimeout">The timeout for this request.</param>
         public RemoteStartRequest(ChargingLocation         ChargingLocation,
                                   RemoteAuthentication     RemoteAuthentication,
-                                  JObject?                 AdditionalSessionInfos   = null,
+                                  CustomDataNew?           AdditionalSessionInfos   = null,
                                   Auth_Path?               AuthenticationPath       = null,
                                   ChargingReservation_Id?  ReservationId            = null,
                                   ChargingProduct?         ChargingProduct          = null,
@@ -312,7 +312,9 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                 RemoteStartRequest = new RemoteStartRequest(
                                          ChargingLocation,
                                          RemoteAuthentication,
-                                         AdditionalSessionInfos,
+                                         AdditionalSessionInfos is not null
+                                             ? CustomDataNew.ParseJObject(AdditionalSessionInfos)
+                                             : null,
                                          AuthenticationPath,
                                          ReservationId,
                                          ChargingProduct,

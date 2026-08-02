@@ -3259,7 +3259,7 @@ namespace cloud.charging.open.protocols.WWCP
             HTTPBaseAPI.AddHandler(
 
                 HTTPMethod.OPTIONS,
-                URLPathPrefix + "RNs/{RoamingNetworkId..}",
+                URLPathPrefix + "RNs/{RoamingNetworkId}",
                 request => {
 
                     #region Check anonymous access

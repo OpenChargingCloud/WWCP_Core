@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   DateTimeOffset?                                                     Created                        = null,
                                                                   DateTimeOffset?                                                     LastChange                     = null,
 
-                                                                  JObject?                                                            CustomData                     = null,
+                                                                  CustomDataNew?                                                      CustomData                     = null,
                                                                   UserDefinedDictionary?                                              InternalData                   = null,
 
                                                                   Action<IChargingPool>?                                              Configurator                   = null,
@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                              DateTimeOffset?                                              Created                        = null,
                                                                              DateTimeOffset?                                              LastChange                     = null,
 
-                                                                             JObject?                                                     CustomData                     = null,
+                                                                             CustomDataNew?                                               CustomData                     = null,
                                                                              UserDefinedDictionary?                                       InternalData                   = null,
 
                                                                              Action<IChargingPool>?                                       Configurator                   = null,
@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                   DateTimeOffset?                                                     Created                                = null,
                                                                                   DateTimeOffset?                                                     LastChange                             = null,
 
-                                                                                  JObject?                                                            CustomData                             = null,
+                                                                                  CustomDataNew?                                                      CustomData                             = null,
                                                                                   UserDefinedDictionary?                                              InternalData                           = null,
 
                                                                                   Action<IChargingPool>?                                              Configurator                           = null,
@@ -521,7 +521,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         DateTimeOffset?                                                     Created                        = null,
                                                                         DateTimeOffset?                                                     LastChange                     = null,
 
-                                                                        JObject?                                                            CustomData                     = null,
+                                                                        CustomDataNew?                                                      CustomData                     = null,
                                                                         UserDefinedDictionary?                                              InternalData                   = null,
 
                                                                         Action<IChargingPool>?                                              Configurator                   = null,
@@ -624,7 +624,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  String?                                                               DataSource                     = null,
                                  DateTimeOffset?                                                       LastChange                     = null,
 
-                                 JObject?                                                              CustomData                     = null,
+                                 CustomDataNew?                                                        CustomData                     = null,
                                  UserDefinedDictionary?                                                InternalData                   = null,
 
                                  Action<IChargingTariff,                           EventTracking_Id>?  OnSuccess                      = null,
@@ -698,7 +698,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  String?                                                               DataSource                     = null,
                                  DateTimeOffset?                                                       LastChange                     = null,
 
-                                 JObject?                                                              CustomData                     = null,
+                                 CustomDataNew?                                                        CustomData                     = null,
                                  UserDefinedDictionary?                                                InternalData                   = null,
 
                                  Action<IChargingTariff,                           EventTracking_Id>?  OnSuccess                      = null,
@@ -2004,7 +2004,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                 String?                                                               DataSource                     = null,
                                                                 DateTimeOffset?                                                       LastChange                     = null,
 
-                                                                JObject?                                                              CustomData                     = null,
+                                                                CustomDataNew?                                                        CustomData                     = null,
                                                                 UserDefinedDictionary?                                                InternalData                   = null,
 
                                                                 Action<IChargingTariff,                           EventTracking_Id>?  OnSuccess                      = null,
@@ -2037,7 +2037,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                 String?                                                               DataSource                     = null,
                                                                 DateTimeOffset?                                                       LastChange                     = null,
 
-                                                                JObject?                                                              CustomData                     = null,
+                                                                CustomDataNew?                                                        CustomData                     = null,
                                                                 UserDefinedDictionary?                                                InternalData                   = null,
 
                                                                 Action<IChargingTariff,                           EventTracking_Id>?  OnSuccess                      = null,

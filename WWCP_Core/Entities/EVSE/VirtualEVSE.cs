@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                          Action<VirtualEVSE>?                                 VirtualEVSEConfigurator        = null,
                                                          RemoteEVSECreatorDelegate?                           RemoteEVSECreator              = null,
 
-                                                         JObject?                                             CustomData                     = null,
+                                                         CustomDataNew?                                       CustomData                     = null,
                                                          UserDefinedDictionary?                               InternalData                   = null,
 
                                                          String                                               EllipticCurve                  = "P-256",
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                     Action<VirtualEVSE>?                                 VirtualEVSEConfigurator        = null,
                                                                     RemoteEVSECreatorDelegate?                           RemoteEVSECreator              = null,
 
-                                                                    JObject?                                             CustomData                     = null,
+                                                                    CustomDataNew?                                       CustomData                     = null,
                                                                     UserDefinedDictionary?                               InternalData                   = null,
 
                                                                     String                                               EllipticCurve                  = "P-256",
@@ -496,7 +496,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          Action<VirtualEVSE>?                                 VirtualEVSEConfigurator                = null,
                                                                          RemoteEVSECreatorDelegate?                           RemoteEVSECreator                      = null,
 
-                                                                         JObject?                                             CustomData                             = null,
+                                                                         CustomDataNew?                                       CustomData                             = null,
                                                                          UserDefinedDictionary?                               InternalData                           = null,
 
                                                                          String                                               EllipticCurve                          = "P-256",
@@ -3083,7 +3083,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         ChargingSession_Id?      SessionId                = null,
                         EMobilityProvider_Id?    ProviderId               = null,
                         RemoteAuthentication?    RemoteAuthentication     = null,
-                        JObject?                 AdditionalSessionInfos   = null,
+                        CustomDataNew?           AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
                         ICSORoamingProvider?     CSORoamingProvider       = null,
 
@@ -3136,7 +3136,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         ChargingSession_Id?      SessionId                = null,
                         EMobilityProvider_Id?    ProviderId               = null,
                         RemoteAuthentication?    RemoteAuthentication     = null,
-                        JObject?                 AdditionalSessionInfos   = null,
+                        CustomDataNew?           AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
                         ICSORoamingProvider?     CSORoamingProvider       = null,
 
@@ -3277,7 +3277,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                       Id:                SessionId ?? ChargingSession_Id.NewRandom(OperatorId),
                                                       EventTrackingId:   EventTrackingId,
                                                       RoamingNetwork:    RoamingNetwork,
-                                                      CustomData:        AdditionalSessionInfos
+                                                      CustomData:        AdditionalSessionInfos is not null
+                                                                             ? CustomDataNew.ParseJObject(AdditionalSessionInfos)
+                                                                             : null
                                                   ) {
                                                         ReservationId        = ReservationId,
                                                         Reservation          = firstReservation.LastOrDefault(),
@@ -3411,7 +3413,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                        ReservationHandling?   ReservationHandling      = null,
                        EMobilityProvider_Id?  ProviderId               = null,
                        RemoteAuthentication?  RemoteAuthentication     = null,
-                       JObject?               AdditionalSessionInfos   = null,
+                       CustomDataNew?         AdditionalSessionInfos   = null,
                        Auth_Path?             AuthenticationPath       = null,
                        ICSORoamingProvider?   CSORoamingProvider       = null,
 

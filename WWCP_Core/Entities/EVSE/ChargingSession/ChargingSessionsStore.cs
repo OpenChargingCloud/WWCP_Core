@@ -971,7 +971,9 @@ namespace cloud.charging.open.protocols.WWCP
             var newChargingSession       = new ChargingSession(
                                                AuthStartResult.SessionId!.Value,
                                                EventTrackingId,
-                                               CustomData: AuthStartResult.AdditionalContext
+                                               CustomData:  AuthStartResult.AdditionalContext is not null
+                                                                ? CustomDataNew.ParseJObject(AuthStartResult.AdditionalContext)
+                                                                : null
                                            ) {
                               RoamingNetwork             = RoamingNetwork,
                               CSORoamingProviderStart    = AuthStartResult.ISendAuthorizeStartStop as ICSORoamingProvider,

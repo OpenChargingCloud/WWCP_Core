@@ -3742,7 +3742,7 @@ namespace cloud.charging.open.protocols.WWCP
                         ChargingSession_Id?      SessionId                = null,
                         EMobilityProvider_Id?    ProviderId               = null,
                         RemoteAuthentication?    RemoteAuthentication     = null,
-                        JObject?                 AdditionalSessionInfos   = null,
+                        CustomDataNew?           AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
                         ICSORoamingProvider?     CSORoamingProvider       = null,
 
@@ -3793,7 +3793,7 @@ namespace cloud.charging.open.protocols.WWCP
                         ChargingSession_Id?      SessionId                = null,
                         EMobilityProvider_Id?    ProviderId               = null,
                         RemoteAuthentication?    RemoteAuthentication     = null,
-                        JObject?                 AdditionalSessionInfos   = null,
+                        CustomDataNew?           AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
                         ICSORoamingProvider?     CSORoamingProvider       = null,
 
@@ -3971,7 +3971,7 @@ namespace cloud.charging.open.protocols.WWCP
                        ReservationHandling?   ReservationHandling      = null,
                        EMobilityProvider_Id?  ProviderId               = null,
                        RemoteAuthentication?  RemoteAuthentication     = null,
-                       JObject?               AdditionalSessionInfos   = null,
+                       CustomDataNew?         AdditionalSessionInfos   = null,
                        Auth_Path?             AuthenticationPath       = null,
                        ICSORoamingProvider?   CSORoamingProvider       = null,
 

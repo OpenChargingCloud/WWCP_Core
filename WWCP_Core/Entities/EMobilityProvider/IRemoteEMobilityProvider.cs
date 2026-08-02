@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.WWCP
                         ChargingProduct?         ChargingProduct          = null,
                         ChargingReservation_Id?  ReservationId            = null,
                         ChargingSession_Id?      SessionId                = null,
-                        JObject?                 AdditionalSessionInfos   = null,
+                        CustomDataNew?           AdditionalSessionInfos   = null,
                         Auth_Path?               AuthenticationPath       = null,
 
                         DateTimeOffset?          RequestTimestamp         = null,
@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.WWCP
             RemoteStop(ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling      = null,
                        RemoteAuthentication?  RemoteAuthentication     = null,
-                       JObject?               AdditionalSessionInfos   = null,
+                       CustomDataNew?         AdditionalSessionInfos   = null,
                        Auth_Path?             AuthenticationPath       = null,
 
                        DateTimeOffset?        Timestamp                = null,
