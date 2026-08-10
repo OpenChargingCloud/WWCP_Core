@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <param name="PacketLoss">The optional error rate between this node and the destination node.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public VirtualNetworkLinkInformation(UInt16                     Distance,
-                                             StdDev<BitPerSecond>?     Capacity     = null,
+                                             StdDev<BitPerSecond>?      Capacity     = null,
                                              StdDev<TimeSpan>?          Latency      = null,
                                              StdDev<PercentageDouble>?  PacketLoss   = null,
                                              CustomData?                CustomData   = null)

@@ -265,13 +265,13 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             //                                                                                LoggingContext,
             //                                                                                LogfileCreator);
 
-            //base.OnValidateTCPConnection        += ValidateTCPConnection;
-            //base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
-            //base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
-            //base.OnCloseMessageReceived         += ProcessCloseMessage;
+            base.OnValidateTCPConnection        += ValidateTCPConnection;
+            base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
+            base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
+            base.OnCloseMessageReceived         += ProcessCloseMessage;
 
-            //base.OnTextMessageReceived          += ProcessTextMessage;
-            //base.OnBinaryMessageReceived        += ProcessBinaryMessage;
+            // Text and binary messages are received via the
+            // ProcessTextMessage/ProcessBinaryMessage overrides!
 
             base.OnPingMessageReceived          += (timestamp, server, connection, frame, eventTrackingId, pingMessage, ct) => {
                                                        DebugX.Log($"HTTP WebSocket Server '{connection.RemoteSocket}' Ping received:   '{frame.Payload.ToUTF8String()}'");
@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region (protected) ValidateTCPConnection         (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         private Task<ConnectionFilterResponse> ValidateTCPConnection(DateTimeOffset                LogTimestamp,
-                                                                     IWebSocketServer              Server,
+                                                                     AWebSocketServer              Server,
                                                                      System.Net.Sockets.TcpClient  Connection,
                                                                      EventTracking_Id              EventTrackingId,
                                                                      CancellationToken             CancellationToken)
@@ -350,12 +350,32 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region (protected) ValidateWebSocketConnection   (LogTimestamp, Server, Connection, HTTPRequest, EventTrackingId, CancellationToken)
 
         private Task<HTTPResponse?> ValidateWebSocketConnection(DateTimeOffset             LogTimestamp,
-                                                                IWebSocketServer           Server,
+                                                                AWebSocketServer           Server,
                                                                 WebSocketServerConnection  Connection,
-                                                                HTTPRequest                HTTPRequest,
                                                                 EventTracking_Id           EventTrackingId,
                                                                 CancellationToken          CancellationToken)
         {
+
+            #region Get HTTP request...
+
+            // The HTTP request is attached to the connection before this event is fired,
+            // but stay defensive: Without a HTTP request we can not authenticate anyone!
+            if (Connection.HTTPRequest is not HTTPRequest httpRequest)
+                return Task.FromResult<HTTPResponse?>(
+                           new HTTPResponse.Builder(
+                               Timestamp.Now,
+                               EventTrackingId,
+                               TimeSpan.Zero,
+                               new HTTPSource(Connection.RemoteSocket),
+                               Connection.LocalSocket,
+                               Connection.RemoteSocket,
+                               ConnectionType.Close,
+                               HTTPStatusCode.BadRequest,
+                               CancellationToken: CancellationToken
+                           ).AsImmutable
+                       );
+
+            #endregion
 
             #region Verify 'Sec-WebSocket-Protocol'...
 
@@ -366,7 +386,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket}: Missing 'Sec-WebSocket-Protocol' HTTP header!");
 
                 return Task.FromResult<HTTPResponse?>(
-                           new HTTPResponse.Builder(HTTPRequest) {
+                           new HTTPResponse.Builder(httpRequest) {
                                HTTPStatusCode  = HTTPStatusCode.BadRequest,
                                Server          = HTTPServiceName,
                                Date            = Timestamp.Now,
@@ -388,7 +408,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket}: {error}");
 
                 return Task.FromResult<HTTPResponse?>(
-                           new HTTPResponse.Builder(HTTPRequest) {
+                           new HTTPResponse.Builder(httpRequest) {
                                HTTPStatusCode  = HTTPStatusCode.BadRequest,
                                Server          = HTTPServiceName,
                                Date            = Timestamp.Now,
@@ -535,7 +555,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
 
                 return Task.FromResult<HTTPResponse?>(
-                           new HTTPResponse.Builder(HTTPRequest) {
+                           new HTTPResponse.Builder(httpRequest) {
                                HTTPStatusCode  = HTTPStatusCode.Unauthorized,
                                Server          = HTTPServiceName,
                                Date            = Timestamp.Now,
@@ -556,7 +576,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region (protected) ProcessNewWebSocketConnection (LogTimestamp, Server, Connection, SharedSubprotocols, EventTrackingId, CancellationToken)
 
         protected async Task ProcessNewWebSocketConnection(DateTimeOffset             LogTimestamp,
-                                                           IWebSocketServer           Server,
+                                                           AWebSocketServer           Server,
                                                            WebSocketServerConnection  Connection,
                                                            IEnumerable<String>        SharedSubprotocols,
                                                            String?                    SelectedSubprotocol,
@@ -756,7 +776,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region (protected) ProcessCloseMessage           (LogTimestamp, Server, Connection, Frame, EventTrackingId, StatusCode, Reason, CancellationToken)
 
         protected async Task ProcessCloseMessage(DateTimeOffset                    LogTimestamp,
-                                                 IWebSocketServer                  Server,
+                                                 AWebSocketServer                  Server,
                                                  WebSocketServerConnection         Connection,
                                                  WebSocketFrame                    Frame,
                                                  EventTracking_Id                  EventTrackingId,
@@ -828,18 +848,29 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
         /// <param name="Server">The HTTP WebSocket server.</param>
         /// <param name="WebSocketConnection">The HTTP WebSocket connection.</param>
-        /// <param name="Frame">The HTTP WebSocket frame.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
+        /// <param name="Frame">The HTTP WebSocket frame.</param>
         /// <param name="TextMessage">The received text message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public async Task ProcessTextMessage(DateTimeOffset             RequestTimestamp,
-                                             IWebSocketServer           Server,
-                                             WebSocketServerConnection  WebSocketConnection,
-                                             WebSocketFrame             Frame,
-                                             EventTracking_Id           EventTrackingId,
-                                             String                     TextMessage,
-                                             CancellationToken          CancellationToken)
+        public override async Task ProcessTextMessage(DateTimeOffset             RequestTimestamp,
+                                                      AWebSocketServer           Server,
+                                                      WebSocketServerConnection  WebSocketConnection,
+                                                      EventTracking_Id           EventTrackingId,
+                                                      WebSocketFrame             Frame,
+                                                      String                     TextMessage,
+                                                      CancellationToken          CancellationToken)
         {
+
+            // Fire the generic OnTextMessageReceived event of the base class!
+            await base.ProcessTextMessage(
+                      RequestTimestamp,
+                      Server,
+                      WebSocketConnection,
+                      EventTrackingId,
+                      Frame,
+                      TextMessage,
+                      CancellationToken
+                  );
 
             try
             {
@@ -926,18 +957,29 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
         /// <param name="Server">The HTTP WebSocket server.</param>
         /// <param name="WebSocketConnection">The HTTP WebSocket connection.</param>
-        /// <param name="Frame">The HTTP WebSocket frame.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
+        /// <param name="Frame">The HTTP WebSocket frame.</param>
         /// <param name="BinaryMessage">The received binary message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public async Task ProcessBinaryMessage(DateTimeOffset             RequestTimestamp,
-                                               IWebSocketServer           Server,
-                                               WebSocketServerConnection  WebSocketConnection,
-                                               WebSocketFrame             Frame,
-                                               EventTracking_Id           EventTrackingId,
-                                               Byte[]                     BinaryMessage,
-                                               CancellationToken          CancellationToken)
+        public override async Task ProcessBinaryMessage(DateTimeOffset             RequestTimestamp,
+                                                        AWebSocketServer           Server,
+                                                        WebSocketServerConnection  WebSocketConnection,
+                                                        EventTracking_Id           EventTrackingId,
+                                                        WebSocketFrame             Frame,
+                                                        Byte[]                     BinaryMessage,
+                                                        CancellationToken          CancellationToken)
         {
+
+            // Fire the generic OnBinaryMessageReceived event of the base class!
+            await base.ProcessBinaryMessage(
+                      RequestTimestamp,
+                      Server,
+                      WebSocketConnection,
+                      EventTrackingId,
+                      Frame,
+                      BinaryMessage,
+                      CancellationToken
+                  );
 
             try
             {
