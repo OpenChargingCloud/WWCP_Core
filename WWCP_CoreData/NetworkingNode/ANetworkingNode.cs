@@ -898,7 +898,9 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #region Shutdown(EventTrackingId = null, Message = true)
 
         /// <summary>
-        /// Stop the ATCPTestServer and close all active client connections.
+        /// Stop the heartbeat and maintenance timers, all attached WebSocket servers
+        /// and close all WebSocket client connections (which also stops their
+        /// automatic reconnects).
         /// </summary>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="Message">An optional message to include in the TCP server stopped event.</param>
@@ -906,8 +908,23 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                String?            Message           = null)
         {
 
+            // Otherwise every node ever created keeps its timers ticking, and every
+            // maintenance tick blocks a thread pool thread => thread pool starvation!
+            await SendHeartbeatsTimer.DisposeAsync();
+            await MaintenanceTimer.   DisposeAsync();
+
             await Task.WhenAll(
                       [.. wwcpWebSocketServers.Select(ocppWebSocketServer => ocppWebSocketServer.Stop(EventTrackingId, Message))]
+                  );
+
+            await Task.WhenAll(
+                      [.. wwcpWebSocketClients.
+                              OfType<org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketClient>().
+                              Select(webSocketClient => webSocketClient.Close(
+                                                            org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketFrame.ClosingStatusCode.NormalClosure,
+                                                            Message,
+                                                            EventTrackingId
+                                                        ))]
                   );
 
         }
