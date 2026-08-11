@@ -641,6 +641,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region ClearSigningRules  ()
+
+        /// <summary>
+        /// Remove all signing rules, e.g. to reset the signature policy within tests.
+        /// </summary>
+        public SignaturePolicy ClearSigningRules()
+        {
+
+            lock (signingRules)
+            {
+                signingRules.Clear();
+                return this;
+            }
+
+        }
+
+        #endregion
+
 
         #region SignMessage         (SignableMessage, JSONMessage,   out ErrorResponse, params SignInfos)
 
@@ -1130,6 +1148,24 @@ namespace cloud.charging.open.protocols.WWCP
 
                 return this;
 
+            }
+
+        }
+
+        #endregion
+
+        #region ClearVerificationRules()
+
+        /// <summary>
+        /// Remove all verification rules, e.g. to reset the signature policy within tests.
+        /// </summary>
+        public SignaturePolicy ClearVerificationRules()
+        {
+
+            lock (verificationRules)
+            {
+                verificationRules.Clear();
+                return this;
             }
 
         }
