@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                                    NetworkingMode?                                                 NetworkingMode                   = null,
 
-                                   HTTPHostname?                                                   VirtualHostname                  = null,
+                                   URLHost?                                                        VirtualHostname                  = null,
                                    String?                                                         HTTPUserAgent                    = DefaultHTTPUserAgent,
                                    IHTTPAuthentication?                                            HTTPAuthentication               = null,
                                    IEnumerable<String>?                                            SecWebSocketProtocols            = null,

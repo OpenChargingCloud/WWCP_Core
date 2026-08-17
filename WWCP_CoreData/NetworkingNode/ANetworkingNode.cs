@@ -378,7 +378,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                                                NetworkingNode_Id?                                              NextHopNetworkingNodeId          = null,
                                                                IEnumerable<NetworkingNode_Id>?                                 RoutingNetworkingNodeIds         = null,
 
-                                                               HTTPHostname?                                                   VirtualHostname                  = null,
+                                                               URLHost?                                                        VirtualHostname                  = null,
                                                                String?                                                         HTTPUserAgent                    = null,
                                                                IHTTPAuthentication?                                            HTTPAuthentication               = null,
                                                                IEnumerable<String>?                                            SecWebSocketProtocols            = null,
