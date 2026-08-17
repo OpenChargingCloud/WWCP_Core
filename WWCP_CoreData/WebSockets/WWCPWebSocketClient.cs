@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
     /// The networking node HTTP WebSocket client runs on a networking node
     /// and connects to a CSMS to invoke methods.
     /// </summary>
-    public partial class WWCPWebSocketClient : org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketClient,
+    public partial class WWCPWebSocketClient : WebSocketClient,
                                                IWWCPWebSocketClient
     {
 
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                                    NetworkingMode?                                                 NetworkingMode                   = null,
 
-                                   URLHost?                                                        VirtualHostname                  = null,
+                                   HTTPHostname?                                                   VirtualHostname                  = null,
                                    String?                                                         HTTPUserAgent                    = DefaultHTTPUserAgent,
                                    IHTTPAuthentication?                                            HTTPAuthentication               = null,
                                    IEnumerable<String>?                                            SecWebSocketProtocols            = null,
