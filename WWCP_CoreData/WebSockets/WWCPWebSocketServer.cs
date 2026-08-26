@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 else if (Connection.HTTPRequest?.Authorization is HTTPTOTPAuthentication totpAuthentication)
                 {
 
-                    if (ClientTOTPConfig.TryGetValue(totpAuthentication.Username, out var totpConfig))
+                    if (ClientTOTPConfig.TryGetValue(totpAuthentication.Login, out var totpConfig))
                     {
 
                         var (previousTOTP,
@@ -472,15 +472,15 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                             totpAuthentication.TOTP == currentTOTP  ||
                             totpAuthentication.TOTP == nextTOTP)
                         {
-                            DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using TOTP authorization: '{totpAuthentication.Username}' / '{totpAuthentication.TOTP}'");
+                            DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using TOTP authorization: '{totpAuthentication.Login}' / '{totpAuthentication.TOTP}'");
                             return Task.FromResult<HTTPResponse?>(null);
                         }
                         else
-                            DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid or outdated TOTP authorization: '{totpAuthentication.Username}' / '{totpAuthentication.TOTP}'!");
+                            DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid or outdated TOTP authorization: '{totpAuthentication.Login}' / '{totpAuthentication.TOTP}'!");
 
                     }
                     else
-                        DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid TOTP authorization: '{totpAuthentication.Username}' / '{totpAuthentication.TOTP}'!");
+                        DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid TOTP authorization: '{totpAuthentication.Login}' / '{totpAuthentication.TOTP}'!");
 
                 }
 
