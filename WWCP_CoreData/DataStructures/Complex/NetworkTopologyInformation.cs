@@ -360,7 +360,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NetworkTopologyInformation>?  CustomNetworkTopologyInformationSerializer   = null,
                               CustomJObjectSerializerDelegate<NetworkRoutingInformation>?   CustomNetworkRoutingInformationSerializer    = null,
-                              CustomJObjectSerializerDelegate<NetworkLinkInformation>?      CustomNetworkLinkInformationSerializer       = null,
+                              CustomJObjectSerializerDelegate<VirtualNetworkLinkInformation>?  CustomNetworkLinkInformationSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?                   CustomSignatureSerializer                    = null,
                               CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {

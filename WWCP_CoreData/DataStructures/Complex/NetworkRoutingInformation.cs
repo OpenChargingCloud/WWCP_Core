@@ -313,10 +313,12 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomNetworkRoutingInformationSerializer">A delegate to serialize custom network routing information.</param>
-        /// <param name="CustomNetworkLinkInformationSerializer">A delegate to serialize custom network link information.</param>
+        /// <param name="CustomNetworkLinkInformationSerializer">A delegate to serialize custom network link information.
+        /// Typed for VirtualNetworkLinkInformation, which is what Uplink and Downlink are: with the
+        /// base type here the call below binds to the base ToJSON, which omits the mandatory distance.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<NetworkRoutingInformation>?  CustomNetworkRoutingInformationSerializer   = null,
-                              CustomJObjectSerializerDelegate<NetworkLinkInformation>?     CustomNetworkLinkInformationSerializer      = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<NetworkRoutingInformation>?         CustomNetworkRoutingInformationSerializer   = null,
+                              CustomJObjectSerializerDelegate<VirtualNetworkLinkInformation>?     CustomNetworkLinkInformationSerializer      = null,
                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
