@@ -278,37 +278,42 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                        HTTPClientLogger?                                               HTTPLogger                   = null,
                                        DNSClient?                                                      DNSClient                    = null)
 
-            : base(RemoteURL,
-                   VirtualHostname,
-                   Description,
-                   PreferIPv4,
-                   RemoteCertificateValidator,
-                   LocalCertificateSelector,
-                   ClientCertificates,
-                   ClientCertificateContext,
-                   ClientCertificateChain,
-                   TLSProtocol,
-                   HTTPUserAgent,
-                   HTTPAuthentication,
-                   RequestTimeout ?? DefaultRequestTimeout,
-                   TransmissionRetryDelay,
-                   MaxNumberOfRetries,
-                   InternalBufferSize,
+            : base(URL:                         RemoteURL,
+                   Description:                 Description,
 
-                   SecWebSocketProtocols,
+                   VirtualHostname:             VirtualHostname,
+                   HTTPUserAgent:               HTTPUserAgent,
+                   HTTPAuthentication:          HTTPAuthentication,
+                   SecWebSocketProtocols:       SecWebSocketProtocols,
+                   RequestTimeout:              RequestTimeout ?? DefaultRequestTimeout,
 
-                   DisableWebSocketPings,
-                   WebSocketPingEvery,
-                   SlowNetworkSimulationDelay,
+                   DisableWebSocketPings:       DisableWebSocketPings,
+                   WebSocketPingEvery:          WebSocketPingEvery,
+                   SlowNetworkSimulationDelay:  SlowNetworkSimulationDelay,
 
-                   DisableMaintenanceTasks,
-                   MaintenanceEvery,
+                   DisableMaintenanceTasks:     DisableMaintenanceTasks,
+                   MaintenanceEvery:            MaintenanceEvery,
 
-                   LoggingPath,
-                   LoggingContext,
-                   LogfileCreator,
-                   HTTPLogger,
-                   DNSClient)
+                   RemoteCertificateValidator:  RemoteCertificateValidator,
+                   LocalCertificateSelector:    LocalCertificateSelector,
+                   ClientCertificates:          ClientCertificates,
+                   ClientCertificateContext:    ClientCertificateContext,
+                   ClientCertificateChain:      ClientCertificateChain,
+                   TLSProtocols:                TLSProtocol,
+
+                   IPVersionPreference:         PreferIPv4 == true
+                                                    ? org.GraphDefined.Vanaheimr.Hermod.IPVersionPreference.PreferIPv4
+                                                    : null,
+                   TransmissionRetryDelay:      TransmissionRetryDelay,
+                   MaxNumberOfRetries:          MaxNumberOfRetries,
+                   InternalBufferSize:          InternalBufferSize,
+
+                   LoggingPath:                 LoggingPath,
+                   LoggingContext:              LoggingContext,
+                   LogfileCreator:              LogfileCreator,
+                   HTTPLogger:                  HTTPLogger,
+
+                   DNSClient:                   DNSClient)
 
         {
 

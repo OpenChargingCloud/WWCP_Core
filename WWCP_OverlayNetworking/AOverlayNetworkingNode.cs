@@ -435,18 +435,15 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                                             TimeSpan?                                                       WebSocketPingEvery           = null,
                                                             TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
-                                                            Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
-                                                            RemoteTLSClientCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer>? ClientCertificateValidator   = null,
+                                                            ServerCertificateSelectorDelegate?                              ServerCertificateSelector    = null,
+                                                            RemoteTLSClientCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.TCP.ITCPServer>? ClientCertificateValidator   = null,
                                                             LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
                                                             SslProtocols?                                                   AllowedTLSProtocols          = null,
                                                             Boolean?                                                        ClientCertificateRequired    = null,
                                                             Boolean?                                                        CheckCertificateRevocation   = null,
 
-                                                            //ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
-                                                            //ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
-                                                            Boolean?                                                        ServerThreadIsBackground     = null,
-                                                            //ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
-                                                            TimeSpan?                                                       ConnectionTimeout            = null,
+                                                            TimeSpan?                                                       ReceiveTimeout               = null,
+                                                            TimeSpan?                                                       SendTimeout                  = null,
                                                             UInt32?                                                         MaxClientConnections         = null,
 
                                                             Boolean                                                         AutoStart                    = false)
@@ -475,12 +472,9 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                           ClientCertificateRequired,
                                           CheckCertificateRevocation,
 
-                                          //ServerThreadNameCreator,
-                                          //ServerThreadPrioritySetter,
-                                          //ServerThreadIsBackground,
-                                          //ConnectionIdBuilder,
-                                          //ConnectionTimeout,
-                                          //MaxClientConnections,
+                                          ReceiveTimeout,
+                                          SendTimeout,
+                                          MaxClientConnections,
 
                                           DNSClient:  DNSClient,
                                           AutoStart:  false

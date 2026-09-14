@@ -133,21 +133,18 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                       TimeSpan?                                                                                                   WebSocketPingEvery                   = null,
                                       TimeSpan?                                                                                                   SlowNetworkSimulationDelay           = null,
 
-                                      Func<X509Certificate2>?                                                                                     ServerCertificateSelector            = null,
-                                      RemoteTLSClientCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer>?  ClientCertificateValidator           = null,
+                                      ServerCertificateSelectorDelegate?                                                                          ServerCertificateSelector            = null,
+                                      RemoteTLSClientCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.TCP.ITCPServer>?               ClientCertificateValidator           = null,
                                       LocalCertificateSelectionHandler?                                                                           LocalCertificateSelector             = null,
                                       SslProtocols?                                                                                               AllowedTLSProtocols                  = null,
                                       Boolean?                                                                                                    ClientCertificateRequired            = null,
                                       Boolean?                                                                                                    CheckCertificateRevocation           = null,
 
-                                      //ServerThreadNameCreatorDelegate?                                                                            ServerThreadNameCreator              = null,
-                                      //ServerThreadPriorityDelegate?                                                                               ServerThreadPrioritySetter           = null,
-                                      Boolean?                                                                                                    ServerThreadIsBackground             = null,
-                                      //ConnectionIdBuilder?                                                                                        ConnectionIdBuilder                  = null,
-                                      TimeSpan?                                                                                                   ConnectionTimeout                    = null,
+                                      TimeSpan?                                                                                                   ReceiveTimeout                       = null,
+                                      TimeSpan?                                                                                                   SendTimeout                          = null,
                                       UInt32?                                                                                                     MaxClientConnections                 = null,
 
-                                      DNSClient?                                                                                                  DNSClient                            = null,
+                                      IDNSClient?                                                                                                 DNSClient                            = null,
                                       Boolean                                                                                                     AutoStart                            = false)
 
             : base(NetworkingNodeId,
@@ -170,12 +167,9 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                    ClientCertificateRequired,
                    CheckCertificateRevocation,
 
-                   //ServerThreadNameCreator,
-                   //ServerThreadPrioritySetter,
-                   //ServerThreadIsBackground,
-                   //ConnectionIdBuilder,
-                   //ConnectionTimeout,
-                   //MaxClientConnections,
+                   ReceiveTimeout,
+                   SendTimeout,
+                   MaxClientConnections,
 
                    DNSClient:  DNSClient,
                    AutoStart:  AutoStart)
@@ -239,7 +233,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             get { return webSocketServer.DisableWebSocketPings; }
             set { webSocketServer.DisableWebSocketPings = value; }
         }
-        public DNSClient?                              DNSClient
+        public IDNSClient?                             DNSClient
             => webSocketServer.DNSClient;
         public String                                  HTTPServiceName
             => webSocketServer.HTTPServiceName;
@@ -253,12 +247,12 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             => webSocketServer.IsRunning;
         public IEnumerable<String>                     SecWebSocketProtocols
             => webSocketServer.SecWebSocketProtocols;
-        public Boolean                                 ServerThreadIsBackground
-            => webSocketServer.ServerThreadIsBackground;
-        public ServerThreadNameCreatorDelegate         ServerThreadNameCreator
-            => webSocketServer.ServerThreadNameCreator;
-        public ServerThreadPriorityDelegate            ServerThreadPrioritySetter
-            => webSocketServer.ServerThreadPrioritySetter;
+        //public Boolean                                 ServerThreadIsBackground
+        //    => webSocketServer.ServerThreadIsBackground;
+        //public ServerThreadNameCreatorDelegate         ServerThreadNameCreator
+        //    => webSocketServer.ServerThreadNameCreator;
+        //public ServerThreadPriorityDelegate            ServerThreadPrioritySetter
+        //    => webSocketServer.ServerThreadPrioritySetter;
         public TimeSpan?                               SlowNetworkSimulationDelay
         {
             get { return webSocketServer.SlowNetworkSimulationDelay; }
@@ -643,54 +637,49 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                        TimeSpan?                                                       WebSocketPingEvery           = null,
                                        TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
-                                       Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
-                                       RemoteTLSClientCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer>?  ClientCertificateValidator   = null,
+                                       ServerCertificateSelectorDelegate?                              ServerCertificateSelector    = null,
+                                       RemoteTLSClientCertificateValidationHandler<org.GraphDefined.Vanaheimr.Hermod.TCP.ITCPServer>?  ClientCertificateValidator   = null,
                                        LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
                                        SslProtocols?                                                   AllowedTLSProtocols          = null,
                                        Boolean?                                                        ClientCertificateRequired    = null,
                                        Boolean?                                                        CheckCertificateRevocation   = null,
 
-                                       ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
-                                       ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
-                                       Boolean?                                                        ServerThreadIsBackground     = null,
-                                       ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
-                                       TimeSpan?                                                       ConnectionTimeout            = null,
+                                       TimeSpan?                                                       ReceiveTimeout               = null,
+                                       TimeSpan?                                                       SendTimeout                  = null,
                                        UInt32?                                                         MaxClientConnections         = null,
 
-                                       DNSClient?                                                      DNSClient                    = null,
+                                       IDNSClient?                                                     DNSClient                    = null,
                                        Boolean                                                         AutoStart                    = false)
 
         {
 
             webSocketServer                                 = new WebSocketServer(
-                                                                  IPAddress,
-                                                                  TCPPort ?? IPPort.Parse(8000),
-                                                                  HTTPServiceName,
-                                                                  Description,
+                                                                  IPAddress:                    IPAddress,
+                                                                  HTTPPort:                     TCPPort ?? IPPort.Parse(8000),
+                                                                  HTTPServerName:               HTTPServiceName,
+                                                                  Description:                  Description,
 
-                                                                  RequireAuthentication,
-                                                                  SupportedEEBusWebSocketSubprotocols,
-                                                                  SubprotocolSelector,
-                                                                  DisableWebSocketPings,
-                                                                  WebSocketPingEvery,
-                                                                  SlowNetworkSimulationDelay,
+                                                                  RequireAuthentication:        RequireAuthentication,
+                                                                  SecWebSocketProtocols:        SupportedEEBusWebSocketSubprotocols,
+                                                                  SubprotocolSelector:          SubprotocolSelector,
+                                                                  DisableWebSocketPings:        DisableWebSocketPings,
+                                                                  WebSocketPingEvery:           WebSocketPingEvery,
+                                                                  SlowNetworkSimulationDelay:   SlowNetworkSimulationDelay,
 
-                                                                  ServerCertificateSelector,
-                                                                  ClientCertificateValidator,
-                                                                  LocalCertificateSelector,
-                                                                  AllowedTLSProtocols,
-                                                                  ClientCertificateRequired,
-                                                                  CheckCertificateRevocation,
+                                                                  ReceiveTimeout:               ReceiveTimeout,
+                                                                  SendTimeout:                  SendTimeout,
 
-                                                                  ServerThreadNameCreator,
-                                                                  ServerThreadPrioritySetter,
-                                                                  ServerThreadIsBackground,
-                                                                  ConnectionIdBuilder,
-                                                                  ConnectionTimeout,
-                                                                  MaxClientConnections,
+                                                                  ServerCertificateSelector:    ServerCertificateSelector,
+                                                                  ClientCertificateValidator:   ClientCertificateValidator,
+                                                                  LocalCertificateSelector:     LocalCertificateSelector,
+                                                                  AllowedTLSProtocols:          AllowedTLSProtocols,
+                                                                  ClientCertificateRequired:    ClientCertificateRequired,
+                                                                  CheckCertificateRevocation:   CheckCertificateRevocation,
 
-                                                                  DNSClient,
-                                                                  false
+                                                                  MaxClientConnections:         MaxClientConnections,
+                                                                  DNSClient:                    DNSClient,
+
+                                                                  AutoStart:                    false
                                                               );
 
             this.NetworkingNodeId                           = NetworkingNodeId;
@@ -701,27 +690,27 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             webSocketServer.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
             webSocketServer.OnCloseMessageReceived         += ProcessCloseMessage;
 
-            webSocketServer.OnTextMessage                  += (timestamp,
+            webSocketServer.OnTextMessageReceived          += (timestamp,
                                                                server,
                                                                connection,
+                                                               frame,
                                                                eventTrackingId,
-                                                               requestTimestamp,
                                                                textMessage,
-                                                               cancellationToken) => ProcessTextMessage(requestTimestamp,
+                                                               cancellationToken) => ProcessTextMessage(timestamp,
                                                                                                         connection,
                                                                                                         textMessage,
                                                                                                         eventTrackingId,
                                                                                                         cancellationToken);
 
-            webSocketServer.OnBinaryMessage                += (timestamp,
+            webSocketServer.OnBinaryMessageReceived        += (timestamp,
                                                                server,
                                                                connection,
+                                                               frame,
                                                                eventTrackingId,
-                                                               requestTimestamp,
-                                                               textMessage,
-                                                               cancellationToken) => ProcessBinaryMessage(requestTimestamp,
+                                                               binaryMessage,
+                                                               cancellationToken) => ProcessBinaryMessage(timestamp,
                                                                                                           connection,
-                                                                                                          textMessage,
+                                                                                                          binaryMessage,
                                                                                                           eventTrackingId,
                                                                                                           cancellationToken);
 
@@ -776,7 +765,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region (protected) ValidateTCPConnection        (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         private Task<ConnectionFilterResponse> ValidateTCPConnection(DateTimeOffset                                                LogTimestamp,
-                                                                     org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer  Server,
+                                                                     AWebSocketServer                                              Server,
                                                                      System.Net.Sockets.TcpClient                                  Connection,
                                                                      EventTracking_Id                                              EventTrackingId,
                                                                      CancellationToken                                             CancellationToken)
@@ -791,7 +780,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region (protected) ValidateWebSocketConnection  (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         private Task<HTTPResponse?> ValidateWebSocketConnection(DateTimeOffset                                                LogTimestamp,
-                                                                org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer  Server,
+                                                                AWebSocketServer                                              Server,
                                                                 WebSocketServerConnection                                     Connection,
                                                                 EventTracking_Id                                              EventTrackingId,
                                                                 CancellationToken                                             CancellationToken)
@@ -806,7 +795,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                 DebugX.Log($"{nameof(AOverlayWebSocketServer)} connection from {Connection.RemoteSocket}: Missing 'Sec-WebSocket-Protocol' HTTP header!");
 
                 return Task.FromResult<HTTPResponse?>(
-                           new HTTPResponse.Builder() {
+                           new HTTPResponse.Builder(Connection.HTTPRequest) {
                                HTTPStatusCode  = HTTPStatusCode.BadRequest,
                                Server          = webSocketServer.HTTPServiceName,
                                Date            = Timestamp.Now,
@@ -828,7 +817,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                 DebugX.Log($"{nameof(AOverlayWebSocketServer)} connection from {Connection.RemoteSocket}: {error}");
 
                 return Task.FromResult<HTTPResponse?>(
-                           new HTTPResponse.Builder() {
+                           new HTTPResponse.Builder(Connection.HTTPRequest) {
                                HTTPStatusCode  = HTTPStatusCode.BadRequest,
                                Server          = webSocketServer.HTTPServiceName,
                                Date            = Timestamp.Now,
@@ -867,7 +856,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                     DebugX.Log($"{nameof(AOverlayWebSocketServer)} connection from {Connection.RemoteSocket} missing authorization!");
 
                 return Task.FromResult<HTTPResponse?>(
-                           new HTTPResponse.Builder() {
+                           new HTTPResponse.Builder(Connection.HTTPRequest) {
                                HTTPStatusCode  = HTTPStatusCode.Unauthorized,
                                Server          = webSocketServer.HTTPServiceName,
                                Date            = Timestamp.Now,
@@ -887,7 +876,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, SharedSubprotocols, SelectedSubprotocol, EventTrackingId, CancellationToken)
 
         protected async Task ProcessNewWebSocketConnection(DateTimeOffset                                                LogTimestamp,
-                                                           org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer  Server,
+                                                           AWebSocketServer                                              Server,
                                                            WebSocketServerConnection                                     Connection,
                                                            IEnumerable<String>                                           SharedSubprotocols,
                                                            String?                                                       SelectedSubprotocol,
@@ -1066,7 +1055,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, Frame, EventTrackingId, StatusCode, Reason, CancellationToken)
 
         protected async Task ProcessCloseMessage(DateTimeOffset                                                LogTimestamp,
-                                                 org.GraphDefined.Vanaheimr.Hermod.WebSocket.IWebSocketServer  Server,
+                                                 AWebSocketServer                                              Server,
                                                  WebSocketServerConnection                                     Connection,
                                                  WebSocketFrame                                                Frame,
                                                  EventTracking_Id                                              EventTrackingId,
