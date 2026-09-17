@@ -158,6 +158,17 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         [Optional]
         public I18NString?                 Description                 { get; }
 
+        /// <summary>
+        /// The clock this networking node reads the time from.
+        /// </summary>
+        public TimeProvider                Clock                       { get; }
+
+        /// <summary>
+        /// The current time, as this networking node sees it.
+        /// </summary>
+        public DateTimeOffset              Now
+            => Clock.GetUtcNow();
+
 
 
         public CustomData                  CustomData                  { get; }
@@ -328,9 +339,14 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                                    Boolean            DisableMaintenanceTasks     = false,
                                    TimeSpan?          MaintenanceEvery            = null,
-                                   IDNSClient?        DNSClient                   = null)
+                                   IDNSClient?        DNSClient                   = null,
+
+                                   TimeProvider?      Clock                       = null)
 
         {
+
+            this.Clock = Clock ?? Timestamp.Provider;
+
 
             if (Id.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(Id), "The given networking node identification must not be null or empty!");

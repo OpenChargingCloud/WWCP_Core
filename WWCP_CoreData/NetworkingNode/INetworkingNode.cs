@@ -39,6 +39,24 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         new NetworkingNode_Id      Id                       { get; }
 
         /// <summary>
+        /// The clock this networking node reads the time from.
+        /// </summary>
+        /// <remarks>
+        /// A node has its own clock because a node is the thing that can be
+        /// moved through time: a test that puts a charging station in last
+        /// March wants the station's reservations, transactions and
+        /// certificates to agree about when "now" is, and a station whose
+        /// OCPP side still read the system clock would be testing that
+        /// disagreement instead.
+        /// </remarks>
+        TimeProvider               Clock                    { get; }
+
+        /// <summary>
+        /// The current time, as this networking node sees it.
+        /// </summary>
+        DateTimeOffset             Now                      { get; }
+
+        /// <summary>
         /// An optional multi-language networking node description.
         /// </summary>
         [Optional]
