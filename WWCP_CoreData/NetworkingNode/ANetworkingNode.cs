@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         public TimeSpan                    MaintenanceEvery            { get; }
 
 
-        public DNSClient                   DNSClient                   { get; }
+        public IDNSClient                  DNSClient                   { get; }
 
         public HTTPExtAPI?                 HTTPExtAPI                  { get; }
 
@@ -328,7 +328,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                                    Boolean            DisableMaintenanceTasks     = false,
                                    TimeSpan?          MaintenanceEvery            = null,
-                                   DNSClient?         DNSClient                   = null)
+                                   IDNSClient?        DNSClient                   = null)
 
         {
 
