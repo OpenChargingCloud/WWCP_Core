@@ -51,6 +51,7 @@
   <PropertyGroup>
     <NodeToolsRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)'))</NodeToolsRoot>
     <TypeScriptCompiler>$(NodeToolsRoot)node_modules/typescript/bin/tsc</TypeScriptCompiler>
+    <StylesheetCompiler>$(NodeToolsRoot)compileSASS.mjs</StylesheetCompiler>
   </PropertyGroup>
 
 </Project>

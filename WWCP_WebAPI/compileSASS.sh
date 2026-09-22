@@ -8,8 +8,8 @@
 # It used to do the work itself and needed "sass" and "jq" installed
 # globally - which nobody had, on a machine where this project then failed
 # to build at all, because the CSS it produces is gitignored and embedded as
-# a resource. One implementation now, in compileSASS.mjs, with the compiler
-# pinned in package.json at the repository root.
+# a resource. One implementation now, in ../compileSASS.mjs, with the
+# compiler pinned in package.json at the repository root.
 
 set -e
 cd "$(dirname "$0")"
@@ -18,4 +18,4 @@ if [ ! -d ../node_modules ]; then
     npm --prefix .. ci
 fi
 
-node compileSASS.mjs
+node ../compileSASS.mjs

@@ -63,7 +63,7 @@
   <Target Name="CompileWebAssets" BeforeTargets="PreBuildEvent" Condition="'$(DesignTimeBuild)' != 'true'">
     <Exec Command="npm ci" WorkingDirectory="$(NodeToolsRoot)" Condition="!Exists('$(NodeToolsRoot)node_modules')" />
     <Exec Command="node &quot;$(TypeScriptCompiler)&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" />
-    <Exec Command="node compileSASS.mjs" WorkingDirectory="$(MSBuildProjectDirectory)" />
+    <Exec Command="node &quot;$(StylesheetCompiler)&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
 
 </Project>
