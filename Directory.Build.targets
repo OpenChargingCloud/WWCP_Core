@@ -28,9 +28,29 @@
     them on the way out.
   -->
 
+  <!--
+    And the same for the stylesheets, which is the same fault twice.
+
+    HTTPRoot/css is generated from the .scss files beside it, gitignored, and
+    embedded as a resource - so a machine where nobody had run compileSASS.sh
+    could not build this project at all:
+
+      error CS1566: Fehler beim Lesen der Ressource
+                    "...HTTPRoot.css.chargingSessions.chargingSessions.css"
+
+    which names the missing file and not the missing step. That script needed
+    "sass" and "jq" installed globally, the same arrangement that made "tsc"
+    fail, so it is now a wrapper around compileSASS.mjs and the compiler is
+    pinned in package.json like the other one.
+
+    NodeToolsRoot rather than TypeScriptRoot, which is what WWCP_OCPP calls
+    the same directory: there it holds one tool and the name is the truth,
+    here it holds two.
+  -->
+
   <PropertyGroup>
-    <TypeScriptRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)'))</TypeScriptRoot>
-    <TypeScriptCompiler>$(TypeScriptRoot)node_modules/typescript/bin/tsc</TypeScriptCompiler>
+    <NodeToolsRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)'))</NodeToolsRoot>
+    <TypeScriptCompiler>$(NodeToolsRoot)node_modules/typescript/bin/tsc</TypeScriptCompiler>
   </PropertyGroup>
 
 </Project>
