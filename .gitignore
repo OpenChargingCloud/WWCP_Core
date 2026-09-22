@@ -128,3 +128,9 @@ WWCP_WebAPI/HTTPRoot/css/debugLog
 
 !WWCP_WebAPI/HTTPRoot/js/
 !WWCP_WebAPI/HTTPRoot/js/**
+
+# The TypeScript compiler WWCP_WebAPI builds its HTTPRoot scripts with.
+# Brought by package.json rather than installed globally, so that every
+# machine compiles with the same version and a build does not depend on what
+# somebody once ran "npm install -g" for.
+node_modules/

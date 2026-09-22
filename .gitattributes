@@ -1,0 +1,7 @@
+# Emitted by tsc, which writes exactly these bytes. With core.autocrlf=true a
+# checkout would rewrite their line endings, so the compiler output would
+# never match what git expects and these files would stand as modified after
+# every build, with an empty diff. Left alone in both directions, the round
+# trip is exact - which is what the build stamp needs to mean anything.
+WWCP_WebAPI/HTTPRoot/defaults/defaults.js      -text
+WWCP_WebAPI/HTTPRoot/defaults/defaults.js.map  -text
