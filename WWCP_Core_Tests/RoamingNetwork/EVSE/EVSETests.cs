@@ -663,11 +663,22 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                         //ClassicAssert.AreEqual(2, DE_GEF_E0001_AAAA_1.ChargingTariffs.   Count);
 
-                        ClassicAssert.AreEqual(2, evseDataChanges.                       Count);
-                        ClassicAssert.AreEqual(2, chargingStationEVSEDataChanges.        Count);
-                        ClassicAssert.AreEqual(2, chargingPoolEVSEDataChanges.           Count);
-                        ClassicAssert.AreEqual(2, chargingStationOperatorEVSEDataChanges.Count);
-                        ClassicAssert.AreEqual(2, roamingNetworkEVSEDataChanges.         Count);
+                        // And these five belong with them. They count the property
+                        // changes those two Add calls raised, and EVSE.ChargingTariffs
+                        // is commented out in the model too - the ReactiveSet and the
+                        // OnSetChanged handler that fired the events. So nothing can
+                        // raise them: the lists are empty, and this test has been
+                        // failing on "expected 2, but was 0" ever since 7530c68a in
+                        // December 2024.
+                        //
+                        // Left commented rather than deleted, next to the two calls
+                        // they belong to, so that putting tariffs back on an EVSE puts
+                        // these back with them.
+                        //ClassicAssert.AreEqual(2, evseDataChanges.                       Count);
+                        //ClassicAssert.AreEqual(2, chargingStationEVSEDataChanges.        Count);
+                        //ClassicAssert.AreEqual(2, chargingPoolEVSEDataChanges.           Count);
+                        //ClassicAssert.AreEqual(2, chargingStationOperatorEVSEDataChanges.Count);
+                        //ClassicAssert.AreEqual(2, roamingNetworkEVSEDataChanges.         Count);
 
 
                         var evseGroup_0_25_kWh  = DE_GEF.CreateEVSEGroup(
