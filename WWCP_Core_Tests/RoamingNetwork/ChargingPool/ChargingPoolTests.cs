@@ -329,11 +329,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 ClassicAssert.AreEqual(3,                                         DE_GEF_P0001.AdminStatusSchedule().Count());
 
 
-                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF_P0001.                                   GenerateAdminStatusReport().            ToString());
-                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.GenerateAdminStatusReport().            ToString());
-                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF.                                         GenerateChargingPoolAdminStatusReport().ToString());
-                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.      GenerateChargingPoolAdminStatusReport().ToString());
-                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.                                 GenerateChargingPoolAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100.00)", DE_GEF_P0001.                                   GenerateAdminStatusReport().            ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100.00)", new IChargingPool[]            { DE_GEF_P0001 }.GenerateAdminStatusReport().            ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100.00)", DE_GEF.                                         GenerateChargingPoolAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100.00)", new IChargingStationOperator[] { DE_GEF }.      GenerateChargingPoolAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100.00)", roamingNetwork.                                 GenerateChargingPoolAdminStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF_P0001.GenerateAdminStatusReport().ToJSON();
@@ -382,11 +382,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 ClassicAssert.AreEqual(3,                                     DE_GEF_P0001.StatusSchedule().Count());
 
 
-                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF_P0001.                                   GenerateStatusReport().            ToString());
-                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.GenerateStatusReport().            ToString());
-                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF.                                         GenerateChargingPoolStatusReport().ToString());
-                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.      GenerateChargingPoolStatusReport().ToString());
-                ClassicAssert.AreEqual("1 entities; error: 1 (100,00)", roamingNetwork.                                 GenerateChargingPoolStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100.00)", DE_GEF_P0001.                                   GenerateStatusReport().            ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100.00)", new IChargingPool[]            { DE_GEF_P0001 }.GenerateStatusReport().            ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100.00)", DE_GEF.                                         GenerateChargingPoolStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100.00)", new IChargingStationOperator[] { DE_GEF }.      GenerateChargingPoolStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; error: 1 (100.00)", roamingNetwork.                                 GenerateChargingPoolStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF_P0001.GenerateStatusReport().ToJSON();

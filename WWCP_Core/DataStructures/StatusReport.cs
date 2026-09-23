@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Globalization;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -207,7 +209,7 @@ namespace cloud.charging.open.protocols.WWCP
                    Count, " entities; ",
 
                    overview.
-                       Select(v => String.Concat(v.Key, ": ", v.Value.Item1, " (", v.Value.Item2.ToString("0.00"), ")")).
+                       Select(v => String.Concat(v.Key, ": ", v.Value.Item1, " (", v.Value.Item2.ToString("0.00", CultureInfo.InvariantCulture), ")")).
                        AggregateWith(", ")
 
                );

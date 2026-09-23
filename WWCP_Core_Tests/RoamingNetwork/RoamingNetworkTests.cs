@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 ClassicAssert.AreEqual(3,                                           roamingNetwork.AdminStatusSchedule().Count());
 
 
-                ClassicAssert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.GenerateAdminStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; operational: 1 (100.00)", roamingNetwork.GenerateAdminStatusReport().ToString());
 
 
                 var jsonStatusReport = roamingNetwork.GenerateAdminStatusReport().ToJSON();
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 ClassicAssert.AreEqual(3,                                    roamingNetwork.StatusSchedule().Count());
 
 
-                ClassicAssert.AreEqual("1 entities; available: 1 (100,00)", roamingNetwork.GenerateStatusReport().ToString());
+                ClassicAssert.AreEqual("1 entities; available: 1 (100.00)", roamingNetwork.GenerateStatusReport().ToString());
 
 
                 var jsonStatusReport = roamingNetwork.GenerateStatusReport().ToJSON();
