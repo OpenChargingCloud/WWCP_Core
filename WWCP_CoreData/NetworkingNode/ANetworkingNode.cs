@@ -522,25 +522,17 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
             wwcpWebSocketClients.Add(wwcpWebSocketClient);
 
-            var connectResponse = await wwcpWebSocketClient.Connect(
-                                            EventTrackingId:      EventTrackingId ?? EventTracking_Id.New,
-                                            RequestTimeout:       wwcpWebSocketClient.RequestTimeout,
-                                            MaxNumberOfRetries:   wwcpWebSocketClient.MaxNumberOfRetries,
-                                            HTTPRequestBuilder:   (httpRequestBuilder) => {
-                                                                      if (wwcpWebSocketClient.NetworkingMode == NetworkingMode.OverlayNetwork)
-                                                                          httpRequestBuilder.SetHeaderField(WebSocketKeys.X_WWCP_NetworkingMode, wwcpWebSocketClient.NetworkingMode.ToString());
-                                                                  },
-                                            CancellationToken:    CancellationToken
-                                        );
-
-            if (connectResponse.Item2.HTTPStatusCode == HTTPStatusCode.SwitchingProtocols &&
-                connectResponse.Item1 is not null)
-            {
+            // Who the server is, and how to reach it, is written down the moment it
+            // has accepted the upgrade and before the first frame from it is read -
+            // and again for the connection every reconnect opens. Written down once
+            // Connect had returned, a request the server sent at once was read before
+            // this node knew whom it came from or how to answer it.
+            wwcpWebSocketClient.OnWebSocketConnectionAccepted += (timestamp, client, connection, httpResponse, cancellationToken) => {
 
                 if (NextHopNetworkingNodeId is not null)
                 {
 
-                    connectResponse.Item1.TryAddCustomData(
+                    connection.TryAddCustomData(
                         WebSocketKeys.NetworkingNodeId,
                         NextHopNetworkingNodeId
                     );
@@ -564,7 +556,20 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                         Timestamp.Now
                     );
 
-            }
+                return Task.CompletedTask;
+
+            };
+
+            var connectResponse = await wwcpWebSocketClient.Connect(
+                                            EventTrackingId:      EventTrackingId ?? EventTracking_Id.New,
+                                            RequestTimeout:       wwcpWebSocketClient.RequestTimeout,
+                                            MaxNumberOfRetries:   wwcpWebSocketClient.MaxNumberOfRetries,
+                                            HTTPRequestBuilder:   (httpRequestBuilder) => {
+                                                                      if (wwcpWebSocketClient.NetworkingMode == NetworkingMode.OverlayNetwork)
+                                                                          httpRequestBuilder.SetHeaderField(WebSocketKeys.X_WWCP_NetworkingMode, wwcpWebSocketClient.NetworkingMode.ToString());
+                                                                  },
+                                            CancellationToken:    CancellationToken
+                                        );
 
             return connectResponse.Item2;
 
@@ -717,16 +722,20 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
             // Failed (Charging Station) Authentication
 
-            #region OnNetworkingNodeNewWebSocketConnection
+            #region OnNetworkingNodeWebSocketConnectionAccepted
 
-            WebSocketServer.OnNetworkingNodeNewWebSocketConnection += async (timestamp,
-                                                                             webSocketServer,
-                                                                             newConnection,
-                                                                             networkingNodeId,
-                                                                             networkingMode,
-                                                                             sharedSubprotocols,
-                                                                             eventTrackingId,
-                                                                             cancellationToken) => {
+            // Routed to from the moment its connection is accepted, before the 101
+            // is sent, and not from the moment the networking node has it: a
+            // request sent to it right after it has connected used to find it
+            // unknown to the routing, and came back UnknownClient.
+            WebSocketServer.OnNetworkingNodeWebSocketConnectionAccepted += async (timestamp,
+                                                                                  webSocketServer,
+                                                                                  newConnection,
+                                                                                  networkingNodeId,
+                                                                                  networkingMode,
+                                                                                  sharedSubprotocols,
+                                                                                  eventTrackingId,
+                                                                                  cancellationToken) => {
 
                 //// A new connection from the same networking node/charging station will replace the older one!
                 if (webSocketServer is IWWCPWebSocketServer wwcpWebSocketServer)

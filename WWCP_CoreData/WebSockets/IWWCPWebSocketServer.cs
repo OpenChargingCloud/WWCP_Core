@@ -107,6 +107,14 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region Events
 
         /// <summary>
+        /// An event sent whenever the connection of a networking node has been
+        /// accepted and registered, before it is answered with 101 Switching
+        /// Protocols - so that the networking node can be routed to by the time
+        /// it knows it is connected.
+        /// </summary>
+        public event OnNetworkingNodeNewWebSocketConnectionDelegate?  OnNetworkingNodeWebSocketConnectionAccepted;
+
+        /// <summary>
         /// An event sent whenever the HTTP connection switched successfully to web socket.
         /// </summary>
         public event OnNetworkingNodeNewWebSocketConnectionDelegate?  OnNetworkingNodeNewWebSocketConnection;

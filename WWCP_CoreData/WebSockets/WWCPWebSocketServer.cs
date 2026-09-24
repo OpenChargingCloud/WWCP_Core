@@ -109,6 +109,19 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region Common Connection Management
 
         /// <summary>
+        /// An event sent whenever the connection of a networking node has been
+        /// accepted and registered, before it is answered with 101 Switching
+        /// Protocols - so that the networking node can be routed to by the time
+        /// it knows it is connected.
+        /// </summary>
+        /// <remarks>
+        /// Nothing can be sent on the connection yet: a frame sent now waits for
+        /// the 101, which is only sent once every handler has returned.
+        /// OnNetworkingNodeNewWebSocketConnection follows once it has been.
+        /// </remarks>
+        public event OnNetworkingNodeNewWebSocketConnectionDelegate?  OnNetworkingNodeWebSocketConnectionAccepted;
+
+        /// <summary>
         /// An event sent whenever the HTTP connection switched successfully to web socket.
         /// </summary>
         public event OnNetworkingNodeNewWebSocketConnectionDelegate?  OnNetworkingNodeNewWebSocketConnection;
@@ -267,6 +280,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
             base.OnValidateTCPConnection        += ValidateTCPConnection;
             base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
+            base.OnWebSocketConnectionAccepted  += RegisterNewWebSocketConnection;
             base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
             base.OnCloseMessageReceived         += ProcessCloseMessage;
 
@@ -573,15 +587,26 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #endregion
 
-        #region (protected) ProcessNewWebSocketConnection (LogTimestamp, Server, Connection, SharedSubprotocols, EventTrackingId, CancellationToken)
+        #region (protected) RegisterNewWebSocketConnection (LogTimestamp, Server, Connection, SharedSubprotocols, EventTrackingId, CancellationToken)
 
-        protected async Task ProcessNewWebSocketConnection(DateTimeOffset             LogTimestamp,
-                                                           AWebSocketServer           Server,
-                                                           WebSocketServerConnection  Connection,
-                                                           IEnumerable<String>        SharedSubprotocols,
-                                                           String?                    SelectedSubprotocol,
-                                                           EventTracking_Id           EventTrackingId,
-                                                           CancellationToken          CancellationToken)
+        /// <summary>
+        /// Register the networking node behind a connection that is about to be
+        /// answered with 101 Switching Protocols, before that answer is sent.
+        /// </summary>
+        /// <remarks>
+        /// A networking node that has read its 101 may be sent a request at once,
+        /// and one registered only after the 101 was unknown to exactly that
+        /// request. Announcing the connection, and closing one that does not say
+        /// which networking node it is, waits for the 101:
+        /// see ProcessNewWebSocketConnection.
+        /// </remarks>
+        protected async Task RegisterNewWebSocketConnection(DateTimeOffset             LogTimestamp,
+                                                            AWebSocketServer           Server,
+                                                            WebSocketServerConnection  Connection,
+                                                            IEnumerable<String>        SharedSubprotocols,
+                                                            String?                    SelectedSubprotocol,
+                                                            EventTracking_Id           EventTrackingId,
+                                                            CancellationToken          CancellationToken)
         {
 
             if (Connection.HTTPRequest is null)
@@ -725,6 +750,52 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                 #endregion
 
+                #region Send OnNetworkingNodeWebSocketConnectionAccepted event
+
+                await LogEvent(
+                          OnNetworkingNodeWebSocketConnectionAccepted,
+                          loggingDelegate => loggingDelegate.Invoke(
+                              LogTimestamp,
+                              this,
+                              Connection,
+                              networkingNodeId.Value,
+                              networkingMode,
+                              SharedSubprotocols,
+                              EventTrackingId,
+                              CancellationToken
+                          )
+                      );
+
+                #endregion
+
+            }
+
+        }
+
+        #endregion
+
+        #region (protected) ProcessNewWebSocketConnection  (LogTimestamp, Server, Connection, SharedSubprotocols, EventTrackingId, CancellationToken)
+
+        /// <summary>
+        /// The 101 has gone out: announce the networking node registered before
+        /// it, or close a connection that could not be registered, because it did
+        /// not say which networking node it is.
+        /// </summary>
+        protected async Task ProcessNewWebSocketConnection(DateTimeOffset             LogTimestamp,
+                                                           AWebSocketServer           Server,
+                                                           WebSocketServerConnection  Connection,
+                                                           IEnumerable<String>        SharedSubprotocols,
+                                                           String?                    SelectedSubprotocol,
+                                                           EventTracking_Id           EventTrackingId,
+                                                           CancellationToken          CancellationToken)
+        {
+
+            if (Connection.HTTPRequest is null)
+                return;
+
+            if (Connection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId, out var networkingNodeId))
+            {
+
                 #region Send OnNewNetworkingNodeWSConnection event
 
                 await LogEvent(
@@ -733,8 +804,10 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                               LogTimestamp,
                               this,
                               Connection,
-                              networkingNodeId.Value,
-                              networkingMode,
+                              networkingNodeId,
+                              Connection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode, out var networkingMode)
+                                  ? networkingMode
+                                  : (NetworkingMode?) null,
                               SharedSubprotocols,
                               EventTrackingId,
                               CancellationToken
