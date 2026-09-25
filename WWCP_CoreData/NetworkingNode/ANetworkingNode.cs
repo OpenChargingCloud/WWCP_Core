@@ -225,6 +225,22 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// </summary>
         public Routing                      Routing                   { get; }
 
+        /// <summary>
+        /// How every WebSocket client this node connects comes back when its
+        /// connection cannot be made or is lost - given to each before its
+        /// first attempt, unless it carries a policy of its own; null, the
+        /// default, for clients that stay away.
+        /// </summary>
+        /// <remarks>
+        /// Before the first attempt, because that is the one thing a caller
+        /// cannot do from outside: the client is made and connected inside
+        /// ConnectWebSocketClient, and one whose first attempt failed has
+        /// ended - a policy set on it afterwards is never asked. A charging
+        /// station started while its CSMS was down had no way to reach it
+        /// later.
+        /// </remarks>
+        public WebSocketClientReconnectPolicy?  ReconnectPolicy       { get; set; }
+
 
         public WebSocketServer?             ControlWebSocketServer    { get; private set; }
 
@@ -521,6 +537,10 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         {
 
             wwcpWebSocketClients.Add(wwcpWebSocketClient);
+
+            // Before the first attempt, so that a first attempt that fails is one
+            // the client comes back from - see ReconnectPolicy.
+            wwcpWebSocketClient.ReconnectPolicy ??= ReconnectPolicy;
 
             // Who the server is, and how to reach it, is written down the moment it
             // has accepted the upgrade and before the first frame from it is read -
