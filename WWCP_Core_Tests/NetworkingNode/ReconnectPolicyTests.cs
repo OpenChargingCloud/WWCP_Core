@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.NetworkingNode
             });
 
             Assert.That(await Connected(port, TimeSpan.FromSeconds(10)), Is.True,
-                        "The client of a node with a reconnect policy did not connect once there was something to connect to.");
+                        $"The client of a node with a reconnect policy did not connect once there was something to connect to. It was last told: {client.ClientCloseMessage ?? "nothing"}");
 
         }
 
@@ -183,24 +183,37 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.NetworkingNode
         /// Whether the client connects to a server started on the port, within
         /// the given time.
         /// </summary>
+        /// <remarks>
+        /// Connected means upgraded. A server books a connection the moment it
+        /// takes it, before it has read the upgrade, and takes it off the books
+        /// once it has turned it away - so a client that was refused was on the
+        /// books for a moment, and a look at them every 50 ms saw it now and
+        /// then and took it for a client let in.
+        ///
+        /// And the server lets anybody in, because what is asked here is whether
+        /// a client comes back, not who it is. A Hermod server asks for
+        /// credentials unless it is told otherwise, and has done so since Hermod
+        /// 55324347; a client without any is answered 401, which is a no, and a
+        /// client told no does not come back. That is what the client of this
+        /// test was told, every time, and whether the look at the books passed
+        /// depended on nothing but how quickly the refusal came.
+        /// </remarks>
         private async Task<Boolean> Connected(IPPort Port, TimeSpan Within)
         {
 
-            server = new WebSocketServer(HTTPPort: Port, AutoStart: true);
+            var upgraded  = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
 
-            var giveUp = DateTimeOffset.UtcNow + Within;
+            server        = new WebSocketServer(HTTPPort:               Port,
+                                                RequireAuthentication:  false);
 
-            while (DateTimeOffset.UtcNow < giveUp)
-            {
+            server.OnNewWebSocketConnection += (_, _, _, _, _, _, _) => {
+                upgraded.TrySetResult();
+                return Task.CompletedTask;
+            };
 
-                if (server.WebSocketConnections.Any())
-                    return true;
+            await server.Start();
 
-                await Task.Delay(50);
-
-            }
-
-            return false;
+            return await Task.WhenAny(upgraded.Task, Task.Delay(Within)) == upgraded.Task;
 
         }
 
