@@ -23,7 +23,6 @@ using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Logging;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.SMTP;
@@ -1295,8 +1294,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public new const  String           DefaultHTTPServiceName    = "GraphDefined WWCP HTTP API";
 
-
-        private readonly  LogFileWriter    logFileWriter             = new (10000);
 
         public            WWWAuthenticate  WWWAuthenticateDefaults   = WWWAuthenticate.Basic("WWCP");
 
