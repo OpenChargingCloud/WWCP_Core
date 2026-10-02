@@ -6974,17 +6974,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Parse AuthTokenType          [optional]
 
-                    if (!json.ParseOptional("authTokenType",
-                                            "authentication token type",
-                                            HTTPServiceName,
-                                            AuthTokenType.TryParse,
-                                            out AuthTokenType? authTokenType,
-                                            request,
-                                            out httpResponseBuilder))
-                    {
-                        if (httpResponseBuilder is not null)
-                            return httpResponseBuilder;
-                    }
+                    json.ParseOptional("authTokenType",
+                                       "authentication token type",
+                                       HTTPServiceName,
+                                       AuthTokenType.TryParse,
+                                       out AuthTokenType? authTokenType,
+                                       request,
+                                       out httpResponseBuilder);
+
+                    if (httpResponseBuilder is not null)
+                        return httpResponseBuilder;
 
                     if (authTokenType.HasValue)
                         authenticationToken = new AuthenticationToken(
@@ -7173,16 +7172,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Parse AuthTokenType          [optional]
 
-                    if (!JSON.ParseOptional("authTokenType",
-                                            "authentication token type",
-                                            HTTPServiceName,
-                                            AuthTokenType.TryParse,
-                                            out AuthTokenType? authTokenType,
-                                            request,
-                                            out httpResponseBuilder))
-                    {
+                    JSON.ParseOptional("authTokenType",
+                                       "authentication token type",
+                                       HTTPServiceName,
+                                       AuthTokenType.TryParse,
+                                       out AuthTokenType? authTokenType,
+                                       request,
+                                       out httpResponseBuilder);
+
+                    if (httpResponseBuilder is not null)
                         return httpResponseBuilder;
-                    }
 
                     if (authTokenType.HasValue)
                         authenticationToken = new AuthenticationToken(
@@ -7194,31 +7193,31 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Parse CPOPartnerSessionId    [optional]
 
-                    if (!JSON.ParseOptionalStruct2("CPOPartnerSessionId",
-                                                   "CPO partner charging session identification",
-                                                   HTTPServiceName,
-                                                   ChargingSession_Id.TryParse,
-                                                   out ChargingSession_Id? CPOPartnerSessionId,
-                                                   request,
-                                                   out httpResponseBuilder))
-                    {
+                    JSON.ParseOptionalStruct2("CPOPartnerSessionId",
+                                              "CPO partner charging session identification",
+                                              HTTPServiceName,
+                                              ChargingSession_Id.TryParse,
+                                              out ChargingSession_Id? CPOPartnerSessionId,
+                                              request,
+                                              out httpResponseBuilder);
+
+                    if (httpResponseBuilder is not null)
                         return httpResponseBuilder;
-                    }
 
                     #endregion
 
                     #region Parse OperatorId   [optional]
 
-                    if (!JSON.ParseOptional("OperatorId",
-                                            "Charging Station Operator identification",
-                                            HTTPServiceName,
-                                            ChargingStationOperator_Id.TryParse,
-                                            out ChargingStationOperator_Id chargingStationOperatorId,
-                                            request,
-                                            out httpResponseBuilder))
-                    {
+                    JSON.ParseOptional("OperatorId",
+                                       "Charging Station Operator identification",
+                                       HTTPServiceName,
+                                       ChargingStationOperator_Id.TryParse,
+                                       out ChargingStationOperator_Id chargingStationOperatorId,
+                                       request,
+                                       out httpResponseBuilder);
+
+                    if (httpResponseBuilder is not null)
                         return httpResponseBuilder;
-                    }
 
                     #endregion
 
@@ -7351,18 +7350,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                         #region Check ChargingProductId  [optional]
 
-                        if (!json.ParseOptionalStruct2("ChargingProductId",
-                                                       "Charging product identification",
-                                                       HTTPServiceName,
-                                                       ChargingProduct_Id.TryParse,
-                                                       out ChargingProductId,
-                                                       request,
-                                                       out httpResponseBuilder))
-                        {
+                        json.ParseOptionalStruct2("ChargingProductId",
+                                                  "Charging product identification",
+                                                  HTTPServiceName,
+                                                  ChargingProduct_Id.TryParse,
+                                                  out ChargingProductId,
+                                                  request,
+                                                  out httpResponseBuilder);
 
+                        if (httpResponseBuilder is not null)
                             return httpResponseBuilder;
-
-                        }
 
                         #endregion
 
@@ -7371,52 +7368,46 @@ namespace cloud.charging.open.protocols.WWCP
 
                         #region Check ReservationId      [optional]
 
-                        if (!json.ParseOptionalStruct2("ReservationId",
-                                                       "Charging reservation identification",
-                                                       HTTPServiceName,
-                                                       ChargingReservation_Id.TryParse,
-                                                       out ReservationId,
-                                                       request,
-                                                       out httpResponseBuilder))
-                        {
+                        json.ParseOptionalStruct2("ReservationId",
+                                                  "Charging reservation identification",
+                                                  HTTPServiceName,
+                                                  ChargingReservation_Id.TryParse,
+                                                  out ReservationId,
+                                                  request,
+                                                  out httpResponseBuilder);
 
+                        if (httpResponseBuilder is not null)
                             return httpResponseBuilder;
-
-                        }
 
                         #endregion
 
                         #region Parse SessionId          [optional]
 
-                        if (!json.ParseOptionalStruct2("SessionId",
-                                                       "Charging session identification",
-                                                       HTTPServiceName,
-                                                       ChargingSession_Id.TryParse,
-                                                       out SessionId,
-                                                       request,
-                                                       out httpResponseBuilder))
-                        {
+                        json.ParseOptionalStruct2("SessionId",
+                                                  "Charging session identification",
+                                                  HTTPServiceName,
+                                                  ChargingSession_Id.TryParse,
+                                                  out SessionId,
+                                                  request,
+                                                  out httpResponseBuilder);
 
+                        if (httpResponseBuilder is not null)
                             return httpResponseBuilder;
-
-                        }
 
                         #endregion
 
                         #region Parse ProviderId         [optional]
 
-                        if (!json.ParseOptionalStruct2("ProviderId",
-                                                       "EV service provider identification",
-                                                       HTTPServiceName,
-                                                       EMobilityProvider_Id.TryParse,
-                                                       out ProviderId,
-                                                       request,
-                                                       out httpResponseBuilder))
-                        {
+                        json.ParseOptionalStruct2("ProviderId",
+                                                  "EV service provider identification",
+                                                  HTTPServiceName,
+                                                  EMobilityProvider_Id.TryParse,
+                                                  out ProviderId,
+                                                  request,
+                                                  out httpResponseBuilder);
 
+                        if (httpResponseBuilder is not null)
                             return httpResponseBuilder;
-
-                        }
 
                         #endregion
 
@@ -7608,31 +7599,31 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Parse ProviderId         [optional]
 
-                    if (!json.ParseOptionalStruct2("ProviderId",
-                                                   "EV service provider identification",
-                                                   HTTPServiceName,
-                                                   EMobilityProvider_Id.TryParse,
-                                                   out EMobilityProvider_Id? ProviderId,
-                                                   request,
-                                                   out httpResponseBuilder))
-                    {
+                    json.ParseOptionalStruct2("ProviderId",
+                                              "EV service provider identification",
+                                              HTTPServiceName,
+                                              EMobilityProvider_Id.TryParse,
+                                              out EMobilityProvider_Id? ProviderId,
+                                              request,
+                                              out httpResponseBuilder);
+
+                    if (httpResponseBuilder is not null)
                         return httpResponseBuilder!;
-                    }
 
                     #endregion
 
                     #region Parse eMAId              [optional]
 
-                    if (!json.ParseOptionalStruct2("eMAId",
-                                                   "e-Mobility account identification",
-                                                   HTTPServiceName,
-                                                   EMobilityAccount_Id.TryParse,
-                                                   out EMobilityAccount_Id? eMAId,
-                                                   request,
-                                                   out httpResponseBuilder))
-                    {
+                    json.ParseOptionalStruct2("eMAId",
+                                              "e-Mobility account identification",
+                                              HTTPServiceName,
+                                              EMobilityAccount_Id.TryParse,
+                                              out EMobilityAccount_Id? eMAId,
+                                              request,
+                                              out httpResponseBuilder);
+
+                    if (httpResponseBuilder is not null)
                         return httpResponseBuilder!;
-                    }
 
                     #endregion
 
@@ -7837,16 +7828,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Parse AuthTokenType          [optional]
 
-                    if (!json.ParseOptional("authTokenType",
-                                            "authentication token type",
-                                            HTTPServiceName,
-                                            AuthTokenType.TryParse,
-                                            out AuthTokenType? authTokenType,
-                                            request,
-                                            out httpResponseBuilder))
-                    {
+                    json.ParseOptional("authTokenType",
+                                       "authentication token type",
+                                       HTTPServiceName,
+                                       AuthTokenType.TryParse,
+                                       out AuthTokenType? authTokenType,
+                                       request,
+                                       out httpResponseBuilder);
+
+                    if (httpResponseBuilder is not null)
                         return httpResponseBuilder;
-                    }
 
                     #endregion
 

@@ -179,29 +179,27 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse Length                            [optional]
 
-                if (!JSON.ParseOptional("length",
-                                        "charging cable length",
-                                        Meter.TryParse,
-                                        out Meter? length,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("length",
+                                   "charging cable length",
+                                   Meter.TryParse,
+                                   out Meter? length,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
                 #region Parse Resistance                        [optional]
 
-                if (!JSON.ParseOptional("resistance",
-                                        "charging cable resistance",
-                                        Ohm.TryParse,
-                                        out Ohm? resistance,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("resistance",
+                                   "charging cable resistance",
+                                   Ohm.TryParse,
+                                   out Ohm? resistance,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 

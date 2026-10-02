@@ -628,56 +628,52 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse CachedResultEndOfLifeTime    [optional]
 
-                if (!JSON.ParseOptional("cachedResultEndOfLifeTime",
-                                        "cached result end-of-life-time",
-                                        out DateTimeOffset? cachedResultEndOfLifeTime,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("cachedResultEndOfLifeTime",
+                                   "cached result end-of-life-time",
+                                   out DateTimeOffset? cachedResultEndOfLifeTime,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
                 #region Parse SessionId                    [optional]
 
-                if (!JSON.ParseOptional("sessionId",
-                                        "session identification",
-                                        ChargingSession_Id.TryParse,
-                                        out ChargingSession_Id? sessionId,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("sessionId",
+                                   "session identification",
+                                   ChargingSession_Id.TryParse,
+                                   out ChargingSession_Id? sessionId,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
                 #region Parse EMPPartnerSessionId          [optional]
 
-                if (!JSON.ParseOptional("empPartnerSessionId",
-                                        "EMP partner session identification",
-                                        ChargingSession_Id.TryParse,
-                                        out ChargingSession_Id? empPartnerSessionId,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("empPartnerSessionId",
+                                   "EMP partner session identification",
+                                   ChargingSession_Id.TryParse,
+                                   out ChargingSession_Id? empPartnerSessionId,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
                 #region Parse AuthorizationReference       [optional]
 
-                if (!JSON.ParseOptional("authorizationReference",
-                                        "authorization reference",
-                                        WWCP.AuthorizationReference.TryParse,
-                                        out AuthorizationReference? authorizationReference,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("authorizationReference",
+                                   "authorization reference",
+                                   WWCP.AuthorizationReference.TryParse,
+                                   out AuthorizationReference? authorizationReference,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
@@ -695,69 +691,64 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse UILanguage                   [optional]
 
-                if (!JSON.ParseOptionalEnum("uiLanguage",
-                                            "UI language",
-                                            out Languages? uiLanguage,
-                                            out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptionalEnum("uiLanguage",
+                                       "UI language",
+                                       out Languages? uiLanguage,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
                 #region Parse ExpiryDate                   [optional]
 
-                if (!JSON.ParseOptional("expiryDate",
-                                        "expiry date",
-                                        out DateTimeOffset? expiryDate,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("expiryDate",
+                                   "expiry date",
+                                   out DateTimeOffset? expiryDate,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
                 #region Parse MaxPower                     [optional]
 
-                if (!JSON.ParseOptional("maxPower",
-                                        "max power",
-                                        Watt.TryParse,
-                                        out Watt? maxPower,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("maxPower",
+                                   "max power",
+                                   Watt.TryParse,
+                                   out Watt? maxPower,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
                 #region Parse MaxEnergy                    [optional]
 
-                if (!JSON.ParseOptional("maxEnergy",
-                                        "max energy",
-                                        WattHour.TryParse,
-                                        out WattHour? maxEnergy,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("maxEnergy",
+                                   "max energy",
+                                   WattHour.TryParse,
+                                   out WattHour? maxEnergy,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
                 #region Parse MaxDuration                  [optional]
 
-                if (!JSON.ParseOptional("maxDuration",
-                                        "max duration",
-                                        TimeSpanExtensions.TryParseMinutes,
-                                        out TimeSpan? maxDuration,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("maxDuration",
+                                   "max duration",
+                                   TimeSpanExtensions.TryParseMinutes,
+                                   out TimeSpan? maxDuration,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
@@ -765,15 +756,14 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse ProviderId                   [optional]
 
-                if (!JSON.ParseOptional("providerId",
-                                        "provider identification",
-                                        EMobilityProvider_Id.TryParse,
-                                        out EMobilityProvider_Id? providerId,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("providerId",
+                                   "provider identification",
+                                   EMobilityProvider_Id.TryParse,
+                                   out EMobilityProvider_Id? providerId,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
@@ -785,29 +775,27 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse Description                  [optional]
 
-                if (!JSON.ParseOptional("description",
-                                        "description",
-                                        I18NString.TryParse,
-                                        out I18NString? description,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("description",
+                                   "description",
+                                   I18NString.TryParse,
+                                   out I18NString? description,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
                 #region Parse AdditionalInfo               [optional]
 
-                if (!JSON.ParseOptional("additionalInfo",
-                                        "additional info",
-                                        I18NString.TryParse,
-                                        out I18NString? additionalInfo,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("additionalInfo",
+                                   "additional info",
+                                   I18NString.TryParse,
+                                   out I18NString? additionalInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
