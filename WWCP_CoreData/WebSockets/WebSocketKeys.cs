@@ -23,6 +23,12 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         public const String  X_WWCP_NetworkingMode           = "X-OCPP-NetworkingMode";
         public const String  NetworkingNodeId   = "NetworkingNodeId";
         public const String  NetworkingMode                  = "NetworkingMode";
+
+        /// <summary>
+        /// The networking node - a local controller, say - whose credentials
+        /// opened a connection as another one, see WWCPWebSocketServer.AllowToActFor.
+        /// </summary>
+        public const String  ActingNetworkingNodeId          = "ActingNetworkingNodeId";
     }
 
 }
