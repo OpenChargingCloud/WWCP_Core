@@ -653,13 +653,19 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
         {
 
+            // The networking nodes are known by NetworkingNodeLogins, which only
+            // ValidateWebSocketConnection checks, and that check is the only one.
+            // A WebSocket server that requires authentication checks once more,
+            // after its validators, against logins of its own - and, having none,
+            // kept out every networking node that ValidateWebSocketConnection had
+            // let in.
             webSocketServer                                 = new WebSocketServer(
                                                                   IPAddress:                    IPAddress,
                                                                   HTTPPort:                     TCPPort ?? IPPort.Parse(8000),
                                                                   HTTPServerName:               HTTPServiceName,
                                                                   Description:                  Description,
 
-                                                                  RequireAuthentication:        RequireAuthentication,
+                                                                  RequireAuthentication:        false,
                                                                   SecWebSocketProtocols:        SupportedEEBusWebSocketSubprotocols,
                                                                   SubprotocolSelector:          SubprotocolSelector,
                                                                   DisableWebSocketPings:        DisableWebSocketPings,
