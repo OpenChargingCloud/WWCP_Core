@@ -283,6 +283,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             base.OnWebSocketConnectionAccepted  += RegisterNewWebSocketConnection;
             base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
             base.OnCloseMessageReceived         += ProcessCloseMessage;
+            base.OnTCPConnectionClosed          += ProcessTCPConnectionClosed;
 
             // Text and binary messages are received via the
             // ProcessTextMessage/ProcessBinaryMessage overrides!
@@ -712,43 +713,28 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                 #region Register new NetworkingNode
 
-                if (!connectedNetworkingNodes.TryAdd(
-                        networkingNodeId.Value,
-                        new NetworkingNodeConnections(
-                            networkingNodeId.Value,
-                            [ Connection ]
-                        )
-                   ))
+                // The connections it replaces are taken off the books in the same
+                // step that puts it on them, and are closed only afterwards: the
+                // networking node is never without a connection in between, and
+                // whatever the end of a replaced connection sets off finds the
+                // newer one in its place, see Forget.
+                foreach (var replacedConnection in Register(networkingNodeId.Value, Connection))
                 {
 
-                    DebugX.Log($"{nameof(WWCPWebSocketServer)} Duplicate networking node '{networkingNodeId.Value}' detected: Trying to close old one(s)!");
+                    DebugX.Log($"{nameof(WWCPWebSocketServer)} Duplicate networking node '{networkingNodeId.Value}' detected: Closing the older connection from {replacedConnection.RemoteSocket}!");
 
-                    if (connectedNetworkingNodes.TryRemove(networkingNodeId.Value, out var oldConnection))
+                    try
                     {
-                        foreach (var webSocketServerConnection in oldConnection.WebSocketServerConnections)
-                        {
-                            try
-                            {
-                                await webSocketServerConnection.Close(
-                                          WebSocketFrame.ClosingStatusCode.NormalClosure,
-                                          "Newer connection detected!",
-                                          CancellationToken
-                                      );
-                            }
-                            catch (Exception e)
-                            {
-                                DebugX.Log($"{nameof(WWCPWebSocketServer)} Closing old HTTP WebSocket connection from {webSocketServerConnection.RemoteSocket} failed: {e.Message}");
-                            }
-                        }
+                        await replacedConnection.Close(
+                                  WebSocketFrame.ClosingStatusCode.NormalClosure,
+                                  "Newer connection detected!",
+                                  CancellationToken
+                              );
                     }
-
-                    connectedNetworkingNodes.TryAdd(
-                        networkingNodeId.Value,
-                        new NetworkingNodeConnections(
-                            networkingNodeId.Value,
-                            [ Connection ]
-                        )
-                    );
+                    catch (Exception e)
+                    {
+                        DebugX.Log($"{nameof(WWCPWebSocketServer)} Closing old HTTP WebSocket connection from {replacedConnection.RemoteSocket} failed: {e.Message}");
+                    }
 
                 }
 
@@ -865,7 +851,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             if (Connection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId, out var networkingNodeId))
             {
 
-                connectedNetworkingNodes.TryRemove(networkingNodeId, out _);
+                Forget(networkingNodeId, Connection);
 
                 await LogEvent(
                     OnNetworkingNodeCloseMessageReceived,
@@ -882,6 +868,151 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 );
 
             }
+
+        }
+
+        #endregion
+
+        #region (protected) ProcessTCPConnectionClosed    (LogTimestamp, Server, Connection, EventTrackingId, Reason, CancellationToken)
+
+        /// <summary>
+        /// A connection has ended, however it ended: after a close frame either
+        /// way, or without one - a station that lost its power or its network,
+        /// a reset, a FIN, a peer that stopped answering pings.
+        /// </summary>
+        protected async Task ProcessTCPConnectionClosed(DateTimeOffset             LogTimestamp,
+                                                        AWebSocketServer           Server,
+                                                        WebSocketServerConnection  Connection,
+                                                        EventTracking_Id           EventTrackingId,
+                                                        String?                    Reason,
+                                                        CancellationToken          CancellationToken)
+        {
+
+            if (Connection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId, out var networkingNodeId))
+            {
+
+                Forget(networkingNodeId, Connection);
+
+                await LogEvent(
+                    OnNetworkingNodeTCPConnectionClosed,
+                    loggingDelegate => loggingDelegate.Invoke(
+                        LogTimestamp,
+                        this,
+                        Connection,
+                        networkingNodeId,
+                        EventTrackingId,
+                        Reason,
+                        CancellationToken
+                    )
+                );
+
+            }
+
+        }
+
+        #endregion
+
+        #region (private) Register                        (NetworkingNodeId, Connection)
+
+        /// <summary>
+        /// Make the given connection a connection to the given networking node,
+        /// and return the connections to it that the new one replaces.
+        /// </summary>
+        /// <remarks>
+        /// The entry of a networking node is never changed, only replaced by a
+        /// new one, and only if it is still the entry that was read: whoever
+        /// registers or forgets a connection at the same time does not undo it.
+        /// </remarks>
+        private IEnumerable<WebSocketServerConnection> Register(NetworkingNode_Id          NetworkingNodeId,
+                                                                WebSocketServerConnection  Connection)
+        {
+            while (true)
+            {
+
+                if (connectedNetworkingNodes.TryGetValue(NetworkingNodeId, out var current))
+                {
+
+                    var others    = current.WebSocketServerConnections.Where(connection => !ReferenceEquals(connection, Connection)).ToArray();
+                    var replaced  = others.Where(connection =>  Supersedes(Connection, connection)).ToArray();
+                    var kept      = others.Where(connection => !Supersedes(Connection, connection));
+
+                    if (connectedNetworkingNodes.TryUpdate(
+                            NetworkingNodeId,
+                            new NetworkingNodeConnections(
+                                NetworkingNodeId,
+                                [ .. kept, Connection ]
+                            ),
+                            current
+                        ))
+                    {
+                        return replaced;
+                    }
+
+                }
+
+                else if (connectedNetworkingNodes.TryAdd(
+                             NetworkingNodeId,
+                             new NetworkingNodeConnections(
+                                 NetworkingNodeId,
+                                 [ Connection ]
+                             )
+                         ))
+                {
+                    return [];
+                }
+
+            }
+        }
+
+        #endregion
+
+        #region (private static) Supersedes               (Newer, Older)
+
+        /// <summary>
+        /// Whether a newer connection of a networking node replaces an older one.
+        /// </summary>
+        /// <remarks>
+        /// Newest wins, per networking node: every one. A networking node with
+        /// several connections at once - one per channel, as in the EVQI
+        /// transport - will need the newest to win per channel instead, and
+        /// this is the one place that has to say so.
+        /// </remarks>
+        private static Boolean Supersedes(WebSocketServerConnection  Newer,
+                                          WebSocketServerConnection  Older)
+
+            => true;
+
+        #endregion
+
+        #region (private) Forget                          (NetworkingNodeId, Connection)
+
+        /// <summary>
+        /// Forget the given connection to the given networking node - and no
+        /// other one. A connection that was replaced by a newer one is no longer
+        /// a connection to the networking node, and its end, which may well come
+        /// after the newer one was registered, is not the end of the newer one.
+        /// </summary>
+        /// <returns>Whether the connection was one to the networking node.</returns>
+        private Boolean Forget(NetworkingNode_Id          NetworkingNodeId,
+                               WebSocketServerConnection  Connection)
+        {
+
+            while (connectedNetworkingNodes.TryGetValue(NetworkingNodeId, out var current) &&
+                   current.WebSocketServerConnections.Any(connection => ReferenceEquals(connection, Connection)))
+            {
+
+                var rest = current.WebSocketServerConnections.Where(connection => !ReferenceEquals(connection, Connection)).ToList();
+
+                if (rest.Count == 0
+                        ? connectedNetworkingNodes.TryRemove(KeyValuePair.Create(NetworkingNodeId, current))
+                        : connectedNetworkingNodes.TryUpdate(NetworkingNodeId, new NetworkingNodeConnections(NetworkingNodeId, rest), current))
+                {
+                    return true;
+                }
+
+            }
+
+            return false;
 
         }
 
