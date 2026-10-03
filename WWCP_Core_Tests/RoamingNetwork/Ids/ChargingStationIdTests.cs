@@ -51,8 +51,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
 
             if (stationId.HasValue)
             {
-                ClassicAssert.AreEqual("DE*GEF*S1234", stationId.Value.ToString());
-                ClassicAssert.AreEqual(12,             stationId.Value.Length);
+                Assert.That(stationId.Value.ToString(), Is.EqualTo("DE*GEF*S1234"));
+                Assert.That(stationId.Value.Length, Is.EqualTo(12));
             }
 
         }
@@ -68,8 +68,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         public void Parse_ChargingPoolId_Test()
         {
             var stationId = ChargingStation_Id.Parse(ChargingPoolId, "5678");
-            ClassicAssert.AreEqual("DE*GEF*S1234*5678", stationId.ToString());
-            ClassicAssert.AreEqual(17,                  stationId.Length);
+            Assert.That(stationId.ToString(), Is.EqualTo("DE*GEF*S1234*5678"));
+            Assert.That(stationId.Length, Is.EqualTo(17));
         }
 
         #endregion
@@ -89,8 +89,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
 
             if (stationId is not null)
             {
-                ClassicAssert.AreEqual("DE*GEF*S1234", stationId.Value.ToString());
-                ClassicAssert.AreEqual(12,             stationId.Value.Length);
+                Assert.That(stationId.Value.ToString(), Is.EqualTo("DE*GEF*S1234"));
+                Assert.That(stationId.Value.Length, Is.EqualTo(12));
             }
 
         }
@@ -111,8 +111,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
 
             if (stationId is not null)
             {
-                ClassicAssert.AreEqual("DE*GEF*S1234*5678", stationId.Value.ToString());
-                ClassicAssert.AreEqual(17,                  stationId.Value.Length);
+                Assert.That(stationId.Value.ToString(), Is.EqualTo("DE*GEF*S1234*5678"));
+                Assert.That(stationId.Value.Length, Is.EqualTo(17));
             }
 
         }
@@ -129,8 +129,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         public void TryParseOut_ChargingStationOperatorId_Test()
         {
             ClassicAssert.IsTrue(ChargingStation_Id.TryParse(ChargingStationOperatorId, "1234", out var stationId));
-            ClassicAssert.AreEqual("DE*GEF*S1234", stationId.ToString());
-            ClassicAssert.AreEqual(12,             stationId.Length);
+            Assert.That(stationId.ToString(), Is.EqualTo("DE*GEF*S1234"));
+            Assert.That(stationId.Length, Is.EqualTo(12));
         }
 
         #endregion
@@ -144,8 +144,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         public void TryParseOut_ChargingPoolId_Test()
         {
             ClassicAssert.IsTrue(ChargingStation_Id.TryParse(ChargingPoolId, "5678", out var stationId));
-            ClassicAssert.AreEqual("DE*GEF*S1234*5678", stationId.ToString());
-            ClassicAssert.AreEqual(17,                  stationId.Length);
+            Assert.That(stationId.ToString(), Is.EqualTo("DE*GEF*S1234*5678"));
+            Assert.That(stationId.Length, Is.EqualTo(17));
         }
 
         #endregion
@@ -201,9 +201,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingStationOperatorId, "5678");
             var stationId2 = stationId1.Clone();
-            ClassicAssert.AreEqual(stationId1.ToString(), stationId2.ToString());
-            ClassicAssert.AreEqual(stationId1.Length, stationId2.Length);
-            ClassicAssert.AreEqual(stationId1, stationId2);
+            Assert.That(stationId2.ToString(), Is.EqualTo(stationId1.ToString()));
+            Assert.That(stationId2.Length, Is.EqualTo(stationId1.Length));
+            Assert.That(stationId2, Is.EqualTo(stationId1));
         }
 
         #endregion
@@ -854,7 +854,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var hashCode1 = ChargingStation_Id.Parse(ChargingPoolId, "555").GetHashCode();
             var hashCode2 = ChargingStation_Id.Parse(ChargingPoolId, "555").GetHashCode();
-            ClassicAssert.AreEqual(hashCode1, hashCode2);
+            Assert.That(hashCode2, Is.EqualTo(hashCode1));
         }
 
         #endregion
@@ -869,7 +869,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var hashCode1 = ChargingStation_Id.Parse(ChargingPoolId, "001").GetHashCode();
             var hashCode2 = ChargingStation_Id.Parse(ChargingPoolId, "002").GetHashCode();
-            ClassicAssert.AreNotEqual(hashCode1, hashCode2);
+            Assert.That(hashCode2, Is.Not.EqualTo(hashCode1));
         }
 
         #endregion
@@ -884,7 +884,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var hashCode1 = ChargingStation_Id.Parse("DE*GEF*S1234*AAAA").GetHashCode();
             var hashCode2 = ChargingStation_Id.Parse("DEGEFS1234AAAA").   GetHashCode();
-            ClassicAssert.AreEqual(hashCode1, hashCode2);
+            Assert.That(hashCode2, Is.EqualTo(hashCode1));
         }
 
         #endregion
@@ -903,13 +903,16 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
             var b = ChargingStation_Id.Parse(ChargingPoolId, "222");
             var c = ChargingStation_Id.Parse(ChargingPoolId, "111");
 
-            ClassicAssert.AreEqual(a, a);
-            ClassicAssert.AreEqual(b, b);
-            ClassicAssert.AreEqual(c, c);
+            // Each id equals itself: what Equals is asked here, on purpose.
+#pragma warning disable NUnit2009
+            Assert.That(a, Is.EqualTo(a));
+            Assert.That(b, Is.EqualTo(b));
+            Assert.That(c, Is.EqualTo(c));
+#pragma warning restore NUnit2009
 
-            ClassicAssert.AreEqual(a, c);
-            ClassicAssert.AreNotEqual(a, b);
-            ClassicAssert.AreNotEqual(b, c);
+            Assert.That(c, Is.EqualTo(a));
+            Assert.That(b, Is.Not.EqualTo(a));
+            Assert.That(c, Is.Not.EqualTo(b));
 
         }
 
@@ -929,16 +932,16 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
             var c = ChargingStation_Id.Parse(ChargingPoolId, "111");
 
             var _HashSet = new HashSet<ChargingStation_Id>();
-            ClassicAssert.AreEqual(0, _HashSet.Count);
+            Assert.That(_HashSet.Count, Is.EqualTo(0));
 
             _HashSet.Add(a);
-            ClassicAssert.AreEqual(1, _HashSet.Count);
+            Assert.That(_HashSet.Count, Is.EqualTo(1));
 
             _HashSet.Add(b);
-            ClassicAssert.AreEqual(2, _HashSet.Count);
+            Assert.That(_HashSet.Count, Is.EqualTo(2));
 
             _HashSet.Add(c);
-            ClassicAssert.AreEqual(2, _HashSet.Count);
+            Assert.That(_HashSet.Count, Is.EqualTo(2));
 
         }
 
@@ -954,13 +957,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         public void ChargingPoolId_CreateStationId()
         {
 
-            ClassicAssert.AreEqual("DE*GEF*S1234*AAAA",        ChargingPoolId.                           CreateStationId("AAAA").ToString());
-            ClassicAssert.AreEqual("DEGEFS1234AAAA",           ChargingPool_Id.Parse("DEGEFP1234").      CreateStationId("AAAA").ToString());
-            ClassicAssert.AreEqual("DE*GEF*STATION*0001*AAAA", ChargingPool_Id.Parse("DE*GEF*POOL*0001").CreateStationId("AAAA").ToString());
+            Assert.That(ChargingPoolId.CreateStationId("AAAA").ToString(), Is.EqualTo("DE*GEF*S1234*AAAA"));
+            Assert.That(ChargingPool_Id.Parse("DEGEFP1234").CreateStationId("AAAA").ToString(), Is.EqualTo("DEGEFS1234AAAA"));
+            Assert.That(ChargingPool_Id.Parse("DE*GEF*POOL*0001").CreateStationId("AAAA").ToString(), Is.EqualTo("DE*GEF*STATION*0001*AAAA"));
 
-            ClassicAssert.AreEqual("DE*GEF*S1234",             ChargingPoolId.                           CreateStationId().ToString());
-            ClassicAssert.AreEqual("DEGEFS1234",               ChargingPool_Id.Parse("DEGEFP1234").      CreateStationId().ToString());
-            ClassicAssert.AreEqual("DE*GEF*STATION*0001",      ChargingPool_Id.Parse("DE*GEF*POOL*0001").CreateStationId().ToString());
+            Assert.That(ChargingPoolId.CreateStationId().ToString(), Is.EqualTo("DE*GEF*S1234"));
+            Assert.That(ChargingPool_Id.Parse("DEGEFP1234").CreateStationId().ToString(), Is.EqualTo("DEGEFS1234"));
+            Assert.That(ChargingPool_Id.Parse("DE*GEF*POOL*0001").CreateStationId().ToString(), Is.EqualTo("DE*GEF*STATION*0001"));
 
         }
 

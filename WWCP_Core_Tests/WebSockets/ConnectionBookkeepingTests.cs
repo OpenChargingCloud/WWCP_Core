@@ -133,7 +133,10 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         {
 
             if (server is not null)
+            {
                 await server.Shutdown();
+                await server.DisposeAsync();
+            }
 
             server = null;
 

@@ -140,10 +140,16 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         {
 
             if (log is not null)
+            {
                 Trace.Listeners.Remove(log);
+                log.Dispose();
+            }
 
             if (server is not null)
+            {
                 await server.Shutdown();
+                await server.DisposeAsync();
+            }
 
             log    = null;
             server = null;

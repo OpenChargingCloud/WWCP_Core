@@ -118,7 +118,10 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
         {
 
             if (log is not null)
+            {
                 Trace.Listeners.Remove(log);
+                log.Dispose();
+            }
 
             if (server is not null)
                 await server.Shutdown();
