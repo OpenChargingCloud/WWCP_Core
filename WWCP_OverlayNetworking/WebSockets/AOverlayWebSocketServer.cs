@@ -19,6 +19,7 @@
 
 using System.Reflection;
 using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
@@ -219,8 +220,15 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         protected readonly      ConcurrentDictionary<NetworkingNode_Id, Tuple<WebSocketServerConnection, DateTimeOffset>>  connectedNetworkingNodes          = [];
         protected readonly      ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>                                 reachableViaNetworkingHubs        = [];
         protected readonly      ConcurrentDictionary<Request_Id, SendRequestState>                                         requests                          = [];
+        private   readonly      ConcurrentDictionary<NetworkingNode_Id, ImmutableHashSet<NetworkingNode_Id>>               mayActFor                         = [];
 
         public    const         String                                                                                     networkingNodeId_WebSocketKey     = "networkingNodeId";
+
+        /// <summary>
+        /// The networking node - a local controller, say - whose credentials
+        /// opened a connection as another one, see AllowToActFor.
+        /// </summary>
+        public    const         String                                                                                     actingNetworkingNodeId_WebSocketKey  = "actingNetworkingNodeId";
         public    const         String                                                                                     networkingMode_WebSocketKey       = "networkingMode";
         public    const         String                                                                                     LogfileName                       = "CSMSWSServer.log";
 
@@ -767,6 +775,78 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #endregion
 
 
+        // Networking nodes connecting as others
+
+        #region AllowToActFor           (NetworkingNodeId, NetworkingNodeIds)
+
+        /// <summary>
+        /// Allow the given networking node - a local controller, say - to connect
+        /// as each of the given ones, with credentials of its own: its client
+        /// certificate or its HTTP Basic login (OCPP 2.1 Part 4, 6.2 and 6.5). A
+        /// connection with the credentials of one networking node and the name of
+        /// another in its path is refused otherwise.
+        /// </summary>
+        /// <param name="NetworkingNodeId">The networking node whose credentials open the connections.</param>
+        /// <param name="NetworkingNodeIds">The networking nodes it may connect as.</param>
+        public void AllowToActFor(NetworkingNode_Id               NetworkingNodeId,
+                                  IEnumerable<NetworkingNode_Id>  NetworkingNodeIds)
+
+            => mayActFor.AddOrUpdate(
+                   NetworkingNodeId,
+                   _       => ImmutableHashSet.CreateRange(NetworkingNodeIds),
+                   (_, ids) => ids.Union(NetworkingNodeIds)
+               );
+
+        #endregion
+
+        #region DisallowToActFor        (NetworkingNodeId, NetworkingNodeIds)
+
+        /// <summary>
+        /// No longer allow the given networking node to connect as the given ones.
+        /// A connection it has open as one of them stays open.
+        /// </summary>
+        /// <param name="NetworkingNodeId">The networking node whose credentials opened the connections.</param>
+        /// <param name="NetworkingNodeIds">The networking nodes it may no longer connect as.</param>
+        public void DisallowToActFor(NetworkingNode_Id               NetworkingNodeId,
+                                     IEnumerable<NetworkingNode_Id>  NetworkingNodeIds)
+        {
+
+            var disallowed = NetworkingNodeIds.ToArray();
+
+            while (mayActFor.TryGetValue(NetworkingNodeId, out var ids))
+            {
+
+                var rest = ids.Except(disallowed);
+
+                if (rest.IsEmpty
+                        ? mayActFor.TryRemove(KeyValuePair.Create(NetworkingNodeId, ids))
+                        : mayActFor.TryUpdate(NetworkingNodeId, rest, ids))
+                {
+                    return;
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region MayActFor               (NetworkingNodeId, OtherNetworkingNodeId)
+
+        /// <summary>
+        /// Whether the given networking node may connect as the other one.
+        /// </summary>
+        /// <param name="NetworkingNodeId">The networking node whose credentials open the connection.</param>
+        /// <param name="OtherNetworkingNodeId">The networking node it connects as.</param>
+        public Boolean MayActFor(NetworkingNode_Id  NetworkingNodeId,
+                                 NetworkingNode_Id  OtherNetworkingNodeId)
+
+            => mayActFor.TryGetValue(NetworkingNodeId, out var ids) &&
+               ids.Contains(OtherNetworkingNodeId);
+
+        #endregion
+
+
         // Connection management...
 
         #region (protected) ValidateTCPConnection        (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
@@ -841,6 +921,57 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
             #endregion
 
+            #region Verify the networking node against its credentials
+
+            // The networking node of a connection is the last segment of its path
+            // (OCPP 2.1 Part 4, 3.1.1), and credentials of another networking node
+            // do not make it that one: a node's password or its certificate opens no
+            // connection as another node - unless the networking node of the
+            // credentials may connect as the one of the path, see AllowToActFor.
+            //
+            // Refused here, before the 101, where this server knows the credentials
+            // to be right. Where it does not, whoever checks them decides, as for
+            // any credentials: wrong ones are refused as wrong, and right ones, which
+            // only somebody else could check, open a connection that is not
+            // registered and so closed at once, see ProcessNewWebSocketConnection.
+            // Refused here as well, they would say to anybody who asks, with wrong
+            // credentials, which networking node may connect as which.
+            if (Connection.HTTPRequest is HTTPRequest httpRequest)
+            {
+
+                var (fromPath, fromCredentials) = IdentitiesOf(httpRequest);
+
+                if (fromPath.       HasValue &&
+                    fromCredentials.HasValue &&
+                    fromPath.Value != fromCredentials.Value &&
+                   !MayActFor(fromCredentials.Value, fromPath.Value) &&
+                    KnowsTheCredentialsOf(httpRequest))
+                {
+
+                    var error = $"'{fromCredentials.Value}' may not connect as '{fromPath.Value}'!";
+
+                    DebugX.Log($"{nameof(AOverlayWebSocketServer)} connection from {Connection.RemoteSocket}: {error}");
+
+                    return Task.FromResult<HTTPResponse?>(
+                               new HTTPResponse.Builder(httpRequest) {
+                                   HTTPStatusCode  = HTTPStatusCode.Forbidden,
+                                   Server          = webSocketServer.HTTPServiceName,
+                                   Date            = Timestamp.Now,
+                                   ContentType     = HTTPContentType.Application.JSON_UTF8,
+                                   Content         = JSONObject.Create(
+                                                         new JProperty("description",
+                                                             JSONObject.Create(
+                                                                 new JProperty("en", error)
+                                                         ))).ToUTF8Bytes(),
+                                   Connection      = ConnectionType.Close
+                               }.AsImmutable);
+
+                }
+
+            }
+
+            #endregion
+
             #region Verify HTTP Authentication
 
             if (RequireAuthentication)
@@ -894,50 +1025,31 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             if (Connection.HTTPRequest is null)
                 return;
 
-            NetworkingNode_Id? networkingNodeId = null;
+            #region The networking node of the path, or else of the credentials
 
-            #region Parse TLS Client Certificate CommonName, or...
+            var (fromPath, fromCredentials)  = IdentitiesOf(Connection.HTTPRequest);
+            var networkingNodeId             = fromPath ?? fromCredentials;
+            var closingReason                = "Could not get NetworkingNodeId from HTTP WebSocket connection!";
 
-            // We already validated and therefore trust this certificate!
-            if (Connection.HTTPRequest.ClientCertificate is not null)
+            if (fromPath.       HasValue &&
+                fromCredentials.HasValue &&
+                fromPath.Value != fromCredentials.Value)
             {
 
-                var x509CommonName = Connection.HTTPRequest.ClientCertificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false);
-
-                if (NetworkingNode_Id.TryParse(x509CommonName, out var networkingNodeId1))
+                // Credentials of another networking node, which this server could
+                // not check itself, and whoever did let pass: not registered, and
+                // so closed, see ValidateWebSocketConnection.
+                if (!MayActFor(fromCredentials.Value, fromPath.Value))
                 {
-                    networkingNodeId = networkingNodeId1;
+                    networkingNodeId  = null;
+                    closingReason     = $"'{fromCredentials.Value}' may not connect as '{fromPath.Value}'!";
                 }
 
-            }
-
-            #endregion
-
-            #region ...check HTTP Basic Authentication, or...
-
-            else if (Connection.HTTPRequest.Authorization is HTTPBasicAuthentication httpBasicAuthentication &&
-                     NetworkingNode_Id.TryParse(httpBasicAuthentication.Username, out var networkingNodeId2))
-            {
-                networkingNodeId = networkingNodeId2;
-            }
-
-            #endregion
-
-
-            //ToDo: This might be a DOS attack vector!
-
-            #region ...try to get the NetworkingNodeId from the HTTP request path suffix
-
-            else
-            {
-
-                var path = Connection.HTTPRequest.Path.ToString();
-
-                if (NetworkingNode_Id.TryParse(path[(path.LastIndexOf('/') + 1)..],
-                    out var networkingNodeId3))
-                {
-                    networkingNodeId = networkingNodeId3;
-                }
+                else
+                    Connection.TryAddCustomData(
+                                   actingNetworkingNodeId_WebSocketKey,
+                                   fromCredentials.Value
+                               );
 
             }
 
@@ -1028,13 +1140,13 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             else
             {
 
-                DebugX.Log($"{nameof(AOverlayWebSocketServer)} Could not get NetworkingNodeId from HTTP WebSocket connection ({Connection.RemoteSocket}): Closing connection!");
+                DebugX.Log($"{nameof(AOverlayWebSocketServer)} connection from {Connection.RemoteSocket}: {closingReason} Closing connection!");
 
                 try
                 {
                     await Connection.Close(
                               WebSocketFrame.ClosingStatusCode.PolicyViolation,
-                              "Could not get NetworkingNodeId from HTTP WebSocket connection!",
+                              closingReason,
                               CancellationToken
                           );
                 }
@@ -1046,6 +1158,60 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             }
 
             #endregion
+
+        }
+
+        #endregion
+
+        #region (private static) IdentitiesOf            (Request)
+
+        /// <summary>
+        /// The networking node named by the last segment of the path of the given
+        /// request, and the one named by its credentials: the common name of its
+        /// client certificate, else its HTTP Basic username.
+        /// </summary>
+        private static (NetworkingNode_Id? FromPath, NetworkingNode_Id? FromCredentials) IdentitiesOf(HTTPRequest Request)
+        {
+
+            // Percent-decoded, segment by segment, by the time it is here.
+            var path             = Request.Path.ToString();
+            var fromPath         = NetworkingNode_Id.TryParse(path[(path.LastIndexOf('/') + 1)..]);
+
+            var fromCredentials  = Request.ClientCertificate is not null
+                                       ? NetworkingNode_Id.TryParse(Request.ClientCertificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false))
+                                       : null;
+
+            fromCredentials    ??= Request.Authorization is HTTPBasicAuthentication basicAuthentication
+                                       ? NetworkingNode_Id.TryParse(basicAuthentication.Username)
+                                       : null;
+
+            return (fromPath, fromCredentials);
+
+        }
+
+        #endregion
+
+        #region (private) KnowsTheCredentialsOf          (Request)
+
+        /// <summary>
+        /// Whether this server knows the credentials the networking node of the
+        /// given request is named by to be right: a client certificate, which the
+        /// TLS handshake has validated, or an HTTP Basic login of its own
+        /// NetworkingNodeLogins - whether or not it requires authentication.
+        /// </summary>
+        private Boolean KnowsTheCredentialsOf(HTTPRequest Request)
+        {
+
+            if (Request.ClientCertificate is not null &&
+                NetworkingNode_Id.TryParse(Request.ClientCertificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false)).HasValue)
+            {
+                return true;
+            }
+
+            return Request.Authorization is HTTPBasicAuthentication basicAuthentication &&
+                   NetworkingNode_Id.TryParse(basicAuthentication.Username, out var networkingNodeId) &&
+                   NetworkingNodeLogins.TryGetValue(networkingNodeId, out var password) &&
+                   basicAuthentication.Password.FixedTimeEquals(password);
 
         }
 
