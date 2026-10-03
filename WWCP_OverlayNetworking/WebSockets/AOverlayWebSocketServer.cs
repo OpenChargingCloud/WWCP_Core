@@ -845,11 +845,11 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                     if (NetworkingNodeLogins.TryGetValue(NetworkingNode_Id.Parse(basicAuthentication.Username), out var password) &&
                         basicAuthentication.Password.FixedTimeEquals(password))
                     {
-                        DebugX.Log($"{nameof(AOverlayWebSocketServer)} connection from {Connection.RemoteSocket} using authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'");
+                        DebugX.Log($"{nameof(AOverlayWebSocketServer)} connection from {Connection.RemoteSocket} using authorization: '{basicAuthentication.Username}'");
                         return Task.FromResult<HTTPResponse?>(null);
                     }
                     else
-                        DebugX.Log($"{nameof(AOverlayWebSocketServer)} connection from {Connection.RemoteSocket} invalid authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'!");
+                        DebugX.Log($"{nameof(AOverlayWebSocketServer)} connection from {Connection.RemoteSocket} invalid authorization: '{basicAuthentication.Username}'!");
 
                 }
                 else
