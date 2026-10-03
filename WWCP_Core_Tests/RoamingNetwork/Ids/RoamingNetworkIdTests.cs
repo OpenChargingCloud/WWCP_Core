@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 #endregion
 
@@ -57,7 +56,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
 
             var roamingNetworkId = RoamingNetwork_Id.TryParse("TEST");
-            ClassicAssert.IsNotNull(roamingNetworkId);
+            Assert.That(roamingNetworkId, Is.Not.Null);
 
             if (roamingNetworkId is not null)
             {
@@ -77,7 +76,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         [Test]
         public void TryParseOut_Test()
         {
-            ClassicAssert.IsTrue(RoamingNetwork_Id.TryParse("TEST", out var roamingNetworkId));
+            Assert.That(RoamingNetwork_Id.TryParse("TEST", out var roamingNetworkId), Is.True);
             Assert.That(roamingNetworkId.ToString(), Is.EqualTo("TEST"));
             Assert.That(roamingNetworkId.Length, Is.EqualTo(4));
         }
@@ -114,7 +113,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId = RoamingNetwork_Id.Parse("TEST");
             #pragma warning disable
-            ClassicAssert.IsTrue(roamingNetworkId == roamingNetworkId);
+            Assert.That(roamingNetworkId == roamingNetworkId, Is.True);
             #pragma warning restore
         }
 
@@ -130,7 +129,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("TEST");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("TEST");
-            ClassicAssert.IsTrue(roamingNetworkId1 == roamingNetworkId2);
+            Assert.That(roamingNetworkId1 == roamingNetworkId2, Is.True);
         }
 
         #endregion
@@ -145,7 +144,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("TEST");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("234");
-            ClassicAssert.IsFalse(roamingNetworkId1 == roamingNetworkId2);
+            Assert.That(roamingNetworkId1 == roamingNetworkId2, Is.False);
         }
 
         #endregion
@@ -161,7 +160,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId = RoamingNetwork_Id.Parse("TEST");
             #pragma warning disable
-            ClassicAssert.IsFalse(roamingNetworkId != roamingNetworkId);
+            Assert.That(roamingNetworkId != roamingNetworkId, Is.False);
             #pragma warning restore
         }
 
@@ -177,7 +176,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("TEST");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("TEST");
-            ClassicAssert.IsFalse(roamingNetworkId1 != roamingNetworkId2);
+            Assert.That(roamingNetworkId1 != roamingNetworkId2, Is.False);
         }
 
         #endregion
@@ -192,7 +191,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("222");
-            ClassicAssert.IsTrue(roamingNetworkId1 != roamingNetworkId2);
+            Assert.That(roamingNetworkId1 != roamingNetworkId2, Is.True);
         }
 
         #endregion
@@ -207,7 +206,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("005");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("023");
-            ClassicAssert.IsTrue(roamingNetworkId1 != roamingNetworkId2);
+            Assert.That(roamingNetworkId1 != roamingNetworkId2, Is.True);
         }
 
         #endregion
@@ -223,7 +222,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId = RoamingNetwork_Id.Parse("TEST");
             #pragma warning disable
-            ClassicAssert.IsFalse(roamingNetworkId < roamingNetworkId);
+            Assert.That(roamingNetworkId < roamingNetworkId, Is.False);
             #pragma warning restore
         }
 
@@ -239,7 +238,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
-            ClassicAssert.IsFalse(roamingNetworkId1 < roamingNetworkId2);
+            Assert.That(roamingNetworkId1 < roamingNetworkId2, Is.False);
         }
 
         #endregion
@@ -254,7 +253,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("222");
-            ClassicAssert.IsTrue(roamingNetworkId1 < roamingNetworkId2);
+            Assert.That(roamingNetworkId1 < roamingNetworkId2, Is.True);
         }
 
         #endregion
@@ -269,7 +268,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("005");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("023");
-            ClassicAssert.IsTrue(roamingNetworkId1 < roamingNetworkId2);
+            Assert.That(roamingNetworkId1 < roamingNetworkId2, Is.True);
         }
 
         #endregion
@@ -284,7 +283,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("222");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
-            ClassicAssert.IsFalse(roamingNetworkId1 < roamingNetworkId2);
+            Assert.That(roamingNetworkId1 < roamingNetworkId2, Is.False);
         }
 
         #endregion
@@ -299,7 +298,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("023");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("005");
-            ClassicAssert.IsFalse(roamingNetworkId1 < roamingNetworkId2);
+            Assert.That(roamingNetworkId1 < roamingNetworkId2, Is.False);
         }
 
         #endregion
@@ -315,7 +314,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId = RoamingNetwork_Id.Parse("TEST");
             #pragma warning disable
-            ClassicAssert.IsTrue(roamingNetworkId <= roamingNetworkId);
+            Assert.That(roamingNetworkId <= roamingNetworkId, Is.True);
             #pragma warning restore
         }
 
@@ -331,7 +330,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("TEST");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("TEST");
-            ClassicAssert.IsTrue(roamingNetworkId1 <= roamingNetworkId2);
+            Assert.That(roamingNetworkId1 <= roamingNetworkId2, Is.True);
         }
 
         #endregion
@@ -346,7 +345,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("222");
-            ClassicAssert.IsTrue(roamingNetworkId1 <= roamingNetworkId2);
+            Assert.That(roamingNetworkId1 <= roamingNetworkId2, Is.True);
         }
 
         #endregion
@@ -361,7 +360,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("005");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("023");
-            ClassicAssert.IsTrue(roamingNetworkId1 <= roamingNetworkId2);
+            Assert.That(roamingNetworkId1 <= roamingNetworkId2, Is.True);
         }
 
         #endregion
@@ -376,7 +375,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("222");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
-            ClassicAssert.IsFalse(roamingNetworkId1 <= roamingNetworkId2);
+            Assert.That(roamingNetworkId1 <= roamingNetworkId2, Is.False);
         }
 
         #endregion
@@ -391,7 +390,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("023");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("005");
-            ClassicAssert.IsFalse(roamingNetworkId1 <= roamingNetworkId2);
+            Assert.That(roamingNetworkId1 <= roamingNetworkId2, Is.False);
         }
 
         #endregion
@@ -407,7 +406,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId = RoamingNetwork_Id.Parse("TEST");
             #pragma warning disable
-            ClassicAssert.IsFalse(roamingNetworkId > roamingNetworkId);
+            Assert.That(roamingNetworkId > roamingNetworkId, Is.False);
             #pragma warning restore
         }
 
@@ -423,7 +422,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
-            ClassicAssert.IsFalse(roamingNetworkId1 > roamingNetworkId2);
+            Assert.That(roamingNetworkId1 > roamingNetworkId2, Is.False);
         }
 
         #endregion
@@ -438,7 +437,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("222");
-            ClassicAssert.IsFalse(roamingNetworkId1 > roamingNetworkId2);
+            Assert.That(roamingNetworkId1 > roamingNetworkId2, Is.False);
         }
 
         #endregion
@@ -453,7 +452,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("005");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("023");
-            ClassicAssert.IsFalse(roamingNetworkId1 > roamingNetworkId2);
+            Assert.That(roamingNetworkId1 > roamingNetworkId2, Is.False);
         }
 
         #endregion
@@ -468,7 +467,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("222");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
-            ClassicAssert.IsTrue(roamingNetworkId1 > roamingNetworkId2);
+            Assert.That(roamingNetworkId1 > roamingNetworkId2, Is.True);
         }
 
         #endregion
@@ -483,7 +482,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("023");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("005");
-            ClassicAssert.IsTrue(roamingNetworkId1 > roamingNetworkId2);
+            Assert.That(roamingNetworkId1 > roamingNetworkId2, Is.True);
         }
 
         #endregion
@@ -499,7 +498,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId = RoamingNetwork_Id.Parse("TEST");
             #pragma warning disable
-            ClassicAssert.IsTrue(roamingNetworkId >= roamingNetworkId);
+            Assert.That(roamingNetworkId >= roamingNetworkId, Is.True);
             #pragma warning restore
         }
 
@@ -515,7 +514,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("TEST");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("TEST");
-            ClassicAssert.IsTrue(roamingNetworkId1 >= roamingNetworkId2);
+            Assert.That(roamingNetworkId1 >= roamingNetworkId2, Is.True);
         }
 
         #endregion
@@ -530,7 +529,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("222");
-            ClassicAssert.IsFalse(roamingNetworkId1 >= roamingNetworkId2);
+            Assert.That(roamingNetworkId1 >= roamingNetworkId2, Is.False);
         }
 
         #endregion
@@ -545,7 +544,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("005");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("023");
-            ClassicAssert.IsFalse(roamingNetworkId1 >= roamingNetworkId2);
+            Assert.That(roamingNetworkId1 >= roamingNetworkId2, Is.False);
         }
 
         #endregion
@@ -560,7 +559,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("222");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
-            ClassicAssert.IsTrue(roamingNetworkId1 >= roamingNetworkId2);
+            Assert.That(roamingNetworkId1 >= roamingNetworkId2, Is.True);
         }
 
         #endregion
@@ -575,7 +574,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("023");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("005");
-            ClassicAssert.IsTrue(roamingNetworkId1 >= roamingNetworkId2);
+            Assert.That(roamingNetworkId1 >= roamingNetworkId2, Is.True);
         }
 
         #endregion
@@ -609,7 +608,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("222");
-            ClassicAssert.IsTrue(roamingNetworkId1.CompareTo(roamingNetworkId2) < 0);
+            Assert.That(roamingNetworkId1.CompareTo(roamingNetworkId2) < 0, Is.True);
         }
 
         #endregion
@@ -624,7 +623,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("005");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("023");
-            ClassicAssert.IsTrue(roamingNetworkId1.CompareTo(roamingNetworkId2) < 0);
+            Assert.That(roamingNetworkId1.CompareTo(roamingNetworkId2) < 0, Is.True);
         }
 
         #endregion
@@ -639,7 +638,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
-            ClassicAssert.IsTrue(roamingNetworkId1.CompareTo(roamingNetworkId2) == 0);
+            Assert.That(roamingNetworkId1.CompareTo(roamingNetworkId2) == 0, Is.True);
         }
 
         #endregion
@@ -654,7 +653,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("222");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
-            ClassicAssert.IsTrue(roamingNetworkId1.CompareTo(roamingNetworkId2) > 0);
+            Assert.That(roamingNetworkId1.CompareTo(roamingNetworkId2) > 0, Is.True);
         }
 
         #endregion
@@ -670,7 +669,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId  = RoamingNetwork_Id.Parse("TEST");
             var text              = "TEST";
-            ClassicAssert.IsFalse(roamingNetworkId.Equals(text));
+            Assert.That(roamingNetworkId.Equals(text), Is.False);
         }
 
         #endregion
@@ -685,7 +684,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
-            ClassicAssert.IsTrue(roamingNetworkId1.Equals(roamingNetworkId2));
+            Assert.That(roamingNetworkId1.Equals(roamingNetworkId2), Is.True);
         }
 
         #endregion
@@ -700,7 +699,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
             var roamingNetworkId2 = RoamingNetwork_Id.Parse("222");
-            ClassicAssert.IsFalse(roamingNetworkId1.Equals(roamingNetworkId2));
+            Assert.That(roamingNetworkId1.Equals(roamingNetworkId2), Is.False);
         }
 
         #endregion

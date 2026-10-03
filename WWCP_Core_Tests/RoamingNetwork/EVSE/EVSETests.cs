@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -45,11 +44,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void EVSE_Init_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
-            ClassicAssert.IsNotNull(DE_GEF_P0001);
-            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
-            ClassicAssert.IsNotNull(DE_GEF_E0001_AAAA_1);
+            Assert.That(roamingNetwork,      Is.Not.Null);
+            Assert.That(DE_GEF,              Is.Not.Null);
+            Assert.That(DE_GEF_P0001,        Is.Not.Null);
+            Assert.That(DE_GEF_S0001_AAAA,   Is.Not.Null);
+            Assert.That(DE_GEF_E0001_AAAA_1, Is.Not.Null);
 
             if (roamingNetwork      is not null &&
                 DE_GEF              is not null &&
@@ -82,17 +81,17 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.That(DE_GEF_S0001_AAAA.EVSEIds().Count(), Is.EqualTo(1));
 
 
-                ClassicAssert.IsTrue   (roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
-                ClassicAssert.IsNotNull(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+                Assert.That(roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")), Is.True);
+                Assert.That(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")), Is.Not.Null);
 
-                ClassicAssert.IsTrue   (DE_GEF.           ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
-                ClassicAssert.IsNotNull(DE_GEF.           GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+                Assert.That(DE_GEF.           ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")), Is.True);
+                Assert.That(DE_GEF.           GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")), Is.Not.Null);
 
-                ClassicAssert.IsTrue   (DE_GEF_P0001.     ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
-                ClassicAssert.IsNotNull(DE_GEF_P0001.     GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+                Assert.That(DE_GEF_P0001.     ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")), Is.True);
+                Assert.That(DE_GEF_P0001.     GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")), Is.Not.Null);
 
-                ClassicAssert.IsTrue   (DE_GEF_S0001_AAAA.ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
-                ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")));
+                Assert.That(DE_GEF_S0001_AAAA.ContainsEVSE(EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")), Is.True);
+                Assert.That(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E0001*AAAA*1")), Is.Not.Null);
 
             }
 
@@ -109,10 +108,10 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void EVSE_Init_DefaultStatus_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
-            ClassicAssert.IsNotNull(DE_GEF_P0001);
-            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
+            Assert.That(roamingNetwork,    Is.Not.Null);
+            Assert.That(DE_GEF,            Is.Not.Null);
+            Assert.That(DE_GEF_P0001,      Is.Not.Null);
+            Assert.That(DE_GEF_S0001_AAAA, Is.Not.Null);
 
             if (roamingNetwork    is not null &&
                 DE_GEF            is not null &&
@@ -126,7 +125,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                 Description:  I18NString.Create(Languages.de, "powered by GraphDefined EVSEs GmbH")
                                                             ).Result.EVSE;
 
-                ClassicAssert.IsNotNull(DE_GEF_E0001_AAAA_X);
+                Assert.That(DE_GEF_E0001_AAAA_X, Is.Not.Null);
 
                 if (DE_GEF_E0001_AAAA_X is not null)
                 {
@@ -138,17 +137,17 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.That(DE_GEF_E0001_AAAA_X.AdminStatus, Is.EqualTo(EVSEAdminStatusType.Operational));
                     Assert.That(DE_GEF_E0001_AAAA_X.Status, Is.EqualTo(EVSEStatusType.Available));
 
-                    ClassicAssert.IsTrue   (roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")));
-                    ClassicAssert.IsNotNull(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")));
+                    Assert.That(roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")), Is.True);
+                    Assert.That(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")), Is.Not.Null);
 
-                    ClassicAssert.IsTrue   (DE_GEF.           ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")));
-                    ClassicAssert.IsNotNull(DE_GEF.           GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")));
+                    Assert.That(DE_GEF.           ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")), Is.True);
+                    Assert.That(DE_GEF.           GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")), Is.Not.Null);
 
-                    ClassicAssert.IsTrue   (DE_GEF_P0001.     ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")));
-                    ClassicAssert.IsNotNull(DE_GEF_P0001.     GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")));
+                    Assert.That(DE_GEF_P0001.     ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")), Is.True);
+                    Assert.That(DE_GEF_P0001.     GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")), Is.Not.Null);
 
-                    ClassicAssert.IsTrue   (DE_GEF_S0001_AAAA.ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")));
-                    ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")));
+                    Assert.That(DE_GEF_S0001_AAAA.ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234")), Is.True);
+                    Assert.That(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234")), Is.Not.Null);
 
                 }
 
@@ -167,10 +166,10 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void EVSE_Init_AllProperties_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
-            ClassicAssert.IsNotNull(DE_GEF_P0001);
-            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
+            Assert.That(roamingNetwork,    Is.Not.Null);
+            Assert.That(DE_GEF,            Is.Not.Null);
+            Assert.That(DE_GEF_P0001,      Is.Not.Null);
+            Assert.That(DE_GEF_S0001_AAAA, Is.Not.Null);
 
             if (roamingNetwork    is not null &&
                 DE_GEF            is not null &&
@@ -202,8 +201,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                                      }
                                                             ).Result.EVSE;
 
-                ClassicAssert.IsNotNull(DE_GEF_E1234_5678_1);
-                ClassicAssert.IsTrue   (success);
+                Assert.That(DE_GEF_E1234_5678_1, Is.Not.Null);
+                Assert.That(success,             Is.True);
 
                 if (DE_GEF_E1234_5678_1 is not null)
                 {
@@ -215,17 +214,17 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.That(DE_GEF_E1234_5678_1.AdminStatus, Is.EqualTo(EVSEAdminStatusType.OutOfService));
                     Assert.That(DE_GEF_E1234_5678_1.Status, Is.EqualTo(EVSEStatusType.Offline));
 
-                    ClassicAssert.IsTrue   (roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
-                    ClassicAssert.IsNotNull(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    Assert.That(roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")), Is.True);
+                    Assert.That(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")), Is.Not.Null);
 
-                    ClassicAssert.IsTrue   (DE_GEF.           ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
-                    ClassicAssert.IsNotNull(DE_GEF.           GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    Assert.That(DE_GEF.           ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")), Is.True);
+                    Assert.That(DE_GEF.           GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")), Is.Not.Null);
 
-                    ClassicAssert.IsTrue   (DE_GEF_P0001.     ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
-                    ClassicAssert.IsNotNull(DE_GEF_P0001.     GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    Assert.That(DE_GEF_P0001.     ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")), Is.True);
+                    Assert.That(DE_GEF_P0001.     GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")), Is.Not.Null);
 
-                    ClassicAssert.IsTrue   (DE_GEF_S0001_AAAA.ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
-                    ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    Assert.That(DE_GEF_S0001_AAAA.ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")), Is.True);
+                    Assert.That(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")), Is.Not.Null);
 
 
                     Assert.That(DE_GEF_E1234_5678_1.Brands.Count, Is.EqualTo(1));
@@ -390,11 +389,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void EVSE_AdminStatus_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
-            ClassicAssert.IsNotNull(DE_GEF_P0001);
-            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
-            ClassicAssert.IsNotNull(DE_GEF_E0001_AAAA_1);
+            Assert.That(roamingNetwork,      Is.Not.Null);
+            Assert.That(DE_GEF,              Is.Not.Null);
+            Assert.That(DE_GEF_P0001,        Is.Not.Null);
+            Assert.That(DE_GEF_S0001_AAAA,   Is.Not.Null);
+            Assert.That(DE_GEF_E0001_AAAA_1, Is.Not.Null);
 
             if (roamingNetwork      is not null &&
                 DE_GEF              is not null &&
@@ -451,11 +450,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void EVSE_Status_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
-            ClassicAssert.IsNotNull(DE_GEF_P0001);
-            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
-            ClassicAssert.IsNotNull(DE_GEF_E0001_AAAA_1);
+            Assert.That(roamingNetwork,      Is.Not.Null);
+            Assert.That(DE_GEF,              Is.Not.Null);
+            Assert.That(DE_GEF_P0001,        Is.Not.Null);
+            Assert.That(DE_GEF_S0001_AAAA,   Is.Not.Null);
+            Assert.That(DE_GEF_E0001_AAAA_1, Is.Not.Null);
 
             if (roamingNetwork      is not null &&
                 DE_GEF              is not null &&
@@ -513,11 +512,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void EVSE_Tariff_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
-            ClassicAssert.IsNotNull(DE_GEF_P0001);
-            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
-            ClassicAssert.IsNotNull(DE_GEF_E0001_AAAA_1);
+            Assert.That(roamingNetwork,      Is.Not.Null);
+            Assert.That(DE_GEF,              Is.Not.Null);
+            Assert.That(DE_GEF_P0001,        Is.Not.Null);
+            Assert.That(DE_GEF_S0001_AAAA,   Is.Not.Null);
+            Assert.That(DE_GEF_E0001_AAAA_1, Is.Not.Null);
 
             if (roamingNetwork      is not null &&
                 DE_GEF              is not null &&
@@ -605,7 +604,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 #endregion
 
                 var tariffGroup_VW = DE_GEF.CreateChargingTariffGroup("_VW", I18NString.Create(Languages.de, "Volkswagen"));
-                ClassicAssert.IsNotNull(tariffGroup_VW);
+                Assert.That(tariffGroup_VW, Is.Not.Null);
 
                 if (tariffGroup_VW is not null)
                 {
@@ -630,7 +629,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                      )
                                                                  }
                                             );
-                    ClassicAssert.IsNotNull(tariff_3_98_60min);
+                    Assert.That(tariff_3_98_60min, Is.Not.Null);
 
 
                     var tariff_0_25_kWh   = tariffGroup_VW.CreateChargingTariff(
@@ -651,7 +650,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                      )
                                                                  ]
                                             );
-                    ClassicAssert.IsNotNull(tariff_0_25_kWh);
+                    Assert.That(tariff_0_25_kWh, Is.Not.Null);
 
 
                     if (tariff_3_98_60min is not null &&
@@ -688,7 +687,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                       MemberIds:  [ DE_GEF_E0001_AAAA_1.Id ]
                                                   );
 
-                        ClassicAssert.IsNotNull(evseGroup_0_25_kWh);
+                        Assert.That(evseGroup_0_25_kWh, Is.Not.Null);
 
 
                     }

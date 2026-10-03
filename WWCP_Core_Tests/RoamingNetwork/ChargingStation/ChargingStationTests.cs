@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -45,10 +44,10 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingStation_Init_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
-            ClassicAssert.IsNotNull(DE_GEF_P0001);
-            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
+            Assert.That(roamingNetwork,    Is.Not.Null);
+            Assert.That(DE_GEF,            Is.Not.Null);
+            Assert.That(DE_GEF_P0001,      Is.Not.Null);
+            Assert.That(DE_GEF_S0001_AAAA, Is.Not.Null);
 
             if (roamingNetwork    is not null &&
                 DE_GEF            is not null &&
@@ -77,14 +76,14 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.That(DE_GEF_P0001.ChargingStationIds().Count(), Is.EqualTo(1));
 
 
-                ClassicAssert.IsTrue   (roamingNetwork.ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S0001*AAAA")));
-                ClassicAssert.IsNotNull(roamingNetwork.GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S0001*AAAA")));
+                Assert.That(roamingNetwork.ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S0001*AAAA")), Is.True);
+                Assert.That(roamingNetwork.GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S0001*AAAA")), Is.Not.Null);
 
-                ClassicAssert.IsTrue   (DE_GEF.        ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S0001*AAAA")));
-                ClassicAssert.IsNotNull(DE_GEF.        GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S0001*AAAA")));
+                Assert.That(DE_GEF.        ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S0001*AAAA")), Is.True);
+                Assert.That(DE_GEF.        GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S0001*AAAA")), Is.Not.Null);
 
-                ClassicAssert.IsTrue   (DE_GEF_P0001.  ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S0001*AAAA")));
-                ClassicAssert.IsNotNull(DE_GEF_P0001.  GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S0001*AAAA")));
+                Assert.That(DE_GEF_P0001.  ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S0001*AAAA")), Is.True);
+                Assert.That(DE_GEF_P0001.  GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S0001*AAAA")), Is.Not.Null);
 
             }
 
@@ -101,9 +100,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingStation_Init_DefaultStatus_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
-            ClassicAssert.IsNotNull(DE_GEF_P0001);
+            Assert.That(roamingNetwork, Is.Not.Null);
+            Assert.That(DE_GEF,         Is.Not.Null);
+            Assert.That(DE_GEF_P0001,   Is.Not.Null);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null &&
@@ -116,7 +115,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                     Description:  I18NString.Create(Languages.de, "powered by GraphDefined Charging Stations GmbH")
                                                 ).Result.ChargingStation;
 
-                ClassicAssert.IsNotNull(DE_GEF_S1234);
+                Assert.That(DE_GEF_S1234, Is.Not.Null);
 
                 if (DE_GEF_S1234 is not null)
                 {
@@ -128,14 +127,14 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.That(DE_GEF_S1234.AdminStatus, Is.EqualTo(ChargingStationAdminStatusType.Operational));
                     Assert.That(DE_GEF_S1234.Status, Is.EqualTo(ChargingStationStatusType.Available));
 
-                    ClassicAssert.IsTrue   (roamingNetwork.ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S1234")));
-                    ClassicAssert.IsNotNull(roamingNetwork.GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S1234")));
+                    Assert.That(roamingNetwork.ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S1234")), Is.True);
+                    Assert.That(roamingNetwork.GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S1234")), Is.Not.Null);
 
-                    ClassicAssert.IsTrue   (DE_GEF.        ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S1234")));
-                    ClassicAssert.IsNotNull(DE_GEF.        GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S1234")));
+                    Assert.That(DE_GEF.        ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S1234")), Is.True);
+                    Assert.That(DE_GEF.        GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S1234")), Is.Not.Null);
 
-                    ClassicAssert.IsTrue   (DE_GEF_P0001.  ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S1234")));
-                    ClassicAssert.IsNotNull(DE_GEF_P0001.  GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S1234")));
+                    Assert.That(DE_GEF_P0001.  ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S1234")), Is.True);
+                    Assert.That(DE_GEF_P0001.  GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S1234")), Is.Not.Null);
 
                 }
 
@@ -154,9 +153,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingStation_AllProperties_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
-            ClassicAssert.IsNotNull(DE_GEF_P0001);
+            Assert.That(roamingNetwork, Is.Not.Null);
+            Assert.That(DE_GEF,         Is.Not.Null);
+            Assert.That(DE_GEF_P0001,   Is.Not.Null);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null &&
@@ -187,8 +186,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                          }
                                                 ).Result.ChargingStation;
 
-                ClassicAssert.IsNotNull(DE_GEF_S1234);
-                ClassicAssert.IsTrue   (success);
+                Assert.That(DE_GEF_S1234, Is.Not.Null);
+                Assert.That(success,      Is.True);
 
                 if (DE_GEF_S1234 is not null)
                 {
@@ -200,14 +199,14 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.That(DE_GEF_S1234.AdminStatus, Is.EqualTo(ChargingStationAdminStatusType.OutOfService));
                     Assert.That(DE_GEF_S1234.Status, Is.EqualTo(ChargingStationStatusType.Offline));
 
-                    ClassicAssert.IsTrue   (roamingNetwork.ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S1234")));
-                    ClassicAssert.IsNotNull(roamingNetwork.GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S1234")));
+                    Assert.That(roamingNetwork.ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S1234")), Is.True);
+                    Assert.That(roamingNetwork.GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S1234")), Is.Not.Null);
 
-                    ClassicAssert.IsTrue   (DE_GEF.        ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S1234")));
-                    ClassicAssert.IsNotNull(DE_GEF.        GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S1234")));
+                    Assert.That(DE_GEF.        ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S1234")), Is.True);
+                    Assert.That(DE_GEF.        GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S1234")), Is.Not.Null);
 
-                    ClassicAssert.IsTrue   (DE_GEF_P0001.  ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S1234")));
-                    ClassicAssert.IsNotNull(DE_GEF_P0001.  GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S1234")));
+                    Assert.That(DE_GEF_P0001.  ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S1234")), Is.True);
+                    Assert.That(DE_GEF_P0001.  GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S1234")), Is.Not.Null);
 
 
                     Assert.That(DE_GEF_S1234.Brands.Count(), Is.EqualTo(1));
@@ -335,10 +334,10 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingStation_AdminStatus_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
-            ClassicAssert.IsNotNull(DE_GEF_P0001);
-            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
+            Assert.That(roamingNetwork,    Is.Not.Null);
+            Assert.That(DE_GEF,            Is.Not.Null);
+            Assert.That(DE_GEF_P0001,      Is.Not.Null);
+            Assert.That(DE_GEF_S0001_AAAA, Is.Not.Null);
 
             if (roamingNetwork    is not null &&
                 DE_GEF            is not null &&
@@ -392,10 +391,10 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingStation_Status_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
-            ClassicAssert.IsNotNull(DE_GEF_P0001);
-            ClassicAssert.IsNotNull(DE_GEF_S0001_AAAA);
+            Assert.That(roamingNetwork,    Is.Not.Null);
+            Assert.That(DE_GEF,            Is.Not.Null);
+            Assert.That(DE_GEF_P0001,      Is.Not.Null);
+            Assert.That(DE_GEF_S0001_AAAA, Is.Not.Null);
 
             if (roamingNetwork    is not null &&
                 DE_GEF            is not null &&

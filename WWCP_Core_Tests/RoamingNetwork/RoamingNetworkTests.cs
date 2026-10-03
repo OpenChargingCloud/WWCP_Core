@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -43,7 +42,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void RoamingNetwork_Init_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
+            Assert.That(roamingNetwork, Is.Not.Null);
 
             if (roamingNetwork is not null)
             {
@@ -59,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.That(roamingNetwork.StatusSchedule().Count(), Is.EqualTo(1));
 
 
-                ClassicAssert.IsTrue   (roamingNetwork.DisableNetworkSync);
+                Assert.That(roamingNetwork.DisableNetworkSync, Is.True);
 
             }
 
@@ -76,7 +75,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void RoamingNetwork_Init_DefaultStatus_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
+            Assert.That(roamingNetwork, Is.Not.Null);
 
             if (roamingNetwork is not null)
             {
@@ -88,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                              DisableNetworkSync:  true
                                          );
 
-                ClassicAssert.IsNotNull(roamingNetwork);
+                Assert.That(roamingNetwork, Is.Not.Null);
 
                 if (roamingNetwork is not null)
                 {
@@ -117,7 +116,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void RoamingNetwork_AdminStatus_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
+            Assert.That(roamingNetwork, Is.Not.Null);
 
             if (roamingNetwork is not null)
             {
@@ -162,7 +161,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void RoamingNetwork_Status_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
+            Assert.That(roamingNetwork, Is.Not.Null);
 
             if (roamingNetwork is not null)
             {

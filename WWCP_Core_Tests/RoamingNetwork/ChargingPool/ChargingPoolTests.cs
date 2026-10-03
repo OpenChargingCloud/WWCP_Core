@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -45,9 +44,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingPool_Init_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
-            ClassicAssert.IsNotNull(DE_GEF_P0001);
+            Assert.That(roamingNetwork, Is.Not.Null);
+            Assert.That(DE_GEF,         Is.Not.Null);
+            Assert.That(DE_GEF_P0001,   Is.Not.Null);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null &&
@@ -72,11 +71,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.That(DE_GEF.ChargingPoolIds().Count(), Is.EqualTo(1));
 
 
-                ClassicAssert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P0001")));
-                ClassicAssert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P0001")));
+                Assert.That(roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P0001")), Is.True);
+                Assert.That(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P0001")), Is.Not.Null);
 
-                ClassicAssert.IsTrue   (DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P0001")));
-                ClassicAssert.IsNotNull(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P0001")));
+                Assert.That(DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P0001")), Is.True);
+                Assert.That(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P0001")), Is.Not.Null);
 
             }
 
@@ -93,8 +92,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingPool_Init_DefaultStatus_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
+            Assert.That(roamingNetwork, Is.Not.Null);
+            Assert.That(DE_GEF,         Is.Not.Null);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null)
@@ -108,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 var DE_GEF_P1234 = DE_GEF_P1234Result.ChargingPool;
 
-                ClassicAssert.IsNotNull(DE_GEF_P1234);
+                Assert.That(DE_GEF_P1234, Is.Not.Null);
 
                 if (DE_GEF_P1234 is not null)
                 {
@@ -120,11 +119,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.That(DE_GEF_P1234.AdminStatus, Is.EqualTo(ChargingPoolAdminStatusType.Operational));
                     Assert.That(DE_GEF_P1234.Status, Is.EqualTo(ChargingPoolStatusType.Available));
 
-                    ClassicAssert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")));
-                    ClassicAssert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    Assert.That(roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")), Is.True);
+                    Assert.That(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")), Is.Not.Null);
 
-                    ClassicAssert.IsTrue   (DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P1234")));
-                    ClassicAssert.IsNotNull(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    Assert.That(DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P1234")), Is.True);
+                    Assert.That(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")), Is.Not.Null);
 
                 }
 
@@ -143,8 +142,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingPool_Init_AllProperties_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
+            Assert.That(roamingNetwork, Is.Not.Null);
+            Assert.That(DE_GEF,         Is.Not.Null);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null)
@@ -176,8 +175,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 var DE_GEF_P1234 = DE_GEF_P1234Result.ChargingPool;
 
-                ClassicAssert.IsNotNull(DE_GEF_P1234);
-                ClassicAssert.IsTrue   (success);
+                Assert.That(DE_GEF_P1234, Is.Not.Null);
+                Assert.That(success,      Is.True);
 
                 if (DE_GEF_P1234 is not null)
                 {
@@ -189,11 +188,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.That(DE_GEF_P1234.AdminStatus, Is.EqualTo(ChargingPoolAdminStatusType.OutOfService));
                     Assert.That(DE_GEF_P1234.Status, Is.EqualTo(ChargingPoolStatusType.Offline));
 
-                    ClassicAssert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")));
-                    ClassicAssert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    Assert.That(roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")), Is.True);
+                    Assert.That(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")), Is.Not.Null);
 
-                    ClassicAssert.IsTrue   (DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P1234")));
-                    ClassicAssert.IsNotNull(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    Assert.That(DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P1234")), Is.True);
+                    Assert.That(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")), Is.Not.Null);
 
 
                     Assert.That(DE_GEF_P1234.Brands.Count(), Is.EqualTo(1));
@@ -304,9 +303,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingPool_AdminStatus_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
-            ClassicAssert.IsNotNull(DE_GEF_P0001);
+            Assert.That(roamingNetwork, Is.Not.Null);
+            Assert.That(DE_GEF,         Is.Not.Null);
+            Assert.That(DE_GEF_P0001,   Is.Not.Null);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null &&
@@ -357,9 +356,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingPool_Status_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
-            ClassicAssert.IsNotNull(DE_GEF_P0001);
+            Assert.That(roamingNetwork, Is.Not.Null);
+            Assert.That(DE_GEF,         Is.Not.Null);
+            Assert.That(DE_GEF_P0001,   Is.Not.Null);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null &&

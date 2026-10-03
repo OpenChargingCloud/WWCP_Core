@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -62,7 +61,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                             InitialStatus:       EVSEStatusType.Offline
                                                         ).Result.EVSE;
 
-                ClassicAssert.IsNotNull(DE_GEF_E0001_AAAA_1);
+                Assert.That(DE_GEF_E0001_AAAA_1, Is.Not.Null);
 
             }
 

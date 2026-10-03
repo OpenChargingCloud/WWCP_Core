@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -43,8 +42,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingStationOperator_Init_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
+            Assert.That(roamingNetwork, Is.Not.Null);
+            Assert.That(DE_GEF,         Is.Not.Null);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null)
@@ -65,8 +64,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.That(roamingNetwork.ChargingStationOperatorIds().Count(), Is.EqualTo(1));
 
 
-                ClassicAssert.IsTrue   (roamingNetwork.ChargingStationOperatorExists (ChargingStationOperator_Id.Parse("DE*GEF")));
-                ClassicAssert.IsNotNull(roamingNetwork.GetChargingStationOperatorById(ChargingStationOperator_Id.Parse("DE*GEF")));
+                Assert.That(roamingNetwork.ChargingStationOperatorExists (ChargingStationOperator_Id.Parse("DE*GEF")), Is.True);
+                Assert.That(roamingNetwork.GetChargingStationOperatorById(ChargingStationOperator_Id.Parse("DE*GEF")), Is.Not.Null);
 
             }
 
@@ -83,7 +82,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingStationOperator_Init_DefaultStatus_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
+            Assert.That(roamingNetwork, Is.Not.Null);
 
             if (roamingNetwork is not null)
             {
@@ -94,7 +93,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                 Description:  I18NString.Create(Languages.de, "powered by GraphDefined CSOs GmbH")
                                             ).Result.ChargingStationOperator;
 
-                ClassicAssert.IsNotNull(DE_XXX);
+                Assert.That(DE_XXX, Is.Not.Null);
 
                 if (DE_XXX is not null)
                 {
@@ -106,8 +105,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.That(DE_XXX.AdminStatus, Is.EqualTo(ChargingStationOperatorAdminStatusTypes.Operational));
                     Assert.That(DE_XXX.Status, Is.EqualTo(ChargingStationOperatorStatusTypes.Available));
 
-                    ClassicAssert.IsTrue   (roamingNetwork.ChargingStationOperatorExists (ChargingStationOperator_Id.Parse("DE*XXX")));
-                    ClassicAssert.IsNotNull(roamingNetwork.GetChargingStationOperatorById(ChargingStationOperator_Id.Parse("DE*XXX")));
+                    Assert.That(roamingNetwork.ChargingStationOperatorExists (ChargingStationOperator_Id.Parse("DE*XXX")), Is.True);
+                    Assert.That(roamingNetwork.GetChargingStationOperatorById(ChargingStationOperator_Id.Parse("DE*XXX")), Is.Not.Null);
 
                 }
 
@@ -127,8 +126,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingStationOperator_AdminStatus_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
+            Assert.That(roamingNetwork, Is.Not.Null);
+            Assert.That(DE_GEF,         Is.Not.Null);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null)
@@ -176,8 +175,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         public void ChargingStationOperator_Status_Test()
         {
 
-            ClassicAssert.IsNotNull(roamingNetwork);
-            ClassicAssert.IsNotNull(DE_GEF);
+            Assert.That(roamingNetwork, Is.Not.Null);
+            Assert.That(DE_GEF,         Is.Not.Null);
 
             if (roamingNetwork is not null &&
                 DE_GEF         is not null)

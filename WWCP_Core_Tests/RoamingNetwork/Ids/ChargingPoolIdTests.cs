@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 #endregion
 
@@ -60,7 +59,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
 
             var poolId = ChargingPool_Id.TryParse(ChargingStationOperatorId, "1234");
-            ClassicAssert.IsNotNull(poolId);
+            Assert.That(poolId, Is.Not.Null);
 
             if (poolId is not null)
             {
@@ -80,7 +79,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         [Test]
         public void TryParseOut_ChargingStationOperatorId_Test()
         {
-            ClassicAssert.IsTrue(ChargingPool_Id.TryParse(ChargingStationOperatorId, "1234", out var poolId));
+            Assert.That(ChargingPool_Id.TryParse(ChargingStationOperatorId, "1234", out var poolId), Is.True);
             Assert.That(poolId.ToString(), Is.EqualTo("DE*GEF*P1234"));
             Assert.That(poolId.Length, Is.EqualTo(12));
         }
@@ -109,7 +108,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         [Test]
         public void TryParse_Small_P_Test()
         {
-            ClassicAssert.IsNull(ChargingStation_Id.TryParse("DE*GEF*pool*1234"));
+            Assert.That(ChargingStation_Id.TryParse("DE*GEF*pool*1234"), Is.Null);
         }
 
         #endregion
@@ -122,7 +121,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         [Test]
         public void TryParseOut_Small_P_Test()
         {
-            ClassicAssert.IsFalse(ChargingStation_Id.TryParse("DE*GEF*pool*1234", out _));
+            Assert.That(ChargingStation_Id.TryParse("DE*GEF*pool*1234", out _), Is.False);
         }
 
         #endregion
@@ -157,7 +156,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
             #pragma warning disable
-            ClassicAssert.IsTrue(poolId == poolId);
+            Assert.That(poolId == poolId, Is.True);
             #pragma warning restore
         }
 
@@ -173,7 +172,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
-            ClassicAssert.IsTrue(poolId1 == poolId2);
+            Assert.That(poolId1 == poolId2, Is.True);
         }
 
         #endregion
@@ -188,7 +187,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "234");
-            ClassicAssert.IsFalse(poolId1 == poolId2);
+            Assert.That(poolId1 == poolId2, Is.False);
         }
 
         #endregion
@@ -204,7 +203,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
             #pragma warning disable
-            ClassicAssert.IsFalse(poolId != poolId);
+            Assert.That(poolId != poolId, Is.False);
             #pragma warning restore
         }
 
@@ -220,7 +219,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
-            ClassicAssert.IsFalse(poolId1 != poolId2);
+            Assert.That(poolId1 != poolId2, Is.False);
         }
 
         #endregion
@@ -235,7 +234,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "222");
-            ClassicAssert.IsTrue(poolId1 != poolId2);
+            Assert.That(poolId1 != poolId2, Is.True);
         }
 
         #endregion
@@ -250,7 +249,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "005");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "023");
-            ClassicAssert.IsTrue(poolId1 != poolId2);
+            Assert.That(poolId1 != poolId2, Is.True);
         }
 
         #endregion
@@ -266,7 +265,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
             #pragma warning disable
-            ClassicAssert.IsFalse(poolId < poolId);
+            Assert.That(poolId < poolId, Is.False);
             #pragma warning restore
         }
 
@@ -282,7 +281,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
-            ClassicAssert.IsFalse(poolId1 < poolId2);
+            Assert.That(poolId1 < poolId2, Is.False);
         }
 
         #endregion
@@ -297,7 +296,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "222");
-            ClassicAssert.IsTrue(poolId1 < poolId2);
+            Assert.That(poolId1 < poolId2, Is.True);
         }
 
         #endregion
@@ -312,7 +311,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "005");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "023");
-            ClassicAssert.IsTrue(poolId1 < poolId2);
+            Assert.That(poolId1 < poolId2, Is.True);
         }
 
         #endregion
@@ -327,7 +326,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "222");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
-            ClassicAssert.IsFalse(poolId1 < poolId2);
+            Assert.That(poolId1 < poolId2, Is.False);
         }
 
         #endregion
@@ -342,7 +341,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "023");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "005");
-            ClassicAssert.IsFalse(poolId1 < poolId2);
+            Assert.That(poolId1 < poolId2, Is.False);
         }
 
         #endregion
@@ -358,7 +357,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
             #pragma warning disable
-            ClassicAssert.IsTrue(poolId <= poolId);
+            Assert.That(poolId <= poolId, Is.True);
             #pragma warning restore
         }
 
@@ -374,7 +373,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
-            ClassicAssert.IsTrue(poolId1 <= poolId2);
+            Assert.That(poolId1 <= poolId2, Is.True);
         }
 
         #endregion
@@ -389,7 +388,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "222");
-            ClassicAssert.IsTrue(poolId1 <= poolId2);
+            Assert.That(poolId1 <= poolId2, Is.True);
         }
 
         #endregion
@@ -404,7 +403,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "005");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "023");
-            ClassicAssert.IsTrue(poolId1 <= poolId2);
+            Assert.That(poolId1 <= poolId2, Is.True);
         }
 
         #endregion
@@ -419,7 +418,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "222");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
-            ClassicAssert.IsFalse(poolId1 <= poolId2);
+            Assert.That(poolId1 <= poolId2, Is.False);
         }
 
         #endregion
@@ -434,7 +433,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "023");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "005");
-            ClassicAssert.IsFalse(poolId1 <= poolId2);
+            Assert.That(poolId1 <= poolId2, Is.False);
         }
 
         #endregion
@@ -450,7 +449,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
             #pragma warning disable
-            ClassicAssert.IsFalse(poolId > poolId);
+            Assert.That(poolId > poolId, Is.False);
             #pragma warning restore
         }
 
@@ -466,7 +465,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
-            ClassicAssert.IsFalse(poolId1 > poolId2);
+            Assert.That(poolId1 > poolId2, Is.False);
         }
 
         #endregion
@@ -481,7 +480,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "222");
-            ClassicAssert.IsFalse(poolId1 > poolId2);
+            Assert.That(poolId1 > poolId2, Is.False);
         }
 
         #endregion
@@ -496,7 +495,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "005");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "023");
-            ClassicAssert.IsFalse(poolId1 > poolId2);
+            Assert.That(poolId1 > poolId2, Is.False);
         }
 
         #endregion
@@ -511,7 +510,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "222");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
-            ClassicAssert.IsTrue(poolId1 > poolId2);
+            Assert.That(poolId1 > poolId2, Is.True);
         }
 
         #endregion
@@ -526,7 +525,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "023");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "005");
-            ClassicAssert.IsTrue(poolId1 > poolId2);
+            Assert.That(poolId1 > poolId2, Is.True);
         }
 
         #endregion
@@ -542,7 +541,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
             #pragma warning disable
-            ClassicAssert.IsTrue(poolId >= poolId);
+            Assert.That(poolId >= poolId, Is.True);
             #pragma warning restore
         }
 
@@ -558,7 +557,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
-            ClassicAssert.IsTrue(poolId1 >= poolId2);
+            Assert.That(poolId1 >= poolId2, Is.True);
         }
 
         #endregion
@@ -573,7 +572,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "222");
-            ClassicAssert.IsFalse(poolId1 >= poolId2);
+            Assert.That(poolId1 >= poolId2, Is.False);
         }
 
         #endregion
@@ -588,7 +587,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "005");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "023");
-            ClassicAssert.IsFalse(poolId1 >= poolId2);
+            Assert.That(poolId1 >= poolId2, Is.False);
         }
 
         #endregion
@@ -603,7 +602,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "222");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
-            ClassicAssert.IsTrue(poolId1 >= poolId2);
+            Assert.That(poolId1 >= poolId2, Is.True);
         }
 
         #endregion
@@ -618,7 +617,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "023");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "005");
-            ClassicAssert.IsTrue(poolId1 >= poolId2);
+            Assert.That(poolId1 >= poolId2, Is.True);
         }
 
         #endregion
@@ -652,7 +651,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "222");
-            ClassicAssert.IsTrue(poolId1.CompareTo(poolId2) < 0);
+            Assert.That(poolId1.CompareTo(poolId2) < 0, Is.True);
         }
 
         #endregion
@@ -667,7 +666,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "005");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "023");
-            ClassicAssert.IsTrue(poolId1.CompareTo(poolId2) < 0);
+            Assert.That(poolId1.CompareTo(poolId2) < 0, Is.True);
         }
 
         #endregion
@@ -682,7 +681,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
-            ClassicAssert.IsTrue(poolId1.CompareTo(poolId2) == 0);
+            Assert.That(poolId1.CompareTo(poolId2) == 0, Is.True);
         }
 
         #endregion
@@ -697,7 +696,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "222");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
-            ClassicAssert.IsTrue(poolId1.CompareTo(poolId2) > 0);
+            Assert.That(poolId1.CompareTo(poolId2) > 0, Is.True);
         }
 
         #endregion
@@ -713,7 +712,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId = ChargingPool_Id.Parse(ChargingStationOperatorId, "1234");
             var text   = "DE*GEF*P1234";
-            ClassicAssert.IsFalse(poolId.Equals(text));
+            Assert.That(poolId.Equals(text), Is.False);
         }
 
         #endregion
@@ -728,7 +727,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
-            ClassicAssert.IsTrue(poolId1.Equals(poolId2));
+            Assert.That(poolId1.Equals(poolId2), Is.True);
         }
 
         #endregion
@@ -743,7 +742,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var poolId1 = ChargingPool_Id.Parse(ChargingStationOperatorId, "111");
             var poolId2 = ChargingPool_Id.Parse(ChargingStationOperatorId, "222");
-            ClassicAssert.IsFalse(poolId1.Equals(poolId2));
+            Assert.That(poolId1.Equals(poolId2), Is.False);
         }
 
         #endregion
@@ -756,8 +755,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         [Test]
         public void OptionalEquals_Test()
         {
-            ClassicAssert.IsTrue(ChargingPool_Id.Parse("DE*GEF*P1234")  == ChargingPool_Id.Parse("DEGEFP1234"));
-            ClassicAssert.IsTrue(ChargingPool_Id.Parse("DE*GEF*P12*34") == ChargingPool_Id.Parse("DEGEFP1234"));
+            Assert.That(ChargingPool_Id.Parse("DE*GEF*P1234")  == ChargingPool_Id.Parse("DEGEFP1234"), Is.True);
+            Assert.That(ChargingPool_Id.Parse("DE*GEF*P12*34") == ChargingPool_Id.Parse("DEGEFP1234"), Is.True);
         }
 
         #endregion

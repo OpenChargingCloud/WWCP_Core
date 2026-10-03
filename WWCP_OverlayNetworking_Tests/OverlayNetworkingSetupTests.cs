@@ -24,7 +24,6 @@ using NUnit.Framework;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using NUnit.Framework.Legacy;
 using System.Diagnostics;
 
 #endregion
@@ -157,7 +156,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
             Assert.That(connectionSetupResponse1.Server, Is.EqualTo($"GraphDefined HTTP WebSocket Service v2.0"));
             Assert.That(connectionSetupResponse1.Connection, Is.EqualTo(ConnectionType.Upgrade));
             Assert.That(connectionSetupResponse1.Upgrade, Is.EqualTo("websocket"));
-            ClassicAssert.IsTrue  (connectionSetupResponse1.SecWebSocketProtocol.Contains("ocpp2.0.1"));
+            Assert.That(connectionSetupResponse1.SecWebSocketProtocol.Contains("ocpp2.0.1"), Is.True);
             Assert.That(connectionSetupResponse1.SecWebSocketVersion, Is.EqualTo("13"));
 
             #endregion

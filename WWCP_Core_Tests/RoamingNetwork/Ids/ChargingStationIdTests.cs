@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 #endregion
 
@@ -47,7 +46,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
 
             var stationId = ChargingStation_Id.TryParse(ChargingStationOperatorId, "1234");
 
-            ClassicAssert.IsNotNull(stationId);
+            Assert.That(stationId, Is.Not.Null);
 
             if (stationId.HasValue)
             {
@@ -85,7 +84,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
 
             var stationId = ChargingStation_Id.TryParse(ChargingStationOperatorId, "1234");
-            ClassicAssert.IsNotNull(stationId);
+            Assert.That(stationId, Is.Not.Null);
 
             if (stationId is not null)
             {
@@ -107,7 +106,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
 
             var stationId = ChargingStation_Id.TryParse(ChargingPoolId, "5678");
-            ClassicAssert.IsNotNull(stationId);
+            Assert.That(stationId, Is.Not.Null);
 
             if (stationId is not null)
             {
@@ -128,7 +127,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         [Test]
         public void TryParseOut_ChargingStationOperatorId_Test()
         {
-            ClassicAssert.IsTrue(ChargingStation_Id.TryParse(ChargingStationOperatorId, "1234", out var stationId));
+            Assert.That(ChargingStation_Id.TryParse(ChargingStationOperatorId, "1234", out var stationId), Is.True);
             Assert.That(stationId.ToString(), Is.EqualTo("DE*GEF*S1234"));
             Assert.That(stationId.Length, Is.EqualTo(12));
         }
@@ -143,7 +142,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         [Test]
         public void TryParseOut_ChargingPoolId_Test()
         {
-            ClassicAssert.IsTrue(ChargingStation_Id.TryParse(ChargingPoolId, "5678", out var stationId));
+            Assert.That(ChargingStation_Id.TryParse(ChargingPoolId, "5678", out var stationId), Is.True);
             Assert.That(stationId.ToString(), Is.EqualTo("DE*GEF*S1234*5678"));
             Assert.That(stationId.Length, Is.EqualTo(17));
         }
@@ -172,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         [Test]
         public void TryParse_Small_S_Test()
         {
-            ClassicAssert.IsNull(ChargingStation_Id.TryParse("DE*GEF*station*1234*5678"));
+            Assert.That(ChargingStation_Id.TryParse("DE*GEF*station*1234*5678"), Is.Null);
         }
 
         #endregion
@@ -185,7 +184,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         [Test]
         public void TryParseOut_Small_S_Test()
         {
-            ClassicAssert.IsFalse(ChargingStation_Id.TryParse("DE*GEF*station*1234*5678", out _));
+            Assert.That(ChargingStation_Id.TryParse("DE*GEF*station*1234*5678", out _), Is.False);
         }
 
         #endregion
@@ -220,7 +219,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId = ChargingStation_Id.Parse(ChargingPoolId, "5678");
             #pragma warning disable
-            ClassicAssert.IsTrue(stationId == stationId);
+            Assert.That(stationId == stationId, Is.True);
             #pragma warning restore
         }
 
@@ -237,23 +236,23 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
 
             var stationId1a = ChargingStation_Id.Parse(ChargingPoolId, "1111");
             var stationId2a = ChargingStation_Id.Parse(ChargingPoolId, "1111");
-            ClassicAssert.IsTrue(stationId1a == stationId2a);
+            Assert.That(stationId1a == stationId2a, Is.True);
 
             var stationId1b = ChargingStation_Id.Parse(ChargingPoolId, "aaaa");
             var stationId2b = ChargingStation_Id.Parse(ChargingPoolId, "aaaa");
-            ClassicAssert.IsTrue(stationId1b == stationId2b);
+            Assert.That(stationId1b == stationId2b, Is.True);
 
             var stationId1c = ChargingStation_Id.Parse(ChargingPoolId, "AAAA");
             var stationId2c = ChargingStation_Id.Parse(ChargingPoolId, "AAAA");
-            ClassicAssert.IsTrue(stationId1c == stationId2c);
+            Assert.That(stationId1c == stationId2c, Is.True);
 
             var stationId1d = ChargingStation_Id.Parse(ChargingPoolId, "aaaa");
             var stationId2d = ChargingStation_Id.Parse(ChargingPoolId, "AAAA");
-            ClassicAssert.IsTrue(stationId1d == stationId2d);
+            Assert.That(stationId1d == stationId2d, Is.True);
 
             var stationId1e = ChargingStation_Id.Parse("DE*GEF*STATION*abcd*1234");
             var stationId2e = ChargingStation_Id.Parse("De*GeF*StAtIoN*ABCD*1234");
-            ClassicAssert.IsTrue(stationId1e == stationId2e);
+            Assert.That(stationId1e == stationId2e, Is.True);
 
         }
 
@@ -269,7 +268,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "5678");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "8765");
-            ClassicAssert.IsFalse(stationId1 == stationId2);
+            Assert.That(stationId1 == stationId2, Is.False);
         }
 
         #endregion
@@ -285,7 +284,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId = ChargingStation_Id.Parse(ChargingPoolId, "5678");
             #pragma warning disable
-            ClassicAssert.IsFalse(stationId != stationId);
+            Assert.That(stationId != stationId, Is.False);
             #pragma warning restore
         }
 
@@ -301,7 +300,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "5678");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "5678");
-            ClassicAssert.IsFalse(stationId1 != stationId2);
+            Assert.That(stationId1 != stationId2, Is.False);
         }
 
         #endregion
@@ -316,7 +315,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "111");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "222");
-            ClassicAssert.IsTrue(stationId1 != stationId2);
+            Assert.That(stationId1 != stationId2, Is.True);
         }
 
         #endregion
@@ -331,7 +330,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "005");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "023");
-            ClassicAssert.IsTrue(stationId1 != stationId2);
+            Assert.That(stationId1 != stationId2, Is.True);
         }
 
         #endregion
@@ -347,7 +346,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId = ChargingStation_Id.Parse(ChargingPoolId, "5678");
             #pragma warning disable
-            ClassicAssert.IsFalse(stationId < stationId);
+            Assert.That(stationId < stationId, Is.False);
             #pragma warning restore
         }
 
@@ -363,7 +362,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "111");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "111");
-            ClassicAssert.IsFalse(stationId1 < stationId2);
+            Assert.That(stationId1 < stationId2, Is.False);
         }
 
         #endregion
@@ -378,7 +377,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "111");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "222");
-            ClassicAssert.IsTrue(stationId1 < stationId2);
+            Assert.That(stationId1 < stationId2, Is.True);
         }
 
         #endregion
@@ -393,7 +392,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "005");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "023");
-            ClassicAssert.IsTrue(stationId1 < stationId2);
+            Assert.That(stationId1 < stationId2, Is.True);
         }
 
         #endregion
@@ -408,7 +407,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "222");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "111");
-            ClassicAssert.IsFalse(stationId1 < stationId2);
+            Assert.That(stationId1 < stationId2, Is.False);
         }
 
         #endregion
@@ -423,7 +422,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "023");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "005");
-            ClassicAssert.IsFalse(stationId1 < stationId2);
+            Assert.That(stationId1 < stationId2, Is.False);
         }
 
         #endregion
@@ -439,7 +438,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId = ChargingStation_Id.Parse(ChargingPoolId, "5678");
             #pragma warning disable
-            ClassicAssert.IsTrue(stationId <= stationId);
+            Assert.That(stationId <= stationId, Is.True);
             #pragma warning restore
         }
 
@@ -455,7 +454,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "5678");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "5678");
-            ClassicAssert.IsTrue(stationId1 <= stationId2);
+            Assert.That(stationId1 <= stationId2, Is.True);
         }
 
         #endregion
@@ -470,7 +469,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "111");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "222");
-            ClassicAssert.IsTrue(stationId1 <= stationId2);
+            Assert.That(stationId1 <= stationId2, Is.True);
         }
 
         #endregion
@@ -485,7 +484,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "005");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "023");
-            ClassicAssert.IsTrue(stationId1 <= stationId2);
+            Assert.That(stationId1 <= stationId2, Is.True);
         }
 
         #endregion
@@ -500,7 +499,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "222");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "111");
-            ClassicAssert.IsFalse(stationId1 <= stationId2);
+            Assert.That(stationId1 <= stationId2, Is.False);
         }
 
         #endregion
@@ -515,7 +514,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "023");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "005");
-            ClassicAssert.IsFalse(stationId1 <= stationId2);
+            Assert.That(stationId1 <= stationId2, Is.False);
         }
 
         #endregion
@@ -531,7 +530,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId = ChargingStation_Id.Parse(ChargingPoolId, "5678");
             #pragma warning disable
-            ClassicAssert.IsFalse(stationId > stationId);
+            Assert.That(stationId > stationId, Is.False);
             #pragma warning restore
         }
 
@@ -547,7 +546,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "111");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "111");
-            ClassicAssert.IsFalse(stationId1 > stationId2);
+            Assert.That(stationId1 > stationId2, Is.False);
         }
 
         #endregion
@@ -562,7 +561,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "111");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "222");
-            ClassicAssert.IsFalse(stationId1 > stationId2);
+            Assert.That(stationId1 > stationId2, Is.False);
         }
 
         #endregion
@@ -577,7 +576,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "005");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "023");
-            ClassicAssert.IsFalse(stationId1 > stationId2);
+            Assert.That(stationId1 > stationId2, Is.False);
         }
 
         #endregion
@@ -592,7 +591,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "222");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "111");
-            ClassicAssert.IsTrue(stationId1 > stationId2);
+            Assert.That(stationId1 > stationId2, Is.True);
         }
 
         #endregion
@@ -607,7 +606,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "023");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "005");
-            ClassicAssert.IsTrue(stationId1 > stationId2);
+            Assert.That(stationId1 > stationId2, Is.True);
         }
 
         #endregion
@@ -623,7 +622,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId = ChargingStation_Id.Parse(ChargingPoolId, "5678");
             #pragma warning disable
-            ClassicAssert.IsTrue(stationId >= stationId);
+            Assert.That(stationId >= stationId, Is.True);
             #pragma warning restore
         }
 
@@ -639,7 +638,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "5678");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "5678");
-            ClassicAssert.IsTrue(stationId1 >= stationId2);
+            Assert.That(stationId1 >= stationId2, Is.True);
         }
 
         #endregion
@@ -654,7 +653,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "111");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "222");
-            ClassicAssert.IsFalse(stationId1 >= stationId2);
+            Assert.That(stationId1 >= stationId2, Is.False);
         }
 
         #endregion
@@ -669,7 +668,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "005");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "023");
-            ClassicAssert.IsFalse(stationId1 >= stationId2);
+            Assert.That(stationId1 >= stationId2, Is.False);
         }
 
         #endregion
@@ -684,7 +683,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "222");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "111");
-            ClassicAssert.IsTrue(stationId1 >= stationId2);
+            Assert.That(stationId1 >= stationId2, Is.True);
         }
 
         #endregion
@@ -699,7 +698,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "023");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "005");
-            ClassicAssert.IsTrue(stationId1 >= stationId2);
+            Assert.That(stationId1 >= stationId2, Is.True);
         }
 
         #endregion
@@ -733,7 +732,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "111");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "222");
-            ClassicAssert.IsTrue(stationId1.CompareTo(stationId2) < 0);
+            Assert.That(stationId1.CompareTo(stationId2) < 0, Is.True);
         }
 
         #endregion
@@ -748,7 +747,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "005");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "023");
-            ClassicAssert.IsTrue(stationId1.CompareTo(stationId2) < 0);
+            Assert.That(stationId1.CompareTo(stationId2) < 0, Is.True);
         }
 
         #endregion
@@ -763,7 +762,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "111");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "111");
-            ClassicAssert.IsTrue(stationId1.CompareTo(stationId2) == 0);
+            Assert.That(stationId1.CompareTo(stationId2) == 0, Is.True);
         }
 
         #endregion
@@ -778,7 +777,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "222");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "111");
-            ClassicAssert.IsTrue(stationId1.CompareTo(stationId2) > 0);
+            Assert.That(stationId1.CompareTo(stationId2) > 0, Is.True);
         }
 
         #endregion
@@ -794,7 +793,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId = ChargingStation_Id.Parse(ChargingPoolId, "5678");
             var text      = "DE*GEF*S1234*5678";
-            ClassicAssert.IsFalse(stationId.Equals(text));
+            Assert.That(stationId.Equals(text), Is.False);
         }
 
         #endregion
@@ -809,7 +808,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "111");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "111");
-            ClassicAssert.IsTrue(stationId1.Equals(stationId2));
+            Assert.That(stationId1.Equals(stationId2), Is.True);
         }
 
         #endregion
@@ -824,7 +823,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         {
             var stationId1 = ChargingStation_Id.Parse(ChargingPoolId, "111");
             var stationId2 = ChargingStation_Id.Parse(ChargingPoolId, "222");
-            ClassicAssert.IsFalse(stationId1.Equals(stationId2));
+            Assert.That(stationId1.Equals(stationId2), Is.False);
         }
 
         #endregion
@@ -837,8 +836,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         [Test]
         public void OptionalEquals_Test()
         {
-            ClassicAssert.IsTrue(ChargingStation_Id.Parse("DE*GEF*S1234*AAAA")   == ChargingStation_Id.Parse("DEGEFS1234AAAA"));
-            ClassicAssert.IsTrue(ChargingStation_Id.Parse("DE*GEF*S12*34*AA*AA") == ChargingStation_Id.Parse("DEGEFS1234AAAA"));
+            Assert.That(ChargingStation_Id.Parse("DE*GEF*S1234*AAAA")   == ChargingStation_Id.Parse("DEGEFS1234AAAA"), Is.True);
+            Assert.That(ChargingStation_Id.Parse("DE*GEF*S12*34*AA*AA") == ChargingStation_Id.Parse("DEGEFS1234AAAA"), Is.True);
         }
 
         #endregion

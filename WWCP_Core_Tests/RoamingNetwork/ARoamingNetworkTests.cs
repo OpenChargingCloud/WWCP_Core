@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -69,7 +68,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                  DisableNetworkSync:          true
                              );
 
-            ClassicAssert.IsNotNull(roamingNetwork);
+            Assert.That(roamingNetwork, Is.Not.Null);
 
 
             //empClientAPI.OnPullEVSEData                    += (timestamp, empClientAPI, pullEVSEDataRequest)                    => {
