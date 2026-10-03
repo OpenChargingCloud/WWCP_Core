@@ -689,6 +689,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             webSocketServer.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
             webSocketServer.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
             webSocketServer.OnCloseMessageReceived         += ProcessCloseMessage;
+            webSocketServer.OnTCPConnectionClosed          += ProcessTCPConnectionClosed;
 
             webSocketServer.OnTextMessageReceived          += (timestamp,
                                                                server,
@@ -951,36 +952,28 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
                 #region Register new Networking Node
 
-                if (!connectedNetworkingNodes.TryAdd(networkingNodeId.Value,
-                                                     new Tuple<WebSocketServerConnection, DateTimeOffset>(
-                                                         Connection,
-                                                         Timestamp.Now
-                                                     )))
+                // The connection it replaces is taken off the books in the same step
+                // that puts it on them, and is closed only afterwards: the networking
+                // node is never without a connection in between, and whatever the end
+                // of the replaced connection sets off finds the newer one in its place,
+                // see Forget.
+                if (Register(networkingNodeId.Value, Connection) is WebSocketServerConnection replacedConnection)
                 {
 
-                    DebugX.Log($"{nameof(AOverlayWebSocketServer)} Duplicate networking node '{networkingNodeId.Value}' detected: Trying to close old one!");
+                    DebugX.Log($"{nameof(AOverlayWebSocketServer)} Duplicate networking node '{networkingNodeId.Value}' detected: Closing the older connection from {replacedConnection.RemoteSocket}!");
 
-                    if (connectedNetworkingNodes.TryRemove(networkingNodeId.Value, out var oldConnection))
+                    try
                     {
-                        try
-                        {
-                            await oldConnection.Item1.Close(
-                                      WebSocketFrame.ClosingStatusCode.NormalClosure,
-                                      "Newer connection detected!",
-                                      CancellationToken
-                                  );
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log($"{nameof(AOverlayWebSocketServer)} Closing old HTTP WebSocket connection from {oldConnection.Item1.RemoteSocket} failed: {e.Message}");
-                        }
+                        await replacedConnection.Close(
+                                  WebSocketFrame.ClosingStatusCode.NormalClosure,
+                                  "Newer connection detected!",
+                                  CancellationToken
+                              );
                     }
-
-                    connectedNetworkingNodes.TryAdd(networkingNodeId.Value,
-                                                    new Tuple<WebSocketServerConnection, DateTimeOffset>(
-                                                        Connection,
-                                                        Timestamp.Now
-                                                    ));
+                    catch (Exception e)
+                    {
+                        DebugX.Log($"{nameof(AOverlayWebSocketServer)} Closing old HTTP WebSocket connection from {replacedConnection.RemoteSocket} failed: {e.Message}");
+                    }
 
                 }
 
@@ -1067,7 +1060,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             if (Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey, out var networkingNodeId))
             {
 
-                connectedNetworkingNodes.TryRemove(networkingNodeId, out _);
+                Forget(networkingNodeId, Connection);
 
                 #region Send OnCSMSCloseMessageReceived event
 
@@ -1107,6 +1100,89 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             }
 
         }
+
+        #endregion
+
+        #region (protected) ProcessTCPConnectionClosed   (LogTimestamp, Server, Connection, EventTrackingId, Reason, CancellationToken)
+
+        /// <summary>
+        /// A connection has ended, however it ended: after a close frame either
+        /// way, or without one - a networking node that lost its power or its
+        /// network, a reset, a FIN, a peer that stopped answering pings.
+        /// </summary>
+        protected Task ProcessTCPConnectionClosed(DateTimeOffset             LogTimestamp,
+                                                  AWebSocketServer           Server,
+                                                  WebSocketServerConnection  Connection,
+                                                  EventTracking_Id           EventTrackingId,
+                                                  String?                    Reason,
+                                                  CancellationToken          CancellationToken)
+        {
+
+            if (Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey, out var networkingNodeId))
+                Forget(networkingNodeId, Connection);
+
+            return Task.CompletedTask;
+
+        }
+
+        #endregion
+
+        #region (private) Register                       (NetworkingNodeId, Connection)
+
+        /// <summary>
+        /// Make the given connection the connection to the given networking node,
+        /// and return the one it replaces, if any.
+        /// </summary>
+        /// <remarks>
+        /// The entry of a networking node is replaced only if it is still the
+        /// entry that was read: whoever registers or forgets a connection at the
+        /// same time does not undo it.
+        /// </remarks>
+        private WebSocketServerConnection? Register(NetworkingNode_Id          NetworkingNodeId,
+                                                    WebSocketServerConnection  Connection)
+        {
+
+            var registration = new Tuple<WebSocketServerConnection, DateTimeOffset>(
+                                   Connection,
+                                   Timestamp.Now
+                               );
+
+            while (true)
+            {
+
+                if (connectedNetworkingNodes.TryGetValue(NetworkingNodeId, out var current))
+                {
+                    if (connectedNetworkingNodes.TryUpdate(NetworkingNodeId, registration, current))
+                        return ReferenceEquals(current.Item1, Connection)
+                                   ? null
+                                   : current.Item1;
+                }
+
+                else if (connectedNetworkingNodes.TryAdd(NetworkingNodeId, registration))
+                    return null;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (private) Forget                         (NetworkingNodeId, Connection)
+
+        /// <summary>
+        /// Forget the given connection to the given networking node - and no
+        /// other one. A connection that was replaced by a newer one is no longer
+        /// the connection to the networking node, and its end, which may well
+        /// come after the newer one was registered, is not the end of the newer
+        /// one.
+        /// </summary>
+        /// <returns>Whether the connection was the one to the networking node.</returns>
+        private Boolean Forget(NetworkingNode_Id          NetworkingNodeId,
+                               WebSocketServerConnection  Connection)
+
+            => connectedNetworkingNodes.TryGetValue(NetworkingNodeId, out var current) &&
+               ReferenceEquals(current.Item1, Connection) &&
+               connectedNetworkingNodes.TryRemove(KeyValuePair.Create(NetworkingNodeId, current));
 
         #endregion
 

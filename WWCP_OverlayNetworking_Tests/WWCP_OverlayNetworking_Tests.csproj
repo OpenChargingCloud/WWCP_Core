@@ -17,6 +17,12 @@
     <ProjectReference Include="..\WWCP_OverlayNetworking\WWCP_OverlayNetworking.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- The bare WebSocket test client of WWCP_Core_Tests, rather than a copy of it. -->
+    <Compile Include="..\WWCP_Core_Tests\WebSockets\RawWebSocketClient.cs" Link="WebSockets\RawWebSocketClient.cs" />
+    <Compile Include="..\WWCP_Core_Tests\WebSockets\TestPorts.cs"          Link="WebSockets\TestPorts.cs" />
+  </ItemGroup>
+
 </Project>
 
 
