@@ -939,13 +939,13 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             if (Connection.HTTPRequest is HTTPRequest httpRequest)
             {
 
-                var (fromPath, fromCredentials) = IdentitiesOf(httpRequest);
+                var (fromPath, fromCredentials) = IdentitiesOf(Connection, httpRequest);
 
                 if (fromPath.       HasValue &&
                     fromCredentials.HasValue &&
                     fromPath.Value != fromCredentials.Value &&
                    !MayActFor(fromCredentials.Value, fromPath.Value) &&
-                    KnowsTheCredentialsOf(httpRequest))
+                    KnowsTheCredentialsOf(Connection, httpRequest))
                 {
 
                     var error = $"'{fromCredentials.Value}' may not connect as '{fromPath.Value}'!";
@@ -1027,7 +1027,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
             #region The networking node of the path, or else of the credentials
 
-            var (fromPath, fromCredentials)  = IdentitiesOf(Connection.HTTPRequest);
+            var (fromPath, fromCredentials)  = IdentitiesOf(Connection, Connection.HTTPRequest);
             var networkingNodeId             = fromPath ?? fromCredentials;
             var closingReason                = "Could not get NetworkingNodeId from HTTP WebSocket connection!";
 
@@ -1163,22 +1163,44 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
         #endregion
 
-        #region (private static) IdentitiesOf            (Request)
+        #region (private static) ClientCertificateOf      (Connection, Request)
+
+        /// <summary>
+        /// The client certificate of the TLS handshake of the given connection.
+        /// </summary>
+        /// <remarks>
+        /// The connection keeps it. The request does only where whoever parsed it
+        /// was given it: a WebSocket server lent a connection by an HTTP server is,
+        /// and one on a port of its own is not - Hermod 22768a4a parses the upgrade
+        /// there without it. Read from the request alone, a certificate of a
+        /// client of this server's own port was never there.
+        /// </remarks>
+        private static X509Certificate2? ClientCertificateOf(WebSocketServerConnection  Connection,
+                                                             HTTPRequest                Request)
+
+            => Connection.ClientCertificate ?? Request.ClientCertificate;
+
+        #endregion
+
+        #region (private static) IdentitiesOf            (Connection, Request)
 
         /// <summary>
         /// The networking node named by the last segment of the path of the given
-        /// request, and the one named by its credentials: the common name of its
-        /// client certificate, else its HTTP Basic username.
+        /// request, and the one named by its credentials: the common name of the
+        /// client certificate of its connection, else its HTTP Basic username.
         /// </summary>
-        private static (NetworkingNode_Id? FromPath, NetworkingNode_Id? FromCredentials) IdentitiesOf(HTTPRequest Request)
+        private static (NetworkingNode_Id? FromPath, NetworkingNode_Id? FromCredentials) IdentitiesOf(WebSocketServerConnection  Connection,
+                                                                                                      HTTPRequest                Request)
         {
 
             // Percent-decoded, segment by segment, by the time it is here.
             var path             = Request.Path.ToString();
             var fromPath         = NetworkingNode_Id.TryParse(path[(path.LastIndexOf('/') + 1)..]);
 
-            var fromCredentials  = Request.ClientCertificate is not null
-                                       ? NetworkingNode_Id.TryParse(Request.ClientCertificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false))
+            var clientCertificate  = ClientCertificateOf(Connection, Request);
+
+            var fromCredentials  = clientCertificate is not null
+                                       ? NetworkingNode_Id.TryParse(clientCertificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false))
                                        : null;
 
             fromCredentials    ??= Request.Authorization is HTTPBasicAuthentication basicAuthentication
@@ -1191,7 +1213,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
 
         #endregion
 
-        #region (private) KnowsTheCredentialsOf          (Request)
+        #region (private) KnowsTheCredentialsOf          (Connection, Request)
 
         /// <summary>
         /// Whether this server knows the credentials the networking node of the
@@ -1199,11 +1221,14 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// TLS handshake has validated, or an HTTP Basic login of its own
         /// NetworkingNodeLogins - whether or not it requires authentication.
         /// </summary>
-        private Boolean KnowsTheCredentialsOf(HTTPRequest Request)
+        private Boolean KnowsTheCredentialsOf(WebSocketServerConnection  Connection,
+                                              HTTPRequest                Request)
         {
 
-            if (Request.ClientCertificate is not null &&
-                NetworkingNode_Id.TryParse(Request.ClientCertificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false)).HasValue)
+            var clientCertificate = ClientCertificateOf(Connection, Request);
+
+            if (clientCertificate is not null &&
+                NetworkingNode_Id.TryParse(clientCertificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false)).HasValue)
             {
                 return true;
             }

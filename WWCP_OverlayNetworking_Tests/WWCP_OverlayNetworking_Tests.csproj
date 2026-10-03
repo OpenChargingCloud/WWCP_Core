@@ -21,6 +21,7 @@
     <!-- The bare WebSocket test client of WWCP_Core_Tests, rather than a copy of it. -->
     <Compile Include="..\WWCP_Core_Tests\WebSockets\RawWebSocketClient.cs" Link="WebSockets\RawWebSocketClient.cs" />
     <Compile Include="..\WWCP_Core_Tests\WebSockets\TestPorts.cs"          Link="WebSockets\TestPorts.cs" />
+    <Compile Include="..\WWCP_Core_Tests\WebSockets\TestCertificates.cs"   Link="WebSockets\TestCertificates.cs" />
   </ItemGroup>
 
 </Project>

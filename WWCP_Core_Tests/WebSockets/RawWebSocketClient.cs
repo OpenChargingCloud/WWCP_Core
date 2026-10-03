@@ -18,8 +18,10 @@
 #region Usings
 
 using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -31,17 +33,17 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
 
     /// <summary>
     /// A WebSocket client of no more than a TCP connection, which says exactly
-    /// what it is told to: the path, the query, the Authorization header - and
-    /// which ends its connection exactly as it is told to, with a close frame,
-    /// with a FIN, or with a reset.
+    /// what it is told to: the path, the query, the Authorization header, the
+    /// client certificate - and which ends its connection exactly as it is told
+    /// to, with a close frame, with a FIN, or with a reset.
     /// </summary>
     internal sealed class RawWebSocketClient : IDisposable
     {
 
         #region Data
 
-        private readonly TcpClient      tcp;
-        private readonly NetworkStream  stream;
+        private readonly TcpClient  tcp;
+        private readonly Stream     stream;
 
         #endregion
 
@@ -62,9 +64,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
 
         #region Constructor(s)
 
-        private RawWebSocketClient(TcpClient      TCP,
-                                   NetworkStream  Stream,
-                                   Int32          StatusCode)
+        private RawWebSocketClient(TcpClient  TCP,
+                                   Stream     Stream,
+                                   Int32      StatusCode)
         {
 
             this.tcp         = TCP;
@@ -77,7 +79,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         #endregion
 
 
-        #region (static) Upgrade(Port, PathAndQuery, Authorization = null, Subprotocol = "ocpp2.1")
+        #region (static) Upgrade(Port, PathAndQuery, Authorization = null, Subprotocol = "ocpp2.1", ServerCertificate = null, ClientCertificate = null)
 
         /// <summary>
         /// Ask the server on the given port for an upgrade, and read its answer.
@@ -86,17 +88,43 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         /// <param name="PathAndQuery">The request target, e.g. "/CS001" or "/CS001?u=CS001".</param>
         /// <param name="Authorization">The value of an optional Authorization header.</param>
         /// <param name="Subprotocol">The WebSocket subprotocol to offer.</param>
-        public static async Task<RawWebSocketClient> Upgrade(IPPort   Port,
-                                                             String   PathAndQuery,
-                                                             String?  Authorization   = null,
-                                                             String   Subprotocol     = "ocpp2.1")
+        /// <param name="ServerCertificate">The certificate the server has to show over TLS; without one, no TLS.</param>
+        /// <param name="ClientCertificate">An optional client certificate to show the server over TLS.</param>
+        public static async Task<RawWebSocketClient> Upgrade(IPPort             Port,
+                                                             String             PathAndQuery,
+                                                             String?            Authorization       = null,
+                                                             String             Subprotocol         = "ocpp2.1",
+                                                             X509Certificate2?  ServerCertificate   = null,
+                                                             X509Certificate2?  ClientCertificate   = null)
         {
 
             var tcp = new TcpClient();
 
             await tcp.ConnectAsync(System.Net.IPAddress.Loopback, Port.ToUInt16());
 
-            var stream   = tcp.GetStream();
+            Stream stream = tcp.GetStream();
+
+            if (ServerCertificate is not null)
+            {
+
+                var tls = new SslStream(stream);
+
+                // The server is the one whose certificate the test made, and no
+                // other: it is known by its thumbprint, not by a chain to a root.
+                await tls.AuthenticateAsClientAsync(
+                          new SslClientAuthenticationOptions {
+                              TargetHost                           = "localhost",
+                              ClientCertificates                   = ClientCertificate is not null ? [ ClientCertificate ] : null,
+                              LocalCertificateSelectionCallback    = ClientCertificate is not null ? (_, _, _, _, _) => ClientCertificate : null,
+                              RemoteCertificateValidationCallback  = (_, certificate, _, _) => certificate is not null &&
+                                                                                                certificate.GetCertHashString() == ServerCertificate.GetCertHashString()
+                          }
+                      );
+
+                stream = tls;
+
+            }
+
             var request  = new StringBuilder();
 
             request.Append($"GET {PathAndQuery} HTTP/1.1\r\n");
@@ -188,7 +216,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         /// Read the answer's head, one octet at a time, so that nothing after
         /// it is taken away from whoever reads the frames.
         /// </summary>
-        private static async Task<Int32> ReadStatusCode(NetworkStream Stream)
+        private static async Task<Int32> ReadStatusCode(Stream Stream)
         {
 
             using var timeout  = new CancellationTokenSource(TimeSpan.FromSeconds(10));
