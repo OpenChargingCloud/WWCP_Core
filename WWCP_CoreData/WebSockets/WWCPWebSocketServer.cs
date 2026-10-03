@@ -505,70 +505,6 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                 #endregion
 
-                #region QueryString u/p    Authentication
-
-                else if (Connection.HTTPRequest?.QueryString is not null)
-                {
-
-                    var queryString  = Connection.HTTPRequest?.QueryString;
-                    var username     = queryString?.GetString("u") ?? "";
-                    var password     = queryString?.GetString("p") ?? "";
-
-                    if (ClientLogins.TryGetValue(username, out var securePassword) &&
-                        securePassword.Equals(password))
-                    {
-                        DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using authorization: '{username}'");
-                        return Task.FromResult<HTTPResponse?>(null);
-                    }
-                    else
-                        DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid authorization: '{username}'!");
-
-                }
-
-                #endregion
-
-                #region QueryString u/totp Authentication
-
-                else if (Connection.HTTPRequest?.QueryString is not null)
-                {
-
-                    var queryString  = Connection.HTTPRequest?.QueryString;
-                    var username     = queryString?.GetString("u")    ?? "";
-                    var totp         = queryString?.GetString("totp") ?? "";
-
-                    if (ClientTOTPConfig.TryGetValue(username, out var totpConfig))
-                    {
-
-                        var (previousTOTP,
-                             currentTOTP,
-                             nextTOTP,
-                             remainingTime,
-                             endTime) = TOTPGenerator.GenerateTOTPs(
-                                            Timestamp.Now,
-                                            totpConfig.SharedSecret,
-                                            totpConfig.ValidityTime,
-                                            totpConfig.Length,
-                                            totpConfig.Alphabet
-                                        );
-
-                        if (totp == previousTOTP ||
-                            totp == currentTOTP  ||
-                            totp == nextTOTP)
-                        {
-                            DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using authorization: '{username}'");
-                            return Task.FromResult<HTTPResponse?>(null);
-                        }
-                        else
-                            DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid or outdated TOTP authorization: '{username}'!");
-
-                    }
-                    else
-                        DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid authorization: '{username}'!");
-
-                }
-
-                #endregion
-
                 else
                     DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} missing or invalid authorization!");
 
@@ -662,18 +598,6 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                     networkingNodeId = networkingNodeId3;
                 }
 
-            }
-
-            #endregion
-
-            #region ...try to get the NetworkingNodeId from the HTTP query string (?u=CS001&p=xxx)...
-
-            if (!networkingNodeId.HasValue && Connection.HTTPRequest.QueryString.Count() > 0 &&
-                Connection.HTTPRequest.QueryString.TryGetString("u", out var u) &&
-                u.IsNotNullOrEmpty() &&
-                NetworkingNode_Id.TryParse(u, out var _networkingNodeId))
-            {
-                networkingNodeId = _networkingNodeId;
             }
 
             #endregion
