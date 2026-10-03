@@ -7030,7 +7030,7 @@ namespace cloud.charging.open.protocols.WWCP
                         if (result.Reservation is not null)
                         {
                             result.Reservation.ChargingStationOperatorId = chargingStationOperator.Id;
-                            ReservationsStore.NewOrUpdate(result.Reservation);
+                            await ReservationsStore.NewOrUpdate(result.Reservation);
                         }
                     }
 
@@ -7074,7 +7074,7 @@ namespace cloud.charging.open.protocols.WWCP
                             if (result.Reservation is not null)
                             {
                                 result.Reservation.EMPRoamingProviderId = empRoamingService.Id;
-                                ReservationsStore.NewOrUpdate(result.Reservation);
+                                await ReservationsStore.NewOrUpdate(result.Reservation);
                             }
                         }
 

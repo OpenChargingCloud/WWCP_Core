@@ -3184,10 +3184,21 @@ namespace cloud.charging.open.protocols.WWCP
                         if (result.Result == ReservationResultTypes.Success)
                         {
 
-                            RoamingNetwork.ReservationsStore.UpdateAll(
-                                result.Reservation.Id,
-                                reservation => reservation.ChargingPoolId = Id
-                            );
+                            // On the reservation itself: the roaming network stores it
+                            // only once this answer has come back up to it, so the store
+                            // does not have it yet - unless it is one more version of a
+                            // reservation it has, whose stored versions are updated too.
+                            if (result.Reservation is not null)
+                            {
+
+                                result.Reservation.ChargingPoolId = Id;
+
+                                await RoamingNetwork.ReservationsStore.UpdateAll(
+                                          result.Reservation.Id,
+                                          reservation => reservation.ChargingPoolId = Id
+                                      );
+
+                            }
 
                             OnNewReservation?.Invoke(
                                 org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,

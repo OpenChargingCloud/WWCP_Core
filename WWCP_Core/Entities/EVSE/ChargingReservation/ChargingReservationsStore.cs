@@ -81,8 +81,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region New(NewChargingReservation)
 
-        public void New(ChargingReservation NewChargingReservation)
+        /// <summary>
+        /// Store a new charging reservation, or one more version of one already stored.
+        /// </summary>
+        /// <remarks>
+        /// What is logged is handed to the log inside the lock, so that the log
+        /// file has the changes in the order they were made, and awaited after
+        /// it: a failure to log is the caller's to see, not lost in a task
+        /// nobody looks at.
+        /// </remarks>
+        public Task New(ChargingReservation NewChargingReservation)
         {
+
+            Task logged;
 
             lock (InternalData)
             {
@@ -92,10 +103,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     InternalData.TryAdd(NewChargingReservation.Id, new ChargingReservationCollection(NewChargingReservation));
 
-                    LogIt("new",
-                          NewChargingReservation.Id,
-                          "reservations",
-                          new JArray(NewChargingReservation.ToJSON()));
+                    logged = LogIt("new",
+                                   NewChargingReservation.Id,
+                                   "reservations",
+                                   new JArray(NewChargingReservation.ToJSON()));
 
                 }
 
@@ -104,14 +115,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                     InternalData[NewChargingReservation.Id].Add(NewChargingReservation);
 
-                    LogIt("update",
-                          NewChargingReservation.Id,
-                          "reservations",
-                          new JArray(InternalData[NewChargingReservation.Id].Select(reservation => reservation.ToJSON())));
+                    logged = LogIt("update",
+                                   NewChargingReservation.Id,
+                                   "reservations",
+                                   new JArray(InternalData[NewChargingReservation.Id].Select(reservation => reservation.ToJSON())));
 
                 }
 
             }
+
+            return logged;
 
         }
 
@@ -119,8 +132,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region NewOrUpdate(NewChargingReservation)
 
-        public void NewOrUpdate(ChargingReservation NewChargingReservation)
+        /// <summary>
+        /// Store a new charging reservation, or replace the latest version of one
+        /// already stored where it differs from it.
+        /// </summary>
+        public Task NewOrUpdate(ChargingReservation NewChargingReservation)
         {
+
+            var logged = Task.CompletedTask;
 
             lock (InternalData)
             {
@@ -130,10 +149,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     InternalData.TryAdd(NewChargingReservation.Id, new ChargingReservationCollection(NewChargingReservation));
 
-                    LogIt("new",
-                          NewChargingReservation.Id,
-                          "reservations",
-                          new JArray(NewChargingReservation.ToJSON()));
+                    logged = LogIt("new",
+                                   NewChargingReservation.Id,
+                                   "reservations",
+                                   new JArray(NewChargingReservation.ToJSON()));
 
                 }
                 else if (NewChargingReservation.ToJSON() != InternalData[NewChargingReservation.Id].Last().ToJSON())
@@ -141,14 +160,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                     InternalData[NewChargingReservation.Id].UpdateLast(NewChargingReservation);
 
-                    LogIt("update",
-                          NewChargingReservation.Id,
-                          "reservations",
-                          new JArray(InternalData[NewChargingReservation.Id].Select(reservation => reservation.ToJSON())));
+                    logged = LogIt("update",
+                                   NewChargingReservation.Id,
+                                   "reservations",
+                                   new JArray(InternalData[NewChargingReservation.Id].Select(reservation => reservation.ToJSON())));
 
                 }
 
             }
+
+            return logged;
 
         }
 
@@ -156,27 +177,34 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region UpdateAll(Id, UpdateFunc)
 
-        public ChargingReservationsStore UpdateAll(ChargingReservation_Id       Id,
-                                                   Action<ChargingReservation>  UpdateFunc)
+        /// <summary>
+        /// Update every stored version of a charging reservation.
+        /// </summary>
+        /// <remarks>
+        /// A reservation not stored yet is left alone, and nothing is logged:
+        /// a charging pool updates the reservation it made before the roaming
+        /// network has stored it, which happens only once the answer has come
+        /// back up to the roaming network.
+        /// </remarks>
+        public Task UpdateAll(ChargingReservation_Id       Id,
+                              Action<ChargingReservation>  UpdateFunc)
         {
 
             lock (InternalData)
             {
 
-                if (InternalData.TryGetValue(Id, out ChargingReservationCollection reservationCollection))
-                {
-                    foreach (var reservation in reservationCollection)
-                        UpdateFunc(reservation);
-                }
+                if (!InternalData.TryGetValue(Id, out var reservationCollection))
+                    return Task.CompletedTask;
 
-                LogIt("update",
-                      Id,
-                      "reservations",
-                      new JArray(reservationCollection.Select(reservation => reservation.ToJSON())));
+                foreach (var reservation in reservationCollection)
+                    UpdateFunc(reservation);
+
+                return LogIt("update",
+                             Id,
+                             "reservations",
+                             new JArray(reservationCollection.Select(reservation => reservation.ToJSON())));
 
             }
-
-            return this;
 
         }
 
@@ -184,24 +212,30 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region UpdateLatest(Id, UpdateFunc)
 
-        public ChargingReservationsStore UpdateLatest(ChargingReservation_Id       Id,
-                                                      Action<ChargingReservation>  UpdateFunc)
+        /// <summary>
+        /// Update the latest stored version of a charging reservation.
+        /// </summary>
+        /// <remarks>
+        /// A reservation not stored yet is left alone, and nothing is logged.
+        /// </remarks>
+        public Task UpdateLatest(ChargingReservation_Id       Id,
+                                 Action<ChargingReservation>  UpdateFunc)
         {
 
             lock (InternalData)
             {
 
-                if (InternalData.TryGetValue(Id, out ChargingReservationCollection reservationCollection))
-                    UpdateFunc(reservationCollection.Last());
+                if (!InternalData.TryGetValue(Id, out var reservationCollection))
+                    return Task.CompletedTask;
 
-                LogIt("update",
-                      Id,
-                      "reservations",
-                      new JArray(reservationCollection.Select(reservation => reservation.ToJSON())));
+                UpdateFunc(reservationCollection.Last());
+
+                return LogIt("update",
+                             Id,
+                             "reservations",
+                             new JArray(reservationCollection.Select(reservation => reservation.ToJSON())));
 
             }
-
-            return this;
 
         }
 
@@ -209,7 +243,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Stop  (Id, Timestamp = null, StopAuthentication = null)
 
-        public void Stop(ChargingReservation_Id  Id,
+        /// <summary>
+        /// End the latest version of a charging reservation.
+        /// </summary>
+        public Task Stop(ChargingReservation_Id  Id,
                          DateTime?               Timestamp          = null,
                          AAuthentication         StopAuthentication = null)
         {
@@ -217,27 +254,23 @@ namespace cloud.charging.open.protocols.WWCP
             lock (InternalData)
             {
 
+                if (!InternalData.TryGetValue(Id, out var reservationCollection))
+                    return Task.CompletedTask;
 
-                if (InternalData.TryGetValue(Id, out ChargingReservationCollection reservationCollection))
-                {
+                var reservation = reservationCollection.LastOrDefault();
 
-                    var reservation = reservationCollection.LastOrDefault();
-                    if (reservation is not null)
-                    {
+                if (reservation is null)
+                    return Task.CompletedTask;
 
-                        reservation.EndTime                 = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+                reservation.EndTime                 = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
-                        if (StopAuthentication is not null)
-                            reservation.StopAuthentication  = StopAuthentication;
+                if (StopAuthentication is not null)
+                    reservation.StopAuthentication  = StopAuthentication;
 
-                        LogIt("stop",
-                              Id,
-                              "reservations",
-                              new JArray(reservation.ToJSON()));
-
-                    }
-
-                }
+                return LogIt("stop",
+                             Id,
+                             "reservations",
+                             new JArray(reservation.ToJSON()));
 
             }
 
