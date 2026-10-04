@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Globalization;
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -72,7 +73,7 @@ namespace cloud.charging.open.protocols.WWCP
                    LogFileNameCreator:    roamingNetworkId => String.Concat("ChargeDetailRecords-",
                                                                             roamingNetworkId, "-",
                                                                             Environment.MachineName, "_",
-                                                                            org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.Year, "-", org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.Month.ToString("D2"),
+                                                                            org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.ToString("yyyy-MM", CultureInfo.InvariantCulture),
                                                                             ".log"),
                    ReloadDataOnStart:     ReloadDataOnStart,
                    LogfileSearchPattern:  roamingNetworkId => "ChargeDetailRecords-" + roamingNetworkId + "-" + Environment.MachineName + "_",

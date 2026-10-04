@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Globalization;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
@@ -65,7 +66,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                    DisableLogfiles:       DisableLogfiles,
                    LogFilePathCreator:    roamingNetworkId => Path.Combine(LoggingPath ?? AppContext.BaseDirectory, "ChargingReservations"),
-                   LogFileNameCreator:    roamingNetworkId => $"ChargingReservations-{roamingNetworkId}-{Environment.MachineName}_{org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.Year}-{org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.Month:D2}.log",
+                   LogFileNameCreator:    roamingNetworkId => $"ChargingReservations-{roamingNetworkId}-{Environment.MachineName}_{org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.ToString("yyyy-MM", CultureInfo.InvariantCulture)}.log",
                    ReloadDataOnStart:     ReloadDataOnStart,
                    LogfileSearchPattern:  roamingNetworkId => $"ChargingReservations-{roamingNetworkId}-{Environment.MachineName}_",
 

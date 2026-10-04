@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Globalization;
 using System.Security.Authentication;
 
 using Newtonsoft.Json.Linq;
@@ -254,8 +255,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                                                  //       : null,
                                                                     context is not null ? context + "_" : "",
                                                                     logfileName, "_",
-                                                                    Timestamp.Now.Year, "-",
-                                                                    Timestamp.Now.Month.ToString("D2"),
+                                                                    Timestamp.Now.ToString("yyyy-MM", CultureInfo.InvariantCulture),
                                                                     ".log"
                                                                 ))
 

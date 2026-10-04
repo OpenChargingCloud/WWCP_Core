@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Globalization;
 using System.Diagnostics;
 
 using Newtonsoft.Json.Linq;
@@ -388,7 +389,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                    DisableLogfiles:        DisableLogfiles,
                    LogFilePathCreator:     roamingNetworkId => Path.Combine(LoggingPath ?? AppContext.BaseDirectory, "ChargingSessions"),
-                   LogFileNameCreator:     roamingNetworkId => $"ChargingSessions-{roamingNetworkId}_{Timestamp.Now.Year}-{Timestamp.Now.Month:D2}.log",
+                   LogFileNameCreator:     roamingNetworkId => $"ChargingSessions-{roamingNetworkId}_{Timestamp.Now.ToString("yyyy-MM", CultureInfo.InvariantCulture)}.log",
                    ReloadDataOnStart:      ReloadDataOnStart,
                    LogfileSearchPattern:   roamingNetworkId => $"ChargingSessions-{roamingNetworkId}_*.log",
 
