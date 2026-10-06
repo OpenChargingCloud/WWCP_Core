@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System;
 using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -40,15 +41,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The regular expression for parsing a charging pool group identification.
         /// </summary>
-        public  static readonly Regex  ChargingPoolGroupId_RegEx  = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?GP([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
-                                                                            RegexOptions.IgnorePatternWhitespace);
+        public static readonly Regex ChargingPoolGroupId_RegEx  = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?GS([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
+                                                                          RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// The charging station operator identification.
+        /// The charging pool operator identification.
         /// </summary>
         public ChargingStationOperator_Id  OperatorId   { get; }
 
@@ -81,7 +82,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         /// <summary>
         /// Generate a new electric vehicle charging pool group identification
-        /// based on the given charging station operator and identification suffix.
+        /// based on the given charging pool operator and identification suffix.
         /// </summary>
         private ChargingPoolGroup_Id(ChargingStationOperator_Id  OperatorId,
                                      String                      Suffix)
@@ -107,10 +108,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Generate a new unique identification of a charging pool group.
         /// </summary>
-        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="OperatorId">The unique identification of a charging pool operator.</param>
         /// <param name="Mapper">A delegate to modify the newly generated charging pool group identification.</param>
         public static ChargingPoolGroup_Id Random(ChargingStationOperator_Id  OperatorId,
-                                                  Func<String, String>?       Mapper   = null)
+                                                     Func<String, String>?       Mapper   = null)
 
 
             => new (OperatorId,
@@ -136,17 +137,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            var MatchCollection = ChargingPoolGroupId_RegEx.Matches(Text);
+            var matchCollection = ChargingPoolGroupId_RegEx.Matches(Text);
 
-            if (MatchCollection.Count != 1)
+            if (matchCollection.Count != 1)
                 throw new ArgumentException("Illegal text representation of a charging pool group identification: '{Text}'!",
                                             nameof(Text));
 
-            ChargingStationOperator_Id _OperatorId;
-
-            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out _OperatorId))
-                return new ChargingPoolGroup_Id(_OperatorId,
-                                                MatchCollection[0].Groups[2].Value);
+            if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out ChargingStationOperator_Id chargingStationOperatorId))
+                return new ChargingPoolGroup_Id(chargingStationOperatorId,
+                                                   matchCollection[0].Groups[2].Value);
 
             throw new ArgumentException("Illegal charging pool group identification '" + Text + "'!",
                                         nameof(Text));
@@ -160,12 +159,27 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Parse the given string as a charging pool group identification.
         /// </summary>
-        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="OperatorId">The unique identification of a charging pool operator.</param>
         /// <param name="Suffix">The suffix of the charging pool group identification.</param>
         public static ChargingPoolGroup_Id Parse(ChargingStationOperator_Id  OperatorId,
-                                                 String                      Suffix)
+                                                    String                      Suffix)
 
             => Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*GS" + Suffix);
+
+        #endregion
+
+        #region Parse(OperatorId, ChargingTariffGroupId, Suffix)
+
+        /// <summary>
+        /// Parse the given string as a charging pool group identification.
+        /// </summary>
+        /// <param name="OperatorId">The unique identification of a charging pool operator.</param>
+        /// <param name="Suffix">The suffix of the charging pool group identification.</param>
+        public static ChargingPoolGroup_Id Parse(ChargingStationOperator_Id  OperatorId,
+                                                    ChargingTariffGroup_Id      ChargingTariffGroupId,
+                                                    String                      Suffix)
+
+            => Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*GS_" + ChargingTariffGroupId + "_" + Suffix);
 
         #endregion
 
@@ -179,45 +193,35 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
+            ChargingPoolGroupId = default;
+
             if (Text.IsNullOrEmpty())
-            {
-                ChargingPoolGroupId = default(ChargingPoolGroup_Id);
                 return false;
-            }
 
             #endregion
 
             try
             {
 
-                ChargingPoolGroupId = default(ChargingPoolGroup_Id);
+                var matchCollection = ChargingPoolGroupId_RegEx.Matches(Text);
 
-                var _MatchCollection = ChargingPoolGroupId_RegEx.Matches(Text);
-
-                if (_MatchCollection.Count != 1)
+                if (matchCollection.Count != 1)
                     return false;
 
-                ChargingStationOperator_Id _OperatorId;
-
-                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _OperatorId))
+                if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out ChargingStationOperator_Id chargingStationOperatorId))
                 {
 
-                    ChargingPoolGroupId = new ChargingPoolGroup_Id(_OperatorId,
-                                                                      _MatchCollection[0].Groups[2].Value);
+                    ChargingPoolGroupId = new ChargingPoolGroup_Id(chargingStationOperatorId,
+                                                                         matchCollection[0].Groups[2].Value);
 
                     return true;
 
                 }
 
             }
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-            catch (Exception e)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
+            catch
             { }
 
-            ChargingPoolGroupId = default(ChargingPoolGroup_Id);
             return false;
 
         }

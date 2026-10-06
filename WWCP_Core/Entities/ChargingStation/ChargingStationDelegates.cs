@@ -56,12 +56,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped admin status of the charging station.</param>
     /// <param name="OldStatus">The optional old timestamped admin status of the charging station.</param>
     /// <param name="DataSource">An optional data source or context for the charging station admin status update.</param>
-    public delegate Task OnChargingStationAdminStatusChangedDelegate(DateTimeOffset                                 Timestamp,
-                                                                     EventTracking_Id                               EventTrackingId,
-                                                                     IChargingStation                               ChargingStation,
+    public delegate Task OnChargingStationAdminStatusChangedDelegate(DateTimeOffset                                Timestamp,
+                                                                     EventTracking_Id                              EventTrackingId,
+                                                                     IChargingStation                              ChargingStation,
                                                                      Timestamped<ChargingStationAdminStatusType>   NewStatus,
                                                                      Timestamped<ChargingStationAdminStatusType>?  OldStatus,
-                                                                     Context?                                       DataSource);
+                                                                     Context?                                      DataSource);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of the charging station changed.
@@ -72,11 +72,11 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped status of the charging station.</param>
     /// <param name="OldStatus">The optional old timestamped status of the charging station.</param>
     /// <param name="DataSource">An optional data source or context for the charging station status update.</param>
-    public delegate Task OnChargingStationStatusChangedDelegate(DateTimeOffset                            Timestamp,
-                                                                EventTracking_Id                          EventTrackingId,
-                                                                IChargingStation                          ChargingStation,
+    public delegate Task OnChargingStationStatusChangedDelegate(DateTimeOffset                           Timestamp,
+                                                                EventTracking_Id                         EventTrackingId,
+                                                                IChargingStation                         ChargingStation,
                                                                 Timestamped<ChargingStationStatusType>   NewStatus,
                                                                 Timestamped<ChargingStationStatusType>?  OldStatus,
-                                                                Context?                                  DataSource);
+                                                                Context?                                 DataSource);
 
 }
