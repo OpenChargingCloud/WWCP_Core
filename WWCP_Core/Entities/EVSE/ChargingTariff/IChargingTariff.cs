@@ -104,9 +104,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                              var results = new List<String[]>();
 
-                             foreach (var group in station.Operator.ChargingStationGroups.Where(group => group.Tariff is not null))
-                                 if (group.AllowedMemberIds.Contains(station.Id) ||
-                                     (group.AutoIncludeStations is not null && group.AutoIncludeStations(station.Operator.GetChargingStationById(station.Id))))
+                             foreach (var group in station.Operator.ChargingStationGroups)
+                                 if (group.Tariff is ChargingTariff tariff &&
+                                     (group.AllowedMemberIds.Contains(station.Id) ||
+                                      (group.AutoIncludeStations is not null && group.AutoIncludeStations(station.Operator.GetChargingStationById(station.Id)))))
                                      foreach (var evse in station)
                                         results.Add(new String[] {
                                                         evse.Id.                             ToString(),
@@ -119,13 +120,14 @@ namespace cloud.charging.open.protocols.WWCP
                                                         station.Address.Country.CountryName. FirstText(),
                                                         evse.MaxPower.                       ToString() + " kW",
                                                         evse.ChargingConnectors.First().Type.ToString(),
-                                                        group.Tariff.Name.                   FirstText()
+                                                        tariff.Name.                         FirstText()
                                                     });
 
                              foreach (var evse in station)
-                                 foreach (var group in evse.Operator.EVSEGroups.Where(group => group.Tariff is not null))
-                                     if (group.AllowedMemberIds.Contains(evse.Id) ||
-                                         (group.AutoIncludeEVSEs is not null && group.AutoIncludeEVSEs(evse.Operator.GetEVSEById(evse.Id))))
+                                 foreach (var group in evse.Operator.EVSEGroups)
+                                     if (group.Tariff is ChargingTariff tariff &&
+                                         (group.AllowedMemberIds.Contains(evse.Id) ||
+                                          (group.AutoIncludeEVSEs is not null && group.AutoIncludeEVSEs(evse.Operator.GetEVSEById(evse.Id)))))
                                          results.Add(new String[] {
                                                          evse.Id.                             ToString(),
                                                       //   station.Brand.Name.                  FirstText(),
@@ -137,7 +139,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                          station.Address.Country.CountryName. FirstText(),
                                                          evse.MaxPower.                       ToString() + " kW",
                                                          evse.ChargingConnectors.First().Type.ToString(),
-                                                         group.Tariff.Name.                   FirstText()
+                                                         tariff.Name.                         FirstText()
                                                      });
 
                              if (results.Count == 0)
