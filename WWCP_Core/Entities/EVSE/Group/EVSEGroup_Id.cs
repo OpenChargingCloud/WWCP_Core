@@ -265,14 +265,6 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator == (EVSEGroup_Id EVSEGroupId1, EVSEGroup_Id EVSEGroupId2)
         {
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(EVSEGroupId1, EVSEGroupId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) EVSEGroupId1 is null) || ((Object) EVSEGroupId2 is null))
-                return false;
-
             return EVSEGroupId1.Equals(EVSEGroupId2);
 
         }
@@ -368,7 +360,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        public Int32 CompareTo(Object? Object)
         {
 
             if (Object is null)
@@ -423,7 +415,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)

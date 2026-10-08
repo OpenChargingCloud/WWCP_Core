@@ -244,14 +244,6 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator == (ChargingTariffGroup_Id ChargingTariffGroupId1, ChargingTariffGroup_Id ChargingTariffGroupId2)
         {
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingTariffGroupId1, ChargingTariffGroupId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ChargingTariffGroupId1 is null) || ((Object) ChargingTariffGroupId2 is null))
-                return false;
-
             return ChargingTariffGroupId1.Equals(ChargingTariffGroupId2);
 
         }
@@ -347,7 +339,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        public Int32 CompareTo(Object? Object)
         {
 
             if (Object is null)
@@ -402,7 +394,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -457,7 +449,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => String.Concat(OperatorId, "*T", Suffix);
+            => String.Concat(OperatorId, "*TG", Suffix);
 
         #endregion
 

@@ -20,3 +20,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("org.GraphDefined.WWCP.Net")]
 [assembly: InternalsVisibleTo("org.GraphDefined.WWCP.EMSP")]
 [assembly: InternalsVisibleTo("org.GraphDefined.WWCP.ChargingStation")]
+[assembly: InternalsVisibleTo("cloud.charging.open.protocols.WWCP.Core.tests")]

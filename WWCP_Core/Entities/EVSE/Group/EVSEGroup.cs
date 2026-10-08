@@ -142,11 +142,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                          #region Embedded means it is served as a substructure of e.g. a charging station operator
 
-                         Embedded
+                         Embedded || EVSEGroup.RoamingNetwork is not IRoamingNetwork roamingNetwork
                              ? null
                              : ExpandRoamingNetworkId.Switch(
-                                   () => new JProperty("roamingNetworkId",           EVSEGroup.RoamingNetwork.Id. ToString()),
-                                   () => new JProperty("roamingNetwork",             EVSEGroup.RoamingNetwork.    ToJSON(Embedded:                          true,
+                                   () => new JProperty("roamingNetworkId",           roamingNetwork.Id. ToString()),
+                                   () => new JProperty("roamingNetwork",             roamingNetwork.    ToJSON(Embedded:                          true,
                                                                                                                                     ExpandChargingStationOperatorIds:  InfoStatus.Hidden,
                                                                                                                                     ExpandChargingPoolIds:             InfoStatus.Hidden,
                                                                                                                                     ExpandChargingStationIds:          InfoStatus.Hidden,
@@ -281,25 +281,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
-        /// <summary>
-        /// The official (multi-language) name of this group.
-        /// </summary>
-        [Mandatory]
-        public I18NString               Name           { get; }
-
-        /// <summary>
-        /// An optional (multi-language) description of this group.
-        /// </summary>
-        [Optional]
-        public I18NString               Description    { get; }
-
 
 
         /// <summary>
         /// An optional (multi-language) brand name for this group.
         /// </summary>
         [Optional]
-        public Brand                    Brand          { get; }
+        public Brand?                   Brand          { get; }
 
         /// <summary>
         /// The priority of this group relative to all other groups.
@@ -310,11 +298,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// An optional charging tariff.
         /// </summary>
         [Optional]
-        public ChargingTariff           Tariff         { get; }
+        public ChargingTariff?          Tariff         { get; }
 
         #region DataLicense
 
-        private ReactiveSet<DataLicense> _DataLicenses;
+        private ReactiveSet<DataLicense>? _DataLicenses;
 
         /// <summary>
         /// The license of the group data.
@@ -328,14 +316,14 @@ namespace cloud.charging.open.protocols.WWCP
 
                 return _DataLicenses is not null && _DataLicenses.Any()
                            ? _DataLicenses
-                           : Operator?.DataLicenses;
+                           : Operator.DataLicenses;
 
             }
 
             set
             {
 
-                if (value != _DataLicenses && value != Operator?.DataLicenses)
+                if (value != _DataLicenses && value != Operator.DataLicenses)
                 {
 
                     if (value.IsNullOrEmpty())
@@ -396,7 +384,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A delegate called to aggregate the dynamic status of all subordinated charging stations.
         /// </summary>
-        public Func<EVSEStatusReport, EVSEGroupStatusTypes>  StatusAggregationDelegate   { get; }
+        public Func<EVSEStatusReport, EVSEGroupStatusTypes>? StatusAggregationDelegate   { get; }
 
         #endregion
 
@@ -414,8 +402,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// The roaming network of this charging station.
         /// </summary>
         [InternalUseOnly]
-        public IRoamingNetwork RoamingNetwork
-            => Operator?.RoamingNetwork;
+        public IRoamingNetwork? RoamingNetwork
+            => Operator.RoamingNetwork;
 
         #endregion
 
@@ -428,7 +416,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the admin status changed.
         /// </summary>
-        public event OnAdminStatus2ChangedDelegate OnAdminStatusChanged;
+        public event OnAdminStatus2ChangedDelegate? OnAdminStatusChanged;
 
         #endregion
 
@@ -440,17 +428,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data of any subordinated EVSE changed.
         /// </summary>
-        public event OnEVSEDataChangedDelegate         OnEVSEDataChanged;
+        public event OnEVSEDataChangedDelegate?         OnEVSEDataChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status of any subordinated EVSE changed.
         /// </summary>
-        public event OnEVSEStatusChangedDelegate       OnEVSEStatusChanged;
+        public event OnEVSEStatusChangedDelegate?       OnEVSEStatusChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        public event OnEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
+        public event OnEVSEAdminStatusChangedDelegate?  OnEVSEAdminStatusChanged;
 
         #endregion
 
@@ -505,23 +493,27 @@ namespace cloud.charging.open.protocols.WWCP
         internal EVSEGroup(EVSEGroup_Id                                  Id,
                            ChargingStationOperator                       Operator,
                            I18NString                                    Name,
-                           I18NString                                    Description                   = null,
+                           I18NString?                                   Description                   = null,
 
-                           Brand                                         Brand                         = null,
+                           Brand?                                        Brand                         = null,
                            Priority?                                     Priority                      = null,
-                           ChargingTariff                                Tariff                        = null,
-                           IEnumerable<DataLicense>                  DataLicenses                  = null,
+                           ChargingTariff?                               Tariff                        = null,
+                           IEnumerable<DataLicense>?                     DataLicenses                  = null,
 
-                           IEnumerable<EVSE>                             Members                       = null,
-                           IEnumerable<EVSE_Id>                          MemberIds                     = null,
-                           Func<EVSE_Id, Boolean>                        AutoIncludeEVSEIds            = null,
-                           Func<IEVSE,   Boolean>                        AutoIncludeEVSEs              = null,
+                           IEnumerable<EVSE>?                            Members                       = null,
+                           IEnumerable<EVSE_Id>?                         MemberIds                     = null,
+                           Func<EVSE_Id, Boolean>?                       AutoIncludeEVSEIds            = null,
+                           Func<IEVSE,   Boolean>?                       AutoIncludeEVSEs              = null,
 
-                           Func<EVSEStatusReport, EVSEGroupStatusTypes>  StatusAggregationDelegate     = null,
+                           Func<EVSEStatusReport, EVSEGroupStatusTypes>? StatusAggregationDelegate     = null,
                            UInt16                                        MaxGroupStatusListSize        = DefaultMaxGroupStatusListSize,
                            UInt16                                        MaxGroupAdminStatusListSize   = DefaultMaxGroupAdminStatusListSize)
 
-            : base(Id)
+            : base(Id,
+                   Name,
+                   Description,
+                   MaxAdminStatusScheduleSize:  MaxGroupAdminStatusListSize,
+                   MaxStatusScheduleSize:       MaxGroupStatusListSize)
 
         {
 
@@ -538,8 +530,6 @@ namespace cloud.charging.open.protocols.WWCP
             #region Init data and properties
 
             this.Operator                    = Operator;
-            this.Name                        = Name;
-            this.Description                 = Description ?? new I18NString();
 
             this.Brand                       = Brand;
             this.Priority                    = Priority;
@@ -547,8 +537,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.DataLicenses                = DataLicenses?.Any() == true ? new ReactiveSet<DataLicense>(DataLicenses) : new ReactiveSet<DataLicense>();
 
             this._AllowedMemberIds           = MemberIds is not null ? new HashSet<EVSE_Id>(MemberIds) : new HashSet<EVSE_Id>();
-            this.AutoIncludeEVSEIds          = AutoIncludeEVSEIds ?? (MemberIds is null ? (Func<EVSE_Id, Boolean>) (evseid => true) : evseid => false);
-            this.AutoIncludeEVSEs            = AutoIncludeEVSEs   ?? (MemberIds is null ? (Func<IEVSE,   Boolean>) (evse   => true) : evse   => false);
+            this.AutoIncludeEVSEIds          = AutoIncludeEVSEIds ?? (Members is null && MemberIds is null ? (Func<EVSE_Id, Boolean>) (evseid => true) : evseid => false);
+            this.AutoIncludeEVSEs            = AutoIncludeEVSEs   ?? (Members is null && MemberIds is null ? (Func<IEVSE,   Boolean>) (evse   => true) : evse   => false);
             this._EVSEs                      = new ConcurrentDictionary<EVSE_Id, EVSE>();
 
             this.StatusAggregationDelegate   = StatusAggregationDelegate;
@@ -587,8 +577,11 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (Members?.Any() == true)
-                Members.ForEach(evse => Add(evse));
+            foreach (var member in Members ?? [])
+            {
+                _AllowedMemberIds.Add(member.Id);
+                _EVSEs.TryAdd(member.Id, member);
+            }
 
         }
 
@@ -598,7 +591,8 @@ namespace cloud.charging.open.protocols.WWCP
         public EVSEGroup Add(EVSE EVSE)
         {
 
-            if (_AllowedMemberIds.Contains(EVSE.Id) &&
+            if (_AllowedMemberIds.Contains(EVSE.Id) ||
+                AutoIncludeEVSEIds(EVSE.Id)          ||
                 AutoIncludeEVSEs(EVSE))
             {
                 _EVSEs.TryAdd(EVSE.Id, EVSE);
@@ -656,12 +650,14 @@ namespace cloud.charging.open.protocols.WWCP
                                               Context?                                 DataSource   = null)
         {
 
-            await OnAdminStatusChanged?.Invoke(Timestamp,
-                                               EventTrackingId,
-                                               this,
-                                               NewStatus,
-                                               OldStatus,
-                                               DataSource);
+            var onAdminStatusChanged = OnAdminStatusChanged;
+            if (onAdminStatusChanged is not null)
+                await onAdminStatusChanged(Timestamp,
+                                           EventTrackingId,
+                                           this,
+                                           NewStatus,
+                                           OldStatus,
+                                           DataSource);
 
         }
 
@@ -780,10 +776,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEGroup1">An EVSE group.</param>
+        /// <param name="EVSEGroup1">A EVSE group.</param>
         /// <param name="EVSEGroup2">Another EVSE group.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (EVSEGroup EVSEGroup1, EVSEGroup EVSEGroup2)
+        public static Boolean operator == (EVSEGroup? EVSEGroup1,
+                                           EVSEGroup? EVSEGroup2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -791,7 +788,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVSEGroup1 is null) || ((Object) EVSEGroup2 is null))
+            if (EVSEGroup1 is null || EVSEGroup2 is null)
                 return false;
 
             return EVSEGroup1.Equals(EVSEGroup2);
@@ -805,10 +802,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEGroup1">An EVSE group.</param>
+        /// <param name="EVSEGroup1">A EVSE group.</param>
         /// <param name="EVSEGroup2">Another EVSE group.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (EVSEGroup EVSEGroup1, EVSEGroup EVSEGroup2)
+        public static Boolean operator != (EVSEGroup? EVSEGroup1,
+                                           EVSEGroup? EVSEGroup2)
+
             => !(EVSEGroup1 == EVSEGroup2);
 
         #endregion
@@ -818,18 +817,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEGroup1">An EVSE group.</param>
+        /// <param name="EVSEGroup1">A EVSE group.</param>
         /// <param name="EVSEGroup2">Another EVSE group.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator < (EVSEGroup EVSEGroup1, EVSEGroup EVSEGroup2)
-        {
+        /// <returns>True if EVSEGroup1 comes first; False otherwise.</returns>
+        public static Boolean operator < (EVSEGroup? EVSEGroup1,
+                                          EVSEGroup? EVSEGroup2)
 
-            if ((Object) EVSEGroup1 is null)
-                throw new ArgumentNullException(nameof(EVSEGroup1), "The given EVSEGroup1 must not be null!");
-
-            return EVSEGroup1.CompareTo(EVSEGroup2) < 0;
-
-        }
+            => EVSEGroup1 is null
+                   ? throw new ArgumentNullException(nameof(EVSEGroup1), "The given EVSE group must not be null!")
+                   : EVSEGroup1.CompareTo(EVSEGroup2) < 0;
 
         #endregion
 
@@ -838,10 +834,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEGroup1">An EVSE group.</param>
+        /// <param name="EVSEGroup1">A EVSE group.</param>
         /// <param name="EVSEGroup2">Another EVSE group.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator <= (EVSEGroup EVSEGroup1, EVSEGroup EVSEGroup2)
+        /// <returns>True if EVSEGroup1 does not come after EVSEGroup2; False otherwise.</returns>
+        public static Boolean operator <= (EVSEGroup? EVSEGroup1,
+                                           EVSEGroup? EVSEGroup2)
+
             => !(EVSEGroup1 > EVSEGroup2);
 
         #endregion
@@ -851,18 +849,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEGroup1">An EVSE group.</param>
+        /// <param name="EVSEGroup1">A EVSE group.</param>
         /// <param name="EVSEGroup2">Another EVSE group.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator > (EVSEGroup EVSEGroup1, EVSEGroup EVSEGroup2)
-        {
+        /// <returns>True if EVSEGroup1 comes after EVSEGroup2; False otherwise.</returns>
+        public static Boolean operator > (EVSEGroup? EVSEGroup1,
+                                          EVSEGroup? EVSEGroup2)
 
-            if ((Object) EVSEGroup1 is null)
-                throw new ArgumentNullException(nameof(EVSEGroup1), "The given EVSEGroup1 must not be null!");
-
-            return EVSEGroup1.CompareTo(EVSEGroup2) > 0;
-
-        }
+            => EVSEGroup1 is null
+                   ? throw new ArgumentNullException(nameof(EVSEGroup1), "The given EVSE group must not be null!")
+                   : EVSEGroup1.CompareTo(EVSEGroup2) > 0;
 
         #endregion
 
@@ -871,10 +866,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEGroup1">An EVSE group.</param>
+        /// <param name="EVSEGroup1">A EVSE group.</param>
         /// <param name="EVSEGroup2">Another EVSE group.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator >= (EVSEGroup EVSEGroup1, EVSEGroup EVSEGroup2)
+        /// <returns>True if EVSEGroup1 does not come first; False otherwise.</returns>
+        public static Boolean operator >= (EVSEGroup? EVSEGroup1,
+                                           EVSEGroup? EVSEGroup2)
+
             => !(EVSEGroup1 < EVSEGroup2);
 
         #endregion
@@ -888,20 +885,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">A EVSE group to compare with.</param>
+        public override Int32 CompareTo(Object? Object)
 
-            if (Object is null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            var EVSEGroup = Object as EVSEGroup;
-            if ((Object) EVSEGroup is null)
-                throw new ArgumentException("The given object is not a charging pool!", nameof(Object));
-
-            return CompareTo(EVSEGroup);
-
-        }
+            => Object is EVSEGroup evseGroup
+                   ? CompareTo(evseGroup)
+                   : throw new ArgumentException("The given object is not a EVSE group!", nameof(Object));
 
         #endregion
 
@@ -910,16 +899,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEGroup">An EVSE group object to compare with.</param>
-        public Int32 CompareTo(EVSEGroup EVSEGroup)
-        {
+        /// <param name="EVSEGroup">A EVSE group to compare with.</param>
+        public Int32 CompareTo(EVSEGroup? EVSEGroup)
 
-            if ((Object) EVSEGroup is null)
-                throw new ArgumentNullException(nameof(EVSEGroup), "The given EVSE group must not be null!");
-
-            return Id.CompareTo(EVSEGroup.Id);
-
-        }
+            => EVSEGroup is null
+                   ? throw new ArgumentNullException(nameof(EVSEGroup), "The given EVSE group must not be null!")
+                   : Id.CompareTo(EVSEGroup.Id);
 
         #endregion
 
@@ -932,40 +917,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A EVSE group to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            var EVSEGroup = Object as EVSEGroup;
-            if ((Object) EVSEGroup is null)
-                return false;
-
-            return Equals(EVSEGroup);
-
-        }
+            => Object is EVSEGroup evseGroup &&
+                   Equals(evseGroup);
 
         #endregion
 
         #region Equals(EVSEGroup)
 
         /// <summary>
-        /// Compares two charging pools for equality.
+        /// Compares two EVSE groups for equality.
         /// </summary>
-        /// <param name="EVSEGroup">An EVSE group to compare with.</param>
+        /// <param name="EVSEGroup">A EVSE group to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EVSEGroup EVSEGroup)
-        {
+        public Boolean Equals(EVSEGroup? EVSEGroup)
 
-            if ((Object) EVSEGroup is null)
-                return false;
-
-            return Id.Equals(EVSEGroup.Id);
-
-        }
+            => EVSEGroup is not null &&
+                   Id.Equals(EVSEGroup.Id);
 
         #endregion
 

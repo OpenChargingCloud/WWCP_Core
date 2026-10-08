@@ -2494,8 +2494,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                     MemberIds,
                                                                     AutoIncludeStations,
                                                                     StatusAggregationDelegate,
-                                                                    MaxGroupAdminStatusListSize,
-                                                                    MaxGroupStatusListSize);
+                                                                    MaxGroupStatusListSize:       MaxGroupStatusListSize,
+                                                                    MaxGroupAdminStatusListSize:  MaxGroupAdminStatusListSize);
 
 
                 if (chargingStationGroups.TryAdd(chargingStationGroup,
@@ -3777,8 +3777,8 @@ namespace cloud.charging.open.protocols.WWCP
                                               AutoIncludeEVSEIds,
                                               AutoIncludeEVSEs,
                                               StatusAggregationDelegate,
-                                              MaxGroupAdminStatusListSize,
-                                              MaxGroupStatusListSize);
+                                              MaxGroupStatusListSize:       MaxGroupStatusListSize,
+                                              MaxGroupAdminStatusListSize:  MaxGroupAdminStatusListSize);
 
 
                 if (evseGroups.TryAdd(evseGroup,

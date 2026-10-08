@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The regular expression for parsing a charging pool group identification.
         /// </summary>
-        public static readonly Regex ChargingPoolGroupId_RegEx  = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?GS([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
+        public static readonly Regex ChargingPoolGroupId_RegEx  = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?GP([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
                                                                           RegexOptions.IgnorePatternWhitespace);
 
         #endregion
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingPoolGroup_Id Parse(ChargingStationOperator_Id  OperatorId,
                                                     String                      Suffix)
 
-            => Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*GS" + Suffix);
+            => Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*GP" + Suffix);
 
         #endregion
 
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                     ChargingTariffGroup_Id      ChargingTariffGroupId,
                                                     String                      Suffix)
 
-            => Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*GS_" + ChargingTariffGroupId + "_" + Suffix);
+            => Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*GP_" + ChargingTariffGroupId + "_" + Suffix);
 
         #endregion
 
@@ -255,14 +255,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChargingPoolGroup_Id ChargingPoolGroupId1, ChargingPoolGroup_Id ChargingPoolGroupId2)
         {
-
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingPoolGroupId1, ChargingPoolGroupId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ChargingPoolGroupId1 is null) || ((Object) ChargingPoolGroupId2 is null))
-                return false;
 
             return ChargingPoolGroupId1.Equals(ChargingPoolGroupId2);
 
@@ -359,7 +351,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        public Int32 CompareTo(Object? Object)
         {
 
             if (Object is null)
@@ -414,7 +406,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -469,7 +461,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => String.Concat(OperatorId, "*GS", Suffix);
+            => String.Concat(OperatorId, "*GP", Suffix);
 
         #endregion
 

@@ -141,11 +141,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                          #region Embedded means it is served as a substructure of e.g. a charging station operator
 
-                         Embedded
+                         Embedded || ChargingStationGroup.RoamingNetwork is not IRoamingNetwork roamingNetwork
                              ? null
                              : ExpandRoamingNetworkId.Switch(
-                                   () => new JProperty("roamingNetworkId",           ChargingStationGroup.RoamingNetwork.Id. ToString()),
-                                   () => new JProperty("roamingNetwork",             ChargingStationGroup.RoamingNetwork.    ToJSON(Embedded:                          true,
+                                   () => new JProperty("roamingNetworkId",           roamingNetwork.Id. ToString()),
+                                   () => new JProperty("roamingNetwork",             roamingNetwork.    ToJSON(Embedded:                          true,
                                                                                                                                     ExpandChargingStationOperatorIds:  InfoStatus.Hidden,
                                                                                                                                     ExpandChargingPoolIds:             InfoStatus.Hidden,
                                                                                                                                     ExpandChargingStationIds:          InfoStatus.Hidden,
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Skip">The optional number of charging stations to skip.</param>
         /// <param name="Take">The optional number of charging stations to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
-        public static JArray ToJSON(this IEnumerable<ChargingStationGroup>  ChargingStationGroups,
+        public static JArray? ToJSON(this IEnumerable<ChargingStationGroup>  ChargingStationGroups,
                                     UInt64?                                 Skip                              = null,
                                     UInt64?                                 Take                              = null,
                                     Boolean                                 Embedded                          = false,
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this ChargingStationGroups, JPropertyKey)
 
-        public static JProperty ToJSON(this IEnumerable<ChargingStationGroup> ChargingStationGroups, String JPropertyKey)
+        public static JProperty? ToJSON(this IEnumerable<ChargingStationGroup> ChargingStationGroups, String JPropertyKey)
         {
 
             #region Initial checks
@@ -287,7 +287,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// An optional (multi-language) brand name for this group.
         /// </summary>
         [Optional]
-        public Brand                    Brand          { get; }
+        public Brand?                   Brand          { get; }
 
         /// <summary>
         /// The priority of this group relative to all other groups.
@@ -298,11 +298,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// An optional charging tariff.
         /// </summary>
         [Optional]
-        public ChargingTariff           Tariff         { get; }
+        public ChargingTariff?          Tariff         { get; }
 
         #region DataLicense
 
-        private ReactiveSet<DataLicense> _DataLicenses;
+        private ReactiveSet<DataLicense>? _DataLicenses;
 
         /// <summary>
         /// The license of the group data.
@@ -316,14 +316,14 @@ namespace cloud.charging.open.protocols.WWCP
 
                 return _DataLicenses is not null && _DataLicenses.Any()
                            ? _DataLicenses
-                           : Operator?.DataLicenses;
+                           : Operator.DataLicenses;
 
             }
 
             set
             {
 
-                if (value != _DataLicenses && value != Operator?.DataLicenses)
+                if (value != _DataLicenses && value != Operator.DataLicenses)
                 {
 
                     if (value.IsNullOrEmpty())
@@ -357,7 +357,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Func<IChargingStation, Boolean> AutoIncludeStations { get; }
 
 
-        public ChargingStationGroup     ParentGroup    { get; }
+        public ChargingStationGroup?    ParentGroup    { get; }
 
         #region ChargingStations
 
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A delegate called to aggregate the dynamic status of all subordinated charging stations.
         /// </summary>
-        public Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate   { get; }
+        public Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>? StatusAggregationDelegate   { get; }
 
         #endregion
 
@@ -415,8 +415,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// The roaming network of this charging station.
         /// </summary>
         [InternalUseOnly]
-        public IRoamingNetwork RoamingNetwork
-            => Operator?.RoamingNetwork;
+        public IRoamingNetwork? RoamingNetwork
+            => Operator.RoamingNetwork;
 
         #endregion
 
@@ -429,7 +429,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the admin status changed.
         /// </summary>
-        public event OnChargingStationGroupAdminStatusChangedDelegate OnAdminStatusChanged;
+        public event OnChargingStationGroupAdminStatusChangedDelegate? OnAdminStatusChanged;
 
         #endregion
 
@@ -511,17 +511,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data of any subordinated EVSE changed.
         /// </summary>
-        public event OnEVSEDataChangedDelegate         OnEVSEDataChanged;
+        public event OnEVSEDataChangedDelegate?         OnEVSEDataChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status of any subordinated EVSE changed.
         /// </summary>
-        public event OnEVSEStatusChangedDelegate       OnEVSEStatusChanged;
+        public event OnEVSEStatusChangedDelegate?       OnEVSEStatusChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        public event OnEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
+        public event OnEVSEAdminStatusChangedDelegate?  OnEVSEAdminStatusChanged;
 
         #endregion
 
@@ -547,24 +547,26 @@ namespace cloud.charging.open.protocols.WWCP
         internal ChargingStationGroup(ChargingStationGroup_Id                                             Id,
                                       IChargingStationOperator                                            Operator,
                                       I18NString                                                          Name,
-                                      I18NString                                                          Description                   = null,
+                                      I18NString?                                                         Description                   = null,
 
-                                      Brand                                                               Brand                         = null,
+                                      Brand?                                                              Brand                         = null,
                                       Priority?                                                           Priority                      = null,
-                                      ChargingTariff                                                      Tariff                        = null,
-                                      IEnumerable<DataLicense>                                            DataLicenses                  = null,
+                                      ChargingTariff?                                                     Tariff                        = null,
+                                      IEnumerable<DataLicense>?                                           DataLicenses                  = null,
 
-                                      IEnumerable<IChargingStation>                                       Members                       = null,
-                                      IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
-                                      Func<IChargingStation, Boolean>                                     AutoIncludeStations           = null,
+                                      IEnumerable<IChargingStation>?                                      Members                       = null,
+                                      IEnumerable<ChargingStation_Id>?                                    MemberIds                     = null,
+                                      Func<IChargingStation, Boolean>?                                    AutoIncludeStations           = null,
 
-                                      Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
+                                      Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>? StatusAggregationDelegate     = null,
                                       UInt16                                                              MaxGroupStatusListSize        = DefaultMaxGroupStatusListSize,
                                       UInt16                                                              MaxGroupAdminStatusListSize   = DefaultMaxGroupAdminStatusListSize)
 
             : base(Id,
                    Name,
-                   Description)
+                   Description,
+                   MaxAdminStatusScheduleSize:  MaxGroupAdminStatusListSize,
+                   MaxStatusScheduleSize:       MaxGroupStatusListSize)
 
         {
 
@@ -588,7 +590,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.DataLicenses                = DataLicenses?.Any() == true ? new ReactiveSet<DataLicense>(DataLicenses) : new ReactiveSet<DataLicense>();
 
             this._AllowedMemberIds           = MemberIds is not null ? new HashSet<ChargingStation_Id>(MemberIds) : new HashSet<ChargingStation_Id>();
-            this.AutoIncludeStations         = AutoIncludeStations ?? (MemberIds is null ? (Func<IChargingStation, Boolean>) (station => true) : station => false);
+            this.AutoIncludeStations         = AutoIncludeStations ?? (Members is null && MemberIds is null ? (Func<IChargingStation, Boolean>) (station => true) : station => false);
             this._ChargingStations           = new ConcurrentDictionary<ChargingStation_Id, IChargingStation>();
 
             this.StatusAggregationDelegate   = StatusAggregationDelegate;
@@ -631,8 +633,11 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (Members?.Any() == true)
-                Members.ForEach(station => Add(station));
+            foreach (var member in Members ?? [])
+            {
+                _AllowedMemberIds.Add(member.Id);
+                _ChargingStations.TryAdd(member.Id, member);
+            }
 
         }
 
@@ -642,7 +647,7 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingStationGroup Add(IChargingStation Station)
         {
 
-            if (_AllowedMemberIds.Contains(Station.Id) &&
+            if (_AllowedMemberIds.Contains(Station.Id) ||
                 AutoIncludeStations(Station))
             {
                 _ChargingStations.TryAdd(Station.Id, Station);
@@ -677,12 +682,14 @@ namespace cloud.charging.open.protocols.WWCP
                                               Context?                                            DataSource   = null)
         {
 
-            await OnAdminStatusChanged?.Invoke(Timestamp,
-                                               EventTrackingId,
-                                               this,
-                                               NewStatus,
-                                               OldStatus,
-                                               DataSource);
+            var onAdminStatusChanged = OnAdminStatusChanged;
+            if (onAdminStatusChanged is not null)
+                await onAdminStatusChanged(Timestamp,
+                                           EventTrackingId,
+                                           this,
+                                           NewStatus,
+                                           OldStatus,
+                                           DataSource);
 
         }
 
@@ -905,7 +912,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationGroup1">A charging station group.</param>
         /// <param name="ChargingStationGroup2">Another charging station group.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ChargingStationGroup ChargingStationGroup1, ChargingStationGroup ChargingStationGroup2)
+        public static Boolean operator == (ChargingStationGroup? ChargingStationGroup1,
+                                           ChargingStationGroup? ChargingStationGroup2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -913,7 +921,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargingStationGroup1 is null) || ((Object) ChargingStationGroup2 is null))
+            if (ChargingStationGroup1 is null || ChargingStationGroup2 is null)
                 return false;
 
             return ChargingStationGroup1.Equals(ChargingStationGroup2);
@@ -930,7 +938,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationGroup1">A charging station group.</param>
         /// <param name="ChargingStationGroup2">Another charging station group.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ChargingStationGroup ChargingStationGroup1, ChargingStationGroup ChargingStationGroup2)
+        public static Boolean operator != (ChargingStationGroup? ChargingStationGroup1,
+                                           ChargingStationGroup? ChargingStationGroup2)
+
             => !(ChargingStationGroup1 == ChargingStationGroup2);
 
         #endregion
@@ -942,16 +952,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationGroup1">A charging station group.</param>
         /// <param name="ChargingStationGroup2">Another charging station group.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator < (ChargingStationGroup ChargingStationGroup1, ChargingStationGroup ChargingStationGroup2)
-        {
+        /// <returns>True if ChargingStationGroup1 comes first; False otherwise.</returns>
+        public static Boolean operator < (ChargingStationGroup? ChargingStationGroup1,
+                                          ChargingStationGroup? ChargingStationGroup2)
 
-            if ((Object) ChargingStationGroup1 is null)
-                throw new ArgumentNullException(nameof(ChargingStationGroup1), "The given ChargingStationGroup1 must not be null!");
-
-            return ChargingStationGroup1.CompareTo(ChargingStationGroup2) < 0;
-
-        }
+            => ChargingStationGroup1 is null
+                   ? throw new ArgumentNullException(nameof(ChargingStationGroup1), "The given charging station group must not be null!")
+                   : ChargingStationGroup1.CompareTo(ChargingStationGroup2) < 0;
 
         #endregion
 
@@ -962,8 +969,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationGroup1">A charging station group.</param>
         /// <param name="ChargingStationGroup2">Another charging station group.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator <= (ChargingStationGroup ChargingStationGroup1, ChargingStationGroup ChargingStationGroup2)
+        /// <returns>True if ChargingStationGroup1 does not come after ChargingStationGroup2; False otherwise.</returns>
+        public static Boolean operator <= (ChargingStationGroup? ChargingStationGroup1,
+                                           ChargingStationGroup? ChargingStationGroup2)
+
             => !(ChargingStationGroup1 > ChargingStationGroup2);
 
         #endregion
@@ -975,16 +984,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationGroup1">A charging station group.</param>
         /// <param name="ChargingStationGroup2">Another charging station group.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator > (ChargingStationGroup ChargingStationGroup1, ChargingStationGroup ChargingStationGroup2)
-        {
+        /// <returns>True if ChargingStationGroup1 comes after ChargingStationGroup2; False otherwise.</returns>
+        public static Boolean operator > (ChargingStationGroup? ChargingStationGroup1,
+                                          ChargingStationGroup? ChargingStationGroup2)
 
-            if ((Object) ChargingStationGroup1 is null)
-                throw new ArgumentNullException(nameof(ChargingStationGroup1), "The given ChargingStationGroup1 must not be null!");
-
-            return ChargingStationGroup1.CompareTo(ChargingStationGroup2) > 0;
-
-        }
+            => ChargingStationGroup1 is null
+                   ? throw new ArgumentNullException(nameof(ChargingStationGroup1), "The given charging station group must not be null!")
+                   : ChargingStationGroup1.CompareTo(ChargingStationGroup2) > 0;
 
         #endregion
 
@@ -995,8 +1001,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationGroup1">A charging station group.</param>
         /// <param name="ChargingStationGroup2">Another charging station group.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator >= (ChargingStationGroup ChargingStationGroup1, ChargingStationGroup ChargingStationGroup2)
+        /// <returns>True if ChargingStationGroup1 does not come first; False otherwise.</returns>
+        public static Boolean operator >= (ChargingStationGroup? ChargingStationGroup1,
+                                           ChargingStationGroup? ChargingStationGroup2)
+
             => !(ChargingStationGroup1 < ChargingStationGroup2);
 
         #endregion
@@ -1010,20 +1018,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">A charging station group to compare with.</param>
+        public override Int32 CompareTo(Object? Object)
 
-            if (Object is null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            var ChargingStationGroup = Object as ChargingStationGroup;
-            if ((Object) ChargingStationGroup is null)
-                throw new ArgumentException("The given object is not a charging pool!", nameof(Object));
-
-            return CompareTo(ChargingStationGroup);
-
-        }
+            => Object is ChargingStationGroup chargingStationGroup
+                   ? CompareTo(chargingStationGroup)
+                   : throw new ArgumentException("The given object is not a charging station group!", nameof(Object));
 
         #endregion
 
@@ -1032,16 +1032,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationGroup">A charging station group object to compare with.</param>
-        public Int32 CompareTo(ChargingStationGroup ChargingStationGroup)
-        {
+        /// <param name="ChargingStationGroup">A charging station group to compare with.</param>
+        public Int32 CompareTo(ChargingStationGroup? ChargingStationGroup)
 
-            if ((Object) ChargingStationGroup is null)
-                throw new ArgumentNullException(nameof(ChargingStationGroup), "The given charging station group must not be null!");
-
-            return Id.CompareTo(ChargingStationGroup.Id);
-
-        }
+            => ChargingStationGroup is null
+                   ? throw new ArgumentNullException(nameof(ChargingStationGroup), "The given charging station group must not be null!")
+                   : Id.CompareTo(ChargingStationGroup.Id);
 
         #endregion
 
@@ -1054,40 +1050,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A charging station group to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            var ChargingStationGroup = Object as ChargingStationGroup;
-            if ((Object) ChargingStationGroup is null)
-                return false;
-
-            return Equals(ChargingStationGroup);
-
-        }
+            => Object is ChargingStationGroup chargingStationGroup &&
+                   Equals(chargingStationGroup);
 
         #endregion
 
         #region Equals(ChargingStationGroup)
 
         /// <summary>
-        /// Compares two charging pools for equality.
+        /// Compares two charging station groups for equality.
         /// </summary>
         /// <param name="ChargingStationGroup">A charging station group to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingStationGroup ChargingStationGroup)
-        {
+        public Boolean Equals(ChargingStationGroup? ChargingStationGroup)
 
-            if ((Object) ChargingStationGroup is null)
-                return false;
-
-            return Id.Equals(ChargingStationGroup.Id);
-
-        }
+            => ChargingStationGroup is not null &&
+                   Id.Equals(ChargingStationGroup.Id);
 
         #endregion
 
