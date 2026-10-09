@@ -305,7 +305,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region EncodingMethod    [optional]
 
-                if (JSON.ParseOptional("encodingMethod",
+                // Written as "encodingMethod"; "encoding" is what was written before.
+                if (JSON.ParseOptional(JSON.ContainsKey("encodingMethod") ? "encodingMethod" : "encoding",
                                        "encoding method",
                                        CryptoEncoding.TryParse,
                                        out CryptoEncoding? EncodingMethod,
@@ -367,8 +368,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 Signature = new Signature(
-                                KeyId.FromBASE64(),
-                                Value.FromBASE64(),
+                                // In the encoding they were written in, not always BASE64.
+                                (EncodingMethod ?? CryptoEncoding.BASE64).Decode(KeyId),
+                                (EncodingMethod ?? CryptoEncoding.BASE64).Decode(Value),
                                 Algorithm,
                                 SigningMethod,
                                 EncodingMethod,
@@ -488,7 +490,7 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
                            Encoding      != CryptoEncoding.     BASE64
-                               ? new JProperty("encoding",         Encoding.       ToString())
+                               ? new JProperty("encodingMethod",   Encoding.       ToString())
                                : null,
 
                            Algorithm     != CryptoAlgorithm.    Secp256r1

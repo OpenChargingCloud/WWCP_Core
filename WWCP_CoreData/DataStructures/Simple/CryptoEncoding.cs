@@ -247,6 +247,24 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
 
+        /// <summary>
+        /// The bytes of the given text in this encoding - what Encode() wrote.
+        /// </summary>
+        /// <param name="Text">A text in this encoding.</param>
+        public Byte[] Decode(String Text)
+        {
+
+            if      (String.Equals(InternalId, HEX.   ToString(), StringComparison.OrdinalIgnoreCase))
+                return Text.FromHEX();
+
+            else if (String.Equals(InternalId, BASE32.ToString(), StringComparison.OrdinalIgnoreCase))
+                return Text.FromBASE32();
+
+            return Text.FromBASE64();
+
+        }
+
+
         #region Operator overloading
 
         #region Operator == (CryptoEncoding1, CryptoEncoding2)
