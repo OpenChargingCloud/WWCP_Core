@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         private readonly static List<(Func<String, (Boolean Success, Byte[]? Bytes, String? Error)> TryParse, CryptoEncoding Encoding)>  parsers1;
         private readonly static Dictionary<String, Func<String, (Boolean Success, Byte[]? Bytes, String? Error)>>                        parsers2;
-        private readonly static List<String>                                                                                             algorithms;
+        private readonly static List<CryptoAlgorithm>                                                                                    algorithms;
 
         #endregion
 
@@ -95,11 +95,11 @@ namespace cloud.charging.open.protocols.WWCP
                           };
 
             algorithms  = [
-                              CryptoAlgorithm.Secp192r1.ToString(),
-                              CryptoAlgorithm.Secp256r1.ToString(),
-                              CryptoAlgorithm.Secp256k1.ToString(),
-                              CryptoAlgorithm.Secp384r1.ToString(),
-                              CryptoAlgorithm.Secp521r1.ToString()
+                              CryptoAlgorithm.Secp192r1,
+                              CryptoAlgorithm.Secp256r1,
+                              CryptoAlgorithm.Secp256k1,
+                              CryptoAlgorithm.Secp384r1,
+                              CryptoAlgorithm.Secp521r1
                           ];
 
         }
@@ -501,12 +501,18 @@ namespace cloud.charging.open.protocols.WWCP
 
                 else if (AutoDetectAlgorithmUsed)
                 {
+
+                    // A compressed point may lie on more than one curve of the same size,
+                    // so only a point on exactly one curve tells the algorithm.
+                    ECCPublicKey? detectedPublicKey  = null;
+                    var           matchingCurves     = 0;
+
                     foreach (var algorithm in algorithms)
                     {
                         try
                         {
 
-                            var ecParameters = ECNamedCurveTable.GetByName(algorithm);
+                            var ecParameters = ECNamedCurveTable.GetByName(algorithm.ToString());
 
                             if (ecParameters is not null)
                             {
@@ -525,10 +531,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                               ecDomainParameters
                                                           );
 
-                                ECCPublicKey            = new ECCPublicKey(
+                                detectedPublicKey       = new ECCPublicKey(
 
                                                               publicKey,
-                                                              Algorithm,
+                                                              algorithm,
                                                               null, //CryptoSerialization.ASN1_DER,
                                                               Encoding,
                                                               CustomData,
@@ -539,7 +545,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                           );
 
-                                return true;
+                                matchingCurves++;
 
                             }
 
@@ -547,6 +553,13 @@ namespace cloud.charging.open.protocols.WWCP
                         catch
                         { }
                     }
+
+                    if (matchingCurves == 1 && detectedPublicKey is not null)
+                    {
+                        ECCPublicKey = detectedPublicKey;
+                        return true;
+                    }
+
                 }
 
 
@@ -1477,13 +1490,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (override) GetHashCode()
 
-        private readonly Int32 hashCode;
-
         /// <summary>
         /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-            => hashCode;
+            => base.GetHashCode();
 
         #endregion
 

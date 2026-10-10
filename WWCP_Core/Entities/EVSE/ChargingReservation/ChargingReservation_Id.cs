@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override Int32 GetHashCode()
 
             => OperatorId.GetHashCode() ^
-              (Suffix?.   GetHashCode() ?? 0);
+              (Suffix is null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(Suffix));
 
         #endregion
 

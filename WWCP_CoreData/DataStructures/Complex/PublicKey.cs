@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                hashCode = this.Value.        GetHashCode()       * 11 ^
+                hashCode = this.Value.Aggregate(17, (hash, item) => unchecked(hash * 31 + item))       * 11 ^
                           (this.Algorithm?.   GetHashCode() ?? 0) *  7 ^
                            this.Serialization.GetHashCode()       *  5 ^
                            this.Encoding.     GetHashCode()       *  3 ^
@@ -164,6 +164,27 @@ namespace cloud.charging.open.protocols.WWCP
 
             var text       = Text.Trim().Replace(" ", "");
 
+            // An ASN.1 DER sequence, or else the raw bytes of an ECC public key
+            PublicKey FromBytes(Byte[] ByteArray, CryptoEncoding ByteEncoding)
+
+                => TryParse(ByteArray,
+                            out var publicKey,
+                            out _,
+                            Algorithm,
+                            Serialization,
+                            ByteEncoding,
+                            CustomData)
+
+                       ? publicKey
+
+                       : new ECCPublicKey(
+                             ByteArray,
+                             Algorithm,
+                             Serialization,
+                             ByteEncoding,
+                             CustomData
+                         );
+
             try
             {
 
@@ -178,16 +199,8 @@ namespace cloud.charging.open.protocols.WWCP
                         return false;
                     }
 
-                    if (TryParse(hexByteArray1,
-                                 out var publicKey,
-                                 out ErrorResponse,
-                                 Algorithm,
-                                 Serialization,
-                                 Encoding,
-                                 CustomData))
-                    {
-                        PublicKey = publicKey;
-                    }
+                    PublicKey = FromBytes(hexByteArray1, CryptoEncoding.HEX);
+                    return true;
 
                 }
 
@@ -197,11 +210,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                 else if (Encoding == CryptoEncoding.BASE32)
                 {
+
                     if (!text.TryParseBASE32(out var base32ByteArray1, out var errorResponse1))
                     {
                         ErrorResponse = $"The given base32 encoding of a public key '{Text}' is invalid: " + errorResponse1;
                         return false;
                     }
+
+                    PublicKey = FromBytes(base32ByteArray1, CryptoEncoding.BASE32);
+                    return true;
+
                 }
 
                 #endregion
@@ -210,11 +228,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                 else if (Encoding == CryptoEncoding.BASE64)
                 {
+
                     if (!text.TryParseBASE64(out var base64ByteArray1, out var errorResponse1))
                     {
                         ErrorResponse = $"The given base64 encoding of a public key '{Text}' is invalid: " + errorResponse1;
                         return false;
                     }
+
+                    PublicKey = FromBytes(base64ByteArray1, CryptoEncoding.BASE64);
+                    return true;
+
                 }
 
                 #endregion
@@ -439,7 +462,7 @@ namespace cloud.charging.open.protocols.WWCP
                 ErrorResponse = $"The given text representation '{Text}' of a public key is invalid: " + e.Message;
             }
 
-            ErrorResponse = "Unknown error!";
+            ErrorResponse ??= "Unknown error!";
             return false;
 
         }
@@ -538,6 +561,7 @@ namespace cloud.charging.open.protocols.WWCP
                 ErrorResponse  = $"The given ASN.1 DER representation '{ByteArray.ToHexString()}' of a public key is invalid: " + e.Message;
             }
 
+            ErrorResponse ??= $"The given byte array '{ByteArray.ToHexString()}' is no ASN.1 DER representation of a public key!";
             return false;
 
         }

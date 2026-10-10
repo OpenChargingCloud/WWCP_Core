@@ -494,7 +494,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override Int32 GetHashCode()
 
-            => InternalId.GetHashCode();
+            => InternalId is null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(InternalId);
 
         #endregion
 

@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.WWCP.MCL
         /// </summary>
         public override Int32 GetHashCode()
 
-            => InternalId?.ToLower().GetHashCode() ?? 0;
+            => InternalId is null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(InternalId);
 
         #endregion
 

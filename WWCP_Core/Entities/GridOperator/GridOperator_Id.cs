@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.WWCP
             var MatchCollection = OperatorId_RegEx.Matches(Text);
 
             if (MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal text representation of a charging station operator identification: '{Text}'!",
+                throw new ArgumentException($"Illegal text representation of a charging station operator identification: '{Text}'!",
                                             nameof(Text));
 
             Country _CountryCode;
@@ -170,9 +170,13 @@ namespace cloud.charging.open.protocols.WWCP
                                                       OperatorIdFormats.DIN);
 
             // Just e.g. "822"...
-            return new GridOperator_Id(Country.Germany,
-                                                  MatchCollection[0].Groups[6].Value,
-                                                  OperatorIdFormats.DIN);
+            if (MatchCollection[0].Groups[6].Success)
+                return new GridOperator_Id(Country.Germany,
+                                                      MatchCollection[0].Groups[6].Value,
+                                                      OperatorIdFormats.DIN);
+
+            throw new ArgumentException($"Unknown country or telephone code in the charging station operator identification: '{Text}'!",
+                                        nameof(Text));
 
         }
 
@@ -279,11 +283,16 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 // Just e.g. "822"...
-                ChargingStationOperatorId = new GridOperator_Id(Country.Germany,
-                                                                           MatchCollection[0].Groups[6].Value,
-                                                                           OperatorIdFormats.DIN);
+                if (MatchCollection[0].Groups[6].Success)
+                {
 
-                return true;
+                    ChargingStationOperatorId = new GridOperator_Id(Country.Germany,
+                                                                               MatchCollection[0].Groups[6].Value,
+                                                                               OperatorIdFormats.DIN);
+
+                    return true;
+
+                }
 
             }
 

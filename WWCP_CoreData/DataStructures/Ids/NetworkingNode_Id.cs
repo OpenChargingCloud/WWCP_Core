@@ -440,7 +440,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// </summary>
         public override Int32 GetHashCode()
 
-            => InternalId?.ToLower().GetHashCode() ?? 0;
+            => InternalId is null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(InternalId);
 
         #endregion
 

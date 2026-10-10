@@ -502,6 +502,36 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
         #endregion
 
+        #region EVSE_ScheduledStatus_Test()
+
+        /// <summary>
+        /// A test for scheduling a return to the current status.
+        /// </summary>
+        [Test]
+        public void EVSE_ScheduledStatus_Test()
+        {
+
+            Assert.That(DE_GEF_E0001_AAAA_1, Is.Not.Null);
+
+            if (DE_GEF_E0001_AAAA_1 is not null)
+            {
+
+                var now      = Timestamp.Now;
+                var current  = DE_GEF_E0001_AAAA_1.Status.Value;
+
+                DE_GEF_E0001_AAAA_1.Status = new Timestamped<EVSEStatusType>(now + TimeSpan.FromHours(1), EVSEStatusType.OutOfService);
+                DE_GEF_E0001_AAAA_1.Status = new Timestamped<EVSEStatusType>(now + TimeSpan.FromHours(2), current);
+
+                Assert.That(DE_GEF_E0001_AAAA_1.Status, Is.EqualTo(current));
+                Assert.That(DE_GEF_E0001_AAAA_1.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "),
+                            Is.EqualTo($"{current}, outOfService, {current}"));
+
+            }
+
+        }
+
+        #endregion
+
 
         #region EVSE_Tariff_Test()
 

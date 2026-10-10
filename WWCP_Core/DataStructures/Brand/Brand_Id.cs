@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            return default(Brand_Id);
+            return null;
 
         }
 
@@ -200,14 +200,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (Brand_Id BrandId1, Brand_Id BrandId2)
         {
-
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(BrandId1, BrandId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) BrandId1 is null) || ((Object) BrandId2 is null))
-                return false;
 
             return BrandId1.Equals(BrandId2);
 
@@ -383,7 +375,7 @@ namespace cloud.charging.open.protocols.WWCP
             if ((Object) BrandId is null)
                 return false;
 
-            return InternalId.Equals(BrandId.InternalId);
+            return String.Equals(InternalId, BrandId.InternalId);
 
         }
 
@@ -397,7 +389,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return the HashCode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-            => InternalId.GetHashCode();
+            => InternalId?.GetHashCode() ?? 0;
 
         #endregion
 

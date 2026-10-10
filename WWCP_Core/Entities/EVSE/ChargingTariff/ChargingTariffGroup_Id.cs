@@ -423,7 +423,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
 
             return OperatorId.Equals(ChargingStationId.OperatorId) &&
-                   Suffix.    Equals(ChargingStationId.Suffix);
+                   String.Equals(Suffix, ChargingStationId.Suffix);
 
         }
 
@@ -439,7 +439,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override Int32 GetHashCode()
 
             => OperatorId.GetHashCode() ^
-               Suffix.    GetHashCode();
+              (Suffix?.GetHashCode() ?? 0);
 
         #endregion
 

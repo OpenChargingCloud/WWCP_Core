@@ -472,13 +472,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-                return (OperatorId?.GetHashCode() ?? 0) * 3 ^
-                       (Suffix?.    GetHashCode() ?? 0);
-            }
-        }
+
+            // Equals ignores the operator when only one side has one.
+            => Suffix is null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(Suffix);
 
         #endregion
 

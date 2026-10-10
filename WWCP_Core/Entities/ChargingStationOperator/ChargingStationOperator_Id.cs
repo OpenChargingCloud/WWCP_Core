@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var matchCollection = OperatorId_RegEx.Matches(Text.ToUpper());
+                var matchCollection = OperatorId_RegEx.Matches(Text.ToUpperInvariant());
 
                 if (matchCollection.Count != 1)
                     return false;
@@ -304,11 +304,19 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 // Just e.g. "822"...
-                ChargingStationOperatorId = new (Country.Germany,
-                                                 matchCollection[0].Groups[6].Value,
-                                                 OperatorIdFormats.DIN);
+                if (matchCollection[0].Groups[6].Success)
+                {
 
-                return true;
+                    ChargingStationOperatorId = new (Country.Germany,
+                                                     matchCollection[0].Groups[6].Value,
+                                                     OperatorIdFormats.DIN);
+
+                    return true;
+
+                }
+
+                // An unknown country or telephone code
+                return false;
 
             }
 
@@ -529,7 +537,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationOperatorId">A charging station operator identification to compare with.</param>
         public Boolean Equals(ChargingStationOperator_Id ChargingStationOperatorId)
 
-            => CountryCode.Equals(ChargingStationOperatorId.CountryCode) &&
+            => (CountryCode is null
+                    ? ChargingStationOperatorId.CountryCode is null
+                    : CountryCode.Equals(ChargingStationOperatorId.CountryCode)) &&
 
                String.Equals(Suffix,
                              ChargingStationOperatorId.Suffix,
@@ -546,8 +556,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override Int32 GetHashCode()
 
-            => CountryCode.GetHashCode() ^
-              (Suffix?.    GetHashCode() ?? 0);
+            => (CountryCode?.GetHashCode() ?? 0) ^
+               (Suffix is null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(Suffix));
 
         #endregion
 

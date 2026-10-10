@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override Int32 GetHashCode()
 
-            => TextId?.GetHashCode() ?? 0;
+            => TextId is null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(TextId);
 
         #endregion
 

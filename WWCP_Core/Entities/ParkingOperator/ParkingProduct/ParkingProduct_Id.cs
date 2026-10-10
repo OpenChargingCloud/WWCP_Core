@@ -154,14 +154,6 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator == (ParkingProduct_Id ParkingProductId1, ParkingProduct_Id ParkingProductId2)
         {
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ParkingProductId1, ParkingProductId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ParkingProductId1 is null) || ((Object) ParkingProductId2 is null))
-                return false;
-
             return ParkingProductId1.Equals(ParkingProductId2);
 
         }
@@ -336,7 +328,7 @@ namespace cloud.charging.open.protocols.WWCP
             if ((Object) ParkingProductId is null)
                 return false;
 
-            return InternalId.Equals(ParkingProductId.InternalId);
+            return String.Equals(InternalId, ParkingProductId.InternalId);
 
         }
 
@@ -350,7 +342,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return the HashCode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-            => InternalId.GetHashCode();
+            => InternalId?.GetHashCode() ?? 0;
 
         #endregion
 

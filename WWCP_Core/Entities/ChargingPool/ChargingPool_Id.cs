@@ -551,8 +551,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override Int32 GetHashCode()
 
-            => OperatorId.               GetHashCode() ^
-              (Suffix?.Replace("*", "")?.GetHashCode() ?? 0);
+            => OperatorId.GetHashCode() ^
+              (Suffix is null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(Suffix.Replace("*", "")));
 
         #endregion
 

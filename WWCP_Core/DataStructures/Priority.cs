@@ -89,14 +89,6 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator == (Priority Priority1, Priority Priority2)
         {
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(Priority1, Priority2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) Priority1 is null) || ((Object) Priority2 is null))
-                return false;
-
             return Priority1.Equals(Priority2);
 
         }

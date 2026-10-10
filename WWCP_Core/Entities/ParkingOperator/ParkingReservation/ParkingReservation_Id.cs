@@ -256,14 +256,6 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator == (ParkingReservation_Id ReservationId1, ParkingReservation_Id ReservationId2)
         {
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ReservationId1, ReservationId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ReservationId1 is null) || ((Object) ReservationId2 is null))
-                return false;
-
             return ReservationId1.Equals(ReservationId2);
 
         }
@@ -440,7 +432,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
 
             return OperatorId.Equals(ReservationId.OperatorId) &&
-                   Suffix.    Equals(ReservationId.Suffix);
+                   String.Equals(Suffix, ReservationId.Suffix);
 
         }
 
@@ -456,7 +448,7 @@ namespace cloud.charging.open.protocols.WWCP
         public override Int32 GetHashCode()
 
             => OperatorId.GetHashCode() ^
-               Suffix.    GetHashCode();
+              (Suffix?.GetHashCode() ?? 0);
 
         #endregion
 

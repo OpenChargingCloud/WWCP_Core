@@ -501,7 +501,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Get the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-            => Type.GetHashCode();
+            => StringComparer.OrdinalIgnoreCase.GetHashCode(Type);
 
         #endregion
 

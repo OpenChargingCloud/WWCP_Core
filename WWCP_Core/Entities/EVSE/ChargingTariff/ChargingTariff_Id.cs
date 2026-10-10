@@ -552,8 +552,8 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                return OperatorId.               GetHashCode() ^
-                      (Suffix?.Replace("*", "")?.GetHashCode() ?? 0);
+                return OperatorId.GetHashCode() ^
+                      (Suffix is null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(Suffix.Replace("*", "")));
 
             }
         }
