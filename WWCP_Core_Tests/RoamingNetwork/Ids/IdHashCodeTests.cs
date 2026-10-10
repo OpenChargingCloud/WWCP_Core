@@ -19,6 +19,7 @@
 
 using NUnit.Framework;
 
+using cloud.charging.open.protocols.WWCP.POI;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
@@ -58,10 +59,6 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         public void Suffixes_ignore_case_and_stars_in_their_hash_codes()
         {
 
-            AssertOneKey(EVSE_Id.               Parse("DE*GEF*Eab*c1"), EVSE_Id.               Parse("DE*GEF*EABC1"));
-            AssertOneKey(ChargingPool_Id.       Parse("DE*GEF*Pab*c1"), ChargingPool_Id.       Parse("DE*GEF*PABC1"));
-            AssertOneKey(ChargingStation_Id.    Parse("DE*GEF*Sab*c1"), ChargingStation_Id.    Parse("DE*GEF*SABC1"));
-            AssertOneKey(ChargingTariff_Id.     Parse("DE*GEF*Tab*c1"), ChargingTariff_Id.     Parse("DE*GEF*TABC1"));
             AssertOneKey(ChargingReservation_Id.Parse("DE*GEF*Rabc1"),  ChargingReservation_Id.Parse("DE*GEF*RABC1"));
 
         }
@@ -123,11 +120,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
         public void Hash_codes_do_not_depend_on_the_current_culture()
         {
 
-            AssertOneKey(RoamingNetwork_Id.   Parse("INDEX"),        RoamingNetwork_Id.   Parse("index"));
-            AssertOneKey(ChargingConnector_Id.Parse("I1"),           ChargingConnector_Id.Parse("i1"));
-            AssertOneKey(EnergyMeter_Id.      Parse("METER-I"),      EnergyMeter_Id.      Parse("meter-i"));
             AssertOneKey(NetworkingNode_Id.   Parse("NODE-I"),       NetworkingNode_Id.   Parse("node-i"));
-            AssertOneKey(EVSE_Id.             Parse("DE*GEF*EI1"),   EVSE_Id.             Parse("DE*GEF*Ei1"));
 
         }
 

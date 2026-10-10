@@ -24,6 +24,8 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 
+using cloud.charging.open.protocols.WWCP.POI;
+
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
@@ -110,17 +112,17 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         #endregion
 
 
-        #region AGroupIdIsWrittenWithGPAndReadBack()
+        #region AGroupIdIsWrittenWithPGAndReadBack()
 
         [Test]
-        public void AGroupIdIsWrittenWithGPAndReadBack()
+        public void AGroupIdIsWrittenWithPGAndReadBack()
         {
 
             var groupId = ChargingPoolGroup_Id.Parse(Operator.Id, "city");
 
-            Assert.That(groupId.ToString(),                                            Is.EqualTo("DE*GEF*GPcity"));
+            Assert.That(groupId.ToString(),                                            Is.EqualTo("DE*GEF*PGcity"));
             Assert.That(ChargingPoolGroup_Id.Parse(groupId.ToString()),                Is.EqualTo(groupId));
-            Assert.That(ChargingPoolGroup_Id.TryParse("DE*GEF*GScity", out _),         Is.False, "a charging station group's identification");
+            Assert.That(ChargingPoolGroup_Id.TryParse("DE*GEF*SGcity", out _),         Is.False, "a charging station group's identification");
             Assert.That(ChargingStationGroup_Id.TryParse(groupId.ToString(), out _),   Is.False, "read as a charging station group's identification");
 
         }
@@ -233,7 +235,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
             var expanded  = NewGroup("json", Members: [ P2, P1 ]).ToJSON(ExpandChargingPoolIds: InfoStatus.Expanded);
 
             Assert.That(json,                                                 Is.Not.Null);
-            Assert.That(json?["@id"]?.Value<String>(),                        Is.EqualTo("DE*GEF*GPjson"));
+            Assert.That(json?["@id"]?.Value<String>(),                        Is.EqualTo("DE*GEF*PGjson"));
             Assert.That(json?["chargingStationOperatorId"]?.Value<String>(),  Is.EqualTo(Operator.Id.ToString()));
             Assert.That(json?["roamingNetworkId"]?.Value<String>(),           Is.EqualTo(roamingNetwork!.Id.ToString()));
             Assert.That(json?["chargingPoolIds"]?.Values<String>(),           Is.EqualTo(new[] { "DE*GEF*P0001", "DE*GEF*P0002" }));

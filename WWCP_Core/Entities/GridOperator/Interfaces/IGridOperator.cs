@@ -17,14 +17,12 @@
 
 #region Usings
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+
 using Newtonsoft.Json.Linq;
+
+using cloud.charging.open.protocols.WWCP.POI;
 
 #endregion
 

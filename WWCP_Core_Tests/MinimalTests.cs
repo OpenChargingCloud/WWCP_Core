@@ -17,14 +17,9 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using NUnit.Framework;
 
-using cloud.charging.open.protocols.WWCP;
-using org.GraphDefined.Vanaheimr.Aegir;
+using cloud.charging.open.protocols.WWCP.POI;
 
 #endregion
 

@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using cloud.charging.open.protocols.WWCP.POI;
+
+#endregion
+
 namespace cloud.charging.open.protocols.WWCP
 {
 

@@ -23,6 +23,8 @@ using System.Collections;
 using System.Collections.Generic;
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP.POI;
+
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP

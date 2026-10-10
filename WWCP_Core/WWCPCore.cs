@@ -24,6 +24,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
+using cloud.charging.open.protocols.WWCP.POI;
 using cloud.charging.open.protocols.WWCP.Networking;
 
 #endregion

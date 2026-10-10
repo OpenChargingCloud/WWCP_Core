@@ -25,6 +25,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
+using cloud.charging.open.protocols.WWCP.POI;
 using cloud.charging.open.protocols.WWCP.Networking;
 
 #endregion

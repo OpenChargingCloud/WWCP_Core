@@ -22,6 +22,8 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.WWCP.POI;
+
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP.MobilityProvider
@@ -249,7 +251,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
 
                 if (JSON.ParseOptionalJSON("chargingLocation",
                                            "charging location",
-                                           WWCP.ChargingLocation.TryParse,
+                                           WWCP.POI.ChargingLocation.TryParse,
                                            out ChargingLocation? ChargingLocation,
                                            out ErrorResponse))
                 {

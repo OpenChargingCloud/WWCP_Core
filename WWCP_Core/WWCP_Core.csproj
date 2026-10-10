@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\WWCP_POI\WWCP_POI2\WWCP_POI2.csproj" />
     <ProjectReference Include="..\WWCP_CoreData\WWCP_CoreData.csproj" />
   </ItemGroup>
 

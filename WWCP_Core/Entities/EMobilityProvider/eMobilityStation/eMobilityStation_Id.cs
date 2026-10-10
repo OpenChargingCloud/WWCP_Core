@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Text.RegularExpressions;
-using static System.Net.Mime.MediaTypeNames;
+
+using cloud.charging.open.protocols.WWCP.POI;
 
 #endregion
 

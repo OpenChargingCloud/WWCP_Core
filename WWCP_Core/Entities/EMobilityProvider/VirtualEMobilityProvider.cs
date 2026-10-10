@@ -20,15 +20,13 @@
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.WWCP.POI;
 using cloud.charging.open.protocols.WWCP.Networking;
 using cloud.charging.open.protocols.WWCP.MobilityProvider;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 

@@ -18,7 +18,8 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
+
+using cloud.charging.open.protocols.WWCP.POI;
 
 #endregion
 

@@ -19,6 +19,8 @@
 
 using NUnit.Framework;
 
+using cloud.charging.open.protocols.WWCP.POI;
+
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Reservations

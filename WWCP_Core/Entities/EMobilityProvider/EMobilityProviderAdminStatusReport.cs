@@ -17,7 +17,7 @@
 
 #region Usings
 
-using System.Collections.Generic;
+using cloud.charging.open.protocols.WWCP.POI;
 
 #endregion
 

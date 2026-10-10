@@ -18,14 +18,13 @@
 #region Usings
 
 using System.Globalization;
-using System;
-using System.IO;
-using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
-using cloud.charging.open.protocols.WWCP.Networking;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
+
+using cloud.charging.open.protocols.WWCP.POI;
+using cloud.charging.open.protocols.WWCP.Networking;
 
 #endregion
 

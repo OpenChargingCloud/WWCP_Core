@@ -21,6 +21,8 @@ using System.Diagnostics.CodeAnalysis;
 
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
+using cloud.charging.open.protocols.WWCP.POI;
+
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP

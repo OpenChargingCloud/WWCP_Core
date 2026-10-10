@@ -23,9 +23,10 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using cloud.charging.open.protocols.WWCP.POI;
 
 #endregion
 
@@ -427,14 +428,12 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse TransparencySoftware          [optional]
 
-                if (JSON.ParseOptionalHashSet("transparencySoftware",
-                                              "transparency software",
-                                              TransparencySoftwareStatus.TryParse,
-                                              out HashSet<TransparencySoftwareStatus> transparencySoftware,
-                                              out ErrorResponse))
+                // The meter carries the releases and documents its statuses refer to.
+                if (!TryParseTransparencySoftware(JSON,
+                                                  out var transparencySoftware,
+                                                  out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion
@@ -497,6 +496,98 @@ namespace cloud.charging.open.protocols.WWCP
                 ErrorResponse  = "The given JSON representation of an energy meter is invalid: " + e.Message;
                 return false;
             }
+
+        }
+
+        #endregion
+
+        #region (private static) TryParseTransparencySoftware(JSON, out TransparencySoftware, out ErrorResponse)
+
+        /// <summary>
+        /// Parse the legal statuses of the transparency software of a meter. The statuses refer
+        /// to releases and documents by their identifications; the meter carries them as well.
+        /// </summary>
+        private static Boolean TryParseTransparencySoftware(JObject                                                   JSON,
+                                                            out HashSet<TransparencySoftwareStatus>                   TransparencySoftware,
+                                                            [NotNullWhen(false)] out String?                          ErrorResponse)
+        {
+
+            TransparencySoftware  = [];
+
+            var releases          = new Dictionary<TransparencySoftware_Id,            POI.TransparencySoftware>();
+            var certificates      = new Dictionary<TransparencySoftwareCertificate_Id, TransparencySoftwareCertificate>();
+            var statuses          = TransparencySoftware;
+
+            return TryParseEntries(JSON, "transparencySoftwareReleases",
+                                   (JObject json, out String? error) => {
+                                       if (!POI.TransparencySoftware.TryParse(json, out var release, out error)) return false;
+                                       releases[release.Id] = release;
+                                       return true;
+                                   },
+                                   out ErrorResponse) &&
+
+                   TryParseEntries(JSON, "transparencySoftwareCertificates",
+                                   (JObject json, out String? error) => {
+                                       if (!TransparencySoftwareCertificate.TryParse(json, out var certificate, out error)) return false;
+                                       certificates[certificate.Id] = certificate;
+                                       return true;
+                                   },
+                                   out ErrorResponse) &&
+
+                   TryParseEntries(JSON, "transparencySoftware",
+                                   (JObject json, out String? error) => {
+                                       if (!TransparencySoftwareStatus.TryParse(json,
+                                                                                id => releases.    GetValueOrDefault(id),
+                                                                                id => certificates.GetValueOrDefault(id),
+                                                                                out var status,
+                                                                                out error)) return false;
+                                       statuses.Add(status);
+                                       return true;
+                                   },
+                                   out ErrorResponse);
+
+        }
+
+        private delegate Boolean EntryParser(JObject JSON, [NotNullWhen(false)] out String? ErrorResponse);
+
+        /// <summary>
+        /// Parse each object of an optional array; an error names its index.
+        /// </summary>
+        private static Boolean TryParseEntries(JObject                           JSON,
+                                               String                            Property,
+                                               EntryParser                       Parse,
+                                               [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ErrorResponse = null;
+
+            if (JSON[Property] is not { } token || token.Type == JTokenType.Null)
+                return true;
+
+            if (token is not JArray array)
+            {
+                ErrorResponse = $"{Property}: expected an array.";
+                return false;
+            }
+
+            for (var index = 0; index < array.Count; index++)
+            {
+
+                if (array[index] is not JObject json)
+                {
+                    ErrorResponse = $"{Property}[{index}]: expected an object.";
+                    return false;
+                }
+
+                if (!Parse(json, out var error))
+                {
+                    ErrorResponse = $"{Property}[{index}]: {error}";
+                    return false;
+                }
+
+            }
+
+            return true;
 
         }
 
@@ -571,8 +662,22 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
                            TransparencySoftware.Any()
-                               ? new JProperty("transparencySoftware",        new JArray(TransparencySoftware.Select(transparencySoftwareStatus => transparencySoftwareStatus.ToJSON(CustomTransparencySoftwareStatusSerializer,
-                                                                                                                                                                                      CustomTransparencySoftwareSerializer))))
+                               ? new JProperty("transparencySoftware",              new JArray(TransparencySoftware.Select(transparencySoftwareStatus => transparencySoftwareStatus.ToJSON(CustomTransparencySoftwareStatusSerializer))))
+                               : null,
+
+                           TransparencySoftware.Any()
+                               ? new JProperty("transparencySoftwareReleases",      new JArray(TransparencySoftware.Select       (transparencySoftwareStatus => transparencySoftwareStatus.TransparencySoftware).
+                                                                                                                    DistinctBy   (transparencySoftware       => transparencySoftware.Id).
+                                                                                                                    OrderBy      (transparencySoftware       => transparencySoftware.Id.ToString(), StringComparer.Ordinal).
+                                                                                                                    Select       (transparencySoftware       => transparencySoftware.ToJSON(CustomTransparencySoftwareSerializer))))
+                               : null,
+
+                           TransparencySoftware.Any(transparencySoftwareStatus => transparencySoftwareStatus.Certificate is not null)
+                               ? new JProperty("transparencySoftwareCertificates",  new JArray(TransparencySoftware.Select       (transparencySoftwareStatus => transparencySoftwareStatus.Certificate).
+                                                                                                                    OfType<TransparencySoftwareCertificate>().
+                                                                                                                    DistinctBy   (certificate                => certificate.Id).
+                                                                                                                    OrderBy      (certificate                => certificate.Id.ToString(), StringComparer.Ordinal).
+                                                                                                                    Select       (certificate                => certificate.ToJSON())))
                                : null,
 
                            Description is not null && Description.IsNotNullOrEmpty()
@@ -612,7 +717,7 @@ namespace cloud.charging.open.protocols.WWCP
                    FirmwareVersion is not null ? new String(FirmwareVersion.ToCharArray()) : null,
                    PublicKeys.Select(publicKey => publicKey.Clone()).ToArray(),
                    PublicKeyCertificateChain?.Clone(),
-                   TransparencySoftware.Select(transparencySoftwareStatus => transparencySoftwareStatus.Clone()).ToArray(),
+                   TransparencySoftware.ToArray(),
 
                    AdminStatus,
                    Status,

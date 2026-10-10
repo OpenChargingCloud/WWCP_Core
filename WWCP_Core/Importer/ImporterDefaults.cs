@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+using cloud.charging.open.protocols.WWCP.POI;
+
 namespace cloud.charging.open.protocols.WWCP.Importer
 {
     public static class Defaults

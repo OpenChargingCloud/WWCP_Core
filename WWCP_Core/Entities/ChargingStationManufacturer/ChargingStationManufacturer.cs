@@ -20,9 +20,11 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 
+using cloud.charging.open.protocols.WWCP.POI;
+
 #endregion
 
-namespace cloud.charging.open.protocols.WWCP.CSM
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -66,11 +68,11 @@ namespace cloud.charging.open.protocols.WWCP.CSM
         /// <param name="Description">A multi-language description of this charging station manufacturer.</param>
         /// 
         /// <param name="CryptoKeys">An optional enumeration of cryptographic identities of this charging station manufacturer.</param>
-        public ChargingStationManufacturer(ChargingStationManufacturer_Id?   Id               = null,
-                                      I18NString?                  Name             = null,
-                                      I18NString?                  Description      = null,
+        public ChargingStationManufacturer(ChargingStationManufacturer_Id?  Id            = null,
+                                           I18NString?                      Name          = null,
+                                           I18NString?                      Description   = null,
 
-                                      IEnumerable<CryptoKeyInfo>?  CryptoKeys       = null)
+                                           IEnumerable<CryptoKeyInfo>?      CryptoKeys    = null)
         {
 
             #region Initial checks

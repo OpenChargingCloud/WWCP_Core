@@ -17,13 +17,10 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Aegir;
-using org.GraphDefined.Vanaheimr.Hermod;
+
+using cloud.charging.open.protocols.WWCP.POI;
 
 #endregion
 
