@@ -31,8 +31,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// A parking space.
     /// </summary>
     public class ParkingSpace : AEMobilityEntity<ParkingSpace_Id,
-                                                 ParkingSpaceAdminStatusTypes,
-                                                 ParkingSpaceStatusTypes>,
+                                                 ParkingSpaceAdminStatusType,
+                                                 ParkingSpaceStatusType>,
                                 IEquatable<ParkingSpace>, IComparable<ParkingSpace>, IComparable
     {
 

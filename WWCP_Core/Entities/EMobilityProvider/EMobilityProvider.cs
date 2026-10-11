@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this eMobilityProviderAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderAdminStatusTypes>>>>  eMobilityProviderAdminStatus,
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderAdminStatusType>>>>  eMobilityProviderAdminStatus,
                                      UInt64?                                                                                                            Skip         = null,
                                      UInt64?                                                                                                            Take         = null,
                                      UInt64                                                                                                             HistorySize  = 1)
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (eMobilityProviderAdminStatus is null || !eMobilityProviderAdminStatus.Any())
                 return new JObject();
 
-            var _eMobilityProviderAdminStatus = new Dictionary<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderAdminStatusTypes>>>();
+            var _eMobilityProviderAdminStatus = new Dictionary<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderAdminStatusType>>>();
 
             #endregion
 
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this eMobilityProviderStatus,      Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderStatusTypes>>>>  eMobilityProviderStatus,
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderStatusType>>>>  eMobilityProviderStatus,
                                      UInt64?                                                                                                       Skip         = null,
                                      UInt64?                                                                                                       Take         = null,
                                      UInt64?                                                                                                       HistorySize  = 1)
@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (eMobilityProviderStatus is null || !eMobilityProviderStatus.Any())
                 return new JObject();
 
-            var _eMobilityProviderStatus = new Dictionary<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderStatusTypes>>>();
+            var _eMobilityProviderStatus = new Dictionary<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderStatusType>>>();
 
             #endregion
 
@@ -289,8 +289,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// an optional remote E-Mobility Provider.
     /// </summary>
     public class EMobilityProvider : ACryptoEMobilityEntity<EMobilityProvider_Id,
-                                                            EMobilityProviderAdminStatusTypes,
-                                                            EMobilityProviderStatusTypes>,
+                                                            EMobilityProviderAdminStatusType,
+                                                            EMobilityProviderStatusType>,
                                      IEMobilityProvider
     {
 
@@ -699,8 +699,8 @@ namespace cloud.charging.open.protocols.WWCP
                                    Action<EMobilityProvider>?               Configurator                     = null,
                                    RemoteEMobilityProviderCreatorDelegate?  RemoteEMobilityProviderCreator   = null,
                                    EMobilityProviderPriority?               Priority                         = null,
-                                   EMobilityProviderAdminStatusTypes?       InitialAdminStatus               = null,
-                                   EMobilityProviderStatusTypes?            InitialStatus                    = null,
+                                   EMobilityProviderAdminStatusType?        InitialAdminStatus               = null,
+                                   EMobilityProviderStatusType?             InitialStatus                    = null,
                                    UInt16?                                  MaxAdminStatusScheduleSize       = null,
                                    UInt16?                                  MaxStatusScheduleSize            = null,
 
@@ -718,8 +718,8 @@ namespace cloud.charging.open.protocols.WWCP
                    null,
                    null,
                    null,
-                   InitialAdminStatus         ?? EMobilityProviderAdminStatusTypes.Operational,
-                   InitialStatus              ?? EMobilityProviderStatusTypes.Available,
+                   InitialAdminStatus         ?? EMobilityProviderAdminStatusType.Operational,
+                   InitialStatus              ?? EMobilityProviderStatusType.Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
                    DataSource,

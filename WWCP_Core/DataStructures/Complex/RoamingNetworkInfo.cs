@@ -58,8 +58,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public static RoamingNetworkInfo Create(this IRoamingNetwork   RoamingNetwork,
                                                 Tracker_Id             TrackerId,
                                                 NetworkServiceNode_Id  NodeId,
-                                                DateTime               NotBefore,
-                                                DateTime               NotAfter,
+                                                DateTimeOffset         NotBefore,
+                                                DateTimeOffset         NotAfter,
 
                                                 Byte                   priority,
                                                 Byte                   weight,
@@ -117,12 +117,12 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// <summary>
         /// When this information becomes valid.
         /// </summary>
-        public DateTime               NotBefore           { get; }
+        public DateTimeOffset         NotBefore           { get; }
 
         /// <summary>
         /// When this information expires.
         /// </summary>
-        public DateTime               NotAfter            { get; }
+        public DateTimeOffset         NotAfter            { get; }
 
 
 
@@ -173,8 +173,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public RoamingNetworkInfo(Tracker_Id             TrackerId,
                                   NetworkServiceNode_Id  NodeId,
                                   String                 IncomingURL,
-                                  DateTime               NotBefore,
-                                  DateTime               NotAfter,
+                                  DateTimeOffset         NotBefore,
+                                  DateTimeOffset         NotAfter,
 
                                   RoamingNetwork_Id      RoamingNetworkId,
                                   Byte                   priority,
@@ -219,8 +219,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public RoamingNetworkInfo(Tracker_Id             TrackerId,
                                   NetworkServiceNode_Id  NodeId,
                                   String                 IncomingURL,
-                                  DateTime               NotBefore,
-                                  DateTime               NotAfter,
+                                  DateTimeOffset         NotBefore,
+                                  DateTimeOffset         NotAfter,
 
                                   RoamingNetwork         RoamingNetwork,
                                   Byte                   priority,

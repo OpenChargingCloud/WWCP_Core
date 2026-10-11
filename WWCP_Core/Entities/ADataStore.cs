@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Boolean CommandDelegate<TId, TData>(String                            FileName,
                                                         UInt64                            lineCounter,
                                                         IPSocket?                         Socket,
-                                                        DateTime                          Timestamp,
+                                                        DateTimeOffset                    Timestamp,
                                                         TId                               Id,
                                                         String                            Command,
                                                         JObject                           JSON,
@@ -843,7 +843,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                     var json       = JObject.Parse(line);
 
-                                    var timestamp  =                json["timestamp"]?.Value<DateTime>();
+                                    var timestamp  =                json["timestamp"]?.Value<DateTimeOffset>();
                                     var id         = StringIdParser(json["id"]?.       Value<String>() ?? "");
                                     var command    =                json["command"]?.  Value<String>();
 

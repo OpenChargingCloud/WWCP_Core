@@ -37,8 +37,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// A parking space.
     /// </summary>
     public class ParkingSpaceGroup : AEMobilityEntity<ParkingSpaceGroup_Id,
-                                                      ParkingSpaceGroupAdminStatusTypes,
-                                                      ParkingSpaceGroupStatusTypes>,
+                                                      ParkingSpaceGroupAdminStatusType,
+                                                      ParkingSpaceGroupStatusType>,
                                      IEquatable<ParkingSpaceGroup>, IComparable<ParkingSpaceGroup>, IComparable
     {
 
@@ -197,13 +197,6 @@ namespace cloud.charging.open.protocols.WWCP
         internal ParkingSpaceGroup(ParkingSpaceGroup_Id  Id)
             : base(Id)
         {
-
-            #region Initial checks
-
-            if (Id is null)
-                throw new ArgumentNullException(nameof(Id), "The unique identification of the parking space must not be null!");
-
-            #endregion
 
             #region Init data and properties
 

@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (!JSON.ParseMandatory("timestamp",
                                          "timestamp",
-                                         out DateTime timestamp,
+                                         out DateTimeOffset timestamp,
                                          out ErrorResponse))
                 {
                     return false;

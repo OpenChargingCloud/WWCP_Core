@@ -1488,7 +1488,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (internal) SendNewChargingSession   (Timestamp, Sender, Session)
 
-        internal void SendNewChargingSession(DateTime Timestamp,
+        internal void SendNewChargingSession(DateTimeOffset Timestamp,
                                              Object Sender,
                                              ChargingSession Session)
         {

@@ -241,8 +241,8 @@ namespace cloud.charging.open.protocols.WWCP
                                     I18NString?                                                      Description                      = null,
                                     Action<IEMobilityProvider>?                                      Configurator                     = null,
                                     RemoteEMobilityProviderCreatorDelegate?                          RemoteEMobilityProviderCreator   = null,
-                                    EMobilityProviderAdminStatusTypes?                               InitialAdminStatus               = null,
-                                    EMobilityProviderStatusTypes?                                    InitialStatus                    = null,
+                                    EMobilityProviderAdminStatusType?                                InitialAdminStatus               = null,
+                                    EMobilityProviderStatusType?                                     InitialStatus                    = null,
                                     OnEMobilityProviderAddedDelegate?                                OnCreated                        = null,
                                     //Action<RoamingNetwork, EMobilityProvider_Id, EventTracking_Id>?  OnError                          = null,
                                     EventTracking_Id?                                                EventTrackingId                  = null,
@@ -290,8 +290,8 @@ namespace cloud.charging.open.protocols.WWCP
                                           I18NString?                                                            Description                            = null,
                                           Action<IChargingStationOperator>?                                      Configurator                           = null,
                                           RemoteChargingStationOperatorCreatorDelegate?                          RemoteChargingStationOperatorCreator   = null,
-                                          ChargingStationOperatorAdminStatusTypes?                               InitialAdminStatus                     = null,
-                                          ChargingStationOperatorStatusTypes?                                    InitialStatus                          = null,
+                                          ChargingStationOperatorAdminStatusType?                               InitialAdminStatus                     = null,
+                                          ChargingStationOperatorStatusType?                                    InitialStatus                          = null,
                                           OnChargingStationOperatorAddedDelegate?                                OnCreated                              = null,
                                           //Action<RoamingNetwork, ChargingStationOperator_Id, EventTracking_Id>?  OnError                                = null,
                                           EventTracking_Id?                                                      EventTrackingId                        = null,
@@ -410,8 +410,8 @@ namespace cloud.charging.open.protocols.WWCP
         //                                            eMobilityProviderPriority?                     Priority                         = null,
         //                                            Action<EMobilityProvider>?                     Configurator                     = null,
         //                                            RemoteEMobilityProviderCreatorDelegate?        RemoteEMobilityProviderCreator   = null,
-        //                                            EMobilityProviderAdminStatusTypes?             InitialAdminStatus               = null,
-        //                                            EMobilityProviderStatusTypes?                  InitialStatus                    = null,
+        //                                            EMobilityProviderAdminStatusType?              InitialAdminStatus               = null,
+        //                                            EMobilityProviderStatusType?                   InitialStatus                    = null,
         //                                            Action<EMobilityProvider>?                     OnSuccess                        = null,
         //                                            Action<RoamingNetwork, EMobilityProvider_Id>?  OnError                          = null);
 
@@ -720,12 +720,12 @@ namespace cloud.charging.open.protocols.WWCP
                                                     DateTimeOffset?    NoAutoDeletionBefore   = null,
                                                     CancellationToken  CancellationToken      = default);
 
-        Task RemoveExternalChargingSession(DateTime            Timestamp,
+        Task RemoveExternalChargingSession(DateTimeOffset      Timestamp,
                                            Object              Sender,
                                            ChargingSession_Id  ChargingSessionId,
                                            CancellationToken   CancellationToken   = default);
 
-        Task RemoveExternalChargingSession(DateTime           Timestamp,
+        Task RemoveExternalChargingSession(DateTimeOffset     Timestamp,
                                            Object             Sender,
                                            ChargingSession    ChargingSession,
                                            CancellationToken  CancellationToken   = default);
@@ -754,12 +754,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return the admin status of all parking operators registered within this roaming network.
         /// </summary>
-        IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusTypes>>>> ParkingOperatorAdminStatus { get; }
+        IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusType>>>> ParkingOperatorAdminStatus { get; }
 
         /// <summary>
         /// Return the status of all parking operators registered within this roaming network.
         /// </summary>
-        IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusTypes>>>> ParkingOperatorStatus { get; }
+        IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusType>>>> ParkingOperatorStatus { get; }
 
 
         /// <summary>
@@ -777,8 +777,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                   I18NString?                                  Description                    = null,
                                                   Action<ParkingOperator>?                     Configurator                   = null,
                                                   RemoteParkingOperatorCreatorDelegate?        RemoteParkingOperatorCreator   = null,
-                                                  ParkingOperatorAdminStatusTypes?             InititalAdminStatus            = ParkingOperatorAdminStatusTypes.Operational,
-                                                  ParkingOperatorStatusTypes?                  InititalStatus                 = ParkingOperatorStatusTypes.Available,
+                                                  ParkingOperatorAdminStatusType?              InititalAdminStatus            = null,
+                                                  ParkingOperatorStatusType?                   InititalStatus                 = null,
                                                   Action<ParkingOperator>?                     OnSuccess                      = null,
                                                   Action<RoamingNetwork, ParkingOperator_Id>?  OnError                        = null);
 
@@ -858,12 +858,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return the admin status of all smart cities registered within this roaming network.
         /// </summary>
-        IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusTypes>>>> GridOperatorsAdminStatus { get; }
+        IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusType>>>> GridOperatorsAdminStatus { get; }
 
         /// <summary>
         /// Return the status of all smart cities registered within this roaming network.
         /// </summary>
-        IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusTypes>>>> GridOperatorsStatus { get; }
+        IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusType>>>> GridOperatorsStatus { get; }
 
 
 
@@ -881,8 +881,8 @@ namespace cloud.charging.open.protocols.WWCP
                                            I18NString?                               Name                        = null,
                                            I18NString?                               Description                 = null,
                                            GridOperatorPriority?                     Priority                    = null,
-                                           GridOperatorAdminStatusTypes              AdminStatus                 = GridOperatorAdminStatusTypes.Available,
-                                           GridOperatorStatusTypes                   Status                      = GridOperatorStatusTypes.Available,
+                                           GridOperatorAdminStatusType?              AdminStatus                 = null,
+                                           GridOperatorStatusType?                   Status                      = null,
                                            Action<GridOperator>?                     Configurator                = null,
                                            Action<GridOperator>?                     OnSuccess                   = null,
                                            Action<RoamingNetwork, GridOperator_Id>?  OnError                     = null,

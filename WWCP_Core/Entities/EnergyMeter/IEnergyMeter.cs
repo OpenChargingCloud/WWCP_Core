@@ -83,8 +83,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// The common interface of all energy meters.
     /// </summary>
     public interface IEnergyMeter : IEntity<EnergyMeter_Id>,
-                                    IAdminStatus<EnergyMeterAdminStatusTypes>,
-                                    IStatus<EnergyMeterStatusTypes>,
+                                    IAdminStatus<EnergyMeterAdminStatusType>,
+                                    IStatus<EnergyMeterStatusType>,
                                     IEquatable<IEnergyMeter>,
                                     IComparable<IEnergyMeter>,
                                     IComparable

@@ -37,8 +37,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// An energy meter.
     /// </summary>
     public class EnergyMeter : AEMobilityEntity<EnergyMeter_Id,
-                                                EnergyMeterAdminStatusTypes,
-                                                EnergyMeterStatusTypes>,
+                                                EnergyMeterAdminStatusType,
+                                                EnergyMeterStatusType>,
                                IEquatable<EnergyMeter>,
                                IComparable<EnergyMeter>,
                                IEnergyMeter
@@ -178,8 +178,8 @@ namespace cloud.charging.open.protocols.WWCP
                            CertificateChain?                          PublicKeyCertificateChain    = null,
                            IEnumerable<TransparencySoftwareStatus>?   TransparencySoftware         = null,
 
-                           Timestamped<EnergyMeterAdminStatusTypes>?  InitialAdminStatus           = null,
-                           Timestamped<EnergyMeterStatusTypes>?       InitialStatus                = null,
+                           Timestamped<EnergyMeterAdminStatusType>?  InitialAdminStatus           = null,
+                           Timestamped<EnergyMeterStatusType>?       InitialStatus                = null,
                            UInt16?                                    MaxAdminStatusScheduleSize   = null,
                            UInt16?                                    MaxStatusScheduleSize        = null,
 
@@ -196,8 +196,8 @@ namespace cloud.charging.open.protocols.WWCP
             : base(Id,
                    Name,
                    Description,
-                   InitialAdminStatus         ?? EnergyMeterAdminStatusTypes.Operational,
-                   InitialStatus              ?? EnergyMeterStatusTypes.     Available,
+                   InitialAdminStatus         ?? EnergyMeterAdminStatusType.Operational,
+                   InitialStatus              ?? EnergyMeterStatusType.     Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxEnergyMeterAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxEnergyMeterStatusScheduleSize,
                    DataSource,
@@ -442,7 +442,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (!JSON.ParseMandatory("lastChange",
                                          "last change",
-                                         out DateTime LastChange,
+                                         out DateTimeOffset LastChange,
                                          out ErrorResponse))
                 {
                     return false;

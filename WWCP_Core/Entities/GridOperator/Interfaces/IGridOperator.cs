@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate Task OnGridOperatorDataChangedDelegate(DateTime          Timestamp,
+    public delegate Task OnGridOperatorDataChangedDelegate(DateTimeOffset    Timestamp,
                                                            EventTracking_Id  EventTrackingId,
                                                            IGridOperator     GridOperator,
                                                            String            PropertyName,
@@ -53,11 +53,11 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="GridOperator">The updated grid operator.</param>
     /// <param name="OldStatus">The old timestamped status of the grid operator.</param>
     /// <param name="NewStatus">The new timestamped status of the grid operator.</param>
-    public delegate Task OnGridOperatorAdminStatusChangedDelegate(DateTime                                   Timestamp,
+    public delegate Task OnGridOperatorAdminStatusChangedDelegate(DateTimeOffset                             Timestamp,
                                                                   EventTracking_Id                           EventTrackingId,
                                                                   IGridOperator                              GridOperator,
-                                                                  Timestamped<GridOperatorAdminStatusTypes>  OldStatus,
-                                                                  Timestamped<GridOperatorAdminStatusTypes>  NewStatus);
+                                                                  Timestamped<GridOperatorAdminStatusType>   OldStatus,
+                                                                  Timestamped<GridOperatorAdminStatusType>   NewStatus);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of the grid operator changed.
@@ -67,11 +67,11 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="GridOperator">The updated grid operator.</param>
     /// <param name="OldStatus">The old timestamped status of the grid operator.</param>
     /// <param name="NewStatus">The new timestamped status of the grid operator.</param>
-    public delegate Task OnGridOperatorStatusChangedDelegate(DateTime                              Timestamp,
+    public delegate Task OnGridOperatorStatusChangedDelegate(DateTimeOffset                        Timestamp,
                                                              EventTracking_Id                      EventTrackingId,
                                                              IGridOperator                         GridOperator,
-                                                             Timestamped<GridOperatorStatusTypes>  OldStatus,
-                                                             Timestamped<GridOperatorStatusTypes>  NewStatus);
+                                                             Timestamped<GridOperatorStatusType>   OldStatus,
+                                                             Timestamped<GridOperatorStatusType>   NewStatus);
 
 
     /// <summary>
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this GridOperatorAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<Timestamped<GridOperatorAdminStatusTypes>>  GridOperatorAdminStatus,
+        public static JObject ToJSON(this IEnumerable<Timestamped<GridOperatorAdminStatusType>>   GridOperatorAdminStatus,
                                      UInt64?                                                      Skip         = null,
                                      UInt64?                                                      Take         = null,
                                      UInt64?                                                      HistorySize  = 1)
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this GridOperatorAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusTypes>>>>  GridOperatorAdminStatus,
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusType>>>>   GridOperatorAdminStatus,
                                      UInt64?                                                                                                  Skip         = null,
                                      UInt64?                                                                                                  Take         = null,
                                      UInt64?                                                                                                  HistorySize  = 1)
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this GridOperatorStatus,      Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<Timestamped<GridOperatorStatusTypes>>  GridOperatorStatus,
+        public static JObject ToJSON(this IEnumerable<Timestamped<GridOperatorStatusType>>   GridOperatorStatus,
                                      UInt64?                                                 Skip         = null,
                                      UInt64?                                                 Take         = null,
                                      UInt64?                                                 HistorySize  = 1)
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this GridOperatorStatus,      Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusTypes>>>>  GridOperatorStatus,
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusType>>>>   GridOperatorStatus,
                                      UInt64?                                                                                             Skip         = null,
                                      UInt64?                                                                                             Take         = null,
                                      UInt64?                                                                                             HistorySize  = 1)
@@ -298,8 +298,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// The common interface of all grid operators.
     /// </summary>
     public interface IGridOperator : IEntity<GridOperator_Id>,
-                                     IAdminStatus<GridOperatorAdminStatusTypes>,
-                                     IStatus<GridOperatorStatusTypes>,
+                                     IAdminStatus<GridOperatorAdminStatusType>,
+                                     IStatus<GridOperatorStatusType>,
                                      IEquatable<GridOperator>,
                                      IComparable<GridOperator>,
                                      IComparable,

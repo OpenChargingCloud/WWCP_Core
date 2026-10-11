@@ -701,7 +701,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldGeoCoordinate">The old geo coordinate.</param>
         /// <param name="NewGeoCoordinate">The new geo coordinate.</param>
-        internal void UpdateGeoLocation(DateTime                    Timestamp,
+        internal void UpdateGeoLocation(DateTimeOffset              Timestamp,
                                         EventTracking_Id            EventTrackingId,
                                         Timestamped<GeoCoordinate>  OldGeoCoordinate,
                                         Timestamped<GeoCoordinate>  NewGeoCoordinate)

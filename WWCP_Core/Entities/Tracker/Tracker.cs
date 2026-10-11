@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                                  new HTTPResponse.Builder(Request) {
                                                      HTTPStatusCode  = HTTPStatusCode.OK,
                                                      Server          = HTTPServer.HTTPServerName,
-                                                     Date            = DateTime.Now,
+                                                     Date            = DateTimeOffset.Now,
                                                      ContentType     = HTTPContentType.Application.JSON_UTF8,
                                                      Content         = JSONObject.Create(
                                                                            new JProperty("id",               Id.ToString()),
@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                                  new HTTPResponse.Builder(Request) {
                                                      HTTPStatusCode  = HTTPStatusCode.OK,
                                                      Server          = HTTPServer.HTTPServerName,
-                                                     Date            = DateTime.Now,
+                                                     Date            = DateTimeOffset.Now,
                                                      Connection      = ConnectionType.Close
                                                  });
 

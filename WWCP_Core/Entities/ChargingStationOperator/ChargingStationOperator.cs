@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this ChargingStationOperatorAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>>  ChargingStationOperatorAdminStatus,
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusType>>>>  ChargingStationOperatorAdminStatus,
                                      UInt64?                                                                                                                        Skip         = null,
                                      UInt64?                                                                                                                        Take         = null,
                                      UInt64?                                                                                                                        HistorySize  = 1)
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (ChargingStationOperatorAdminStatus is null || !ChargingStationOperatorAdminStatus.Any())
                 return new JObject();
 
-            var _ChargingStationOperatorAdminStatus = new Dictionary<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>();
+            var _ChargingStationOperatorAdminStatus = new Dictionary<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusType>>>();
 
             #endregion
 
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this ChargingStationOperatorStatus,      Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>>  ChargingStationOperatorStatus,
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusType>>>>  ChargingStationOperatorStatus,
                                      UInt64?                                                                                                                   Skip         = null,
                                      UInt64?                                                                                                                   Take         = null,
                                      UInt64?                                                                                                                   HistorySize  = 1)
@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (ChargingStationOperatorStatus is null || !ChargingStationOperatorStatus.Any())
                 return new JObject();
 
-            var _ChargingStationOperatorStatus = new Dictionary<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>();
+            var _ChargingStationOperatorStatus = new Dictionary<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusType>>>();
 
             #endregion
 
@@ -175,8 +175,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// information or part of B2B contracts.
     /// </summary>
     public class ChargingStationOperator : ACryptoEMobilityEntity<ChargingStationOperator_Id,
-                                                                  ChargingStationOperatorAdminStatusTypes,
-                                                                  ChargingStationOperatorStatusTypes>,
+                                                                  ChargingStationOperatorAdminStatusType,
+                                                                  ChargingStationOperatorStatusType>,
                                            IChargingStationOperator
     {
 
@@ -478,8 +478,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                        Action<ChargingStationOperator>?                       Configurator                           = null,
                                        RemoteChargingStationOperatorCreatorDelegate?          RemoteChargingStationOperatorCreator   = null,
-                                       Timestamped<ChargingStationOperatorAdminStatusTypes>?  InitialAdminStatus                     = null,
-                                       Timestamped<ChargingStationOperatorStatusTypes>?       InitialStatus                          = null,
+                                       Timestamped<ChargingStationOperatorAdminStatusType>?  InitialAdminStatus                     = null,
+                                       Timestamped<ChargingStationOperatorStatusType>?       InitialStatus                          = null,
                                        UInt16?                                                MaxAdminStatusScheduleSize             = DefaultMaxAdminStatusScheduleSize,
                                        UInt16?                                                MaxStatusScheduleSize                  = DefaultMaxStatusScheduleSize,
 
@@ -496,8 +496,8 @@ namespace cloud.charging.open.protocols.WWCP
                    null,
                    null,
                    null,
-                   InitialAdminStatus         ?? ChargingStationOperatorAdminStatusTypes.Operational,
-                   InitialStatus              ?? ChargingStationOperatorStatusTypes.Available,
+                   InitialAdminStatus         ?? ChargingStationOperatorAdminStatusType.Operational,
+                   InitialStatus              ?? ChargingStationOperatorStatusType.Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxChargingStationOperatorAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxChargingStationOperatorStatusScheduleSize,
                    null,
@@ -629,8 +629,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new charging station admin status.</param>
         internal async Task UpdateAdminStatus(DateTimeOffset                                        Timestamp,
                                               EventTracking_Id                                      EventTrackingId,
-                                              Timestamped<ChargingStationOperatorAdminStatusTypes>  OldStatus,
-                                              Timestamped<ChargingStationOperatorAdminStatusTypes>  NewStatus)
+                                              Timestamped<ChargingStationOperatorAdminStatusType>  OldStatus,
+                                              Timestamped<ChargingStationOperatorAdminStatusType>  NewStatus)
         {
 
             var onAdminStatusChanged = OnAdminStatusChanged;
@@ -656,8 +656,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new EVSE status.</param>
         internal async Task UpdateStatus(DateTimeOffset                                   Timestamp,
                                          EventTracking_Id                                 EventTrackingId,
-                                         Timestamped<ChargingStationOperatorStatusTypes>  OldStatus,
-                                         Timestamped<ChargingStationOperatorStatusTypes>  NewStatus)
+                                         Timestamped<ChargingStationOperatorStatusType>  OldStatus,
+                                         Timestamped<ChargingStationOperatorStatusType>  NewStatus)
         {
 
             var onStatusChanged = OnStatusChanged;
@@ -2453,7 +2453,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
                                                                Func<IChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
-                                                               Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
+                                                               Func<ChargingStationStatusReport, ChargingStationGroupStatusType>   StatusAggregationDelegate     = null,
                                                                UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                                UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -2558,7 +2558,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
                                                                Func<IChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
-                                                               Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
+                                                               Func<ChargingStationStatusReport, ChargingStationGroupStatusType>   StatusAggregationDelegate     = null,
                                                                UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                                UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -2625,7 +2625,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                     IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
                                                                     Func<IChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
-                                                                    Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
+                                                                    Func<ChargingStationStatusReport, ChargingStationGroupStatusType>   StatusAggregationDelegate     = null,
                                                                     UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                                     UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -2699,7 +2699,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                     IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
                                                                     Func<IChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
-                                                                    Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
+                                                                    Func<ChargingStationStatusReport, ChargingStationGroupStatusType>   StatusAggregationDelegate     = null,
                                                                     UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                                     UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -3735,7 +3735,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
                                          Func<IEVSE,   Boolean>                         AutoIncludeEVSEs              = null,
 
-                                         Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
+                                         Func<EVSEStatusReport, EVSEGroupStatusType>    StatusAggregationDelegate     = null,
                                          UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
                                          UInt16                                         MaxGroupAdminStatusListSize   = EVSEGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -3847,7 +3847,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
                                          Func<IEVSE,   Boolean>                         AutoIncludeEVSEs              = null,
 
-                                         Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
+                                         Func<EVSEStatusReport, EVSEGroupStatusType>    StatusAggregationDelegate     = null,
                                          UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
                                          UInt16                                         MaxGroupAdminStatusListSize   = EVSEGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -3921,7 +3921,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
                                               Func<IEVSE,   Boolean>                         AutoIncludeEVSEs              = null,
 
-                                              Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
+                                              Func<EVSEStatusReport, EVSEGroupStatusType>    StatusAggregationDelegate     = null,
                                               UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
                                               UInt16                                         MaxGroupAdminStatusListSize   = EVSEGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -4002,7 +4002,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
                                               Func<IEVSE,   Boolean>                         AutoIncludeEVSEs              = null,
 
-                                              Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
+                                              Func<EVSEStatusReport, EVSEGroupStatusType>    StatusAggregationDelegate     = null,
                                               UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
                                               UInt16                                         MaxGroupAdminStatusListSize   = EVSEGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -5596,8 +5596,8 @@ namespace cloud.charging.open.protocols.WWCP
                 if (ChargingLocation.ChargingStationOperatorId.HasValue && ChargingLocation.ChargingStationOperatorId.Value != Id)
                     result = ReservationResult.UnknownLocation;
 
-                else if (AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.Operational ||
-                         AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.InternalUse)
+                else if (AdminStatus.Value == ChargingStationOperatorAdminStatusType.Operational ||
+                         AdminStatus.Value == ChargingStationOperatorAdminStatusType.InternalUse)
                 {
 
                     if (RemoteChargingStationOperator is not null)
@@ -5761,8 +5761,8 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                if (AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.Operational ||
-                    AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == ChargingStationOperatorAdminStatusType.Operational ||
+                    AdminStatus.Value == ChargingStationOperatorAdminStatusType.InternalUse)
                 {
 
                     if (RemoteChargingStationOperator is not null)
@@ -6422,8 +6422,8 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                if (AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.Operational ||
-                    AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == ChargingStationOperatorAdminStatusType.Operational ||
+                    AdminStatus.Value == ChargingStationOperatorAdminStatusType.InternalUse)
                 {
 
                     if ((ChargingLocation.EVSEId.           HasValue && TryGetChargingPoolByEVSEId   (ChargingLocation.EVSEId.           Value, out var chargingPool) ||
@@ -6595,8 +6595,8 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                if (AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.Operational ||
-                    AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.InternalUse)
+                if (AdminStatus.Value == ChargingStationOperatorAdminStatusType.Operational ||
+                    AdminStatus.Value == ChargingStationOperatorAdminStatusType.InternalUse)
                 {
 
                     if (TryGetChargingSessionById(SessionId, out var chargingSession) &&

@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (JSON.ParseOptional("endTime",
                                        "end time",
-                                       out DateTime? EndTime,
+                                       out DateTimeOffset? EndTime,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The reservation can be used for additional charging sessions within the given time span.
         /// </summary>
         /// <param name="EndTime">The timestamp after which the reservation can no longer be used for additional charging sessions (absolute time).</param>
-        public static ReservationHandling KeepAlive(DateTime EndTime)
+        public static ReservationHandling KeepAlive(DateTimeOffset EndTime)
             => new (EndTime: EndTime);
 
         #endregion

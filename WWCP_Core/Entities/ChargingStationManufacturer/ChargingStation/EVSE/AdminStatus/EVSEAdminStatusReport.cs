@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
         public static EVSEAdminStatusReport GenerateAdminStatusReport(this IEVSE                                      EVSE,
-                                                                      DateTime?                                       Timestamp   = null)
+                                                                      DateTimeOffset?                                 Timestamp   = null)
 
             => new (new IEVSE[] { EVSE },
                     Timestamp);
@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEs">An enumeration of EVSEs.</param>
         public static EVSEAdminStatusReport GenerateAdminStatusReport(this IEnumerable<IEVSE>                         EVSEs,
-                                                                      DateTime?                                       Timestamp   = null)
+                                                                      DateTimeOffset?                                 Timestamp   = null)
 
             => new (EVSEs,
                     Timestamp);
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
         public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IChargingStation                       ChargingStation,
-                                                                          DateTime?                                   Timestamp   = null)
+                                                                          DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingStation.EVSEs,
                     Timestamp);
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStations">An enumeration of charging stations.</param>
         public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IEnumerable<IChargingStation>          ChargingStations,
-                                                                          DateTime?                                   Timestamp   = null)
+                                                                          DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingStations.SelectMany(chargingStation => chargingStation.EVSEs),
                     Timestamp);
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
         public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IChargingPool                          ChargingPool,
-                                                                          DateTime?                                   Timestamp   = null)
+                                                                          DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingPool.EVSEs,
                     Timestamp);
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPools">An enumeration of charging pools.</param>
         public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IEnumerable<IChargingPool>             ChargingPools,
-                                                                          DateTime?                                   Timestamp   = null)
+                                                                          DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingPools.SelectMany(chargingPool => chargingPool.EVSEs),
                     Timestamp);
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
         public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IChargingStationOperator               ChargingStationOperator,
-                                                                          DateTime?                                   Timestamp   = null)
+                                                                          DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingStationOperator.EVSEs,
                     Timestamp);
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
         public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IEnumerable<IChargingStationOperator>  ChargingStationOperators,
-                                                                          DateTime?                                   Timestamp   = null)
+                                                                          DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingStationOperators.SelectMany(chargingStationOperator => chargingStationOperator.EVSEs),
                     Timestamp);
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
         public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IRoamingNetwork                        RoamingNetwork,
-                                                                          DateTime?                                   Timestamp   = null)
+                                                                          DateTimeOffset?                             Timestamp   = null)
 
             => new (RoamingNetwork.EVSEs,
                     Timestamp);
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEs">An enumeration of EVSEs.</param>
         /// <param name="Timestamp">The optional timestamp of the status report generation.</param>
         public EVSEAdminStatusReport(IEnumerable<IEVSE>  EVSEs,
-                                     DateTime?           Timestamp = null)
+                                     DateTimeOffset?     Timestamp = null)
 
             : base(EVSEs,
                    evse => evse.AdminStatus.Value,

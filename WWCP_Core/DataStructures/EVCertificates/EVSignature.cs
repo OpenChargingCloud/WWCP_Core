@@ -41,8 +41,8 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
         public ECCPublicKey?         PublicKey              { get; }
         public SimpleEMailAddress?   EMail                  { get; }
         public URL?                  WWW                    { get; }
-        public DateTime?             NotBefore              { get; }
-        public DateTime?             NotAfter               { get; }
+        public DateTimeOffset?       NotBefore              { get; }
+        public DateTimeOffset?       NotAfter               { get; }
         public HashingAlgorithm?     HashingAlgorithm       { get; }
         public EncryptionAlgorithm?  EncryptionAlgorithm    { get; }
         public Encoding?             Encoding               { get; }
@@ -53,8 +53,8 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
                            ECCPublicKey?         PublicKey,
                            SimpleEMailAddress?   EMail,
                            URL?                  WWW,
-                           DateTime?             NotBefore,
-                           DateTime?             NotAfter,
+                           DateTimeOffset?       NotBefore,
+                           DateTimeOffset?       NotAfter,
                            HashingAlgorithm?     HashingAlgorithm,
                            EncryptionAlgorithm?  EncryptionAlgorithm,
                            Encoding?             Encoding,

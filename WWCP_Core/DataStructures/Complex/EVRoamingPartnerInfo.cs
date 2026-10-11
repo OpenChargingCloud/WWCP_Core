@@ -32,14 +32,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         public EMobilityProvider_Id   EMPId        { get; }
         public I18NString             Name         { get; }
-        public DateTime?              NotBefore    { get; }
-        public DateTime?              NotAfter     { get; }
+        public DateTimeOffset?        NotBefore    { get; }
+        public DateTimeOffset?        NotAfter     { get; }
         public I18NString             Comment      { get; }
 
         public EVRoamingPartnerInfo(EMobilityProvider_Id  EMPId,
                                     I18NString?           Name,
-                                    DateTime?             NotBefore,
-                                    DateTime?             NotAfter,
+                                    DateTimeOffset?       NotBefore,
+                                    DateTimeOffset?       NotAfter,
                                     I18NString?           Comment     = null)
         {
 

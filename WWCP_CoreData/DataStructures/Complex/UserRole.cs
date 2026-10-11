@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The optional timestamp of the message signature.
         /// </summary>
         [Optional]
-        public Func<ISignableMessage, DateTime>?    TimestampCreator         { get; }
+        public Func<ISignableMessage, DateTimeOffset>? TimestampCreator         { get; }
 
         #endregion
 
@@ -547,7 +547,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (JSON.ParseOptional("timestampCreator",
                                        "timestamp creator",
-                                       out DateTime? TimestampCreator,
+                                       out DateTimeOffset? TimestampCreator,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

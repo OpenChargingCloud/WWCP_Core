@@ -342,7 +342,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (JSON.ParseOptional("timestamp",
                                        "timestamp",
-                                       out DateTime? Timestamp,
+                                       out DateTimeOffset? Timestamp,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

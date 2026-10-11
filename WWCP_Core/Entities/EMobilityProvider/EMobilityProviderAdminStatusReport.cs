@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// An e-mobility provider admin status report.
     /// </summary>
-    public class EMobilityProviderAdminStatusReport : StatusReport<EMobilityProvider, EMobilityProviderAdminStatusTypes>
+    public class EMobilityProviderAdminStatusReport : StatusReport<EMobilityProvider, EMobilityProviderAdminStatusType>
     {
 
         public EMobilityProviderAdminStatusReport(IEnumerable<EMobilityProvider> EMobilityProviders)

@@ -34,8 +34,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// A charging tariff for charging an electric vehicle.
     /// </summary>
     public class ChargingTariff : AEMobilityEntity<ChargingTariff_Id,
-                                                   ChargingTariffAdminStatusTypes,
-                                                   ChargingTariffStatusTypes>,
+                                                   ChargingTariffAdminStatusType,
+                                                   ChargingTariffStatusType>,
                                   IChargingTariff
     {
 

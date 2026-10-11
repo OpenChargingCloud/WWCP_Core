@@ -43,8 +43,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// ev driver or its behaviour.
     /// </summary>
     public interface IEMobilityProvider : IEntity<EMobilityProvider_Id>,
-                                          IAdminStatus<EMobilityProviderAdminStatusTypes>,
-                                          IStatus<EMobilityProviderStatusTypes>,
+                                          IAdminStatus<EMobilityProviderAdminStatusType>,
+                                          IStatus<EMobilityProviderStatusType>,
                                           ISendChargeDetailRecords,
                                           IChargingReservations,
                                           IRemoteStartStop,

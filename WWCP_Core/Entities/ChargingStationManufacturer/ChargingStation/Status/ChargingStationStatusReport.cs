@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
         public static ChargingStationStatusReport GenerateStatusReport               (this IChargingStation                       ChargingStation,
-                                                                                      DateTime?                                   Timestamp   = null)
+                                                                                      DateTimeOffset?                             Timestamp   = null)
 
             => new (new IChargingStation[] { ChargingStation },
                     Timestamp);
@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStations">An enumeration of charging stations.</param>
         public static ChargingStationStatusReport GenerateStatusReport               (this IEnumerable<IChargingStation>          ChargingStations,
-                                                                                      DateTime?                                   Timestamp   = null)
+                                                                                      DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingStations,
                     Timestamp);
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
         public static ChargingStationStatusReport GenerateChargingStationStatusReport(this IChargingPool                          ChargingPool,
-                                                                                      DateTime?                                   Timestamp   = null)
+                                                                                      DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingPool.ChargingStations,
                     Timestamp);
@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPools">An enumeration of charging pools.</param>
         public static ChargingStationStatusReport GenerateChargingStationStatusReport(this IEnumerable<IChargingPool>             ChargingPools,
-                                                                                      DateTime?                                   Timestamp   = null)
+                                                                                      DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingPools.SelectMany(chargingPool => chargingPool.ChargingStations),
                     Timestamp);
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
         public static ChargingStationStatusReport GenerateChargingStationStatusReport(this IChargingStationOperator               ChargingStationOperator,
-                                                                                      DateTime?                                   Timestamp   = null)
+                                                                                      DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingStationOperator.ChargingStations,
                     Timestamp);
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
         public static ChargingStationStatusReport GenerateChargingStationStatusReport(this IEnumerable<IChargingStationOperator>  ChargingStationOperators,
-                                                                                      DateTime?                                   Timestamp   = null)
+                                                                                      DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingStationOperators.SelectMany(chargingStationOperator => chargingStationOperator.ChargingStations),
                     Timestamp);
@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
         public static ChargingStationStatusReport GenerateChargingStationStatusReport(this IRoamingNetwork                        RoamingNetwork,
-                                                                                      DateTime?                                   Timestamp   = null)
+                                                                                      DateTimeOffset?                             Timestamp   = null)
 
             => new (RoamingNetwork.ChargingStations,
                     Timestamp);
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStations">An enumeration of charging stations.</param>
         /// <param name="Timestamp">The optional timestamp of the status report generation.</param>
         public ChargingStationStatusReport(IEnumerable<IChargingStation>  ChargingStations,
-                                           DateTime?                      Timestamp   = null)
+                                           DateTimeOffset?                Timestamp   = null)
 
             : base(ChargingStations,
                    station => station.Status.Value,

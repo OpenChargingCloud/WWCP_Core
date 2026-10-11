@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
         public static ChargingPoolAdminStatusReport GenerateAdminStatusReport            (this IChargingPool                          ChargingPool,
-                                                                                          DateTime?                                   Timestamp   = null)
+                                                                                          DateTimeOffset?                             Timestamp   = null)
 
             => new (new IChargingPool[] { ChargingPool },
                     Timestamp);
@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPools">An enumeration of charging pools.</param>
         public static ChargingPoolAdminStatusReport GenerateAdminStatusReport            (this IEnumerable<IChargingPool>             ChargingPools,
-                                                                                          DateTime?                                   Timestamp   = null)
+                                                                                          DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingPools,
                     Timestamp);
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
         public static ChargingPoolAdminStatusReport GenerateChargingPoolAdminStatusReport(this IChargingStationOperator               ChargingStationOperator,
-                                                                                          DateTime?                                   Timestamp   = null)
+                                                                                          DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingStationOperator.ChargingPools,
                     Timestamp);
@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
         public static ChargingPoolAdminStatusReport GenerateChargingPoolAdminStatusReport(this IEnumerable<IChargingStationOperator>  ChargingStationOperators,
-                                                                                          DateTime?                                   Timestamp   = null)
+                                                                                          DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingStationOperators.SelectMany(chargingStationOperator => chargingStationOperator.ChargingPools),
                     Timestamp);
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
         public static ChargingPoolAdminStatusReport GenerateChargingPoolAdminStatusReport(this IRoamingNetwork                        RoamingNetwork,
-                                                                                          DateTime?                                   Timestamp   = null)
+                                                                                          DateTimeOffset?                             Timestamp   = null)
 
             => new (RoamingNetwork.ChargingPools,
                     Timestamp);
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPools">An enumeration of charging pools.</param>
         /// <param name="Timestamp">The optional timestamp of the status report generation.</param>
         public ChargingPoolAdminStatusReport(IEnumerable<IChargingPool>  ChargingPools,
-                                             DateTime?                   Timestamp   = null)
+                                             DateTimeOffset?             Timestamp   = null)
 
             : base(ChargingPools,
                    pool => pool.AdminStatus.Value,

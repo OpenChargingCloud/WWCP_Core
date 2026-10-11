@@ -38,10 +38,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Timestamp
 
-        private readonly DateTime _Timestamp;
+        private readonly DateTimeOffset _Timestamp;
 
         [Mandatory]
-        public DateTime Timestamp
+        public DateTimeOffset Timestamp
         {
             get
             {
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region StartTime
 
-        private readonly DateTime _StartTime;
+        private readonly DateTimeOffset _StartTime;
 
         [Mandatory]
-        public DateTime StartTime
+        public DateTimeOffset StartTime
         {
             get
             {
@@ -119,10 +119,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EndTime
 
-        private DateTime _EndTime;
+        private DateTimeOffset _EndTime;
 
         [Mandatory]
-        public DateTime EndTime
+        public DateTimeOffset EndTime
         {
 
             get
@@ -268,10 +268,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a parking reservation.
         /// </summary>
         public ParkingReservation(ParkingReservation_Id              ReservationId,
-                                  DateTime                           Timestamp,
-                                  DateTime                           StartTime,
+                                  DateTimeOffset                     Timestamp,
+                                  DateTimeOffset                     StartTime,
                                   TimeSpan                           Duration,
-                                  DateTime                           EndTime,
+                                  DateTimeOffset                     EndTime,
                                   TimeSpan                           ConsumedReservationTime,
                                   ParkingReservationLevel            ReservationLevel,
 

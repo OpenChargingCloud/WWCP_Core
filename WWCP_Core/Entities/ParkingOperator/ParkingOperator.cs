@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this ParkingOperatorAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<Timestamped<ParkingOperatorAdminStatusTypes>>  ParkingOperatorAdminStatus,
+        public static JObject ToJSON(this IEnumerable<Timestamped<ParkingOperatorAdminStatusType>>   ParkingOperatorAdminStatus,
                                      UInt64?                                                        Skip         = null,
                                      UInt64?                                                        Take         = null,
                                      UInt64?                                                        HistorySize  = 1)
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this ParkingOperatorAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusTypes>>>>  ParkingOperatorAdminStatus,
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusType>>>>   ParkingOperatorAdminStatus,
                                      UInt64?                                                                                                       Skip         = null,
                                      UInt64?                                                                                                       Take         = null,
                                      UInt64?                                                                                                       HistorySize  = 1)
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this ParkingOperatorStatus,      Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<Timestamped<ParkingOperatorStatusTypes>>  ParkingOperatorStatus,
+        public static JObject ToJSON(this IEnumerable<Timestamped<ParkingOperatorStatusType>>   ParkingOperatorStatus,
                                      UInt64?                                                   Skip         = null,
                                      UInt64?                                                   Take         = null,
                                      UInt64?                                                   HistorySize  = 1)
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this ParkingOperatorStatus,      Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusTypes>>>>  ParkingOperatorStatus,
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusType>>>>   ParkingOperatorStatus,
                                      UInt64?                                                                                                  Skip         = null,
                                      UInt64?                                                                                                  Take         = null,
                                      UInt64?                                                                                                  HistorySize  = 1)
@@ -342,8 +342,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// The parking operator is responsible for operating parking spaces.
     /// </summary>
     public class ParkingOperator : ACryptoEMobilityEntity<ParkingOperator_Id,
-                                                          ParkingOperatorAdminStatusTypes,
-                                                          ParkingOperatorStatusTypes>,
+                                                          ParkingOperatorAdminStatusType,
+                                                          ParkingOperatorStatusType>,
                                    IEquatable<ParkingOperator>, IComparable<ParkingOperator>, IComparable,
                                    IEnumerable<ParkingGarage>
     {
@@ -663,8 +663,8 @@ namespace cloud.charging.open.protocols.WWCP
                                  I18NString?                            Description                    = null,
                                  Action<ParkingOperator>?               Configurator                   = null,
                                  RemoteParkingOperatorCreatorDelegate?  RemoteParkingOperatorCreator   = null,
-                                 ParkingOperatorAdminStatusTypes?       InitialAdminStatus             = ParkingOperatorAdminStatusTypes.Operational,
-                                 ParkingOperatorStatusTypes?            InitialStatus                  = ParkingOperatorStatusTypes.Available,
+                                 ParkingOperatorAdminStatusType?        InitialAdminStatus             = null,
+                                 ParkingOperatorStatusType?             InitialStatus                  = null,
                                  UInt16?                                MaxAdminStatusScheduleSize     = DefaultMaxAdminStatusScheduleSize,
                                  UInt16?                                MaxStatusScheduleSize          = DefaultMaxStatusScheduleSize,
 
@@ -682,8 +682,8 @@ namespace cloud.charging.open.protocols.WWCP
                    null,
                    null,
                    null,
-                   InitialAdminStatus         ?? ParkingOperatorAdminStatusTypes.Operational,
-                   InitialStatus              ?? ParkingOperatorStatusTypes.Available,
+                   InitialAdminStatus         ?? ParkingOperatorAdminStatusType.Operational,
+                   InitialStatus              ?? ParkingOperatorStatusType.Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
                    MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
                    DataSource,
@@ -824,7 +824,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateData(DateTime  Timestamp,
+        internal async Task UpdateData(DateTimeOffset Timestamp,
                                        Object    Sender,
                                        String    PropertyName,
                                        Object    OldValue,
@@ -847,9 +847,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old ParkingSpace status.</param>
         /// <param name="NewStatus">The new ParkingSpace status.</param>
-        internal async Task UpdateStatus(DateTime                             Timestamp,
-                                         Timestamped<ParkingOperatorStatusTypes>  OldStatus,
-                                         Timestamped<ParkingOperatorStatusTypes>  NewStatus)
+        internal async Task UpdateStatus(DateTimeOffset                       Timestamp,
+                                         Timestamped<ParkingOperatorStatusType>   OldStatus,
+                                         Timestamped<ParkingOperatorStatusType>   NewStatus)
         {
 
             var onStatusChanged = OnStatusChanged;
@@ -868,9 +868,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                  Timestamp,
-                                              Timestamped<ParkingOperatorAdminStatusTypes>  OldStatus,
-                                              Timestamped<ParkingOperatorAdminStatusTypes>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTimeOffset                            Timestamp,
+                                              Timestamped<ParkingOperatorAdminStatusType>   OldStatus,
+                                              Timestamped<ParkingOperatorAdminStatusType>   NewStatus)
         {
 
             var onAdminStatusChanged = OnAdminStatusChanged;
@@ -1343,13 +1343,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ParkingGarageAdminStatus(IncludeStation = null)
 
-        //public IEnumerable<KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusTypes>> ParkingGarageAdminStatus(Func<ParkingGarage, Boolean> IncludeStation = null)
+        //public IEnumerable<KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>> ParkingGarageAdminStatus(Func<ParkingGarage, Boolean> IncludeStation = null)
 
         //    => _ParkingGarages.
         //           SelectMany(pool    => pool.ParkingGarages).
         //           Where     (station => IncludeStation is null || IncludeStation(station)).
         //           OrderBy   (station => station.Id).
-        //           Select    (station => new KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusTypes>(station.Id, station.AdminStatus.Value));
+        //           Select    (station => new KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>(station.Id, station.AdminStatus.Value));
 
         #endregion
 
@@ -1407,7 +1407,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetParkingGarageStatus(ParkingGarageId, NewStatus)
 
         //public void SetParkingGarageStatus(ParkingGarage_Id         ParkingGarageId,
-        //                                     ParkingGarageStatusTypes  NewStatus)
+        //                                     ParkingGarageStatusType  NewStatus)
         //{
 
         //    ParkingGarage _ParkingGarage  = null;
@@ -1421,7 +1421,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetParkingGarageStatus(ParkingGarageId, NewTimestampedStatus)
 
         //public void SetParkingGarageStatus(ParkingGarage_Id                      ParkingGarageId,
-        //                                     Timestamped<ParkingGarageStatusTypes>  NewTimestampedStatus)
+        //                                     Timestamped<ParkingGarageStatusType>  NewTimestampedStatus)
         //{
 
         //    ParkingGarage _ParkingGarage = null;
@@ -1436,7 +1436,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetParkingGarageAdminStatus(ParkingGarageId, NewStatus)
 
         //public void SetParkingGarageAdminStatus(ParkingGarage_Id              ParkingGarageId,
-        //                                          ParkingGarageAdminStatusTypes  NewStatus)
+        //                                          ParkingGarageAdminStatusType  NewStatus)
         //{
 
         //    ParkingGarage _ParkingGarage  = null;
@@ -1450,7 +1450,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetParkingGarageAdminStatus(ParkingGarageId, NewTimestampedStatus)
 
         //public void SetParkingGarageAdminStatus(ParkingGarage_Id                           ParkingGarageId,
-        //                                          Timestamped<ParkingGarageAdminStatusTypes>  NewTimestampedStatus)
+        //                                          Timestamped<ParkingGarageAdminStatusType>  NewTimestampedStatus)
         //{
 
         //    ParkingGarage _ParkingGarage = null;
@@ -1464,7 +1464,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetParkingGarageAdminStatus(ParkingGarageId, NewStatus, Timestamp)
 
         //public void SetParkingGarageAdminStatus(ParkingGarage_Id              ParkingGarageId,
-        //                                          ParkingGarageAdminStatusTypes  NewStatus,
+        //                                          ParkingGarageAdminStatusType  NewStatus,
         //                                          DateTime                        Timestamp)
         //{
 
@@ -1479,7 +1479,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetParkingGarageAdminStatus(ParkingGarageId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
         //public void SetParkingGarageAdminStatus(ParkingGarage_Id                                        ParkingGarageId,
-        //                                          IEnumerable<Timestamped<ParkingGarageAdminStatusTypes>>  StatusList,
+        //                                          IEnumerable<Timestamped<ParkingGarageAdminStatusType>>  StatusList,
         //                                          ChangeMethods                                             ChangeMethod  = ChangeMethods.Replace)
         //{
 
@@ -1589,8 +1589,8 @@ namespace cloud.charging.open.protocols.WWCP
         ///// <param name="NewStatus">The new aggreagted charging station status.</param>
         //internal async Task UpdateParkingGarageStatus(DateTime                                Timestamp,
         //                                                ParkingGarage                         ParkingGarage,
-        //                                                Timestamped<ParkingGarageStatusTypes>  OldStatus,
-        //                                                Timestamped<ParkingGarageStatusTypes>  NewStatus)
+        //                                                Timestamped<ParkingGarageStatusType>  OldStatus,
+        //                                                Timestamped<ParkingGarageStatusType>  NewStatus)
         //{
 
         //    var OnParkingGarageStatusChangedLocal = OnParkingGarageStatusChanged;
@@ -1612,8 +1612,8 @@ namespace cloud.charging.open.protocols.WWCP
         ///// <param name="NewStatus">The new aggreagted charging station admin status.</param>
         //internal async Task UpdateParkingGarageAdminStatus(DateTime                                     Timestamp,
         //                                                     ParkingGarage                              ParkingGarage,
-        //                                                     Timestamped<ParkingGarageAdminStatusTypes>  OldStatus,
-        //                                                     Timestamped<ParkingGarageAdminStatusTypes>  NewStatus)
+        //                                                     Timestamped<ParkingGarageAdminStatusType>  OldStatus,
+        //                                                     Timestamped<ParkingGarageAdminStatusType>  NewStatus)
         //{
 
         //    var OnParkingGarageAdminStatusChangedLocal = OnParkingGarageAdminStatusChanged;

@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
                             Action<ChargingStation, EVSE_Id>?  OnError       = null);
 
 
-        Task<IEnumerable<EVSEStatus>> GetEVSEStatus(DateTime           Timestamp,
+        Task<IEnumerable<EVSEStatus>> GetEVSEStatus(DateTimeOffset     Timestamp,
                                                     CancellationToken  CancellationToken,
                                                     EventTracking_Id   EventTrackingId,
                                                     TimeSpan?          RequestTimeout = null);

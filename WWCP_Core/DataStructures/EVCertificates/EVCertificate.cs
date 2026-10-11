@@ -51,9 +51,9 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
 
         public IEnumerable<Usages>                         Usages                          { get; }
 
-        public DateTime                                    NotBefore                       { get; }
+        public DateTimeOffset                              NotBefore                       { get; }
 
-        public DateTime                                    NotAfter                        { get; }
+        public DateTimeOffset                              NotAfter                        { get; }
 
         public Owner                                       Owner                           { get; }
 
@@ -77,9 +77,9 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
 
                              IEnumerable<Usages>                          Usages,
 
-                             DateTime                                     NotBefore,
+                             DateTimeOffset                               NotBefore,
 
-                             DateTime                                     NotAfter,
+                             DateTimeOffset                               NotAfter,
 
                              Owner                                        Owner,
 
@@ -181,8 +181,8 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
                                   ECCPublicKey?           PublicKey             = null,
                                   SimpleEMailAddress?     EMailAddress          = null,
                                   URL?                    WWW                   = null,
-                                  DateTime?               NotBefore             = null,
-                                  DateTime?               NotAfter              = null,
+                                  DateTimeOffset?         NotBefore             = null,
+                                  DateTimeOffset?         NotAfter              = null,
                                   HashingAlgorithm?       HashingAlgorithm      = null,
                                   EncryptionAlgorithm?    EncryptionAlgorithm   = null,
                                   Encoding?               Encoding              = null)

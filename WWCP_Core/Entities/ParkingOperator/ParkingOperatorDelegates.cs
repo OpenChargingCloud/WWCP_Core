@@ -54,8 +54,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped status of the Charging Station Operator.</param>
     public delegate Task OnParkingOperatorAdminStatusChangedDelegate(DateTimeOffset                                Timestamp,
                                                                      ParkingOperator                               ParkingOperator,
-                                                                     Timestamped<ParkingOperatorAdminStatusTypes>  OldStatus,
-                                                                     Timestamped<ParkingOperatorAdminStatusTypes>  NewStatus);
+                                                                     Timestamped<ParkingOperatorAdminStatusType>   OldStatus,
+                                                                     Timestamped<ParkingOperatorAdminStatusType>   NewStatus);
 
 
     /// <summary>
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped status of the Charging Station Operator.</param>
     public delegate Task OnParkingOperatorStatusChangedDelegate(DateTimeOffset                           Timestamp,
                                                                 ParkingOperator                          ParkingOperator,
-                                                                Timestamped<ParkingOperatorStatusTypes>  OldStatus,
-                                                                Timestamped<ParkingOperatorStatusTypes>  NewStatus);
+                                                                Timestamped<ParkingOperatorStatusType>   OldStatus,
+                                                                Timestamped<ParkingOperatorStatusType>   NewStatus);
 
 }

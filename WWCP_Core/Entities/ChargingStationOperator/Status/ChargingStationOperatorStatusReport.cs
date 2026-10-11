@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
         public static ChargingStationOperatorStatusReport GenerateStatusReport                       (this IChargingStationOperator               ChargingStationOperator,
-                                                                                                      DateTime?                                   Timestamp   = null)
+                                                                                                      DateTimeOffset?                             Timestamp   = null)
 
             => new (new IChargingStationOperator[] { ChargingStationOperator },
                     Timestamp);
@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
         public static ChargingStationOperatorStatusReport GenerateStatusReport                       (this IEnumerable<IChargingStationOperator>  ChargingStationOperators,
-                                                                                                      DateTime?                                   Timestamp   = null)
+                                                                                                      DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingStationOperators,
                     Timestamp);
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
         public static ChargingStationOperatorStatusReport GenerateChargingStationOperatorStatusReport(this IRoamingNetwork                        RoamingNetwork,
-                                                                                                      DateTime?                                   Timestamp   = null)
+                                                                                                      DateTimeOffset?                             Timestamp   = null)
 
             => new (RoamingNetwork.ChargingStationOperators,
                     Timestamp);
@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A charging station operator status report.
     /// </summary>
-    public class ChargingStationOperatorStatusReport : StatusReport<IChargingStationOperator, ChargingStationOperatorStatusTypes>
+    public class ChargingStationOperatorStatusReport : StatusReport<IChargingStationOperator, ChargingStationOperatorStatusType>
     {
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
         /// <param name="Timestamp">The optional timestamp of the status report generation.</param>
         public ChargingStationOperatorStatusReport(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
-                                                   DateTime?                              Timestamp   = null)
+                                                   DateTimeOffset?                        Timestamp   = null)
 
             : base(ChargingStationOperators,
                    chargingStationOperator => chargingStationOperator.Status.Value,

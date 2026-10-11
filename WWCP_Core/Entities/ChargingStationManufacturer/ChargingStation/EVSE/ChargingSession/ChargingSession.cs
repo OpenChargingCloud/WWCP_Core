@@ -1305,7 +1305,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    };
 
 
-                var noAutoDeletionBefore = JSON["noAutoDeletionBefore"]?.Value<DateTime>();
+                var noAutoDeletionBefore = JSON["noAutoDeletionBefore"]?.Value<DateTimeOffset>();
                 if (noAutoDeletionBefore.HasValue)
                     ChargingSession.NoAutoDeletionBefore = noAutoDeletionBefore.Value;
 
@@ -1313,7 +1313,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (JSON["start"]        is JObject sessionStartJSON)
                 {
 
-                    var startTime = sessionStartJSON["timestamp"]?.Value<DateTime>();
+                    var startTime = sessionStartJSON["timestamp"]?.Value<DateTimeOffset>();
 
                     if (startTime is not null)
                     {
@@ -1334,7 +1334,7 @@ namespace cloud.charging.open.protocols.WWCP
                     if (JSON["stop"] is JObject sessionStopJSON)
                     {
 
-                        var stopTime = sessionStopJSON["timestamp"]?.Value<DateTime>();
+                        var stopTime = sessionStopJSON["timestamp"]?.Value<DateTimeOffset>();
 
                         if (startTime is not null && stopTime is not null)
                         {

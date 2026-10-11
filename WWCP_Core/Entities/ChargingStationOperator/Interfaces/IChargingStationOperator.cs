@@ -77,8 +77,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnChargingStationOperatorAdminStatusChangedDelegate(DateTimeOffset                                        Timestamp,
                                                                              EventTracking_Id                                      EventTrackingId,
                                                                              IChargingStationOperator                              ChargingStationOperator,
-                                                                             Timestamped<ChargingStationOperatorAdminStatusTypes>  OldStatus,
-                                                                             Timestamped<ChargingStationOperatorAdminStatusTypes>  NewStatus);
+                                                                             Timestamped<ChargingStationOperatorAdminStatusType>  OldStatus,
+                                                                             Timestamped<ChargingStationOperatorAdminStatusType>  NewStatus);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of the charging station operator changed.
@@ -91,8 +91,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnChargingStationOperatorStatusChangedDelegate(DateTimeOffset                                   Timestamp,
                                                                         EventTracking_Id                                 EventTrackingId,
                                                                         IChargingStationOperator                         ChargingStationOperator,
-                                                                        Timestamped<ChargingStationOperatorStatusTypes>  OldStatus,
-                                                                        Timestamped<ChargingStationOperatorStatusTypes>  NewStatus);
+                                                                        Timestamped<ChargingStationOperatorStatusType>  OldStatus,
+                                                                        Timestamped<ChargingStationOperatorStatusType>  NewStatus);
 
 
     /// <summary>
@@ -811,8 +811,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// The common interface of all charging station operators.
     /// </summary>
     public interface IChargingStationOperator : IEntity<ChargingStationOperator_Id>,
-                                                IAdminStatus<ChargingStationOperatorAdminStatusTypes>,
-                                                IStatus<ChargingStationOperatorStatusTypes>,
+                                                IAdminStatus<ChargingStationOperatorAdminStatusType>,
+                                                IStatus<ChargingStationOperatorStatusType>,
                                                 ISendAuthorizeStartStop,
                                                 //ILocalRemoteStartStop,
                                                 //ILocalChargingReservations,
@@ -1410,7 +1410,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                         IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
                                                         Func<IChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
-                                                        Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
+                                                        Func<ChargingStationStatusReport, ChargingStationGroupStatusType>   StatusAggregationDelegate     = null,
                                                         UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                         UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -1443,7 +1443,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                         IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
                                                         Func<IChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
-                                                        Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
+                                                        Func<ChargingStationStatusReport, ChargingStationGroupStatusType>   StatusAggregationDelegate     = null,
                                                         UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                         UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -1476,7 +1476,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                              IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
                                                              Func<IChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
-                                                             Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
+                                                             Func<ChargingStationStatusReport, ChargingStationGroupStatusType>   StatusAggregationDelegate     = null,
                                                              UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                              UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -1509,7 +1509,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                              IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
                                                              Func<IChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
-                                                             Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
+                                                             Func<ChargingStationStatusReport, ChargingStationGroupStatusType>   StatusAggregationDelegate     = null,
                                                              UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                              UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -1791,7 +1791,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
                                   Func<IEVSE,   Boolean>                         AutoIncludeEVSEs              = null,
 
-                                  Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
+                                  Func<EVSEStatusReport, EVSEGroupStatusType>    StatusAggregationDelegate     = null,
                                   UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
                                   UInt16                                         MaxGroupAdminStatusListSize   = EVSEGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -1830,7 +1830,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
                                   Func<IEVSE,   Boolean>                         AutoIncludeEVSEs              = null,
 
-                                  Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
+                                  Func<EVSEStatusReport, EVSEGroupStatusType>    StatusAggregationDelegate     = null,
                                   UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
                                   UInt16                                         MaxGroupAdminStatusListSize   = EVSEGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -1869,7 +1869,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
                                        Func<IEVSE,   Boolean>                         AutoIncludeEVSEs              = null,
 
-                                       Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
+                                       Func<EVSEStatusReport, EVSEGroupStatusType>    StatusAggregationDelegate     = null,
                                        UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
                                        UInt16                                         MaxGroupAdminStatusListSize   = EVSEGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -1908,7 +1908,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
                                        Func<IEVSE,   Boolean>                         AutoIncludeEVSEs              = null,
 
-                                       Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
+                                       Func<EVSEStatusReport, EVSEGroupStatusType>    StatusAggregationDelegate     = null,
                                        UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
                                        UInt16                                         MaxGroupAdminStatusListSize   = EVSEGroup.DefaultMaxGroupAdminStatusListSize,
 

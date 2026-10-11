@@ -44,8 +44,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnChargingStationGroupAdminStatusChangedDelegate(DateTimeOffset                                      Timestamp,
                                                                           EventTracking_Id                                    EventTrackingId,
                                                                           ChargingStationGroup                                ChargingStationGroup,
-                                                                          Timestamped<ChargingStationGroupAdminStatusTypes>   NewStatus,
-                                                                          Timestamped<ChargingStationGroupAdminStatusTypes>?  OldStatus    = null,
+                                                                          Timestamped<ChargingStationGroupAdminStatusType>    NewStatus,
+                                                                          Timestamped<ChargingStationGroupAdminStatusType>?   OldStatus    = null,
                                                                           Context?                                            DataSource   = null);
 
     /// <summary>
@@ -58,8 +58,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnChargingStationGroupStatusChangedDelegate(DateTimeOffset                                 Timestamp,
                                                                      EventTracking_Id                               EventTrackingId,
                                                                      ChargingStationGroup                           ChargingStationGroup,
-                                                                     Timestamped<ChargingStationGroupStatusTypes>   NewStatus,
-                                                                     Timestamped<ChargingStationGroupStatusTypes>?  OldStatus    = null,
+                                                                     Timestamped<ChargingStationGroupStatusType>    NewStatus,
+                                                                     Timestamped<ChargingStationGroupStatusType>?   OldStatus    = null,
                                                                      Context?                                       DataSource   = null);
 
 
@@ -263,8 +263,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// with the EVSE Operator backend.
     /// </summary>
     public class ChargingStationGroup : AEMobilityEntity<ChargingStationGroup_Id,
-                                                         ChargingStationGroupAdminStatusTypes,
-                                                         ChargingStationGroupStatusTypes>,
+                                                         ChargingStationGroupAdminStatusType,
+                                                         ChargingStationGroupStatusType>,
                                         IEquatable<ChargingStationGroup>, IComparable<ChargingStationGroup>, IComparable,
                                         IEnumerable<IChargingStation>
     {
@@ -399,7 +399,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A delegate called to aggregate the dynamic status of all subordinated charging stations.
         /// </summary>
-        public Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>? StatusAggregationDelegate   { get; }
+        public Func<ChargingStationStatusReport, ChargingStationGroupStatusType>? StatusAggregationDelegate   { get; }
 
         #endregion
 
@@ -437,24 +437,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationAddition
 
-        internal readonly IVotingNotificator<DateTime, User_Id, ChargingStationGroup, ChargingStation, Boolean> ChargingStationAddition;
+        internal readonly IVotingNotificator<DateTimeOffset, User_Id, ChargingStationGroup, ChargingStation, Boolean> ChargingStationAddition;
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, User_Id, ChargingStationGroup, ChargingStation, Boolean> OnChargingStationAddition
+        public IVotingSender<DateTimeOffset, User_Id, ChargingStationGroup, ChargingStation, Boolean> OnChargingStationAddition
             => ChargingStationAddition;
 
         #endregion
 
         #region ChargingStationRemoval
 
-        internal readonly IVotingNotificator<DateTime, User_Id, ChargingStationGroup, ChargingStation, Boolean> ChargingStationRemoval;
+        internal readonly IVotingNotificator<DateTimeOffset, User_Id, ChargingStationGroup, ChargingStation, Boolean> ChargingStationRemoval;
 
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, User_Id, ChargingStationGroup, ChargingStation, Boolean> OnChargingStationRemoval
+        public IVotingSender<DateTimeOffset, User_Id, ChargingStationGroup, ChargingStation, Boolean> OnChargingStationRemoval
             => ChargingStationRemoval;
 
         #endregion
@@ -483,24 +483,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<DateTime, User_Id, IChargingStation, IEVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean> EVSEAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition
             => EVSEAddition;
 
         #endregion
 
         #region EVSERemoval
 
-        internal readonly IVotingNotificator<DateTime, User_Id, IChargingStation, IEVSE, Boolean> EVSERemoval;
+        internal readonly IVotingNotificator<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean> EVSERemoval;
 
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval
+        public IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval
             => EVSERemoval;
 
         #endregion
@@ -560,7 +560,7 @@ namespace cloud.charging.open.protocols.WWCP
                                       IEnumerable<ChargingStation_Id>?                                    MemberIds                     = null,
                                       Func<IChargingStation, Boolean>?                                    AutoIncludeStations           = null,
 
-                                      Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>? StatusAggregationDelegate     = null,
+                                      Func<ChargingStationStatusReport, ChargingStationGroupStatusType>? StatusAggregationDelegate     = null,
                                       UInt16                                                              MaxGroupStatusListSize        = DefaultMaxGroupStatusListSize,
                                       UInt16                                                              MaxGroupAdminStatusListSize   = DefaultMaxGroupAdminStatusListSize)
 
@@ -602,12 +602,12 @@ namespace cloud.charging.open.protocols.WWCP
             #region Init events
 
             // ChargingStationGroup events
-            this.ChargingStationAddition  = new VotingNotificator<DateTime, User_Id, ChargingStationGroup, ChargingStation, Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval   = new VotingNotificator<DateTime, User_Id, ChargingStationGroup, ChargingStation, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition  = new VotingNotificator<DateTimeOffset, User_Id, ChargingStationGroup, ChargingStation, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationRemoval   = new VotingNotificator<DateTimeOffset, User_Id, ChargingStationGroup, ChargingStation, Boolean>(() => new VetoVote(), true);
 
             // ChargingStation events
-            this.EVSEAddition             = new VotingNotificator<DateTime, User_Id, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval              = new VotingNotificator<DateTime, User_Id, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition             = new VotingNotificator<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval              = new VotingNotificator<DateTimeOffset, User_Id, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
 
@@ -679,8 +679,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new charging station admin status.</param>
         internal async Task UpdateAdminStatus(DateTimeOffset                                      Timestamp,
                                               EventTracking_Id                                    EventTrackingId,
-                                              Timestamped<ChargingStationGroupAdminStatusTypes>   NewStatus,
-                                              Timestamped<ChargingStationGroupAdminStatusTypes>?  OldStatus    = null,
+                                              Timestamped<ChargingStationGroupAdminStatusType>    NewStatus,
+                                              Timestamped<ChargingStationGroupAdminStatusType>?   OldStatus    = null,
                                               Context?                                            DataSource   = null)
         {
 
@@ -708,7 +708,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal void UpdateEVSEData(DateTime          Timestamp,
+        internal void UpdateEVSEData(DateTimeOffset    Timestamp,
                                      EventTracking_Id  EventTrackingId,
                                      EVSE              EVSE,
                                      String            PropertyName,
@@ -739,7 +739,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
+        internal async Task UpdateEVSEAdminStatus(DateTimeOffset                     Timestamp,
                                                   EventTracking_Id                   EventTrackingId,
                                                   EVSE                               EVSE,
                                                   Timestamped<EVSEAdminStatusType>  OldStatus,
@@ -768,7 +768,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
+        internal async Task UpdateEVSEStatus(DateTimeOffset                Timestamp,
                                              EventTracking_Id              EventTrackingId,
                                              EVSE                          EVSE,
                                              Timestamped<EVSEStatusType>  OldStatus,
@@ -799,7 +799,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
-        internal void UpdateChargingStationData(DateTime          Timestamp,
+        internal void UpdateChargingStationData(DateTimeOffset    Timestamp,
                                                 EventTracking_Id  EventTrackingId,
                                                 ChargingStation   ChargingStation,
                                                 String            PropertyName,
@@ -832,7 +832,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation">The updated charging station.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal void UpdateChargingStationAdminStatus(DateTime                                       Timestamp,
+        internal void UpdateChargingStationAdminStatus(DateTimeOffset                                 Timestamp,
                                                        EventTracking_Id                               EventTrackingId,
                                                        ChargingStation                                ChargingStation,
                                                        Timestamped<ChargingStationAdminStatusType>   NewStatus,
@@ -863,7 +863,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation">The updated charging station.</param>
         /// <param name="OldStatus">The old charging station status.</param>
         /// <param name="NewStatus">The new charging station status.</param>
-        internal void UpdateChargingStationStatus(DateTime                                  Timestamp,
+        internal void UpdateChargingStationStatus(DateTimeOffset                            Timestamp,
                                                   EventTracking_Id                          EventTrackingId,
                                                   ChargingStation                           ChargingStation,
                                                   Timestamped<ChargingStationStatusType>   NewStatus,

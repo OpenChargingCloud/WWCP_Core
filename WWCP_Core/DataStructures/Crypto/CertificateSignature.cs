@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.WWCP
     {
 
         public ECPublicKeyParameters SignerPublicKey    { get; }
-        public DateTime              SignatureDate      { get; }
+        public DateTimeOffset        SignatureDate      { get; }
         public String                Signature          { get; }
 
     }

@@ -55,10 +55,10 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.That(DE_GEF.Name.FirstText(), Is.EqualTo("GraphDefined CSO"));
                 Assert.That(DE_GEF.Description.FirstText(), Is.EqualTo("powered by GraphDefined GmbH"));
 
-                Assert.That(DE_GEF.AdminStatus, Is.EqualTo(ChargingStationOperatorAdminStatusTypes.OutOfService));
+                Assert.That(DE_GEF.AdminStatus, Is.EqualTo(ChargingStationOperatorAdminStatusType.OutOfService));
                 Assert.That(DE_GEF.AdminStatusSchedule().Count(), Is.EqualTo(1));
 
-                Assert.That(DE_GEF.Status, Is.EqualTo(ChargingStationOperatorStatusTypes.Offline));
+                Assert.That(DE_GEF.Status, Is.EqualTo(ChargingStationOperatorStatusType.Offline));
                 Assert.That(DE_GEF.StatusSchedule().Count(), Is.EqualTo(1));
 
 
@@ -104,8 +104,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.That(DE_XXX.Name.FirstText(), Is.EqualTo("XXX CSO"));
                     Assert.That(DE_XXX.Description.FirstText(), Is.EqualTo("powered by GraphDefined CSOs GmbH"));
 
-                    Assert.That(DE_XXX.AdminStatus, Is.EqualTo(ChargingStationOperatorAdminStatusTypes.Operational));
-                    Assert.That(DE_XXX.Status, Is.EqualTo(ChargingStationOperatorStatusTypes.Available));
+                    Assert.That(DE_XXX.AdminStatus, Is.EqualTo(ChargingStationOperatorAdminStatusType.Operational));
+                    Assert.That(DE_XXX.Status, Is.EqualTo(ChargingStationOperatorStatusType.Available));
 
                     Assert.That(roamingNetwork.ChargingStationOperatorExists (ChargingStationOperator_Id.Parse("DE*XXX")), Is.True);
                     Assert.That(roamingNetwork.GetChargingStationOperatorById(ChargingStationOperator_Id.Parse("DE*XXX")), Is.Not.Null);
@@ -138,15 +138,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 // Status entries are compared by their ISO 8601 timestamps!
                 Thread.Sleep(1000);
 
-                DE_GEF.AdminStatus = ChargingStationOperatorAdminStatusTypes.InternalUse;
-                Assert.That(DE_GEF.AdminStatus, Is.EqualTo(ChargingStationOperatorAdminStatusTypes.InternalUse));
+                DE_GEF.AdminStatus = ChargingStationOperatorAdminStatusType.InternalUse;
+                Assert.That(DE_GEF.AdminStatus, Is.EqualTo(ChargingStationOperatorAdminStatusType.InternalUse));
                 Assert.That(DE_GEF.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "), Is.EqualTo("internalUse, outOfService"));
                 Assert.That(DE_GEF.AdminStatusSchedule().Count(), Is.EqualTo(2));
 
                 Thread.Sleep(1000);
 
-                DE_GEF.AdminStatus = ChargingStationOperatorAdminStatusTypes.Operational;
-                Assert.That(DE_GEF.AdminStatus, Is.EqualTo(ChargingStationOperatorAdminStatusTypes.Operational));
+                DE_GEF.AdminStatus = ChargingStationOperatorAdminStatusType.Operational;
+                Assert.That(DE_GEF.AdminStatus, Is.EqualTo(ChargingStationOperatorAdminStatusType.Operational));
                 Assert.That(DE_GEF.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "), Is.EqualTo("operational, internalUse, outOfService"));
                 Assert.That(DE_GEF.AdminStatusSchedule().Count(), Is.EqualTo(3));
 
@@ -187,15 +187,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 // Status entries are compared by their ISO 8601 timestamps!
                 Thread.Sleep(1000);
 
-                DE_GEF.Status = ChargingStationOperatorStatusTypes.InDeployment;
-                Assert.That(DE_GEF.Status, Is.EqualTo(ChargingStationOperatorStatusTypes.InDeployment));
+                DE_GEF.Status = ChargingStationOperatorStatusType.InDeployment;
+                Assert.That(DE_GEF.Status, Is.EqualTo(ChargingStationOperatorStatusType.InDeployment));
                 Assert.That(DE_GEF.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "), Is.EqualTo("inDeployment, offline"));
                 Assert.That(DE_GEF.StatusSchedule().Count(), Is.EqualTo(2));
 
                 Thread.Sleep(1000);
 
-                DE_GEF.Status = ChargingStationOperatorStatusTypes.Error;
-                Assert.That(DE_GEF.Status, Is.EqualTo(ChargingStationOperatorStatusTypes.Error));
+                DE_GEF.Status = ChargingStationOperatorStatusType.Error;
+                Assert.That(DE_GEF.Status, Is.EqualTo(ChargingStationOperatorStatusType.Error));
                 Assert.That(DE_GEF.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "), Is.EqualTo("error, inDeployment, offline"));
                 Assert.That(DE_GEF.StatusSchedule().Count(), Is.EqualTo(3));
 

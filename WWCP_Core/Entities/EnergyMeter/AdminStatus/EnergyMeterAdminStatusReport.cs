@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeter">A energy meter.</param>
         public static EnergyMeterAdminStatusReport GenerateAdminStatusReport               (this IEnergyMeter                       EnergyMeter,
-                                                                                                DateTime?                                   Timestamp   = null)
+                                                                                                DateTimeOffset?                             Timestamp   = null)
 
             => new (new IEnergyMeter[] { EnergyMeter },
                     Timestamp);
@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeters">An enumeration of energy meters.</param>
         public static EnergyMeterAdminStatusReport GenerateAdminStatusReport               (this IEnumerable<IEnergyMeter>          EnergyMeters,
-                                                                                                DateTime?                                   Timestamp   = null)
+                                                                                                DateTimeOffset?                             Timestamp   = null)
 
             => new (EnergyMeters,
                     Timestamp);
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
         public static EnergyMeterAdminStatusReport GenerateEnergyMeterAdminStatusReport(this IChargingPool                          ChargingPool,
-                                                                                                DateTime?                                   Timestamp   = null)
+                                                                                                DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingPool.EnergyMeters,
                     Timestamp);
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPools">An enumeration of charging pools.</param>
         public static EnergyMeterAdminStatusReport GenerateEnergyMeterAdminStatusReport(this IEnumerable<IChargingPool>             ChargingPools,
-                                                                                                DateTime?                                   Timestamp   = null)
+                                                                                                DateTimeOffset?                             Timestamp   = null)
 
             => new (ChargingPools.SelectMany(chargingPool => chargingPool.EnergyMeters),
                     Timestamp);
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// </summary>
         ///// <param name="EnergyMeterOperator">A energy meter operator.</param>
         //public static EnergyMeterAdminStatusReport GenerateEnergyMeterAdminStatusReport(this IChargingStationOperator               EnergyMeterOperator,
-        //                                                                                        DateTime?                                   Timestamp   = null)
+        //                                                                                        DateTimeOffset?                             Timestamp   = null)
 
         //    => new (EnergyMeterOperator.EnergyMeters,
         //            Timestamp);
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// </summary>
         ///// <param name="EnergyMeterOperators">An enumeration of energy meter operators.</param>
         //public static EnergyMeterAdminStatusReport GenerateEnergyMeterAdminStatusReport(this IEnumerable<IChargingStationOperator>  EnergyMeterOperators,
-        //                                                                                        DateTime?                                   Timestamp   = null)
+        //                                                                                        DateTimeOffset?                             Timestamp   = null)
 
         //    => new (EnergyMeterOperators.SelectMany(energyMeterOperator => energyMeterOperator.EnergyMeters),
         //            Timestamp);
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.WWCP
         ///// </summary>
         ///// <param name="RoamingNetwork">A roaming network.</param>
         //public static EnergyMeterAdminStatusReport GenerateEnergyMeterAdminStatusReport(this IRoamingNetwork                        RoamingNetwork,
-        //                                                                                        DateTime?                                   Timestamp   = null)
+        //                                                                                        DateTimeOffset?                             Timestamp   = null)
 
         //    => new (RoamingNetwork.EnergyMeters,
         //            Timestamp);
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A energy meter admin status report.
     /// </summary>
-    public class EnergyMeterAdminStatusReport : StatusReport<IEnergyMeter, EnergyMeterAdminStatusTypes>
+    public class EnergyMeterAdminStatusReport : StatusReport<IEnergyMeter, EnergyMeterAdminStatusType>
     {
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EnergyMeters">An enumeration of energy meters.</param>
         /// <param name="Timestamp">The optional timestamp of the status report generation.</param>
         public EnergyMeterAdminStatusReport(IEnumerable<IEnergyMeter>  EnergyMeters,
-                                            DateTime?                  Timestamp   = null)
+                                            DateTimeOffset?            Timestamp   = null)
 
             : base(EnergyMeters,
                    station => station.AdminStatus.Value,

@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate Task OnEMobilityProviderDataChangedDelegate(DateTime          Timestamp,
+    public delegate Task OnEMobilityProviderDataChangedDelegate(DateTimeOffset    Timestamp,
                                                                 eMobilityStation  eMobilityStation,
                                                                 String            PropertyName,
                                                                 Object            OldValue,
@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="eMobilityStation">The updated e-mobility station.</param>
     /// <param name="OldStatus">The old timestamped status of the charging station.</param>
     /// <param name="NewStatus">The new timestamped status of the charging station.</param>
-    public delegate Task OnEMobilityProviderAdminStatusChangedDelegate(DateTime                                      Timestamp,
+    public delegate Task OnEMobilityProviderAdminStatusChangedDelegate(DateTimeOffset                                Timestamp,
                                                                        eMobilityStation                              eMobilityStation,
                                                                        Timestamped<eMobilityStationAdminStatusTypes>  OldStatus,
                                                                        Timestamped<eMobilityStationAdminStatusTypes>  NewStatus);

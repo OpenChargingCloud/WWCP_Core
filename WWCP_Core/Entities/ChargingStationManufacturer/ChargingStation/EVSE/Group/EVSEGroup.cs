@@ -44,8 +44,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnAdminStatus2ChangedDelegate(DateTimeOffset Timestamp,
                                                        EventTracking_Id? EventTrackingId,
                                                        EVSEGroup EVSEGroup,
-                                                       Timestamped<EVSEGroupAdminStatusTypes> NewStatus,
-                                                       Timestamped<EVSEGroupAdminStatusTypes>? OldStatus = null,
+                                                       Timestamped<EVSEGroupAdminStatusType> NewStatus,
+                                                       Timestamped<EVSEGroupAdminStatusType>? OldStatus = null,
                                                        Context? DataSource = null);
 
     /// <summary>
@@ -58,8 +58,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnStatus2ChangedDelegate(DateTimeOffset Timestamp,
                                                   EventTracking_Id? EventTrackingId,
                                                   EVSEGroup EVSEGroup,
-                                                  Timestamped<EVSEGroupStatusTypes>   NewStatus,
-                                                  Timestamped<EVSEGroupStatusTypes>?  OldStatus    = null,
+                                                  Timestamped<EVSEGroupStatusType>    NewStatus,
+                                                  Timestamped<EVSEGroupStatusType>?   OldStatus    = null,
                                                   Context?                            DataSource   = null);
 
 
@@ -261,8 +261,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// A group of EVSEs.
     /// </summary>
     public class EVSEGroup : AEMobilityEntity<EVSEGroup_Id,
-                                              EVSEGroupAdminStatusTypes,
-                                              EVSEGroupStatusTypes>,
+                                              EVSEGroupAdminStatusType,
+                                              EVSEGroupStatusType>,
                              IEquatable<EVSEGroup>, IComparable<EVSEGroup>, IComparable,
                              IEnumerable<EVSE>
     {
@@ -386,7 +386,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A delegate called to aggregate the dynamic status of all subordinated charging stations.
         /// </summary>
-        public Func<EVSEStatusReport, EVSEGroupStatusTypes>? StatusAggregationDelegate   { get; }
+        public Func<EVSEStatusReport, EVSEGroupStatusType>? StatusAggregationDelegate   { get; }
 
         #endregion
 
@@ -446,24 +446,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<DateTime, User_Id, ChargingStation, EVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<DateTimeOffset, User_Id, ChargingStation, EVSE, Boolean> EVSEAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, User_Id, ChargingStation, EVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTimeOffset, User_Id, ChargingStation, EVSE, Boolean> OnEVSEAddition
             => EVSEAddition;
 
         #endregion
 
         #region EVSERemoval
 
-        internal readonly IVotingNotificator<DateTime, User_Id, ChargingStation, EVSE, Boolean> EVSERemoval;
+        internal readonly IVotingNotificator<DateTimeOffset, User_Id, ChargingStation, EVSE, Boolean> EVSERemoval;
 
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, User_Id, ChargingStation, EVSE, Boolean> OnEVSERemoval
+        public IVotingSender<DateTimeOffset, User_Id, ChargingStation, EVSE, Boolean> OnEVSERemoval
         {
             get
             {
@@ -507,7 +507,7 @@ namespace cloud.charging.open.protocols.WWCP
                            Func<EVSE_Id, Boolean>?                       AutoIncludeEVSEIds            = null,
                            Func<IEVSE,   Boolean>?                       AutoIncludeEVSEs              = null,
 
-                           Func<EVSEStatusReport, EVSEGroupStatusTypes>? StatusAggregationDelegate     = null,
+                           Func<EVSEStatusReport, EVSEGroupStatusType>? StatusAggregationDelegate     = null,
                            UInt16                                        MaxGroupStatusListSize        = DefaultMaxGroupStatusListSize,
                            UInt16                                        MaxGroupAdminStatusListSize   = DefaultMaxGroupAdminStatusListSize)
 
@@ -550,8 +550,8 @@ namespace cloud.charging.open.protocols.WWCP
             #region Init events
 
             // EVSEGroup events
-            this.EVSEAddition             = new VotingNotificator<DateTime, User_Id, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval              = new VotingNotificator<DateTime, User_Id, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition             = new VotingNotificator<DateTimeOffset, User_Id, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval              = new VotingNotificator<DateTimeOffset, User_Id, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
 
@@ -647,8 +647,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new charging station admin status.</param>
         internal async Task UpdateAdminStatus(DateTimeOffset                           Timestamp,
                                               EventTracking_Id                         EventTrackingId,
-                                              Timestamped<EVSEGroupAdminStatusTypes>   NewStatus,
-                                              Timestamped<EVSEGroupAdminStatusTypes>?  OldStatus    = null,
+                                              Timestamped<EVSEGroupAdminStatusType>    NewStatus,
+                                              Timestamped<EVSEGroupAdminStatusType>?   OldStatus    = null,
                                               Context?                                 DataSource   = null)
         {
 
@@ -676,7 +676,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal void UpdateEVSEData(DateTime          Timestamp,
+        internal void UpdateEVSEData(DateTimeOffset    Timestamp,
                                      EventTracking_Id  EventTrackingId,
                                      EVSE              EVSE,
                                      String            PropertyName,
@@ -707,7 +707,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
+        internal async Task UpdateEVSEAdminStatus(DateTimeOffset                     Timestamp,
                                                   EventTracking_Id                   EventTrackingId,
                                                   EVSE                               EVSE,
                                                   Timestamped<EVSEAdminStatusType>  OldStatus,
@@ -736,7 +736,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
+        internal async Task UpdateEVSEStatus(DateTimeOffset                Timestamp,
                                              EventTracking_Id              EventTrackingId,
                                              EVSE                          EVSE,
                                              Timestamped<EVSEStatusType>  OldStatus,

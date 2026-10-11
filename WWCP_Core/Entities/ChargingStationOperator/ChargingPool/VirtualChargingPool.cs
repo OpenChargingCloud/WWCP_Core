@@ -91,8 +91,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                          UInt16?                                                             MaxStatusScheduleSize             = null,
 
                                                                          String?                                                             DataSource                        = null,
-                                                                         DateTime?                                                           Created                           = null,
-                                                                         DateTime?                                                           LastChange                        = null,
+                                                                         DateTimeOffset?                                                     Created                           = null,
+                                                                         DateTimeOffset?                                                     LastChange                        = null,
 
                                                                          CustomDataNew?                                                      CustomData                        = null,
                                                                          UserDefinedDictionary?                                              InternalData                      = null,

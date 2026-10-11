@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="CustomRemoteStopResponseParser">An optional delegate to parse custom RemoteStop JSON objects.</param>
         public static RemoteStopResponse Parse(RemoteStopRequest                                 Request,
                                                JObject                                           JSON,
-                                               DateTime                                          ResponseTimestamp,
+                                               DateTimeOffset                                    ResponseTimestamp,
                                                TimeSpan                                          Runtime,
                                                HTTPResponse?                                     HTTPResponse                     = null,
                                                RoamingNetwork?                                   RoamingNetwork                   = null,

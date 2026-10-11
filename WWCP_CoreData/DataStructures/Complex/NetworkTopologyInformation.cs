@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                 if (!JSON.ParseMandatory("notBefore",
                                          "start schedule",
-                                         out DateTime NotBefore,
+                                         out DateTimeOffset NotBefore,
                                          out ErrorResponse))
                 {
                     return false;
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                 if (JSON.ParseOptional("notAfter",
                                        "start schedule",
-                                       out DateTime? NotAfter,
+                                       out DateTimeOffset? NotAfter,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

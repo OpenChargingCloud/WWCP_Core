@@ -737,7 +737,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (!JSONObject.ParseMandatory("timestamp",
                                                "timestamp",
-                                               out DateTime timestamp,
+                                               out DateTimeOffset timestamp,
                                                out ErrorResponse))
                 {
                     return false;

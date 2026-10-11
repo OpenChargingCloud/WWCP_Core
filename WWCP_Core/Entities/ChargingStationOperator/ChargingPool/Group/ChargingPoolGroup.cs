@@ -43,8 +43,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnChargingPoolGroupAdminStatusChangedDelegate(DateTimeOffset                                   Timestamp,
                                                                        EventTracking_Id                                 EventTrackingId,
                                                                        ChargingPoolGroup                                ChargingPoolGroup,
-                                                                       Timestamped<ChargingPoolGroupAdminStatusTypes>   NewStatus,
-                                                                       Timestamped<ChargingPoolGroupAdminStatusTypes>?  OldStatus    = null,
+                                                                       Timestamped<ChargingPoolGroupAdminStatusType>    NewStatus,
+                                                                       Timestamped<ChargingPoolGroupAdminStatusType>?   OldStatus    = null,
                                                                        Context?                                         DataSource   = null);
 
     /// <summary>
@@ -59,8 +59,8 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnChargingPoolGroupStatusChangedDelegate(DateTimeOffset                              Timestamp,
                                                                   EventTracking_Id                            EventTrackingId,
                                                                   ChargingPoolGroup                           ChargingPoolGroup,
-                                                                  Timestamped<ChargingPoolGroupStatusTypes>   NewStatus,
-                                                                  Timestamped<ChargingPoolGroupStatusTypes>?  OldStatus    = null,
+                                                                  Timestamped<ChargingPoolGroupStatusType>    NewStatus,
+                                                                  Timestamped<ChargingPoolGroupStatusType>?   OldStatus    = null,
                                                                   Context?                                    DataSource   = null);
 
 
@@ -255,8 +255,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// charging pools of a city or all charging pools sharing a tariff.
     /// </summary>
     public class ChargingPoolGroup : AEMobilityEntity<ChargingPoolGroup_Id,
-                                                      ChargingPoolGroupAdminStatusTypes,
-                                                      ChargingPoolGroupStatusTypes>,
+                                                      ChargingPoolGroupAdminStatusType,
+                                                      ChargingPoolGroupStatusType>,
                                      IEquatable<ChargingPoolGroup>, IComparable<ChargingPoolGroup>, IComparable,
                                      IEnumerable<IChargingPool>
     {
@@ -368,7 +368,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional delegate to aggregate the dynamic status of all charging pools of this group.
         /// </summary>
-        public Func<ChargingPoolStatusReport, ChargingPoolGroupStatusTypes>?  StatusAggregationDelegate    { get; }
+        public Func<ChargingPoolStatusReport, ChargingPoolGroupStatusType>?   StatusAggregationDelegate    { get; }
 
         #endregion
 
@@ -449,7 +449,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    IEnumerable<ChargingPool_Id>?                                  MemberIds                     = null,
                                    Func<IChargingPool, Boolean>?                                  AutoIncludePools              = null,
 
-                                   Func<ChargingPoolStatusReport, ChargingPoolGroupStatusTypes>?  StatusAggregationDelegate     = null,
+                                   Func<ChargingPoolStatusReport, ChargingPoolGroupStatusType>?   StatusAggregationDelegate     = null,
                                    UInt16                                                         MaxGroupStatusListSize        = DefaultMaxGroupStatusListSize,
                                    UInt16                                                         MaxGroupAdminStatusListSize   = DefaultMaxGroupAdminStatusListSize)
 
@@ -602,8 +602,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DataSource">An optional data source or context for the admin status update.</param>
         internal async Task UpdateAdminStatus(DateTimeOffset                                   Timestamp,
                                               EventTracking_Id                                 EventTrackingId,
-                                              Timestamped<ChargingPoolGroupAdminStatusTypes>   NewStatus,
-                                              Timestamped<ChargingPoolGroupAdminStatusTypes>?  OldStatus    = null,
+                                              Timestamped<ChargingPoolGroupAdminStatusType>    NewStatus,
+                                              Timestamped<ChargingPoolGroupAdminStatusType>?   OldStatus    = null,
                                               Context?                                         DataSource   = null)
         {
 

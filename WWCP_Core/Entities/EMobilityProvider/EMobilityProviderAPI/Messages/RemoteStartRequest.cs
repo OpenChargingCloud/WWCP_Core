@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="CustomRemoteStartRequestParser">An optional delegate to parse custom RemoteStart JSON objects.</param>
         public static RemoteStartRequest Parse(JObject                                           JSON,
 
-                                               DateTime?                                         Timestamp                        = null,
+                                               DateTimeOffset?                                   Timestamp                        = null,
                                                EventTracking_Id?                                 EventTrackingId                  = null,
                                                TimeSpan?                                         RequestTimeout                   = null,
                                                CancellationToken                                 CancellationToken                = default,

@@ -520,8 +520,8 @@ namespace cloud.charging.open.protocols.WWCP
                                   ECPublicKeyParameters?             PublicKey                   = null,
                                   IEnumerable<String>?               Signatures                  = null,
 
-                                  DateTime?                          Created                     = null,
-                                  DateTime?                          LastChange                  = null)
+                                  DateTimeOffset?                    Created                     = null,
+                                  DateTimeOffset?                    LastChange                  = null)
 
             : base(CustomData,
                    InternalData,
@@ -922,7 +922,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (JSON.ParseOptional("created",
                                        "created timestamp",
-                                       out DateTime? created,
+                                       out DateTimeOffset? created,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -935,7 +935,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (JSON.ParseOptional("lastChange",
                                        "last change timestamp",
-                                       out DateTime? lastChange,
+                                       out DateTimeOffset? lastChange,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

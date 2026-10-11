@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewValue">The new value of the changed property.</param>
     /// <param name="OldValue">The optional old value of the changed property.</param>
     /// <param name="DataSource">An optional data source or context for the energy meter data change.</param>
-    public delegate Task OnEnergyMeterDataChangedDelegate(DateTime          Timestamp,
+    public delegate Task OnEnergyMeterDataChangedDelegate(DateTimeOffset    Timestamp,
                                                           EventTracking_Id  EventTrackingId,
                                                           IEnergyMeter      EnergyMeter,
                                                           String            PropertyName,
@@ -58,11 +58,11 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped admin status of the energy meter.</param>
     /// <param name="OldStatus">The optional old timestamped admin status of the energy meter.</param>
     /// <param name="DataSource">An optional data source or context for the energy meter admin status update.</param>
-    public delegate Task OnEnergyMeterAdminStatusChangedDelegate(DateTime                                   Timestamp,
+    public delegate Task OnEnergyMeterAdminStatusChangedDelegate(DateTimeOffset                             Timestamp,
                                                                  EventTracking_Id                           EventTrackingId,
                                                                  IEnergyMeter                               EnergyMeter,
-                                                                 Timestamped<EnergyMeterAdminStatusTypes>   NewStatus,
-                                                                 Timestamped<EnergyMeterAdminStatusTypes>?  OldStatus,
+                                                                 Timestamped<EnergyMeterAdminStatusType>   NewStatus,
+                                                                 Timestamped<EnergyMeterAdminStatusType>?  OldStatus,
                                                                  Context?                                   DataSource);
 
     /// <summary>
@@ -74,11 +74,11 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped status of the energy meter.</param>
     /// <param name="OldStatus">The optional old timestamped status of the energy meter.</param>
     /// <param name="DataSource">An optional data source or context for the energy meter status update.</param>
-    public delegate Task OnEnergyMeterStatusChangedDelegate(DateTime                              Timestamp,
+    public delegate Task OnEnergyMeterStatusChangedDelegate(DateTimeOffset                        Timestamp,
                                                             EventTracking_Id                      EventTrackingId,
                                                             IEnergyMeter                          EnergyMeter,
-                                                            Timestamped<EnergyMeterStatusTypes>   NewStatus,
-                                                            Timestamped<EnergyMeterStatusTypes>?  OldStatus,
+                                                            Timestamped<EnergyMeterStatusType>   NewStatus,
+                                                            Timestamped<EnergyMeterStatusType>?  OldStatus,
                                                             Context?                              DataSource);
 
 }

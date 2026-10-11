@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                  ChargingReservation_Id?  ReservationId          = null,
                                  JObject?                 CustomData             = null,
 
-                                 DateTime?                Timestamp              = null,
+                                 DateTimeOffset?          Timestamp              = null,
                                  EventTracking_Id?        EventTrackingId        = null,
                                  TimeSpan?                RequestTimeout         = null,
                                  CancellationToken        CancellationToken      = default)
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
         /// <param name="CustomRemoteStopRequestParser">An optional delegate to parse custom RemoteStop JSON objects.</param>
         public static RemoteStopRequest Parse(JObject                                           JSON,
 
-                                               DateTime?                                        Timestamp                       = null,
+                                               DateTimeOffset?                                  Timestamp                       = null,
                                                EventTracking_Id?                                EventTrackingId                 = null,
                                                TimeSpan?                                        RequestTimeout                  = null,
                                                CancellationToken                                CancellationToken               = default,
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.WWCP.MobilityProvider
                                        out RemoteStopRequest?                           RemoteStopRequest,
                                        out String?                                      ErrorResponse,
 
-                                       DateTime?                                        Timestamp                       = null,
+                                       DateTimeOffset?                                  Timestamp                       = null,
                                        CancellationToken                                CancellationToken               = default,
                                        EventTracking_Id?                                EventTrackingId                 = null,
                                        TimeSpan?                                        RequestTimeout                  = null,

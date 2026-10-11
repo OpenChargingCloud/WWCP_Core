@@ -249,7 +249,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// End the latest version of a charging reservation.
         /// </summary>
         public Task Stop(ChargingReservation_Id  Id,
-                         DateTime?               Timestamp          = null,
+                         DateTimeOffset?         Timestamp          = null,
                          AAuthentication         StopAuthentication = null)
         {
 

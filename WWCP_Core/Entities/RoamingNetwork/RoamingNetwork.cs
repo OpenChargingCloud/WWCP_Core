@@ -3419,8 +3419,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateChargingStationOperatorAdminStatus(DateTimeOffset                                        Timestamp,
                                                                      EventTracking_Id                                      EventTrackingId,
                                                                      IChargingStationOperator                              ChargingStationOperator,
-                                                                     Timestamped<ChargingStationOperatorAdminStatusTypes>  OldAdminStatus,
-                                                                     Timestamped<ChargingStationOperatorAdminStatusTypes>  NewAdminStatus)
+                                                                     Timestamped<ChargingStationOperatorAdminStatusType>  OldAdminStatus,
+                                                                     Timestamped<ChargingStationOperatorAdminStatusType>  NewAdminStatus)
         {
 
             try
@@ -3514,8 +3514,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateChargingStationOperatorStatus(DateTimeOffset                                   Timestamp,
                                                                 EventTracking_Id                                 EventTrackingId,
                                                                 IChargingStationOperator                         ChargingStationOperator,
-                                                                Timestamped<ChargingStationOperatorStatusTypes>  OldStatus,
-                                                                Timestamped<ChargingStationOperatorStatusTypes>  NewStatus)
+                                                                Timestamped<ChargingStationOperatorStatusType>  OldStatus,
+                                                                Timestamped<ChargingStationOperatorStatusType>  NewStatus)
         {
 
             try
@@ -5668,10 +5668,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return the admin status of all smart cities registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusTypes>>>> GridOperatorsAdminStatus
+        public IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusType>>>> GridOperatorsAdminStatus
 
             => gridOperators.
-                   Select(emp => new KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusTypes>>>(emp.Id, emp.AdminStatusSchedule()));
+                   Select(emp => new KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule()));
 
         #endregion
 
@@ -5680,10 +5680,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return the status of all smart cities registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusTypes>>>> GridOperatorsStatus
+        public IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusType>>>> GridOperatorsStatus
 
             => gridOperators.
-                   Select(emp => new KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusTypes>>>(emp.Id, emp.StatusSchedule()));
+                   Select(emp => new KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusType>>>(emp.Id, emp.StatusSchedule()));
 
         #endregion
 
@@ -5704,8 +5704,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                   I18NString?                               Name                       = null,
                                                   I18NString?                               Description                = null,
                                                   GridOperatorPriority?                     Priority                   = null,
-                                                  GridOperatorAdminStatusTypes              AdminStatus                = GridOperatorAdminStatusTypes.Available,
-                                                  GridOperatorStatusTypes                   Status                     = GridOperatorStatusTypes.Available,
+                                                  GridOperatorAdminStatusType?              AdminStatus                = null,
+                                                  GridOperatorStatusType?                   Status                     = null,
                                                   Action<GridOperator>?                     Configurator               = null,
                                                   Action<GridOperator>?                     OnSuccess                  = null,
                                                   Action<RoamingNetwork, GridOperator_Id>?  OnError                    = null,
@@ -5861,10 +5861,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return the admin status of all parking operators registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusTypes>>>> ParkingOperatorAdminStatus
+        public IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusType>>>> ParkingOperatorAdminStatus
 
             => parkingOperators.
-                   Select(pop => new KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusTypes>>>(pop.Id,
+                   Select(pop => new KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusType>>>(pop.Id,
                                                                                                                                  pop.AdminStatusSchedule()));
 
         #endregion
@@ -5874,10 +5874,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return the status of all parking operators registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusTypes>>>> ParkingOperatorStatus
+        public IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusType>>>> ParkingOperatorStatus
 
             => parkingOperators.
-                   Select(pop => new KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusTypes>>>(pop.Id,
+                   Select(pop => new KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusType>>>(pop.Id,
                                                                                                                             pop.StatusSchedule()));
 
         #endregion
@@ -5900,8 +5900,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                          I18NString?                                  Description                    = null,
                                                          Action<ParkingOperator>?                     Configurator                   = null,
                                                          RemoteParkingOperatorCreatorDelegate?        RemoteParkingOperatorCreator   = null,
-                                                         ParkingOperatorAdminStatusTypes?             InititalAdminStatus            = ParkingOperatorAdminStatusTypes.Operational,
-                                                         ParkingOperatorStatusTypes?                  InititalStatus                 = ParkingOperatorStatusTypes.Available,
+                                                         ParkingOperatorAdminStatusType?              InititalAdminStatus            = null,
+                                                         ParkingOperatorStatusType?                   InititalStatus                 = null,
                                                          Action<ParkingOperator>?                     OnSuccess                      = null,
                                                          Action<RoamingNetwork, ParkingOperator_Id>?  OnError                        = null)
 
@@ -6091,8 +6091,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new aggreagted parking operator admin status.</param>
         internal async Task UpdateParkingOperatorAdminStatus(DateTimeOffset                                Timestamp,
                                                              ParkingOperator                               ParkingOperator,
-                                                             Timestamped<ParkingOperatorAdminStatusTypes>  OldStatus,
-                                                             Timestamped<ParkingOperatorAdminStatusTypes>  NewStatus)
+                                                             Timestamped<ParkingOperatorAdminStatusType>   OldStatus,
+                                                             Timestamped<ParkingOperatorAdminStatusType>   NewStatus)
         {
 
             // Send parking Operator admin status change upstream
@@ -6140,8 +6140,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new aggreagted parking operator status.</param>
         internal async Task UpdateParkingOperatorStatus(DateTimeOffset                           Timestamp,
                                                         ParkingOperator                          ParkingOperator,
-                                                        Timestamped<ParkingOperatorStatusTypes>  OldStatus,
-                                                        Timestamped<ParkingOperatorStatusTypes>  NewStatus)
+                                                        Timestamped<ParkingOperatorStatusType>   OldStatus,
+                                                        Timestamped<ParkingOperatorStatusType>   NewStatus)
         {
 
             var OnParkingOperatorStatusChangedLocal = OnParkingOperatorStatusChanged;
@@ -6814,7 +6814,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="Sender">The sender of the charging session.</param>
         /// <param name="ChargingSessionId">The charging session identification.</param>
-        public async Task RemoveExternalChargingSession(DateTime            Timestamp,
+        public async Task RemoveExternalChargingSession(DateTimeOffset      Timestamp,
                                                         Object              Sender,
                                                         ChargingSession_Id  ChargingSessionId,
                                                         CancellationToken   CancellationToken   = default)
@@ -6836,7 +6836,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="Sender">The sender of the charging session.</param>
         /// <param name="ChargingSession">The charging session.</param>
-        public async Task RemoveExternalChargingSession(DateTime           Timestamp,
+        public async Task RemoveExternalChargingSession(DateTimeOffset     Timestamp,
                                                         Object             Sender,
                                                         ChargingSession    ChargingSession,
                                                         CancellationToken  CancellationToken   = default)

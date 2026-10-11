@@ -31,8 +31,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// A parking sensor.
     /// </summary>
     public class ParkingSensor : AEMobilityEntity<ParkingSensor_Id,
-                                                  ParkingSensorAdminStatusTypes,
-                                                  ParkingSensorStatusTypes>,
+                                                  ParkingSensorAdminStatusType,
+                                                  ParkingSensorStatusType>,
                                  IEquatable<ParkingSensor>, IComparable<ParkingSensor>, IComparable
     {
 
@@ -191,13 +191,6 @@ namespace cloud.charging.open.protocols.WWCP
         internal ParkingSensor(ParkingSensor_Id  Id)
             : base(Id)
         {
-
-            #region Initial checks
-
-            if (Id is null)
-                throw new ArgumentNullException(nameof(Id), "The unique identification of the parking space must not be null!");
-
-            #endregion
 
             #region Init data and properties
 
