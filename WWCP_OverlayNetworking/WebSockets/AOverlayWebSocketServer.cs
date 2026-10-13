@@ -852,7 +852,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region (protected) ValidateTCPConnection        (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         private Task<ConnectionFilterResponse> ValidateTCPConnection(DateTimeOffset                                                LogTimestamp,
-                                                                     AWebSocketServer                                              Server,
+                                                                     AWebSocketEndpoint                                            Server,
                                                                      System.Net.Sockets.TcpClient                                  Connection,
                                                                      EventTracking_Id                                              EventTrackingId,
                                                                      CancellationToken                                             CancellationToken)
@@ -867,7 +867,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region (protected) ValidateWebSocketConnection  (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         private Task<HTTPResponse?> ValidateWebSocketConnection(DateTimeOffset                                                LogTimestamp,
-                                                                AWebSocketServer                                              Server,
+                                                                AWebSocketEndpoint                                            Server,
                                                                 WebSocketServerConnection                                     Connection,
                                                                 EventTracking_Id                                              EventTrackingId,
                                                                 CancellationToken                                             CancellationToken)
@@ -1014,7 +1014,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, SharedSubprotocols, SelectedSubprotocol, EventTrackingId, CancellationToken)
 
         protected async Task ProcessNewWebSocketConnection(DateTimeOffset                                                LogTimestamp,
-                                                           AWebSocketServer                                              Server,
+                                                           AWebSocketEndpoint                                            Server,
                                                            WebSocketServerConnection                                     Connection,
                                                            IEnumerable<String>                                           SharedSubprotocols,
                                                            String?                                                       SelectedSubprotocol,
@@ -1245,7 +1245,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, Frame, EventTrackingId, StatusCode, Reason, CancellationToken)
 
         protected async Task ProcessCloseMessage(DateTimeOffset                                                LogTimestamp,
-                                                 AWebSocketServer                                              Server,
+                                                 AWebSocketEndpoint                                            Server,
                                                  WebSocketServerConnection                                     Connection,
                                                  WebSocketFrame                                                Frame,
                                                  EventTracking_Id                                              EventTrackingId,
@@ -1308,7 +1308,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         /// network, a reset, a FIN, a peer that stopped answering pings.
         /// </summary>
         protected Task ProcessTCPConnectionClosed(DateTimeOffset             LogTimestamp,
-                                                  AWebSocketServer           Server,
+                                                  AWebSocketEndpoint         Server,
                                                   WebSocketServerConnection  Connection,
                                                   EventTracking_Id           EventTrackingId,
                                                   String?                    Reason,

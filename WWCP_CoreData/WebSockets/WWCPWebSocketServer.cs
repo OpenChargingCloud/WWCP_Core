@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region (protected) ValidateTCPConnection         (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         private Task<ConnectionFilterResponse> ValidateTCPConnection(DateTimeOffset                LogTimestamp,
-                                                                     AWebSocketServer              Server,
+                                                                     AWebSocketEndpoint            Server,
                                                                      System.Net.Sockets.TcpClient  Connection,
                                                                      EventTracking_Id              EventTrackingId,
                                                                      CancellationToken             CancellationToken)
@@ -440,7 +440,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region (protected) ValidateWebSocketConnection   (LogTimestamp, Server, Connection, HTTPRequest, EventTrackingId, CancellationToken)
 
         private Task<HTTPResponse?> ValidateWebSocketConnection(DateTimeOffset             LogTimestamp,
-                                                                AWebSocketServer           Server,
+                                                                AWebSocketEndpoint         Server,
                                                                 WebSocketServerConnection  Connection,
                                                                 EventTracking_Id           EventTrackingId,
                                                                 CancellationToken          CancellationToken)
@@ -651,7 +651,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// see ProcessNewWebSocketConnection.
         /// </remarks>
         protected async Task RegisterNewWebSocketConnection(DateTimeOffset             LogTimestamp,
-                                                            AWebSocketServer           Server,
+                                                            AWebSocketEndpoint         Server,
                                                             WebSocketServerConnection  Connection,
                                                             IEnumerable<String>        SharedSubprotocols,
                                                             String?                    SelectedSubprotocol,
@@ -785,7 +785,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// not say which networking node it is.
         /// </summary>
         protected async Task ProcessNewWebSocketConnection(DateTimeOffset             LogTimestamp,
-                                                           AWebSocketServer           Server,
+                                                           AWebSocketEndpoint         Server,
                                                            WebSocketServerConnection  Connection,
                                                            IEnumerable<String>        SharedSubprotocols,
                                                            String?                    SelectedSubprotocol,
@@ -852,7 +852,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region (protected) ProcessCloseMessage           (LogTimestamp, Server, Connection, Frame, EventTrackingId, StatusCode, Reason, CancellationToken)
 
         protected async Task ProcessCloseMessage(DateTimeOffset                    LogTimestamp,
-                                                 AWebSocketServer                  Server,
+                                                 AWebSocketEndpoint                Server,
                                                  WebSocketServerConnection         Connection,
                                                  WebSocketFrame                    Frame,
                                                  EventTracking_Id                  EventTrackingId,
@@ -894,7 +894,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// a reset, a FIN, a peer that stopped answering pings.
         /// </summary>
         protected async Task ProcessTCPConnectionClosed(DateTimeOffset             LogTimestamp,
-                                                        AWebSocketServer           Server,
+                                                        AWebSocketEndpoint         Server,
                                                         WebSocketServerConnection  Connection,
                                                         EventTracking_Id           EventTrackingId,
                                                         String?                    Reason,
@@ -1196,7 +1196,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <param name="TextMessage">The received text message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
         public override async Task ProcessTextMessage(DateTimeOffset             RequestTimestamp,
-                                                      AWebSocketServer           Server,
+                                                      AWebSocketEndpoint         Server,
                                                       WebSocketServerConnection  WebSocketConnection,
                                                       EventTracking_Id           EventTrackingId,
                                                       WebSocketFrame             Frame,
@@ -1305,7 +1305,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <param name="BinaryMessage">The received binary message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
         public override async Task ProcessBinaryMessage(DateTimeOffset             RequestTimestamp,
-                                                        AWebSocketServer           Server,
+                                                        AWebSocketEndpoint         Server,
                                                         WebSocketServerConnection  WebSocketConnection,
                                                         EventTracking_Id           EventTrackingId,
                                                         WebSocketFrame             Frame,
