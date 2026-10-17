@@ -68,6 +68,12 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
+        /// What the energy meter measures, e.g. the grid, a PV system or an EVSE.
+        /// </summary>
+        [Optional]
+        public EnergyMeterRole?                         Role                         { get; }
+
+        /// <summary>
         /// The optional manufacturer of the energy meter.
         /// </summary>
         [Optional]
@@ -122,6 +128,12 @@ namespace cloud.charging.open.protocols.WWCP
         public CertificateChain?                        PublicKeyCertificateChain    { get; }
 
         /// <summary>
+        /// How the energy meter signs its measurements, e.g. OCMF.
+        /// </summary>
+        [Optional]
+        public IEnumerable<SignatureMethod>             SignatureMethods             { get; }
+
+        /// <summary>
         /// The enumeration of transparency software and their legal status,
         /// which can be used to validate the charging session data.
         /// </summary>
@@ -151,6 +163,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Name">An optional name of the energy meter.</param>
         /// <param name="Description">An optional multi-language description of the energy meter.</param>
         /// 
+        /// <param name="Role">What the energy meter measures, e.g. the grid, a PV system or an EVSE.</param>
         /// <param name="Manufacturer">An optional manufacturer of the energy meter.</param>
         /// <param name="ManufacturerURL">An optional URL to the manufacturer of the energy meter.</param>
         /// <param name="Model">An optional model of the energy meter.</param>
@@ -160,6 +173,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="FirmwareVersion">An optional firmware version of the energy meter.</param>
         /// <param name="PublicKeys">The optional public key of the energy meter used for signing the energy meter values.</param>
         /// <param name="PublicKeyCertificateChain">One or multiple optional certificates for the public key of the energy meter.</param>
+        /// <param name="SignatureMethods">How the energy meter signs its measurements, e.g. OCMF.</param>
         /// <param name="TransparencySoftware">An enumeration of transparency software and their legal status, which can be used to validate the charging session data.</param>
         /// 
         /// <param name="LastChange">The timestamp when this energy meter was last updated (or created).</param>
@@ -167,6 +181,7 @@ namespace cloud.charging.open.protocols.WWCP
                            I18NString?                                Name                         = null,
                            I18NString?                                Description                  = null,
 
+                           EnergyMeterRole?                           Role                         = null,
                            String?                                    Manufacturer                 = null,
                            URL?                                       ManufacturerURL              = null,
                            String?                                    Model                        = null,
@@ -176,6 +191,7 @@ namespace cloud.charging.open.protocols.WWCP
                            String?                                    FirmwareVersion              = null,
                            IEnumerable<PublicKey>?                    PublicKeys                   = null,
                            CertificateChain?                          PublicKeyCertificateChain    = null,
+                           IEnumerable<SignatureMethod>?              SignatureMethods             = null,
                            IEnumerable<TransparencySoftwareStatus>?   TransparencySoftware         = null,
 
                            Timestamped<EnergyMeterAdminStatusType>?  InitialAdminStatus           = null,
@@ -208,6 +224,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
+            this.Role                       = Role;
             this.Manufacturer               = Manufacturer;
             this.ManufacturerURL            = ManufacturerURL;
             this.Model                      = Model;
@@ -217,6 +234,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.FirmwareVersion            = FirmwareVersion;
             this.PublicKeys                 = PublicKeys?.          Distinct() ?? [];
             this.PublicKeyCertificateChain  = PublicKeyCertificateChain;
+            this.SignatureMethods           = SignatureMethods?.    Distinct().OrderBy(signatureMethod => signatureMethod.ToString(), StringComparer.Ordinal).ToArray() ?? [];
             this.TransparencySoftware       = TransparencySoftware?.Distinct() ?? [];
 
             Configurator?.Invoke(this);
@@ -340,6 +358,20 @@ namespace cloud.charging.open.protocols.WWCP
                 #endregion
 
 
+                #region Parse Role                          [optional]
+
+                if (JSON.ParseOptional("role",
+                                       "energy meter role",
+                                       EnergyMeterRole.TryParse,
+                                       out EnergyMeterRole? Role,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Parse Manufacturer                  [optional]
 
                 var Manufacturer = JSON.GetString("manufacturer");
@@ -426,6 +458,20 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
+                #region Parse SignatureMethods              [optional]
+
+                if (JSON.ParseOptionalHashSet<SignatureMethod>("signatureMethods",
+                                                               "energy meter signature methods",
+                                                               SignatureMethod.TryParse,
+                                                               out HashSet<SignatureMethod> SignatureMethods,
+                                                               out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Parse TransparencySoftware          [optional]
 
                 // The meter carries the releases and documents its statuses refer to.
@@ -457,6 +503,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   Name,
                                   Description,
 
+                                  Role,
                                   Manufacturer,
                                   ManufacturerURL,
                                   Model,
@@ -466,6 +513,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   FirmwareVersion,
                                   PublicKeys,
                                   PublicKeyCertificateChain,
+                                  SignatureMethods,
                                   transparencySoftware,
 
                                   null, // InitialAdminStatus
@@ -624,6 +672,10 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("description",                 Description.ToJSON())
                                : null,
 
+                           Role.HasValue
+                               ? new JProperty("role",                        Role.Value.ToString())
+                               : null,
+
                            Manufacturer is not null
                                ? new JProperty("manufacturer",                Manufacturer)
                                : null,
@@ -659,6 +711,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                            PublicKeyCertificateChain.HasValue
                                ? new JProperty("publicKeyCertificateChain",   PublicKeyCertificateChain.Value.ToString())
+                               : null,
+
+                           SignatureMethods.Any()
+                               ? new JProperty("signatureMethods",            new JArray(SignatureMethods.Select(signatureMethod => signatureMethod.ToString())))
                                : null,
 
                            TransparencySoftware.Any()
@@ -708,6 +764,7 @@ namespace cloud.charging.open.protocols.WWCP
                    Id.Clone(),
                    Name.       IsNotNullOrEmpty() ? Name.       Clone() : I18NString.Empty,
                    Description.IsNotNullOrEmpty() ? Description.Clone() : I18NString.Empty,
+                   Role?.Clone(),
                    Manufacturer    is not null ? new String(Manufacturer.   ToCharArray()) : null,
                    ManufacturerURL?.Clone(),
                    Model           is not null ? new String(Model.          ToCharArray()) : null,
@@ -717,6 +774,7 @@ namespace cloud.charging.open.protocols.WWCP
                    FirmwareVersion is not null ? new String(FirmwareVersion.ToCharArray()) : null,
                    PublicKeys.Select(publicKey => publicKey.Clone()).ToArray(),
                    PublicKeyCertificateChain?.Clone(),
+                   SignatureMethods.Select(signatureMethod => signatureMethod.Clone()).ToArray(),
                    TransparencySoftware.ToArray(),
 
                    AdminStatus,
@@ -908,6 +966,11 @@ namespace cloud.charging.open.protocols.WWCP
                 c = LastChangeDate.ToISO8601().CompareTo(EnergyMeter.LastChangeDate.ToISO8601());
 
             if (c == 0)
+                c = Role.HasValue && EnergyMeter.Role.HasValue
+                        ? Role.Value.CompareTo(EnergyMeter.Role.Value)
+                        : 0;
+
+            if (c == 0)
                 c = Model is not null && EnergyMeter.Model is not null
                         ? Model.CompareTo(EnergyMeter.Model)
                         : 0;
@@ -992,6 +1055,9 @@ namespace cloud.charging.open.protocols.WWCP
                Id.                    Equals(EnergyMeter.Id) &&
                //LastChangeDate.ToISO8601().Equals(EnergyMeter.LastChangeDate.ToISO8601()) &&
 
+            ((!Role.HasValue && !EnergyMeter.Role.HasValue) ||
+              (Role.HasValue && EnergyMeter.Role.HasValue && Role.Value.Equals(EnergyMeter.Role.Value))) &&
+
              ((Model is null && EnergyMeter.Model is null) ||
               (Model is not null && EnergyMeter.Model is not null && Model.Equals(EnergyMeter.Model))) &&
 
@@ -1019,6 +1085,9 @@ namespace cloud.charging.open.protocols.WWCP
                PublicKeys.Count().Equals(EnergyMeter.PublicKeys.Count()) &&
                PublicKeys.All(publicKey => EnergyMeter.PublicKeys.Contains(publicKey)) &&
 
+               SignatureMethods.Count().Equals(EnergyMeter.SignatureMethods.Count()) &&
+               SignatureMethods.All(signatureMethod => EnergyMeter.SignatureMethods.Contains(signatureMethod)) &&
+
                TransparencySoftware.Count().Equals(EnergyMeter.TransparencySoftware.Count()) &&
                TransparencySoftware.All(transparencySoftwareStatus => EnergyMeter.TransparencySoftware.Contains(transparencySoftwareStatus));
 
@@ -1036,7 +1105,9 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                return Id.                        GetHashCode()        * 37 ^
+                return Id.                        GetHashCode()        * 43 ^
+                      (Role?.                     GetHashCode()  ?? 0) * 41 ^
+                      (SignatureMethods?.         CalcHashCode() ?? 0) * 39 ^
                       (Model?.                    GetHashCode()  ?? 0) * 31 ^
                       (ModelURL?.                 GetHashCode()  ?? 0) * 29 ^
                       (HardwareVersion?.          GetHashCode()  ?? 0) * 23 ^
@@ -1064,6 +1135,10 @@ namespace cloud.charging.open.protocols.WWCP
             => new[] {
 
                    $"Id: {Id}",
+
+                   Role.HasValue
+                       ? $"Role: {Role}"
+                       : String.Empty,
 
                    Model.IsNotNullOrEmpty()
                        ? $"Model: {Model}"
@@ -1095,6 +1170,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                    PublicKeyCertificateChain.HasValue
                        ? $"public key certificate chain: {PublicKeyCertificateChain.Value.ToString().SubstringMax(20)}"
+                       : String.Empty,
+
+                   SignatureMethods.Any()
+                       ? "signature methods: " + SignatureMethods.AggregateWith(", ")
                        : String.Empty,
 
                    TransparencySoftware.Any()

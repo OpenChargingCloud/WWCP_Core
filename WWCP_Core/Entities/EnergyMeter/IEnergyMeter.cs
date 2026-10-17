@@ -92,6 +92,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
+        EnergyMeterRole?                         Role                         { get; }
         String?                                  Manufacturer                 { get; }
         URL?                                     ManufacturerURL              { get; }
         String?                                  Model                        { get; }
@@ -101,6 +102,7 @@ namespace cloud.charging.open.protocols.WWCP
         String?                                  HardwareVersion              { get; }
         IEnumerable<PublicKey>                   PublicKeys                   { get; }
         CertificateChain?                        PublicKeyCertificateChain    { get; }
+        IEnumerable<SignatureMethod>             SignatureMethods             { get; }
         IEnumerable<TransparencySoftwareStatus>  TransparencySoftware        { get; }
 
         #endregion
