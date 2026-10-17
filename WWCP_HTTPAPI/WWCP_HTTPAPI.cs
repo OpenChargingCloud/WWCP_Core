@@ -1284,6 +1284,45 @@ namespace cloud.charging.open.protocols.WWCP
     public class WWCP_HTTPAPI : AHTTPExtAPIExtension1<HTTPExtAPI>
     {
 
+        #region (static) OlderThanOf(Text)
+
+        /// <summary>
+        /// The age of ?olderThan=…, e.g. 12h: days (d), hours (h) or minutes (m), written as everywhere on the wire,
+        /// "1.5d", whatever culture the server runs in - not 15 days on a German machine, nor 5 of "1,5d" -;
+        /// zero without one, or with one that is no age or longer than any.
+        /// </summary>
+        /// <param name="Text">The text of the age.</param>
+        public static TimeSpan OlderThanOf(String? Text)
+        {
+
+            var text = Text?.Trim() ?? "";
+
+            if (text.Length < 2 ||
+                !Double.TryParse(text[..^1].Trim(),
+                                 System.Globalization.NumberStyles.Float,
+                                 System.Globalization.CultureInfo.InvariantCulture,
+                                 out var number) ||
+                !Double.IsFinite(number))
+            {
+                return TimeSpan.Zero;
+            }
+
+            var minutes = text[^1] switch {
+                              'd' => number * 24 * 60,
+                              'h' => number * 60,
+                              'm' => number,
+                              _   => Double.NaN
+                          };
+
+            return Double.IsFinite(minutes) && Math.Abs(minutes) < TimeSpan.MaxValue.TotalMinutes - 1
+                       ? TimeSpan.FromMinutes(minutes)
+                       : TimeSpan.Zero;
+
+        }
+
+        #endregion
+
+
         #region Data
 
         /// <summary>
@@ -9276,22 +9315,7 @@ namespace cloud.charging.open.protocols.WWCP
                     #endregion
 
 
-                    var olderThanString      = request.QueryString.GetString("olderThan")?.Trim();
-                    var olderThan            = TimeSpan.Zero;
-
-                    if (olderThanString.IsNotNullOrEmpty())
-                    {
-
-                        if (olderThanString.EndsWith('d') && Double.TryParse(olderThanString[..^1].Trim(), out var days))
-                            olderThan        = TimeSpan.FromDays   (days);
-
-                        if (olderThanString.EndsWith('h') && Double.TryParse(olderThanString[..^1].Trim(), out var hours))
-                            olderThan        = TimeSpan.FromHours  (hours);
-
-                        if (olderThanString.EndsWith('m') && Double.TryParse(olderThanString[..^1].Trim(), out var minutes))
-                            olderThan        = TimeSpan.FromMinutes(minutes);
-
-                    }
+                    var olderThan            = OlderThanOf(request.QueryString.GetString("olderThan"));
 
                     var skip                 = request.QueryString.GetUInt64("skip");
                     var take                 = request.QueryString.GetUInt64("take");
@@ -9378,22 +9402,7 @@ namespace cloud.charging.open.protocols.WWCP
                     #endregion
 
 
-                    var olderThanString      = request.QueryString.GetString("olderThan")?.Trim();
-                    var olderThan            = TimeSpan.Zero;
-
-                    if (olderThanString.IsNotNullOrEmpty())
-                    {
-
-                        if (olderThanString.EndsWith('d') && Double.TryParse(olderThanString[..^1].Trim(), out var days))
-                            olderThan        = TimeSpan.FromDays   (days);
-
-                        if (olderThanString.EndsWith('h') && Double.TryParse(olderThanString[..^1].Trim(), out var hours))
-                            olderThan        = TimeSpan.FromHours  (hours);
-
-                        if (olderThanString.EndsWith('m') && Double.TryParse(olderThanString[..^1].Trim(), out var minutes))
-                            olderThan        = TimeSpan.FromMinutes(minutes);
-
-                    }
+                    var olderThan            = OlderThanOf(request.QueryString.GetString("olderThan"));
 
                     var skip                 = request.QueryString.GetUInt64("skip");
                     var take                 = request.QueryString.GetUInt64("take");
