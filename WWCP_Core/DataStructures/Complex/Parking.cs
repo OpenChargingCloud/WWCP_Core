@@ -690,7 +690,7 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
                            Images.Any()
-                               ? new JProperty("images",                    new JArray(Images.Select(image => image.ToJSON(CustomImageSerializer))))
+                               ? new JProperty("images",                    new JArray(Images.Select(image => image.ToJSON(Embedded: true, CustomImageSerializer: CustomImageSerializer))))
                                : null,
 
                            Lighting.             HasValue

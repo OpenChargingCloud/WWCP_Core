@@ -718,14 +718,14 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
                            TransparencySoftware.Any()
-                               ? new JProperty("transparencySoftware",              new JArray(TransparencySoftware.Select(transparencySoftwareStatus => transparencySoftwareStatus.ToJSON(CustomTransparencySoftwareStatusSerializer))))
+                               ? new JProperty("transparencySoftware",              new JArray(TransparencySoftware.Select(transparencySoftwareStatus => transparencySoftwareStatus.ToJSON(Embedded: true, CustomTransparencySoftwareStatusSerializer: CustomTransparencySoftwareStatusSerializer))))
                                : null,
 
                            TransparencySoftware.Any()
                                ? new JProperty("transparencySoftwareReleases",      new JArray(TransparencySoftware.Select       (transparencySoftwareStatus => transparencySoftwareStatus.TransparencySoftware).
                                                                                                                     DistinctBy   (transparencySoftware       => transparencySoftware.Id).
                                                                                                                     OrderBy      (transparencySoftware       => transparencySoftware.Id.ToString(), StringComparer.Ordinal).
-                                                                                                                    Select       (transparencySoftware       => transparencySoftware.ToJSON(CustomTransparencySoftwareSerializer))))
+                                                                                                                    Select       (transparencySoftware       => transparencySoftware.ToJSON(Embedded: true, CustomTransparencySoftwareSerializer: CustomTransparencySoftwareSerializer))))
                                : null,
 
                            TransparencySoftware.Any(transparencySoftwareStatus => transparencySoftwareStatus.Certificate is not null)
@@ -733,7 +733,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                     OfType<TransparencySoftwareCertificate>().
                                                                                                                     DistinctBy   (certificate                => certificate.Id).
                                                                                                                     OrderBy      (certificate                => certificate.Id.ToString(), StringComparer.Ordinal).
-                                                                                                                    Select       (certificate                => certificate.ToJSON())))
+                                                                                                                    Select       (certificate                => certificate.ToJSON(Embedded: true))))
                                : null,
 
                            Description is not null && Description.IsNotNullOrEmpty()
