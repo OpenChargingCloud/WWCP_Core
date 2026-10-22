@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                          Embedded
                              ? null
-                             : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/core/evseGroup/v1"),
+                             : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp/core/evseGroup/v1"),
 
                          EVSEGroup.Name.       IsNotNullOrEmpty()
                              ? new JProperty("name",        EVSEGroup.Name.ToJSON())

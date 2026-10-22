@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                          Embedded
                              ? null
-                             : new JProperty("@context",        "https://open.charging.cloud/contexts/wwcp+json/core/chargingTariff/v1"),
+                             : new JProperty("@context",        "https://open.charging.cloud/contexts/wwcp/core/chargingTariff/v1"),
 
                          Name.IsNotNullOrEmpty()
                              ? new JProperty("name",            Name.ToJSON())

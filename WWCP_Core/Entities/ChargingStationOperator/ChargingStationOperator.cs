@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The JSON-LD context of the object.
         /// </summary>
-        public const String  JSONLDContext                                               = "https://open.charging.cloud/contexts/wwcp+json/core/chargingStationOperator/v1";
+        public const String  JSONLDContext                                               = "https://open.charging.cloud/contexts/wwcp/core/chargingStationOperator/v1";
 
         /// <summary>
         /// The default max size of the charging station operator admin status list.

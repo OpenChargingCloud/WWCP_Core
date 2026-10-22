@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 jsonStatusReport.Remove("timestamp");
 
                 Assert.That(jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None),
-                                Is.EqualTo("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/core/chargingStationOperatorAdminStatusReport/v1\",\"count\":1,\"report\":{\"operational\":{\"count\":1,\"percentage\":100.0}}}"));
+                                Is.EqualTo("{\"@context\":\"https://open.charging.cloud/contexts/wwcp/core/chargingStationOperatorAdminStatusReport/v1\",\"count\":1,\"report\":{\"operational\":{\"count\":1,\"percentage\":100.0}}}"));
 
             }
 
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 jsonStatusReport.Remove("timestamp");
 
                 Assert.That(jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None),
-                                Is.EqualTo("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/core/chargingStationOperatorStatusReport/v1\",\"count\":1,\"report\":{\"error\":{\"count\":1,\"percentage\":100.0}}}"));
+                                Is.EqualTo("{\"@context\":\"https://open.charging.cloud/contexts/wwcp/core/chargingStationOperatorStatusReport/v1\",\"count\":1,\"report\":{\"error\":{\"count\":1,\"percentage\":100.0}}}"));
 
             }
 
