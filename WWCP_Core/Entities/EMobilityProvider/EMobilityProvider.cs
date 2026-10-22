@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP
                          new JProperty("@id",  eMobilityProvider.Id.ToString()),
 
                          Embedded
-                             ? new JProperty("@context",  "https://open.charging.cloud/contexts/wwcp+json/eMobilityProvider")
+                             ? new JProperty("@context",  "https://open.charging.cloud/contexts/wwcp+json/core/eMobilityProvider/v1")
                              : null,
 
                          new JProperty("name",  eMobilityProvider.Name.ToJSON()),

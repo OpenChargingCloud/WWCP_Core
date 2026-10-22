@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.WWCP
             : base(ChargingStations,
                    station => station.AdminStatus.Value,
                    Timestamp,
-                   "https://open.charging.cloud/contexts/wwcp+json/chargingStationAdminStatusReport")
+                   "https://open.charging.cloud/contexts/wwcp+json/core/chargingStationAdminStatusReport/v1")
 
         { }
 

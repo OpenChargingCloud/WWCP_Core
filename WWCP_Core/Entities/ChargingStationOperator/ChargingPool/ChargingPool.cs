@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The JSON-LD context of the object.
         /// </summary>
-        public const            String    JSONLDContext                                    = "https://open.charging.cloud/contexts/wwcp+json/chargingPool";
+        public const            String    JSONLDContext                                    = "https://open.charging.cloud/contexts/wwcp+json/core/chargingPool/v1";
 
 
         private readonly        Decimal   EPSILON                                          = 0.01m;

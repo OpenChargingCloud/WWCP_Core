@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public const String JSONLDContext = "https://open.charging.cloud/contexts/wwcp+json/cdrReceivedInfo";
+        public const String JSONLDContext = "https://open.charging.cloud/contexts/wwcp+json/core/cdrReceivedInfo/v1";
 
         #endregion
 
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public const String JSONLDContext = "https://open.charging.cloud/contexts/wwcp+json/chargingSession";
+        public const String JSONLDContext = "https://open.charging.cloud/contexts/wwcp+json/core/chargingSession/v1";
 
         #endregion
 
@@ -1165,7 +1165,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             // {
             //     "@id":                           "7f0d7978-ab29-462c-908f-b31aa9c9326e",
-            //     "@context":                      "https://open.charging.cloud/contexts/wwcp+json/chargingSession",
+            //     "@context":                      "https://open.charging.cloud/contexts/wwcp+json/core/chargingSession/v1",
             //     "roamingNetworkId":              "Prod",
             //     "noAutoDeletionBefore":          "2020-06-24T07:44:39.476Z",
             //
@@ -1221,7 +1221,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             // {
             //   "@id":                     "b0a4af6a-3a11-4296-b1e4-7221fd318d36",
-            //   "@context":                "https://open.charging.cloud/contexts/wwcp+json/chargingSession",
+            //   "@context":                "https://open.charging.cloud/contexts/wwcp+json/core/chargingSession/v1",
             //   "roamingNetworkId":        "Prod",
             //   "start": {
             //       "timestamp":                   "2023-12-31T18:45:43.636Z",

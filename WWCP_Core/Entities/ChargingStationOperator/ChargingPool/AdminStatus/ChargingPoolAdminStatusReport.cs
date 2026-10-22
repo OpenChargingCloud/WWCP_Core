@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.WWCP
             : base(ChargingPools,
                    pool => pool.AdminStatus.Value,
                    Timestamp,
-                   "https://open.charging.cloud/contexts/wwcp+json/chargingPoolAdminStatusReport")
+                   "https://open.charging.cloud/contexts/wwcp+json/core/chargingPoolAdminStatusReport/v1")
 
         { }
 

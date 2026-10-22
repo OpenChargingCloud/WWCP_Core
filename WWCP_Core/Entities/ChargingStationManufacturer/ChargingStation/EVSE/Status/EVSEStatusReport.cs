@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.WWCP
             : base(EVSEs,
                    evse => evse.Status.Value,
                    Timestamp,
-                   "https://open.charging.cloud/contexts/wwcp+json/evseStatusReport")
+                   "https://open.charging.cloud/contexts/wwcp+json/core/evseStatusReport/v1")
 
         { }
 

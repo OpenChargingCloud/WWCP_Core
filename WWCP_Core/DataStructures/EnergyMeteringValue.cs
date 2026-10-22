@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The JSON-LD context of the object.
         /// </summary>
-        public const String JSONLDContext  = "https://open.charging.cloud/contexts/wwcp+json/energyMeteringValue";
+        public const String JSONLDContext  = "https://open.charging.cloud/contexts/wwcp+json/core/energyMeteringValue/v1";
 
         #endregion
 
