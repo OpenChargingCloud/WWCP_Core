@@ -563,7 +563,7 @@ namespace cloud.charging.open.protocols.WWCP
             TransparencySoftware  = [];
 
             var releases          = new Dictionary<TransparencySoftware_Id,            POI.TransparencySoftware>();
-            var certificates      = new Dictionary<TransparencySoftwareCertificate_Id, TransparencySoftwareCertificate>();
+            var certificates      = new Dictionary<ConformityCertificate_Id, ConformityCertificate>();
             var statuses          = TransparencySoftware;
 
             return TryParseEntries(JSON, "transparencySoftwareReleases",
@@ -576,7 +576,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                    TryParseEntries(JSON, "transparencySoftwareCertificates",
                                    (JObject json, out String? error) => {
-                                       if (!TransparencySoftwareCertificate.TryParse(json, out var certificate, out error)) return false;
+                                       if (!ConformityCertificate.TryParse(json, out var certificate, out error)) return false;
                                        certificates[certificate.Id] = certificate;
                                        return true;
                                    },
@@ -730,7 +730,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                            TransparencySoftware.Any(transparencySoftwareStatus => transparencySoftwareStatus.Certificate is not null)
                                ? new JProperty("transparencySoftwareCertificates",  new JArray(TransparencySoftware.Select       (transparencySoftwareStatus => transparencySoftwareStatus.Certificate).
-                                                                                                                    OfType<TransparencySoftwareCertificate>().
+                                                                                                                    OfType<ConformityCertificate>().
                                                                                                                     DistinctBy   (certificate                => certificate.Id).
                                                                                                                     OrderBy      (certificate                => certificate.Id.ToString(), StringComparer.Ordinal).
                                                                                                                     Select       (certificate                => certificate.ToJSON(Embedded: true))))
