@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 #endregion
 
 
-                var jsonMessage = JArray.Parse(TextMessage);
+                var jsonMessage = JSONMessages.ParseArray(TextMessage);
 
                 await LogEvent(
                           OnJSONMessageReceived,

@@ -1406,7 +1406,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             try
             {
 
-                var jsonArray     = JArray.Parse(TextMessage);
+                var jsonArray     = WWCP.WebSockets.JSONMessages.ParseArray(TextMessage);
                 var sourceNodeId  = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey);
 
                 if      (JSONRequestMessage.     TryParse(jsonArray, out var jsonRequestMessage,  out var requestParsingError,  RequestTimestamp, null, EventTrackingId, sourceNodeId, CancellationToken))

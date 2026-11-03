@@ -152,6 +152,37 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
 
         #endregion
 
+        #region SendText(Text)
+
+        /// <summary>
+        /// Send a text message in one frame, masked as a client must, exactly as
+        /// it is written.
+        /// </summary>
+        public async Task SendText(String Text)
+        {
+
+            var payload  = Encoding.UTF8.GetBytes(Text);
+            var mask     = RandomNumberGenerator.GetBytes(4);
+            var header   = payload.Length < 126
+                               ? new[] { (Byte) 0x81, (Byte) (0x80 | payload.Length) }
+                               : new[] { (Byte) 0x81, (Byte) (0x80 | 126), (Byte) (payload.Length >> 8), (Byte) (payload.Length & 0xff) };
+            var frame    = new Byte[header.Length + 4 + payload.Length];
+
+            if (payload.Length > UInt16.MaxValue)
+                throw new ArgumentException("A text of one frame of no more than 65535 bytes.", nameof(Text));
+
+            Array.Copy(header, frame, header.Length);
+            Array.Copy(mask, 0, frame, header.Length, 4);
+
+            for (var i = 0; i < payload.Length; i++)
+                frame[header.Length + 4 + i] = (Byte) (payload[i] ^ mask[i % 4]);
+
+            await stream.WriteAsync(frame);
+
+        }
+
+        #endregion
+
         #region SendClose(StatusCode = 1000)
 
         /// <summary>

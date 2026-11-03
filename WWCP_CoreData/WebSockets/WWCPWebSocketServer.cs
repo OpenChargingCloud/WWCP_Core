@@ -1245,7 +1245,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 #endregion
 
 
-                var jsonMessage   = JArray.Parse(TextMessage);
+                var jsonMessage   = JSONMessages.ParseArray(TextMessage);
                 var timestamp     = Timestamp.Now;
 
                 // Just for logging!
