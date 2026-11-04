@@ -123,13 +123,18 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         protected        readonly  Timer                                                    SendHeartbeatsTimer;
 
+        // 1 while the heartbeats of a tick are being sent - see DoSendHeartbeatsSync.
+        private                    Int32                                                    sendingHeartbeats;
+
 
         /// <summary>
         /// The default maintenance interval.
         /// </summary>
         public           readonly  TimeSpan                                                 DefaultMaintenanceEvery      = TimeSpan.FromSeconds(1);
-        private   static readonly  SemaphoreSlim                                            MaintenanceSemaphore         = new (1, 1);
         private          readonly  Timer                                                    MaintenanceTimer;
+
+        // 1 while the maintenance of a tick is at work - see DoMaintenanceSync.
+        private                    Int32                                                    maintaining;
 
         //public ConcurrentDictionary<String, List<ComponentConfig>>                          ComponentConfigs             = [];
 
@@ -1086,53 +1091,101 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #endregion
 
 
-        #region (Timer) DoSendHeartbeatSync(State)
+        #region (Timer) DoSendHeartbeatsSync(State)
 
-        protected virtual void DoSendHeartbeatsSync(Object? State)
-        { }
+        /// <summary>
+        /// A tick of the heartbeat timer: it starts sending the heartbeats and
+        /// does not wait for them. A tick that comes while the heartbeats of
+        /// the tick before are still being sent is left out.
+        /// </summary>
+        /// <remarks>
+        /// A kind of node used to send them here itself, waiting for the answer
+        /// with .Wait() on a thread of the thread pool: a back end slow to
+        /// answer held one thread per node for as long as it took.
+        /// </remarks>
+        private void DoSendHeartbeatsSync(Object? State)
+        {
+
+            if (DisableSendHeartbeats || Interlocked.Exchange(ref sendingHeartbeats, 1) == 1)
+                return;
+
+            _ = SendHeartbeats(State);
+
+        }
+
+        private async Task SendHeartbeats(Object? State)
+        {
+            try
+            {
+                await DoSendHeartbeatsAsync(State);
+            }
+            catch (Exception e)
+            {
+                DebugX.LogException(e, nameof(DoSendHeartbeatsAsync));
+            }
+            finally
+            {
+                Volatile.Write(ref sendingHeartbeats, 0);
+            }
+        }
+
+        /// <summary>
+        /// Send this node's heartbeats: none, unless a kind of node overrides
+        /// this. Not asked where they are switched off, and not asked again
+        /// before the heartbeats it is sending are sent.
+        /// </summary>
+        protected virtual Task DoSendHeartbeatsAsync(Object? State)
+            => Task.CompletedTask;
 
         #endregion
 
         #region (Timer) DoMaintenance(State)
 
+        /// <summary>
+        /// A tick of the maintenance timer: it starts this node's maintenance
+        /// and does not wait for it. A tick that comes while the maintenance of
+        /// the tick before is still at work is left out.
+        /// </summary>
+        /// <remarks>
+        /// It used to wait for the maintenance, with .Wait() on a thread of the
+        /// thread pool, and the maintenance waited for up to five seconds for a
+        /// lock that every node of the process shared. With many nodes ticking
+        /// every second the waits took every thread there was: a charging
+        /// station's tests, which make a station with two nodes for nearly
+        /// every test, hung on a machine with four cores. Now each node waits
+        /// for nobody else, and nothing waits for it.
+        /// </remarks>
         private void DoMaintenanceSync(Object? State)
         {
-            if (!DisableMaintenanceTasks)
-                DoMaintenance(State).Wait();
+
+            if (DisableMaintenanceTasks || Interlocked.Exchange(ref maintaining, 1) == 1)
+                return;
+
+            _ = DoMaintenance(State);
+
         }
 
         private async Task DoMaintenance(Object? State)
         {
-
-            //DebugX.LogT($"Node {Id}: Enter DoMaintenance(...)");
-
-            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            try
             {
-                try
-                {
 
-                    await DoMaintenanceAsync(State);
+                await DoMaintenanceAsync(State);
 
-                }
-                catch (Exception e)
-                {
-
-                    while (e.InnerException is not null)
-                        e = e.InnerException;
-
-                    DebugX.LogException(e);
-
-                }
-                finally
-                {
-                    MaintenanceSemaphore.Release();
-                }
             }
-            else
-                DebugX.LogT($"Node {Id}: Could not aquire the maintenance tasks lock!");
+            catch (Exception e)
+            {
 
-            //DebugX.LogT($"Node {Id}: Exit DoMaintenance(...)");
+                while (e.InnerException is not null)
+                    e = e.InnerException;
 
+                DebugX.LogException(e);
+
+            }
+            finally
+            {
+                Volatile.Write(ref maintaining, 0);
+            }
         }
 
         protected virtual async Task DoMaintenanceAsync(Object? State)
