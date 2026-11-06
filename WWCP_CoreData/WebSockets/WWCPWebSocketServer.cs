@@ -31,6 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP;
@@ -104,6 +105,18 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// </summary>
         public Formatting                      JSONFormatting    { get; set; }
             = Formatting.None;
+
+        /// <summary>
+        /// Messages go over HTTP WebSockets.
+        /// </summary>
+        public MessageTransport                Transport
+            => MessageTransport.WebSocket;
+
+        /// <summary>
+        /// Where the server listens.
+        /// </summary>
+        public String                          TransportDescription
+            => IPSocket.ToString();
 
         #endregion
 

@@ -27,8 +27,10 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
+using org.GraphDefined.Vanaheimr.Hermod.SSH;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.WWCP.SSH;
 using cloud.charging.open.protocols.WWCP.WebSockets;
 using Microsoft.Extensions.Logging;
 
@@ -106,6 +108,9 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         protected        readonly  HashSet<IWWCPWebSocketServer>                            wwcpWebSocketServers         = [];
         protected        readonly  List<IWWCPWebSocketClient>                               wwcpWebSocketClients         = [];
+
+        private          readonly  List<WWCPSshServer>                                      wwcpSshServers               = [];
+        private          readonly  List<WWCPSshClient>                                      wwcpSshClients               = [];
 
         protected static readonly  TimeSpan                                                 SemaphoreSlimTimeout         = TimeSpan.FromSeconds(5);
 
@@ -224,6 +229,42 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         public IEnumerable<IWWCPWebSocketServer> WWCPWebSocketServers
             => wwcpWebSocketServers;
+
+        /// <summary>
+        /// The SSH subsystems this node serves other networking nodes on.
+        /// </summary>
+        public IEnumerable<WWCPSshServer> WWCPSshServers
+        {
+            get
+            {
+                lock (wwcpSshServers)
+                    return [.. wwcpSshServers];
+            }
+        }
+
+        /// <summary>
+        /// The SSH connections this node keeps up to other networking nodes.
+        /// </summary>
+        public IEnumerable<WWCPSshClient> WWCPSshClients
+        {
+            get
+            {
+                lock (wwcpSshClients)
+                    return [.. wwcpSshClients];
+            }
+        }
+
+        /// <summary>
+        /// The connections this node keeps up to other networking nodes, over whatever transport.
+        /// </summary>
+        public IEnumerable<IWWCPClient> WWCPClients
+            => [.. WWCPWebSocketClients, .. WWCPSshClients];
+
+        /// <summary>
+        /// The servers other networking nodes connect to, over whatever transport.
+        /// </summary>
+        public IEnumerable<IWWCPServer> WWCPServers
+            => [.. WWCPWebSocketServers, .. WWCPSshServers];
 
         /// <summary>
         /// Routing of messages.
@@ -602,6 +643,106 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         #endregion
 
+        #region ConnectSshClient(SshClient, NextHopNetworkingNodeId = null, RoutingNetworkingNodeIds = null, CancellationToken = default)
+
+        /// <summary>
+        /// Keep up a connection to another networking node over an SSH subsystem, as
+        /// <see cref="ConnectWebSocketClient(WWCPWebSocketClient, NetworkingNode_Id?, IEnumerable{NetworkingNode_Id}?, EventTracking_Id?, CancellationToken)"/>
+        /// does over an HTTP WebSocket: who is at the other end, and who is reached through it, is written
+        /// down for every connection the client makes - the first one, and every reconnect - before its first
+        /// message is read.
+        /// </summary>
+        /// <param name="SshClient">The client.</param>
+        /// <param name="NextHopNetworkingNodeId">The networking node at the other end.</param>
+        /// <param name="RoutingNetworkingNodeIds">The networking nodes reached through it.</param>
+        /// <param name="CancellationToken">A cancellation token.</param>
+        /// <returns>The connection made. A failure is thrown - and, with a reconnect policy, tried again in the background.</returns>
+        public Task<SshMessageConnection> ConnectSshClient(WWCPSshClient                    SshClient,
+                                                           NetworkingNode_Id?               NextHopNetworkingNodeId    = null,
+                                                           IEnumerable<NetworkingNode_Id>?  RoutingNetworkingNodeIds   = null,
+                                                           CancellationToken                CancellationToken          = default)
+        {
+
+            lock (wwcpSshClients)
+                wwcpSshClients.Add(SshClient);
+
+            var routingNetworkingNodeIds = RoutingNetworkingNodeIds?.ToArray() ?? [];
+
+            SshClient.OnConnected += (timestamp, transport, connection, networkingNodeId, networkingMode, eventTrackingId, cancellationToken) => {
+
+                if (NextHopNetworkingNodeId.HasValue)
+                {
+
+                    connection.TryAddCustomData(
+                        WebSocketKeys.NetworkingNodeId,
+                        NextHopNetworkingNodeId.Value
+                    );
+
+                    Routing.AddOrUpdateStaticRouting(
+                        NextHopNetworkingNodeId.Value,
+                        SshClient,
+                        0,
+                        1,
+                        Timestamp.Now
+                    );
+
+                }
+
+                if (routingNetworkingNodeIds.Length > 0)
+                    Routing.AddOrUpdateStaticRouting(
+                        routingNetworkingNodeIds,
+                        SshClient,
+                        0,
+                        1,
+                        Timestamp.Now
+                    );
+
+                return Task.CompletedTask;
+
+            };
+
+            return SshClient.Connect(CancellationToken);
+
+        }
+
+        #endregion
+
+        #region AttachSshServer (SshServer)
+
+        /// <summary>
+        /// Serve other networking nodes over an SSH subsystem: each one is routed to over its connection from
+        /// the moment it was welcomed, before its first message is read. The SSH server that listens is not
+        /// this node's: hand <see cref="WWCPSshServer.Handler"/> to its SshServerOptions.Subsystems.
+        /// </summary>
+        /// <param name="SshServer">The server of the subsystem.</param>
+        public WWCPSshServer AttachSshServer(WWCPSshServer SshServer)
+        {
+
+            lock (wwcpSshServers)
+                wwcpSshServers.Add(SshServer);
+
+            SshServer.OnNetworkingNodeConnectionAccepted += (timestamp, transport, connection, networkingNodeId, networkingMode, eventTrackingId, cancellationToken) => {
+
+                // A newer connection of the same networking node replaces the older one: the server has
+                // put it in its place, and the route stays the server.
+                if (networkingNodeId.HasValue)
+                    Routing.AddOrUpdateStaticRouting(
+                        DestinationId:    networkingNodeId.Value,
+                        WebSocketServer:  SshServer,
+                        Priority:         0,
+                        Timestamp:        timestamp
+                    );
+
+                return Task.CompletedTask;
+
+            };
+
+            return SshServer;
+
+        }
+
+        #endregion
+
 
         #region AddOrUpdateHTTPBasicAuth(NetworkingNodeId, Password)
 
@@ -975,6 +1116,11 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                                             Message,
                                                             EventTrackingId
                                                         ))]
+                  );
+
+            await Task.WhenAll(
+                      [.. WWCPSshServers.Select(sshServer => sshServer.Stop (Message)),
+                       .. WWCPSshClients.Select(sshClient => sshClient.Close(org.GraphDefined.Vanaheimr.Hermod.Messaging.MessageCloseCode.NormalClosure, Message))]
                   );
 
         }

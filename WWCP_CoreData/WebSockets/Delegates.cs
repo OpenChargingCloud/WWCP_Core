@@ -20,7 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using WWCPNN = cloud.charging.open.protocols.WWCP.NetworkingNode;
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
     public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTimeOffset            Timestamp,
                                                                   WWCPNN.INetworkingNode      Server,
-                                                                  IWebSocketConnection        Connection,
+                                                                  IMessageConnection          Connection,
                                                                   WWCPNN.NetworkingNode_Id    DestinationId,
                                                                   WWCPNN.NetworkPath          NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
     public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTimeOffset            Timestamp,
                                                                   WWCPNN.INetworkingNode      Server,
-                                                                  IWebSocketConnection        Connection,
+                                                                  IMessageConnection          Connection,
                                                                   WWCPNN.NetworkingNode_Id    DestinationId,
                                                                   WWCPNN.NetworkPath          NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
     public delegate Task OnWebSocketBinaryMessageRequestDelegate (DateTimeOffset            Timestamp,
                                                                   WWCPNN.INetworkingNode      Server,
-                                                                  IWebSocketConnection        Connection,
+                                                                  IMessageConnection          Connection,
                                                                   WWCPNN.NetworkingNode_Id    DestinationId,
                                                                   WWCPNN.NetworkPath          NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
     public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTimeOffset            Timestamp,
                                                                   WWCPNN.INetworkingNode      Server,
-                                                                  IWebSocketConnection        Connection,
+                                                                  IMessageConnection          Connection,
                                                                   WWCPNN.NetworkingNode_Id    DestinationId,
                                                                   WWCPNN.NetworkPath          NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,

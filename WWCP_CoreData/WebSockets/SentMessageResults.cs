@@ -17,7 +17,7 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 #endregion
 
@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region Properties
 
         public SentMessageResults     Result        { get; }
-        public IWebSocketConnection?  Connection    { get; }
+        public IMessageConnection?    Connection    { get; }
         public Exception?             Exception     { get; }
 
         #endregion
@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #region Constructor(s)
 
         private SentMessageResult(SentMessageResults     SentMessageResult,
-                                  IWebSocketConnection?  WebSocketConnection   = null,
+                                  IMessageConnection?    WebSocketConnection   = null,
                                   Exception?             Exception             = null)
         {
 
@@ -70,18 +70,18 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                     Exception);
 
         public static SentMessageResult TransmissionFailed (Exception             Exception,
-                                                            IWebSocketConnection  WebSocketConnection)
+                                                            IMessageConnection    WebSocketConnection)
 
             => new (SentMessageResults.TransmissionFailed,
                     WebSocketConnection,
                     Exception);
 
-        public static SentMessageResult Timeout            (IWebSocketConnection  WebSocketConnection)
+        public static SentMessageResult Timeout            (IMessageConnection    WebSocketConnection)
 
             => new (SentMessageResults.Timeout,
                     WebSocketConnection);
 
-        public static SentMessageResult Success            (IWebSocketConnection  WebSocketConnection)
+        public static SentMessageResult Success            (IMessageConnection    WebSocketConnection)
 
             => new (SentMessageResults.Success,
                     WebSocketConnection);

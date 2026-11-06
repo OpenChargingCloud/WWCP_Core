@@ -69,11 +69,9 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
     /// <summary>
     /// The common interface of all WWCP HTTP WebSocket clients.
     /// </summary>
-    public interface IWWCPWebSocketClient : IWebSocketClient
+    public interface IWWCPWebSocketClient : IWebSocketClient,
+                                            IWWCPClient
     {
-
-
-        NetworkingMode  NetworkingMode    { get; }
 
 
         /// <summary>

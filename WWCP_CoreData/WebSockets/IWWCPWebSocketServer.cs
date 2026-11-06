@@ -72,25 +72,16 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
     /// <summary>
     /// The common interface of all WWCP HTTP WebSocket servers.
     /// </summary>
-    public interface IWWCPWebSocketServer : IWebSocketServer
+    public interface IWWCPWebSocketServer : IWebSocketServer,
+                                            IWWCPServer
     {
 
         #region Properties
 
         /// <summary>
-        /// The parent networking node.
-        /// </summary>
-        INetworkingNode                         NetworkingNode                { get; }
-
-        /// <summary>
         /// The enumeration of all connected networking nodes.
         /// </summary>
         IEnumerable<NetworkingNodeConnections>  ConnectedNetworkingNodes      { get; }
-
-        /// <summary>
-        /// The enumeration of all connected networking node identifications.
-        /// </summary>
-        IEnumerable<NetworkingNode_Id>          ConnectedNetworkingNodeIds    { get; }
 
         /// <summary>
         /// The request timeout for messages sent by this HTTP WebSocket server.

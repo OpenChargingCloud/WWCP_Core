@@ -54,19 +54,37 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
 
 
-        public IEnumerable<IWWCPWebSocketClient> AllWebSocketClients
+        /// <summary>
+        /// All clients the routing table uses, over whatever transport.
+        /// </summary>
+        public IEnumerable<IWWCPClient> AllClients
             => reachableNetworkingNodes.Values.
                    SelectMany(fff => fff).
-                   Select    (rrr => rrr.WWCPWebSocketClient).
+                   Select    (rrr => rrr.Client).
                    Where     (www => www is not null).
-                   Cast<IWWCPWebSocketClient>();
+                   Cast<IWWCPClient>();
 
-        public IEnumerable<IWWCPWebSocketServer> AllWebSocketServers
+        /// <summary>
+        /// All servers the routing table uses, over whatever transport.
+        /// </summary>
+        public IEnumerable<IWWCPServer> AllServers
             => reachableNetworkingNodes.Values.
                    SelectMany(fff => fff).
-                   Select    (rrr => rrr.WWCPWebSocketServer).
+                   Select    (rrr => rrr.Server).
                    Where     (www => www is not null).
-                   Cast<IWWCPWebSocketServer>();
+                   Cast<IWWCPServer>();
+
+        /// <summary>
+        /// All HTTP WebSocket clients the routing table uses.
+        /// </summary>
+        public IEnumerable<IWWCPWebSocketClient> AllWebSocketClients
+            => AllClients.OfType<IWWCPWebSocketClient>();
+
+        /// <summary>
+        /// All HTTP WebSocket servers the routing table uses.
+        /// </summary>
+        public IEnumerable<IWWCPWebSocketServer> AllWebSocketServers
+            => AllServers.OfType<IWWCPWebSocketServer>();
 
 
         public IEnumerable<NetworkRoutingInformation> GetNetworkRoutingInformation()
@@ -173,8 +191,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                         }
 
-                    } while (reachability.WWCPWebSocketClient is null &&
-                             reachability.WWCPWebSocketServer is null);
+                    } while (reachability.Client is null &&
+                             reachability.Server is null);
 
                 }
 
@@ -196,7 +214,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         public List<Reachability>
 
             AddOrUpdateStaticRouting(NetworkingNode_Id     DestinationId,
-                                     IWWCPWebSocketClient  WebSocketClient,
+                                     IWWCPClient           WebSocketClient,
                                      Byte?                 Priority    = 0,
                                      Byte?                 Weight      = 1,
                                      DateTimeOffset?       Timestamp   = null,
@@ -255,7 +273,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #region AddOrUpdateStaticRouting     (DestinationIds, WebSocketClient,        Priority = 0, Weight = 1, Timestamp = null, Timeout = null)
 
         public void AddOrUpdateStaticRouting(IEnumerable<NetworkingNode_Id>  DestinationIds,
-                                             IWWCPWebSocketClient            WebSocketClient,
+                                             IWWCPClient                     WebSocketClient,
                                              Byte?                           Priority    = 0,
                                              Byte?                           Weight      = 1,
                                              DateTimeOffset?                 Timestamp   = null,
@@ -282,7 +300,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         public List<Reachability>
 
             AddOrUpdateStaticRouting(NetworkingNode_Id     DestinationId,
-                                     IWWCPWebSocketServer  WebSocketServer,
+                                     IWWCPServer           WebSocketServer,
                                      Byte?                 Priority    = 0,
                                      Byte?                 Weight      = 1,
                                      DateTimeOffset?       Timestamp   = null,
@@ -341,7 +359,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #region AddOrUpdateStaticRouting     (DestinationIds, WebSocketClient,        Priority = 0, Weight = 1, Timestamp = null, Timeout = null)
 
         public void AddOrUpdateStaticRouting(IEnumerable<NetworkingNode_Id>  DestinationIds,
-                                             IWWCPWebSocketServer            WebSocketServer,
+                                             IWWCPServer                     WebSocketServer,
                                              Byte?                           Priority    = 0,
                                              Byte?                           Weight      = 1,
                                              DateTimeOffset?                 Timestamp   = null,

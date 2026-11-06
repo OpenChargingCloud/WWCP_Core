@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
 
@@ -43,14 +44,32 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
 
         /// <summary>
-        /// The OCPP WebSocket client to use to reach the destination node.
+        /// The client connection to use to reach the destination node: an HTTP WebSocket or an SSH channel.
         /// </summary>
-        public IWWCPWebSocketClient?          WWCPWebSocketClient    { get; }
+        public IWWCPClient?                   Client                 { get; }
 
         /// <summary>
-        /// The OCPP WebSocket server to use to reach the destination node.
+        /// The server whose connection to use to reach the destination node: an HTTP WebSocket server or an SSH subsystem.
         /// </summary>
-        public IWWCPWebSocketServer?          WWCPWebSocketServer    { get; }
+        public IWWCPServer?                   Server                 { get; }
+
+        /// <summary>
+        /// The client or the server to use to reach the destination node; null where a networking hub is to be used.
+        /// </summary>
+        public IWWCPTransport?                Transport
+            => (IWWCPTransport?) Client ?? Server;
+
+        /// <summary>
+        /// The client to use to reach the destination node, where it is an HTTP WebSocket client.
+        /// </summary>
+        public IWWCPWebSocketClient?          WWCPWebSocketClient
+            => Client as IWWCPWebSocketClient;
+
+        /// <summary>
+        /// The server to use to reach the destination node, where it is an HTTP WebSocket server.
+        /// </summary>
+        public IWWCPWebSocketServer?          WWCPWebSocketServer
+            => Server as IWWCPWebSocketServer;
 
         /// <summary>
         /// The networking hub to use to reach the destination node.
@@ -83,8 +102,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         #region Constructor(s)
         private Reachability(NetworkingNode_Id               DestinationId,
-                             IWWCPWebSocketClient?           WWCPWebSocketClient   = null,
-                             IWWCPWebSocketServer?           WWCPWebSocketServer   = null,
+                             IWWCPClient?                    Client                = null,
+                             IWWCPServer?                    Server                = null,
                              NetworkingNode_Id?              NetworkingHub         = null,
 
                              VirtualNetworkLinkInformation?  Uplink                = null,
@@ -97,8 +116,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         {
 
             this.DestinationId        = DestinationId;
-            this.WWCPWebSocketClient  = WWCPWebSocketClient;
-            this.WWCPWebSocketServer  = WWCPWebSocketServer;
+            this.Client               = Client;
+            this.Server               = Server;
             this.NetworkingHub        = NetworkingHub;
             this.Uplink               = Uplink    ?? new VirtualNetworkLinkInformation(Distance: 1);
             this.Downlink             = Downlink  ?? new VirtualNetworkLinkInformation(Distance: 1);
@@ -116,7 +135,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #region (static) FromWebSocketClient (DestinationId, WebSocketClient, ...)
 
         public static Reachability FromWebSocketClient(NetworkingNode_Id               DestinationId,
-                                                       IWWCPWebSocketClient            WebSocketClient,
+                                                       IWWCPClient                     WebSocketClient,
                                                        VirtualNetworkLinkInformation?  Uplink       = null,
                                                        VirtualNetworkLinkInformation?  Downlink     = null,
                                                        Byte?                           Priority     = 0,
@@ -141,7 +160,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #region (static) FromWebSocketServer (DestinationId, WebSocketClient, ...)
 
         public static Reachability FromWebSocketServer(NetworkingNode_Id               DestinationId,
-                                                       IWWCPWebSocketServer            WebSocketServer,
+                                                       IWWCPServer                     WebSocketServer,
                                                        VirtualNetworkLinkInformation?  Uplink       = null,
                                                        VirtualNetworkLinkInformation?  Downlink     = null,
                                                        Byte?                           Priority     = 0,
@@ -199,12 +218,12 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                : new JProperty("destinationId",     DestinationId.                ToString()),
 
 
-                           WWCPWebSocketClient is not null
-                               ? new JProperty("webSocketClient",   WWCPWebSocketClient.RemoteURL.ToString())
+                           Client is not null
+                               ? new JProperty(Client.Transport == MessageTransport.WebSocket ? "webSocketClient" : "sshClient",  Client.TransportDescription)
                                : null,
 
-                           WWCPWebSocketServer is not null
-                               ? new JProperty("webSocketServer",   WWCPWebSocketServer.IPSocket. ToString())
+                           Server is not null
+                               ? new JProperty(Server.Transport == MessageTransport.WebSocket ? "webSocketServer" : "sshServer",  Server.TransportDescription)
                                : null,
 
                            NetworkingHub.HasValue
@@ -239,11 +258,11 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         public override String ToString()
         {
 
-            if (WWCPWebSocketClient is not null)
-                return $"'{DestinationId}' via HTTP Web Socker client '{WWCPWebSocketClient.RemoteURL}'";
+            if (Client is not null)
+                return $"'{DestinationId}' via {(Client.Transport == MessageTransport.WebSocket ? "HTTP WebSocket" : "SSH")} client '{Client.TransportDescription}'";
 
-            if (WWCPWebSocketServer is not null)
-                return $"'{DestinationId}' via HTTP Web Socker server '{WWCPWebSocketServer.IPSocket}'";
+            if (Server is not null)
+                return $"'{DestinationId}' via {(Server.Transport == MessageTransport.WebSocket ? "HTTP WebSocket" : "SSH")} server '{Server.TransportDescription}'";
 
             if (NetworkingHub       is not null)
                 return $"'{DestinationId}' via networking hub '{NetworkingHub}'";

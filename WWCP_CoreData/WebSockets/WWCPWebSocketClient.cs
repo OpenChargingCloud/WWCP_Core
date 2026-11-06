@@ -29,6 +29,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using System.Net.Security;
@@ -70,6 +71,24 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// The Networking Mode.
         /// </summary>
         public NetworkingMode   NetworkingMode    { get; } = NetworkingMode.Standard;
+
+        /// <summary>
+        /// Messages go over an HTTP WebSocket.
+        /// </summary>
+        public MessageTransport Transport
+            => MessageTransport.WebSocket;
+
+        /// <summary>
+        /// Where the client connects to.
+        /// </summary>
+        public String           TransportDescription
+            => RemoteURL.ToString();
+
+        /// <summary>
+        /// The connection made last - which may have ended since.
+        /// </summary>
+        public org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketClientConnection?  WebSocketClientConnection
+            => webSocketClientConnection;
 
         /// <summary>
         /// The JSON formatting to use.
