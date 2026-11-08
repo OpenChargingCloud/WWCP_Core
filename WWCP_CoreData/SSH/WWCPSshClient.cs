@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SSH;
 using org.GraphDefined.Vanaheimr.Hermod.SSH.Client;
@@ -158,6 +159,13 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         /// </summary>
         public event OnWWCPBinaryMessageSentDelegate?      OnBinaryMessageSent;
 
+        /// <summary>
+        /// An attempt to connect failed, and is tried again or not: every one the client makes by itself -
+        /// before its first connection, and after a connection ended. The failure of <see cref="Connect"/>
+        /// itself is its caller's, and thrown.
+        /// </summary>
+        public event OnWWCPSshConnectFailedDelegate?       OnConnectFailed;
+
         #endregion
 
         #region Constructor(s)
@@ -165,7 +173,7 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         /// <summary>
         /// A client of the networking node at the other end of the given SSH subsystem.
         /// </summary>
-        /// <param name="NetworkingNode">The networking node connecting.</param>
+        /// <param name="NetworkingNode">The networking node connecting - whose DNS client resolves the server's host name where the options name none.</param>
         /// <param name="Options">Where and how to connect: host, port, login, subsystem, subprotocols, reconnects.</param>
         /// <param name="NetworkingMode">Whether messages carry their network path; standard by default.</param>
         /// <param name="ConnectAs">The networking node to connect as, where that is not the SSH login.</param>
@@ -191,11 +199,20 @@ namespace cloud.charging.open.protocols.WWCP.SSH
             if (this.NetworkingMode == WWCPNetworkingMode.OverlayNetwork)
                 hello[WWCPSshMessaging.HelloNetworkingMode]   = this.NetworkingMode.ToString();
 
+            // The node's DNS client, where the options name none: a host name is never resolved by the
+            // operating system, and a node that resolves its names securely is not dialled around them.
+            var dnsClient        = Options.Ssh.DNSClient ?? (NetworkingNode as AWWCPNetworkingNode)?.DNSClient;
+
             this.MessageClient   = new SshMessageClient(
                                        Options with {
-                                           HelloProperties = hello.Count > 0 ? hello : null
+                                           Ssh              = Options.Ssh with { DNSClient = dnsClient },
+                                           HelloProperties  = hello.Count > 0 ? hello : null
                                        }
                                    );
+
+            // After a connection ended: the message client tries again by itself, and says so here.
+            MessageClient.OnConnectFailed          += (timestamp, sender, error, attempt, nextAttemptIn, cancellationToken) =>
+                                                          RaiseConnectFailed(error, attempt, nextAttemptIn);
 
             MessageClient.OnNewConnection          += (timestamp, sender, connection, cancellationToken) => {
 
@@ -244,7 +261,7 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         #endregion
 
 
-        #region (static) OptionsFrom(RemoteURL, Ssh, Subsystem, Subprotocols = null, Reconnect = null, PingEvery = null)
+        #region (static) OptionsFrom(RemoteURL, Ssh, Subsystem, Subprotocols = null, Reconnect = null, PingEvery = null, DNSClient = null)
 
         /// <summary>
         /// Where to connect, from an "ssh://" URL: its host, its port (22 by default), and its login - which
@@ -256,13 +273,15 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         /// <param name="Subprotocols">The subprotocols to offer, by preference.</param>
         /// <param name="Reconnect">How to connect again after a connection ended; null to stay disconnected.</param>
         /// <param name="PingEvery">Every how long to send a PING; null for none.</param>
+        /// <param name="DNSClient">The DNS client the URL's host name is resolved with, where the SSH options name none.</param>
         /// <exception cref="ArgumentException">The URL is no "ssh://" URL, or names another login than the SSH options.</exception>
         public static SshMessageClientOptions OptionsFrom(URL                              RemoteURL,
                                                           SshClientOptions                 Ssh,
                                                           String                           Subsystem,
                                                           IEnumerable<String>?             Subprotocols   = null,
                                                           WebSocketClientReconnectPolicy?  Reconnect      = null,
-                                                          TimeSpan?                        PingEvery      = null)
+                                                          TimeSpan?                        PingEvery      = null,
+                                                          IDNSClient?                      DNSClient      = null)
         {
 
             if (RemoteURL.Scheme != URIScheme.ssh)
@@ -274,7 +293,7 @@ namespace cloud.charging.open.protocols.WWCP.SSH
             return new SshMessageClientOptions {
                        Host          = RemoteURL.Host.ToString(),
                        Port          = RemoteURL.Port?.ToUInt16() ?? 22,
-                       Ssh           = Ssh,
+                       Ssh           = Ssh with { DNSClient = Ssh.DNSClient ?? DNSClient },
                        Subsystem     = Subsystem,
                        Subprotocols  = Subprotocols?.ToArray() ?? [],
                        Reconnect     = Reconnect,
@@ -394,7 +413,14 @@ namespace cloud.charging.open.protocols.WWCP.SSH
 
                         DebugX.Log($"{nameof(WWCPSshClient)} {TransportDescription}: Connecting failed (attempt {attempt}): {e.Message}");
 
-                        if (Policy.MaxAttempts is UInt32 maxAttempts && attempt >= maxAttempts)
+                        var last = Policy.MaxAttempts is UInt32 maxAttempts && attempt >= maxAttempts;
+
+                        // Said, as the message client says it after a connection ended: before the first
+                        // connection, a login the server turned away was tried again and again, and nobody
+                        // heard of it.
+                        await RaiseConnectFailed(e, attempt, last ? null : Policy.DelayForAttempt(attempt + 1)).ConfigureAwait(false);
+
+                        if (last)
                             return;
 
                     }
@@ -409,6 +435,27 @@ namespace cloud.charging.open.protocols.WWCP.SSH
 
         #endregion
 
+
+        #region (private) RaiseConnectFailed(Error, Attempt, NextAttemptIn)
+
+        private Task RaiseConnectFailed(Exception  Error,
+                                        UInt32     Attempt,
+                                        TimeSpan?  NextAttemptIn)
+
+            => WWCPSshMessaging.RaiseAll(
+                   OnConnectFailed,
+                   handler => handler(
+                                  Timestamp.Now,
+                                  this,
+                                  Error,
+                                  Attempt,
+                                  NextAttemptIn,
+                                  CancellationToken.None
+                              ),
+                   nameof(WWCPSshClient)
+               );
+
+        #endregion
 
         #region SendJSONMessage   (JSONMessage,   MessageTimestamp, EventTrackingId, CancellationToken = default)
 

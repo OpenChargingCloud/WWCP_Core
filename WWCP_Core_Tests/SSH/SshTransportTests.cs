@@ -25,6 +25,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.SSH;
 using org.GraphDefined.Vanaheimr.Hermod.SSH.Client;
 using org.GraphDefined.Vanaheimr.Hermod.SSH.Server;
@@ -56,10 +57,75 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
         /// <summary>
         /// A networking node of no particular kind.
         /// </summary>
-        private sealed class Node(String Id) : AWWCPNetworkingNode(NetworkingNode_Id.Parse(Id),
-                                                                   DisableSendHeartbeats:    true,
-                                                                   DisableMaintenanceTasks:  true)
+        private sealed class Node(String Id, IDNSClient? DNSClient = null) : AWWCPNetworkingNode(NetworkingNode_Id.Parse(Id),
+                                                                                                 DisableSendHeartbeats:    true,
+                                                                                                 DisableMaintenanceTasks:  true,
+                                                                                                 DNSClient:                DNSClient)
         { }
+
+        #endregion
+
+        #region (class) LoopbackDNS
+
+        /// <summary>
+        /// A DNS client that answers every name with 127.0.0.1, and counts what it was asked: a name the
+        /// operating system does not know reaches the test's SSH server only through it.
+        /// </summary>
+        private sealed class LoopbackDNS : IDNSClient
+        {
+
+            private Int32 asked;
+
+            public Int32 Asked
+                => Volatile.Read(ref asked);
+
+            public Task<DNSInfo> Query(DomainName                           DomainName,
+                                       IEnumerable<DNSResourceRecordTypes>  ResourceRecordTypes,
+                                       TimeSpan?                            Timeout             = null,
+                                       Boolean?                             RecursionDesired    = true,
+                                       Boolean?                             ForceUpdate         = false,
+                                       CancellationToken                    CancellationToken   = default)
+
+                => Query(DNSServiceName.Parse(DomainName.FullName), ResourceRecordTypes, Timeout, RecursionDesired, ForceUpdate, CancellationToken);
+
+            public Task<DNSInfo> Query(DNSServiceName                       DNSServiceName,
+                                       IEnumerable<DNSResourceRecordTypes>  ResourceRecordTypes,
+                                       TimeSpan?                            Timeout             = null,
+                                       Boolean?                             RecursionDesired    = true,
+                                       Boolean?                             ForceUpdate         = false,
+                                       CancellationToken                    CancellationToken   = default)
+            {
+
+                Interlocked.Increment(ref asked);
+
+                return Task.FromResult(new DNSInfo(
+                           new DNSServerConfig(IPv4Address.Localhost, IPPort.Parse(53)),
+                           QueryId:                0,
+                           IsAuthoritativeAnswer:  true,
+                           IsTruncated:            false,
+                           RecursionDesired:       true,
+                           RecursionAvailable:     true,
+                           ResponseCode:           DNSResponseCodes.NoError,
+                           Answers:                ResourceRecordTypes.Contains(DNSResourceRecordTypes.A)
+                                                       ? [ new A(DNSServiceName, DNSQueryClasses.IN, TimeSpan.FromMinutes(1), IPv4Address.Localhost) ]
+                                                       : [],
+                           Authorities:            [],
+                           AdditionalRecords:      [],
+                           IsValid:                true,
+                           IsTimeout:              false,
+                           Timeout:                TimeSpan.FromSeconds(5),
+                           Runtime:                TimeSpan.Zero
+                       ));
+
+            }
+
+            public void Dispose()
+            { }
+
+            public ValueTask DisposeAsync()
+                => ValueTask.CompletedTask;
+
+        }
 
         #endregion
 
@@ -130,9 +196,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
 
         }
 
-        private Node Station(String Id)
+        private Node Station(String Id, IDNSClient? DNSClient = null)
         {
-            var station = new Node(Id);
+            var station = new Node(Id, DNSClient);
             stations.Add(station);
             return station;
         }
@@ -142,11 +208,12 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
                                      NetworkingMode?                  NetworkingMode   = null,
                                      NetworkingNode_Id?               ConnectAs        = null,
                                      JObject?                         Hello            = null,
-                                     WebSocketClientReconnectPolicy?  Reconnect        = null)
+                                     WebSocketClientReconnectPolicy?  Reconnect        = null,
+                                     String                           Host             = "127.0.0.1")
 
             => new (Station,
                     new SshMessageClientOptions {
-                        Host             = "127.0.0.1",
+                        Host             = Host,
                         Port             = port.ToUInt16(),
                         Ssh              = new SshClientOptions {
                                                Username       = Login,
@@ -453,6 +520,65 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
 
             Assert.That(sshServer!.ConnectedNetworkingNodeIds, Is.EqualTo(new[] { cs001 }));
             Assert.That(client.Connection!.NetworkingNodeIdOf(), Is.EqualTo(csmsId), "Every connection the client makes is written down.");
+
+        }
+
+        #endregion
+
+        #region AFirstConnectThatFailsSaysSoEveryTime()
+
+        /// <summary>
+        /// Every attempt a client makes by itself before its first connection that fails is said, with when
+        /// the next one is - where nobody heard of them, and a login the CSMS turned away went on being tried.
+        /// </summary>
+        [Test]
+        public async Task AFirstConnectThatFailsSaysSoEveryTime()
+        {
+
+            await listener!.DisposeAsync();
+            listener = null;
+
+            var station  = Station("CS001");
+            var client   = Client(station, "CS001", Reconnect: new WebSocketClientReconnectPolicy(InitialDelay: TimeSpan.FromMilliseconds(100), MaxDelay: TimeSpan.FromMilliseconds(200)));
+
+            var failed   = new ConcurrentQueue<(UInt32 Attempt, TimeSpan? Next)>();
+            client.OnConnectFailed += (_, _, _, attempt, next, _) => { failed.Enqueue((attempt, next)); return Task.CompletedTask; };
+
+            Assert.That(async () => await station.ConnectSshClient(client, NextHopNetworkingNodeId: csmsId), Throws.Exception);
+
+            await Until(() => failed.Count >= 2, "Two attempts by itself said");
+
+            await client.Close();
+
+            Assert.Multiple(() => {
+                Assert.That(failed.Select(one => one.Attempt).Take(2), Is.EqualTo(new UInt32[] { 1, 2 }));
+                Assert.That(failed.All(one => one.Next.HasValue), Is.True, "An attempt that is followed by another said none comes.");
+            });
+
+        }
+
+        #endregion
+
+        #region AHostNameIsResolvedWithTheNodesDNSClient()
+
+        /// <summary>
+        /// A host name is resolved with the DNS client of the node that connects - not with the resolver of
+        /// the operating system, which does not know the name at all.
+        /// </summary>
+        [Test]
+        public async Task AHostNameIsResolvedWithTheNodesDNSClient()
+        {
+
+            var dns      = new LoopbackDNS();
+            var station  = Station("CS001", dns);
+
+            // .invalid is a name no resolver of an operating system answers (RFC 6761).
+            var client   = Client(station, "CS001", Host: "csms.invalid");
+
+            await station.ConnectSshClient(client, NextHopNetworkingNodeId: csmsId);
+            await Registered(cs001);
+
+            Assert.That(dns.Asked, Is.GreaterThan(0), "The node's DNS client was not asked.");
 
         }
 

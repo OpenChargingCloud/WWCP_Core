@@ -66,6 +66,23 @@ namespace cloud.charging.open.protocols.WWCP.SSH
                                                              CancellationToken      CancellationToken);
 
     /// <summary>
+    /// An attempt of a client to connect over an SSH subsystem failed - the first connection's, or one after
+    /// the connection ended - and the client tries again, or not, as <paramref name="NextAttemptIn"/> says.
+    /// </summary>
+    /// <param name="Timestamp">When.</param>
+    /// <param name="Client">The client.</param>
+    /// <param name="Error">Why: a host key not believed, a login not taken, the subsystem refused, a server not reached.</param>
+    /// <param name="Attempt">Which attempt failed, counted from 1 since the last connection - or since the first failed.</param>
+    /// <param name="NextAttemptIn">When the next attempt is made; null where the client gives up.</param>
+    /// <param name="CancellationToken">A cancellation token.</param>
+    public delegate Task OnWWCPSshConnectFailedDelegate     (DateTimeOffset         Timestamp,
+                                                             WWCPSshClient          Client,
+                                                             Exception              Error,
+                                                             UInt32                 Attempt,
+                                                             TimeSpan?              NextAttemptIn,
+                                                             CancellationToken      CancellationToken);
+
+    /// <summary>
     /// A JSON message was received - over whatever transport.
     /// </summary>
     public delegate Task OnWWCPJSONMessageReceivedDelegate  (DateTimeOffset         Timestamp,
