@@ -74,6 +74,12 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         private   readonly ConcurrentDictionary<NetworkingNode_Id, ImmutableHashSet<NetworkingNode_Id>>  mayActFor  = [];
 
+        /// <summary>
+        /// The networking nodes that are let in with their client certificate
+        /// only, see RequireACertificateOf.
+        /// </summary>
+        private   readonly ConcurrentDictionary<NetworkingNode_Id, Byte>  certificateOnly  = [];
+
         #endregion
 
         #region Properties
@@ -433,6 +439,62 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #endregion
 
 
+        // Networking nodes that are to show their client certificate
+
+        #region RequireACertificateOf        (NetworkingNodeId)
+
+        /// <summary>
+        /// Let the given networking node in with its client certificate only -
+        /// security profile 3 - and no longer with an HTTP Basic or TOTP login
+        /// of its own, however right.
+        /// </summary>
+        /// <remarks>
+        /// One port may serve security profiles 2 and 3 side by side: with
+        /// authentication required, a client certificate the TLS handshake took
+        /// is authentication enough, and a password still is for a networking
+        /// node not named here. Named here, its password opens nothing - which
+        /// is what makes a password copied off a profile 3 station worthless.
+        /// A certificate counts whichever networking node it names, so a local
+        /// controller may still act for it with its own (AllowToActFor).
+        /// </remarks>
+        /// <param name="NetworkingNodeId">The networking node that is to show its client certificate.</param>
+        public void RequireACertificateOf(NetworkingNode_Id NetworkingNodeId)
+
+            => certificateOnly.TryAdd(NetworkingNodeId, 0);
+
+        #endregion
+
+        #region NoLongerRequireACertificateOf(NetworkingNodeId)
+
+        /// <summary>
+        /// Let the given networking node in with a password again. A connection
+        /// it has open stays open.
+        /// </summary>
+        /// <param name="NetworkingNodeId">The networking node that may use a password again.</param>
+        public void NoLongerRequireACertificateOf(NetworkingNode_Id NetworkingNodeId)
+
+            => certificateOnly.TryRemove(NetworkingNodeId, out _);
+
+        #endregion
+
+        #region MustShowACertificate         (NetworkingNodeId)
+
+        /// <summary>
+        /// Whether the given networking node is let in with its client
+        /// certificate only.
+        /// </summary>
+        /// <remarks>
+        /// Virtual, for an application that knows it otherwise - by a group of
+        /// logins, by the security profile it keeps per station.
+        /// </remarks>
+        /// <param name="NetworkingNodeId">The networking node a connection is for.</param>
+        public virtual Boolean MustShowACertificate(NetworkingNode_Id NetworkingNodeId)
+
+            => certificateOnly.ContainsKey(NetworkingNodeId);
+
+        #endregion
+
+
         // Connection management...
 
         #region (protected) ValidateTCPConnection         (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
@@ -576,6 +638,41 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
             #endregion
 
+            #region Verify that a networking node to show its certificate shows it
+
+            // Whether or not this server requires authentication: a password,
+            // however right, opens nothing for a networking node that is let in
+            // with its client certificate only (security profile 3), see
+            // RequireACertificateOf.
+            var networkingNodeId = fromPath ?? fromCredentials;
+
+            if (networkingNodeId.HasValue &&
+                MustShowACertificate(networkingNodeId.Value) &&
+                CertificateIdentityOf(Connection, httpRequest) is null)
+            {
+
+                var error = $"'{networkingNodeId.Value}' is let in with its client certificate only!";
+
+                DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket}: {error}");
+
+                return Task.FromResult<HTTPResponse?>(
+                           new HTTPResponse.Builder(httpRequest) {
+                               HTTPStatusCode  = HTTPStatusCode.Unauthorized,
+                               Server          = HTTPServiceName,
+                               Date            = Timestamp.Now,
+                               ContentType     = HTTPContentType.Application.JSON_UTF8,
+                               Content         = JSONObject.Create(
+                                                     new JProperty("description",
+                                                         JSONObject.Create(
+                                                             new JProperty("en", error)
+                                                     ))).ToUTF8Bytes(),
+                               Connection      = ConnectionType.Close
+                           }.AsImmutable);
+
+            }
+
+            #endregion
+
             #region Verify HTTP Authentication
 
             if (RequireAuthentication)
@@ -584,6 +681,18 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 // Who asked to be let in goes into the log, never with what: a password
                 // or a one-time password in a log is one for whoever reads the log -
                 // and a wrong one is often the right one mistyped, or another account's.
+
+                #region A client certificate
+
+                // Taken by the TLS handshake and checked against the path above:
+                // security profile 3, on a port that may serve profile 2 as well.
+                if (CertificateIdentityOf(Connection, httpRequest) is NetworkingNode_Id fromCertificate)
+                {
+                    DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using its client certificate: '{fromCertificate}'");
+                    return Task.FromResult<HTTPResponse?>(null);
+                }
+
+                #endregion
 
                 #region HTTP Basic Authentication
 
@@ -1060,6 +1169,48 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                                              HTTPRequest                Request)
 
             => Connection.ClientCertificate ?? Request.ClientCertificate;
+
+        #endregion
+
+        #region (private static) CertificateIdentityOf    (Connection, Request)
+
+        /// <summary>
+        /// The networking node the client certificate of the given connection
+        /// names by its common name - or null, where it has none or names none.
+        /// </summary>
+        /// <remarks>
+        /// A certificate here has been taken by the TLS handshake, whose
+        /// validator decided whether to trust it.
+        /// </remarks>
+        private static NetworkingNode_Id? CertificateIdentityOf(WebSocketServerConnection  Connection,
+                                                                HTTPRequest                Request)
+
+            => ClientCertificateOf(Connection, Request) is X509Certificate2 clientCertificate
+                   ? NetworkingNode_Id.TryParse(clientCertificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false))
+                   : null;
+
+        #endregion
+
+        #region (protected override) AuthenticateAsync    (Connection, Request, CancellationToken)
+
+        /// <summary>
+        /// Who a connection is, once the validators above let it through: the
+        /// networking node its client certificate names, and otherwise whatever
+        /// Hermod's WebSocket server knows - an HTTP Basic or a TOTP login.
+        /// </summary>
+        /// <remarks>
+        /// Asked by Hermod after the validators, where this server requires
+        /// authentication. Without this, a station with nothing but its client
+        /// certificate was answered 401 there, after the validator had let it
+        /// in.
+        /// </remarks>
+        protected override Task<String?> AuthenticateAsync(WebSocketServerConnection  Connection,
+                                                           HTTPRequest                Request,
+                                                           CancellationToken          CancellationToken)
+
+            => CertificateIdentityOf(Connection, Request) is NetworkingNode_Id fromCertificate
+                   ? Task.FromResult<String?>(fromCertificate.ToString())
+                   : base.AuthenticateAsync(Connection, Request, CancellationToken);
 
         #endregion
 
