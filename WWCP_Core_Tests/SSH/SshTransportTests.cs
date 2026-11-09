@@ -125,6 +125,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
             public ValueTask DisposeAsync()
                 => ValueTask.CompletedTask;
 
+            public override String ToString()
+                => nameof(LoopbackDNS);
+
         }
 
         #endregion
