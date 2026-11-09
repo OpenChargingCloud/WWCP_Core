@@ -180,6 +180,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                    Boolean?                                                        AllowRenegotiation               = null,
                                    Boolean?                                                        AllowTLSResume                   = null,
                                    TOTPConfig?                                                     TOTPConfig                       = null,
+                                   String?                                                         TOTPLogin                        = null,
 
                                    IPVersionPreference?                                            IPVersionPreference              = null,
                                    TimeSpan?                                                       ConnectTimeout                   = null,
@@ -230,6 +231,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                    AllowRenegotiation,
                    AllowTLSResume,
                    TOTPConfig,
+                   TOTPLogin,
 
                    IPVersionPreference,
                    ConnectTimeout,
