@@ -575,8 +575,10 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
             var dns      = new LoopbackDNS();
             var station  = Station("CS001", dns);
 
-            // .invalid is a name no resolver of an operating system answers (RFC 6761).
-            var client   = Client(station, "CS001", Host: "csms.invalid");
+            // .test is a name no resolver of an operating system answers, and one a name resolution library
+            // hands to its DNS client as any other (RFC 6761 §6.2) - unlike .invalid, which it answers itself
+            // with "no such name" and asks no DNS client for (§6.4).
+            var client   = Client(station, "CS001", Host: "csms.test");
 
             await station.ConnectSshClient(client, NextHopNetworkingNodeId: csmsId);
             await Registered(cs001);
