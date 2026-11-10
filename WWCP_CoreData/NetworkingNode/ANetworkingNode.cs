@@ -1160,12 +1160,33 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         }
 
 
+        /// <summary>
+        /// A nonce for one encrypted message to the given networking node.
+        /// </summary>
+        /// <remarks>
+        /// SecureDataTransfer encrypts with AES in counter mode, and its IV is this
+        /// nonce followed by the counter. A nonce that came round again under the
+        /// same key would give two messages the same key stream, and the XOR of
+        /// their ciphertexts would be the XOR of their plaintexts. Every message
+        /// therefore gets a random nonce of its own: under one key, two of them
+        /// are unlikely to meet before some four billion messages.
+        /// </remarks>
+        /// <param name="DestinationId">The networking node the message is for.</param>
+        /// <param name="KeyId">The key the message is encrypted with.</param>
         public UInt64 GetEncryptionNonce(NetworkingNode_Id  DestinationId,
                                          UInt16?            KeyId   = null)
-        {
-            return 1;
-        }
 
+            => BitConverter.ToUInt64(System.Security.Cryptography.RandomNumberGenerator.GetBytes(8));
+
+        /// <summary>
+        /// The counter the key stream of one encrypted message starts from.
+        /// </summary>
+        /// <remarks>
+        /// It may stay the same for every message, because the nonce in front of it
+        /// is new for each one (GetEncryptionNonce).
+        /// </remarks>
+        /// <param name="DestinationId">The networking node the message is for.</param>
+        /// <param name="KeyId">The key the message is encrypted with.</param>
         public UInt64 GetEncryptionCounter(NetworkingNode_Id  DestinationId,
                                            UInt16?            KeyId   = null)
         {

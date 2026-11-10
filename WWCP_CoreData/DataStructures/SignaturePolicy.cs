@@ -590,23 +590,49 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region (private) MatchingSigningRules(Context)
+
+        /// <summary>
+        /// The signing rules for messages of the given JSON-LD context, exactly
+        /// or by a pattern ending in "...", the rule of highest priority first.
+        /// </summary>
+        /// <param name="Context">The JSON-LD context of a message.</param>
+        private List<SigningRule> MatchingSigningRules(JSONLDContext Context)
+        {
+
+            lock (signingRules)
+            {
+                return [.. signingRules.Where            (signingRule => Context.Matches(signingRule.Context)).
+                                        OrderByDescending(signingRule => signingRule.Priority)];
+            }
+
+        }
+
+        #endregion
+
         #region GetSigningRules(...)
 
+        /// <summary>
+        /// The signing rules for messages of the given JSON-LD context, the rule
+        /// of highest priority first, or the default rule when none matches.
+        /// </summary>
+        /// <param name="Context">The JSON-LD context of a message.</param>
         public IEnumerable<SigningRule> GetSigningRules(JSONLDContext Context)
         {
 
-            var rules = signingRules.Where(signingRule => signingRule.Context == Context);
+            var rules = MatchingSigningRules(Context);
 
-            if (rules.Any())
+            if (rules.Count > 0)
                 return rules;
 
-            return new[] {
+            return [
                        new SigningRule(
                            JSONLDContext.Parse("default"),
                            0,
-                           DefaultSigningAction
+                           DefaultSigningAction,
+                           DefaultSigningKeyPair
                        )
-                   };
+                   ];
 
         }
 
@@ -618,24 +644,93 @@ namespace cloud.charging.open.protocols.WWCP
                                        out HashSet<SigningRule>  SigningRules)
         {
 
-            SigningRules = [];
+            SigningRules = [.. MatchingSigningRules(Context)];
 
-            foreach (var signingRule in signingRules)
+            return SigningRules.Count > 0;
+
+        }
+
+        #endregion
+
+        #region (private) TryGetSignInfos(SignableMessage, SignInfos, out AllSignInfos, out ErrorResponse)
+
+        /// <summary>
+        /// Which keys sign the given message, or why it must not be sent at all.
+        /// </summary>
+        /// <remarks>
+        /// The matching signing rule of highest priority decides what the policy
+        /// does with the message, and the default signing action does when no
+        /// rule matches. "Sign" signs it with the key of every matching rule that
+        /// says "Sign", or with the default key. "ForwardUnsigned" adds no key of
+        /// the policy. "Drop" and "Reject" refuse the message, also one whose
+        /// caller named keys of its own. In every other case the keys that the
+        /// caller and the message name sign as well.
+        /// </remarks>
+        /// <param name="SignableMessage">A signable message.</param>
+        /// <param name="SignInfos">The keys the caller named.</param>
+        /// <param name="AllSignInfos">Every key that signs the message.</param>
+        /// <param name="ErrorResponse">Why the message must not be sent.</param>
+        private Boolean TryGetSignInfos(ISignableMessage                  SignableMessage,
+                                        SignInfo[]?                       SignInfos,
+                                        out List<SignInfo>                AllSignInfos,
+                                        [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            AllSignInfos  = [];
+
+            var rules     = MatchingSigningRules(SignableMessage.Context);
+            var action    = rules.Count > 0
+                                ? rules[0].Action
+                                : DefaultSigningAction;
+
+            if (action == SigningRuleActions.Drop ||
+                action == SigningRuleActions.Reject)
+            {
+                ErrorResponse = $"The signature policy {(action == SigningRuleActions.Drop ? "drops" : "rejects")} '{SignableMessage.Context}' messages!";
+                return false;
+            }
+
+            if (SignInfos                 is not null)
+                AllSignInfos.AddRange(SignInfos);
+
+            if (SignableMessage.SignKeys  is not null)
+                AllSignInfos.AddRange(SignableMessage.SignKeys.Select(keyPair => keyPair.ToSignInfo1()));
+
+            if (SignableMessage.SignInfos is not null)
+                AllSignInfos.AddRange(SignableMessage.SignInfos);
+
+            if (action == SigningRuleActions.Sign)
             {
 
-                     // Exact match...
-                if ((signingRule.Context == Context) ||
-
-                     // Match with wildcard...
-                    (signingRule.Context.ToString().EndsWith("...") &&
-                     Context.Matches(signingRule.Context)))
+                if (rules.Count == 0)
                 {
-                    SigningRules.Add(signingRule);
+
+                    // The constructor refuses a default action "Sign" without a default key.
+                    if (DefaultSigningKeyPair is not null)
+                        AllSignInfos.Add(DefaultSigningKeyPair.ToSignInfo1());
+
                 }
+
+                else
+                    foreach (var rule in rules.Where(rule => rule.Action == SigningRuleActions.Sign))
+                    {
+
+                        var signInfo = rule.ToSignInfo();
+
+                        if (signInfo is null)
+                        {
+                            ErrorResponse = $"The signing rule for '{rule.Context}' has no key pair to sign with!";
+                            return false;
+                        }
+
+                        AllSignInfos.Add(signInfo);
+
+                    }
 
             }
 
-            return SigningRules.Count > 0;
+            ErrorResponse = null;
+            return true;
 
         }
 
@@ -697,106 +792,74 @@ namespace cloud.charging.open.protocols.WWCP
                 if (JSONMessage["@context"] is null)
                     JSONMessage.AddFirst(new JProperty("@context", SignableMessage.Context.ToString()));
 
-                HashSet<SigningRule>? signaturePolicyEntries = null;
+                if (!TryGetSignInfos(SignableMessage, SignInfos, out var signInfos, out ErrorResponse))
+                    return false;
 
-                if ((SignInfos                 is not null && SignInfos.                Any()) ||
-                    (SignableMessage.SignKeys  is not null && SignableMessage.SignKeys. Any()) ||
-                    (SignableMessage.SignInfos is not null && SignableMessage.SignInfos.Any()) ||
-                     HasSigningRules(SignableMessage.Context, out signaturePolicyEntries))
+                foreach (var signInfo in signInfos)
                 {
 
-                    var signInfos = new List<SignInfo>();
+                    #region Initial checks
 
-                    if (SignInfos                 is not null && SignInfos.Any())
-                        signInfos.AddRange(SignInfos);
-
-                    if (SignableMessage.SignKeys  is not null && SignableMessage.SignKeys. Any())
-                        signInfos.AddRange(SignableMessage.SignKeys.Select(keyPair => keyPair.ToSignInfo1()));
-
-                    if (SignableMessage.SignInfos is not null && SignableMessage.SignInfos.Any())
-                        signInfos.AddRange(SignableMessage.SignInfos);
-
-                    if (signaturePolicyEntries    is not null && signaturePolicyEntries.Count > 0)
+                    if (signInfo is null)
                     {
-                        foreach (var signaturePolicyEntry in signaturePolicyEntries)
-                        {
-
-                            var signInfo = signaturePolicyEntry.ToSignInfo();
-
-                            if (signInfo is not null)
-                                signInfos.Add(signInfo);
-
-                        }
+                        ErrorResponse = "The given key pair must not be null!";
+                        return false;
                     }
 
 
-                    foreach (var signInfo in signInfos)
+                    if (signInfo.PrivateKeyBytes is null || signInfo.PrivateKeyBytes.IsNullOrEmpty())
                     {
-
-                        #region Initial checks
-
-                        if (signInfo is null)
-                        {
-                            ErrorResponse = "The given key pair must not be null!";
-                            return false;
-                        }
-
-
-                        if (signInfo.PrivateKeyBytes is null || signInfo.PrivateKeyBytes.IsNullOrEmpty())
-                        {
-                            ErrorResponse = "The given key pair must contain a serialized private key!";
-                            return false;
-                        }
-
-                        if (signInfo.PublicKeyBytes  is null || signInfo.PublicKeyBytes. IsNullOrEmpty())
-                        {
-                            ErrorResponse = "The given key pair must contain a serialized public key!";
-                            return false;
-                        }
-
-
-                        if (signInfo.PrivateKey is null)
-                        {
-                            ErrorResponse = "The given key pair must contain a private key!";
-                            return false;
-                        }
-
-                        if (signInfo.PublicKey is null)
-                        {
-                            ErrorResponse = "The given key pair must contain a public key!";
-                            return false;
-                        }
-
-                        #endregion
-
-                        var plainText   = JSONMessage.ToString(Formatting.None, WWCP.SignableMessage.DefaultJSONConverters);
-
-                        var cryptoHash  = signInfo.Algorithm switch {
-                                              var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                              var s when s == CryptoAlgorithm.Secp384r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                              _                                          => SHA256.HashData(plainText.ToUTF8Bytes()),
-                                          };
-
-                        var signer       = SignerUtilities.GetSigner("NONEwithECDSA");
-                        signer.Init(true, signInfo.PrivateKey);
-                        signer.BlockUpdate(cryptoHash);
-                        var signature    = signer.GenerateSignature();
-
-                        SignableMessage.AddSignature(
-                            new Signature(
-                                //KeyId:           SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKey.GetBytes(),
-                                KeyId:           signInfo.PublicKey.Q.GetEncoded(),
-                                Value:           signature,
-                                Algorithm:       signInfo.Algorithm,
-                                SigningMethod:   null,
-                                Encoding:        signInfo.Encoding,
-                                Name:            signInfo.SignerName?. Invoke(SignableMessage),
-                                Description:     signInfo.Description?.Invoke(SignableMessage),
-                                Timestamp:       signInfo.Timestamp?.  Invoke(SignableMessage)
-                            )
-                        );
-
+                        ErrorResponse = "The given key pair must contain a serialized private key!";
+                        return false;
                     }
+
+                    if (signInfo.PublicKeyBytes  is null || signInfo.PublicKeyBytes. IsNullOrEmpty())
+                    {
+                        ErrorResponse = "The given key pair must contain a serialized public key!";
+                        return false;
+                    }
+
+
+                    if (signInfo.PrivateKey is null)
+                    {
+                        ErrorResponse = "The given key pair must contain a private key!";
+                        return false;
+                    }
+
+                    if (signInfo.PublicKey is null)
+                    {
+                        ErrorResponse = "The given key pair must contain a public key!";
+                        return false;
+                    }
+
+                    #endregion
+
+                    var plainText   = JSONMessage.ToString(Formatting.None, WWCP.SignableMessage.DefaultJSONConverters);
+
+                    var cryptoHash  = signInfo.Algorithm switch {
+                                          var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                          var s when s == CryptoAlgorithm.Secp384r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                          _                                          => SHA256.HashData(plainText.ToUTF8Bytes()),
+                                      };
+
+                    var signer       = SignerUtilities.GetSigner("NONEwithECDSA");
+                    signer.Init(true, signInfo.PrivateKey);
+                    signer.BlockUpdate(cryptoHash);
+                    var signature    = signer.GenerateSignature();
+
+                    SignableMessage.AddSignature(
+                        new Signature(
+                            //KeyId:           SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKey.GetBytes(),
+                            KeyId:           signInfo.PublicKey.Q.GetEncoded(),
+                            Value:           signature,
+                            Algorithm:       signInfo.Algorithm,
+                            SigningMethod:   null,
+                            Encoding:        signInfo.Encoding,
+                            Name:            signInfo.SignerName?. Invoke(SignableMessage),
+                            Description:     signInfo.Description?.Invoke(SignableMessage),
+                            Timestamp:       signInfo.Timestamp?.  Invoke(SignableMessage)
+                        )
+                    );
 
                 }
 
@@ -921,102 +984,70 @@ namespace cloud.charging.open.protocols.WWCP
                 //if (BinaryMessage["@context"] is null)
                 //    BinaryMessage.AddFirst(new JProperty("@context", SignableMessage.Context.ToString()));
 
-                HashSet<SigningRule>? signaturePolicyEntries = null;
+                if (!TryGetSignInfos(SignableMessage, SignInfos, out var signInfos, out ErrorResponse))
+                    return false;
 
-                if ((SignInfos                 is not null && SignInfos.                Any()) ||
-                    (SignableMessage.SignKeys  is not null && SignableMessage.SignKeys. Any()) ||
-                    (SignableMessage.SignInfos is not null && SignableMessage.SignInfos.Any()) ||
-                     HasSigningRules(SignableMessage.Context, out signaturePolicyEntries))
+                foreach (var signInfo in signInfos)
                 {
 
-                    var signInfos = new List<SignInfo>();
+                    #region Initial checks
 
-                    if (SignInfos                 is not null && SignInfos.Any())
-                        signInfos.AddRange(SignInfos);
-
-                    if (SignableMessage.SignKeys  is not null && SignableMessage.SignKeys. Any())
-                        signInfos.AddRange(SignableMessage.SignKeys.Select(keyPair => keyPair.ToSignInfo1()));
-
-                    if (SignableMessage.SignInfos is not null && SignableMessage.SignInfos.Any())
-                        signInfos.AddRange(SignableMessage.SignInfos);
-
-                    if (signaturePolicyEntries    is not null && signaturePolicyEntries.Count > 0)
+                    if (signInfo is null)
                     {
-                        foreach (var signaturePolicyEntry in signaturePolicyEntries)
-                        {
-
-                            var signInfo = signaturePolicyEntry.ToSignInfo();
-
-                            if (signInfo is not null)
-                                signInfos.Add(signInfo);
-
-                        }
+                        ErrorResponse = "The given key pair must not be null!";
+                        return false;
                     }
 
 
-                    foreach (var signInfo in signInfos)
+                    if (signInfo.PrivateKeyBytes is null || signInfo.PrivateKeyBytes.IsNullOrEmpty())
                     {
-
-                        #region Initial checks
-
-                        if (signInfo is null)
-                        {
-                            ErrorResponse = "The given key pair must not be null!";
-                            return false;
-                        }
-
-
-                        if (signInfo.PrivateKeyBytes is null || signInfo.PrivateKeyBytes.IsNullOrEmpty())
-                        {
-                            ErrorResponse = "The given key pair must contain a serialized private key!";
-                            return false;
-                        }
-
-                        if (signInfo.PublicKeyBytes  is null || signInfo.PublicKeyBytes. IsNullOrEmpty())
-                        {
-                            ErrorResponse = "The given key pair must contain a serialized public key!";
-                            return false;
-                        }
-
-
-                        if (signInfo.PrivateKey is null)
-                        {
-                            ErrorResponse = "The given key pair must contain a private key!";
-                            return false;
-                        }
-
-                        if (signInfo.PublicKey is null)
-                        {
-                            ErrorResponse = "The given key pair must contain a public key!";
-                            return false;
-                        }
-
-                        #endregion
-
-                        var cryptoHash  = signInfo.Algorithm switch {
-                                              var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(BinaryMessage),
-                                              var s when s == CryptoAlgorithm.Secp384r1  => SHA512.HashData(BinaryMessage),
-                                              _                                          => SHA256.HashData(BinaryMessage),
-                                          };
-
-                        var signer       = SignerUtilities.GetSigner("NONEwithECDSA");
-                        signer.Init(true, signInfo.PrivateKey);
-                        signer.BlockUpdate(cryptoHash);
-                        var signature    = signer.GenerateSignature();
-
-                        SignableMessage.AddSignature(
-                                            new Signature(
-                                                KeyId:           SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKeyData.GetBytes(),
-                                                Value:           signature,
-                                                Algorithm:       signInfo.Algorithm,
-                                                SigningMethod:   null,
-                                                Encoding:  signInfo.Encoding,
-                                                Name:            signInfo.SignerName?. Invoke(SignableMessage),
-                                                Description:     signInfo.Description?.Invoke(SignableMessage),
-                                                Timestamp:       signInfo.Timestamp?.  Invoke(SignableMessage)
-                                            ));
-
+                        ErrorResponse = "The given key pair must contain a serialized private key!";
+                        return false;
                     }
+
+                    if (signInfo.PublicKeyBytes  is null || signInfo.PublicKeyBytes. IsNullOrEmpty())
+                    {
+                        ErrorResponse = "The given key pair must contain a serialized public key!";
+                        return false;
+                    }
+
+
+                    if (signInfo.PrivateKey is null)
+                    {
+                        ErrorResponse = "The given key pair must contain a private key!";
+                        return false;
+                    }
+
+                    if (signInfo.PublicKey is null)
+                    {
+                        ErrorResponse = "The given key pair must contain a public key!";
+                        return false;
+                    }
+
+                    #endregion
+
+                    var cryptoHash  = signInfo.Algorithm switch {
+                                          var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(BinaryMessage),
+                                          var s when s == CryptoAlgorithm.Secp384r1  => SHA512.HashData(BinaryMessage),
+                                          _                                          => SHA256.HashData(BinaryMessage),
+                                      };
+
+                    var signer       = SignerUtilities.GetSigner("NONEwithECDSA");
+                    signer.Init(true, signInfo.PrivateKey);
+                    signer.BlockUpdate(cryptoHash);
+                    var signature    = signer.GenerateSignature();
+
+                    SignableMessage.AddSignature(
+                                        new Signature(
+                                            KeyId:           SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKeyData.GetBytes(),
+                                            Value:           signature,
+                                            Algorithm:       signInfo.Algorithm,
+                                            SigningMethod:   null,
+                                            Encoding:  signInfo.Encoding,
+                                            Name:            signInfo.SignerName?. Invoke(SignableMessage),
+                                            Description:     signInfo.Description?.Invoke(SignableMessage),
+                                            Timestamp:       signInfo.Timestamp?.  Invoke(SignableMessage)
+                                        ));
 
                 }
 
@@ -1202,13 +1233,14 @@ namespace cloud.charging.open.protocols.WWCP
             if (rules.Any())
                 return rules;
 
-            return new[] {
+            return [
                        new VerificationRule(
                            JSONLDContext.Parse("default"),
                            0,
-                           DefaultVerificationAction
+                           DefaultVerificationAction,
+                           DefaultVerificationKeyPair
                        )
-                   };
+                   ];
 
         }
 
@@ -1216,6 +1248,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetHighestVerificationRule(...)
 
+        /// <summary>
+        /// The verification rule of highest priority for messages of the given
+        /// JSON-LD context, or the default rule, with the default action and the
+        /// default verification key, when none matches.
+        /// </summary>
+        /// <param name="Context">The JSON-LD context of a message.</param>
         public VerificationRule GetHighestVerificationRule(JSONLDContext Context)
         {
 
@@ -1229,13 +1267,136 @@ namespace cloud.charging.open.protocols.WWCP
             return new VerificationRule(
                        JSONLDContext.Parse("default"),
                        0,
-                       DefaultVerificationAction
+                       DefaultVerificationAction,
+                       DefaultVerificationKeyPair
                    );
 
         }
 
         #endregion
 
+
+        #region (private) VerifySignatures(SignableMessage, SignedData, out ErrorResponse)
+
+        /// <summary>
+        /// Verify the signatures of the given message over the given data, as the
+        /// verification rule of highest priority for its JSON-LD context says.
+        /// </summary>
+        /// <remarks>
+        /// "AcceptUnverified" accepts the message whatever it carries, and "Drop"
+        /// and "Reject" refuse it. "VerifyAny" and "VerifyAll" refuse a message
+        /// that carries no signature at all, so that taking the signatures off a
+        /// message is no way past them. A rule that names a key pair accepts
+        /// signatures by that key only, and any other signer is "UnknownSigner".
+        /// A rule without a key pair checks that each signature is valid for the
+        /// key it names, and leaves it to the node's user roles to say who that
+        /// key belongs to.
+        /// </remarks>
+        /// <param name="SignableMessage">A signable/verifiable message.</param>
+        /// <param name="SignedData">What its signatures sign.</param>
+        /// <param name="ErrorResponse">Why the message is refused.</param>
+        private Boolean VerifySignatures(ISignableMessage                  SignableMessage,
+                                         Byte[]                            SignedData,
+                                         [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            var verificationRule = GetHighestVerificationRule(SignableMessage.Context);
+
+            switch (verificationRule.Action)
+            {
+
+                case VerificationRuleActions.AcceptUnverified:
+                    foreach (var signature in SignableMessage.Signatures)
+                        signature.Status = VerificationStatus.Unverified;
+                    ErrorResponse = null;
+                    return true;
+
+                case VerificationRuleActions.Drop:
+                    foreach (var signature in SignableMessage.Signatures)
+                        signature.Status = VerificationStatus.DropMessage;
+                    ErrorResponse = $"The signature policy drops '{SignableMessage.Context}' messages!";
+                    return false;
+
+                case VerificationRuleActions.Reject:
+                    foreach (var signature in SignableMessage.Signatures)
+                        signature.Status = VerificationStatus.RejectMessage;
+                    ErrorResponse = $"The signature policy rejects '{SignableMessage.Context}' messages!";
+                    return false;
+
+            }
+
+            if (!SignableMessage.Signatures.Any())
+            {
+                ErrorResponse = $"The signature policy wants '{SignableMessage.Context}' messages signed, and this one carries no signature!";
+                return false;
+            }
+
+            foreach (var signature in SignableMessage.Signatures)
+            {
+
+                if (verificationRule.KeyPair?.PublicKeyBytes is Byte[] expectedKey &&
+                   !signature.KeyId.SequenceEqual(expectedKey))
+                {
+                    signature.Status = VerificationStatus.UnknownSigner;
+                    continue;
+                }
+
+                try
+                {
+
+                    var ecp           = signature.Algorithm switch {
+                                            var s when s == CryptoAlgorithm.Secp521r1  => SecNamedCurves.GetByName("secp521r1"),
+                                            var s when s == CryptoAlgorithm.Secp384r1  => SecNamedCurves.GetByName("secp384r1"),
+                                            _                                          => SecNamedCurves.GetByName("secp256r1"),
+                                        };
+                    var ecParams      = new ECDomainParameters(ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
+                    var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId), ecParams);
+
+                    var cryptoHash    = signature.Algorithm switch {
+                                            var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(SignedData),
+                                            var s when s == CryptoAlgorithm.Secp384r1  => SHA512.HashData(SignedData),
+                                            _                                          => SHA256.HashData(SignedData),
+                                        };
+
+                    var verifier      = SignerUtilities.GetSigner("NONEwithECDSA");
+                    verifier.Init(false, pubKeyParams);
+                    verifier.BlockUpdate(cryptoHash);
+                    signature.Status  = verifier.VerifySignature(signature.Value)
+                                            ? VerificationStatus.ValidSignature
+                                            : VerificationStatus.InvalidSignature;
+
+                }
+                catch
+                {
+                    // A key that is no point on the curve, or a value that is no signature.
+                    signature.Status  = VerificationStatus.BrokenSignature;
+                }
+
+                if (verificationRule.Action == VerificationRuleActions.VerifyAny &&
+                    signature.Status        == VerificationStatus.ValidSignature)
+                {
+                    ErrorResponse = null;
+                    return true;
+                }
+
+            }
+
+            if (SignableMessage.Signatures.All(signature => signature.Status == VerificationStatus.ValidSignature))
+            {
+                ErrorResponse = null;
+                return true;
+            }
+
+            ErrorResponse = (verificationRule.Action == VerificationRuleActions.VerifyAny
+                                 ? "None of the message's signatures is valid"
+                                 : "Not every signature of the message is valid") +
+                            $": {String.Join(", ", SignableMessage.Signatures.Select(signature => signature.Status))}!";
+
+            return false;
+
+        }
+
+        #endregion
 
         #region VerifySendMessage     (SignableMessage, JSONMessage,   out ErrorResponse)
 
@@ -1250,21 +1411,6 @@ namespace cloud.charging.open.protocols.WWCP
                                          [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
-            ErrorResponse = null;
-
-            var verificationPolicyEntry = GetHighestVerificationRule(SignableMessage.Context);
-
-            if (!SignableMessage.Signatures.Any())
-            {
-
-                if (DefaultVerificationAction == VerificationRuleActions.AcceptUnverified)
-                    return true;
-
-                ErrorResponse = "The given message does not contain any signatures!";
-                return false;
-
-            }
-
             try
             {
 
@@ -1276,60 +1422,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 var plainText = jsonMessageCopy.ToString(Formatting.None, WWCP.SignableMessage.DefaultJSONConverters);
 
-                switch (verificationPolicyEntry.Action)
-                {
-
-                    case VerificationRuleActions.AcceptUnverified:
-                        foreach (var signature in SignableMessage.Signatures)
-                            signature.Status = VerificationStatus.Unverified;
-                        return true;
-
-                    case VerificationRuleActions.Drop:
-                        foreach (var signature in SignableMessage.Signatures)
-                            signature.Status = VerificationStatus.DropMessage;
-                        return true;
-
-                    case VerificationRuleActions.Reject:
-                        foreach (var signature in SignableMessage.Signatures)
-                            signature.Status = VerificationStatus.RejectMessage;
-                        return true;
-
-                }
-
-                foreach (var signature in SignableMessage.Signatures)
-                {
-
-                    var ecp           = signature.Algorithm switch {
-                                            var s when s == CryptoAlgorithm.Secp521r1  => SecNamedCurves.GetByName("secp521r1"),
-                                            var s when s == CryptoAlgorithm.Secp384r1  => SecNamedCurves.GetByName("secp384r1"),
-                                            _                                          => SecNamedCurves.GetByName("secp256r1"),
-                                        };
-                    var ecParams      = new ECDomainParameters(ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
-                    var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId), ecParams);
-
-                    var cryptoHash    = signature.Algorithm switch {
-                                            var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                            var s when s == CryptoAlgorithm.Secp384r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                            _                                          => SHA256.HashData(plainText.ToUTF8Bytes()),
-                                        };
-
-                    var verifier      = SignerUtilities.GetSigner("NONEwithECDSA");
-                    verifier.Init(false, pubKeyParams);
-                    verifier.BlockUpdate(cryptoHash);
-                    signature.Status  = verifier.VerifySignature(signature.Value)
-                                            ? VerificationStatus.ValidSignature
-                                            : VerificationStatus.InvalidSignature;
-
-                    if (verificationPolicyEntry?.Action == VerificationRuleActions.VerifyAny &&
-                        signature.Status == VerificationStatus.ValidSignature)
-                    {
-                        return true;
-                    }
-
-                }
-
-                // Default, and when there is no signature policy (entry) defined!
-                return SignableMessage.Signatures.All(signature => signature.Status == VerificationStatus.ValidSignature);
+                return VerifySignatures(
+                           SignableMessage,
+                           plainText.ToUTF8Bytes(),
+                           out ErrorResponse
+                       );
 
             }
             catch (Exception e)
@@ -1396,86 +1493,14 @@ namespace cloud.charging.open.protocols.WWCP
                                          [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
-            ErrorResponse = null;
-
-            var verificationPolicyEntry = GetHighestVerificationRule(SignableMessage.Context);
-
-            if (!SignableMessage.Signatures.Any())
-            {
-
-                if (DefaultVerificationAction == VerificationRuleActions.AcceptUnverified)
-                    return true;
-
-                ErrorResponse = "The given message does not contain any signatures!";
-                return false;
-
-            }
-
             try
             {
 
-                //if (BinaryMessage["@context"] is null)
-                //    BinaryMessage.AddFirst(new JProperty("@context", SignableMessage.Context.ToString()));
-
-                //var jsonMessageCopy  = Byte[].Parse(BinaryMessage.ToString(Formatting.None, OCPP.SignableMessage.DefaultJSONConverters));
-                //jsonMessageCopy.Remove("signatures");
-
-                //var plainText = jsonMessageCopy.ToString(Formatting.None, OCPP.SignableMessage.DefaultJSONConverters);
-
-                switch (verificationPolicyEntry.Action)
-                {
-
-                    case VerificationRuleActions.AcceptUnverified:
-                        foreach (var signature in SignableMessage.Signatures)
-                            signature.Status = VerificationStatus.Unverified;
-                        return true;
-
-                    case VerificationRuleActions.Drop:
-                        foreach (var signature in SignableMessage.Signatures)
-                            signature.Status = VerificationStatus.DropMessage;
-                        return true;
-
-                    case VerificationRuleActions.Reject:
-                        foreach (var signature in SignableMessage.Signatures)
-                            signature.Status = VerificationStatus.RejectMessage;
-                        return true;
-
-                }
-
-                foreach (var signature in SignableMessage.Signatures)
-                {
-
-                    var ecp           = signature.Algorithm switch {
-                                            var s when s == CryptoAlgorithm.Secp521r1  => SecNamedCurves.GetByName("secp521r1"),
-                                            var s when s == CryptoAlgorithm.Secp384r1  => SecNamedCurves.GetByName("secp384r1"),
-                                            _                                          => SecNamedCurves.GetByName("secp256r1"),
-                                        };
-                    var ecParams      = new ECDomainParameters(ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
-                    var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId), ecParams);
-
-                    var cryptoHash    = signature.Algorithm switch {
-                                            var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(BinaryMessage),
-                                            var s when s == CryptoAlgorithm.Secp384r1  => SHA512.HashData(BinaryMessage),
-                                            _                                          => SHA256.HashData(BinaryMessage),
-                                        };
-
-                    var verifier      = SignerUtilities.GetSigner("NONEwithECDSA");
-                    verifier.Init(false, pubKeyParams);
-                    verifier.BlockUpdate(cryptoHash);
-                    signature.Status  = verifier.VerifySignature(signature.Value)
-                                            ? VerificationStatus.ValidSignature
-                                            : VerificationStatus.InvalidSignature;
-
-                    if (verificationPolicyEntry?.Action == VerificationRuleActions.VerifyAny &&
-                        signature.Status == VerificationStatus.ValidSignature)
-                    {
-                        return true;
-                    }
-
-                }
-
-                // Default, and when there is no signature policy (entry) defined!
-                return SignableMessage.Signatures.All(signature => signature.Status == VerificationStatus.ValidSignature);
+                return VerifySignatures(
+                           SignableMessage,
+                           BinaryMessage,
+                           out ErrorResponse
+                       );
 
             }
             catch (Exception e)
