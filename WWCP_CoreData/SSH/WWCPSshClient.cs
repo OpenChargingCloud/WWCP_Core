@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.WWCP.SSH
             {
 
                 if (Interlocked.CompareExchange(ref retrying, 1, 0) == 0)
-                    _ = RetryAsync(policy);
+                    _ = RetryAsync(policy, RetryAfterOf(e));
 
                 throw;
 
@@ -385,9 +385,13 @@ namespace cloud.charging.open.protocols.WWCP.SSH
 
         /// <summary>
         /// Try to connect, as the policy says, until a connection is made - from which on the message client
-        /// itself reconnects - or the client is closed, or the policy gives up.
+        /// itself reconnects - or the client is closed, or the policy gives up. A server that refused with a
+        /// "retryAfter" - "connection-exists" - is not asked again before then.
         /// </summary>
-        private async Task RetryAsync(WebSocketClientReconnectPolicy Policy)
+        /// <param name="Policy">How often and how soon to try again.</param>
+        /// <param name="RetryAfter">How long the server that refused the first attempt said to wait, if it said.</param>
+        private async Task RetryAsync(WebSocketClientReconnectPolicy  Policy,
+                                      TimeSpan?                       RetryAfter   = null)
         {
             try
             {
@@ -396,7 +400,7 @@ namespace cloud.charging.open.protocols.WWCP.SSH
 
                     try
                     {
-                        await Task.Delay(Policy.DelayForAttempt(attempt), stopping.Token);
+                        await Task.Delay(Later(Policy.DelayForAttempt(attempt), RetryAfter), stopping.Token);
                         await MessageClient.ConnectAsync(stopping.Token);
                         return;
                     }
@@ -413,12 +417,14 @@ namespace cloud.charging.open.protocols.WWCP.SSH
 
                         DebugX.Log($"{nameof(WWCPSshClient)} {TransportDescription}: Connecting failed (attempt {attempt}): {e.Message}");
 
+                        RetryAfter = RetryAfterOf(e);
+
                         var last = Policy.MaxAttempts is UInt32 maxAttempts && attempt >= maxAttempts;
 
                         // Said, as the message client says it after a connection ended: before the first
                         // connection, a login the server turned away was tried again and again, and nobody
                         // heard of it.
-                        await RaiseConnectFailed(e, attempt, last ? null : Policy.DelayForAttempt(attempt + 1)).ConfigureAwait(false);
+                        await RaiseConnectFailed(e, attempt, last ? null : Later(Policy.DelayForAttempt(attempt + 1), RetryAfter)).ConfigureAwait(false);
 
                         if (last)
                             return;
@@ -435,6 +441,27 @@ namespace cloud.charging.open.protocols.WWCP.SSH
 
         #endregion
 
+
+        #region (private static) RetryAfterOf(Error) / Later(Delay, RetryAfter)
+
+        /// <summary>
+        /// How long a server that refused the HELLO said to wait - or null, where it was no such refusal.
+        /// </summary>
+        private static TimeSpan? RetryAfterOf(Exception Error)
+
+            => (Error as SshMessageRefusedException ?? Error.GetBaseException() as SshMessageRefusedException)?.RetryAfter;
+
+        /// <summary>
+        /// The later of the policy's delay and the server's retryAfter.
+        /// </summary>
+        private static TimeSpan Later(TimeSpan   Delay,
+                                      TimeSpan?  RetryAfter)
+
+            => RetryAfter is TimeSpan after && after > Delay
+                   ? after
+                   : Delay;
+
+        #endregion
 
         #region (private) RaiseConnectFailed(Error, Attempt, NextAttemptIn)
 
