@@ -521,6 +521,44 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         #endregion
 
+        #region RemoveStaticRouting          (Client)
+
+        /// <summary>
+        /// Take away every route that leads through the given client, whatever its
+        /// destination: the client's connection has ended.
+        /// </summary>
+        /// <remarks>
+        /// Only the routes of this client. Another connection to the same
+        /// destination, through another client or a server, keeps its route.
+        /// </remarks>
+        /// <param name="Client">The client whose connection has ended.</param>
+        public void RemoveStaticRouting(IWWCPClient Client)
+        {
+
+            foreach (var destinationId in reachableNetworkingNodes.Keys)
+            {
+
+                while (reachableNetworkingNodes.TryGetValue(destinationId, out var reachabilityList) &&
+                       reachabilityList is not null &&
+                       reachabilityList.Any(reachability => ReferenceEquals(reachability.Client, Client)))
+                {
+
+                    // For thread-safety: replaced only where nobody changed it meanwhile.
+                    var remaining = reachabilityList.Where(reachability => !ReferenceEquals(reachability.Client, Client)).ToList();
+
+                    if (remaining.Count > 0
+                            ? reachableNetworkingNodes.TryUpdate(destinationId, remaining, reachabilityList)
+                            : reachableNetworkingNodes.TryRemove(new KeyValuePair<NetworkingNode_Id, List<Reachability>>(destinationId, reachabilityList)))
+                        break;
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
 
 
         public JArray ToJSON()

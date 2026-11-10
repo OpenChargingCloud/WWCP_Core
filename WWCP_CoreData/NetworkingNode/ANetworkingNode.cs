@@ -628,6 +628,22 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
             };
 
+            // And taken away again when the connection ends: by a close frame, by a
+            // socket closed underneath or by pings no longer answered - all of which
+            // the client reports as a close received - or because this node hung up.
+            // A route left behind handed messages to a client with nowhere to send
+            // them, and with two connections to one name it could outlive the one
+            // that is still there. The next connection writes it down anew.
+            wwcpWebSocketClient.OnCloseMessageReceived += (timestamp, client, connection, frame, eventTrackingId, statusCode, reason, cancellationToken) => {
+                Routing.RemoveStaticRouting(wwcpWebSocketClient);
+                return Task.CompletedTask;
+            };
+
+            wwcpWebSocketClient.OnCloseMessageSent     += (timestamp, client, connection, frame, eventTrackingId, statusCode, reason, sentStatus, cancellationToken) => {
+                Routing.RemoveStaticRouting(wwcpWebSocketClient);
+                return Task.CompletedTask;
+            };
+
             var connectResponse = await wwcpWebSocketClient.Connect(
                                             EventTrackingId:      EventTrackingId ?? EventTracking_Id.New,
                                             RequestTimeout:       wwcpWebSocketClient.RequestTimeout,
@@ -701,6 +717,12 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                 return Task.CompletedTask;
 
+            };
+
+            // Taken away again when the connection ends, as over a WebSocket.
+            SshClient.OnConnectionClosed += (timestamp, transport, connection, networkingNodeId, close, cancellationToken) => {
+                Routing.RemoveStaticRouting(SshClient);
+                return Task.CompletedTask;
             };
 
             return SshClient.Connect(CancellationToken);
