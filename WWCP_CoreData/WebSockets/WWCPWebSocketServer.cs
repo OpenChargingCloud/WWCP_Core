@@ -124,6 +124,29 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         public String                          TransportDescription
             => IPSocket.ToString();
 
+        /// <summary>
+        /// Whether the given client certificate was let through the TLS
+        /// handshake by the key pin of its key rather than by a chain - and so
+        /// names no networking node: the networking node of its connection is
+        /// the one of its path, and the application that pinned the key says
+        /// whether the key may connect as it. Null, the default, for a server
+        /// that pins no keys: every client certificate names the networking node
+        /// of its common name, as before.
+        /// </summary>
+        /// <remarks>
+        /// A key pin vouches for a key and for nothing that is written around
+        /// it. Anybody can wrap a pinned key into a certificate of their own
+        /// making with any common name at all, so a common name read from such
+        /// a certificate would let the key of one charging station connect as
+        /// another - and would turn its own station away with a 403 for a path
+        /// that is its own. A certificate accepted by its key pin contributes
+        /// its key pin and nothing else (EVQI Transport, key pins, 5.4).
+        ///
+        /// Asked whenever the identity of a connection is worked out: before
+        /// the 101, when it is registered, and when it is authenticated.
+        /// </remarks>
+        public Func<X509Certificate2, Boolean>? AcceptedByKeyPin    { get; set; }
+
         #endregion
 
         #region Events
@@ -646,9 +669,12 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             // RequireACertificateOf.
             var networkingNodeId = fromPath ?? fromCredentials;
 
+            // A certificate let in by its key pin is shown as well, although it
+            // names nobody: whose key it is, is the pinning application's to say.
             if (networkingNodeId.HasValue &&
                 MustShowACertificate(networkingNodeId.Value) &&
-                CertificateIdentityOf(Connection, httpRequest) is null)
+                CertificateIdentityOf(Connection, httpRequest) is null &&
+                !IsKeyPinned(ClientCertificateOf(Connection, httpRequest)))
             {
 
                 var error = $"'{networkingNodeId.Value}' is let in with its client certificate only!";
@@ -1172,20 +1198,35 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #endregion
 
-        #region (private static) CertificateIdentityOf    (Connection, Request)
+        #region (private) IsKeyPinned                     (Certificate)
+
+        /// <summary>
+        /// Whether the given client certificate was let in by its key pin, and
+        /// so names no networking node - see <see cref="AcceptedByKeyPin"/>.
+        /// </summary>
+        private Boolean IsKeyPinned(X509Certificate2? Certificate)
+
+            => Certificate is not null &&
+               AcceptedByKeyPin?.Invoke(Certificate) == true;
+
+        #endregion
+
+        #region (private) CertificateIdentityOf           (Connection, Request)
 
         /// <summary>
         /// The networking node the client certificate of the given connection
-        /// names by its common name - or null, where it has none or names none.
+        /// names by its common name - or null, where it has none, names none,
+        /// or was let in by its key pin.
         /// </summary>
         /// <remarks>
         /// A certificate here has been taken by the TLS handshake, whose
         /// validator decided whether to trust it.
         /// </remarks>
-        private static NetworkingNode_Id? CertificateIdentityOf(WebSocketServerConnection  Connection,
-                                                                HTTPRequest                Request)
+        private NetworkingNode_Id? CertificateIdentityOf(WebSocketServerConnection  Connection,
+                                                         HTTPRequest                Request)
 
-            => ClientCertificateOf(Connection, Request) is X509Certificate2 clientCertificate
+            => ClientCertificateOf(Connection, Request) is X509Certificate2 clientCertificate &&
+               !IsKeyPinned(clientCertificate)
                    ? NetworkingNode_Id.TryParse(clientCertificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false))
                    : null;
 
@@ -1202,7 +1243,9 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// Asked by Hermod after the validators, where this server requires
         /// authentication. Without this, a station with nothing but its client
         /// certificate was answered 401 there, after the validator had let it
-        /// in.
+        /// in. A certificate let in by its key pin names nobody here, see
+        /// <see cref="AcceptedByKeyPin"/>: which networking node its key may be
+        /// is the pinning application's to decide.
         /// </remarks>
         protected override Task<String?> AuthenticateAsync(WebSocketServerConnection  Connection,
                                                            HTTPRequest                Request,
@@ -1214,27 +1257,24 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #endregion
 
-        #region (private static) IdentitiesOf             (Connection, Request)
+        #region (private) IdentitiesOf                    (Connection, Request)
 
         /// <summary>
         /// The networking node named by the last segment of the path of the given
         /// request, and the one named by its credentials: the common name of the
-        /// client certificate of its connection, else its HTTP Basic username,
+        /// client certificate of its connection - unless the certificate was let
+        /// in by its key pin, which names nobody - else its HTTP Basic username,
         /// else its TOTP login.
         /// </summary>
-        private static (NetworkingNode_Id? FromPath, NetworkingNode_Id? FromCredentials) IdentitiesOf(WebSocketServerConnection  Connection,
-                                                                                                      HTTPRequest                Request)
+        private (NetworkingNode_Id? FromPath, NetworkingNode_Id? FromCredentials) IdentitiesOf(WebSocketServerConnection  Connection,
+                                                                                               HTTPRequest                Request)
         {
 
             // Percent-decoded, segment by segment, by the time it is here.
             var path             = Request.Path.ToString();
             var fromPath         = NetworkingNode_Id.TryParse(path[(path.LastIndexOf('/') + 1)..]);
 
-            var clientCertificate  = ClientCertificateOf(Connection, Request);
-
-            var fromCredentials  = clientCertificate is not null
-                                       ? NetworkingNode_Id.TryParse(clientCertificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false))
-                                       : null;
+            var fromCredentials  = CertificateIdentityOf(Connection, Request);
 
             fromCredentials    ??= Request.Authorization switch {
                                        HTTPBasicAuthentication basicAuthentication  => NetworkingNode_Id.TryParse(basicAuthentication.Username),
@@ -1255,19 +1295,15 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// given request is named by to be right: a client certificate, which the
         /// TLS handshake has validated, or an HTTP Basic or TOTP login of its own
         /// ClientLogins or ClientTOTPConfig - whether or not it requires
-        /// authentication itself.
+        /// authentication itself. A certificate let in by its key pin is not
+        /// among them: it names nobody whose credentials it could be.
         /// </summary>
         private Boolean KnowsTheCredentialsOf(WebSocketServerConnection  Connection,
                                               HTTPRequest                Request)
         {
 
-            var clientCertificate = ClientCertificateOf(Connection, Request);
-
-            if (clientCertificate is not null &&
-                NetworkingNode_Id.TryParse(clientCertificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false)).HasValue)
-            {
+            if (CertificateIdentityOf(Connection, Request).HasValue)
                 return true;
-            }
 
             return Request.Authorization switch {
 

@@ -269,6 +269,99 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         #endregion
 
 
+        #region ACertificateLetInByItsKeyPinNamesNobody()
+
+        /// <summary>
+        /// A certificate the server let in by the key pin of its key names no
+        /// networking node: the certificate of CS002, pinned, connects on the
+        /// path of CS001 as CS001 - whose key it is, is the pinning
+        /// application's to say - where without the pin it would be refused
+        /// as CS002 asking to be CS001 (EVQI Transport, key pins, 5.4).
+        /// </summary>
+        [Test]
+        public async Task ACertificateLetInByItsKeyPinNamesNobody()
+        {
+
+            await Start();
+
+            server!.AcceptedByKeyPin = PinnedIs(CS002);
+
+            using var client      = await Upgrade($"/{CS001}", CS002);
+            var       connection  = server.ConnectedNetworkingNodes.SingleOrDefault()?.WebSocketServerConnections.SingleOrDefault();
+
+            Assert.Multiple(() => {
+                Assert.That(client.StatusCode,                 Is.EqualTo(101));
+                Assert.That(server.ConnectedNetworkingNodeIds, Is.EqualTo(new[] { CS001 }));
+                Assert.That(connection?.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.ActingNetworkingNodeId), Is.Null,
+                            "the pinned certificate's name was taken for somebody acting for the path");
+            });
+
+        }
+
+        #endregion
+
+        #region APinnedCertificateNamesNoNodeOfAPathWithoutAName()
+
+        /// <summary>
+        /// Without a name in the path, a pinned certificate does not supply one
+        /// either: the connection says which networking node it is nowhere, and
+        /// is not registered.
+        /// </summary>
+        [Test]
+        public async Task APinnedCertificateNamesNoNodeOfAPathWithoutAName()
+        {
+
+            await Start();
+
+            server!.AcceptedByKeyPin = PinnedIs(LC001);
+
+            using var client = await Upgrade("/", LC001);
+
+            Assert.That(server.ConnectedNetworkingNodeIds, Is.Empty);
+
+        }
+
+        #endregion
+
+        #region ACertificateNotLetInByAPinStillNamesItsNode()
+
+        /// <summary>
+        /// Only the certificates the server says it let in by their pins name
+        /// nobody: CS001's certificate, not pinned, is still CS001's, and opens
+        /// no connection as CS002.
+        /// </summary>
+        [Test]
+        public async Task ACertificateNotLetInByAPinStillNamesItsNode()
+        {
+
+            await Start();
+
+            server!.AcceptedByKeyPin = PinnedIs(CS002);
+
+            using var client = await Upgrade($"/{CS002}", CS001);
+
+            Assert.Multiple(() => {
+                Assert.That(client.StatusCode,                 Is.EqualTo(403));
+                Assert.That(server.ConnectedNetworkingNodeIds, Is.Empty);
+            });
+
+        }
+
+        #endregion
+
+        #region (private) PinnedIs(NetworkingNodeId)
+
+        /// <summary>
+        /// What a server that pins keys says of a certificate: here, that the
+        /// one of the given networking node was let in by its key pin.
+        /// </summary>
+        private Func<X509Certificate2, Boolean> PinnedIs(NetworkingNode_Id NetworkingNodeId)
+
+            => certificate => certificate.GetCertHashString() == clientCertificates[NetworkingNodeId].GetCertHashString();
+
+        #endregion
+
+
         #region (private) Start()
 
         private async Task Start()
