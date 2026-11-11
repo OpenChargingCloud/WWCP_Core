@@ -201,6 +201,39 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.Signatures
 
         #endregion
 
+        #region ADecimalIsWrittenAsTheDoubleItStandsFor(Text, Expected)
+
+        /// <summary>
+        /// A signer may hold a number as a decimal, its peer reads the same text as a double.
+        /// RFC 8785 writes both as the double they stand for. On .NET 11 a conversion from
+        /// double to decimal is exact (11.9 becomes 11.900000000000000355...); the canonical
+        /// form goes from decimal to double, which stays the nearest double.
+        /// </summary>
+        [TestCase("11.9",  "11.9")]
+        [TestCase("4.50",  "4.5")]
+        [TestCase("0.1",   "0.1")]
+        [TestCase("1E-7",  "1e-7")]
+        [TestCase("-12.5", "-12.5")]
+        public void ADecimalIsWrittenAsTheDoubleItStandsFor(String Text, String Expected)
+        {
+
+            var asDecimal  = Decimal.Parse(Text, NumberStyles.Float, CultureInfo.InvariantCulture);
+            var asDouble   = Double. Parse(Text, NumberStyles.Float, CultureInfo.InvariantCulture);
+
+            using var reader = new JsonTextReader(new StringReader(Text)) { FloatParseHandling = FloatParseHandling.Decimal };
+            var readAsDecimal = JToken.Load(reader);
+
+            Assert.Multiple(() => {
+                Assert.That(JSONCanonicalization.Canonicalize(new JValue(asDecimal)), Is.EqualTo(Expected));
+                Assert.That(JSONCanonicalization.Canonicalize(new JValue(asDouble)),  Is.EqualTo(Expected));
+                Assert.That(JSONCanonicalization.Canonicalize(readAsDecimal),         Is.EqualTo(Expected));
+                Assert.That(JSONCanonicalization.Canonicalize(Read(Text)),            Is.EqualTo(Expected));
+            });
+
+        }
+
+        #endregion
+
         #region NaNAndInfinityAreRefused()
 
         [Test]
