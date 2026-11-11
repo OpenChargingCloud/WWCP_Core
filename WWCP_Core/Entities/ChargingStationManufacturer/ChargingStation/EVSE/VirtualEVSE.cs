@@ -3504,7 +3504,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             __ChargingSession.SessionTime.EndTime = now;
                             var duration             = now - __ChargingSession.SessionTime.StartTime;
                             var consumption          = MaxPower.HasValue
-                                                           ? WattHour.FromWh(Math.Round(((Decimal) duration.TotalHours) * MaxPower.Value.Value, 2))
+                                                           ? WattHour.FromWh(Math.Round(duration.TotalHours.AsDecimal() * MaxPower.Value.Value, 2))
                                                            : WattHour.Zero;
 
                             __ChargingSession.AddEnergyMeterValue(

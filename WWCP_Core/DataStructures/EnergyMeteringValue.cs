@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Parse WattHours     [mandatory]
 
-                var valueDecimal = JSON["value"]?.Value<Decimal>() ?? 0.0M;
+                var valueDecimal = JSON["value"]?.AsDecimal() ?? 0.0M;
 
                 if (!WattHour.TryFromKWh(valueDecimal, out var value))
                 {

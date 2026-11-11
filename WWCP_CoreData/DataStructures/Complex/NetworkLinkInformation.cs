@@ -186,8 +186,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                 if (capacityArray is not null)
                 {
 
-                    var v = capacityArray[0].Value<Decimal>();
-                    var s = capacityArray[1].Value<Decimal>();
+                    var v = capacityArray[0].AsDecimal();
+                    var s = capacityArray[1].AsDecimal();
 
                     Capacity = StdDev<BitPerSecond>.From(
                                    BitPerSecond.FromBPS(v),
@@ -647,8 +647,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                 if (capacityArray is not null)
                 {
 
-                    var v = capacityArray[0].Value<Decimal>();
-                    var s = capacityArray[1].Value<Decimal>();
+                    var v = capacityArray[0].AsDecimal();
+                    var s = capacityArray[1].AsDecimal();
 
                     Capacity = StdDev<BitPerSecond>.From(
                                    BitPerSecond.FromBPS(v),
