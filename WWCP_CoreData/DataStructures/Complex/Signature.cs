@@ -91,6 +91,30 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public VerificationStatus?  Status            { get; set; }
 
+
+        /// <summary>
+        /// The protected header of a JWS signature as it was sent: base64url of its JSON.
+        /// Null for a signature of format 0.
+        /// </summary>
+        public String?              Protected         { get; }
+
+        /// <summary>
+        /// The protected header of a JWS signature, decoded.
+        /// </summary>
+        public JObject?             ProtectedHeader   { get; }
+
+        /// <summary>
+        /// The unprotected header of a JWS signature, e.g. the signer's public key as "jwk".
+        /// </summary>
+        public JObject?             Header            { get; }
+
+        /// <summary>
+        /// Whether this is a JWS signature with a protected header (white paper "Signed OCPP
+        /// Messages and Signer Roles", section 4.2), rather than one of format 0.
+        /// </summary>
+        public Boolean              IsJWS
+            => Protected is not null;
+
         #endregion
 
         #region Constructor(s)
@@ -143,6 +167,51 @@ namespace cloud.charging.open.protocols.WWCP
                           (Timestamp?.   GetHashCode() ?? 0) *  3 ^
                            base.         GetHashCode();
 
+            }
+
+        }
+
+
+        /// <summary>
+        /// Create a new JWS signature with a protected header.
+        /// </summary>
+        /// <param name="Protected">The protected header as sent: base64url of its JSON.</param>
+        /// <param name="ProtectedHeader">The protected header, decoded.</param>
+        /// <param name="Header">The optional unprotected header, e.g. with the public key as "jwk".</param>
+        /// <param name="Value">The signature value (for ECDSA: r‖s).</param>
+        /// <param name="KeyId">The signer's public key as a raw point, when the header carries it; otherwise empty.</param>
+        /// <param name="Algorithm">The curve of the algorithm in the header.</param>
+        /// <param name="Name">The signer's name from the protected header.</param>
+        /// <param name="Description">The signer's description from the protected header.</param>
+        /// <param name="Timestamp">The signing time ("iat") from the protected header.</param>
+        public Signature(String           Protected,
+                         JObject          ProtectedHeader,
+                         JObject?         Header,
+                         Byte[]           Value,
+                         Byte[]           KeyId,
+                         CryptoAlgorithm  Algorithm,
+                         String?          Name          = null,
+                         I18NString?      Description   = null,
+                         DateTimeOffset?  Timestamp     = null)
+
+            : this(KeyId,
+                   Value,
+                   Algorithm,
+                   null,
+                   null,
+                   Name,
+                   Description,
+                   Timestamp)
+
+        {
+
+            this.Protected        = Protected;
+            this.ProtectedHeader  = ProtectedHeader;
+            this.Header           = Header;
+
+            unchecked
+            {
+                hashCode = hashCode * 29 ^ Protected.GetHashCode();
             }
 
         }
@@ -250,6 +319,20 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 Signature = default;
+
+                if (JSON.ContainsKey("protected"))
+                {
+
+                    if (!TryParseJWS(JSON, out Signature, out ErrorResponse))
+                        return false;
+
+                    if (CustomSignatureParser is not null)
+                        Signature = CustomSignatureParser(JSON,
+                                                          Signature);
+
+                    return true;
+
+                }
 
                 #region KeyId             [mandatory]
 
@@ -398,6 +481,107 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region (private static) TryParseJWS(JSON, out Signature, out ErrorResponse)
+
+        /// <summary>
+        /// Read a signature of the general JWS JSON serialization: { "protected", "header", "signature" }.
+        /// </summary>
+        private static Boolean TryParseJWS(JObject                              JSON,
+                                           [NotNullWhen(true)]  out Signature?  Signature,
+                                           [NotNullWhen(false)] out String?     ErrorResponse)
+        {
+
+            Signature = null;
+
+            if (JSON["protected"]?.Type != JTokenType.String ||
+                JSON["protected"]!.Value<String>() is not String protectedText ||
+                !JWS.TryDecodeBase64URL(protectedText, out var protectedBytes))
+            {
+                ErrorResponse = "The protected header of the signature is not base64url!";
+                return false;
+            }
+
+            JObject protectedHeader;
+
+            try
+            {
+                using var reader = new Newtonsoft.Json.JsonTextReader(new StringReader(System.Text.Encoding.UTF8.GetString(protectedBytes))) {
+                                       DateParseHandling = Newtonsoft.Json.DateParseHandling.None
+                                   };
+                protectedHeader = JObject.Load(reader);
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = "The protected header of the signature is no JSON object: " + e.Message;
+                return false;
+            }
+
+            if (JSON["signature"]?.Type != JTokenType.String ||
+                !JWS.TryDecodeBase64URL(JSON["signature"]!.Value<String>(), out var value))
+            {
+                ErrorResponse = "The signature value is not base64url!";
+                return false;
+            }
+
+            var header = JSON["header"] as JObject;
+
+            if (JSON["header"] is not null && header is null)
+            {
+                ErrorResponse = "The unprotected header of the signature is no JSON object!";
+                return false;
+            }
+
+            var algorithm = protectedHeader["alg"]?.Value<String>() switch {
+                                JWS.ES256 => CryptoAlgorithm.Secp256r1,
+                                JWS.ES384 => CryptoAlgorithm.Secp384r1,
+                                JWS.ES512 => CryptoAlgorithm.Secp521r1,
+                                _         => (CryptoAlgorithm?) null
+                            };
+
+            if (algorithm is null)
+            {
+                ErrorResponse = $"The signature algorithm '{protectedHeader["alg"]}' is unknown!";
+                return false;
+            }
+
+            // The signer's public key, when the header carries it, as the raw point a key pair holds.
+            var keyId = header?["jwk"] is JObject jwk && JWS.TryParsePublicKey(jwk, out var publicKey)
+                            ? publicKey!.Q.GetEncoded(false)
+                            : [];
+
+            var timestamp = protectedHeader["iat"]?.Type == JTokenType.Integer
+                                ? DateTimeOffset.FromUnixTimeSeconds(protectedHeader["iat"]!.Value<Int64>())
+                                : (DateTimeOffset?) null;
+
+            if (protectedHeader.ParseOptional("OCPPSignerDescription",
+                                              "signer description",
+                                              I18NString.TryParse,
+                                              out I18NString? description,
+                                              out ErrorResponse))
+            {
+                if (ErrorResponse is not null)
+                    return false;
+            }
+
+            Signature = new Signature(
+                            protectedText,
+                            protectedHeader,
+                            header,
+                            value,
+                            keyId,
+                            algorithm.Value,
+                            protectedHeader["OCPPSignerName"]?.Value<String>(),
+                            description,
+                            timestamp
+                        );
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
+
         #region (static) TryParse(Binary, out Signature, out ErrorResponse, CustomSignatureParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
@@ -479,6 +663,27 @@ namespace cloud.charging.open.protocols.WWCP
         public JObject ToJSON(CustomJObjectSerializerDelegate<Signature>?   CustomSignatureSerializer    = null,
                               CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
+
+            if (IsJWS)
+            {
+
+                var jws = JSONObject.Create(
+
+                                    new JProperty("protected",  Protected),
+
+                              Header is not null
+                                  ? new JProperty("header",     Header.DeepClone())
+                                  : null,
+
+                                    new JProperty("signature",  JWS.Base64URL(Value))
+
+                          );
+
+                return CustomSignatureSerializer is not null
+                           ? CustomSignatureSerializer(this, jws)
+                           : jws;
+
+            }
 
             var json = JSONObject.Create(
 
@@ -567,7 +772,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Signature Clone()
 
-            => new (
+            => IsJWS
+
+                   ? new (
+                         Protected!,
+                         (JObject) ProtectedHeader!.DeepClone(),
+                         (JObject?) Header?.DeepClone(),
+                         (Byte[]) Value.Clone(),
+                         (Byte[]) KeyId.Clone(),
+                         Algorithm.Clone(),
+                         Name,
+                         Description,
+                         Timestamp
+                     )
+
+                   : new (
 
                    (Byte[]) KeyId.Clone(),
                    (Byte[]) Value.Clone(),
@@ -658,6 +877,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                KeyId.SequenceEqual(Signature.KeyId) &&
                Value.SequenceEqual(Signature.Value) &&
+               Protected == Signature.Protected     &&
 
                Algorithm.    Equals(Signature.Algorithm)     &&
                SigningMethod.Equals(Signature.SigningMethod) &&

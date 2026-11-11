@@ -46,6 +46,17 @@ namespace cloud.charging.open.protocols.WWCP
         [Mandatory]
         TimeSpan        Runtime              { get; }
 
+        /// <summary>
+        /// The request this response answers, where the response knows it.
+        /// </summary>
+        /// <remarks>
+        /// A signature over a response names the action and the message id of its
+        /// request and the hash of the request's signatures (OCPPRequestHash), so
+        /// that a signed response cannot answer another request.
+        /// </remarks>
+        IRequest?       RequestMessage
+            => null;
+
     }
 
 

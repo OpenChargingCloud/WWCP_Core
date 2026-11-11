@@ -73,7 +73,30 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The signer of the signature is not trusted for this message.
         /// </summary>
-        InvalidSigner
+        InvalidSigner,
+
+        /// <summary>
+        /// The signature is valid, but its protected header names another frame:
+        /// another protocol version, message type, action, message id or destination,
+        /// or a response to another request.
+        /// </summary>
+        WrongFrame,
+
+        /// <summary>
+        /// The signature was made too far in the future, or its validity has passed.
+        /// </summary>
+        OutOfTime,
+
+        /// <summary>
+        /// The signature was seen before within its validity: the message is a replay.
+        /// </summary>
+        Replayed,
+
+        /// <summary>
+        /// The signature is of format 0, which does not bind the frame, and the
+        /// signature policy does not accept it.
+        /// </summary>
+        Format0NotAccepted
 
 
     }

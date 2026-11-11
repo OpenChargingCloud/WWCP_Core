@@ -30,6 +30,8 @@ using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
@@ -755,6 +757,540 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region The protected header (white paper "Signed OCPP Messages and Signer Roles", chapter 4)
+
+        #region Binding, time and format 0
+
+        private readonly Object bindLock = new();
+
+        /// <summary>
+        /// The node this policy signs and verifies for: its OCPPSource when it signs.
+        /// Set by the node's OCPP adapter (BindTo).
+        /// </summary>
+        public NetworkingNode_Id?     NodeId             { get; private set; }
+
+        /// <summary>
+        /// The protocol the node speaks, as its WebSocket subprotocol ("ocpp2.1", "ocpp1.6"):
+        /// its OCPPVersion when it signs, and what a verified header must name.
+        /// </summary>
+        public String?                OCPPVersion        { get; private set; }
+
+        /// <summary>
+        /// Whether signatures of format 0 - which bind neither the frame nor a time - are
+        /// checked at all. Even then they count as unverified, never as valid (section 4.2).
+        /// </summary>
+        public Boolean                AcceptFormat0      { get; set; }  = false;
+
+        /// <summary>
+        /// How far in the future a signature's "iat" may lie. Default 300 seconds.
+        /// </summary>
+        public TimeSpan               MaxClockSkew       { get; set; }  = TimeSpan.FromSeconds(300);
+
+        /// <summary>
+        /// How long a signature without "exp" is valid after its "iat". Default 900 seconds.
+        /// </summary>
+        public TimeSpan               MaxSignatureAge    { get; set; }  = TimeSpan.FromSeconds(900);
+
+        /// <summary>
+        /// The clock of signing and verifying. Replaceable for tests.
+        /// </summary>
+        public Func<DateTimeOffset>   Now                { get; set; }  = () => DateTimeOffset.UtcNow;
+
+        /// <summary>
+        /// Sign with OCPPMessageId "*" and a nonce of the signer's own (OCPPNonce) instead of
+        /// the message id (section 4.3, Q3). For nodes whose messages pass a relay that sends
+        /// them on under ids of its own, as a Local Controller does: the message id the
+        /// signer knows is not the one the receiver sees. A response is then bound to its
+        /// request by OCPPRequestHash alone, so this suits signed requests.
+        /// </summary>
+        public Boolean                NonceInsteadOfMessageId   { get; set; }  = false;
+
+
+        /// <summary>
+        /// Bind this policy to its node. A policy belongs to one node: binding it to
+        /// a second one would sign that node's messages in the first one's name.
+        /// </summary>
+        /// <param name="NodeId">The node's identification.</param>
+        /// <param name="OCPPVersion">The protocol the node speaks, e.g. "ocpp2.1".</param>
+        /// <exception cref="InvalidOperationException">The policy belongs to another node.</exception>
+        public SignaturePolicy BindTo(NetworkingNode_Id  NodeId,
+                                      String             OCPPVersion)
+        {
+
+            lock (bindLock)
+            {
+
+                if (this.NodeId.HasValue && this.NodeId.Value != NodeId)
+                    throw new InvalidOperationException($"This signature policy belongs to the node '{this.NodeId}' already, not to '{NodeId}'!");
+
+                this.NodeId       = NodeId;
+                this.OCPPVersion  = OCPPVersion;
+
+            }
+
+            return this;
+
+        }
+
+        #endregion
+
+        #region (private) Frame and FrameOf(Message)
+
+        /// <summary>
+        /// What a signature binds of the frame that carries the message.
+        /// </summary>
+        /// <param name="MessageTypeId">2 (CALL), 3 (CALLRESULT) or 6 (SEND).</param>
+        /// <param name="Action">The action; for a response that of its request.</param>
+        /// <param name="MessageId">The message id; for a response that of its request.</param>
+        /// <param name="Destination">The node the message is for: of a request or SEND its destination, of a response the node that sent the request.</param>
+        /// <param name="Request">For a response: the request it answers.</param>
+        private sealed record Frame(Byte                MessageTypeId,
+                                    String              Action,
+                                    String              MessageId,
+                                    NetworkingNode_Id?  Destination,
+                                    IRequest?           Request);
+
+        private static NetworkingNode_Id? Target(SourceRouting? Destination)
+        {
+            var target = Destination?.LastOrDefault();
+            return target.HasValue && target.Value != NetworkingNode_Id.Zero ? target : null;
+        }
+
+        private static NetworkingNode_Id? Origin(NetworkPath? NetworkPath)
+        {
+            try
+            {
+                var source = NetworkPath?.Source;
+                return source.HasValue && source.Value != NetworkingNode_Id.Zero ? source : null;
+            }
+            catch
+            {
+                return null;  // an empty network path
+            }
+        }
+
+        private static Frame? FrameOf(ISignableMessage Message)
+
+            => Message switch {
+
+                   IRequest  request   => new Frame(2, request.Action, request.RequestId.ToString(), Target(request.Destination), null),
+
+                   IResponse response when response.RequestMessage is IRequest request
+                                       => new Frame(3, request.Action, request.RequestId.ToString(), Origin(request.NetworkPath), request),
+
+                   IMessage  message   => new Frame(6, message.Action, message.MessageId.ToString(), Target(message.Destination), null),
+
+                   _                   => null
+
+               };
+
+        #endregion
+
+        #region (private) RequestHash(Request)
+
+        /// <summary>
+        /// OCPPRequestHash: SHA-256 (base64url) over the concatenated signature values of a request.
+        /// </summary>
+        private static String? RequestHash(IRequest? Request)
+        {
+
+            var signatures = Request?.Signatures.ToArray() ?? [];
+
+            return signatures.Length > 0
+                       ? JWS.Base64URL(SHA256.HashData(signatures.SelectMany(signature => signature.Value).ToArray()))
+                       : null;
+
+        }
+
+        #endregion
+
+        #region (private) JWSPayload(JSON, RemoveContext)
+
+        /// <summary>
+        /// The JWS payload of a message: base64url of the RFC 8785 form of its JSON
+        /// without "signatures" - and without the "@context" a node adds for format 0.
+        /// </summary>
+        private static String JWSPayload(JObject JSON, Boolean RemoveContext)
+        {
+
+            var payload = (JObject) JSON.DeepClone();
+            payload.Remove("signatures");
+
+            if (RemoveContext)
+                payload.Remove("@context");
+
+            return JWS.Base64URL(JSONCanonicalization.CanonicalizeToUTF8(payload));
+
+        }
+
+        #endregion
+
+        #region (private) TrySignJWS(Message, JSONMessage, SignInfo, out Signature, out ErrorResponse)
+
+        /// <summary>
+        /// The OCPP fields a verifier must understand (RFC 7515 "crit").
+        /// </summary>
+        private static readonly HashSet<String> OCPPHeaderFields = [
+            "OCPPVersion", "OCPPMessageTypeId", "OCPPAction", "OCPPMessageId", "OCPPSource", "OCPPDestination",
+            "OCPPNonce", "OCPPRequestHash", "OCPPSignerName", "OCPPSignerDescription"
+        ];
+
+        private Boolean TrySignJWS(ISignableMessage                     Message,
+                                   JObject                              JSONMessage,
+                                   SignInfo                             SignInfo,
+                                   [NotNullWhen(true)]  out Signature?  Signature,
+                                   [NotNullWhen(false)] out String?     ErrorResponse)
+        {
+
+            Signature = null;
+
+            var algorithm = JWS.AlgorithmFor(SignInfo.Algorithm);
+
+            if (algorithm is null)
+            {
+                ErrorResponse = $"JWS has no algorithm for keys of '{SignInfo.Algorithm}'!";
+                return false;
+            }
+
+            var frame = FrameOf(Message);
+
+            if (frame is null && Message is IResponse)
+            {
+                ErrorResponse = "A response is signed only together with the request it answers!";
+                return false;
+            }
+
+            var jwk         = JWS.PublicKeyJWK(SignInfo.PublicKey);
+            var iat         = SignInfo.Timestamp?.Invoke(Message) ?? Now();
+            var source      = NodeId ?? (Message is IRequest request ? Origin(request.NetworkPath) : null);
+            var name        = SignInfo.SignerName?. Invoke(Message);
+            var description = SignInfo.Description?.Invoke(Message);
+            var requestHash = RequestHash(frame?.Request);
+
+            var header      = JSONObject.Create(
+
+                                        new JProperty("alg",                    algorithm),
+                                        new JProperty("kid",                    JWS.Thumbprint(jwk)),
+
+                                  frame is not null && OCPPVersion is not null
+                                      ? new JProperty("OCPPVersion",            OCPPVersion)
+                                      : null,
+
+                                  frame is not null
+                                      ? new JProperty("OCPPMessageTypeId",      frame.MessageTypeId)
+                                      : null,
+
+                                  frame is not null
+                                      ? new JProperty("OCPPAction",             frame.Action)
+                                      : null,
+
+                                  frame is not null
+                                      ? new JProperty("OCPPMessageId",          NonceInsteadOfMessageId ? "*" : frame.MessageId)
+                                      : null,
+
+                                  frame is not null && NonceInsteadOfMessageId
+                                      ? new JProperty("OCPPNonce",              JWS.Base64URL(RandomNumberGenerator.GetBytes(16)))
+                                      : null,
+
+                                  frame is not null && source.HasValue
+                                      ? new JProperty("OCPPSource",             source.Value.ToString())
+                                      : null,
+
+                                  frame?.Destination is not null
+                                      ? new JProperty("OCPPDestination",        frame.Destination.Value.ToString())
+                                      : null,
+
+                                        new JProperty("iat",                    iat.ToUnixTimeSeconds()),
+
+                                  requestHash is not null
+                                      ? new JProperty("OCPPRequestHash",        requestHash)
+                                      : null,
+
+                                  name is not null && name.IsNotNullOrEmpty()
+                                      ? new JProperty("OCPPSignerName",         name)
+                                      : null,
+
+                                  description is not null && description.IsNotNullOrEmpty()
+                                      ? new JProperty("OCPPSignerDescription",  description.ToJSON())
+                                      : null,
+
+                                  frame is null
+                                      ? new JProperty("typ",                    Message.Context.ToString())
+                                      : null
+
+                              );
+
+            var crit = header.Properties().Select(property => property.Name).Where(OCPPHeaderFields.Contains).ToArray();
+
+            if (crit.Length > 0)
+                header.Add("crit", new JArray(crit));
+
+            var protectedText  = JWS.Base64URL(header.ToString(Formatting.None));
+            var signingInput   = System.Text.Encoding.ASCII.GetBytes(protectedText + "." + JWSPayload(JSONMessage, RemoveContext: true));
+
+            Signature = new Signature(
+                            protectedText,
+                            header,
+                            new JObject(new JProperty("jwk", jwk)),
+                            JWS.Sign(algorithm, SignInfo.PrivateKey, signingInput),
+                            SignInfo.PublicKey.Q.GetEncoded(false),
+                            SignInfo.Algorithm,
+                            name,
+                            description,
+                            // What the receiver reads: a NumericDate in whole seconds.
+                            DateTimeOffset.FromUnixTimeSeconds(iat.ToUnixTimeSeconds())
+                        );
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
+
+        #region (private) CheckJWS(Signature, Message, Payload, Rule, out Why)
+
+        private readonly System.Collections.Concurrent.ConcurrentDictionary<String, DateTimeOffset> replayCache = new();
+        private Int64 replayInserts;
+
+        /// <summary>
+        /// The replay cache key of a signature: its key, the message type, and its
+        /// nonce - or its message id when it has none (section 4.1, "Freshness").
+        /// </summary>
+        private static String ReplayKey(JObject Header)
+
+            => $"{Header["kid"]}|{Header["OCPPMessageTypeId"]}|{Header["OCPPNonce"] ?? Header["OCPPMessageId"]}";
+
+        /// <summary>
+        /// Check one JWS signature: the key, the mathematics, the header against the
+        /// frame, and the time. The replay cache is consulted, not yet written.
+        /// </summary>
+        private VerificationStatus CheckJWS(Signature           Signature,
+                                            ISignableMessage    Message,
+                                            String              Payload,
+                                            VerificationRule    Rule,
+                                            out String          Why)
+        {
+
+            var header    = Signature.ProtectedHeader!;
+            var algorithm = header["alg"]?.Value<String>();
+
+            #region Critical fields this verifier understands
+
+            if (header["crit"] is JToken crit &&
+                (crit is not JArray critArray ||
+                 critArray.Any(field => field.Type != JTokenType.String || !OCPPHeaderFields.Contains(field.Value<String>()!))))
+            {
+                Why = $"The signature names critical header fields this verifier does not understand: {crit.ToString(Formatting.None)}";
+                return VerificationStatus.BrokenSignature;
+            }
+
+            #endregion
+
+            #region The key: the rule's, or the one the signature carries
+
+            ECPublicKeyParameters? publicKey = null;
+            var kid = header["kid"]?.Value<String>();
+
+            if (Rule.KeyPair?.PublicKeyBytes is Byte[] ruleKey)
+            {
+
+                var curve = Rule.KeyPair.Algorithm switch {
+                                var a when a == CryptoAlgorithm.Secp521r1 => SecNamedCurves.GetByName("secp521r1"),
+                                var a when a == CryptoAlgorithm.Secp384r1 => SecNamedCurves.GetByName("secp384r1"),
+                                _                                         => SecNamedCurves.GetByName("secp256r1")
+                            };
+
+                publicKey = new ECPublicKeyParameters(curve.Curve.DecodePoint(ruleKey), new ECDomainParameters(curve.Curve, curve.G, curve.N, curve.H, curve.GetSeed()));
+
+                if (kid != JWS.Thumbprint(publicKey))
+                {
+                    Why = "The signature was made by another key than the one the signature policy names!";
+                    return VerificationStatus.UnknownSigner;
+                }
+
+            }
+            else
+            {
+
+                if (Signature.Header?["jwk"] is not JObject jwk ||
+                    !JWS.TryParsePublicKey(jwk, out publicKey))
+                {
+                    Why = "The signature carries no public key, and the signature policy names none!";
+                    return VerificationStatus.UnknownSigner;
+                }
+
+                if (kid != JWS.Thumbprint(publicKey!))
+                {
+                    Why = "The key id of the signature is not the thumbprint of the key it carries!";
+                    return VerificationStatus.BrokenSignature;
+                }
+
+            }
+
+            #endregion
+
+            #region The mathematics
+
+            if (!JWS.Verify(algorithm ?? "", publicKey!, System.Text.Encoding.ASCII.GetBytes(Signature.Protected + "." + Payload), Signature.Value))
+            {
+                Why = "The signature is not valid for the message as it was received!";
+                return VerificationStatus.InvalidSignature;
+            }
+
+            #endregion
+
+            #region The header against the frame
+
+            var frame = FrameOf(Message);
+
+            if (frame is not null)
+            {
+
+                if (OCPPVersion is not null &&
+                    header["OCPPVersion"]?.Value<String>() != OCPPVersion)
+                {
+                    Why = $"The signature was made for '{header["OCPPVersion"]}', not for '{OCPPVersion}'!";
+                    return VerificationStatus.WrongFrame;
+                }
+
+                if (header["OCPPMessageTypeId"]?.Type != JTokenType.Integer ||
+                    header["OCPPMessageTypeId"]!.Value<Int32>() != frame.MessageTypeId)
+                {
+                    Why = $"The signature was made for message type '{header["OCPPMessageTypeId"]}', not for {frame.MessageTypeId}!";
+                    return VerificationStatus.WrongFrame;
+                }
+
+                if (header["OCPPAction"]?.Value<String>() != frame.Action)
+                {
+                    Why = $"The signature was made for the action '{header["OCPPAction"]}', not for '{frame.Action}'!";
+                    return VerificationStatus.WrongFrame;
+                }
+
+                var messageId = header["OCPPMessageId"]?.Value<String>();
+
+                if (messageId != frame.MessageId &&
+                    !(messageId == "*" && header["OCPPNonce"] is not null))
+                {
+                    Why = $"The signature was made for the message id '{messageId}', not for '{frame.MessageId}'!";
+                    return VerificationStatus.WrongFrame;
+                }
+
+                if (frame.MessageTypeId != 3)
+                {
+
+                    // A request or SEND names the node that shall execute it: this node, or the
+                    // destination the frame was delivered to (e.g. "CSMS" on a CSMS's connections).
+                    var destination = header["OCPPDestination"]?.Value<String>();
+
+                    if (destination is null ||
+                        (destination != frame.Destination?.ToString() && destination != NodeId?.ToString()))
+                    {
+                        Why = $"The signature was made for the destination '{destination}', not for this node!";
+                        return VerificationStatus.WrongFrame;
+                    }
+
+                }
+                else
+                {
+
+                    // A response is bound to its request by the message id and, when the request
+                    // was signed, by the hash of its signatures. Its destination is not compared:
+                    // a node is known to its peers under aliases ("CSMS", "CentralSystem").
+                    var requestHash = RequestHash(frame.Request);
+
+                    if (requestHash is not null &&
+                        header["OCPPRequestHash"]?.Value<String>() != requestHash)
+                    {
+                        Why = "The signature was made for a response to another request!";
+                        return VerificationStatus.WrongFrame;
+                    }
+
+                }
+
+            }
+
+            #endregion
+
+            #region The time
+
+            if (header["iat"]?.Type != JTokenType.Integer)
+            {
+                Why = "The signature carries no signing time!";
+                return VerificationStatus.BrokenSignature;
+            }
+
+            var now      = Now();
+            var issued   = DateTimeOffset.FromUnixTimeSeconds(header["iat"]!.Value<Int64>());
+            var expires  = header["exp"]?.Type == JTokenType.Integer
+                               ? DateTimeOffset.FromUnixTimeSeconds(header["exp"]!.Value<Int64>())
+                               : issued + MaxSignatureAge;
+
+            if (issued > now + MaxClockSkew)
+            {
+                Why = $"The signature was made at {issued:o}, further in the future than the clock skew allows!";
+                return VerificationStatus.OutOfTime;
+            }
+
+            if (now > expires)
+            {
+                Why = $"The signature expired at {expires:o}!";
+                return VerificationStatus.OutOfTime;
+            }
+
+            #endregion
+
+            #region Freshness
+
+            if (replayCache.TryGetValue(ReplayKey(header), out var seenUntil) && seenUntil >= now)
+            {
+                Why = "The signature was seen before: the message is a replay!";
+                return VerificationStatus.Replayed;
+            }
+
+            #endregion
+
+            Why = "";
+            return VerificationStatus.ValidSignature;
+
+        }
+
+        #endregion
+
+        #region (private) Remember(Signature)
+
+        /// <summary>
+        /// Remember an accepted signature until it expires, so that the same message is not accepted twice.
+        /// </summary>
+        private void Remember(Signature Signature)
+        {
+
+            // Format 0 (binary messages) names nothing a replay could be told by.
+            if (Signature.ProtectedHeader is not JObject header)
+                return;
+
+            var issued   = DateTimeOffset.FromUnixTimeSeconds(header["iat"]!.Value<Int64>());
+            var expires  = header["exp"]?.Type == JTokenType.Integer
+                               ? DateTimeOffset.FromUnixTimeSeconds(header["exp"]!.Value<Int64>())
+                               : issued + MaxSignatureAge;
+
+            replayCache[ReplayKey(header)] = expires;
+
+            if (Interlocked.Increment(ref replayInserts) % 256 == 0)
+            {
+                var now = Now();
+                foreach (var entry in replayCache)
+                    if (entry.Value < now)
+                        replayCache.TryRemove(entry.Key, out _);
+            }
+
+        }
+
+        #endregion
+
+        #endregion
+
+
         #region SignMessage         (SignableMessage, JSONMessage,   out ErrorResponse, params SignInfos)
 
         /// <summary>
@@ -834,32 +1370,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #endregion
 
-                    var plainText   = JSONMessage.ToString(Formatting.None, WWCP.SignableMessage.DefaultJSONConverters);
+                    if (!TrySignJWS(SignableMessage, JSONMessage, signInfo, out var signature, out ErrorResponse))
+                        return false;
 
-                    var cryptoHash  = signInfo.Algorithm switch {
-                                          var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                          var s when s == CryptoAlgorithm.Secp384r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                          _                                          => SHA256.HashData(plainText.ToUTF8Bytes()),
-                                      };
-
-                    var signer       = SignerUtilities.GetSigner("NONEwithECDSA");
-                    signer.Init(true, signInfo.PrivateKey);
-                    signer.BlockUpdate(cryptoHash);
-                    var signature    = signer.GenerateSignature();
-
-                    SignableMessage.AddSignature(
-                        new Signature(
-                            //KeyId:           SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKey.GetBytes(),
-                            KeyId:           signInfo.PublicKey.Q.GetEncoded(),
-                            Value:           signature,
-                            Algorithm:       signInfo.Algorithm,
-                            SigningMethod:   null,
-                            Encoding:        signInfo.Encoding,
-                            Name:            signInfo.SignerName?. Invoke(SignableMessage),
-                            Description:     signInfo.Description?.Invoke(SignableMessage),
-                            Timestamp:       signInfo.Timestamp?.  Invoke(SignableMessage)
-                        )
-                    );
+                    SignableMessage.AddSignature(signature);
 
                 }
 
@@ -1291,12 +1805,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// A rule without a key pair checks that each signature is valid for the
         /// key it names, and leaves it to the node's user roles to say who that
         /// key belongs to.
+        /// A JWS signature counts as valid only when its protected header names
+        /// this frame and its time has not passed, and only once (CheckJWS). A
+        /// signature of format 0 counts as unverified at best: it binds neither.
         /// </remarks>
         /// <param name="SignableMessage">A signable/verifiable message.</param>
-        /// <param name="SignedData">What its signatures sign.</param>
+        /// <param name="SignedData">What a signature of format 0 signs.</param>
+        /// <param name="JWSPayload">What a JWS signature signs: base64url of the RFC 8785 form of the message as received, or null for a binary message.</param>
         /// <param name="ErrorResponse">Why the message is refused.</param>
         private Boolean VerifySignatures(ISignableMessage                  SignableMessage,
                                          Byte[]                            SignedData,
+                                         String?                           JWSPayload,
                                          [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
@@ -1331,8 +1850,54 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
             }
 
+            var reasons = new List<String>();
+
             foreach (var signature in SignableMessage.Signatures)
             {
+
+                #region A JWS signature with a protected header
+
+                if (signature.IsJWS)
+                {
+
+                    if (JWSPayload is null)
+                    {
+                        signature.Status = VerificationStatus.BrokenSignature;
+                        reasons.Add("A JWS signature on a binary message cannot be verified");
+                    }
+                    else
+                    {
+                        signature.Status = CheckJWS(signature, SignableMessage, JWSPayload, verificationRule, out var why);
+                        if (why.Length > 0)
+                            reasons.Add(why);
+                    }
+
+                    if (verificationRule.Action == VerificationRuleActions.VerifyAny &&
+                        signature.Status        == VerificationStatus.ValidSignature)
+                    {
+                        Remember(signature);
+                        ErrorResponse = null;
+                        return true;
+                    }
+
+                    continue;
+
+                }
+
+                #endregion
+
+                #region Format 0: checked only when accepted, and unverified at best
+
+                // A binary message has no form yet that binds the frame (finding F17): its
+                // signatures stay of format 0, and a valid one counts as before phase 2.
+                var binary = JWSPayload is null;
+
+                if (!AcceptFormat0 && !binary)
+                {
+                    signature.Status = VerificationStatus.Format0NotAccepted;
+                    reasons.Add("Signatures of format 0 are not accepted");
+                    continue;
+                }
 
                 if (verificationRule.KeyPair?.PublicKeyBytes is Byte[] expectedKey &&
                    !signature.KeyId.SequenceEqual(expectedKey))
@@ -1361,9 +1926,24 @@ namespace cloud.charging.open.protocols.WWCP
                     var verifier      = SignerUtilities.GetSigner("NONEwithECDSA");
                     verifier.Init(false, pubKeyParams);
                     verifier.BlockUpdate(cryptoHash);
+
+                    // Valid mathematics, but no frame and no time bound: unverified at best.
                     signature.Status  = verifier.VerifySignature(signature.Value)
-                                            ? VerificationStatus.ValidSignature
+                                            ? binary
+                                                  ? VerificationStatus.ValidSignature
+                                                  : VerificationStatus.Unverified
                                             : VerificationStatus.InvalidSignature;
+
+                    if (signature.Status == VerificationStatus.Unverified)
+                        reasons.Add("A signature of format 0 binds neither the frame nor a time, and counts as unverified");
+
+                    if (binary                                                 &&
+                        verificationRule.Action == VerificationRuleActions.VerifyAny &&
+                        signature.Status        == VerificationStatus.ValidSignature)
+                    {
+                        ErrorResponse = null;
+                        return true;
+                    }
 
                 }
                 catch
@@ -1372,25 +1952,26 @@ namespace cloud.charging.open.protocols.WWCP
                     signature.Status  = VerificationStatus.BrokenSignature;
                 }
 
-                if (verificationRule.Action == VerificationRuleActions.VerifyAny &&
-                    signature.Status        == VerificationStatus.ValidSignature)
-                {
-                    ErrorResponse = null;
-                    return true;
-                }
+                #endregion
 
             }
 
             if (SignableMessage.Signatures.All(signature => signature.Status == VerificationStatus.ValidSignature))
             {
+
+                foreach (var signature in SignableMessage.Signatures)
+                    Remember(signature);
+
                 ErrorResponse = null;
                 return true;
+
             }
 
             ErrorResponse = (verificationRule.Action == VerificationRuleActions.VerifyAny
                                  ? "None of the message's signatures is valid"
                                  : "Not every signature of the message is valid") +
-                            $": {String.Join(", ", SignableMessage.Signatures.Select(signature => signature.Status))}!";
+                            $": {String.Join(", ", SignableMessage.Signatures.Select(signature => signature.Status))}" +
+                            (reasons.Count > 0 ? $" ({String.Join("; ", reasons.Distinct())})" : "") + "!";
 
             return false;
 
@@ -1406,13 +1987,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="SignableMessage">A signable/verifiable message.</param>
         /// <param name="JSONMessage">The JSON representation of the signable/verifiable message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
+        /// <param name="ReceivedJSON">The payload exactly as it was received. A JWS signature signs it, so that fields the parser does not know are covered too. Without it, the re-serialization stands in for it.</param>
         public Boolean VerifySendMessage(ISignableMessage                  SignableMessage,
                                          JObject                           JSONMessage,
-                                         [NotNullWhen(false)] out String?  ErrorResponse)
+                                         [NotNullWhen(false)] out String?  ErrorResponse,
+                                         JObject?                          ReceivedJSON   = null)
         {
 
             try
             {
+
+                var jwsPayload = ReceivedJSON is not null
+                                     ? JWSPayload(ReceivedJSON, RemoveContext: false)
+                                     : JWSPayload(JSONMessage,  RemoveContext: true);
 
                 if (JSONMessage["@context"] is null)
                     JSONMessage.AddFirst(new JProperty("@context", SignableMessage.Context.ToString()));
@@ -1425,6 +2012,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return VerifySignatures(
                            SignableMessage,
                            plainText.ToUTF8Bytes(),
+                           jwsPayload,
                            out ErrorResponse
                        );
 
@@ -1447,14 +2035,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestMessage">The request message.</param>
         /// <param name="JSONMessage">The JSON representation of the request message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
+        /// <param name="ReceivedJSON">The payload exactly as it was received.</param>
         public Boolean VerifyRequestMessage(IRequest                          RequestMessage,
                                             JObject                           JSONMessage,
-                                            [NotNullWhen(false)] out String?  ErrorResponse)
+                                            [NotNullWhen(false)] out String?  ErrorResponse,
+                                            JObject?                          ReceivedJSON   = null)
 
             => VerifySendMessage(
                    RequestMessage,
                    JSONMessage,
-                   out ErrorResponse
+                   out ErrorResponse,
+                   ReceivedJSON
                );
 
         #endregion
@@ -1467,14 +2058,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ResponseMessage">A response message.</param>
         /// <param name="JSONMessage">The JSON representation of the request message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
+        /// <param name="ReceivedJSON">The payload exactly as it was received.</param>
         public Boolean VerifyResponseMessage(IResponse                         ResponseMessage,
                                              JObject                           JSONMessage,
-                                             [NotNullWhen(false)] out String?  ErrorResponse)
+                                             [NotNullWhen(false)] out String?  ErrorResponse,
+                                             JObject?                          ReceivedJSON   = null)
 
             => VerifySendMessage(
                    ResponseMessage,
                    JSONMessage,
-                   out ErrorResponse
+                   out ErrorResponse,
+                   ReceivedJSON
                );
 
         #endregion
@@ -1499,6 +2093,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return VerifySignatures(
                            SignableMessage,
                            BinaryMessage,
+                           null,
                            out ErrorResponse
                        );
 
