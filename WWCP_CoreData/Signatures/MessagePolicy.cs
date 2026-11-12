@@ -909,19 +909,67 @@ namespace cloud.charging.open.protocols.WWCP
 
     #endregion
 
+    #region PolicyViolationKinds
+
+    /// <summary>
+    /// What was wrong with the signatures of a message: the security events of
+    /// section 5.4 of the white paper "Signed OCPP Messages and Signer Roles".
+    /// </summary>
+    public enum PolicyViolationKinds
+    {
+
+        /// <summary>
+        /// The message carries no signature, and needed one.
+        /// </summary>
+        SignatureMissing,
+
+        /// <summary>
+        /// A signature of the message does not hold: it is broken, signs another
+        /// frame, or is of a format that is not accepted.
+        /// </summary>
+        SignatureInvalid,
+
+        /// <summary>
+        /// The signatures hold, and no key behind them is known to the node.
+        /// </summary>
+        SignerUnknown,
+
+        /// <summary>
+        /// The signers are known, and may not do what the message asks for.
+        /// </summary>
+        SignerNotAuthorized,
+
+        /// <summary>
+        /// A signature was seen before within its validity.
+        /// </summary>
+        Replayed,
+
+        /// <summary>
+        /// A signature was made too far in the future, or its validity has passed.
+        /// </summary>
+        SignatureExpired
+
+    }
+
+    #endregion
+
     #region PolicyViolation
 
     /// <summary>
     /// A message that was not signed as the policy wants it.
     /// </summary>
     /// <param name="Action">The OCPP action.</param>
-    /// <param name="Entry">The policy entry that was violated, or null when it was a permission of the node's table or the default.</param>
+    /// <param name="Entry">The policy entry that was violated, or null when it was a permission of the node's table, the default or a verification rule.</param>
     /// <param name="Reason">What was missing.</param>
     /// <param name="Refused">Whether the message was refused; otherwise it was executed and the violation recorded.</param>
-    public sealed record PolicyViolation(String               Action,
-                                         MessagePolicyEntry?  Entry,
-                                         String               Reason,
-                                         Boolean              Refused);
+    /// <param name="Kind">What was wrong with its signatures.</param>
+    /// <param name="Message">The message. A request whose entries are decided one by one is reported once per entry that was refused, with the same message.</param>
+    public sealed record PolicyViolation(String                Action,
+                                         MessagePolicyEntry?   Entry,
+                                         String                Reason,
+                                         Boolean               Refused,
+                                         PolicyViolationKinds  Kind,
+                                         ISignableMessage      Message);
 
     #endregion
 

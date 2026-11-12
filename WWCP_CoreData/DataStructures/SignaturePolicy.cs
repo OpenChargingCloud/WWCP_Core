@@ -2106,6 +2106,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (!SignableMessage.Signatures.Any())
             {
                 ErrorResponse = $"The signature policy wants '{SignableMessage.Context}' messages signed, and this one carries no signature!";
+                SignaturesDoNotHold(SignableMessage, ErrorResponse);
                 return false;
             }
 
@@ -2290,6 +2291,8 @@ namespace cloud.charging.open.protocols.WWCP
                                  : "Not every signature of the message is valid") +
                             $": {String.Join(", ", SignableMessage.Signatures.Select(signature => signature.Status))}" +
                             (reasons.Count > 0 ? $" ({String.Join("; ", reasons.Distinct())})" : "") + "!";
+
+            SignaturesDoNotHold(SignableMessage, ErrorResponse);
 
             return false;
 

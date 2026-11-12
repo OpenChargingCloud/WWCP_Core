@@ -128,8 +128,11 @@ namespace cloud.charging.open.protocols.WWCP
         #region Events
 
         /// <summary>
-        /// A message was not signed as the policy wants it: refused, or executed
-        /// and recorded.
+        /// A request was not signed as the policy wants it: refused, or executed
+        /// and recorded. Its signatures did not hold, or its signers may not do
+        /// what it asks for. A response is not reported: whoever is told of a
+        /// violation asks somebody, and the answer to that must not be the next
+        /// violation.
         /// </summary>
         public event Action<PolicyViolation>? OnPolicyViolation;
 
@@ -364,30 +367,112 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (private) Violated(Action, Entry, Reason, OnViolation, out ErrorResponse)
+        #region (private) KindOf(Message)
 
         /// <summary>
-        /// Report a violation, and say whether the message goes on.
+        /// What is wrong with the signatures of a message that was refused, or
+        /// would have been: the worst of what its signatures were found to be,
+        /// and for signatures that hold, whether anybody knows their keys.
         /// </summary>
-        /// <returns>Whether the message is executed all the same.</returns>
-        private Boolean Violated(String                  Action,
-                                 MessagePolicyEntry?     Entry,
-                                 String                  Reason,
-                                 PolicyViolationActions  OnViolation,
-                                 out String?             ErrorResponse)
+        private PolicyViolationKinds KindOf(ISignableMessage Message)
         {
 
-            var refused = Mode == MessagePolicyModes.Enforce &&
-                          OnViolation == PolicyViolationActions.Refuse;
+            if (!Message.Signatures.Any())
+                return PolicyViolationKinds.SignatureMissing;
+
+            var signers = SignersOf(Message);
+
+            if (signers.Count == 0)
+            {
+
+                if (Message.Signatures.Any(signature => signature.Status == VerificationStatus.Replayed))
+                    return PolicyViolationKinds.Replayed;
+
+                if (Message.Signatures.Any(signature => signature.Status == VerificationStatus.OutOfTime))
+                    return PolicyViolationKinds.SignatureExpired;
+
+                if (Message.Signatures.Any(signature => signature.Status == VerificationStatus.UnknownSigner))
+                    return PolicyViolationKinds.SignerUnknown;
+
+                return PolicyViolationKinds.SignatureInvalid;
+
+            }
+
+            return signers.All(signer => signer.Roles.Count == 0)
+                       ? PolicyViolationKinds.SignerUnknown
+                       : PolicyViolationKinds.SignerNotAuthorized;
+
+        }
+
+        #endregion
+
+        #region (private) Report(Message, Action, Entry, Reason, Refused, Kind = null)
+
+        private void Report(ISignableMessage       Message,
+                            String                 Action,
+                            MessagePolicyEntry?    Entry,
+                            String                 Reason,
+                            Boolean                Refused,
+                            PolicyViolationKinds?  Kind   = null)
+        {
 
             try
             {
-                OnPolicyViolation?.Invoke(new PolicyViolation(Action, Entry, Reason, refused));
+                OnPolicyViolation?.Invoke(new PolicyViolation(Action, Entry, Reason, Refused, Kind ?? KindOf(Message), Message));
             }
             catch
             {
                 // Whoever listens must not decide what happens to the message.
             }
+
+        }
+
+        #endregion
+
+        #region (private) SignaturesDoNotHold(Message, Reason)
+
+        /// <summary>
+        /// Report a request whose signatures did not hold, or that carries none
+        /// where a verification rule wants one: it is refused before the policy
+        /// table is asked.
+        /// </summary>
+        private void SignaturesDoNotHold(ISignableMessage  Message,
+                                         String            Reason)
+        {
+
+            var action = Message switch {
+                             IResponse         => null,
+                             IRequest request  => request.Action,
+                             IMessage message  => message.Action,
+                             _                 => null
+                         };
+
+            if (action is not null)
+                Report(Message, action, null, Reason, Refused: true);
+
+        }
+
+        #endregion
+
+        #region (private) Violated(Message, Action, Entry, Reason, OnViolation, out ErrorResponse, Kind = null)
+
+        /// <summary>
+        /// Report a violation, and say whether the message goes on.
+        /// </summary>
+        /// <returns>Whether the message is executed all the same.</returns>
+        private Boolean Violated(ISignableMessage        Message,
+                                 String                  Action,
+                                 MessagePolicyEntry?     Entry,
+                                 String                  Reason,
+                                 PolicyViolationActions  OnViolation,
+                                 out String?             ErrorResponse,
+                                 PolicyViolationKinds?   Kind   = null)
+        {
+
+            var refused = Mode == MessagePolicyModes.Enforce &&
+                          OnViolation == PolicyViolationActions.Refuse;
+
+            Report(Message, Action, Entry, Reason, refused, Kind);
 
             ErrorResponse = refused
                                 ? Entry is not null
@@ -480,10 +565,10 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (ambiguous is not null)
-                    return Violated(action, entry, ambiguous, PolicyViolationActions.Refuse, out ErrorResponse);
+                    return Violated(Message, action, entry, ambiguous, PolicyViolationActions.Refuse, out ErrorResponse, PolicyViolationKinds.SignerNotAuthorized);
 
                 return Satisfies(entry!.Require, signers, out var missing) ||
-                       Violated(action, entry, missing, entry.OnViolation, out ErrorResponse);
+                       Violated(Message, action, entry, missing, entry.OnViolation, out ErrorResponse);
 
             }
 
@@ -501,7 +586,7 @@ namespace cloud.charging.open.protocols.WWCP
                 var needed = permissions.MaxBy(permission => permission.Where.Count)!;
 
                 if (needed.RefusedBecause is not null)
-                    return Violated(action, null, needed.RefusedBecause, PolicyViolationActions.Refuse, out ErrorResponse);
+                    return Violated(Message, action, null, needed.RefusedBecause, PolicyViolationActions.Refuse, out ErrorResponse, PolicyViolationKinds.SignerNotAuthorized);
 
                 var lacking = needed.Permissions.
                                   Concat(needed.AdditionalPermissions?.Invoke() ?? []).
@@ -510,7 +595,8 @@ namespace cloud.charging.open.protocols.WWCP
                                   ToArray ();
 
                 return lacking.Length == 0 ||
-                       Violated(action,
+                       Violated(Message,
+                                action,
                                 null,
                                 signers.Count == 0
                                     ? $"it carries no valid signature, and needs {String.Join(" and ", lacking)}"
@@ -530,7 +616,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        : SignerRequirement.Unsigned);
 
             return Satisfies(requirement, signers, out var missingByDefault) ||
-                   Violated(action, null, missingByDefault, PolicyViolationActions.Refuse, out ErrorResponse);
+                   Violated(Message, action, null, missingByDefault, PolicyViolationActions.Refuse, out ErrorResponse);
 
             #endregion
 
@@ -585,17 +671,18 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (ambiguous is not null)
-                    return Violated(Request.Action, entry, $"{target}: {ambiguous}", PolicyViolationActions.Refuse, out Reason);
+                    return Violated(Request, Request.Action, entry, $"{target}: {ambiguous}", PolicyViolationActions.Refuse, out Reason, PolicyViolationKinds.SignerNotAuthorized);
 
                 return Satisfies(entry!.Require, signers, out var missing) ||
-                       Violated(Request.Action, entry, $"{target}: {missing}", entry.OnViolation, out Reason);
+                       Violated(Request, Request.Action, entry, $"{target}: {missing}", entry.OnViolation, out Reason);
 
             }
 
             var permission = $"{ResourceOfComponent(Component)}:{Operation}";
 
             return Holds(signers, permission) ||
-                   Violated(Request.Action,
+                   Violated(Request,
+                            Request.Action,
                             null,
                             signers.Count == 0
                                 ? $"{target}: it carries no valid signature, and needs {permission}"
