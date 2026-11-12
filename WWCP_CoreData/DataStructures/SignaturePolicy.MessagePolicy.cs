@@ -367,6 +367,84 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region (private) The connection a request came over
+
+        /// <summary>
+        /// What the connection of a request may carry, for the entries of the
+        /// request that are decided later, one by one.
+        /// </summary>
+        private readonly System.Runtime.CompilerServices.ConditionalWeakTable<ISignableMessage, ConnectionRights> connectionOf = [];
+
+        /// <summary>
+        /// The first step of the decision chain: whether the connection a
+        /// request came over may carry it, before anybody asks who signed it.
+        /// The rights profile of the peer names the requests it accepts, and
+        /// the role of the connection holds the permissions the node's table
+        /// asks for. A request whose entries are decided one by one passes
+        /// here, and each entry is held against the connection by itself.
+        /// </summary>
+        /// <param name="Request">A request, not verified yet.</param>
+        /// <param name="Payload">Its payload as received, for the conditions of the table.</param>
+        /// <param name="Connection">What its connection may carry.</param>
+        /// <param name="ErrorResponse">Why the request is refused.</param>
+        private Boolean ConnectionAllows(IRequest                          Request,
+                                         JObject?                          Payload,
+                                         ConnectionRights                  Connection,
+                                         [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ErrorResponse = null;
+
+            if (Mode == MessagePolicyModes.Off)
+                return true;
+
+            connectionOf.AddOrUpdate(Request, Connection);
+
+            var action = Request.Action;
+
+            if (!Connection.Accepts(action))
+                return Violated(Request,
+                                action,
+                                null,
+                                $"the rights of the connection '{Connection.Name}' do not accept it",
+                                PolicyViolationActions.Refuse,
+                                out ErrorResponse,
+                                PolicyViolationKinds.ConnectionNotAuthorized);
+
+            if (Connection.Permissions is null || ActionsDecidedPerEntry.Contains(action))
+                return true;
+
+            ActionPermission? needed;
+
+            lock (policyLock)
+                needed = actionPermissions.Where(permission => permission.Action == action &&
+                                                               permission.Where.All(condition => condition.Matches(Payload))).
+                                           MaxBy(permission => permission.Where.Count);
+
+            // No row: the action needs a signer, and no permission. A row that refuses
+            // refuses whoever signed, and says so when the signers are asked.
+            if (needed is null || needed.RefusedBecause is not null)
+                return true;
+
+            var lacking = needed.Permissions.
+                              Concat(needed.AdditionalPermissions?.Invoke() ?? []).
+                              Distinct(StringComparer.Ordinal).
+                              Where   (permission => !Connection.Holds(permission)).
+                              ToArray ();
+
+            return lacking.Length == 0 ||
+                   Violated(Request,
+                            action,
+                            null,
+                            $"the connection '{Connection.Name}' may not {String.Join(" and ", lacking)}",
+                            PolicyViolationActions.Refuse,
+                            out ErrorResponse,
+                            PolicyViolationKinds.ConnectionNotAuthorized);
+
+        }
+
+        #endregion
+
         #region (private) KindOf(Message)
 
         /// <summary>
@@ -653,6 +731,20 @@ namespace cloud.charging.open.protocols.WWCP
             if (Mode == MessagePolicyModes.Off)
                 return true;
 
+            var target      = $"{Component}{(Instance is not null ? $"[{Instance}]" : "")}{(Variable is not null ? $".{Variable}" : "")}";
+            var permission  = $"{ResourceOfComponent(Component)}:{Operation}";
+
+            // The first step of the chain, for this entry: what the connection may not
+            // carry, nobody's signature brings over it.
+            if (connectionOf.TryGetValue(Request, out var connection) && !connection.Holds(permission))
+                return Violated(Request,
+                                Request.Action,
+                                null,
+                                $"{target}: the connection '{connection.Name}' may not {permission}",
+                                PolicyViolationActions.Refuse,
+                                out Reason,
+                                PolicyViolationKinds.ConnectionNotAuthorized);
+
             var signers = SignersOf(Request);
 
             List<MessagePolicyEntry> candidates;
@@ -665,8 +757,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                              (entry.Instance  is null || entry.Instance  == Instance)  &&
                                                              (!entry.EVSE.HasValue    || entry.EVSE      == EVSE))];
 
-            var target = $"{Component}{(Instance is not null ? $"[{Instance}]" : "")}{(Variable is not null ? $".{Variable}" : "")}";
-
             if (MostSpecific(candidates, out var entry, out var ambiguous))
             {
 
@@ -677,8 +767,6 @@ namespace cloud.charging.open.protocols.WWCP
                        Violated(Request, Request.Action, entry, $"{target}: {missing}", entry.OnViolation, out Reason);
 
             }
-
-            var permission = $"{ResourceOfComponent(Component)}:{Operation}";
 
             return Holds(signers, permission) ||
                    Violated(Request,

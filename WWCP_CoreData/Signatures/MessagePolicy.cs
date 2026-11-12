@@ -947,7 +947,54 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A signature was made too far in the future, or its validity has passed.
         /// </summary>
-        SignatureExpired
+        SignatureExpired,
+
+        /// <summary>
+        /// The connection the request came over may not carry it, whoever
+        /// signed it: the first step of the decision chain.
+        /// </summary>
+        ConnectionNotAuthorized
+
+    }
+
+    #endregion
+
+    #region ConnectionRights
+
+    /// <summary>
+    /// What may come over a connection, whoever signed it: the first step of
+    /// the decision chain (white paper "Signed OCPP Messages and Signer
+    /// Roles", section 5.1). The effective permission is the intersection of
+    /// the connection role, the rights of the peer and the signer role.
+    /// </summary>
+    /// <param name="Name">What the connection is called in a refusal: its role, or its peer.</param>
+    /// <param name="Permissions">The permissions of the role of the connection, as "resource:operation"; null for a connection that may carry anything its signers may do.</param>
+    /// <param name="Actions">The requests the rights profile of the peer accepts; null for a peer every request is accepted from.</param>
+    public sealed record ConnectionRights(String                        Name,
+                                          IReadOnlyCollection<String>?  Permissions   = null,
+                                          IReadOnlyCollection<String>?  Actions       = null)
+    {
+
+        /// <summary>
+        /// A connection nothing may come over.
+        /// </summary>
+        /// <param name="Name">What the connection is called in a refusal.</param>
+        public static ConnectionRights Nothing(String Name)
+            => new (Name, [], []);
+
+        /// <summary>
+        /// Whether the role of the connection holds the given permission.
+        /// </summary>
+        public Boolean Holds(String Permission)
+            => Permissions is null ||
+               Permissions.Any(held => SignerPermissions.Covers(held, Permission));
+
+        /// <summary>
+        /// Whether the rights profile of the peer accepts the given request.
+        /// </summary>
+        public Boolean Accepts(String Action)
+            => Actions is null ||
+               Actions.Contains(Action, StringComparer.Ordinal);
 
     }
 

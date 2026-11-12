@@ -2384,12 +2384,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="JSONMessage">The JSON representation of the request message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
         /// <param name="ReceivedJSON">The payload exactly as it was received.</param>
+        /// <param name="Connection">What the connection the request came over may carry, whoever signed it: asked first. Null for a connection that may carry anything.</param>
         public Boolean VerifyRequestMessage(IRequest                          RequestMessage,
                                             JObject                           JSONMessage,
                                             [NotNullWhen(false)] out String?  ErrorResponse,
-                                            JObject?                          ReceivedJSON   = null)
+                                            JObject?                          ReceivedJSON   = null,
+                                            ConnectionRights?                 Connection     = null)
 
-            => VerifySendMessage(
+            => (Connection is null ||
+                ConnectionAllows(
+                    RequestMessage,
+                    ReceivedJSON ?? JSONMessage,
+                    Connection,
+                    out ErrorResponse
+                )) &&
+               VerifySendMessage(
                    RequestMessage,
                    JSONMessage,
                    out ErrorResponse,
@@ -2472,9 +2481,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
         public Boolean VerifyRequestMessage(IRequest                          RequestMessage,
                                             Byte[]                            BinaryMessage,
-                                            [NotNullWhen(false)] out String?  ErrorResponse)
+                                            [NotNullWhen(false)] out String?  ErrorResponse,
+                                            ConnectionRights?                 Connection   = null)
 
-            => VerifySendMessage(
+            => (Connection is null ||
+                ConnectionAllows(
+                    RequestMessage,
+                    null,
+                    Connection,
+                    out ErrorResponse
+                )) &&
+               VerifySendMessage(
                    RequestMessage,
                    BinaryMessage,
                    out ErrorResponse
