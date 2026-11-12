@@ -87,8 +87,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         /// <summary>
         /// The resource of the node's role model a device model component belongs
-        /// to: "dns" for the DNSClientController. Unknown components are
-        /// "configuration".
+        /// to: "dns" for the components of the name servers, "nts" for those of
+        /// the time. Unknown components are "configuration".
         /// </summary>
         public Func<String, String>                         ResourceOfComponent   { get; set; }  = DefaultResourceOfComponent;
 
@@ -148,6 +148,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             => Component switch {
                    "DNSClientController"         => "dns",
+                   "DNSServerController"         => "dns",
+                   "ClockCtrlr"                  => "nts",
+                   "NTPController"               => "nts",
+                   "NTPClientGroupController"    => "nts",
                    "NTPClientController"         => "nts",
                    "NTSClientController"         => "nts",
                    "MessageSignatureController"  => "signatures",
