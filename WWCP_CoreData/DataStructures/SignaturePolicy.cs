@@ -1259,7 +1259,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return CheckFrameAndTime(header, Message, out Why);
+            return CheckFrameAndTime(header, Message, Rule, out Why);
 
         }
 
@@ -1351,13 +1351,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return CheckFrameAndTime(header, Message, out Why);
+            return CheckFrameAndTime(header, Message, Rule, out Why);
 
         }
 
         #endregion
 
-        #region (private) CheckFrameAndTime(header, Message, out Why)
+        #region (private) CheckFrameAndTime(header, Message, Rule, out Why)
 
         /// <summary>
         /// What every signature with a protected header is held to, whatever its
@@ -1366,6 +1366,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         private VerificationStatus CheckFrameAndTime(JObject           header,
                                                      ISignableMessage  Message,
+                                                     VerificationRule  Rule,
                                                      out String        Why)
         {
 
@@ -1443,6 +1444,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region The time
 
+            // A signing time is part of the header even where it is not held to
+            // the clock: a header without one is not one this verifier knows.
             if (header["iat"]?.Type != JTokenType.Integer)
             {
                 Why = "The signature carries no signing time!";
@@ -1455,16 +1458,23 @@ namespace cloud.charging.open.protocols.WWCP
                                ? DateTimeOffset.FromUnixTimeSeconds(header["exp"]!.Value<Int64>())
                                : issued + MaxSignatureAge;
 
-            if (issued > now + MaxClockSkew)
+            // A rule for messages with a version of their own, a signed pin set,
+            // is verified without the time window - see VerificationRule.WithoutTimeWindow.
+            if (!Rule.WithoutTimeWindow)
             {
-                Why = $"The signature was made at {issued:o}, further in the future than the clock skew allows!";
-                return VerificationStatus.OutOfTime;
-            }
 
-            if (now > expires)
-            {
-                Why = $"The signature expired at {expires:o}!";
-                return VerificationStatus.OutOfTime;
+                if (issued > now + MaxClockSkew)
+                {
+                    Why = $"The signature was made at {issued:o}, further in the future than the clock skew allows!";
+                    return VerificationStatus.OutOfTime;
+                }
+
+                if (now > expires)
+                {
+                    Why = $"The signature expired at {expires:o}!";
+                    return VerificationStatus.OutOfTime;
+                }
+
             }
 
             #endregion
@@ -1486,12 +1496,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (private) Remember(Signature)
+        #region (private) Remember(Signature, Rule)
 
         /// <summary>
         /// Remember an accepted signature until it expires, so that the same message is not accepted twice.
         /// </summary>
-        private void Remember(Signature Signature)
+        /// <remarks>
+        /// A signature taken by a rule without time window would be forgotten at
+        /// once where its "iat" lies further back than MaxSignatureAge: it is
+        /// remembered for MaxSignatureAge from now, by this node's clock, at least.
+        /// </remarks>
+        private void Remember(Signature         Signature,
+                              VerificationRule  Rule)
         {
 
             // Format 0 (binary messages) names nothing a replay could be told by.
@@ -1502,6 +1518,9 @@ namespace cloud.charging.open.protocols.WWCP
             var expires  = header["exp"]?.Type == JTokenType.Integer
                                ? DateTimeOffset.FromUnixTimeSeconds(header["exp"]!.Value<Int64>())
                                : issued + MaxSignatureAge;
+
+            if (Rule.WithoutTimeWindow && expires < Now() + MaxSignatureAge)
+                expires = Now() + MaxSignatureAge;
 
             replayCache[ReplayKey(header)] = expires;
 
@@ -2052,7 +2071,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// key belongs to.
         /// A JWS signature counts as valid only when its protected header names
         /// this frame and its time has not passed, and only once (CheckJWS). A
-        /// signature of format 0 counts as unverified at best: it binds neither.
+        /// rule without time window (a signed pin set's) leaves out the time, and
+        /// only the time. A signature of format 0 counts as unverified at best: it
+        /// binds neither.
         /// </remarks>
         /// <param name="SignableMessage">A signable/verifiable message.</param>
         /// <param name="SignedData">What a signature of format 0 signs.</param>
@@ -2155,7 +2176,7 @@ namespace cloud.charging.open.protocols.WWCP
                     if (verificationRule.Action == VerificationRuleActions.VerifyAny &&
                         signature.Status        == VerificationStatus.ValidSignature)
                     {
-                        Remember(signature);
+                        Remember(signature, verificationRule);
                         ErrorResponse = null;
                         return true;
                     }
@@ -2186,7 +2207,7 @@ namespace cloud.charging.open.protocols.WWCP
                     if (verificationRule.Action == VerificationRuleActions.VerifyAny &&
                         signature.Status        == VerificationStatus.ValidSignature)
                     {
-                        Remember(signature);
+                        Remember(signature, verificationRule);
                         ErrorResponse = null;
                         return true;
                     }
@@ -2271,7 +2292,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 foreach (var signature in SignableMessage.Signatures)
-                    Remember(signature);
+                    Remember(signature, verificationRule);
 
                 ErrorResponse = null;
                 return true;

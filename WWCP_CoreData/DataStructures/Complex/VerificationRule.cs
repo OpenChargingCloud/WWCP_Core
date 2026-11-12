@@ -64,6 +64,41 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public VerificationRuleActions  Action      { get; }
 
+        /// <summary>
+        /// Whether the signatures of the messages of this rule are verified without
+        /// their time: neither "iat" nor "exp" is held to this node's clock, so
+        /// that MaxClockSkew and MaxSignatureAge of the signature policy do not
+        /// apply. Everything else is checked as for every other rule: the key, the
+        /// mathematics, the message type, the action, the message id or "*" with a
+        /// nonce, the destination, and the replay cache.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// For messages that carry their own protection against replay, and only
+        /// for them: a signed pin set (white paper "Key Pins and TLS 1.3 Raw Public
+        /// Keys", section 5.7) carries ServerKeyPinsVersion, and its receiver takes
+        /// it only with a higher version than the one it holds. That needs no
+        /// clock, unlike the time window, which a charging station without a
+        /// synchronized clock cannot apply: it would refuse every pin set, or take
+        /// any one, depending on how wrong its clock is.
+        /// </para>
+        /// <para>
+        /// A rule, not the policy: a node has a single signature policy, and the
+        /// time window keeps guarding everything else it verifies - a Reset, an
+        /// UpdateFirmware. Give the rule the context of the pin set's message only.
+        /// </para>
+        /// <para>
+        /// The replay cache still refuses the same signature again, but only for
+        /// MaxSignatureAge after it was taken, by this node's clock: its entries
+        /// cannot run until "exp" when "exp" is not believed. After that, the
+        /// version is the only protection left, so the receiver must compare it
+        /// with the one it holds and store the new one atomically - a rule without
+        /// time window on a message without such a version takes any replay of an
+        /// older one.
+        /// </para>
+        /// </remarks>
+        public Boolean                  WithoutTimeWindow    { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -75,30 +110,34 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Priority">The priority of the cryptographic verificationRule entry.</param>
         /// <param name="Action">The context of the cryptographic verificationRule action.</param>
         /// <param name="KeyPair">The optional cryptographic key pair for verification.</param>
+        /// <param name="WithoutTimeWindow">Whether signatures are verified without their time, for messages that carry a version of their own - see <see cref="WithoutTimeWindow"/>.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public VerificationRule(JSONLDContext            Context,
                                 UInt32                   Priority,
                                 VerificationRuleActions  Action,
-                                KeyPair?                 KeyPair      = null,
-                                CustomData?              CustomData   = null)
+                                KeyPair?                 KeyPair             = null,
+                                Boolean                  WithoutTimeWindow   = false,
+                                CustomData?              CustomData          = null)
 
             : base(CustomData)
 
         {
 
-            this.Context   = Context;
-            this.Priority  = Priority;
-            this.Action    = Action;
-            this.KeyPair   = KeyPair;
+            this.Context            = Context;
+            this.Priority           = Priority;
+            this.Action             = Action;
+            this.KeyPair            = KeyPair;
+            this.WithoutTimeWindow  = WithoutTimeWindow;
 
             unchecked
             {
 
-                hashCode = Context. GetHashCode()       * 11 ^
-                           Priority.GetHashCode()       *  7 ^
-                           Action.  GetHashCode()       *  5 ^
-                          (KeyPair?.GetHashCode() ?? 0) *  3 ^
-                           base.    GetHashCode();
+                hashCode = Context.          GetHashCode()       * 13 ^
+                           Priority.         GetHashCode()       * 11 ^
+                           Action.           GetHashCode()       *  7 ^
+                          (KeyPair?.         GetHashCode() ?? 0) *  5 ^
+                           WithoutTimeWindow.GetHashCode()       *  3 ^
+                           base.             GetHashCode();
 
             }
 
@@ -217,6 +256,19 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
+                #region WithoutTimeWindow    [optional]
+
+                if (JSON.ParseOptional("withoutTimeWindow",
+                                       "without time window",
+                                       out Boolean? WithoutTimeWindow,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -237,6 +289,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               Priority,
                                               Action,
                                               KeyPair,
+                                              WithoutTimeWindow ?? false,
                                               CustomData
                                           );
 
@@ -279,6 +332,10 @@ namespace cloud.charging.open.protocols.WWCP
                            KeyPair is not null
                                ? new JProperty("keyPair",      KeyPair.   ToJSON(CustomKeyPairSerializer,
                                                                                  CustomCustomDataSerializer))
+                               : null,
+
+                           WithoutTimeWindow
+                               ? new JProperty("withoutTimeWindow",  true)
                                : null,
 
                            CustomData is not null
@@ -366,14 +423,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             => VerificationRule is not null &&
 
-               Priority.Equals(VerificationRule.Priority) &&
-               Context. Equals(VerificationRule.Context)  &&
-               Action.  Equals(VerificationRule.Action)   &&
+               Priority.         Equals(VerificationRule.Priority)           &&
+               Context.          Equals(VerificationRule.Context)            &&
+               Action.           Equals(VerificationRule.Action)             &&
+               WithoutTimeWindow.Equals(VerificationRule.WithoutTimeWindow)  &&
 
              ((KeyPair is null     && VerificationRule.KeyPair is null) ||
               (KeyPair is not null && VerificationRule.KeyPair is not null && KeyPair.Equals(VerificationRule.KeyPair))) &&
 
-               base.    Equals(VerificationRule);
+               base.             Equals(VerificationRule);
 
         #endregion
 
@@ -398,7 +456,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => $"{Context} => {Action} ({Priority})";
+            => $"{Context} => {Action} ({Priority}){(WithoutTimeWindow ? ", without time window" : "")}";
 
         #endregion
 
