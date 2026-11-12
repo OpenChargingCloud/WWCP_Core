@@ -107,7 +107,10 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #region Data
 
         protected        readonly  HashSet<IWWCPWebSocketServer>                            wwcpWebSocketServers         = [];
-        protected        readonly  List<IWWCPWebSocketClient>                               wwcpWebSocketClients         = [];
+        // Replaced on every change, never changed in place - under wwcpWebSocketClientsLock -
+        // so that whoever goes through it goes through a list nobody writes to.
+        protected                  List<IWWCPWebSocketClient>                               wwcpWebSocketClients         = [];
+        private          readonly  Lock                                                     wwcpWebSocketClientsLock     = new();
 
         private          readonly  List<WWCPSshServer>                                      wwcpSshServers               = [];
         private          readonly  List<WWCPSshClient>                                      wwcpSshClients               = [];
@@ -584,7 +587,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                                                                CancellationToken                CancellationToken          = default)
         {
 
-            wwcpWebSocketClients.Add(wwcpWebSocketClient);
+            lock (wwcpWebSocketClientsLock)
+                wwcpWebSocketClients = [.. wwcpWebSocketClients, wwcpWebSocketClient];
 
             // Before the first attempt, so that a first attempt that fails is one
             // the client comes back from - see ReconnectPolicy.
@@ -726,6 +730,80 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
             };
 
             return SshClient.Connect(CancellationToken);
+
+        }
+
+        #endregion
+
+        #region DisconnectClient(Client, Reason = null, EventTrackingId = null)
+
+        /// <summary>
+        /// Let go of a connection this node keeps up to another networking node, for good: the node
+        /// forgets it - it is no longer among <see cref="WWCPWebSocketClients"/>, <see cref="WWCPSshClients"/>
+        /// or <see cref="WWCPClients"/> - the routes through it go, and it is closed and connects no more.
+        /// </summary>
+        /// <remarks>
+        /// A client closed by itself stays the node's, so that it can come back. A node that dials anew -
+        /// another address, another back end, after one that could not be reached - lets go of the client
+        /// it dialled before with this; otherwise it kept every client it ever dialled.
+        /// </remarks>
+        /// <param name="Client">The client.</param>
+        /// <param name="Reason">An optional reason, sent with the close.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <returns>Whether the client was one of this node's. One that was not is closed all the same.</returns>
+        public async Task<Boolean> DisconnectClient(IWWCPClient        Client,
+                                                    String?            Reason            = null,
+                                                    EventTracking_Id?  EventTrackingId   = null)
+        {
+
+            var wasOne = false;
+
+            switch (Client)
+            {
+
+                case IWWCPWebSocketClient webSocketClient:
+                    lock (wwcpWebSocketClientsLock)
+                    {
+                        wasOne = wwcpWebSocketClients.Contains(webSocketClient);
+                        if (wasOne)
+                            wwcpWebSocketClients = [.. wwcpWebSocketClients.Where(client => !ReferenceEquals(client, webSocketClient))];
+                    }
+                    break;
+
+                case WWCPSshClient sshClient:
+                    lock (wwcpSshClients)
+                        wasOne = wwcpSshClients.Remove(sshClient);
+                    break;
+
+            }
+
+            Routing.RemoveStaticRouting(Client);
+
+            switch (Client)
+            {
+
+                // Closed, it connects no more - a close cancels its reconnects, and its
+                // attempts to get through at all - and its policy goes as well.
+                case org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketClient webSocketClient:
+                    webSocketClient.ReconnectPolicy = null;
+                    await webSocketClient.Close(
+                              org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketFrame.ClosingStatusCode.NormalClosure,
+                              Reason,
+                              EventTrackingId
+                          );
+                    break;
+
+                // Closed, it connects no more.
+                case WWCPSshClient sshClient:
+                    await sshClient.Close(
+                              org.GraphDefined.Vanaheimr.Hermod.Messaging.MessageCloseCode.NormalClosure,
+                              Reason
+                          );
+                    break;
+
+            }
+
+            return wasOne;
 
         }
 

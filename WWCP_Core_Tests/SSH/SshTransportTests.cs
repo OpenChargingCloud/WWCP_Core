@@ -589,6 +589,44 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
 
         #endregion
 
+        #region ADisconnectedClientIsNoLongerTheStations()
+
+        /// <summary>
+        /// A station that lets go of its SSH client with DisconnectClient forgets it: it is no longer among
+        /// its clients nor a route, and it connects no more although it was told to come back.
+        /// </summary>
+        [Test]
+        public async Task ADisconnectedClientIsNoLongerTheStations()
+        {
+
+            var station = Station("CS001");
+            var client  = Client(station, "CS001", Reconnect: new WebSocketClientReconnectPolicy(InitialDelay: TimeSpan.FromMilliseconds(100)));
+
+            await station.ConnectSshClient(client, NextHopNetworkingNodeId: csmsId);
+            await Registered(cs001);
+
+            Assert.That(station.WWCPSshClients, Does.Contain(client));
+
+            var wasOne  = await station.DisconnectClient(client, "Dialling another one.");
+
+            Assert.That(client.IsConnected, Is.False);
+
+            await Task.Delay(400);
+
+            Assert.Multiple(() => {
+                Assert.That(wasOne,                                                 Is.True);
+                Assert.That(station.WWCPSshClients,                                 Does.Not.Contain(client));
+                Assert.That(station.WWCPClients,                                    Does.Not.Contain(client));
+                Assert.That(station.Routing.LookupNetworkingNode(csmsId, out _),    Is.False,
+                            "The route through the client let go of was still there.");
+                Assert.That(sshServer!.ConnectedNetworkingNodeIds,                  Is.Empty,
+                            "The client the station let go of connected again.");
+            });
+
+        }
+
+        #endregion
+
         #region StoppingTheNodesEndsTheirConnections()
 
         /// <summary>
