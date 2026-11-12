@@ -330,6 +330,16 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             // client of HTTP/1.1 notices nothing. Switched off by AcceptHTTP2.
             base.AcceptHTTP2                     = true;
 
+            // And over HTTP/3 (RFC 9220), on the UDP port of the number of the
+            // TCP port, where the server has TLS and a certificate that can be
+            // shown over QUIC - ECDSA P-256, ECDSA P-384 or RSA. Where it has
+            // not, or the UDP port is taken, it runs as it would without, and
+            // WhyNoHTTP3 says why. While it takes them it says so with every
+            // WebSocket it accepts (Alt-Svc), which is what a client that
+            // leaves the version of HTTP to its server goes by. Switched off
+            // by AcceptHTTP3.
+            base.AcceptHTTP3                     = true;
+
             base.OnValidateTCPConnection        += ValidateTCPConnection;
             base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
             base.OnWebSocketConnectionAccepted  += RegisterNewWebSocketConnection;
