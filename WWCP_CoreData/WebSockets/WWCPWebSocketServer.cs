@@ -323,6 +323,13 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             //                                                                                LoggingContext,
             //                                                                                LogfileCreator);
 
+            // WebSockets over HTTP/2 as well (RFC 8441), on the same port: a
+            // client that asks for "h2" - or, without TLS, starts with the
+            // connection preface of HTTP/2 - opens its WebSocket by an extended
+            // CONNECT, and is validated and authenticated as every other. A
+            // client of HTTP/1.1 notices nothing. Switched off by AcceptHTTP2.
+            base.AcceptHTTP2                     = true;
+
             base.OnValidateTCPConnection        += ValidateTCPConnection;
             base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
             base.OnWebSocketConnectionAccepted  += RegisterNewWebSocketConnection;
