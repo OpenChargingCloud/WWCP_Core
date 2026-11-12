@@ -43,8 +43,14 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.Signatures
     /// they come over the wire, and verifies them with a policy of the receiver
     /// whose clock is far from the signer's. Nothing is sent over a network.
     /// </remarks>
-    [TestFixture]
-    public class VerificationWithoutTimeWindowTests
+    /// <param name="Formats">
+    /// What the signer writes: the JWS over the JSON of the message, or the COSE_Sign1
+    /// over its CBOR. The time window, the replay cache and the frame are checked by
+    /// the same code for both, so every test runs for both.
+    /// </param>
+    [TestFixture(SignatureFormats.JWS)]
+    [TestFixture(SignatureFormats.COSE)]
+    public class VerificationWithoutTimeWindowTests(SignatureFormats Formats)
     {
 
         #region (class) ARequest
@@ -138,9 +144,19 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.Signatures
         #region (private) Helpers
 
         /// <summary>
+        /// What a COSE signature of a request signs: the CBOR of its JSON, in the
+        /// deterministic encoding - what the adapter of a node tells its policy.
+        /// </summary>
+        private static Byte[]? CBORPayloadOf(ISignableMessage Message)
+
+            => Message is ARequest request
+                   ? CBORJSON.ToCBOR(request.ToJSON().ToString(Newtonsoft.Json.Formatting.None)).ToByteArray(CBORWriterOptions.Canonical)
+                   : null;
+
+        /// <summary>
         /// A pin set request, signed at the given time by the given key.
         /// </summary>
-        private static ARequest Signed(ECCKeyPair      Signer,
+        private ARequest Signed(ECCKeyPair      Signer,
                                        JSONLDContext?  Context                   = null,
                                        DateTimeOffset? At                        = null,
                                        Boolean         NonceInsteadOfMessageId   = false,
@@ -155,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.Signatures
                                        3);
 
             // Signed as the CSMS's adapter signs: bound to its node and its protocol.
-            var policy  = new SignaturePolicy() { NonceInsteadOfMessageId = NonceInsteadOfMessageId }.
+            var policy  = new SignaturePolicy() { NonceInsteadOfMessageId = NonceInsteadOfMessageId, Formats = Formats, CBORPayloadOf = CBORPayloadOf }.
                               BindTo(NetworkingNode_Id.Parse("csms01"), "ocpp2.1");
 
             Assert.That(policy.SignRequestMessage(request, request.ToJSON(), out var errorResponse, Signer.ToSignInfo1(Timestamp: At ?? signedAt)),
@@ -163,6 +179,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.Signatures
                         errorResponse);
 
             Assert.That(request.Signatures.Count(), Is.EqualTo(1));
+            Assert.That(request.Signatures.Single().IsCOSE, Is.EqualTo(Formats == SignatureFormats.COSE));
 
             return request;
 
@@ -182,7 +199,8 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.Signatures
                        new VerificationRule(pinSetContext, 1, Action, PinSetSigner, WithoutTimeWindow),
                        new VerificationRule(resetContext,  1, Action, PinSetSigner)
                    ]) {
-                       Now = () => signedAt + ClockOffset
+                       Now            = () => signedAt + ClockOffset,
+                       CBORPayloadOf  = CBORPayloadOf
                    };
 
         /// <summary>
