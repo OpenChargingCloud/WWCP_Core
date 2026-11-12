@@ -805,6 +805,28 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Boolean                NonceInsteadOfMessageId   { get; set; }  = false;
 
+        /// <summary>
+        /// Which signatures this node writes: the JWS over the JSON of a message, the
+        /// COSE_Sign1 over its CBOR, or both (section 4.2). It verifies every signature
+        /// it can read, whatever it writes itself. Default: JWS.
+        /// </summary>
+        /// <remarks>
+        /// The two are worth different things on the way. The JWS signs the RFC 8785
+        /// form of the JSON, which every node that reads JSON can rebuild. The COSE
+        /// signs the deterministic CBOR of the message, which takes the class of the
+        /// message to rebuild: a node without it carries the signature along and cannot
+        /// verify it.
+        /// </remarks>
+        public SignatureFormats       Formats            { get; set; }  = SignatureFormats.JWS;
+
+        /// <summary>
+        /// What a COSE signature signs: the deterministic CBOR (RFC 8949, section 4.2.1)
+        /// of the given message without its signatures - or null for a message without
+        /// a CBOR form. Set by whoever knows the classes of the messages, the node's OCPP
+        /// adapter; without it no COSE signature is written, and none is verified.
+        /// </summary>
+        public Func<ISignableMessage, Byte[]?>?  CBORPayloadOf   { get; set; }
+
 
         /// <summary>
         /// Bind this policy to its node. A policy belongs to one node: binding it to
@@ -925,42 +947,31 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (private) TrySignJWS(Message, JSONMessage, SignInfo, out Signature, out ErrorResponse)
+        #region (private) ProtectedHeaderOf(Message, SignInfo, Frame, Algorithm, KeyIdentifier, out IssuedAt, out Name, out Description)
 
         /// <summary>
-        /// The OCPP fields a verifier must understand (RFC 7515 "crit").
+        /// The protected header of a signature (section 4.1): the same for a JWS and for
+        /// a COSE signature, but for the key identifier, which is the thumbprint of the
+        /// key in the form of each.
         /// </summary>
-        private static readonly HashSet<String> OCPPHeaderFields = [
-            "OCPPVersion", "OCPPMessageTypeId", "OCPPAction", "OCPPMessageId", "OCPPSource", "OCPPDestination",
-            "OCPPNonce", "OCPPRequestHash", "OCPPSignerName", "OCPPSignerDescription"
-        ];
-
-        private Boolean TrySignJWS(ISignableMessage                     Message,
-                                   JObject                              JSONMessage,
-                                   SignInfo                             SignInfo,
-                                   [NotNullWhen(true)]  out Signature?  Signature,
-                                   [NotNullWhen(false)] out String?     ErrorResponse)
+        /// <param name="Message">The message that is signed.</param>
+        /// <param name="SignInfo">Who signs it.</param>
+        /// <param name="frame">What of its frame the signature binds.</param>
+        /// <param name="algorithm">ES256, ES384 or ES512.</param>
+        /// <param name="KeyIdentifier">The key identifier, as the text the header carries.</param>
+        /// <param name="IssuedAt">The signing time.</param>
+        /// <param name="Name">The signer's name.</param>
+        /// <param name="Description">The signer's description.</param>
+        private JObject ProtectedHeaderOf(ISignableMessage    Message,
+                                          SignInfo            SignInfo,
+                                          Frame?              frame,
+                                          String              algorithm,
+                                          String              KeyIdentifier,
+                                          out DateTimeOffset  IssuedAt,
+                                          out String?         Name,
+                                          out I18NString?     Description)
         {
 
-            Signature = null;
-
-            var algorithm = JWS.AlgorithmFor(SignInfo.Algorithm);
-
-            if (algorithm is null)
-            {
-                ErrorResponse = $"JWS has no algorithm for keys of '{SignInfo.Algorithm}'!";
-                return false;
-            }
-
-            var frame = FrameOf(Message);
-
-            if (frame is null && Message is IResponse)
-            {
-                ErrorResponse = "A response is signed only together with the request it answers!";
-                return false;
-            }
-
-            var jwk         = JWS.PublicKeyJWK(SignInfo.PublicKey);
             var iat         = SignInfo.Timestamp?.Invoke(Message) ?? Now();
             var source      = NodeId ?? (Message is IRequest request ? Origin(request.NetworkPath) : null);
             var name        = SignInfo.SignerName?. Invoke(Message);
@@ -970,7 +981,7 @@ namespace cloud.charging.open.protocols.WWCP
             var header      = JSONObject.Create(
 
                                         new JProperty("alg",                    algorithm),
-                                        new JProperty("kid",                    JWS.Thumbprint(jwk)),
+                                        new JProperty("kid",                    KeyIdentifier),
 
                                   frame is not null && OCPPVersion is not null
                                       ? new JProperty("OCPPVersion",            OCPPVersion)
@@ -1025,6 +1036,54 @@ namespace cloud.charging.open.protocols.WWCP
             if (crit.Length > 0)
                 header.Add("crit", new JArray(crit));
 
+            IssuedAt     = iat;
+            Name         = name;
+            Description  = description;
+
+            return header;
+
+        }
+
+        #endregion
+
+        #region (private) TrySignJWS(Message, JSONMessage, SignInfo, out Signature, out ErrorResponse)
+
+        /// <summary>
+        /// The OCPP fields a verifier must understand (RFC 7515 "crit").
+        /// </summary>
+        private static readonly HashSet<String> OCPPHeaderFields = [
+            "OCPPVersion", "OCPPMessageTypeId", "OCPPAction", "OCPPMessageId", "OCPPSource", "OCPPDestination",
+            "OCPPNonce", "OCPPRequestHash", "OCPPSignerName", "OCPPSignerDescription"
+        ];
+
+        private Boolean TrySignJWS(ISignableMessage                     Message,
+                                   JObject                              JSONMessage,
+                                   SignInfo                             SignInfo,
+                                   [NotNullWhen(true)]  out Signature?  Signature,
+                                   [NotNullWhen(false)] out String?     ErrorResponse)
+        {
+
+            Signature = null;
+
+            var algorithm = JWS.AlgorithmFor(SignInfo.Algorithm);
+
+            if (algorithm is null)
+            {
+                ErrorResponse = $"JWS has no algorithm for keys of '{SignInfo.Algorithm}'!";
+                return false;
+            }
+
+            var frame = FrameOf(Message);
+
+            if (frame is null && Message is IResponse)
+            {
+                ErrorResponse = "A response is signed only together with the request it answers!";
+                return false;
+            }
+
+            var jwk         = JWS.PublicKeyJWK(SignInfo.PublicKey);
+            var header      = ProtectedHeaderOf(Message, SignInfo, frame, algorithm, JWS.Thumbprint(jwk), out var iat, out var name, out var description);
+
             var protectedText  = JWS.Base64URL(header.ToString(Formatting.None));
             var signingInput   = System.Text.Encoding.ASCII.GetBytes(protectedText + "." + JWSPayload(JSONMessage, RemoveContext: true));
 
@@ -1043,6 +1102,66 @@ namespace cloud.charging.open.protocols.WWCP
 
             ErrorResponse = null;
             return true;
+
+        }
+
+        #endregion
+
+        #region (private) TrySignCOSE(Message, SignInfo, out Signature, out ErrorResponse)
+
+        /// <summary>
+        /// Sign the given message with a COSE_Sign1 over its deterministic CBOR.
+        /// </summary>
+        private Boolean TrySignCOSE(ISignableMessage                     Message,
+                                    SignInfo                             SignInfo,
+                                    [NotNullWhen(true)]  out Signature?  Signature,
+                                    [NotNullWhen(false)] out String?     ErrorResponse)
+        {
+
+            Signature = null;
+
+            var algorithm = JWS.AlgorithmFor(SignInfo.Algorithm);
+
+            if (algorithm is null)
+            {
+                ErrorResponse = $"COSE has no algorithm for keys of '{SignInfo.Algorithm}'!";
+                return false;
+            }
+
+            var frame = FrameOf(Message);
+
+            if (frame is null && Message is IResponse)
+            {
+                ErrorResponse = "A response is signed only together with the request it answers!";
+                return false;
+            }
+
+            var payload = CBORPayloadOf?.Invoke(Message);
+
+            if (payload is null)
+            {
+                ErrorResponse = $"The message '{Message.Context}' has no CBOR a COSE signature could sign!";
+                return false;
+            }
+
+            var header = ProtectedHeaderOf(
+                             Message,
+                             SignInfo,
+                             frame,
+                             algorithm,
+                             JWS.Base64URL(COSESignatures.KeyIdentifier(SignInfo.PublicKey)),
+                             out _,
+                             out _,
+                             out _
+                         );
+
+            // Read back as whoever receives it reads it: the signature the message
+            // carries is what was sent, and nothing that was only meant.
+            return Signature.TryParseCOSE(
+                       COSESignatures.Sign(header, SignInfo.PublicKey, SignInfo.PrivateKey, payload),
+                       out Signature,
+                       out ErrorResponse
+                   );
 
         }
 
@@ -1139,6 +1258,116 @@ namespace cloud.charging.open.protocols.WWCP
             }
 
             #endregion
+
+            return CheckFrameAndTime(header, Message, out Why);
+
+        }
+
+        #endregion
+
+        #region (private) CheckCOSE(Signature, Message, Payload, Rule, out Why)
+
+        /// <summary>
+        /// Check one COSE signature: the key, the mathematics, the header against the
+        /// frame, and the time. The replay cache is consulted, not yet written.
+        /// </summary>
+        /// <param name="Payload">The deterministic CBOR of the message without its signatures.</param>
+        private VerificationStatus CheckCOSE(Signature           Signature,
+                                             ISignableMessage    Message,
+                                             Byte[]              Payload,
+                                             VerificationRule    Rule,
+                                             out String          Why)
+        {
+
+            if (!COSESignatures.TryRead(Signature.COSE!, out var sign1, out var header, out var carriedKey, out var errorResponse))
+            {
+                Why = errorResponse;
+                return VerificationStatus.BrokenSignature;
+            }
+
+            #region Critical fields this verifier understands
+
+            if (header["crit"] is JToken crit &&
+                (crit is not JArray critArray ||
+                 critArray.Any(field => field.Type != JTokenType.String || !OCPPHeaderFields.Contains(field.Value<String>()!))))
+            {
+                Why = $"The signature names critical header fields this verifier does not understand: {crit.ToString(Formatting.None)}";
+                return VerificationStatus.BrokenSignature;
+            }
+
+            #endregion
+
+            #region The key: the rule's, or the one the signature carries
+
+            ECPublicKeyParameters? publicKey;
+            var kid = header["kid"]?.Value<String>();
+
+            if (Rule.KeyPair?.PublicKeyBytes is Byte[] ruleKey)
+            {
+
+                var curve = Rule.KeyPair.Algorithm switch {
+                                var a when a == CryptoAlgorithm.Secp521r1 => SecNamedCurves.GetByName("secp521r1"),
+                                var a when a == CryptoAlgorithm.Secp384r1 => SecNamedCurves.GetByName("secp384r1"),
+                                _                                         => SecNamedCurves.GetByName("secp256r1")
+                            };
+
+                publicKey = new ECPublicKeyParameters("ECDSA", curve.Curve.DecodePoint(ruleKey), new ECDomainParameters(curve.Curve, curve.G, curve.N, curve.H, curve.GetSeed()));
+
+                if (kid != JWS.Base64URL(COSESignatures.KeyIdentifier(publicKey)))
+                {
+                    Why = "The signature was made by another key than the one the signature policy names!";
+                    return VerificationStatus.UnknownSigner;
+                }
+
+            }
+            else
+            {
+
+                if (carriedKey is null)
+                {
+                    Why = "The signature carries no public key, and the signature policy names none!";
+                    return VerificationStatus.UnknownSigner;
+                }
+
+                publicKey = carriedKey;
+
+                if (kid != JWS.Base64URL(COSESignatures.KeyIdentifier(publicKey)))
+                {
+                    Why = "The key id of the signature is not the thumbprint of the key it carries!";
+                    return VerificationStatus.BrokenSignature;
+                }
+
+            }
+
+            #endregion
+
+            #region The mathematics
+
+            if (!COSESignatures.Verify(sign1, header, publicKey, Payload))
+            {
+                Why = "The signature is not valid for the CBOR of the message!";
+                return VerificationStatus.InvalidSignature;
+            }
+
+            #endregion
+
+            return CheckFrameAndTime(header, Message, out Why);
+
+        }
+
+        #endregion
+
+        #region (private) CheckFrameAndTime(header, Message, out Why)
+
+        /// <summary>
+        /// What every signature with a protected header is held to, whatever its
+        /// encoding: the header against the frame, the time, and that it was not seen
+        /// before (section 4.1).
+        /// </summary>
+        private VerificationStatus CheckFrameAndTime(JObject           header,
+                                                     ISignableMessage  Message,
+                                                     out String        Why)
+        {
 
             #region The header against the frame
 
@@ -1370,10 +1599,26 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #endregion
 
-                    if (!TrySignJWS(SignableMessage, JSONMessage, signInfo, out var signature, out ErrorResponse))
-                        return false;
+                    if (Formats.HasFlag(SignatureFormats.JWS))
+                    {
 
-                    SignableMessage.AddSignature(signature);
+                        if (!TrySignJWS(SignableMessage, JSONMessage, signInfo, out var signature, out ErrorResponse))
+                            return false;
+
+                        SignableMessage.AddSignature(signature);
+
+                    }
+
+                    // Next to it, not instead of it: neither signs the other.
+                    if (Formats.HasFlag(SignatureFormats.COSE))
+                    {
+
+                        if (!TrySignCOSE(SignableMessage, signInfo, out var signature, out ErrorResponse))
+                            return false;
+
+                        SignableMessage.AddSignature(signature);
+
+                    }
 
                 }
 
@@ -1866,8 +2111,59 @@ namespace cloud.charging.open.protocols.WWCP
 
             var reasons = new List<String>();
 
+            // What a COSE signature signs is built once, and only where one asks for it.
+            Byte[]? cosePayload      = null;
+            var     cosePayloadBuilt = false;
+
             foreach (var signature in SignableMessage.Signatures)
             {
+
+                #region A COSE signature
+
+                if (signature.IsCOSE)
+                {
+
+                    if (!cosePayloadBuilt)
+                    {
+
+                        try
+                        {
+                            cosePayload = CBORPayloadOf?.Invoke(SignableMessage);
+                        }
+                        catch
+                        {
+                            cosePayload = null;
+                        }
+
+                        cosePayloadBuilt = true;
+
+                    }
+
+                    if (cosePayload is null)
+                    {
+                        signature.Status = VerificationStatus.BrokenSignature;
+                        reasons.Add("A COSE signature on a message this node has no CBOR for cannot be verified");
+                    }
+                    else
+                    {
+                        signature.Status = CheckCOSE(signature, SignableMessage, cosePayload, verificationRule, out var why);
+                        if (why.Length > 0)
+                            reasons.Add(why);
+                    }
+
+                    if (verificationRule.Action == VerificationRuleActions.VerifyAny &&
+                        signature.Status        == VerificationStatus.ValidSignature)
+                    {
+                        Remember(signature);
+                        ErrorResponse = null;
+                        return true;
+                    }
+
+                    continue;
+
+                }
+
+                #endregion
 
                 #region A JWS signature with a protected header
 

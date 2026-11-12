@@ -115,6 +115,22 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean              IsJWS
             => Protected is not null;
 
+        /// <summary>
+        /// A COSE signature as it was sent: the bytes of a COSE_Sign1 (RFC 9052) without
+        /// its payload, which is the deterministic CBOR of the message without its
+        /// signatures. Null for every other signature.
+        /// </summary>
+        public Byte[]?              COSE              { get; }
+
+        /// <summary>
+        /// Whether this is a COSE signature (white paper "Signed OCPP Messages and Signer
+        /// Roles", section 4.2). Its protected header is that of a JWS signature, and is
+        /// found decoded in ProtectedHeader, "alg" and "kid" under their JWS names.
+        /// </summary>
+        [MemberNotNullWhen(true, nameof(COSE))]
+        public Boolean              IsCOSE
+            => COSE is not null;
+
         #endregion
 
         #region Constructor(s)
@@ -212,6 +228,48 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
                 hashCode = hashCode * 29 ^ Protected.GetHashCode();
+            }
+
+        }
+
+
+        /// <summary>
+        /// Create a new COSE signature.
+        /// </summary>
+        /// <param name="COSE">The COSE_Sign1 as sent.</param>
+        /// <param name="ProtectedHeader">Its protected header, decoded: as the JSON object a JWS signature has.</param>
+        /// <param name="Value">The signature value (for ECDSA: r‖s).</param>
+        /// <param name="KeyId">The signer's public key as a raw point, when the signature carries it; otherwise empty.</param>
+        /// <param name="Algorithm">The curve of the algorithm in the header.</param>
+        /// <param name="Name">The signer's name from the protected header.</param>
+        /// <param name="Description">The signer's description from the protected header.</param>
+        /// <param name="Timestamp">The signing time ("iat") from the protected header.</param>
+        private Signature(Byte[]           COSE,
+                          JObject          ProtectedHeader,
+                          Byte[]           Value,
+                          Byte[]           KeyId,
+                          CryptoAlgorithm  Algorithm,
+                          String?          Name,
+                          I18NString?      Description,
+                          DateTimeOffset?  Timestamp)
+
+            : this(KeyId,
+                   Value,
+                   Algorithm,
+                   null,
+                   null,
+                   Name,
+                   Description,
+                   Timestamp)
+
+        {
+
+            this.COSE             = COSE;
+            this.ProtectedHeader  = ProtectedHeader;
+
+            unchecked
+            {
+                hashCode = hashCode * 31 ^ JWS.Base64URL(COSE).GetHashCode();
             }
 
         }
@@ -319,6 +377,28 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 Signature = default;
+
+                // A COSE signature in a JSON message: its bytes, as base64url.
+                if (JSON.ContainsKey("cose"))
+                {
+
+                    if (JSON["cose"]?.Type != JTokenType.String ||
+                        !JWS.TryDecodeBase64URL(JSON["cose"]!.Value<String>(), out var cose))
+                    {
+                        ErrorResponse = "The COSE signature is not base64url!";
+                        return false;
+                    }
+
+                    if (!TryParseCOSE(cose, out Signature, out ErrorResponse))
+                        return false;
+
+                    if (CustomSignatureParser is not null)
+                        Signature = CustomSignatureParser(JSON,
+                                                          Signature);
+
+                    return true;
+
+                }
 
                 if (JSON.ContainsKey("protected"))
                 {
@@ -582,6 +662,71 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region (static) TryParseCOSE(COSE, out Signature, out ErrorResponse)
+
+        /// <summary>
+        /// Read a COSE signature: a COSE_Sign1 without its payload.
+        /// </summary>
+        /// <param name="COSE">The bytes of the COSE_Sign1.</param>
+        /// <param name="Signature">The signature.</param>
+        /// <param name="ErrorResponse">Why it cannot be read.</param>
+        public static Boolean TryParseCOSE(Byte[]                               COSE,
+                                           [NotNullWhen(true)]  out Signature?  Signature,
+                                           [NotNullWhen(false)] out String?     ErrorResponse)
+        {
+
+            Signature = null;
+
+            if (!COSESignatures.TryRead(COSE, out var sign1, out var protectedHeader, out var publicKey, out ErrorResponse))
+                return false;
+
+            var algorithm = protectedHeader["alg"]?.Value<String>() switch {
+                                JWS.ES256 => CryptoAlgorithm.Secp256r1,
+                                JWS.ES384 => CryptoAlgorithm.Secp384r1,
+                                JWS.ES512 => CryptoAlgorithm.Secp521r1,
+                                _         => (CryptoAlgorithm?) null
+                            };
+
+            if (algorithm is null)
+            {
+                ErrorResponse = $"The signature algorithm '{protectedHeader["alg"]}' is unknown!";
+                return false;
+            }
+
+            var timestamp = protectedHeader["iat"]?.Type == JTokenType.Integer
+                                ? DateTimeOffset.FromUnixTimeSeconds(protectedHeader["iat"]!.Value<Int64>())
+                                : (DateTimeOffset?) null;
+
+            if (protectedHeader.ParseOptional("OCPPSignerDescription",
+                                              "signer description",
+                                              I18NString.TryParse,
+                                              out I18NString? description,
+                                              out ErrorResponse))
+            {
+                if (ErrorResponse is not null)
+                    return false;
+            }
+
+            Signature = new Signature(
+                            COSE,
+                            protectedHeader,
+                            sign1.Signature,
+                            publicKey?.Q.GetEncoded(false) ?? [],
+                            algorithm.Value,
+                            protectedHeader["OCPPSignerName"]?.Type == JTokenType.String
+                                ? protectedHeader["OCPPSignerName"]!.Value<String>()
+                                : null,
+                            description,
+                            timestamp
+                        );
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
+
         #region (static) TryParse(Binary, out Signature, out ErrorResponse, CustomSignatureParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
@@ -663,6 +808,19 @@ namespace cloud.charging.open.protocols.WWCP
         public JObject ToJSON(CustomJObjectSerializerDelegate<Signature>?   CustomSignatureSerializer    = null,
                               CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
+
+            if (IsCOSE)
+            {
+
+                var cose = new JObject(
+                               new JProperty("cose", JWS.Base64URL(COSE))
+                           );
+
+                return CustomSignatureSerializer is not null
+                           ? CustomSignatureSerializer(this, cose)
+                           : cose;
+
+            }
 
             if (IsJWS)
             {
@@ -772,7 +930,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Signature Clone()
 
-            => IsJWS
+            => IsCOSE
+
+                   ? new (
+                         (Byte[]) COSE.Clone(),
+                         (JObject) ProtectedHeader!.DeepClone(),
+                         (Byte[]) Value.Clone(),
+                         (Byte[]) KeyId.Clone(),
+                         Algorithm.Clone(),
+                         Name,
+                         Description,
+                         Timestamp
+                     )
+
+             : IsJWS
 
                    ? new (
                          Protected!,
@@ -878,6 +1049,7 @@ namespace cloud.charging.open.protocols.WWCP
                KeyId.SequenceEqual(Signature.KeyId) &&
                Value.SequenceEqual(Signature.Value) &&
                Protected == Signature.Protected     &&
+               (COSE ?? []).SequenceEqual(Signature.COSE ?? []) &&
 
                Algorithm.    Equals(Signature.Algorithm)     &&
                SigningMethod.Equals(Signature.SigningMethod) &&
