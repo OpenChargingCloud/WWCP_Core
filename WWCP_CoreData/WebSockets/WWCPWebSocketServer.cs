@@ -763,7 +763,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                     if (ClientTOTPConfig.TryGetValue(totpAuthentication.Login, out var totpConfig))
                     {
 
-                        if (TOTPMatches(totpConfig, totpAuthentication.TOTP))
+                        if (TOTPIsTheOneOf(totpConfig, totpAuthentication.TOTP, totpAuthentication.Type, Connection.TOTPTLSExporterMaterial))
                         {
                             DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using TOTP authorization: '{totpAuthentication.Login}'");
                             return Task.FromResult<HTTPResponse?>(null);
@@ -1330,41 +1330,11 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                        HTTPTOTPAuthentication totpAuthentication
                            => ClientTOTPConfig.TryGetValue(totpAuthentication.Login, out var totpConfig) &&
-                              TOTPMatches(totpConfig, totpAuthentication.TOTP),
+                              TOTPIsTheOneOf(totpConfig, totpAuthentication.TOTP, totpAuthentication.Type, Connection.TOTPTLSExporterMaterial),
 
                        _   => false
 
                    };
-
-        }
-
-        #endregion
-
-        #region (private static) TOTPMatches              (TOTPConfig, TOTP)
-
-        /// <summary>
-        /// Whether the given TOTP is the one of the current time slot, or of the
-        /// one before or after it.
-        /// </summary>
-        private static Boolean TOTPMatches(TOTPConfig  TOTPConfig,
-                                           String      TOTP)
-        {
-
-            var (previousTOTP,
-                 currentTOTP,
-                 nextTOTP,
-                 _,
-                 _) = TOTPGenerator.GenerateTOTPs(
-                          Timestamp.Now,
-                          TOTPConfig.SharedSecret,
-                          TOTPConfig.ValidityTime,
-                          TOTPConfig.Length,
-                          TOTPConfig.Alphabet
-                      );
-
-            return TOTP == previousTOTP ||
-                   TOTP == currentTOTP  ||
-                   TOTP == nextTOTP;
 
         }
 
