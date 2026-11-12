@@ -113,6 +113,35 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
             => Connection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId);
 
+        /// <summary>
+        /// Whether the far end of a connection dialled it in the overlay network - X-OCPP-NetworkingMode or its
+        /// SSH HELLO said so - and so is sent messages that name where they go and where they come from.
+        /// </summary>
+        /// <param name="Connection">A message connection.</param>
+        public static Boolean InOverlayNetwork(this IMessageConnection Connection)
+
+            => Connection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode) == NetworkingMode.OverlayNetwork;
+
+        /// <summary>
+        /// Whether a message for the given networking node may go over a connection to the given next hop:
+        /// always where the next hop is that node, and through it only in the overlay network.
+        /// </summary>
+        /// <remarks>
+        /// A message in the standard networking mode names no destination, and its receiver takes it as its
+        /// own. Over a local controller's standard connection a request for a charging station behind it would
+        /// be carried out by the controller itself - a Reset, a SetVariables, an InstallSSHKey - and answered
+        /// as if by the station.
+        /// </remarks>
+        /// <param name="Connection">A connection to the next hop.</param>
+        /// <param name="NextHop">The networking node the connection leads to.</param>
+        /// <param name="DestinationId">The networking node the message is for.</param>
+        public static Boolean Carries(this IMessageConnection  Connection,
+                                      NetworkingNode_Id        NextHop,
+                                      NetworkingNode_Id        DestinationId)
+
+            => NextHop == DestinationId ||
+               Connection.InOverlayNetwork();
+
     }
 
 }

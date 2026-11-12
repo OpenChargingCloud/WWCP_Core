@@ -386,7 +386,8 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         #region GetConnectionsFor         (DestinationId)
 
         /// <summary>
-        /// The live connections to the given networking node, or to the one it is reached through.
+        /// The live connections to the given networking node, or to the one it is reached through - where they
+        /// are in the overlay network, see <see cref="WWCPConnectionExtensions.Carries"/>.
         /// </summary>
         /// <param name="DestinationId">A networking node.</param>
         public IEnumerable<SshMessageConnection> GetConnectionsFor(NetworkingNode_Id DestinationId)
@@ -407,7 +408,8 @@ namespace cloud.charging.open.protocols.WWCP.SSH
                 nextHop = reachability.DestinationId;
 
             return connectedNetworkingNodes.TryGetValue(nextHop, out var connectionsTo)
-                       ? connectionsTo.Where(connection => connection.IsAlive)
+                       ? connectionsTo.Where(connection => connection.IsAlive &&
+                                                           connection.Carries(nextHop, DestinationId))
                        : [];
 
         }

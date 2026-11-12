@@ -1372,6 +1372,13 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #region (protected) GetConnectionsFor             (DestinationId)
 
+        /// <summary>
+        /// The live connections a message for the given networking node goes over: its own, or those of the
+        /// node it is reached through - where they are in the overlay network, see
+        /// <see cref="WWCPConnectionExtensions.Carries"/>. None, where it cannot be reached this way: the
+        /// sender is told so as of a node this server does not know.
+        /// </summary>
+        /// <param name="DestinationId">A networking node.</param>
         protected IEnumerable<WebSocketServerConnection> GetConnectionsFor(NetworkingNode_Id DestinationId)
         {
 
@@ -1389,7 +1396,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
             if (connectedNetworkingNodes.TryGetValue(nextHop, out var networkingNodeConnections))
                 return networkingNodeConnections.WebSocketServerConnections.
-                           Where(webSocketServerConnection => webSocketServerConnection.IsAlive);
+                           Where(webSocketServerConnection => webSocketServerConnection.IsAlive &&
+                                                              webSocketServerConnection.Carries(nextHop, DestinationId));
 
             return [];
 

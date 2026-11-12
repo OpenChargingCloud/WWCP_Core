@@ -90,12 +90,14 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         /// <param name="Subprotocol">The WebSocket subprotocol to offer.</param>
         /// <param name="ServerCertificate">The certificate the server has to show over TLS; without one, no TLS.</param>
         /// <param name="ClientCertificate">An optional client certificate to show the server over TLS.</param>
-        public static async Task<RawWebSocketClient> Upgrade(IPPort             Port,
-                                                             String             PathAndQuery,
-                                                             String?            Authorization       = null,
-                                                             String             Subprotocol         = "ocpp2.1",
-                                                             X509Certificate2?  ServerCertificate   = null,
-                                                             X509Certificate2?  ClientCertificate   = null)
+        /// <param name="Headers">Further header lines, e.g. "X-OCPP-NetworkingMode: OverlayNetwork".</param>
+        public static async Task<RawWebSocketClient> Upgrade(IPPort                Port,
+                                                             String                PathAndQuery,
+                                                             String?               Authorization       = null,
+                                                             String                Subprotocol         = "ocpp2.1",
+                                                             X509Certificate2?     ServerCertificate   = null,
+                                                             X509Certificate2?     ClientCertificate   = null,
+                                                             IEnumerable<String>?  Headers             = null)
         {
 
             var tcp = new TcpClient();
@@ -137,6 +139,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
 
             if (Authorization is not null)
                 request.Append($"Authorization: {Authorization}\r\n");
+
+            foreach (var header in Headers ?? [])
+                request.Append($"{header}\r\n");
 
             request.Append("\r\n");
 

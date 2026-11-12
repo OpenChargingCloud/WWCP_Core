@@ -495,6 +495,55 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
 
         #endregion
 
+        #region ANodeBehindAnother_IsReachedOnlyInTheOverlayNetwork(Mode)
+
+        /// <summary>
+        /// A message for a station behind a local controller goes over the controller's connection only where
+        /// the controller said in its HELLO that it is in the overlay network. Over a standard connection it
+        /// would name no destination, and the controller would take it as its own: nothing is sent, as to a
+        /// node nobody knows. What is for the controller itself goes either way.
+        /// </summary>
+        [TestCase(null,                           false, TestName = "ANodeBehindAStandardConnection_IsNotReached")]
+        [TestCase(NetworkingMode.OverlayNetwork,  true,  TestName = "ANodeBehindAnOverlayConnection_IsReached")]
+        public async Task ANodeBehindAnother_IsReachedOnlyInTheOverlayNetwork(NetworkingMode?  Mode,
+                                                                             Boolean          Reached)
+        {
+
+            var lc001       = NetworkingNode_Id.Parse("LC001");
+            var atLC        = new ConcurrentQueue<JArray>();
+
+            var controller  = Station("LC001");
+            var client      = Client(controller, "LC001", Mode);
+
+            client.OnJSONMessageReceived += (_, _, _, _, _, _, json, _) => { atLC.Enqueue(json); return Task.CompletedTask; };
+
+            await controller.ConnectSshClient(client, NextHopNetworkingNodeId: csmsId);
+
+            var serverSide  = await Registered(lc001);
+
+            csms!.Routing.AddOrUpdateStaticRouting(cs002, lc001);
+
+            var reset       = JArray.Parse("""[2,"CS002","csms","1","Reset",{"type":"Immediate"}]""");
+            var toStation   = await sshServer!.SendJSONMessage(cs002, reset, Timestamp.Now, EventTracking_Id.New);
+
+            Assert.Multiple(() => {
+                Assert.That(sshServer.GetConnectionsFor(lc001),   Is.EqualTo(new[] { serverSide }), "the controller itself is not reached");
+                Assert.That(sshServer.GetConnectionsFor(cs002),   Reached ? Is.EqualTo(new[] { serverSide }) : Is.Empty);
+                Assert.That(toStation.Result,                     Is.EqualTo(Reached ? SentMessageResults.Success : SentMessageResults.UnknownClient));
+            });
+
+            if (Reached)
+                await Until(() => atLC.Count == 1, "The message for the station at the controller");
+            else
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(300));
+                Assert.That(atLC, Is.Empty, "the controller got a message for the station behind it over its standard connection");
+            }
+
+        }
+
+        #endregion
+
         #region AFirstConnectThatFailsIsTriedAgain()
 
         /// <summary>
