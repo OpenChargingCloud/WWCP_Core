@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// An OCPP CSE cryptographic signature policy.
     /// </summary>
-    public class SignaturePolicy : ACustomSignableData,
+    public partial class SignaturePolicy : ACustomSignableData,
                                    ISignableMessage,
                                    IEquatable<SignaturePolicy>
     {
@@ -1821,14 +1821,28 @@ namespace cloud.charging.open.protocols.WWCP
 
             var verificationRule = GetHighestVerificationRule(SignableMessage.Context);
 
+            // The policy table (chapter 5) wants to know who signed a request, also where
+            // no verification rule asks for signatures: what is there is then verified,
+            // and none at all is for the table to judge.
+            var forThePolicyTable = false;
+
             switch (verificationRule.Action)
             {
 
                 case VerificationRuleActions.AcceptUnverified:
-                    foreach (var signature in SignableMessage.Signatures)
-                        signature.Status = VerificationStatus.Unverified;
-                    ErrorResponse = null;
-                    return true;
+
+                    if (Mode == MessagePolicyModes.Off  ||
+                        SignableMessage is IResponse    ||
+                       !SignableMessage.Signatures.Any())
+                    {
+                        foreach (var signature in SignableMessage.Signatures)
+                            signature.Status = VerificationStatus.Unverified;
+                        ErrorResponse = null;
+                        return true;
+                    }
+
+                    forThePolicyTable = true;
+                    break;
 
                 case VerificationRuleActions.Drop:
                     foreach (var signature in SignableMessage.Signatures)
@@ -1967,6 +1981,14 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
+            // In the mode "Observe" an invalid signature is reported, not refused: its key
+            // counts as no signer, and the policy table says what follows from that.
+            if (forThePolicyTable && Mode == MessagePolicyModes.Observe)
+            {
+                ErrorResponse = null;
+                return true;
+            }
+
             ErrorResponse = (verificationRule.Action == VerificationRuleActions.VerifyAny
                                  ? "None of the message's signatures is valid"
                                  : "Not every signature of the message is valid") +
@@ -2014,7 +2036,13 @@ namespace cloud.charging.open.protocols.WWCP
                            plainText.ToUTF8Bytes(),
                            jwsPayload,
                            out ErrorResponse
-                       );
+                       ) &&
+                       (SignableMessage is IResponse ||
+                        Decide(
+                            SignableMessage,
+                            ReceivedJSON ?? JSONMessage,
+                            out ErrorResponse
+                        ));
 
             }
             catch (Exception e)
@@ -2095,7 +2123,13 @@ namespace cloud.charging.open.protocols.WWCP
                            BinaryMessage,
                            null,
                            out ErrorResponse
-                       );
+                       ) &&
+                       (SignableMessage is IResponse ||
+                        Decide(
+                            SignableMessage,
+                            null,
+                            out ErrorResponse
+                        ));
 
             }
             catch (Exception e)
