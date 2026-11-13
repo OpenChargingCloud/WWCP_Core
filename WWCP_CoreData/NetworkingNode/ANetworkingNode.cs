@@ -690,7 +690,9 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
             var routingNetworkingNodeIds = RoutingNetworkingNodeIds?.ToArray() ?? [];
 
-            SshClient.OnConnected += (timestamp, transport, connection, networkingNodeId, networkingMode, eventTrackingId, cancellationToken) => {
+            // Before anyone hears of the connection: written down in a handler of OnConnected, one subscribed
+            // before this was told of it without whom it reaches, and found no route through it.
+            SshClient.OnConnectionAccepted += (timestamp, transport, connection, networkingNodeId, networkingMode, eventTrackingId, cancellationToken) => {
 
                 if (NextHopNetworkingNodeId.HasValue)
                 {

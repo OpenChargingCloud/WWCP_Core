@@ -135,6 +135,14 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         public event OnWWCPSshConnectionDelegate?          OnConnected;
 
         /// <summary>
+        /// A connection was made, and nobody has heard of it yet: raised before <see cref="OnConnected"/>, for
+        /// the node that keeps the client up to write down who is at the other end and who is reached through
+        /// it - as it does for a WebSocket when the server has accepted the upgrade. Written down in a handler
+        /// of OnConnected, a handler subscribed before it was told of the connection without them.
+        /// </summary>
+        internal event OnWWCPSshConnectionDelegate?        OnConnectionAccepted;
+
+        /// <summary>
         /// A connection ended.
         /// </summary>
         public event OnWWCPSshConnectionClosedDelegate?    OnConnectionClosed;
@@ -216,13 +224,28 @@ namespace cloud.charging.open.protocols.WWCP.SSH
             MessageClient.OnConnectFailed          += (timestamp, sender, error, attempt, nextAttemptIn, cancellationToken) =>
                                                           RaiseConnectFailed(error, attempt, nextAttemptIn);
 
-            MessageClient.OnNewConnection          += (timestamp, sender, connection, cancellationToken) => {
+            MessageClient.OnNewConnection          += async (timestamp, sender, connection, cancellationToken) => {
 
                 // Before anyone else hears of it, and before its first message is read: whoever reads one
                 // learns from the connection which client it belongs to.
                 connection.TryAddCustomData(WWCPConnectionExtensions.WWCPClientKey, this);
 
-                return WWCPSshMessaging.RaiseAll(
+                // Who is at the other end, and who is reached through it, before anyone hears of it.
+                await WWCPSshMessaging.RaiseAll(
+                          OnConnectionAccepted,
+                          handler => handler(
+                                         timestamp,
+                                         this,
+                                         connection,
+                                         connection.NetworkingNodeIdOf(),
+                                         this.NetworkingMode,
+                                         EventTracking_Id.New,
+                                         cancellationToken
+                                     ),
+                          nameof(WWCPSshClient)
+                      );
+
+                await WWCPSshMessaging.RaiseAll(
                            OnConnected,
                            handler => handler(
                                           timestamp,

@@ -577,6 +577,64 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
 
         #endregion
 
+        #region WhoeverHearsOfAConnection_FindsWhomItReaches(FirstAttemptFails)
+
+        /// <summary>
+        /// Whoever hears of a connection - subscribed to the client before the node keeps it up - is told
+        /// whom it reaches, finds that written on it, and finds the route through it: on the first
+        /// connection, and on one the client made by itself after a first attempt that failed. Written down
+        /// in a handler of OnConnected of its own, the node did so after such a handler had heard of it -
+        /// and AFirstConnectThatFailsIsTriedAgain, waiting for that handler, found no id on a busy machine.
+        /// </summary>
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task WhoeverHearsOfAConnection_FindsWhomItReaches(Boolean FirstAttemptFails)
+        {
+
+            if (FirstAttemptFails)
+            {
+                await listener!.DisposeAsync();
+                listener = null;
+            }
+
+            var station   = Station("CS001");
+            var client    = Client(station, "CS001", Reconnect: new WebSocketClientReconnectPolicy(InitialDelay: TimeSpan.FromMilliseconds(100), MaxDelay: TimeSpan.FromMilliseconds(200)));
+
+            NetworkingNode_Id?  told     = null;
+            NetworkingNode_Id?  written  = null;
+            var                 routed   = false;
+
+            var heard = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            client.OnConnected += (_, _, connection, networkingNodeId, _, _, _) => {
+
+                told     = networkingNodeId;
+                written  = connection.NetworkingNodeIdOf();
+                routed   = station.Routing.LookupNetworkingNode(csmsId, out var toCSMS) && ReferenceEquals(toCSMS!.Client, client);
+
+                heard.TrySetResult();
+                return Task.CompletedTask;
+
+            };
+
+            if (FirstAttemptFails)
+            {
+                Assert.That(async () => await station.ConnectSshClient(client, NextHopNetworkingNodeId: csmsId), Throws.Exception);
+                listener = await Listen(port);
+            }
+            else
+                await station.ConnectSshClient(client, NextHopNetworkingNodeId: csmsId);
+
+            await Within(heard.Task, "Hearing of the connection");
+
+            Assert.That(told,    Is.EqualTo(csmsId), "Told whom the connection reaches.");
+            Assert.That(written, Is.EqualTo(csmsId), "Found it written on the connection.");
+            Assert.That(routed,  Is.True,            "Found the route through it.");
+
+        }
+
+        #endregion
+
         #region AFirstConnectThatFailsSaysSoEveryTime()
 
         /// <summary>
