@@ -160,6 +160,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
                 Assert.That(asItself. HTTPStatusCode.Code,  Is.EqualTo(101),      "A one-time password without a login was not taken for the one of the path.");
                 Assert.That(asAnother.HTTPStatusCode.Code,  Is.EqualTo(401),      "A one-time password of CS001 opened a connection as CS002.");
                 Assert.That(mistaken. HTTPStatusCode.Code,  Is.EqualTo(401),      "A one-time password of another secret was taken.");
+                Assert.That(mistaken. WWWAuthenticate?.ToString(), Is.EqualTo("TOTP realm=\"WWCP\""), "Who was refused is not told what it may come with.");
                 Assert.That(server!.WebSocketConnections.Count(), Is.EqualTo(1),  "Not the one connection that was let in is there.");
             });
 

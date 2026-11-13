@@ -805,14 +805,19 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                     DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} missing or invalid authorization!");
 
 
-                return Task.FromResult<HTTPResponse?>(
-                           new HTTPResponse.Builder(httpRequest) {
-                               HTTPStatusCode  = HTTPStatusCode.Unauthorized,
-                               Server          = HTTPServiceName,
-                               Date            = Timestamp.Now,
-                               Connection      = ConnectionType.Close
-                           }.AsImmutable
-                       );
+                var unauthorized = new HTTPResponse.Builder(httpRequest) {
+                                       HTTPStatusCode  = HTTPStatusCode.Unauthorized,
+                                       Server          = HTTPServiceName,
+                                       Date            = Timestamp.Now,
+                                       Connection      = ConnectionType.Close
+                                   };
+
+                // What it may come with: "Basic" where this server has
+                // passwords, "TOTP" where it has one-time passwords.
+                if (ChallengeFor("WWCP") is WWWAuthenticate challenge)
+                    unauthorized.WWWAuthenticate = challenge;
+
+                return Task.FromResult<HTTPResponse?>(unauthorized.AsImmutable);
 
             }
 
