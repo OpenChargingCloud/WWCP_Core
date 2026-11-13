@@ -100,6 +100,14 @@ namespace cloud.charging.open.protocols.WWCP
         public HashSet<String>                              ActionsDecidedPerEntry   { get; }  = [];
 
         /// <summary>
+        /// The permission that protects the policy itself: what needs it -
+        /// writing the policy, the signer roles, or the components that
+        /// stand for them - needs it whatever an entry of the table says
+        /// (section 5.2 of the white paper: "The policy protects itself").
+        /// </summary>
+        public String                                       PolicyPermission         { get; set; } = "signatures:edit";
+
+        /// <summary>
         /// The policy table.
         /// </summary>
         public IEnumerable<MessagePolicyEntry> PolicyEntries
@@ -254,6 +262,43 @@ namespace cloud.charging.open.protocols.WWCP
                 policyEntries.Clear();
 
             return this;
+
+        }
+
+        /// <summary>
+        /// Put the entries of a policy table as JSON in the place of the
+        /// entries of the given names: what a node was given as its policy
+        /// before, replaced by what it is given now. Either all of it
+        /// happens, or nothing. The other entries of the table - those the
+        /// node made itself - stay, and the new ones have to go with them.
+        /// </summary>
+        /// <param name="JSON">The new entries.</param>
+        /// <param name="Replacing">The names of the entries they replace.</param>
+        /// <param name="ErrorResponse">Why nothing was replaced.</param>
+        public Boolean TryReplacePolicyEntries(JArray                            JSON,
+                                               IEnumerable<String>               Replacing,
+                                               [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            var replacing = Replacing.ToHashSet(StringComparer.Ordinal);
+
+            lock (policyLock)
+            {
+
+                var before = policyEntries.ToArray();
+
+                policyEntries.RemoveAll(entry => replacing.Contains(entry.Id));
+
+                if (!TryAddPolicyEntries(JSON, out ErrorResponse))
+                {
+                    policyEntries.Clear();
+                    policyEntries.AddRange(before);
+                    return false;
+                }
+
+            }
+
+            return true;
 
         }
 
@@ -649,8 +694,20 @@ namespace cloud.charging.open.protocols.WWCP
                 if (ambiguous is not null)
                     return Violated(Message, action, entry, ambiguous, PolicyViolationActions.Refuse, out ErrorResponse, PolicyViolationKinds.SignerNotAuthorized);
 
-                return Satisfies(entry!.Require, signers, out var missing) ||
-                       Violated(Message, action, entry, missing, entry.OnViolation, out ErrorResponse);
+                if (!Satisfies(entry!.Require, signers, out var missing) &&
+                    !Violated(Message, action, entry, missing, entry.OnViolation, out ErrorResponse))
+                {
+                    return false;
+                }
+
+                // The policy protects itself: what writes it needs the permission
+                // to, whatever an entry of the table says of the action.
+                if (!permissions.Any(permission => permission.Permissions.
+                                                       Concat  (permission.AdditionalPermissions?.Invoke() ?? []).
+                                                       Contains(PolicyPermission, StringComparer.Ordinal)))
+                {
+                    return true;
+                }
 
             }
 
@@ -767,8 +824,15 @@ namespace cloud.charging.open.protocols.WWCP
                 if (ambiguous is not null)
                     return Violated(Request, Request.Action, entry, $"{target}: {ambiguous}", PolicyViolationActions.Refuse, out Reason, PolicyViolationKinds.SignerNotAuthorized);
 
-                return Satisfies(entry!.Require, signers, out var missing) ||
-                       Violated(Request, Request.Action, entry, $"{target}: {missing}", entry.OnViolation, out Reason);
+                if (!Satisfies(entry!.Require, signers, out var missing) &&
+                    !Violated(Request, Request.Action, entry, $"{target}: {missing}", entry.OnViolation, out Reason))
+                {
+                    return false;
+                }
+
+                // The policy protects itself, here as well.
+                if (!String.Equals(permission, PolicyPermission, StringComparison.Ordinal))
+                    return true;
 
             }
 

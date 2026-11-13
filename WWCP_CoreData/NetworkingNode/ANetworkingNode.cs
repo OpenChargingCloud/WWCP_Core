@@ -148,6 +148,49 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         public List<UserRole>                                                               UserRoles                    = [];
 
+        private SignerRoleTable? signerRoles;
+
+        /// <summary>
+        /// The signer roles of this node: which keys may sign as which of its
+        /// roles, as the signed role assignments it was given (white paper
+        /// "Signed OCPP Messages and Signer Roles", chapter 6). A node that
+        /// is built again, or two nodes of one program, are given the table
+        /// of whoever keeps it.
+        /// </summary>
+        public SignerRoleTable SignerRoles
+        {
+
+            get
+            {
+
+                if (signerRoles is null)
+                    SignerRoles = new SignerRoleTable(role => null);
+
+                return signerRoles!;
+
+            }
+
+            set
+            {
+
+                if (signerRoles is not null)
+                    signerRoles.OnChanged -= TellOfSignerRolesChange;
+
+                signerRoles            = value;
+                signerRoles.OnChanged += TellOfSignerRolesChange;
+
+            }
+
+        }
+
+        /// <summary>
+        /// Something about the signer roles or the policy table of this node was changed.
+        /// </summary>
+        public event Action<SignerRoleTableChange>? OnSignerRolesChanged;
+
+        private void TellOfSignerRolesChange(SignerRoleTableChange Change)
+            => OnSignerRolesChanged?.Invoke(Change);
+
         private DateTimeOffset lastRoutesBroadcast = Timestamp.Now;
 
         #endregion

@@ -595,6 +595,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         private          JObject?                                  policy;
 
+        /// <summary>
+        /// The names of the entries of the policy table that was stored before
+        /// the one that is: what a signature policy that was given the earlier
+        /// one still has of it.
+        /// </summary>
+        private          String[]                                  replacedPolicyEntries   = [];
+
         #endregion
 
         #region Properties
@@ -602,12 +609,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// What a role may do by the node's own definition of it, or null for a role the node does not have.
         /// </summary>
-        public Func<String, IEnumerable<String>?>   PermissionsOfRole           { get; }
+        public Func<String, IEnumerable<String>?>   PermissionsOfRole           { get; set; }
 
         /// <summary>
         /// The role of the owner.
         /// </summary>
-        public String                               OwnerRole                   { get; init; } = "systemadmin";
+        public String                               OwnerRole                   { get; set; }  = "systemadmin";
 
         /// <summary>
         /// The permission that makes an owner.
@@ -1266,14 +1273,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// versions that were known stay known, so that nothing old comes
         /// back.
         /// </summary>
-        public void Reset()
+        /// <param name="SignaturePolicy">The signature policy of the node, which loses the entries of the policy table it was given.</param>
+        public void Reset(SignaturePolicy? SignaturePolicy = null)
         {
 
             lock (sync)
             {
+
+                SignaturePolicy?.TryReplacePolicyEntries([], IdsOf(policy), out _);
+
+                replacedPolicyEntries = [.. IdsOf(policy)];
+
                 roles.   Clear();
                 lastUsed.Clear();
                 policy = null;
+
             }
 
             Tell(SignerRoleTableChanges.TableReset, null, 0, true);
@@ -1345,8 +1359,9 @@ namespace cloud.charging.open.protocols.WWCP
                     return false;
                 }
 
-                policy         = (JObject) JSON.DeepClone();
-                PolicyVersion  = version;
+                replacedPolicyEntries  = [.. IdsOf(policy)];
+                policy                 = (JObject) JSON.DeepClone();
+                PolicyVersion          = version;
 
             }
 
@@ -1358,6 +1373,80 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
+        #region (private) IdsOf(Policy)
+
+        /// <summary>
+        /// The names of the entries of a policy as it was received.
+        /// </summary>
+        private static IEnumerable<String> IdsOf(JObject? Policy)
+
+            => Policy?["entries"] is JArray entries
+                   ? [.. entries.OfType<JObject>().
+                                 Select(entry => entry["id"]?.Type == JTokenType.String ? entry["id"]!.Value<String>() : null).
+                                 Where (id    => id is not null).
+                                 Cast<String>()]
+                   : [];
+
+        #endregion
+
+        #region TrySetPolicy(JSON, SignaturePolicy, out Reason, out ErrorResponse, Locally = false)
+
+        /// <summary>
+        /// Take a policy table, and make its entries those of the given
+        /// signature policy, in the place of the entries of the policy table
+        /// that was taken before. What the node made itself of entries stays.
+        /// </summary>
+        /// <param name="JSON">The policy, as received.</param>
+        /// <param name="SignaturePolicy">The signature policy of the node.</param>
+        /// <param name="Reason">Why it was refused.</param>
+        /// <param name="ErrorResponse">Why it was refused, in words.</param>
+        /// <param name="Locally">Whether this happens at the node itself.</param>
+        public Boolean TrySetPolicy(JObject                JSON,
+                                    SignaturePolicy        SignaturePolicy,
+                                    out SignerRoleReasons  Reason,
+                                    out String?            ErrorResponse,
+                                    Boolean                Locally   = false)
+
+            => TrySetPolicy(JSON,
+                            entries => SignaturePolicy.TryReplacePolicyEntries(entries, IdsOf(policy), out var whyNot)
+                                           ? null
+                                           : whyNot,
+                            out Reason,
+                            out ErrorResponse,
+                            Locally);
+
+        #endregion
+
+        #region ApplyPolicyTo(SignaturePolicy)
+
+        /// <summary>
+        /// Make the entries of the policy table that is stored those of the
+        /// given signature policy, in the place of the entries of the table
+        /// that was stored before: of a policy that was made anew, as when a
+        /// node is built again, or of the policy of another node of the same
+        /// program, which was not asked. Says why not, or null.
+        /// </summary>
+        /// <param name="SignaturePolicy">A signature policy.</param>
+        public String? ApplyPolicyTo(SignaturePolicy SignaturePolicy)
+        {
+
+            lock (sync)
+            {
+
+                return SignaturePolicy.TryReplacePolicyEntries(
+                           policy?["entries"] as JArray ?? [],
+                           IdsOf(policy).Concat(replacedPolicyEntries),
+                           out var whyNot
+                       )
+                           ? null
+                           : whyNot;
+
+            }
+
+        }
+
+        #endregion
 
         #region ToJSON()
 
