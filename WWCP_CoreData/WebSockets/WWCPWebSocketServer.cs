@@ -747,8 +747,9 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 if (Connection.HTTPRequest?.Authorization is HTTPBasicAuthentication basicAuthentication)
                 {
 
-                    if (ClientLogins.TryGetValue(basicAuthentication.Username, out var securePassword) &&
-                        securePassword.Equals(basicAuthentication.Password))
+                    // Its password, or a one-time password of its login in the
+                    // place of it: what a client has that knows nothing but Basic.
+                    if (BasicCredentialsAreKnown(basicAuthentication))
                     {
                         DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using authorization: '{basicAuthentication.Username}'");
                         return Task.FromResult<HTTPResponse?>(null);
@@ -1337,7 +1338,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// Whether this server knows the credentials the networking node of the
         /// given request is named by to be right: a client certificate, which the
         /// TLS handshake has validated, or an HTTP Basic or TOTP login of its own
-        /// ClientLogins or ClientTOTPConfig - whether or not it requires
+        /// ClientLogins or ClientTOTPConfig - a one-time password as the password
+        /// of HTTP Basic Authentication among them - whether or not it requires
         /// authentication itself. A certificate let in by its key pin is not
         /// among them: it names nobody whose credentials it could be.
         /// </summary>
@@ -1351,8 +1353,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             return Request.Authorization switch {
 
                        HTTPBasicAuthentication basicAuthentication
-                           => ClientLogins.TryGetValue(basicAuthentication.Username, out var password) &&
-                              password.Verify(basicAuthentication.Password),
+                           => BasicCredentialsAreKnown(basicAuthentication),
 
                        HTTPTOTPAuthentication totpAuthentication
                            => ClientTOTPConfig.TryGetValue(totpAuthentication.Login, out var totpConfig) &&

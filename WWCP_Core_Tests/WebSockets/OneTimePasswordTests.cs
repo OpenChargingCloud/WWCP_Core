@@ -160,7 +160,8 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
                 Assert.That(asItself. HTTPStatusCode.Code,  Is.EqualTo(101),      "A one-time password without a login was not taken for the one of the path.");
                 Assert.That(asAnother.HTTPStatusCode.Code,  Is.EqualTo(401),      "A one-time password of CS001 opened a connection as CS002.");
                 Assert.That(mistaken. HTTPStatusCode.Code,  Is.EqualTo(401),      "A one-time password of another secret was taken.");
-                Assert.That(mistaken. WWWAuthenticate?.ToString(), Is.EqualTo("TOTP realm=\"WWCP\""), "Who was refused is not told what it may come with.");
+                // "Basic" beside "TOTP": a raw one-time password may come as a Basic password.
+                Assert.That(mistaken. WWWAuthenticate?.Challenges.Select(one => one.Method), Is.EqualTo(new[] { "Basic", "TOTP" }), "Who was refused is not told what it may come with.");
                 Assert.That(server!.WebSocketConnections.Count(), Is.EqualTo(1),  "Not the one connection that was let in is there.");
             });
 
@@ -190,6 +191,108 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
 
             Assert.That(response.HTTPStatusCode.Code, Is.Not.EqualTo(101),
                         "A one-time password of CS001 opened a connection as CS002.");
+
+        }
+
+        #endregion
+
+
+        #region ANodeWithItsOneTimePasswordAsABasicPasswordIsLetIn()
+
+        /// <summary>
+        /// A node that knows nothing but HTTP Basic Authentication, with a
+        /// one-time password of its login in the place of the password: let
+        /// in, as with "Authorization: TOTP".
+        /// </summary>
+        [Test]
+        public async Task ANodeWithItsOneTimePasswordAsABasicPasswordIsLetIn()
+        {
+
+            var node      = new Node("CS001");
+
+            var response  = await node.ConnectWebSocketClient(
+                                      RemoteURL:              URL.Parse($"ws://127.0.0.1:{port}/CS001"),
+                                      SecWebSocketProtocols:  [ "ocpp2.1" ],
+                                      DisableWebSocketPings:  true,
+                                      HTTPAuthentication:     HTTPBasicAuthentication.Create("CS001", TOTPGenerator.GenerateTOTP(sharedSecret).Current)
+                                  );
+
+            Assert.Multiple(() => {
+
+                Assert.That(response.HTTPStatusCode.Code, Is.EqualTo(101),
+                            "A node with its one-time password as its Basic password was not let in.");
+
+                Assert.That(server!.ConnectedNetworkingNodeIds, Is.EqualTo(new[] { NetworkingNode_Id.Parse("CS001") }));
+
+            });
+
+        }
+
+        #endregion
+
+        #region ANodeWithAWrongBasicPasswordIsNotLetIn()
+
+        /// <summary>
+        /// What is not a one-time password of the login is no password of it
+        /// either, and the refusal names Basic beside TOTP.
+        /// </summary>
+        [Test]
+        public async Task ANodeWithAWrongBasicPasswordIsNotLetIn()
+        {
+
+            var node      = new Node("CS001");
+
+            var response  = await node.ConnectWebSocketClient(
+                                      RemoteURL:              URL.Parse($"ws://127.0.0.1:{port}/CS001"),
+                                      SecWebSocketProtocols:  [ "ocpp2.1" ],
+                                      DisableWebSocketPings:  true,
+                                      HTTPAuthentication:     HTTPBasicAuthentication.Create("CS001", "not-a-one-time-password")
+                                  );
+
+            Assert.Multiple(() => {
+
+                Assert.That(response.HTTPStatusCode.Code, Is.EqualTo(401),
+                            "A wrong Basic password was let in.");
+
+                Assert.That(response.WWWAuthenticate?.Challenges.Select(one => one.Method), Is.EqualTo(new[] { "Basic", "TOTP" }),
+                            "The refusal does not name Basic beside TOTP.");
+
+                Assert.That(server!.ConnectedNetworkingNodeIds, Is.Empty);
+
+            });
+
+        }
+
+        #endregion
+
+        #region ANodeWithAnotherOnesOneTimePasswordAsABasicPasswordIsNotLetIn()
+
+        /// <summary>
+        /// The login is checked against the path here as well: a right
+        /// one-time password of CS001 as a Basic password opens no
+        /// connection as CS002.
+        /// </summary>
+        [Test]
+        public async Task ANodeWithAnotherOnesOneTimePasswordAsABasicPasswordIsNotLetIn()
+        {
+
+            var node      = new Node("CS002");
+
+            var response  = await node.ConnectWebSocketClient(
+                                      RemoteURL:              URL.Parse($"ws://127.0.0.1:{port}/CS002"),
+                                      SecWebSocketProtocols:  [ "ocpp2.1" ],
+                                      DisableWebSocketPings:  true,
+                                      HTTPAuthentication:     HTTPBasicAuthentication.Create("CS001", TOTPGenerator.GenerateTOTP(sharedSecret).Current)
+                                  );
+
+            Assert.Multiple(() => {
+
+                Assert.That(response.HTTPStatusCode.Code, Is.EqualTo(403),
+                            "A one-time password of CS001 as a Basic password opened a connection as CS002.");
+
+                Assert.That(server!.ConnectedNetworkingNodeIds, Is.Empty);
+
+            });
 
         }
 
