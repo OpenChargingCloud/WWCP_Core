@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         /// The SSH login.
         /// </summary>
         public String                   Username
-            => MessageClient.Options.Ssh.Username;
+            => MessageClient.Options.Ssh?.Username ?? MessageClient.Connection?.Username ?? "";
 
         /// <summary>
         /// Messages go over an SSH channel.
@@ -201,11 +201,13 @@ namespace cloud.charging.open.protocols.WWCP.SSH
 
             // The node's DNS client, where the options name none: a host name is never resolved by the
             // operating system, and a node that resolves its names securely is not dialled around them.
-            var dnsClient        = Options.Ssh.DNSClient ?? (NetworkingNode as AWWCPNetworkingNode)?.DNSClient;
+            var dnsClient        = Options.Ssh?.DNSClient ?? (NetworkingNode as AWWCPNetworkingNode)?.DNSClient;
 
             this.MessageClient   = new SshMessageClient(
                                        Options with {
-                                           Ssh              = Options.Ssh with { DNSClient = dnsClient },
+                                           Ssh              = Options.Ssh is SshClientOptions login
+                                                                  ? login with { DNSClient = dnsClient }
+                                                                  : null,
                                            HelloProperties  = hello.Count > 0 ? hello : null
                                        }
                                    );
@@ -274,14 +276,16 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         /// <param name="Reconnect">How to connect again after a connection ended; null to stay disconnected.</param>
         /// <param name="PingEvery">Every how long to send a PING; null for none.</param>
         /// <param name="DNSClient">The DNS client the URL's host name is resolved with, where the SSH options name none.</param>
+        /// <param name="Connection">The SSH connection the messages go over, where it is not the client's own: one that others share, asked for at every connect and reconnect. The client opens its subsystem as one more channel of it, and closes that channel only. Null for a connection of the client's own.</param>
         /// <exception cref="ArgumentException">The URL is no "ssh://" URL, or names another login than the SSH options.</exception>
-        public static SshMessageClientOptions OptionsFrom(URL                              RemoteURL,
-                                                          SshClientOptions                 Ssh,
-                                                          String                           Subsystem,
-                                                          IEnumerable<String>?             Subprotocols   = null,
-                                                          WebSocketClientReconnectPolicy?  Reconnect      = null,
-                                                          TimeSpan?                        PingEvery      = null,
-                                                          IDNSClient?                      DNSClient      = null)
+        public static SshMessageClientOptions OptionsFrom(URL                                             RemoteURL,
+                                                          SshClientOptions                                Ssh,
+                                                          String                                          Subsystem,
+                                                          IEnumerable<String>?                            Subprotocols   = null,
+                                                          WebSocketClientReconnectPolicy?                 Reconnect      = null,
+                                                          TimeSpan?                                       PingEvery      = null,
+                                                          IDNSClient?                                     DNSClient      = null,
+                                                          Func<CancellationToken, ValueTask<SshClient>>?  Connection     = null)
         {
 
             if (RemoteURL.Scheme != URIScheme.ssh)
@@ -294,6 +298,7 @@ namespace cloud.charging.open.protocols.WWCP.SSH
                        Host          = RemoteURL.Host.ToString(),
                        Port          = RemoteURL.Port?.ToUInt16() ?? 22,
                        Ssh           = Ssh with { DNSClient = Ssh.DNSClient ?? DNSClient },
+                       Connection    = Connection,
                        Subsystem     = Subsystem,
                        Subprotocols  = Subprotocols?.ToArray() ?? [],
                        Reconnect     = Reconnect,
