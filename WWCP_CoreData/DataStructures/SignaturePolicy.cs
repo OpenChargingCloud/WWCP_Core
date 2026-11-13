@@ -379,6 +379,35 @@ namespace cloud.charging.open.protocols.WWCP
                 #endregion
 
 
+                #region DefaultSigningAction         [optional]
+
+                if (JSON.ParseOptional("defaultSigningAction",
+                                       "default signing action",
+                                       SigningRuleActionsExtensions.TryParse,
+                                       out SigningRuleActions? DefaultSigningAction,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region DefaultSigningKeyPair        [optional]
+
+                if (JSON.ParseOptionalJSON("defaultSigningKeyPair",
+                                           "default signing key pair",
+                                           ECCKeyPair.TryParse,
+                                           out ECCKeyPair? DefaultSigningKeyPair,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 #region VerificationRules    [optional]
 
                 if (JSON.ParseOptionalHashSet("verificationRules",
@@ -386,6 +415,35 @@ namespace cloud.charging.open.protocols.WWCP
                                               VerificationRule.TryParse,
                                               out HashSet<VerificationRule> VerificationRules,
                                               out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region DefaultVerificationAction    [optional]
+
+                if (JSON.ParseOptional("defaultVerificationAction",
+                                       "default verification action",
+                                       VerificationRuleActionsExtensions.TryParse,
+                                       out VerificationRuleActions? DefaultVerificationAction,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region DefaultVerificationKeyPair   [optional]
+
+                if (JSON.ParseOptionalJSON("defaultVerificationKeyPair",
+                                           "default verification key pair",
+                                           ECCKeyPair.TryParse,
+                                           out ECCKeyPair? DefaultVerificationKeyPair,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -431,12 +489,12 @@ namespace cloud.charging.open.protocols.WWCP
                                       NotAfter,
 
                                       SigningRules,
-                                      null,  // DefaultSigningAction
-                                      null,  // DefaultSigningKeyPair
+                                      DefaultSigningAction,
+                                      DefaultSigningKeyPair,
 
                                       VerificationRules,
-                                      null,  // DefaultVerificationAction
-                                      null,  // DefaultVerificationKeyPair
+                                      DefaultVerificationAction,
+                                      DefaultVerificationKeyPair,
 
                                       null,
                                       null,
@@ -509,8 +567,26 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("signingRules",       signingRulesJSON)
                                : null,
 
+                           // What a message is done with that no rule is for - written
+                           // where it is not what a policy does anyway.
+                           DefaultSigningAction != SigningRuleActions.ForwardUnsigned
+                               ? new JProperty("defaultSigningAction",        DefaultSigningAction.AsText())
+                               : null,
+
+                           DefaultSigningKeyPair is not null
+                               ? new JProperty("defaultSigningKeyPair",       DefaultSigningKeyPair.ToPublicJSON(CustomCustomDataSerializer: CustomCustomDataSerializer))
+                               : null,
+
                            verificationRulesJSON.Count > 0
                                ? new JProperty("verificationRules",  verificationRulesJSON)
+                               : null,
+
+                           DefaultVerificationAction != VerificationRuleActions.AcceptUnverified
+                               ? new JProperty("defaultVerificationAction",   DefaultVerificationAction.AsText())
+                               : null,
+
+                           DefaultVerificationKeyPair is not null
+                               ? new JProperty("defaultVerificationKeyPair",  DefaultVerificationKeyPair.ToPublicJSON(CustomCustomDataSerializer: CustomCustomDataSerializer))
                                : null,
 
                            Signatures.Any()
