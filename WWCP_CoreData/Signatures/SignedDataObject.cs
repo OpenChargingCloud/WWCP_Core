@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Sign(Object, Type, KeyPair, IssuedAt = null, Expires = null)
+        #region Sign(Object, Type, KeyPair, IssuedAt = null, Expires = null, SignerName = null, SignerDescription = null)
 
         /// <summary>
         /// Sign the given object: a signature is added to its "signatures",
@@ -161,12 +161,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="KeyPair">The key pair to sign with.</param>
         /// <param name="IssuedAt">When the signature is made: now, by default.</param>
         /// <param name="Expires">Until when the signature holds, if it is to say so.</param>
+        /// <param name="SignerName">Who signs, in the signer's own words: said, and held to nothing.</param>
+        /// <param name="SignerDescription">What the signature is for, in the signer's own words.</param>
         /// <returns>The object.</returns>
         public static JObject Sign(JObject          Object,
                                    String           Type,
                                    ECCKeyPair       KeyPair,
-                                   DateTimeOffset?  IssuedAt   = null,
-                                   DateTimeOffset?  Expires    = null)
+                                   DateTimeOffset?  IssuedAt            = null,
+                                   DateTimeOffset?  Expires             = null,
+                                   String?          SignerName          = null,
+                                   I18NString?      SignerDescription   = null)
         {
 
             if (KeyPair.PrivateKey is null)
@@ -189,6 +193,14 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (Expires.HasValue)
                 header.Add("exp", Expires.Value.ToUnixTimeSeconds());
+
+            // What the signer says of itself, under the names a signature of a
+            // message has for it. Nothing is critical about it.
+            if (SignerName is not null)
+                header.Add("OCPPSignerName",         SignerName);
+
+            if (SignerDescription is not null && SignerDescription.IsNotNullOrEmpty())
+                header.Add("OCPPSignerDescription",  SignerDescription.ToJSON());
 
             var protectedText  = JWS.Base64URL(header.ToString(Formatting.None));
 

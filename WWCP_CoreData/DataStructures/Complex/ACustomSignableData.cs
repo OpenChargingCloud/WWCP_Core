@@ -149,8 +149,15 @@ namespace cloud.charging.open.protocols.WWCP
         #region Sign  (JSONData,   Context, KeyPair, out ErrorResponse, SignerName = null, Description = null, Timestamp = null)
 
         /// <summary>
-        /// Sign the given JSON data structure.
+        /// Sign the given JSON data structure, as a signed data object: the
+        /// embedded JWS of section 4.4 of the white paper "Signed OCPP
+        /// Messages and Signer Roles". Until phase 4 this was a signature of
+        /// format 0, over Newtonsoft's own serialization of the object.
         /// </summary>
+        /// <remarks>
+        /// The name and the description of the signer are in the protected
+        /// header, under the names a signature of a message has for them.
+        /// </remarks>
         /// <param name="JSONData">A JSON object to be signed.</param>
         /// <param name="Context">The JSON-LD context of the JSON data structure.</param>
         /// <param name="KeyPair">A cryptographic key pair for signing.</param>
@@ -199,44 +206,25 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                if (JSONData["@context"] is null)
-                    JSONData.AddFirst(new JProperty("@context", Context.ToString()));
+                // The embedded JWS of a signed data object (white paper "Signed OCPP
+                // Messages and Signer Roles", section 4.4): the protected header says
+                // what kind of object was signed, by its JSON-LD context, and when;
+                // the payload is the RFC 8785 form of the object without its signatures.
+                var unsigned = (JObject) JSONData.DeepClone();
+                unsigned.Remove(SignedDataObject.SignaturesMember);
 
-                var jsonMessageCopy  = JObject.Parse(
-                                           JSONData.ToString(
-                                               Formatting.None,
-                                               SignableMessage.DefaultJSONConverters
-                                           )
-                                       );
+                SignedDataObject.Sign(unsigned, Context.ToString(), KeyPair, Timestamp, null, SignerName, Description);
 
-                jsonMessageCopy.Remove("signatures");
+                if (unsigned[SignedDataObject.SignaturesMember]?[0] is not JObject signatureJSON)
+                {
+                    ErrorResponse = "The signature could not be made!";
+                    return false;
+                }
 
-                var plainText        = jsonMessageCopy.ToString(
-                                           Formatting.None,
-                                           SignableMessage.DefaultJSONConverters
-                                       );
+                if (!Signature.TryParse(signatureJSON, out var signature, out ErrorResponse))
+                    return false;
 
-                var cryptoHash       = KeyPair.Algorithm switch {
-                                           var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                           var s when s == CryptoAlgorithm.Secp384r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                           _                                          => SHA256.HashData(plainText.ToUTF8Bytes()),
-                                       };
-
-                var signer           = SignerUtilities.GetSigner("NONEwithECDSA");
-                signer.Init(true, KeyPair.PrivateKey);
-                signer.BlockUpdate(cryptoHash);
-                var signature        = signer.GenerateSignature();
-
-                AddSignature(new Signature(
-                                 KeyId:           SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(KeyPair.PublicKey).PublicKeyData.GetBytes(),
-                                 Value:           signature,
-                                 Algorithm:       KeyPair.Algorithm,
-                                 SigningMethod:   null,
-                                 Encoding:  KeyPair.Encoding,
-                                 Name:            SignerName,
-                                 Description:     Description,
-                                 Timestamp:       Timestamp
-                             ));
+                AddSignature(signature);
 
                 ErrorResponse = null;
                 return true;
@@ -348,7 +336,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region Verify(JSONData,   Context, out ErrorResponse, VerificationRuleAction = VerificationRuleActions.VerifyAll)
 
         /// <summary>
-        /// Verify the given JSON data structure.
+        /// Verify the given JSON data structure, as a signed data object: its
+        /// signatures are the embedded JWS of section 4.4 of the white paper
+        /// "Signed OCPP Messages and Signer Roles", made for an object of the
+        /// given JSON-LD context. A signature of format 0 is not counted.
         /// </summary>
         /// <param name="JSONData">The JSON representation of the signable/verifiable data.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
@@ -374,47 +365,39 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                if (JSONData["@context"] is null)
-                    JSONData.AddFirst(new JProperty("@context", Context.ToString()));
-
-                var jsonMessageCopy = JObject.Parse(
-                                           JSONData.ToString(
-                                               Formatting.None,
-                                               SignableMessage.DefaultJSONConverters
-                                           )
-                                       );
-
-                jsonMessageCopy.Remove("signatures");
-
-                var plainText = jsonMessageCopy.ToString(Formatting.None, SignableMessage.DefaultJSONConverters);
+                var type = Context.ToString();
 
                 foreach (var signature in Signatures)
                 {
 
-                    var ecp           = signature.Algorithm switch {
-                                            var s when s == CryptoAlgorithm.Secp521r1  => SecNamedCurves.GetByName("secp521r1"),
-                                            var s when s == CryptoAlgorithm.Secp384r1  => SecNamedCurves.GetByName("secp384r1"),
-                                            _                                          => SecNamedCurves.GetByName("secp256r1"),
-                                        };
-                    var ecParams      = new ECDomainParameters(ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
-                    var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId), ecParams);
+                    if (signature.IsJWS)
+                    {
 
-                    var cryptoHash    = signature.Algorithm switch {
-                                            var s when s == CryptoAlgorithm.Secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                            var s when s == CryptoAlgorithm.Secp384r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                            _                                          => SHA256.HashData(plainText.ToUTF8Bytes()),
-                                        };
+                        // Each signature by itself, so that each has its own status.
+                        var withThisOne = (JObject) JSONData.DeepClone();
+                        withThisOne[SignedDataObject.SignaturesMember] = new JArray(signature.ToJSON());
 
-                    var verifier      = SignerUtilities.GetSigner("NONEwithECDSA");
-                    verifier.Init(false, pubKeyParams);
-                    verifier.BlockUpdate(cryptoHash);
-                    signature.Status  = verifier.VerifySignature(signature.Value)
-                                            ? VerificationStatus.ValidSignature
-                                            : VerificationStatus.InvalidSignature;
+                        signature.Status = SignedDataObject.Verify(withThisOne, type, out var signers, out var doesNotHold) && signers.Count == 1
+                                               ? VerificationStatus.ValidSignature
+                                               : VerificationStatus.InvalidSignature;
+
+                        if (signature.Status != VerificationStatus.ValidSignature)
+                            ErrorResponse ??= doesNotHold ?? "A signature of the object does not hold!";
+
+                    }
+
+                    // A signature of format 0 covers Newtonsoft's own serialization of the
+                    // object and binds neither its kind nor its time: it is not counted (Q7, Q21).
+                    else
+                    {
+                        signature.Status  = VerificationStatus.Format0NotAccepted;
+                        ErrorResponse   ??= "A signature of the object is of format 0, which signed data objects no longer have!";
+                    }
 
                     if (VerificationRuleAction == VerificationRuleActions.VerifyAny &&
                         signature.Status       == VerificationStatus.ValidSignature)
                     {
+                        ErrorResponse = null;
                         return true;
                     }
 
