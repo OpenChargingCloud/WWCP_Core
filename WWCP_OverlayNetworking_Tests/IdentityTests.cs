@@ -280,6 +280,9 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
         /// the path, without RequireAuthentication. The server cannot refuse it
         /// as forbidden without telling apart right and wrong credentials; the
         /// connection it lets in is no connection to either, and is closed.
+        /// The server waits for the client's close frame before it lets go of
+        /// the connection, and this client sends none: the server's close
+        /// handshake has to time out first.
         /// </summary>
         [Test]
         public async Task CredentialsTheServerCannotCheckOpenNoConnectionAsAnotherNode()
@@ -288,7 +291,8 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
             Start(RequireAuthentication: false);
 
             using var client  = await RawWebSocketClient.Upgrade(port, $"/{CS001}", Basic(CS003));
-            var       closed  = await Until(() => !server!.WebSocketConnections.Any(connection => connection.RemoteSocket.Port.ToUInt16() == client.LocalPort));
+            var       closed  = await Until(() => !server!.WebSocketConnections.Any(connection => connection.RemoteSocket.Port.ToUInt16() == client.LocalPort),
+                                            org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection.DefaultCloseHandshakeTimeout + TimeSpan.FromSeconds(2));
 
             Assert.Multiple(() => {
                 Assert.That(closed,                            Is.True,
@@ -348,15 +352,19 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
 
         #endregion
 
-        #region (private static) Until(Condition)
+        #region (private static) Until(Condition, Within = null)
 
         /// <summary>
-        /// Whether the given condition holds within two seconds.
+        /// Whether the given condition holds within the given time, two
+        /// seconds by default.
         /// </summary>
-        private static async Task<Boolean> Until(Func<Boolean> Condition)
+        /// <param name="Condition">The condition to wait for.</param>
+        /// <param name="Within">How long to wait for it.</param>
+        private static async Task<Boolean> Until(Func<Boolean>  Condition,
+                                                 TimeSpan?      Within   = null)
         {
 
-            var deadline = DateTimeOffset.UtcNow + TimeSpan.FromSeconds(2);
+            var deadline = DateTimeOffset.UtcNow + (Within ?? TimeSpan.FromSeconds(2));
 
             while (!Condition())
             {
