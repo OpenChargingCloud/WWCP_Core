@@ -340,6 +340,11 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             // by AcceptHTTP3.
             base.AcceptHTTP3                     = true;
 
+            // A one-time password in the "TOTP" request header names no login:
+            // here it is the one of the networking node the path names, which
+            // is who a connection says it is before it has shown anything.
+            base.TOTPLoginOfAConnection          = (connection, request) => NodeOfThePath(request)?.ToString();
+
             base.OnValidateTCPConnection        += ValidateTCPConnection;
             base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
             base.OnWebSocketConnectionAccepted  += RegisterNewWebSocketConnection;
@@ -774,6 +779,23 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                     }
                     else
                         DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid TOTP authorization: '{totpAuthentication.Login}'!");
+
+                }
+
+                #endregion
+
+                #region A one-time password in the TOTP request header
+
+                else if (Connection.HTTPRequest is { Authorization: null, TOTP: not null })
+                {
+
+                    if (TOTPHeaderIsTheOneOfThePath(Connection, Connection.HTTPRequest))
+                    {
+                        DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using the TOTP header of: '{NodeOfThePath(Connection.HTTPRequest)}'");
+                        return Task.FromResult<HTTPResponse?>(null);
+                    }
+                    else
+                        DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} invalid or outdated TOTP header for: '{NodeOfThePath(Connection.HTTPRequest)}'!");
 
                 }
 
@@ -1281,15 +1303,14 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// request, and the one named by its credentials: the common name of the
         /// client certificate of its connection - unless the certificate was let
         /// in by its key pin, which names nobody - else its HTTP Basic username,
-        /// else its TOTP login.
+        /// else its TOTP login. A one-time password in the "TOTP" request
+        /// header names nobody, and so nobody else than the path does.
         /// </summary>
         private (NetworkingNode_Id? FromPath, NetworkingNode_Id? FromCredentials) IdentitiesOf(WebSocketServerConnection  Connection,
                                                                                                HTTPRequest                Request)
         {
 
-            // Percent-decoded, segment by segment, by the time it is here.
-            var path             = Request.Path.ToString();
-            var fromPath         = NetworkingNode_Id.TryParse(path[(path.LastIndexOf('/') + 1)..]);
+            var fromPath         = NodeOfThePath(Request);
 
             var fromCredentials  = CertificateIdentityOf(Connection, Request);
 
@@ -1332,11 +1353,49 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                            => ClientTOTPConfig.TryGetValue(totpAuthentication.Login, out var totpConfig) &&
                               TOTPIsTheOneOf(totpConfig, totpAuthentication.TOTP, totpAuthentication.Type, Connection.TOTPTLSExporterMaterial),
 
+                       null
+                           => TOTPHeaderIsTheOneOfThePath(Connection, Request),
+
                        _   => false
 
                    };
 
         }
+
+        #endregion
+
+        #region (private static) NodeOfThePath            (Request)
+
+        /// <summary>
+        /// The networking node named by the last segment of the path of the
+        /// given request.
+        /// </summary>
+        private static NetworkingNode_Id? NodeOfThePath(HTTPRequest Request)
+        {
+
+            // Percent-decoded, segment by segment, by the time it is here.
+            var path = Request.Path.ToString();
+
+            return NetworkingNode_Id.TryParse(path[(path.LastIndexOf('/') + 1)..]);
+
+        }
+
+        #endregion
+
+        #region (private) TOTPHeaderIsTheOneOfThePath     (Connection, Request)
+
+        /// <summary>
+        /// Whether the given request, which has no Authorization, shows in
+        /// its "TOTP" request header a one-time password of the networking
+        /// node its path names: raw, or bound to its connection.
+        /// </summary>
+        private Boolean TOTPHeaderIsTheOneOfThePath(WebSocketServerConnection  Connection,
+                                                    HTTPRequest                Request)
+
+            => Request is { Authorization: null, TOTP: TOTPHTTPHeader totpHeader } &&
+               NodeOfThePath(Request) is NetworkingNode_Id ofThePath &&
+               ClientTOTPConfig.TryGetValue(ofThePath.ToString(), out var totpConfig) &&
+               TOTPIsTheOneOf(totpConfig, totpHeader.Value, totpHeader.Type, Connection.TOTPTLSExporterMaterial);
 
         #endregion
 

@@ -124,6 +124,49 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
 
         #endregion
 
+        #region ANodeWithAOneTimePasswordAndNoLoginIsLetInAsWhoItsPathNames()
+
+        /// <summary>
+        /// Without a login the password goes in the "TOTP" request header,
+        /// which names nobody: it is verified as the one of the networking
+        /// node the path names, and of nobody else.
+        /// </summary>
+        [Test]
+        public async Task ANodeWithAOneTimePasswordAndNoLoginIsLetInAsWhoItsPathNames()
+        {
+
+            var asItself   = await new Node("CS001").ConnectWebSocketClient(
+                                       RemoteURL:              URL.Parse($"ws://127.0.0.1:{port}/CS001"),
+                                       SecWebSocketProtocols:  [ "ocpp2.1" ],
+                                       DisableWebSocketPings:  true,
+                                       TOTPConfig:             new TOTPConfig(sharedSecret)
+                                   );
+
+            var asAnother  = await new Node("CS002").ConnectWebSocketClient(
+                                       RemoteURL:              URL.Parse($"ws://127.0.0.1:{port}/CS002"),
+                                       SecWebSocketProtocols:  [ "ocpp2.1" ],
+                                       DisableWebSocketPings:  true,
+                                       TOTPConfig:             new TOTPConfig(sharedSecret)
+                                   );
+
+            var mistaken   = await new Node("CS001").ConnectWebSocketClient(
+                                       RemoteURL:              URL.Parse($"ws://127.0.0.1:{port}/CS001"),
+                                       SecWebSocketProtocols:  [ "ocpp2.1" ],
+                                       DisableWebSocketPings:  true,
+                                       TOTPConfig:             new TOTPConfig(sharedSecret + "-not")
+                                   );
+
+            Assert.Multiple(() => {
+                Assert.That(asItself. HTTPStatusCode.Code,  Is.EqualTo(101),      "A one-time password without a login was not taken for the one of the path.");
+                Assert.That(asAnother.HTTPStatusCode.Code,  Is.EqualTo(401),      "A one-time password of CS001 opened a connection as CS002.");
+                Assert.That(mistaken. HTTPStatusCode.Code,  Is.EqualTo(401),      "A one-time password of another secret was taken.");
+                Assert.That(server!.WebSocketConnections.Count(), Is.EqualTo(1),  "Not the one connection that was let in is there.");
+            });
+
+        }
+
+        #endregion
+
         #region ANodeWithAnotherOnesLoginIsNotLetIn()
 
         /// <summary>
