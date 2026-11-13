@@ -477,6 +477,22 @@ namespace cloud.charging.open.protocols.WWCP
                               CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer        = null)
         {
 
+            // The rules say their public keys alone: a signature policy is sent to
+            // others, and is part of what a node says about itself.
+            JArray signingRulesJSON, verificationRulesJSON;
+
+            lock (signingRules)
+                signingRulesJSON       = new JArray(signingRules.
+                                                        OrderBy(rule => rule.Priority).
+                                                        ThenBy (rule => rule.Context.ToString(), StringComparer.Ordinal).
+                                                        Select (rule => rule.ToJSON(CustomCustomDataSerializer: CustomCustomDataSerializer)));
+
+            lock (verificationRules)
+                verificationRulesJSON  = new JArray(verificationRules.
+                                                        OrderBy(rule => rule.Priority).
+                                                        ThenBy (rule => rule.Context.ToString(), StringComparer.Ordinal).
+                                                        Select (rule => rule.ToJSON(CustomCustomDataSerializer: CustomCustomDataSerializer)));
+
             var json = JSONObject.Create(
 
                                  new JProperty("id",            Id.ToString()),
@@ -488,6 +504,14 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
 
+
+                           signingRulesJSON.Count > 0
+                               ? new JProperty("signingRules",       signingRulesJSON)
+                               : null,
+
+                           verificationRulesJSON.Count > 0
+                               ? new JProperty("verificationRules",  verificationRulesJSON)
+                               : null,
 
                            Signatures.Any()
                                ? new JProperty("signatures",    new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,

@@ -206,6 +206,23 @@ namespace cloud.charging.open.protocols.WWCP
 
                 SigningRule = default;
 
+                #region Context       [optional]
+
+                // The message the rule is for; a rule without one is for the default context.
+                var Context = DefaultJSONLDContext;
+
+                if (JSON["context"] is JToken contextToken)
+                {
+                    if (contextToken.Type != JTokenType.String ||
+                        !JSONLDContext.TryParse(contextToken.Value<String>() ?? "", out Context))
+                    {
+                        ErrorResponse = "The context of the signing rule is invalid!";
+                        return false;
+                    }
+                }
+
+                #endregion
+
                 #region Priority      [mandatory]
 
                 if (!JSON.ParseMandatory("priority",
@@ -261,7 +278,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 SigningRule = new SigningRule(
-                                  DefaultJSONLDContext,
+                                  Context,
                                   Priority,
                                   Action,
                                   KeyPair,
@@ -304,12 +321,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             var json = JSONObject.Create(
 
+                                 new JProperty("context",      Context.   ToString()),
                                  new JProperty("priority",     Priority),
                                  new JProperty("action",       Action.    AsText()),
 
                            KeyPair is not null
-                               ? new JProperty("keyPair",      KeyPair.   ToJSON(CustomKeyPairSerializer,
-                                                                                 CustomCustomDataSerializer))
+                               ? new JProperty("keyPair",      KeyPair.   ToPublicJSON(CustomKeyPairSerializer,
+                                                                                       CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null

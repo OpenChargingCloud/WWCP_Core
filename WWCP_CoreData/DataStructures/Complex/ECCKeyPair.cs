@@ -311,15 +311,12 @@ namespace cloud.charging.open.protocols.WWCP
 
                 ECCKeyPair = default;
 
-                #region Private          [mandatory]
+                #region Private          [optional]
 
-                if (!JSON.ParseMandatoryText("private",
-                                             "private key",
-                                             out String PrivateText,
-                                             out ErrorResponse))
-                {
-                    return false;
-                }
+                // A key pair on the wire has its public key alone.
+                var PrivateText = JSON["private"]?.Type == JTokenType.String
+                                      ? JSON["private"]!.Value<String>() ?? ""
+                                      : "";
 
                 #endregion
 
@@ -375,7 +372,7 @@ namespace cloud.charging.open.protocols.WWCP
                         return false;
                 }
 
-                var Private  = PrivateText.FromBASE64();
+                var Private  = PrivateText.Length > 0 ? PrivateText.FromBASE64() : [];
                 var Public   = PublicText. FromBASE64();
 
                 #endregion
@@ -396,8 +393,8 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 ECCKeyPair = new ECCKeyPair(
-                                 Private,
                                  Public,
+                                 Private.Length > 0 ? Private : null,
                                  Algorithm,
                                  Serialization,
                                  Encoding,

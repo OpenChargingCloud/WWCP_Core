@@ -626,15 +626,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             var json = JSONObject.Create(
 
-                                 //new JProperty("private",         PrivateKeyBytes),
-                                 //new JProperty("public",          PublicKeyBytes),
+                                 new JProperty("id",              Id.ToString()),
+
+                           Description.IsNotNullOrEmpty()
+                               ? new JProperty("description",     Description.ToJSON())
+                               : null,
+
+                           KeyPairs.Any()
+                               ? new JProperty("keyPairs",        new JArray(KeyPairs.Select(keyPair => keyPair.ToPublicJSON(CustomCustomDataSerializer: CustomCustomDataSerializer))))
+                               : null,
 
                            SignerNameCreator  is not null && SignableMessage is not null
                                ? new JProperty("signerName",      SignerNameCreator (SignableMessage))
-                               : null,
-
-                           DescriptionCreator is not null && SignableMessage is not null
-                               ? new JProperty("description",     DescriptionCreator(SignableMessage))
                                : null,
 
                            TimestampCreator   is not null && SignableMessage is not null

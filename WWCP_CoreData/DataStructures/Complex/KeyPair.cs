@@ -246,6 +246,48 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
+        #region ToPublicJSON(CustomKeyPairSerializer = null, CustomCustomDataSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object without its private key:
+        /// what a key pair says of itself to anybody else.
+        /// </summary>
+        /// <param name="CustomKeyPairSerializer">A delegate to serialize cryptographic key pairs.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToPublicJSON(CustomJObjectSerializerDelegate<KeyPair>?     CustomKeyPairSerializer      = null,
+                                    CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
+        {
+
+            var json = JSONObject.Create(
+
+                                 new JProperty("public",          Encoding.Encode(PublicKeyBytes)),
+
+                           Algorithm     != CryptoAlgorithm.Secp256r1
+                               ? new JProperty("algorithm",       Algorithm.    ToString())
+                               : null,
+
+                           Serialization != CryptoSerialization.RAW
+                               ? new JProperty("serialization",   Serialization.ToString())
+                               : null,
+
+                           Encoding      != CryptoEncoding.BASE64
+                               ? new JProperty("encoding",        Encoding.     ToString())
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",      CustomData.   ToJSON(CustomCustomDataSerializer))
+                               : null
+
+                       );
+
+            return CustomKeyPairSerializer is not null
+                       ? CustomKeyPairSerializer(this, json)
+                       : json;
+
+        }
+
+        #endregion
+
         #region ToJSON(CustomKeyPairSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
