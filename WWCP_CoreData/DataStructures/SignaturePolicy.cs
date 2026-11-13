@@ -820,6 +820,15 @@ namespace cloud.charging.open.protocols.WWCP
         public SignatureFormats       Formats            { get; set; }  = SignatureFormats.JWS;
 
         /// <summary>
+        /// Which signatures are written for the given message, where that is not the
+        /// same for every message of this node: a node asks its connections, and the
+        /// connection a message leaves over may say otherwise than <see cref="Formats"/>
+        /// (white paper, section 6.3.1: "Formats", per connection). Null, or an answer
+        /// of null, is <see cref="Formats"/>. Set by the node's OCPP adapter.
+        /// </summary>
+        public Func<ISignableMessage, SignatureFormats?>?  FormatsOf   { get; set; }
+
+        /// <summary>
         /// What a COSE signature signs: the deterministic CBOR (RFC 8949, section 4.2.1)
         /// of the given message without its signatures - or null for a message without
         /// a CBOR form. Set by whoever knows the classes of the messages, the node's OCPP
@@ -1618,7 +1627,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #endregion
 
-                    if (Formats.HasFlag(SignatureFormats.JWS))
+                    // What the connection of the message says, or what this node says.
+                    var formats = FormatsOf?.Invoke(SignableMessage) ?? Formats;
+
+                    if (formats.HasFlag(SignatureFormats.JWS))
                     {
 
                         if (!TrySignJWS(SignableMessage, JSONMessage, signInfo, out var signature, out ErrorResponse))
@@ -1629,7 +1641,7 @@ namespace cloud.charging.open.protocols.WWCP
                     }
 
                     // Next to it, not instead of it: neither signs the other.
-                    if (Formats.HasFlag(SignatureFormats.COSE))
+                    if (formats.HasFlag(SignatureFormats.COSE))
                     {
 
                         if (!TrySignCOSE(SignableMessage, signInfo, out var signature, out ErrorResponse))
