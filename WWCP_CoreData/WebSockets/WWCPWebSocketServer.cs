@@ -72,6 +72,12 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         protected readonly ConcurrentDictionary<NetworkingNode_Id, NetworkingNodeConnections>  connectedNetworkingNodes  = [];
 
+        /// <summary>
+        /// The names a connected networking node is reached by besides the one it came under, each
+        /// with that one: see <see cref="ReachAs"/>.
+        /// </summary>
+        private   readonly ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>          reachedAs                 = [];
+
         private   readonly ConcurrentDictionary<NetworkingNode_Id, ImmutableHashSet<NetworkingNode_Id>>  mayActFor  = [];
 
         /// <summary>
@@ -146,6 +152,21 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// the 101, when it is registered, and when it is authenticated.
         /// </remarks>
         public Func<X509Certificate2, Boolean>? AcceptedByKeyPin    { get; set; }
+
+        /// <summary>
+        /// How many sign-ins with credentials that were wrong one address is given within a minute
+        /// before it is told to wait (429 Too Many Requests) rather than asked again - or null,
+        /// where they are not counted. Null by default.
+        /// </summary>
+        /// <remarks>
+        /// For a server whose passwords are worth guessing at from wherever it can be reached: one a
+        /// charging station serves. A request without credentials is not counted - it is how a client
+        /// asks what to come with - and neither is a client certificate, which nobody guesses.
+        /// Counted by address, since a wrong guess names whichever login it likes.
+        /// </remarks>
+        public UInt32?                          MaxFailedSignInsPerMinute    { get; set; }
+
+        private readonly ConcurrentDictionary<String, Queue<DateTimeOffset>>  failedSignIns  = new (StringComparer.Ordinal);
 
         #endregion
 
@@ -408,6 +429,54 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             => RemoveHTTPBasicAuth(
                    NetworkingNodeId.ToString()
                );
+
+        #endregion
+
+
+        // Networking nodes reached under other names
+
+        #region ReachAs(Name, NetworkingNodeId) / NoLongerReachAs(Name)
+
+        /// <summary>
+        /// Reach the networking node that connects under the given identification under the given
+        /// name as well: what is sent to that name goes over its connection, as what is sent to the
+        /// node itself does.
+        /// </summary>
+        /// <remarks>
+        /// A name for the same far end, and not a node behind it: a message for it goes over the
+        /// connection in whichever networking mode that was dialled in - where a message for a node
+        /// behind another goes through that one only in the overlay network, see
+        /// <see cref="WWCPConnectionExtensions.Carries"/>. So a node that speaks to its CSMS by that
+        /// name reaches it over the connection the CSMS made, under whatever name it came.
+        /// The routing of the networking node is the caller's to tell: this is where a message ends
+        /// up once the routing has led it to this server.
+        /// </remarks>
+        /// <param name="Name">The name it is reached by as well.</param>
+        /// <param name="NetworkingNodeId">The identification it connects under.</param>
+        public void ReachAs(NetworkingNode_Id  Name,
+                            NetworkingNode_Id  NetworkingNodeId)
+        {
+            reachedAs[Name] = NetworkingNodeId;
+        }
+
+        /// <summary>
+        /// The identification of the networking node that is reached under the given name as well,
+        /// or null where nothing is.
+        /// </summary>
+        /// <param name="Name">A name given with <see cref="ReachAs"/>.</param>
+        public NetworkingNode_Id? ReachedAs(NetworkingNode_Id Name)
+
+            => reachedAs.TryGetValue(Name, out var networkingNodeId)
+                   ? networkingNodeId
+                   : null;
+
+        /// <summary>
+        /// Reach nothing under the given name any more. Whether there was something.
+        /// </summary>
+        /// <param name="Name">A name given with <see cref="ReachAs"/>.</param>
+        public Boolean NoLongerReachAs(NetworkingNode_Id Name)
+
+            => reachedAs.TryRemove(Name, out _);
 
         #endregion
 
@@ -726,6 +795,25 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             if (RequireAuthentication)
             {
 
+                var guessesFrom = Connection.RemoteSocket.IPAddress.ToString();
+
+                // An address that guessed wrong too often is told to wait, whatever it
+                // comes with now - but for a client certificate, which is no guess.
+                if (CertificateIdentityOf(Connection, httpRequest) is null && HasGuessedTooOften(guessesFrom))
+                {
+
+                    DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket}: too many sign-ins that were wrong, it is told to wait.");
+
+                    return Task.FromResult<HTTPResponse?>(
+                               new HTTPResponse.Builder(httpRequest) {
+                                   HTTPStatusCode  = HTTPStatusCode.TooManyRequests,
+                                   Server          = HTTPServiceName,
+                                   Date            = Timestamp.Now,
+                                   Connection      = ConnectionType.Close
+                               }.AsImmutable);
+
+                }
+
                 // Who asked to be let in goes into the log, never with what: a password
                 // or a one-time password in a log is one for whoever reads the log -
                 // and a wrong one is often the right one mistyped, or another account's.
@@ -805,6 +893,10 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 else
                     DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} missing or invalid authorization!");
 
+                // A guess, where it came with something: counted against its address.
+                if (Connection.HTTPRequest is { Authorization: not null } or { TOTP: not null })
+                    CountFailedSignIn(guessesFrom);
+
 
                 var unauthorized = new HTTPResponse.Builder(httpRequest) {
                                        HTTPStatusCode  = HTTPStatusCode.Unauthorized,
@@ -825,6 +917,75 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             #endregion
 
             return Task.FromResult<HTTPResponse?>(null);
+
+        }
+
+        #endregion
+
+        #region (private) HasGuessedTooOften(Client) / CountFailedSignIn(Client)
+
+        /// <summary>
+        /// Whether the given address signed in wrong as often within the last minute as it may.
+        /// </summary>
+        private Boolean HasGuessedTooOften(String Client)
+        {
+
+            if (MaxFailedSignInsPerMinute is not UInt32 most ||
+                !failedSignIns.TryGetValue(Client, out var guesses))
+            {
+                return false;
+            }
+
+            var since = Timestamp.Now - TimeSpan.FromMinutes(1);
+
+            lock (guesses)
+            {
+
+                while (guesses.Count > 0 && guesses.Peek() < since)
+                    guesses.Dequeue();
+
+                return guesses.Count >= most;
+
+            }
+
+        }
+
+        /// <summary>
+        /// Count a sign-in of the given address that was wrong.
+        /// </summary>
+        private void CountFailedSignIn(String Client)
+        {
+
+            if (MaxFailedSignInsPerMinute is null)
+                return;
+
+            var now     = Timestamp.Now;
+            var since   = now - TimeSpan.FromMinutes(1);
+
+            // Kept small: what is older than a minute says nothing any more.
+            if (failedSignIns.Count > 4096)
+            {
+                foreach (var (address, old) in failedSignIns.ToArray())
+                {
+                    lock (old)
+                    {
+                        if (old.Count == 0 || old.Last() < since)
+                            failedSignIns.TryRemove(KeyValuePair.Create(address, old));
+                    }
+                }
+            }
+
+            var guesses = failedSignIns.GetOrAdd(Client, _ => new Queue<DateTimeOffset>());
+
+            lock (guesses)
+            {
+
+                while (guesses.Count > 0 && guesses.Peek() < since)
+                    guesses.Dequeue();
+
+                guesses.Enqueue(now);
+
+            }
 
         }
 
@@ -1422,6 +1583,12 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
             if (DestinationId == NetworkingNode_Id.Broadcast)
                 return WebSocketConnections;
+
+            // Another name of a node that is connected: its connections, whatever their mode.
+            if (reachedAs.TryGetValue(DestinationId, out var itself))
+                return connectedNetworkingNodes.TryGetValue(itself, out var itsConnections)
+                           ? itsConnections.WebSocketServerConnections.Where(webSocketServerConnection => webSocketServerConnection.IsAlive)
+                           : [];
 
             var nextHop = DestinationId;
 
