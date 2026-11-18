@@ -930,6 +930,21 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #endregion
 
 
+        #region DetachWebSocketServer(WebSocketServer)
+
+        /// <summary>
+        /// A WebSocket server this node no longer has: it is not stopped again
+        /// when the node is (see Stop). Whoever made it lets go of it - and
+        /// detaches it first, as a server that was let go of cannot be stopped.
+        /// </summary>
+        /// <param name="WebSocketServer">A WebSocket server of this node.</param>
+        /// <returns>Whether this node had it.</returns>
+        public Boolean DetachWebSocketServer(IWWCPWebSocketServer WebSocketServer)
+
+            => wwcpWebSocketServers.Remove(WebSocketServer);
+
+        #endregion
+
         #region (protected virtual) WireWebSocketServer(WebSocketServer)
 
         protected virtual void WireWebSocketServer(IWWCPWebSocketServer WebSocketServer)
