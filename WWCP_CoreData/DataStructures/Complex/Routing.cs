@@ -40,6 +40,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         #region Data
 
         private readonly ConcurrentDictionary<NetworkingNode_Id, List<Reachability>>  reachableNetworkingNodes = [];
+        private readonly ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>   namesOnTheWire           = [];
 
         #endregion
 
@@ -559,6 +560,51 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         #endregion
 
+
+
+        #region SetNameOnTheWire(RouteName, NameOnTheWire) / OnTheWire(Destination)
+
+        /// <summary>
+        /// Say what the node at the end of a route is called in what is sent to
+        /// it, where the route is known by a name of this node's own: a line to
+        /// a back end, known as "connection-" and the id of its connection, so
+        /// that two lines of one version are two routes.
+        /// </summary>
+        /// <remarks>
+        /// In the overlay network a frame carries where it goes, and the node
+        /// at the other end reads it: a name of this node's own it does not
+        /// know, and takes what is sent to it for something to pass on. The
+        /// route still decides the line; the frame names what that line's far
+        /// end answers to. In the plain frame of OCPP nothing of it is sent.
+        /// </remarks>
+        /// <param name="RouteName">The name of the route, this node's own.</param>
+        /// <param name="NameOnTheWire">What the node at its end answers to.</param>
+        public void SetNameOnTheWire(NetworkingNode_Id  RouteName,
+                                     NetworkingNode_Id  NameOnTheWire)
+        {
+
+            if (RouteName == NameOnTheWire)
+                namesOnTheWire.TryRemove(RouteName, out _);
+
+            else
+                namesOnTheWire[RouteName] = NameOnTheWire;
+
+        }
+
+        /// <summary>
+        /// Where a message goes as it is written on the line: its first hop by
+        /// the name the node at the end of its route answers to, where the
+        /// route has a name of this node's own - see SetNameOnTheWire.
+        /// </summary>
+        /// <param name="Destination">Where the message goes, as routed.</param>
+        public SourceRouting OnTheWire(SourceRouting Destination)
+
+            => Destination.IsNotNullOrEmpty &&
+               namesOnTheWire.TryGetValue(Destination.Next, out var nameOnTheWire)
+                   ? SourceRouting.To([ nameOnTheWire, .. Destination.Skip(1) ])
+                   : Destination;
+
+        #endregion
 
 
         public JArray ToJSON()
