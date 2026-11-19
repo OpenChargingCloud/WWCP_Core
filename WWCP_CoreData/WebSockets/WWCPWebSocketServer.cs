@@ -857,7 +857,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                     if (ClientTOTPConfig.TryGetValue(totpAuthentication.Login, out var totpConfig))
                     {
 
-                        if (TOTPIsTheOneOf(totpConfig, totpAuthentication.TOTP, totpAuthentication.Type, Connection.TOTPTLSExporterMaterial))
+                        if (TOTPIsTheOneOf(totpConfig, totpAuthentication.TOTP, Connection.TOTPTLSExporterMaterial))
                         {
                             DebugX.Log($"{nameof(WWCPWebSocketServer)} connection from {Connection.RemoteSocket} using TOTP authorization: '{totpAuthentication.Login}'");
                             return Task.FromResult<HTTPResponse?>(null);
@@ -1518,7 +1518,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                        HTTPTOTPAuthentication totpAuthentication
                            => ClientTOTPConfig.TryGetValue(totpAuthentication.Login, out var totpConfig) &&
-                              TOTPIsTheOneOf(totpConfig, totpAuthentication.TOTP, totpAuthentication.Type, Connection.TOTPTLSExporterMaterial),
+                              TOTPIsTheOneOf(totpConfig, totpAuthentication.TOTP, Connection.TOTPTLSExporterMaterial),
 
                        null
                            => TOTPHeaderIsTheOneOfThePath(Connection, Request),

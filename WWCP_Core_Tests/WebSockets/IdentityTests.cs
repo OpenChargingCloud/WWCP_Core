@@ -343,7 +343,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
 
             await Start(RequireAuthentication: false);
 
-            using var client = await Upgrade($"/{CS001}", HTTPTOTPAuthentication.Create(CS003.ToString(), "123456789012", TOTPHTTPHeaderType.RAW).HTTPText);
+            using var client = await Upgrade($"/{CS001}", HTTPTOTPAuthentication.Create(CS003.ToString(), "123456789012").HTTPText);
 
             Assert.That(server!.ConnectedNetworkingNodeIds, Is.Empty);
 
@@ -400,7 +400,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         /// The right TOTP credentials of the given networking node.
         /// </summary>
         private String TOTP(NetworkingNode_Id NetworkingNodeId)
-            => HTTPTOTPAuthentication.Create(NetworkingNodeId.ToString(), TOTPGenerator.GenerateTOTP(sharedSecret).Current, TOTPHTTPHeaderType.RAW).HTTPText;
+            => HTTPTOTPAuthentication.Create(NetworkingNodeId.ToString(), TOTPGenerator.GenerateTOTP(sharedSecret).Current).HTTPText;
 
         #endregion
 

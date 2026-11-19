@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
             using var client = await RawWebSocketClient.Upgrade(
                                          port,
                                          $"/{station}",
-                                         HTTPTOTPAuthentication.Create(station, totp, TOTPHTTPHeaderType.RAW).HTTPText
+                                         HTTPTOTPAuthentication.Create(station, totp).HTTPText
                                      );
 
             Assert.Multiple(() => {
@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
             using var client = await RawWebSocketClient.Upgrade(
                                          port,
                                          $"/{station}",
-                                         HTTPTOTPAuthentication.Create("CS002", totp, TOTPHTTPHeaderType.RAW).HTTPText
+                                         HTTPTOTPAuthentication.Create("CS002", totp).HTTPText
                                      );
 
             Assert.Multiple(() => {
