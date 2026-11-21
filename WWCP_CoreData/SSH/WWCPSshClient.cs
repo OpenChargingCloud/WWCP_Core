@@ -125,6 +125,15 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         public Formatting               JSONFormatting          { get; set; }
             = Formatting.None;
 
+        /// <summary>
+        /// Whether the binary messages of a connection that agreed on the given subprotocol are CBOR: told
+        /// of by OnCBORMessageReceived and OnCBORMessageSent as well, decoded, after the events of binary
+        /// messages - as a text message is told of as JSON. None by default - which subprotocols those are
+        /// is for the protocol that names them to say.
+        /// </summary>
+        public virtual Func<String?, Boolean>  SubprotocolIsCBOR    { get; set; }
+            = subprotocol => false;
+
         #endregion
 
         #region Events
@@ -153,9 +162,16 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         public event OnWWCPJSONMessageReceivedDelegate?    OnJSONMessageReceived;
 
         /// <summary>
-        /// A binary message was received.
+        /// A binary message was received: every one, over a connection whose subprotocol is CBOR as well,
+        /// before OnCBORMessageReceived.
         /// </summary>
         public event OnWWCPBinaryMessageReceivedDelegate?  OnBinaryMessageReceived;
+
+        /// <summary>
+        /// A CBOR message was received: a binary message over a connection whose subprotocol is CBOR, see
+        /// SubprotocolIsCBOR - decoded, after OnBinaryMessageReceived.
+        /// </summary>
+        public event OnWWCPCBORMessageReceivedDelegate?    OnCBORMessageReceived;
 
         /// <summary>
         /// A JSON message was sent, or failed to be.
@@ -163,9 +179,16 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         public event OnWWCPJSONMessageSentDelegate?        OnJSONMessageSent;
 
         /// <summary>
-        /// A binary message was sent, or failed to be.
+        /// A binary message was sent, or failed to be: every one, over a connection whose subprotocol is
+        /// CBOR as well, before OnCBORMessageSent.
         /// </summary>
         public event OnWWCPBinaryMessageSentDelegate?      OnBinaryMessageSent;
+
+        /// <summary>
+        /// A CBOR message was sent, or failed to be: a binary message over a connection whose subprotocol
+        /// is CBOR, see SubprotocolIsCBOR - decoded, after OnBinaryMessageSent.
+        /// </summary>
+        public event OnWWCPCBORMessageSentDelegate?        OnCBORMessageSent;
 
         /// <summary>
         /// An attempt to connect failed, and is tried again or not: every one the client makes by itself -
@@ -265,7 +288,7 @@ namespace cloud.charging.open.protocols.WWCP.SSH
                                                           WWCPSshMessaging.ReceiveText(this, connection, timestamp, text, OnJSONMessageReceived, nameof(WWCPSshClient), cancellationToken);
 
             MessageClient.OnBinaryMessageReceived  += (timestamp, sender, connection, bytes, cancellationToken) =>
-                                                          WWCPSshMessaging.ReceiveBinary(this, connection, timestamp, bytes, OnBinaryMessageReceived, nameof(WWCPSshClient), cancellationToken);
+                                                          WWCPSshMessaging.ReceiveBinary(this, connection, timestamp, bytes, OnBinaryMessageReceived, SubprotocolIsCBOR, OnCBORMessageReceived, nameof(WWCPSshClient), cancellationToken);
 
             MessageClient.OnConnectionClosed       += (timestamp, sender, connection, close, cancellationToken) =>
                                                           WWCPSshMessaging.RaiseAll(
@@ -539,7 +562,7 @@ namespace cloud.charging.open.protocols.WWCP.SSH
                                                          CancellationToken  CancellationToken   = default)
 
             => MessageClient.Connection is SshMessageConnection connection && connection.IsAlive
-                   ? WWCPSshMessaging.SendBinary(this, connection, BinaryMessage, MessageTimestamp, EventTrackingId, OnBinaryMessageSent, nameof(WWCPSshClient), CancellationToken)
+                   ? WWCPSshMessaging.SendBinary(this, connection, BinaryMessage, MessageTimestamp, EventTrackingId, OnBinaryMessageSent, SubprotocolIsCBOR, OnCBORMessageSent, nameof(WWCPSshClient), CancellationToken)
                    : Task.FromResult(SentMessageResult.UnknownClient());
 
         #endregion

@@ -115,21 +115,26 @@ namespace cloud.charging.open.protocols.WWCP.SSH
 
         #endregion
 
-        #region ReceiveBinary(Transport, Connection, MessageTimestamp, Bytes, Handlers, Module, CancellationToken)
+        #region ReceiveBinary(Transport, Connection, MessageTimestamp, Bytes, Handlers, SubprotocolIsCBOR, CBORHandlers, Module, CancellationToken)
 
         /// <summary>
-        /// A binary message, for whoever listens - or, where it is empty, a line in the log.
+        /// A binary message, for whoever listens - or, where it is empty, a line in the log. Over a
+        /// connection whose subprotocol is CBOR, it is told of as CBOR as well, decoded, after it was told
+        /// of as a binary message - as a text message is told of as JSON.
         /// </summary>
         public static async Task ReceiveBinary(IWWCPTransport                        Transport,
                                                IMessageConnection                    Connection,
                                                DateTimeOffset                        MessageTimestamp,
                                                Byte[]                                Bytes,
                                                OnWWCPBinaryMessageReceivedDelegate?  Handlers,
+                                               Func<String?, Boolean>                SubprotocolIsCBOR,
+                                               OnWWCPCBORMessageReceivedDelegate?    CBORHandlers,
                                                String                                Module,
                                                CancellationToken                     CancellationToken)
         {
 
-            var sourceNodeId = Connection.NetworkingNodeIdOf();
+            var sourceNodeId     = Connection.NetworkingNodeIdOf();
+            var eventTrackingId  = EventTracking_Id.New;
 
             if (Bytes.Length == 0)
             {
@@ -144,9 +149,34 @@ namespace cloud.charging.open.protocols.WWCP.SSH
                                      Transport,
                                      Connection,
                                      MessageTimestamp,
-                                     EventTracking_Id.New,
+                                     eventTrackingId,
                                      sourceNodeId ?? NetworkingNode_Id.Zero,
                                      Bytes,
+                                     CancellationToken
+                                 ),
+                      Module
+                  );
+
+            // A connection whose subprotocol is CBOR has CBOR in its binary messages, and nothing else.
+            if (!SubprotocolIsCBOR(Connection.Subprotocol))
+                return;
+
+            if (!CBORValue.TryParse(Bytes, out var cborMessage, out var cborError))
+            {
+                DebugX.Log($"{Module}: Received a binary message that is not CBOR over a CBOR connection from {(sourceNodeId.HasValue ? $"'{sourceNodeId}' ({Connection.RemoteSocket})" : Connection.RemoteSocket.ToString())}: {cborError}");
+                return;
+            }
+
+            await RaiseAll(
+                      CBORHandlers,
+                      handler => handler(
+                                     Timestamp.Now,
+                                     Transport,
+                                     Connection,
+                                     MessageTimestamp,
+                                     eventTrackingId,
+                                     sourceNodeId ?? NetworkingNode_Id.Zero,
+                                     cborMessage,
                                      CancellationToken
                                  ),
                       Module
@@ -209,10 +239,11 @@ namespace cloud.charging.open.protocols.WWCP.SSH
 
         #endregion
 
-        #region SendBinary   (Transport, Connection, BinaryMessage,                   MessageTimestamp, EventTrackingId, Handlers, Module, CancellationToken)
+        #region SendBinary   (Transport, Connection, BinaryMessage,                   MessageTimestamp, EventTrackingId, Handlers, SubprotocolIsCBOR, CBORHandlers, Module, CancellationToken)
 
         /// <summary>
-        /// Send a binary message on the given connection.
+        /// Send a binary message on the given connection - told of as a binary message, and, over a
+        /// connection whose subprotocol is CBOR, as CBOR after it, decoded where anybody listens.
         /// </summary>
         public static async Task<SentMessageResult> SendBinary(IWWCPTransport                    Transport,
                                                                IMessageConnection                Connection,
@@ -220,6 +251,8 @@ namespace cloud.charging.open.protocols.WWCP.SSH
                                                                DateTimeOffset                    MessageTimestamp,
                                                                EventTracking_Id                  EventTrackingId,
                                                                OnWWCPBinaryMessageSentDelegate?  Handlers,
+                                                               Func<String?, Boolean>            SubprotocolIsCBOR,
+                                                               OnWWCPCBORMessageSentDelegate?    CBORHandlers,
                                                                String                            Module,
                                                                CancellationToken                 CancellationToken)
         {
@@ -246,6 +279,30 @@ namespace cloud.charging.open.protocols.WWCP.SSH
                                      ),
                           Module
                       );
+
+                if (CBORHandlers is not null && SubprotocolIsCBOR(Connection.Subprotocol))
+                {
+
+                    if (CBORValue.TryParse(BinaryMessage, out var cborMessage, out var cborError))
+                        await RaiseAll(
+                                  CBORHandlers,
+                                  handler => handler(
+                                                 Timestamp.Now,
+                                                 Transport,
+                                                 Connection,
+                                                 MessageTimestamp,
+                                                 EventTrackingId,
+                                                 cborMessage,
+                                                 sentStatus,
+                                                 CancellationToken
+                                             ),
+                                  Module
+                              );
+
+                    else
+                        DebugX.Log($"{Module}: Sent a binary message that is not CBOR over a CBOR connection: {cborError}");
+
+                }
 
                 return sentStatus == SentStatus.Success
                            ? SentMessageResult.Success(Connection)

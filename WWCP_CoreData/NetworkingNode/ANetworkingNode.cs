@@ -409,17 +409,17 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
         #endregion
 
-        #region Generic Binary Messages
+        #region Generic CBOR Messages
 
         /// <summary>
-        /// An event sent whenever a binary message was sent.
+        /// An event sent whenever a CBOR message was sent.
         /// </summary>
-        public event WebSockets.OnWebSocketServerBinaryMessageSentDelegate?      OnBinaryMessageSent;
+        public event OnWebSocketServerCBORMessageSentDelegate?        OnCBORMessageSent;
 
         /// <summary>
-        /// An event sent whenever a binary message was received.
+        /// An event sent whenever a CBOR message was received.
         /// </summary>
-        public event WebSockets.OnWebSocketServerBinaryMessageReceivedDelegate?  OnBinaryMessageReceived;
+        public event OnWebSocketServerCBORMessageReceivedDelegate?    OnCBORMessageReceived;
 
         #endregion
 
@@ -995,6 +995,52 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                          messageTimestamp,
                          sourceNodeId,
                          jsonMessage,
+                         cancellationToken
+                    )
+                );
+
+            WebSocketServer.OnCBORMessageSent += (timestamp,
+                                                  server,
+                                                  connection,
+                                                  messageTimestamp,
+                                                  eventTrackingId,
+                                                  cborMessage,
+                                                  sentStatus,
+                                                  cancellationToken) =>
+
+                LogEvent(
+                    OnCBORMessageSent,
+                    loggingDelegate => loggingDelegate.Invoke(
+                         timestamp,
+                         server,
+                         connection,
+                         messageTimestamp,
+                         eventTrackingId,
+                         cborMessage,
+                         sentStatus,
+                         cancellationToken
+                    )
+                );
+
+            WebSocketServer.OnCBORMessageReceived += (timestamp,
+                                                      server,
+                                                      connection,
+                                                      messageTimestamp,
+                                                      eventTrackingId,
+                                                      sourceNodeId,
+                                                      cborMessage,
+                                                      cancellationToken) =>
+
+                LogEvent(
+                    OnCBORMessageReceived,
+                    loggingDelegate => loggingDelegate.Invoke(
+                         timestamp,
+                         server,
+                         connection,
+                         messageTimestamp,
+                         eventTrackingId,
+                         sourceNodeId,
+                         cborMessage,
                          cancellationToken
                     )
                 );

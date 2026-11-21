@@ -96,6 +96,15 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         public Formatting       JSONFormatting    { get; set; }
             = Formatting.None;
 
+        /// <summary>
+        /// Whether the binary frames of a connection that agreed on the given subprotocol are
+        /// CBOR: told of by OnCBORMessageReceived and OnCBORMessageSent as well, decoded - as
+        /// a text frame is told of by OnJSONMessageReceived after OnTextMessageReceived. None
+        /// by default - which subprotocols those are is for the protocol that names them to say.
+        /// </summary>
+        public Func<String?, Boolean>  SubprotocolIsCBOR    { get; set; }
+            = subprotocol => false;
+
         #endregion
 
         #region Events
@@ -112,14 +121,16 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
 
         /// <summary>
-        /// An event sent whenever a binary message was sent.
+        /// An event sent whenever a CBOR message was sent: a binary frame over a connection
+        /// whose subprotocol is CBOR, see SubprotocolIsCBOR - after OnBinaryMessageSent.
         /// </summary>
-        public new event OnWebSocketClientBinaryMessageSentDelegate?       OnBinaryMessageSent;
+        public     event OnWebSocketClientCBORMessageSentDelegate?         OnCBORMessageSent;
 
         /// <summary>
-        /// An event sent whenever a binary message was received.
+        /// An event sent whenever a CBOR message was received: a binary frame over a connection
+        /// whose subprotocol is CBOR, see SubprotocolIsCBOR - after OnBinaryMessageReceived.
         /// </summary>
-        public new event OnWebSocketClientBinaryMessageReceivedDelegate?   OnBinaryMessageReceived;
+        public     event OnWebSocketClientCBORMessageReceivedDelegate?     OnCBORMessageReceived;
 
         #endregion
 
@@ -256,9 +267,6 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             this.NetworkingNode           = NetworkingNode;
             this.NetworkingMode           = NetworkingMode ?? WWCP.NetworkingNode.NetworkingMode.Standard;
 
-            base.OnTextMessageReceived   += ProcessWebSocketTextFrame;
-            base.OnBinaryMessageReceived += ProcessWebSocketBinaryFrame;
-
             //this.Logger                   = new ChargePointwebsocketClient.CPClientLogger(this,
             //                                                                         LoggingPath,
             //                                                                         LoggingContext,
@@ -269,26 +277,35 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         #endregion
 
 
-        #region ProcessWebSocketTextFrame   (RequestTimestamp, Client, Connection, Frame, EventTrackingId, TextMessage,   CancellationToken)
+        #region (override) ProcessTextMessage   (RequestTimestamp, Connection, Frame, EventTrackingId, TextMessage,   CancellationToken)
 
         /// <summary>
-        /// Process a HTTP WebSocket text message.
+        /// Process a HTTP WebSocket text message: told of as text first, by the base
+        /// class, and then as JSON.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
-        /// <param name="Client">The HTTP WebSocket client.</param>
         /// <param name="Connection">The HTTP WebSocket connection.</param>
         /// <param name="Frame">The HTTP WebSocket frame.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="TextMessage">The received text message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public async Task ProcessWebSocketTextFrame(DateTimeOffset                                                         RequestTimestamp,
-                                                    org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketClient            Client,
-                                                    org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketClientConnection  Connection,
-                                                    org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketFrame             Frame,
-                                                    EventTracking_Id                                                       EventTrackingId,
-                                                    String                                                                 TextMessage,
-                                                    CancellationToken                                                      CancellationToken)
+        public override async Task ProcessTextMessage(DateTimeOffset                                                         RequestTimestamp,
+                                                      org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketClientConnection  Connection,
+                                                      org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketFrame             Frame,
+                                                      EventTracking_Id                                                       EventTrackingId,
+                                                      String                                                                 TextMessage,
+                                                      CancellationToken                                                      CancellationToken)
         {
+
+            // Fire the generic OnTextMessageReceived event of the base class!
+            await base.ProcessTextMessage(
+                      RequestTimestamp,
+                      Connection,
+                      Frame,
+                      EventTrackingId,
+                      TextMessage,
+                      CancellationToken
+                  );
 
             try
             {
@@ -303,7 +320,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                     await HandleErrors(
                               nameof(WWCPWebSocketClient),
-                              nameof(ProcessWebSocketBinaryFrame),
+                              nameof(ProcessTextMessage),
                               $"Received an empty text message from {(
                                    sourceNodeId.HasValue
                                        ? $"'{sourceNodeId}' ({Connection.RemoteSocket})"
@@ -339,7 +356,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             {
                 await HandleErrors(
                           nameof(WWCPWebSocketClient),
-                          nameof(ProcessWebSocketTextFrame),
+                          nameof(ProcessTextMessage),
                           e
                       );
             }
@@ -348,26 +365,35 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #endregion
 
-        #region ProcessWebSocketBinaryFrame (RequestTimestamp, Client, Connection, Frame, EventTrackingId, BinaryMessage, CancellationToken)
+        #region (override) ProcessBinaryMessage (RequestTimestamp, Connection, Frame, EventTrackingId, BinaryMessage, CancellationToken)
 
         /// <summary>
-        /// Process a HTTP WebSocket binary message.
+        /// Process a HTTP WebSocket binary message: told of as a binary message first, by
+        /// the base class, and then - over a connection whose subprotocol is CBOR - as CBOR.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
-        /// <param name="Client">The HTTP WebSocket client.</param>
         /// <param name="Connection">The HTTP WebSocket connection.</param>
         /// <param name="Frame">The HTTP WebSocket frame.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="BinaryMessage">The received binary message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public async Task ProcessWebSocketBinaryFrame(DateTimeOffset                                                         RequestTimestamp,
-                                                      org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketClient            Client,
-                                                      org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketClientConnection  Connection,
-                                                      org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketFrame             Frame,
-                                                      EventTracking_Id                                                       EventTrackingId,
-                                                      Byte[]                                                                 BinaryMessage,
-                                                      CancellationToken                                                      CancellationToken)
+        public override async Task ProcessBinaryMessage(DateTimeOffset                                                         RequestTimestamp,
+                                                        org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketClientConnection  Connection,
+                                                        org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketFrame             Frame,
+                                                        EventTracking_Id                                                       EventTrackingId,
+                                                        Byte[]                                                                 BinaryMessage,
+                                                        CancellationToken                                                      CancellationToken)
         {
+
+            // Fire the generic OnBinaryMessageReceived event of the base class!
+            await base.ProcessBinaryMessage(
+                      RequestTimestamp,
+                      Connection,
+                      Frame,
+                      EventTrackingId,
+                      BinaryMessage,
+                      CancellationToken
+                  );
 
             try
             {
@@ -381,7 +407,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                     await HandleErrors(
                               nameof(WWCPWebSocketClient),
-                              nameof(ProcessWebSocketBinaryFrame),
+                              nameof(ProcessBinaryMessage),
                               $"Received an empty binary message from {(
                                    sourceNodeId.HasValue
                                        ? $"'{sourceNodeId}' ({Connection.RemoteSocket})"
@@ -396,26 +422,51 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                 #endregion
 
 
-                await LogEvent(
-                          OnBinaryMessageReceived,
-                          loggingDelegate => loggingDelegate.Invoke(
-                              Timestamp.Now,
-                              this,
-                              Connection,
-                              EventTrackingId,
-                              RequestTimestamp,
-                              sourceNodeId ?? NetworkingNode_Id.Zero,
-                              BinaryMessage,
-                              CancellationToken
-                          )
-                      );
+                // A connection whose subprotocol is CBOR has CBOR in its binary frames, and
+                // nothing else: told of as CBOR as well, decoded. Any other binary frame the
+                // base class told of already, and that is all.
+                if (SubprotocolIsCBOR(Connection.Subprotocol))
+                {
+
+                    if (!CBORValue.TryParse(BinaryMessage, out var cborMessage, out var cborError))
+                    {
+
+                        await HandleErrors(
+                                  nameof(WWCPWebSocketClient),
+                                  nameof(ProcessBinaryMessage),
+                                  $"Received a binary message that is not CBOR over a CBOR connection from {(
+                                       sourceNodeId.HasValue
+                                           ? $"'{sourceNodeId}' ({Connection.RemoteSocket})"
+                                           : $"'{Connection.RemoteSocket}"
+                                  )}': {cborError}"
+                              );
+
+                        return;
+
+                    }
+
+                    await LogEvent(
+                              OnCBORMessageReceived,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  this,
+                                  Connection,
+                                  EventTrackingId,
+                                  RequestTimestamp,
+                                  sourceNodeId ?? NetworkingNode_Id.Zero,
+                                  cborMessage,
+                                  CancellationToken
+                              )
+                          );
+
+                }
 
             }
             catch (Exception e)
             {
                 await HandleErrors(
                           nameof(WWCPWebSocketClient),
-                          nameof(ProcessWebSocketBinaryFrame),
+                          nameof(ProcessBinaryMessage),
                           e
                       );
             }
@@ -502,19 +553,39 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                            CancellationToken
                                        );
 
-                await LogEvent(
-                          OnBinaryMessageSent,
-                          loggingDelegate => loggingDelegate.Invoke(
-                              Timestamp.Now,
-                              this,
-                              webSocketClientConnection,
-                              EventTrackingId,
-                              MessageTimestamp,
-                              BinaryMessage,
-                              sentStatus,
-                              CancellationToken
-                          )
-                      );
+                // Over a connection whose subprotocol is CBOR: told of as CBOR as well, after
+                // the base class told of the binary frame - decoded, where anybody listens.
+                if (SubprotocolIsCBOR(webSocketClientConnection?.Subprotocol))
+                {
+
+                    if (OnCBORMessageSent is not null)
+                    {
+
+                        if (CBORValue.TryParse(BinaryMessage, out var cborMessage, out var cborError))
+                            await LogEvent(
+                                      OnCBORMessageSent,
+                                      loggingDelegate => loggingDelegate.Invoke(
+                                          Timestamp.Now,
+                                          this,
+                                          webSocketClientConnection,
+                                          EventTrackingId,
+                                          MessageTimestamp,
+                                          cborMessage,
+                                          sentStatus,
+                                          CancellationToken
+                                      )
+                                  );
+
+                        else
+                            await HandleErrors(
+                                      nameof(WWCPWebSocketClient),
+                                      nameof(SendBinaryMessage),
+                                      $"Sent a binary message that is not CBOR over a CBOR connection: {cborError}"
+                                  );
+
+                    }
+
+                }
 
                 return sentStatus switch {
                            org.GraphDefined.Vanaheimr.Hermod.WebSocket.SentStatus.Success  => SentMessageResult.Success(webSocketClientConnection),

@@ -119,6 +119,15 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
             = Formatting.None;
 
         /// <summary>
+        /// Whether the binary frames of a connection that agreed on the given subprotocol are
+        /// CBOR: told of by OnCBORMessageReceived and OnCBORMessageSent as well, decoded - as
+        /// a text frame is told of by OnJSONMessageReceived after OnTextMessageReceived. None
+        /// by default - which subprotocols those are is for the protocol that names them to say.
+        /// </summary>
+        public Func<String?, Boolean>          SubprotocolIsCBOR    { get; set; }
+            = subprotocol => false;
+
+        /// <summary>
         /// Messages go over HTTP WebSockets.
         /// </summary>
         public MessageTransport                Transport
@@ -204,7 +213,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #endregion
 
-        #region JSON/Binary Message Sent/Received
+        #region JSON/CBOR Message Sent/Received
 
         /// <summary>
         /// An event sent whenever a JSON message was sent.
@@ -223,19 +232,21 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
 
         /// <summary>
-        /// An event sent whenever a binary message was sent.
+        /// An event sent whenever a CBOR message was sent: a binary frame over a connection
+        /// whose subprotocol is CBOR, see SubprotocolIsCBOR - after OnBinaryMessageSent.
         /// </summary>
-        public new event OnWebSocketServerBinaryMessageSentDelegate?       OnBinaryMessageSent;
+        public event     OnWebSocketServerCBORMessageSentDelegate?         OnCBORMessageSent;
 
         /// <summary>
-        /// An event sent whenever a binary message was received.
+        /// An event sent whenever a CBOR message was received: a binary frame over a connection
+        /// whose subprotocol is CBOR, see SubprotocolIsCBOR - after OnBinaryMessageReceived.
         /// </summary>
-        public new event OnWebSocketServerBinaryMessageReceivedDelegate?   OnBinaryMessageReceived;
+        public event     OnWebSocketServerCBORMessageReceivedDelegate?     OnCBORMessageReceived;
 
         /// <summary>
-        /// An event sent whenever a binary message was received.
+        /// An event sent whenever a CBOR message was received, for further processing.
         /// </summary>
-        public new event OnWebSocketServerBinaryMessageReceivedDelegate?   OnBinaryMessageReceived2;
+        public event     OnWebSocketServerCBORMessageReceivedDelegate?     OnCBORMessageReceived2;
 
         #endregion
 
@@ -1779,35 +1790,60 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                 var timestamp     = Timestamp.Now;
 
-                // Just for logging!
-                await LogEvent(
-                          OnBinaryMessageReceived,
-                          loggingDelegate => loggingDelegate.Invoke(
-                              Timestamp.Now,
-                              this,
-                              WebSocketConnection,
-                              RequestTimestamp,
-                              EventTrackingId,
-                              sourceNodeId ?? NetworkingNode_Id.Zero,
-                              BinaryMessage,
-                              CancellationToken
-                          )
-                      );
+                // A connection whose subprotocol is CBOR has CBOR in its binary frames, and
+                // nothing else: told of as CBOR as well, decoded. Any other binary frame the
+                // base class told of above, and that is all.
+                if (SubprotocolIsCBOR(WebSocketConnection.Subprotocol))
+                {
 
-                // For further processing...
-                await LogEvent(
-                          OnBinaryMessageReceived2,
-                          loggingDelegate => loggingDelegate.Invoke(
-                              Timestamp.Now,
-                              this,
-                              WebSocketConnection,
-                              RequestTimestamp,
-                              EventTrackingId,
-                              sourceNodeId ?? NetworkingNode_Id.Zero,
-                              BinaryMessage,
-                              CancellationToken
-                          )
-                      );
+                    if (!CBORValue.TryParse(BinaryMessage, out var cborMessage, out var cborError))
+                    {
+
+                        await HandleErrors(
+                                  nameof(WWCPWebSocketServer),
+                                  nameof(ProcessBinaryMessage),
+                                  $"Received a binary message that is not CBOR over a CBOR connection from {(
+                                       sourceNodeId.HasValue
+                                           ? $"'{sourceNodeId}' ({WebSocketConnection.RemoteSocket})"
+                                           : $"'{WebSocketConnection.RemoteSocket}"
+                                  )}': {cborError}"
+                              );
+
+                        return;
+
+                    }
+
+                    // Just for logging!
+                    await LogEvent(
+                              OnCBORMessageReceived,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  timestamp,
+                                  this,
+                                  WebSocketConnection,
+                                  RequestTimestamp,
+                                  EventTrackingId,
+                                  sourceNodeId ?? NetworkingNode_Id.Zero,
+                                  cborMessage,
+                                  CancellationToken
+                              )
+                          );
+
+                    // For further processing...
+                    await LogEvent(
+                              OnCBORMessageReceived2,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  timestamp,
+                                  this,
+                                  WebSocketConnection,
+                                  RequestTimestamp,
+                                  EventTrackingId,
+                                  sourceNodeId ?? NetworkingNode_Id.Zero,
+                                  cborMessage,
+                                  CancellationToken
+                              )
+                          );
+
+                }
 
             }
             catch (Exception e)
@@ -1909,19 +1945,39 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                            CancellationToken
                                        );
 
-                await LogEvent(
-                          OnBinaryMessageSent,
-                          loggingDelegate => loggingDelegate.Invoke(
-                              Timestamp.Now,
-                              this,
-                              WebSocketConnection,
-                              RequestTimestamp,
-                              EventTrackingId,
-                              BinaryMessage,
-                              sentStatus,
-                              CancellationToken
-                          )
-                      );
+                // Over a connection whose subprotocol is CBOR: told of as CBOR as well, after
+                // the base class told of the binary frame - decoded, where anybody listens.
+                if (SubprotocolIsCBOR(WebSocketConnection.Subprotocol))
+                {
+
+                    if (OnCBORMessageSent is not null)
+                    {
+
+                        if (CBORValue.TryParse(BinaryMessage, out var cborMessage, out var cborError))
+                            await LogEvent(
+                                      OnCBORMessageSent,
+                                      loggingDelegate => loggingDelegate.Invoke(
+                                          Timestamp.Now,
+                                          this,
+                                          WebSocketConnection,
+                                          RequestTimestamp,
+                                          EventTrackingId,
+                                          cborMessage,
+                                          sentStatus,
+                                          CancellationToken
+                                      )
+                                  );
+
+                        else
+                            await HandleErrors(
+                                      nameof(WWCPWebSocketServer),
+                                      nameof(SendBinaryMessage),
+                                      $"Sent a binary message that is not CBOR over a CBOR connection: {cborError}"
+                                  );
+
+                    }
+
+                }
 
                 if (sentStatus == SentStatus.Success)
                     return SentMessageResult.Success(WebSocketConnection);
@@ -1964,35 +2020,6 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                );
 
         #endregion
-
-        #region (protected) SendOnBinaryMessageSent (...)
-
-        protected Task SendOnBinaryMessageSent(DateTimeOffset            Timestamp,
-                                               IWWCPWebSocketServer        Server,
-                                               WebSocketServerConnection   WebSocketConnection,
-                                               EventTracking_Id            EventTrackingId,
-                                               DateTimeOffset            MessageTimestamp,
-                                               Byte[]                      BinaryMessage,
-                                               SentStatus                  SentStatus,
-                                               CancellationToken           CancellationToken)
-
-            => LogEvent(
-                   OnBinaryMessageSent,
-                   loggingDelegate => loggingDelegate.Invoke(
-                       Timestamp,
-                       Server,
-                       WebSocketConnection,
-                       MessageTimestamp,
-                       EventTrackingId,
-                       BinaryMessage,
-                       SentStatus,
-                       CancellationToken
-                   )
-               );
-
-        #endregion
-
-
 
         #region (private) LogEvent(Logger, LogHandler, ...)
 

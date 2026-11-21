@@ -50,22 +50,22 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                                                          CancellationToken           CancellationToken);
 
 
-    public delegate Task OnWebSocketServerBinaryMessageSentDelegate     (DateTimeOffset              Timestamp,
+    public delegate Task OnWebSocketServerCBORMessageSentDelegate       (DateTimeOffset              Timestamp,
                                                                          IWWCPWebSocketServer        Server,
                                                                          WebSocketServerConnection   Connection,
                                                                          DateTimeOffset              MessageTimestamp,
                                                                          EventTracking_Id            EventTrackingId,
-                                                                         Byte[]                      BinaryMessage,
+                                                                         CBORValue                   Message,
                                                                          SentStatus                  SentStatus,
                                                                          CancellationToken           CancellationToken);
 
-    public delegate Task OnWebSocketServerBinaryMessageReceivedDelegate (DateTimeOffset              Timestamp,
+    public delegate Task OnWebSocketServerCBORMessageReceivedDelegate   (DateTimeOffset              Timestamp,
                                                                          IWWCPWebSocketServer        Server,
                                                                          WebSocketServerConnection   Connection,
                                                                          DateTimeOffset              MessageTimestamp,
                                                                          EventTracking_Id            EventTrackingId,
                                                                          NetworkingNode_Id           SourceNodeId,
-                                                                         Byte[]                      BinaryMessage,
+                                                                         CBORValue                   Message,
                                                                          CancellationToken           CancellationToken);
 
 
@@ -92,6 +92,12 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// The JSON formatting to use.
         /// </summary>
         Formatting                              JSONFormatting                { get; set; }
+
+        /// <summary>
+        /// Whether the binary frames of a connection that agreed on the given subprotocol are
+        /// CBOR: told of as CBOR messages, not as binary messages.
+        /// </summary>
+        Func<String?, Boolean>                  SubprotocolIsCBOR             { get; set; }
 
         #endregion
 
@@ -134,14 +140,14 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
 
         /// <summary>
-        /// An event sent whenever a binary message was sent.
+        /// An event sent whenever a CBOR message was sent.
         /// </summary>
-        new event OnWebSocketServerBinaryMessageSentDelegate?         OnBinaryMessageSent;
+        event     OnWebSocketServerCBORMessageSentDelegate?           OnCBORMessageSent;
 
         /// <summary>
-        /// An event sent whenever a binary message was received.
+        /// An event sent whenever a CBOR message was received.
         /// </summary>
-        new event OnWebSocketServerBinaryMessageReceivedDelegate?     OnBinaryMessageReceived;
+        event     OnWebSocketServerCBORMessageReceivedDelegate?       OnCBORMessageReceived;
 
         #endregion
 

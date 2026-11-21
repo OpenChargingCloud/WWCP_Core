@@ -95,7 +95,8 @@ namespace cloud.charging.open.protocols.WWCP.SSH
                                                              CancellationToken      CancellationToken);
 
     /// <summary>
-    /// A binary message was received - over whatever transport.
+    /// A binary message was received - over whatever transport: every one, over a connection whose
+    /// subprotocol is CBOR as well, before it is told of as CBOR.
     /// </summary>
     public delegate Task OnWWCPBinaryMessageReceivedDelegate(DateTimeOffset         Timestamp,
                                                              IWWCPTransport         Transport,
@@ -119,7 +120,8 @@ namespace cloud.charging.open.protocols.WWCP.SSH
                                                              CancellationToken      CancellationToken);
 
     /// <summary>
-    /// A binary message was sent, or failed to be - over whatever transport.
+    /// A binary message was sent, or failed to be - over whatever transport: every one, over a connection
+    /// whose subprotocol is CBOR as well, before it is told of as CBOR.
     /// </summary>
     public delegate Task OnWWCPBinaryMessageSentDelegate    (DateTimeOffset         Timestamp,
                                                              IWWCPTransport         Transport,
@@ -127,6 +129,32 @@ namespace cloud.charging.open.protocols.WWCP.SSH
                                                              DateTimeOffset         MessageTimestamp,
                                                              EventTracking_Id       EventTrackingId,
                                                              Byte[]                 BinaryMessage,
+                                                             SentStatus             SentStatus,
+                                                             CancellationToken      CancellationToken);
+
+    /// <summary>
+    /// A CBOR message was received: a binary message over a connection whose subprotocol is CBOR, decoded -
+    /// after it was told of as a binary message, as a text message is told of as JSON.
+    /// </summary>
+    public delegate Task OnWWCPCBORMessageReceivedDelegate  (DateTimeOffset         Timestamp,
+                                                             IWWCPTransport         Transport,
+                                                             IMessageConnection     Connection,
+                                                             DateTimeOffset         MessageTimestamp,
+                                                             EventTracking_Id       EventTrackingId,
+                                                             NetworkingNode_Id      SourceNodeId,
+                                                             CBORValue              CBORMessage,
+                                                             CancellationToken      CancellationToken);
+
+    /// <summary>
+    /// A CBOR message was sent, or failed to be: a binary message over a connection whose subprotocol is
+    /// CBOR, decoded - after it was told of as a binary message.
+    /// </summary>
+    public delegate Task OnWWCPCBORMessageSentDelegate      (DateTimeOffset         Timestamp,
+                                                             IWWCPTransport         Transport,
+                                                             IMessageConnection     Connection,
+                                                             DateTimeOffset         MessageTimestamp,
+                                                             EventTracking_Id       EventTrackingId,
+                                                             CBORValue              CBORMessage,
                                                              SentStatus             SentStatus,
                                                              CancellationToken      CancellationToken);
 
