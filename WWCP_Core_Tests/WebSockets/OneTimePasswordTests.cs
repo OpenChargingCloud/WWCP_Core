@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
 {
 
     /// <summary>
-    /// A networking node that dials with a one-time password is let in by a
+    /// A networking node that connects with a one-time password is let in by a
     /// networking node that knows it.
     /// </summary>
     /// <remarks>

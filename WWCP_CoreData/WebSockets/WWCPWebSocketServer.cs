@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// <param name="AutoStart">Start the server immediately.</param>
         public WWCPWebSocketServer(INetworkingNode                                           NetworkingNode,
 
-                                   IIPAddress?                                               IPAddress                    = null,
+                                   IPAddress?                                               IPAddress                    = null,
                                    IPPort?                                                   HTTPPort                     = null,
                                    String?                                                   HTTPServerName               = null,
                                    I18NString?                                               Description                  = null,
@@ -455,7 +455,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
         /// </summary>
         /// <remarks>
         /// A name for the same far end, and not a node behind it: a message for it goes over the
-        /// connection in whichever networking mode that was dialled in - where a message for a node
+        /// connection in whichever networking mode that was connected in - where a message for a node
         /// behind another goes through that one only in the overlay network, see
         /// <see cref="WWCPConnectionExtensions.Carries"/>. So a node that speaks to its CSMS by that
         /// name reaches it over the connection the CSMS made, under whatever name it came.

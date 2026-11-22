@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         private                  IPPort                                                port;
 
         private readonly         ConcurrentQueue<WebSocketServerConnection>            accepted       = [];
-        private readonly         ConcurrentDictionary<UInt16, TaskCompletionSource>    tcpClosed      = [];
+        private readonly         ConcurrentDictionary<IPPort, TaskCompletionSource>    tcpClosed      = [];
 
         #endregion
 
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
             };
 
             server.OnTCPConnectionClosed += (_, _, connection, _, _, _) => {
-                TCPClosed(connection.RemoteSocket.Port.ToUInt16()).TrySetResult();
+                TCPClosed(connection.RemoteSocket.Port).TrySetResult();
                 return Task.CompletedTask;
             };
 
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
             Assert.That(older.StatusCode, Is.EqualTo(101));
             Assert.That(newer.StatusCode, Is.EqualTo(101));
 
-            var olderConnection = accepted.Single(connection => connection.RemoteSocket.Port.ToUInt16() == older.LocalPort);
+            var olderConnection = accepted.Single(connection => connection.RemoteSocket.Port == older.LocalPort);
 
             await server!.CloseFrameArrivesOn(olderConnection);
 
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
 
         #region (private) TCPClosed(RemotePort)
 
-        private TaskCompletionSource TCPClosed(UInt16 RemotePort)
+        private TaskCompletionSource TCPClosed(IPPort RemotePort)
 
             => tcpClosed.GetOrAdd(
                    RemotePort,
@@ -295,12 +295,12 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         /// The remote ports of the connections the server has to the given
         /// networking node.
         /// </summary>
-        private IEnumerable<UInt16> PortsOfTheConnectionsTo(NetworkingNode_Id NetworkingNodeId)
+        private IEnumerable<IPPort> PortsOfTheConnectionsTo(NetworkingNode_Id NetworkingNodeId)
 
             => server!.ConnectedNetworkingNodes.
                        Where     (networkingNode => networkingNode.DestinationNodeId == NetworkingNodeId).
                        SelectMany(networkingNode => networkingNode.WebSocketServerConnections).
-                       Select    (connection     => connection.RemoteSocket.Port.ToUInt16()).
+                       Select    (connection     => connection.RemoteSocket.Port).
                        ToArray();
 
         #endregion

@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         public OverlayWebSocketServer AttachWebSocketServer(IEnumerable<String>                                             SupportedEEBusWebSocketSubprotocols,
 
                                                             String?                                                         HTTPServiceName              = null,
-                                                            IIPAddress?                                                     IPAddress                    = null,
+                                                            IPAddress?                                                     IPAddress                    = null,
                                                             IPPort?                                                         TCPPort                      = null,
                                                             I18NString?                                                     Description                  = null,
 

@@ -322,7 +322,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
         /// </summary>
         private org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection? ConnectionOf(RawWebSocketClient Client)
 
-            => server!.WebSocketConnections.SingleOrDefault(connection => connection.RemoteSocket.Port.ToUInt16() == Client.LocalPort);
+            => server!.WebSocketConnections.SingleOrDefault(connection => connection.RemoteSocket.Port == Client.LocalPort);
 
         #endregion
 

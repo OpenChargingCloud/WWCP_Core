@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 
                                                 Byte                   priority,
                                                 Byte                   weight,
-                                                IIPAddress             IPAddress,
+                                                IPAddress             IPAddress,
                                                 DomainName             hostname,
                                                 IPPort                 port,
                                                 TransportTypes         transport,
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 
         public Byte                   weight              { get; }
 
-        public IIPAddress             IPAddress           { get; }
+        public IPAddress             IPAddress           { get; }
 
         public DomainName             hostname            { get; }
 
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                   RoamingNetwork_Id      RoamingNetworkId,
                                   Byte                   priority,
                                   Byte                   weight,
-                                  IIPAddress             IPAddress,
+                                  IPAddress             IPAddress,
                                   DomainName             hostname,
                                   IPPort                 port,
                                   TransportTypes         transport,
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                   RoamingNetwork         RoamingNetwork,
                                   Byte                   priority,
                                   Byte                   weight,
-                                  IIPAddress             IPAddress,
+                                  IPAddress             IPAddress,
                                   DomainName             hostname,
                                   IPPort                 port,
                                   TransportTypes         transport,

@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
         }
 
         private WWCPSshClient Client(Node                             Station,
-                                     String                           Login,
+                                     User_Id                          Login,
                                      NetworkingMode?                  NetworkingMode   = null,
                                      NetworkingNode_Id?               ConnectAs        = null,
                                      JObject?                         Hello            = null,
@@ -217,8 +217,8 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
             => new (Station,
                     new SshMessageClientOptions {
                         Host             = Host,
-                        Port             = port.ToUInt16(),
-                        Ssh              = new SshClientOptions {
+                        Port             = port,
+                        Ssh              = new SSHClientOptions {
                                                Username       = Login,
                                                VerifyHostKey  = blob => blob.AsSpan().SequenceEqual(hostKey.PublicKeyBlob),
                                                Credentials    = [ stationKey ]
@@ -286,7 +286,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
         {
 
             var station     = Station("CS001");
-            var client      = Client(station, "CS001");
+            var client      = Client(station, User_Id.Parse("CS001"));
 
             var connection  = await station.ConnectSshClient(client, NextHopNetworkingNodeId: csmsId);
 
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
             sshServer. OnBinaryMessageReceived += (_, _,         _, _, _, source, bytes, _) => { atServer.Enqueue((source, bytes)); return Task.CompletedTask; };
 
             var station   = Station("CS001");
-            var client    = Client(station, "CS001");
+            var client    = Client(station, User_Id.Parse("CS001"));
 
             client.OnJSONMessageReceived       += (_, transport, _, _, _, source, json,  _) => { Assert.That(transport, Is.SameAs(client));    atStation.Enqueue((source, json));  return Task.CompletedTask; };
             client.OnBinaryMessageReceived     += (_, _,         _, _, _, source, bytes, _) => { atStation.Enqueue((source, bytes)); return Task.CompletedTask; };
@@ -381,32 +381,32 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
 
             var station  = Station("CS002");
 
-            var refused  = await Assert.ThrowsAsync<SshMessageRefusedException>(() => station.ConnectSshClient(Client(station, "CS001", ConnectAs: cs002)));
+            var refused  = await Assert.ThrowsAsync<SshMessageRefusedException>(() => station.ConnectSshClient(Client(station, User_Id.Parse("CS001"), ConnectAs: cs002)));
 
             Assert.That(refused!.Code,                       Is.EqualTo(WWCPSshServer.RefusalNotPermitted));
             Assert.That(sshServer!.ConnectedNetworkingNodeIds, Is.Empty);
 
             sshServer.AllowToActFor(cs001, [ cs002 ]);
 
-            await station.ConnectSshClient(Client(station, "CS001", ConnectAs: cs002));
+            await station.ConnectSshClient(Client(station, User_Id.Parse("CS001"), ConnectAs: cs002));
 
             var serverSide = await Registered(cs002);
 
-            Assert.That(sshServer.ConnectedNetworkingNodeIds,                                                Is.EqualTo(new[] { cs002 }));
-            Assert.That(serverSide.NetworkingNodeIdOf(),                                                     Is.EqualTo(cs002));
+            Assert.That(sshServer.ConnectedNetworkingNodeIds,                                                   Is.EqualTo([ cs002 ]));
+            Assert.That(serverSide.NetworkingNodeIdOf(),                                                        Is.EqualTo(cs002));
             Assert.That(serverSide.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.ActingNetworkingNodeId), Is.EqualTo(cs001));
 
             // Naming itself is no acting for anybody.
             var other = Station("CS001");
 
-            await other.ConnectSshClient(Client(other, "CS001", ConnectAs: cs001));
+            await other.ConnectSshClient(Client(other, User_Id.Parse("CS001"), ConnectAs: cs001));
 
             Assert.That((await Registered(cs001)).HasCustomData(WebSocketKeys.ActingNetworkingNodeId), Is.False);
 
             // Allowed no more: refused again - and the open connection stays.
             sshServer.DisallowToActFor(cs001, [ cs002 ]);
 
-            var refusedAgain = await Assert.ThrowsAsync<SshMessageRefusedException>(() => station.ConnectSshClient(Client(station, "CS001", ConnectAs: cs002)));
+            var refusedAgain = await Assert.ThrowsAsync<SshMessageRefusedException>(() => station.ConnectSshClient(Client(station, User_Id.Parse("CS001"), ConnectAs: cs002)));
 
             Assert.That(refusedAgain!.Code,                       Is.EqualTo(WWCPSshServer.RefusalNotPermitted));
             Assert.That(sshServer.GetConnectionsFor(cs002).Single(), Is.SameAs(serverSide));
@@ -426,8 +426,8 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
         {
 
             var station  = Station("CS001");
-            var older    = Client(station, "CS001");
-            var newer    = Client(station, "CS001");
+            var older    = Client(station, User_Id.Parse("CS001"));
+            var newer    = Client(station, User_Id.Parse("CS001"));
 
             var olderClosed = new TaskCompletionSource<SshMessageCloseInfo>(TaskCreationOptions.RunContinuationsAsynchronously);
             older.OnConnectionClosed += (_, _, _, _, close, _) => { olderClosed.TrySetResult(close); return Task.CompletedTask; };
@@ -473,21 +473,21 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
 
             var station = Station("CS001");
 
-            await station.ConnectSshClient(Client(station, "CS001", NetworkingMode.OverlayNetwork));
+            await station.ConnectSshClient(Client(station, User_Id.Parse("CS001"), NetworkingMode.OverlayNetwork));
 
             Assert.That((await Registered(cs001)).TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode), Is.EqualTo(NetworkingMode.OverlayNetwork));
 
             foreach (var notAMode in new JToken[] { "2", "overlaynetwork", "Standard, OverlayNetwork", 1, JValue.CreateNull() })
             {
 
-                var refused = await Assert.ThrowsAsync<SshMessageRefusedException>(() => Client(station, "CS002", Hello: new JObject(new JProperty(WWCPSshServer.HelloNetworkingMode, notAMode))).Connect(),
+                var refused = await Assert.ThrowsAsync<SshMessageRefusedException>(() => Client(station, User_Id.Parse("CS002"), Hello: new JObject(new JProperty(WWCPSshServer.HelloNetworkingMode, notAMode))).Connect(),
                                                                              $"networkingMode {notAMode.ToString(Newtonsoft.Json.Formatting.None)}");
 
                 Assert.That(refused!.Code, Is.EqualTo(SshMessageRefusal.InvalidHello), $"networkingMode {notAMode.ToString(Newtonsoft.Json.Formatting.None)}");
 
             }
 
-            var badId = await Assert.ThrowsAsync<SshMessageRefusedException>(() => Client(station, "CS002", Hello: new JObject(new JProperty(WWCPSshServer.HelloNetworkingNodeId, 42))).Connect());
+            var badId = await Assert.ThrowsAsync<SshMessageRefusedException>(() => Client(station, User_Id.Parse("CS002"), Hello: new JObject(new JProperty(WWCPSshServer.HelloNetworkingNodeId, 42))).Connect());
 
             Assert.That(badId!.Code, Is.EqualTo(SshMessageRefusal.InvalidHello));
 
@@ -513,7 +513,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
             var atLC        = new ConcurrentQueue<JArray>();
 
             var controller  = Station("LC001");
-            var client      = Client(controller, "LC001", Mode);
+            var client      = Client(controller, User_Id.Parse("LC001"), Mode);
 
             client.OnJSONMessageReceived += (_, _, _, _, _, _, json, _) => { atLC.Enqueue(json); return Task.CompletedTask; };
 
@@ -558,7 +558,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
             listener = null;
 
             var station   = Station("CS001");
-            var client    = Client(station, "CS001", Reconnect: new WebSocketClientReconnectPolicy(InitialDelay: TimeSpan.FromMilliseconds(100), MaxDelay: TimeSpan.FromMilliseconds(200)));
+            var client    = Client(station, User_Id.Parse("CS001"), Reconnect: new WebSocketClientReconnectPolicy(InitialDelay: TimeSpan.FromMilliseconds(100), MaxDelay: TimeSpan.FromMilliseconds(200)));
 
             var connected = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             client.OnConnected += (_, _, _, _, _, _, _) => { connected.TrySetResult(); return Task.CompletedTask; };
@@ -598,7 +598,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
             }
 
             var station   = Station("CS001");
-            var client    = Client(station, "CS001", Reconnect: new WebSocketClientReconnectPolicy(InitialDelay: TimeSpan.FromMilliseconds(100), MaxDelay: TimeSpan.FromMilliseconds(200)));
+            var client    = Client(station, User_Id.Parse("CS001"), Reconnect: new WebSocketClientReconnectPolicy(InitialDelay: TimeSpan.FromMilliseconds(100), MaxDelay: TimeSpan.FromMilliseconds(200)));
 
             NetworkingNode_Id?  told     = null;
             NetworkingNode_Id?  written  = null;
@@ -649,7 +649,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
             listener = null;
 
             var station  = Station("CS001");
-            var client   = Client(station, "CS001", Reconnect: new WebSocketClientReconnectPolicy(InitialDelay: TimeSpan.FromMilliseconds(100), MaxDelay: TimeSpan.FromMilliseconds(200)));
+            var client   = Client(station, User_Id.Parse("CS001"), Reconnect: new WebSocketClientReconnectPolicy(InitialDelay: TimeSpan.FromMilliseconds(100), MaxDelay: TimeSpan.FromMilliseconds(200)));
 
             var failed   = new ConcurrentQueue<(UInt32 Attempt, TimeSpan? Next)>();
             client.OnConnectFailed += (_, _, _, attempt, next, _) => { failed.Enqueue((attempt, next)); return Task.CompletedTask; };
@@ -685,7 +685,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
             // .test is a name no resolver of an operating system answers, and one a name resolution library
             // hands to its DNS client as any other (RFC 6761 §6.2) - unlike .invalid, which it answers itself
             // with "no such name" and asks no DNS client for (§6.4).
-            var client   = Client(station, "CS001", Host: "csms.test");
+            var client   = Client(station, User_Id.Parse("CS001"), Host: "csms.test");
 
             await station.ConnectSshClient(client, NextHopNetworkingNodeId: csmsId);
             await Registered(cs001);
@@ -707,14 +707,14 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
         {
 
             var station = Station("CS001");
-            var client  = Client(station, "CS001", Reconnect: new WebSocketClientReconnectPolicy(InitialDelay: TimeSpan.FromMilliseconds(100)));
+            var client  = Client(station, User_Id.Parse("CS001"), Reconnect: new WebSocketClientReconnectPolicy(InitialDelay: TimeSpan.FromMilliseconds(100)));
 
             await station.ConnectSshClient(client, NextHopNetworkingNodeId: csmsId);
             await Registered(cs001);
 
             Assert.That(station.WWCPSshClients, Does.Contain(client));
 
-            var wasOne  = await station.DisconnectClient(client, "Dialling another one.");
+            var wasOne  = await station.DisconnectClient(client, "Connecting to another one.");
 
             Assert.That(client.IsConnected, Is.False);
 
@@ -745,7 +745,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
         {
 
             var station = Station("CS001");
-            var client  = Client(station, "CS001", Reconnect: new WebSocketClientReconnectPolicy(InitialDelay: TimeSpan.FromMilliseconds(100)));
+            var client  = Client(station, User_Id.Parse("CS001"), Reconnect: new WebSocketClientReconnectPolicy(InitialDelay: TimeSpan.FromMilliseconds(100)));
 
             var closed  = new TaskCompletionSource<SshMessageCloseInfo>(TaskCreationOptions.RunContinuationsAsynchronously);
             client.OnConnectionClosed += (_, _, _, _, close, _) => { closed.TrySetResult(close); return Task.CompletedTask; };

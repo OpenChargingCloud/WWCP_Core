@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
             using var client = await RawWebSocketClient.Upgrade(port, $"/{CS001}", Basic(LC001));
 
             var registered = await RegisteredAs(CS001);
-            var connection = server.WebSocketConnections.SingleOrDefault(connection => connection.RemoteSocket.Port.ToUInt16() == client.LocalPort);
+            var connection = server.WebSocketConnections.SingleOrDefault(connection => connection.RemoteSocket.Port == client.LocalPort);
 
             Assert.Multiple(() => {
                 Assert.That(client.StatusCode, Is.EqualTo(101));
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
             Start(RequireAuthentication: false);
 
             using var client  = await RawWebSocketClient.Upgrade(port, $"/{CS001}", Basic(CS003));
-            var       closed  = await Until(() => !server!.WebSocketConnections.Any(connection => connection.RemoteSocket.Port.ToUInt16() == client.LocalPort),
+            var       closed  = await Until(() => !server!.WebSocketConnections.Any(connection => connection.RemoteSocket.Port == client.LocalPort),
                                             org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServerConnection.DefaultCloseHandshakeTimeout + TimeSpan.FromSeconds(2));
 
             Assert.Multiple(() => {

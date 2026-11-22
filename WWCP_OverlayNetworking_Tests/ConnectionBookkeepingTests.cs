@@ -64,10 +64,10 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
             /// The remote port of the connection the server has for the given
             /// networking node, if it has one.
             /// </summary>
-            public UInt16? PortOfTheConnectionTo(NetworkingNode_Id NetworkingNodeId)
+            public IPPort? PortOfTheConnectionTo(NetworkingNode_Id NetworkingNodeId)
 
                 => connectedNetworkingNodes.TryGetValue(NetworkingNodeId, out var connection)
-                       ? connection.Item1.RemoteSocket.Port.ToUInt16()
+                       ? connection.Item1.RemoteSocket.Port
                        : null;
 
             /// <summary>
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
         {
 
             using var older            = await Connected($"/{station}");
-            var       olderConnection  = server!.WebSocketConnections.Single(connection => connection.RemoteSocket.Port.ToUInt16() == older.LocalPort);
+            var       olderConnection  = server!.WebSocketConnections.Single(connection => connection.RemoteSocket.Port == older.LocalPort);
 
             using var newer            = await Upgrade($"/{station}");
 
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
         private async Task NoticedTheEndOf(RawWebSocketClient Client)
         {
 
-            Assert.That(await Until(() => !server!.WebSocketConnections.Any(connection => connection.RemoteSocket.Port.ToUInt16() == Client.LocalPort),
+            Assert.That(await Until(() => !server!.WebSocketConnections.Any(connection => connection.RemoteSocket.Port == Client.LocalPort),
                                     TimeSpan.FromSeconds(10)),
                         Is.True,
                         "The server never noticed that the connection had ended.");

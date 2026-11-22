@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                               new JProperty("role",          sshConnection.Role.ToString()),
                               new JProperty("localSocket",   sshConnection.LocalSocket. ToString()),
                               new JProperty("remoteSocket",  sshConnection.RemoteSocket.ToString()),
-                              new JProperty("username",      sshConnection.Username),
+                              new JProperty("username",      sshConnection.Username.ToString()),
                               new JProperty("subsystem",     sshConnection.Subsystem),
 
                               sshConnection.Subprotocol is not null

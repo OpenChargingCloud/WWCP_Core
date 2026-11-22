@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         #region AStandardConnection_CarriesNothingForTheNodeBehindIt()
 
         /// <summary>
-        /// A local controller that dialled without X-OCPP-NetworkingMode is sent what is for itself, and
+        /// A local controller that connected without X-OCPP-NetworkingMode is sent what is for itself, and
         /// nothing that is for the station behind it: there is no connection for that, as for a node nobody
         /// knows.
         /// </summary>
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         #region AnOverlayConnection_CarriesWhatIsForTheNodeBehindIt()
 
         /// <summary>
-        /// A local controller that dialled in the overlay network is sent both: what is for itself, and what
+        /// A local controller that connected in the overlay network is sent both: what is for itself, and what
         /// is for the station behind it - which the frame of the overlay network names.
         /// </summary>
         [Test]

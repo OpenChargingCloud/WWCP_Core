@@ -78,6 +78,31 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// </summary>
         IEnumerable<NetworkingNode_Id>  ConnectedNetworkingNodeIds  { get; }
 
+
+        /// <summary>
+        /// Reach the networking node that connects under the given identification under the given
+        /// name as well: what is sent to that name goes over its connection, as what is sent to the
+        /// node itself does - so a node that speaks to its CSMS by that name reaches it over the
+        /// connection the CSMS made, under whatever name it came.
+        /// </summary>
+        /// <param name="Name">The name it is reached by as well.</param>
+        /// <param name="NetworkingNodeId">The identification it connects under.</param>
+        void ReachAs(NetworkingNode_Id  Name,
+                     NetworkingNode_Id  NetworkingNodeId);
+
+        /// <summary>
+        /// The identification of the networking node that is reached under the given name as well,
+        /// or null where nothing is.
+        /// </summary>
+        /// <param name="Name">A name given with <see cref="ReachAs"/>.</param>
+        NetworkingNode_Id? ReachedAs(NetworkingNode_Id Name);
+
+        /// <summary>
+        /// Reach nothing under the given name any more. Whether there was something.
+        /// </summary>
+        /// <param name="Name">A name given with <see cref="ReachAs"/>.</param>
+        Boolean NoLongerReachAs(NetworkingNode_Id Name);
+
     }
 
 
@@ -114,7 +139,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
             => Connection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId);
 
         /// <summary>
-        /// Whether the far end of a connection dialled it in the overlay network - X-OCPP-NetworkingMode or its
+        /// Whether the far end of a connection connected to it in the overlay network - X-OCPP-NetworkingMode or its
         /// SSH HELLO said so - and so is sent messages that name where they go and where they come from.
         /// </summary>
         /// <param name="Connection">A message connection.</param>

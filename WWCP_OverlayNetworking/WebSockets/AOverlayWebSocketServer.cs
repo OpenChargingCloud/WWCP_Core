@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
                                       IEnumerable<String>                                                                                         SupportedEEBusWebSocketSubprotocols,
 
                                       String                                                                                                      HTTPServiceName                      = DefaultHTTPServiceName,
-                                      IIPAddress?                                                                                                 IPAddress                            = null,
+                                      IPAddress?                                                                                                 IPAddress                            = null,
                                       IPPort?                                                                                                     TCPPort                              = null,
                                       I18NString?                                                                                                 Description                          = null,
 
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
             => webSocketServer.DNSClient;
         public String                                  HTTPServiceName
             => webSocketServer.HTTPServiceName;
-        public IIPAddress                              IPAddress
+        public IPAddress                              IPAddress
             => webSocketServer.IPAddress;
         public IPPort                                  IPPort
             => webSocketServer.IPPort;
@@ -635,7 +635,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking
         public AOverlayWebSocketServer(NetworkingNode_Id                                               NetworkingNodeId,
                                        IEnumerable<String>                                             SupportedEEBusWebSocketSubprotocols,
                                        String                                                          HTTPServiceName              = DefaultHTTPServiceName,
-                                       IIPAddress?                                                     IPAddress                    = null,
+                                       IPAddress?                                                     IPAddress                    = null,
                                        IPPort?                                                         TCPPort                      = null,
                                        I18NString?                                                     Description                  = null,
 

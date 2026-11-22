@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         /// The local TCP port of this client, which is the remote port of its
         /// connection on the server.
         /// </summary>
-        public UInt16  LocalPort     { get; }
+        public IPPort  LocalPort     { get; }
 
         #endregion
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
             this.tcp         = TCP;
             this.stream      = Stream;
             this.StatusCode  = StatusCode;
-            this.LocalPort   = (UInt16) ((IPEndPoint) TCP.Client.LocalEndPoint!).Port;
+            this.LocalPort   = IPPort.Parse(((IPEndPoint) TCP.Client.LocalEndPoint!).Port);
 
         }
 

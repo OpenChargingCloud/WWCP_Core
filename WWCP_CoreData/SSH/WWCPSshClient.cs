@@ -92,8 +92,8 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         /// <summary>
         /// The SSH login.
         /// </summary>
-        public String                   Username
-            => MessageClient.Options.Ssh?.Username ?? MessageClient.Connection?.Username ?? "";
+        public User_Id?                  Username
+            => MessageClient.Options.Ssh?.Username ?? MessageClient.Connection?.Username;
 
         /// <summary>
         /// Messages go over an SSH channel.
@@ -231,12 +231,12 @@ namespace cloud.charging.open.protocols.WWCP.SSH
                 hello[WWCPSshMessaging.HelloNetworkingMode]   = this.NetworkingMode.ToString();
 
             // The node's DNS client, where the options name none: a host name is never resolved by the
-            // operating system, and a node that resolves its names securely is not dialled around them.
+            // operating system, and a node that resolves its names securely is not connected around them.
             var dnsClient        = Options.Ssh?.DNSClient ?? (NetworkingNode as AWWCPNetworkingNode)?.DNSClient;
 
             this.MessageClient   = new SshMessageClient(
                                        Options with {
-                                           Ssh              = Options.Ssh is SshClientOptions login
+                                           Ssh              = Options.Ssh is SSHClientOptions login
                                                                   ? login with { DNSClient = dnsClient }
                                                                   : null,
                                            HelloProperties  = hello.Count > 0 ? hello : null
@@ -325,24 +325,24 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         /// <param name="Connection">The SSH connection the messages go over, where it is not the client's own: one that others share, asked for at every connect and reconnect. The client opens its subsystem as one more channel of it, and closes that channel only. Null for a connection of the client's own.</param>
         /// <exception cref="ArgumentException">The URL is no "ssh://" URL, or names another login than the SSH options.</exception>
         public static SshMessageClientOptions OptionsFrom(URL                                             RemoteURL,
-                                                          SshClientOptions                                Ssh,
+                                                          SSHClientOptions                                Ssh,
                                                           String                                          Subsystem,
                                                           IEnumerable<String>?                            Subprotocols   = null,
                                                           WebSocketClientReconnectPolicy?                 Reconnect      = null,
                                                           TimeSpan?                                       PingEvery      = null,
                                                           IDNSClient?                                     DNSClient      = null,
-                                                          Func<CancellationToken, ValueTask<SshClient>>?  Connection     = null)
+                                                          Func<CancellationToken, ValueTask<SSHClient>>?  Connection     = null)
         {
 
             if (RemoteURL.Scheme != URIScheme.ssh)
                 throw new ArgumentException($"'{RemoteURL}' is no ssh:// URL.", nameof(RemoteURL));
 
-            if (RemoteURL.Login is String login && login != Ssh.Username)
+            if (RemoteURL.Login is User_Id login && login != Ssh.Username)
                 throw new ArgumentException($"'{RemoteURL}' signs in as '{login}', the SSH options as '{Ssh.Username}'.", nameof(RemoteURL));
 
             return new SshMessageClientOptions {
                        Host          = RemoteURL.Host.ToString(),
-                       Port          = RemoteURL.Port?.ToUInt16() ?? 22,
+                       Port          = RemoteURL.Port ?? IPPort.SSH,
                        Ssh           = Ssh with { DNSClient = Ssh.DNSClient ?? DNSClient },
                        Connection    = Connection,
                        Subsystem     = Subsystem,

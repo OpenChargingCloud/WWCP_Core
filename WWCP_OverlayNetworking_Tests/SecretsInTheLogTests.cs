@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
         private readonly  String                   password  = $"pw-{Guid.NewGuid():N}";
 
         private           OverlayWebSocketServer?  server;
-        private           UInt16                   port;
+        private           IPPort                   port;
         private           Log?                     log;
 
         #endregion
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
             server  = new OverlayWebSocketServer(
                           NetworkingNode_Id.Parse("onn"),
                           [ "ocpp2.1" ],
-                          TCPPort:                IPPort.Parse(port),
+                          TCPPort:                port,
                           RequireAuthentication:  true,
                           DisableWebSocketPings:  true
                       );
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
             using var tcp     = new TcpClient();
             using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
 
-            await tcp.ConnectAsync(System.Net.IPAddress.Loopback, port, timeout.Token);
+            await tcp.ConnectAsync(System.Net.IPAddress.Loopback, port.ToInt32(), timeout.Token);
 
             var stream = tcp.GetStream();
 
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
 
         #region (private static) FreePort()
 
-        private static UInt16 FreePort()
+        private static IPPort FreePort()
         {
 
             var listener = new TcpListener(System.Net.IPAddress.Loopback, 0);
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.WWCP.OverlayNetworking.tests
 
             try
             {
-                return (UInt16) ((IPEndPoint) listener.LocalEndpoint).Port;
+                return IPPort.Parse(((IPEndPoint) listener.LocalEndpoint).Port);
             }
             finally
             {

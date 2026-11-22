@@ -79,6 +79,12 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         private readonly ConcurrentDictionary<NetworkingNode_Id, ImmutableArray<SshMessageConnection>>  connectedNetworkingNodes  = [];
         private readonly ConcurrentDictionary<NetworkingNode_Id, ImmutableHashSet<NetworkingNode_Id>>   mayActFor                 = [];
 
+        /// <summary>
+        /// The names a connected networking node is reached by besides the one it came under, each
+        /// with that one: see <see cref="ReachAs"/>.
+        /// </summary>
+        private readonly ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>                     reachedAs                 = [];
+
         #endregion
 
         #region Properties
@@ -325,6 +331,49 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         #endregion
 
 
+        // Networking nodes reached under other names
+
+        #region ReachAs(Name, NetworkingNodeId) / ReachedAs(Name) / NoLongerReachAs(Name)
+
+        /// <summary>
+        /// Reach the networking node that connects under the given identification under the given
+        /// name as well: what is sent to that name goes over its connection, as what is sent to the
+        /// node itself does - as <see cref="WWCPWebSocketServer.ReachAs"/> does over WebSockets.
+        /// </summary>
+        /// <remarks>
+        /// The routing of the networking node is the caller's to tell: this is where a message ends
+        /// up once the routing has led it to this server.
+        /// </remarks>
+        /// <param name="Name">The name it is reached by as well.</param>
+        /// <param name="NetworkingNodeId">The identification it connects under.</param>
+        public void ReachAs(NetworkingNode_Id  Name,
+                            NetworkingNode_Id  NetworkingNodeId)
+        {
+            reachedAs[Name] = NetworkingNodeId;
+        }
+
+        /// <summary>
+        /// The identification of the networking node that is reached under the given name as well,
+        /// or null where nothing is.
+        /// </summary>
+        /// <param name="Name">A name given with <see cref="ReachAs"/>.</param>
+        public NetworkingNode_Id? ReachedAs(NetworkingNode_Id Name)
+
+            => reachedAs.TryGetValue(Name, out var networkingNodeId)
+                   ? networkingNodeId
+                   : null;
+
+        /// <summary>
+        /// Reach nothing under the given name any more. Whether there was something.
+        /// </summary>
+        /// <param name="Name">A name given with <see cref="ReachAs"/>.</param>
+        public Boolean NoLongerReachAs(NetworkingNode_Id Name)
+
+            => reachedAs.TryRemove(Name, out _);
+
+        #endregion
+
+
         // Connection management
 
         #region Validate                  (Login, Hello)
@@ -336,11 +385,11 @@ namespace cloud.charging.open.protocols.WWCP.SSH
         /// </summary>
         /// <param name="Login">The SSH login.</param>
         /// <param name="Hello">The client's HELLO.</param>
-        public SshHelloVerdict Validate(String           Login,
+        public SshHelloVerdict Validate(User_Id          Login,
                                         SshMessageHello  Hello)
         {
 
-            if (!NetworkingNode_Id.TryParse(Login, out var fromLogin))
+            if (!NetworkingNode_Id.TryParse(Login.ToString(), out var fromLogin))
                 return SshHelloVerdict.Refuse(RefusalNotPermitted, "The SSH login names no networking node.");
 
             #region The networking node the HELLO names, if any
@@ -423,6 +472,12 @@ namespace cloud.charging.open.protocols.WWCP.SSH
                 return connectedNetworkingNodes.Values.
                            SelectMany(connections => connections).
                            Where     (connection  => connection.IsAlive);
+
+            // Another name of a node that is connected: its connections, whatever their mode.
+            if (reachedAs.TryGetValue(DestinationId, out var itself))
+                return connectedNetworkingNodes.TryGetValue(itself, out var itsConnections)
+                           ? itsConnections.Where(connection => connection.IsAlive)
+                           : [];
 
             var nextHop = DestinationId;
 

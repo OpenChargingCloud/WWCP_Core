@@ -788,9 +788,9 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// or <see cref="WWCPClients"/> - the routes through it go, and it is closed and connects no more.
         /// </summary>
         /// <remarks>
-        /// A client closed by itself stays the node's, so that it can come back. A node that dials anew -
+        /// A client closed by itself stays the node's, so that it can come back. A node that connects anew -
         /// another address, another back end, after one that could not be reached - lets go of the client
-        /// it dialled before with this; otherwise it kept every client it ever dialled.
+        /// it connected with before with this; otherwise it kept every client it ever connected with.
         /// </remarks>
         /// <param name="Client">The client.</param>
         /// <param name="Reason">An optional reason, sent with the close.</param>

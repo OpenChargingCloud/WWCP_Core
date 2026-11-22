@@ -28,16 +28,16 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
     /// <summary>
     /// A connection a node accepted that is its line up all the same: the
-    /// CSMS, or the controller above it, dialled the node - where the node
-    /// cannot dial them.
+    /// CSMS, or the controller above it, connected to the node - where the node
+    /// cannot connect to them.
     /// </summary>
     /// <remarks>
     /// Who opened a connection says nothing of who is above whom. A frame of
     /// plain OCPP names neither where it goes nor where it comes from, and a
     /// node reads that off the connection: what comes over a connection it
-    /// dialled is for the node itself, and what comes over one it accepted is
+    /// made is for the node itself, and what comes over one it accepted is
     /// on its way to the CSMS - a charging station's, below a local
-    /// controller. A connection marked here is read as one the node dialled.
+    /// controller. A connection marked here is read as one the node made.
     /// </remarks>
     public static class LineUpExtensions
     {

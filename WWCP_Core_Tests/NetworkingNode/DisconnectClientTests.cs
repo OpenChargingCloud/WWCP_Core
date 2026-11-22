@@ -39,8 +39,8 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.NetworkingNode
     /// <remarks>
     /// A client was the node's from ConnectWebSocketClient on, for as long as
     /// the node lived: closed, it stayed among WWCPWebSocketClients. A charging
-    /// station that dials one back end after another, while none of them can be
-    /// reached, gathered a client for every one it dialled.
+    /// station that connects to one back end after another, while none of them can be
+    /// reached, gathered a client for every one it connected to.
     /// </remarks>
     [TestFixture]
     public class DisconnectClientTests
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.NetworkingNode
 
             Assert.That(node.WWCPWebSocketClients, Is.EquivalentTo(new[] { clientA, clientB }));
 
-            var wasOne   = await node.DisconnectClient(clientA, "Dialling another one.");
+            var wasOne   = await node.DisconnectClient(clientA, "Connecting to another one.");
 
             Assert.Multiple(() => {
 
@@ -267,14 +267,14 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.NetworkingNode
 
         #endregion
 
-        #region DialledAgainAndAgainTheNodeKeepsOneClient()
+        #region ConnectedAgainAndAgainTheNodeKeepsOneClient()
 
         /// <summary>
-        /// Dialled over and over, each client let go of before the next is
-        /// dialled, the node keeps the last one only.
+        /// Connected over and over, each client let go of before the next is
+        /// connected, the node keeps the last one only.
         /// </summary>
         [Test]
-        public async Task DialledAgainAndAgainTheNodeKeepsOneClient()
+        public async Task ConnectedAgainAndAgainTheNodeKeepsOneClient()
         {
 
             var node    = new Node();
