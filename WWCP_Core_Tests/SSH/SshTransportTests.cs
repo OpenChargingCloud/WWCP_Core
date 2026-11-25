@@ -158,8 +158,8 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
 
             csms       = new Node("csms");
             sshServer  = csms.AttachSshServer(new WWCPSshServer(csms));
-            port       = TestPorts.Free();
-            listener   = await Listen(port);
+            listener   = await TestPorts.OnAFreePort(Listen);
+            port       = listener.LocalEndPoint.Port;
 
         }
 
@@ -193,7 +193,15 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.SSH
                              Subsystems     = (session, name, ct) => ValueTask.FromResult(name == WWCPSshServer.WWCPSubsystem ? sshServer!.Handler : null)
                          });
 
-            await server.StartAsync(new IPSocket(IPv4Address.Localhost, Port), CancellationToken.None);
+            try
+            {
+                await server.StartAsync(new IPSocket(IPv4Address.Localhost, Port), CancellationToken.None);
+            }
+            catch
+            {
+                await server.DisposeAsync();
+                throw;
+            }
 
             return server;
 

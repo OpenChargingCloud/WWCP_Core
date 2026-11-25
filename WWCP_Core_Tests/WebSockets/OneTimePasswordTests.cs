@@ -68,19 +68,23 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         public async Task StartAServerThatKnowsCS001()
         {
 
-            port    = TestPorts.Free();
+            server  = await TestPorts.Start(freePort => {
 
-            server  = new WWCPWebSocketServer(
-                          new Node("csms"),
-                          HTTPPort:               port,
-                          RequireAuthentication:  true,
-                          SecWebSocketProtocols:  [ "ocpp2.1" ],
-                          DisableWebSocketPings:  true
-                      );
+                var server = new WWCPWebSocketServer(
+                                 new Node("csms"),
+                                 HTTPPort:               freePort,
+                                 RequireAuthentication:  true,
+                                 SecWebSocketProtocols:  [ "ocpp2.1" ],
+                                 DisableWebSocketPings:  true
+                             );
 
-            server.ClientTOTPConfig["CS001"] = new TOTPConfig(sharedSecret);
+                server.ClientTOTPConfig["CS001"] = new TOTPConfig(sharedSecret);
 
-            await server.Start();
+                return server;
+
+            });
+
+            port    = server.IPPort;
 
         }
 

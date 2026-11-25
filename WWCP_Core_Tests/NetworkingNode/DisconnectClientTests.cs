@@ -102,15 +102,19 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.NetworkingNode
         private async Task<WebSocketServer> AServer(Action? Upgraded = null)
         {
 
-            var server = new WebSocketServer(HTTPPort:               TestPorts.Free(),
-                                             RequireAuthentication:  false);
+            var server = await TestPorts.Start(freePort => {
 
-            server.OnNewWebSocketConnection += (_, _, _, _, _, _, _) => {
-                Upgraded?.Invoke();
-                return Task.CompletedTask;
-            };
+                             var aServer = new WebSocketServer(HTTPPort:               freePort,
+                                                               RequireAuthentication:  false);
 
-            await server.Start();
+                             aServer.OnNewWebSocketConnection += (_, _, _, _, _, _, _) => {
+                                 Upgraded?.Invoke();
+                                 return Task.CompletedTask;
+                             };
+
+                             return aServer;
+
+                         });
 
             servers.Add(server);
 

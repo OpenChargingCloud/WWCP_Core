@@ -121,20 +121,24 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         public async Task TheServerHandsOnAMessageWithItsStringsAsTheyWereSent()
         {
 
-            var port      = TestPorts.Free();
             var received  = new ConcurrentQueue<JArray>();
-            var server    = new WWCPWebSocketServer(new Node(),
-                                                    HTTPPort:               port,
-                                                    RequireAuthentication:  false,
-                                                    SecWebSocketProtocols:  [ "ocpp2.1" ],
-                                                    DisableWebSocketPings:  true);
+            var server    = await TestPorts.Start(freePort => {
 
-            server.OnJSONMessageReceived += (_, _, _, _, _, _, message, _) => {
-                received.Enqueue(message);
-                return Task.CompletedTask;
-            };
+                                var aServer = new WWCPWebSocketServer(new Node(),
+                                                                      HTTPPort:               freePort,
+                                                                      RequireAuthentication:  false,
+                                                                      SecWebSocketProtocols:  [ "ocpp2.1" ],
+                                                                      DisableWebSocketPings:  true);
 
-            await server.Start();
+                                aServer.OnJSONMessageReceived += (_, _, _, _, _, _, message, _) => {
+                                    received.Enqueue(message);
+                                    return Task.CompletedTask;
+                                };
+
+                                return aServer;
+
+                            });
+            var port      = server.IPPort;
 
             try
             {

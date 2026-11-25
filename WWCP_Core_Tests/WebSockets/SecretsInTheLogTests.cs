@@ -107,20 +107,24 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         public async Task SetUp()
         {
 
-            port    = TestPorts.Free();
+            server  = await TestPorts.Start(freePort => {
 
-            server  = new WWCPWebSocketServer(
-                          new Node(),
-                          HTTPPort:               port,
-                          RequireAuthentication:  true,
-                          SecWebSocketProtocols:  [ "ocpp2.1" ],
-                          DisableWebSocketPings:  true
-                      );
+                var server = new WWCPWebSocketServer(
+                                 new Node(),
+                                 HTTPPort:               freePort,
+                                 RequireAuthentication:  true,
+                                 SecWebSocketProtocols:  [ "ocpp2.1" ],
+                                 DisableWebSocketPings:  true
+                             );
 
-            server.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse(station), password);
-            server.ClientTOTPConfig[station] = new TOTPConfig(sharedSecret);
+                server.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse(station), password);
+                server.ClientTOTPConfig[station] = new TOTPConfig(sharedSecret);
 
-            await server.Start();
+                return server;
+
+            });
+
+            port    = server.IPPort;
 
             log     = new Log();
             Trace.Listeners.Add(log);

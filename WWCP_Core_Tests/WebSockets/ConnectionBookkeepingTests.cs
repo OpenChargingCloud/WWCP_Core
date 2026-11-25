@@ -111,20 +111,25 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
             accepted.Clear();
             tcpClosed.Clear();
 
-            port    = TestPorts.Free();
-            server  = new Server(port);
+            server  = await TestPorts.Start(freePort => {
 
-            server.OnNetworkingNodeWebSocketConnectionAccepted += (_, _, connection, _, _, _, _, _) => {
-                accepted.Enqueue(connection);
-                return Task.CompletedTask;
-            };
+                var server = new Server(freePort);
 
-            server.OnTCPConnectionClosed += (_, _, connection, _, _, _) => {
-                TCPClosed(connection.RemoteSocket.Port).TrySetResult();
-                return Task.CompletedTask;
-            };
+                server.OnNetworkingNodeWebSocketConnectionAccepted += (_, _, connection, _, _, _, _, _) => {
+                    accepted.Enqueue(connection);
+                    return Task.CompletedTask;
+                };
 
-            await server.Start();
+                server.OnTCPConnectionClosed += (_, _, connection, _, _, _) => {
+                    TCPClosed(connection.RemoteSocket.Port).TrySetResult();
+                    return Task.CompletedTask;
+                };
+
+                return server;
+
+            });
+
+            port    = server.IPPort;
 
         }
 

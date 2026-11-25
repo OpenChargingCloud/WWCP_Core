@@ -98,10 +98,8 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.NetworkingNode
         private async Task<WebSocketServer> AServer()
         {
 
-            var server = new WebSocketServer(HTTPPort:               TestPorts.Free(),
-                                             RequireAuthentication:  false);
-
-            await server.Start();
+            var server = await TestPorts.Start(freePort => new WebSocketServer(HTTPPort:               freePort,
+                                                                               RequireAuthentication:  false));
 
             servers.Add(server);
 

@@ -114,29 +114,33 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         public async Task Start()
         {
 
-            port    = TestPorts.Free();
+            server  = await TestPorts.Start(freePort => {
 
-            server  = new WWCPWebSocketServer(
-                          new Node(),
-                          HTTPPort:                    port,
-                          RequireAuthentication:       true,
-                          SecWebSocketProtocols:       [ "ocpp2.1" ],
-                          DisableWebSocketPings:       true,
-                          ServerCertificateSelector:   (_, _) => serverCertificate!,
-                          ClientCertificateValidator:  (_, certificate, _, _, _) => certificate is null ||
-                                                                                    clientCertificates.Values.Any(clientCertificate => clientCertificate.GetCertHashString() == certificate.GetCertHashString())
-                                                                                        ? TLSValidationResult.Success()
-                                                                                        : TLSValidationResult.Failed("Not a client certificate of this test!"),
-                          ClientCertificateRequired:   true
-                      );
+                var server = new WWCPWebSocketServer(
+                                 new Node(),
+                                 HTTPPort:                    freePort,
+                                 RequireAuthentication:       true,
+                                 SecWebSocketProtocols:       [ "ocpp2.1" ],
+                                 DisableWebSocketPings:       true,
+                                 ServerCertificateSelector:   (_, _) => serverCertificate!,
+                                 ClientCertificateValidator:  (_, certificate, _, _, _) => certificate is null ||
+                                                                                           clientCertificates.Values.Any(clientCertificate => clientCertificate.GetCertHashString() == certificate.GetCertHashString())
+                                                                                               ? TLSValidationResult.Success()
+                                                                                               : TLSValidationResult.Failed("Not a client certificate of this test!"),
+                                 ClientCertificateRequired:   true
+                             );
 
-            server.AddOrUpdateHTTPBasicAuth(CS001, password);
-            server.AddOrUpdateHTTPBasicAuth(CS002, password);
-            server.AddOrUpdateHTTPBasicAuth(CS003, password);
+                server.AddOrUpdateHTTPBasicAuth(CS001, password);
+                server.AddOrUpdateHTTPBasicAuth(CS002, password);
+                server.AddOrUpdateHTTPBasicAuth(CS003, password);
 
-            server.RequireACertificateOf(CS003);
+                server.RequireACertificateOf(CS003);
 
-            await server.Start();
+                return server;
+
+            });
+
+            port    = server.IPPort;
 
         }
 

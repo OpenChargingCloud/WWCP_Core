@@ -88,11 +88,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests.WebSockets
         public async Task SetUp()
         {
 
-            port    = TestPorts.Free();
             node    = new Node();
-            server  = new Server(node, port);
-
-            await server.Start();
+            server  = await TestPorts.Start(freePort => new Server(node, freePort));
+            port    = server.IPPort;
 
             // The local controller is reached over this server, and the station behind it through it.
             node.Routing.AddOrUpdateStaticRouting(localController, server);
