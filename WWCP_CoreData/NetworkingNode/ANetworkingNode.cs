@@ -347,6 +347,9 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// </summary>
         public event OnServerStartedDelegate?                         OnWebSocketServerStarted;
 
+        // Some of the events of the WebSocket server below are not raised by this node.
+#pragma warning disable CS0067
+
         /// <summary>
         /// An event sent whenever a new TCP connection was accepted.
         /// </summary>
@@ -387,6 +390,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// An event sent whenever a TCP connection was closed.
         /// </summary>
         public event OnTCPConnectionClosedDelegate?                   OnWebSocketServerTCPConnectionClosed;
+
+#pragma warning restore CS0067
 
         /// <summary>
         /// An event sent whenever the HTTP WebSocket server stopped.
@@ -1084,11 +1089,11 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
                     )
                 ),
 
-                ControlWebSocketServer.BroadcastTextMessage(
+                ControlWebSocketServer?.BroadcastTextMessage(
                     "OnNewTCPConnection",
                     eventTrackingId,
                     cancellationToken
-                )
+                ) ?? Task.CompletedTask
 
             );
 

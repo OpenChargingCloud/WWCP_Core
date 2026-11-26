@@ -337,12 +337,13 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                 var jsonMessage = JSONMessages.ParseArray(TextMessage);
 
-                await LogEvent(
+                if (webSocketClientConnection is { } connection)
+                    await LogEvent(
                           OnJSONMessageReceived,
                           loggingDelegate => loggingDelegate.Invoke(
                               Timestamp.Now,
                               this,
-                              webSocketClientConnection,
+                              connection,
                               EventTrackingId,
                               RequestTimestamp,
                               sourceNodeId ?? NetworkingNode_Id.Zero,
@@ -497,12 +498,13 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                            CancellationToken
                                        );
 
-                await LogEvent(
+                if (webSocketClientConnection is { } connection)
+                    await LogEvent(
                           OnJSONMessageSent,
                           loggingDelegate => loggingDelegate.Invoke(
                               Timestamp.Now,
                               this,
-                              webSocketClientConnection,
+                              connection,
                               EventTrackingId,
                               MessageTimestamp,
                               JSONMessage,
@@ -555,7 +557,8 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
                 // Over a connection whose subprotocol is CBOR: told of as CBOR as well, after
                 // the base class told of the binary frame - decoded, where anybody listens.
-                if (SubprotocolIsCBOR(webSocketClientConnection?.Subprotocol))
+                if (webSocketClientConnection is { } connection &&
+                    SubprotocolIsCBOR(connection.Subprotocol))
                 {
 
                     if (OnCBORMessageSent is not null)
@@ -567,7 +570,7 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                                       loggingDelegate => loggingDelegate.Invoke(
                                           Timestamp.Now,
                                           this,
-                                          webSocketClientConnection,
+                                          connection,
                                           EventTrackingId,
                                           MessageTimestamp,
                                           cborMessage,
@@ -626,9 +629,9 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #region (private) HandleErrors(Module, Caller, ErrorResponse)
 
-        private Task HandleErrors(String  Module,
-                                  String  Caller,
-                                  String  ErrorResponse)
+        private new Task HandleErrors(String  Module,
+                                      String  Caller,
+                                      String  ErrorResponse)
         {
 
             DebugX.Log($"{Module}.{Caller}: {ErrorResponse}");
@@ -641,9 +644,9 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #region (private) HandleErrors(Module, Caller, ExceptionOccurred)
 
-        private Task HandleErrors(String     Module,
-                                  String     Caller,
-                                  Exception  ExceptionOccurred)
+        private new Task HandleErrors(String     Module,
+                                      String     Caller,
+                                      Exception  ExceptionOccurred)
         {
 
             DebugX.LogException(ExceptionOccurred, $"{Module}.{Caller}");

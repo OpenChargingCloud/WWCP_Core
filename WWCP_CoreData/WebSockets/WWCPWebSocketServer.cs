@@ -2023,10 +2023,10 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
 
         #region (private) LogEvent(Logger, LogHandler, ...)
 
-        private async Task LogEvent<TDelegate>(TDelegate?                                         Logger,
-                                               Func<TDelegate, Task>                              LogHandler,
-                                               [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
-                                               [CallerMemberName()]                       String  WWCPCommand   = "")
+        private new async Task LogEvent<TDelegate>(TDelegate?                                         Logger,
+                                                   Func<TDelegate, Task>                              LogHandler,
+                                                   [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
+                                                   [CallerMemberName()]                       String  WWCPCommand   = "")
 
             where TDelegate : Delegate
 

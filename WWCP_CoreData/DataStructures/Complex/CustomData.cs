@@ -321,7 +321,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return a text representation of this object.
         /// </summary>
-        public String ToString(Newtonsoft.Json.Formatting Formatting)
+        public new String ToString(Newtonsoft.Json.Formatting Formatting)
 
             => base.ToString(Formatting);
 

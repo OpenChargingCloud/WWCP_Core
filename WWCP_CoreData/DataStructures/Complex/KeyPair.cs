@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             KeyPair        = null;
-            ErrorResponse  = null;
+            ErrorResponse  = "A key pair is not parsed from JSON!";
 
             return false;
 

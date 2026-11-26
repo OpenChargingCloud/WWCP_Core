@@ -308,7 +308,7 @@ namespace cloud.charging.open.protocols.WWCP
                 var signature    = signer.GenerateSignature();
 
                 AddSignature(new Signature(
-                                 KeyId:           SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(KeyPair.PublicKey).PublicKeyData.GetBytes(),
+                                 KeyId:           SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(KeyPair.PublicKey).PublicKey.GetBytes(),
                                  Value:           signature,
                                  Algorithm:       KeyPair.Algorithm,
                                  SigningMethod:   null,

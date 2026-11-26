@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public  ECPrivateKeyParameters?  PrivateKey            { get; }
 
-        public  ECPublicKeyParameters    PublicKey             { get; }
+        public new ECPublicKeyParameters PublicKey             { get; }
 
         public  Byte[] PublicKeyASN1
             => SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(PublicKey). ToAsn1Object().GetEncoded();
@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (!JSON.ParseMandatoryText("public",
                                              "public key",
-                                             out String PublicText,
+                                             out String? PublicText,
                                              out ErrorResponse))
                 {
                     return false;
@@ -379,11 +379,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region CustomData       [optional]
 
-                if (JSON.ParseOptionalJSON("customData",
-                                           "custom data",
-                                           WWCP.CustomData.TryParse,
-                                           out CustomData CustomData,
-                                           out ErrorResponse))
+                if (JSON.ParseOptionalJSONMayBeNull("customData",
+                                                    "custom data",
+                                                    WWCP.CustomData.TryParse,
+                                                    out CustomData? CustomData,
+                                                    out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -426,8 +426,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="CustomKeyPairSerializer">A delegate to serialize cryptographic key pairs.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<KeyPair>?     CustomKeyPairSerializer      = null,
-                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
+        public new JObject ToJSON(CustomJObjectSerializerDelegate<KeyPair>?     CustomKeyPairSerializer      = null,
+                                  CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
 
             var json = JSONObject.Create(
@@ -928,7 +928,7 @@ namespace cloud.charging.open.protocols.WWCP
                             );
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
                 //throw new ArgumentException("The given public key is invalid!", nameof(PublicKeyBytes), e);

@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (!JSON.ParseMandatoryText("private",
                                              "private key",
-                                             out String PrivateText,
+                                             out String? PrivateText,
                                              out ErrorResponse))
                 {
                     return false;
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (!JSON.ParseMandatoryText("public",
                                              "public key",
-                                             out String PublicText,
+                                             out String? PublicText,
                                              out ErrorResponse))
                 {
                     return false;
@@ -390,11 +390,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region CustomData       [optional]
 
-                if (JSON.ParseOptionalJSON("customData",
-                                           "custom data",
-                                           WWCP.CustomData.TryParse,
-                                           out CustomData CustomData,
-                                           out ErrorResponse))
+                if (JSON.ParseOptionalJSONMayBeNull("customData",
+                                                    "custom data",
+                                                    WWCP.CustomData.TryParse,
+                                                    out CustomData? CustomData,
+                                                    out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

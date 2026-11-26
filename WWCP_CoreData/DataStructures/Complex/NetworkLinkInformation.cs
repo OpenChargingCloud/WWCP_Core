@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
         /// <summary>
         /// The JSON-LD context of this data structure.
         /// </summary>
-        public static readonly JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/virtualNetworkLinkInformation");
+        public static new readonly JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/virtualNetworkLinkInformation");
 
         #endregion
 
@@ -271,11 +271,11 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                 #region CustomData    [optional]
 
-                if (JSON.ParseOptionalJSON("customData",
-                                            "custom data",
-                                            WWCP.CustomData.TryParse,
-                                            out CustomData CustomData,
-                                            out ErrorResponse))
+                if (JSON.ParseOptionalJSONMayBeNull("customData",
+                                                     "custom data",
+                                                     WWCP.CustomData.TryParse,
+                                                     out CustomData? CustomData,
+                                                     out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -732,11 +732,11 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                 #region CustomData    [optional]
 
-                if (JSON.ParseOptionalJSON("customData",
-                                            "custom data",
-                                            WWCP.CustomData.TryParse,
-                                            out CustomData CustomData,
-                                            out ErrorResponse))
+                if (JSON.ParseOptionalJSONMayBeNull("customData",
+                                                     "custom data",
+                                                     WWCP.CustomData.TryParse,
+                                                     out CustomData? CustomData,
+                                                     out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

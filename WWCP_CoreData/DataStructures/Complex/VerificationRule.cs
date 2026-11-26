@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -189,9 +191,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="VerificationRule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                JSON,
-                                       out VerificationRule?  VerificationRule,
-                                       out String?            ErrorResponse)
+        public static Boolean TryParse(JObject                                     JSON,
+                                       [NotNullWhen(true)]  out VerificationRule?  VerificationRule,
+                                       [NotNullWhen(false)] out String?            ErrorResponse)
 
             => TryParse(JSON,
                         out VerificationRule,
@@ -207,8 +209,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomVerificationRuleParser">An optional delegate to parse custom verification rules.</param>
         public static Boolean TryParse(JObject                                         JSON,
-                                       out VerificationRule?                           VerificationRule,
-                                       out String?                                     ErrorResponse,
+                                       [NotNullWhen(true)]  out VerificationRule?      VerificationRule,
+                                       [NotNullWhen(false)] out String?                ErrorResponse,
                                        CustomJObjectParserDelegate<VerificationRule>?  CustomVerificationRuleParser   = null)
         {
 
@@ -288,11 +290,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region CustomData    [optional]
 
-                if (JSON.ParseOptionalJSON("customData",
-                                           "custom data",
-                                           WWCP.CustomData.TryParse,
-                                           out CustomData CustomData,
-                                           out ErrorResponse))
+                if (JSON.ParseOptionalJSONMayBeNull("customData",
+                                                    "custom data",
+                                                    WWCP.CustomData.TryParse,
+                                                    out CustomData? CustomData,
+                                                    out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

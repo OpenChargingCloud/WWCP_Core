@@ -70,18 +70,18 @@ namespace cloud.charging.open.protocols.WWCP.WebSockets
                     Exception);
 
         public static SentMessageResult TransmissionFailed (Exception             Exception,
-                                                            IMessageConnection    WebSocketConnection)
+                                                            IMessageConnection?   WebSocketConnection)
 
             => new (SentMessageResults.TransmissionFailed,
                     WebSocketConnection,
                     Exception);
 
-        public static SentMessageResult Timeout            (IMessageConnection    WebSocketConnection)
+        public static SentMessageResult Timeout            (IMessageConnection?   WebSocketConnection)
 
             => new (SentMessageResults.Timeout,
                     WebSocketConnection);
 
-        public static SentMessageResult Success            (IMessageConnection    WebSocketConnection)
+        public static SentMessageResult Success            (IMessageConnection?   WebSocketConnection)
 
             => new (SentMessageResults.Success,
                     WebSocketConnection);

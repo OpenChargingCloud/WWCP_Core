@@ -302,11 +302,11 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                 #region CustomData     [optional]
 
-                if (JSON.ParseOptionalJSON("customData",
-                                           "custom data",
-                                           WWCP.CustomData.TryParse,
-                                           out CustomData CustomData,
-                                           out ErrorResponse))
+                if (JSON.ParseOptionalJSONMayBeNull("customData",
+                                                    "custom data",
+                                                    WWCP.CustomData.TryParse,
+                                                    out CustomData? CustomData,
+                                                    out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

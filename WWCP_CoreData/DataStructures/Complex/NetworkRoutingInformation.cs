@@ -98,8 +98,8 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
             {
 
                 hashCode = this.DestinationId.GetHashCode()       * 17 ^
-                          (this.Uplink?.      GetHashCode() ?? 0) * 13 ^
-                          (this.Downlink?.    GetHashCode() ?? 0) * 11 ^
+                           this.Uplink.       GetHashCode()       * 13 ^
+                           this.Downlink.     GetHashCode()       * 11 ^
                            this.Priority.     GetHashCode()       *  7 ^
                            this.Weight.       GetHashCode()       *  5 ^
                           (this.Timeout?.     GetHashCode() ?? 0) *  3 ^
@@ -264,11 +264,11 @@ namespace cloud.charging.open.protocols.WWCP.NetworkingNode
 
                 #region CustomData       [optional]
 
-                if (JSON.ParseOptionalJSON("customData",
-                                           "custom data",
-                                           WWCP.CustomData.TryParse,
-                                           out CustomData CustomData,
-                                           out ErrorResponse))
+                if (JSON.ParseOptionalJSONMayBeNull("customData",
+                                                    "custom data",
+                                                    WWCP.CustomData.TryParse,
+                                                    out CustomData? CustomData,
+                                                    out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

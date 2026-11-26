@@ -592,7 +592,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  MessagePolicyEntry?     Entry,
                                  String                  Reason,
                                  PolicyViolationActions  OnViolation,
-                                 out String?             ErrorResponse,
+            [NotNullWhen(false)] out String?             ErrorResponse,
                                  PolicyViolationKinds?   Kind   = null)
         {
 

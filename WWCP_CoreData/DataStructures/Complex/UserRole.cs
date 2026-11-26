@@ -559,11 +559,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region CustomData        [optional]
 
-                if (JSON.ParseOptionalJSON("customData",
-                                           "custom data",
-                                           WWCP.CustomData.TryParse,
-                                           out CustomData? CustomData,
-                                           out ErrorResponse))
+                if (JSON.ParseOptionalJSONMayBeNull("customData",
+                                                    "custom data",
+                                                    WWCP.CustomData.TryParse,
+                                                    out CustomData? CustomData,
+                                                    out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -663,7 +663,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Clone this object.
         /// </summary>
-        public new UserRole Clone()
+        public UserRole Clone()
 
             => new (
 

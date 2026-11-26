@@ -468,11 +468,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region CustomData           [optional]
 
-                if (JSON.ParseOptionalJSON("customData",
-                                           "custom data",
-                                           WWCP.CustomData.TryParse,
-                                           out CustomData CustomData,
-                                           out ErrorResponse))
+                if (JSON.ParseOptionalJSONMayBeNull("customData",
+                                                    "custom data",
+                                                    WWCP.CustomData.TryParse,
+                                                    out CustomData? CustomData,
+                                                    out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -1174,6 +1174,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             Signature = null;
 
+            if (SignInfo.PrivateKey is null)
+            {
+                ErrorResponse = "The given key pair must contain a private key!";
+                return false;
+            }
+
             var algorithm = JWS.AlgorithmFor(SignInfo.Algorithm);
 
             if (algorithm is null)
@@ -1228,6 +1234,12 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             Signature = null;
+
+            if (SignInfo.PrivateKey is null)
+            {
+                ErrorResponse = "The given key pair must contain a private key!";
+                return false;
+            }
 
             var algorithm = JWS.AlgorithmFor(SignInfo.Algorithm);
 
@@ -1929,7 +1941,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     SignableMessage.AddSignature(
                                         new Signature(
-                                            KeyId:           SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKeyData.GetBytes(),
+                                            KeyId:           SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKey.GetBytes(),
                                             Value:           signature,
                                             Algorithm:       signInfo.Algorithm,
                                             SigningMethod:   null,
